@@ -6,3 +6,5 @@
 /.vs/RemoteSensingProject/FileContentIndex/d20f8bcb-07b0-4f96-bd2f-a89fecb40e83.vsidx
 *.vsidx
 **/.vs/
+bin/
+obj/
