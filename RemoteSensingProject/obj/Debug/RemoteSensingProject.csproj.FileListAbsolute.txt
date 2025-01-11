@@ -45,14 +45,13 @@ D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Memory.xm
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Numerics.Vectors.xml
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Runtime.CompilerServices.Unsafe.xml
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Threading.Tasks.Extensions.xml
-<<<<<<< HEAD
+
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.csproj.AssemblyReference.cache
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.csproj.CoreCompileInputs.cache
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
-=======
-<<<<<<< HEAD
+
 G:\Sahbag Project\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 G:\Sahbag Project\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 G:\Sahbag Project\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
@@ -106,7 +105,6 @@ G:\Sahbag Project\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\D
 G:\Sahbag Project\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
 G:\Sahbag Project\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 G:\Sahbag Project\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
-=======
 C:\Users\macreel_dev\Source\Repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.csproj.AssemblyReference.cache
 C:\Users\macreel_dev\Source\Repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.csproj.CoreCompileInputs.cache
 C:\Users\macreel_dev\Source\Repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
@@ -160,5 +158,4 @@ C:\Users\macreel_dev\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\
 C:\Users\macreel_dev\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\macreel_dev\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Threading.Tasks.Extensions.xml
 C:\Users\macreel_dev\Source\Repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
->>>>>>> 493fb268c5bd3e7e4a0535e11824ffefea1a2137
->>>>>>> 3ef11adecf63f8ef66cd6ac1c1cf09c58fe400fc
+
