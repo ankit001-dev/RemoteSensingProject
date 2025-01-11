@@ -158,6 +158,7 @@
     </Compile>
     <Compile Include="Models\Admin\main.cs" />
     <Compile Include="Models\demo.cs" />
+    <Compile Include="Models\ProjectManager\main.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -845,7 +846,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\ProjectManager\" />
     <Folder Include="obj\Debug\TempPE\" />
   </ItemGroup>
   <ItemGroup>
