@@ -40,7 +40,7 @@ namespace RemoteSensingProject.Models.Admin
             {
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action" , cr.id > 0 ? "InsertDevision" : "UpdateDevision");
+                cmd.Parameters.AddWithValue("@action" , cr.id > 0 ? "UpdateDevision" : "InsertDevision");
                 cmd.Parameters.AddWithValue("@devisionName", cr.name);
                 cmd.Parameters.AddWithValue("@id", cr.id);
                 con.Open();
@@ -77,6 +77,7 @@ namespace RemoteSensingProject.Models.Admin
                             name = rd["devisionName"].ToString()
                         });
                     }
+                    rd.Close();
                 }
                 return list;
             }
@@ -111,6 +112,7 @@ namespace RemoteSensingProject.Models.Admin
                             name = rd["designationName"].ToString()
                         });
                     }
+                    rd.Close();
                 }
                 return list;
             }

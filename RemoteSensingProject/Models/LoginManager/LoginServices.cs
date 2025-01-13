@@ -64,6 +64,8 @@ namespace RemoteSensingProject.Models.LoginManager
                     {
                         roles.Add(rd["userRole"].ToString());
                     }
+
+                    rd.Close();
                 }
                 return roles;
             }
