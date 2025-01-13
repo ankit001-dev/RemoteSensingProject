@@ -157,6 +157,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Admin\AdminServices.cs" />
     <Compile Include="Models\Admin\main.cs" />
     <Compile Include="Models\DataFactory.cs" />
     <Compile Include="Models\LoginManager\LoginServices.cs" />

@@ -8,6 +8,11 @@ namespace RemoteSensingProject.Models.Admin
 {
     public class main
     {
+        public class CommonResponse
+        {
+            public int id { get; set; }
+            public string name { get; set; }
+        }
         public class Employee_model
         {
             public int Id { get; set; }

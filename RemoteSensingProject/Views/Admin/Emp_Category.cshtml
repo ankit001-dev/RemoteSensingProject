@@ -3,14 +3,44 @@
     ViewBag.Title = "Emp_Category";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
 }
+<style>
+    /*spinner section start here*/
+    #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.7); /* White background with opacity */
+        backdrop-filter: blur(5px); /* Blur effect */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    /* Spinner */
+    .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3; /* Light grey */
+        border-top: 5px solid #3498db; /* Blue */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+</style>
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<div id="loading" style="display: none;">
+    <div class="spinner"></div>
+</div>
+
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#" id="desginationTab">Desgination</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#" id="department">Divison</a>
+            <a class="nav-link" href="#" id="divisonTab">Divison</a>
         </li>
     </ul>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Employee</button>
@@ -25,7 +55,7 @@
             <div class="modal-header">
                 <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
 
-                <h5 class="modal-title" id="exampleModalLabel">Add <span>Designation</span></h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add <span id="modalTitle">Designation</span></h5>
 
             </div>
             <div class="modal-body">
@@ -34,8 +64,9 @@
                         <label>
                             Designation :
                         </label>
-                        <input type="text" class="form-control" name="name"/>
-                        <input type="hidden" name="id"/>
+                        <input type="text" class="form-control" name="name" />
+                        <input type="hidden" name="formType" value="Designation" id="formTypes"/>
+                        <input type="hidden" name="id" />
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Employee</button>
@@ -48,24 +79,30 @@
 
 <script>
     $(document).ready(function () {
-        loadPartialContent("_desgination")
+        $("#desginationTab").triger("click")
         $("#desginationTab").click(function () {
             loadPartialContent("_desgination")
+            $(":#modalTitle").text("Desgination")
+            $("#formTypes").val("Desgination")
         });
 
-        $("#desginationTab").click(function () {
+        $("#divisonTab").click(function () {
             loadPartialContent("_divison")
+            $(":#modalTitle").text("Divison")
+            $("#formTypes").val("Divison")
         });
 
         function loadPartialContent(partialView) {
+            $("#loading").show();
             $.get("/admin/getCategoryPartial", { partial: partialView }).done(function (res) {
                 $("#mainContainer").html(res)
             }).fail(function () {
                 alert("Failed to load content.");
             })
                 .always(function () {
-                    $("#loadingIndicator").hide();
+                    $("#loading").hide();
                 });
         }
+
     })
 </script>

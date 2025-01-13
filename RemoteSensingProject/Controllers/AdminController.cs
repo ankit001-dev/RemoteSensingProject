@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using RemoteSensingProject.Models.Admin;
+using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Controllers
 {
     [Authorize(Roles ="admin")]
     public class AdminController : Controller
     {
+        private readonly AdminServices _adminServices;
+        public AdminController()
+        {
+            _adminServices = new AdminServices();   
+        }
         // GET: Admin
         public ActionResult Dashboard()
         {
@@ -25,7 +32,26 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult getCategoryPartial(string partial)
         {
-            return PartialView(partial);
+            List<CommonResponse> list = new List<CommonResponse>();
+            if (partial.Equals("_desgination"))
+            {
+                list = _adminServices.ListDesgination();
+            }
+            else if (partial.Equals("_divison"))
+            {
+                list = _adminServices.ListDivison();
+            }
+            return PartialView(partial, list);
+        }
+
+        public ActionResult InsertDesgination(CommonResponse cr)
+        {
+            bool res = _adminServices.InsertDesgination(cr);
+            return Json(new
+            {
+                status = res,
+                message = res ? "Desgination inserted successfully!"  : "Some issue found while processing your request !"
+            }, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
