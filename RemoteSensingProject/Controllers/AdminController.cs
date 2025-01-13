@@ -102,6 +102,7 @@ namespace RemoteSensingProject.Controllers
             }
             if (res)
             {
+
                 emp.EmployeeImages.SaveAs(Server.MapPath(path));
 
             }
