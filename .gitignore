@@ -78,3 +78,6 @@ _ReSharper*/
 /.vscode/
 
 # End of .gitignore
+/.vs/RemoteSensingProject/v17/DocumentLayout.backup.json
+/.vs/RemoteSensingProject/v17/DocumentLayout.json
+/.vs/RemoteSensingProject/v17/.suo
