@@ -133,14 +133,14 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "InsertEmployees");
                 cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@name", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@mobile", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@email", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@gender", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@role", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@devision", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@designation", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@profile", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@name", emp.EmployeeName);
+                cmd.Parameters.AddWithValue("@mobile", emp.MobileNo);
+                cmd.Parameters.AddWithValue("@email", emp.Email);
+                cmd.Parameters.AddWithValue("@gender", emp.Gender);
+                cmd.Parameters.AddWithValue("@role", emp.EmployeeRole);
+                cmd.Parameters.AddWithValue("@devision", emp.Division);
+                cmd.Parameters.AddWithValue("@designation", emp.Designation);
+                cmd.Parameters.AddWithValue("@profile", emp.Image_url);
 
                 con.Open();
                 int res = cmd.ExecuteNonQuery();

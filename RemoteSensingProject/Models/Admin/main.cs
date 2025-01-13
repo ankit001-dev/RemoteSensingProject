@@ -21,7 +21,7 @@ namespace RemoteSensingProject.Models.Admin
             public string MobileNo { get; set; }
             public string Email { get; set; }
             public string EmployeeRole { get; set; }
-            public string Department { get; set; }
+            public string Division { get; set; }
             public string Designation { get; set; }
             public string Gender { get; set; }
             public HttpPostedFileBase EmployeeImages { get; set; }
