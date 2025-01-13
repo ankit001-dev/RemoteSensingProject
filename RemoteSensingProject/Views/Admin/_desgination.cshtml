@@ -26,7 +26,17 @@
 
 
             $.ajax({
-                url: "/admin/"
+                url: "/admin/InsertDesgination",
+                type: "post",
+                data: data,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: "Successfully !",
+
+                        })
+                    }
+                }
             })
         })
     })

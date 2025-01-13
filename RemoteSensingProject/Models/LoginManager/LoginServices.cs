@@ -55,6 +55,8 @@ namespace RemoteSensingProject.Models.LoginManager
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getUserRole");
                 cmd.Parameters.AddWithValue("@username", username);
+                if (con.State == ConnectionState.Open)
+                    con.Close();
                 con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
