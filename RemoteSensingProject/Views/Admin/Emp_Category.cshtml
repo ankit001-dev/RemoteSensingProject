@@ -43,54 +43,38 @@
             <a class="nav-link" href="#" id="divisonTab">Divison</a>
         </li>
     </ul>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Employee</button>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEmployeeCategory"><i class="link-icon" data-feather="plus"></i> Add</button>
 </nav>
 <div class="row" id="mainContainer">
 </div>
 
-<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-sm modal-dialog-centered">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                <h5 class="modal-title" id="exampleModalLabel">Add <span id="modalTitle">Designation</span></h5>
-
-            </div>
-            <div class="modal-body">
-                <form class="forms-sample" id="categoryForms">
-                    <div class="form-group">
-                        <label>
-                            Designation :
-                        </label>
-                        <input type="text" class="form-control" name="name" />
-                        <input type="hidden" name="formType" value="Designation" id="formTypes"/>
-                        <input type="hidden" name="id" />
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Employee</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     $(document).ready(function () {
         loadPartialContent("_desgination")
         $("#desginationTab").click(function () {
+            checkActiveTab();
+            $(this).addClass("active")
             loadPartialContent("_desgination")
             $("#modalTitle").text("Desgination")
             $("#formTypes").val("Desgination")
         });
 
         $("#divisonTab").click(function () {
+            checkActiveTab()
             loadPartialContent("_divison")
             $("#modalTitle").text("Divison")
-            $("#formTypes").val("Divison")
+            $("#formTypes").val("Divison");
+            $(this).addClass("active")
         });
+
+        function checkActiveTab() {
+            $(".nav-link").each(function () {
+                if ($(this).hasClass("active")) {
+                    $(this).removeClass("active")
+                }
+            })
+        }
 
         function loadPartialContent(partialView) {
             $("#loading").show();

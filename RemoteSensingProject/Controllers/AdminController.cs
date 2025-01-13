@@ -50,6 +50,7 @@ namespace RemoteSensingProject.Controllers
             return PartialView(partial, list);
         }
 
+        [HttpPost]
         public ActionResult InsertDesgination(CommonResponse cr)
         {
             bool res = _adminServices.InsertDesgination(cr);
@@ -59,7 +60,7 @@ namespace RemoteSensingProject.Controllers
                 message = res ? "Desgination inserted successfully!"  : "Some issue found while processing your request !"
             }, JsonRequestBehavior.AllowGet);
         }
-
+        [HttpPost]
         public ActionResult InsertDivision(CommonResponse cr)
         {
             bool res = _adminServices.InsertDivison(cr);
@@ -69,7 +70,26 @@ namespace RemoteSensingProject.Controllers
                 message = res ? "Divison inserted successfully!"  : "Some issue found while processing your request !"
             }, JsonRequestBehavior.AllowGet);
         }
-
+        [HttpDelete]
+        public ActionResult removeDivison(int id)
+        {
+            bool res = _adminServices.removeDivison(id);
+            return Json(new
+            {
+                status = res,
+                message = res ? "Divison removed successfully !" : "Some issue occred "
+            }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpDelete]
+        public ActionResult removeDesgination(int id)
+        {
+            bool res = _adminServices.removeDesgination(id);
+            return Json(new
+            {
+                status = res,
+                message = res ? "Divison removed successfully !" : "Some issue occred "
+            }, JsonRequestBehavior.AllowGet);
+        }
 
         #endregion
 
@@ -81,17 +101,6 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
-
-        [HttpPost]
-        public ActionResult Employee_Registration(Employee_model emp)
-        {
-
-            var res = _adminServices.AddEmployees(emp);
-
-            return Json(res);
-            
-        }
-
         public ActionResult Add_Project()
         {
 

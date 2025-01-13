@@ -268,23 +268,23 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="subtitle" class="form-label"> Employee Code</label>
-                            <input type="text" class="form-control" id="subtitle" autocomplete="off" placeholder="Enter Employee Code">
+                            <input type="text" class="form-control" required id="subtitle" autocomplete="off" placeholder="Enter Employee Code">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="subtitle" class="form-label"> Employee Name</label>
-                            <input type="text" class="form-control" id="subtitle" autocomplete="off" placeholder="Enter Employee Name">
+                            <input type="text" class="form-control" required id="subtitle" autocomplete="off" placeholder="Enter Employee Name">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="title" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" id="title" placeholder="Enter Mobile">
+                            <input type="text" class="form-control" required id="title" placeholder="Enter Mobile">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="title" class="form-label">Email</label>
-                            <input type="text" class="form-control" id="title" placeholder="Enter Email">
+                            <input type="text" class="form-control" required id="title" placeholder="Enter Email">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="description" class="form-label">Select Role</label>
-                            <select class="form-select form-select-lg">
+                            <select class="form-select form-select-lg" required>
                                 <option selected disabled>Select Role</option>
                                 <option value="projectManager">Project Manager</option>
                                 <option value="subOrdinate">Sub Ordinate</option>
@@ -293,7 +293,7 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="description" class="form-label">Select Division</label>
-                            <select class="form-select form-select-lg">
+                            <select class="form-select form-select-lg" required>
                                 <option selected disabled>Select Division</option>
                                 @if (ViewBag.division != null)
             {
@@ -311,7 +311,7 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="description" class="form-label">Select Designation</label>
-                            <select class="form-select form-select-lg">
+                            <select class="form-select form-select-lg" required>
                                 <option selected>Select Designation</option>
                                 @if (ViewBag.designation != null)
                                 {
@@ -330,15 +330,15 @@
                             <label for="gender" class="form-label">Gender</label>
                             <div id="gender">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+                                    <input class="form-check-input" required type="radio" name="gender" id="male" value="male">
                                     <label class="form-check-label" for="male">Male</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+                                    <input class="form-check-input" required type="radio" name="gender" id="female" value="female">
                                     <label class="form-check-label" for="female">Female</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="gender" id="other" value="other">
+                                    <input class="form-check-input" required type="radio" name="gender" id="other" value="other">
                                     <label class="form-check-label" for="other">Other</label>
                                 </div>
                             </div>
@@ -346,7 +346,7 @@
                        
                         <div class="mb-3 col-md-6">
                             <label for="upload" class="form-label">Upload Images</label>
-                            <input class="form-control" type="file" id="fileupload">
+                            <input class="form-control" required type="file" id="fileupload">
                         </div>
                     </div>
                     <div class="text-center">
@@ -430,7 +430,7 @@
 
 <script>
 
-    $("#addEmployeeform").submit(function (e) {
+    $(".addEmployeeform").submit(function (e) {
         e.preventDefault();
         let formData = new FormData();
         let arrData = $(this).serializeArray();
@@ -448,7 +448,7 @@
             contentType:false,
             data: formData,
             success: function (res) {
-
+    alert(res)
             },error:function(xhr){
 
             }

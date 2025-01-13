@@ -12,6 +12,7 @@ namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
     {
+        #region Employee Category
         public bool InsertDesgination(CommonResponse cr)
         {
             try
@@ -41,7 +42,7 @@ namespace RemoteSensingProject.Models.Admin
             {
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action" , cr.id > 0 ? "InsertDevision" : "UpdateDevision");
+                cmd.Parameters.AddWithValue("@action" , cr.id > 0 ? "UpdateDevision" : "InsertDevision");
                 cmd.Parameters.AddWithValue("@devisionName", cr.name);
                 cmd.Parameters.AddWithValue("@id", cr.id);
                 con.Open();
@@ -78,6 +79,7 @@ namespace RemoteSensingProject.Models.Admin
                             name = rd["devisionName"].ToString()
                         });
                     }
+                    rd.Close();
                 }
                 return list;
             }
@@ -112,6 +114,7 @@ namespace RemoteSensingProject.Models.Admin
                             name = rd["designationName"].ToString()
                         });
                     }
+                    rd.Close();
                 }
                 return list;
             }
@@ -126,6 +129,54 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+
+        public bool removeDesgination(int Id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "deleteDesignation");
+                cmd.Parameters.AddWithValue("@id", Id);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public bool removeDivison(int Id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "deleteDevision");
+                cmd.Parameters.AddWithValue("@id", Id);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        #endregion
         public bool AddEmployees(Employee_model emp)
         {
             try
@@ -134,14 +185,14 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "InsertEmployees");
                 cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@name", emp.EmployeeName);
-                cmd.Parameters.AddWithValue("@mobile", emp.MobileNo);
-                cmd.Parameters.AddWithValue("@email", emp.Email);
-                cmd.Parameters.AddWithValue("@gender", emp.Gender);
-                cmd.Parameters.AddWithValue("@role", emp.EmployeeRole);
-                cmd.Parameters.AddWithValue("@devision", emp.Division);
-                cmd.Parameters.AddWithValue("@designation", emp.Designation);
-                cmd.Parameters.AddWithValue("@profile", emp.Image_url);
+                cmd.Parameters.AddWithValue("@name", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@mobile", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@email", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@gender", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@role", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@devision", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@designation", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@profile", emp.EmployeeCode);
 
                 con.Open();
                 int res = cmd.ExecuteNonQuery();
