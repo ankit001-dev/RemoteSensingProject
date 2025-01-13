@@ -219,10 +219,6 @@ namespace RemoteSensingProject.Models.Admin
 
         #region Create PRoject
         #endregion
-    }
-}
-        }
-
         #region /* Admin Dashboard Count */
         public DashboardCount DashboardCount()
         {
@@ -235,7 +231,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@action", "AdminDashboardCount");
                 con.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
-              
+
                 if (sdr.Read())
                 {
                     obj = new DashboardCount();
@@ -246,21 +242,24 @@ namespace RemoteSensingProject.Models.Admin
                     obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
                     obj.TotalMeetings = sdr["TotalMeetings"].ToString();
                 }
-                
+
                 sdr.Close();
 
                 return obj;
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
             }
             finally
             {
                 con.Close();
-               
+
             }
         }
-        #endregion /* End */
+        #endregion /* End */    
+
+
     }
 }
