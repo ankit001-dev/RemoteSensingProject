@@ -263,3 +263,6 @@ _Pvt_Extensions
 # JetBrains Rider
 .idea/
 *.sln.iml
+/RemoteSensingProject/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/RemoteSensingProject/obj/Debug/RemoteSensingProject.csproj.AssemblyReference.cache
+/.vs/RemoteSensingProject/config/applicationhost.config
