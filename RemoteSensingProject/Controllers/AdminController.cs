@@ -17,6 +17,18 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
+        #region Employee Category
+        public ActionResult Emp_Category()
+        {
+            return View();
+        }
+
+        public ActionResult getCategoryPartial(string partial)
+        {
+            return PartialView(partial);
+        }
+        #endregion
+
         public ActionResult Employee_Registration()
         {
 

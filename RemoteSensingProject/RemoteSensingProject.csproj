@@ -850,6 +850,9 @@
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Shared\_adminLayout.cshtml" />
     <Content Include="Views\Shared\_employeeLayout.cshtml" />
+    <Content Include="Views\Admin\Emp_Category.cshtml" />
+    <Content Include="Views\Admin\_desgination.cshtml" />
+    <Content Include="Views\Admin\_divison.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

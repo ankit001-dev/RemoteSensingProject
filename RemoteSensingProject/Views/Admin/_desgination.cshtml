@@ -1,0 +1,33 @@
+﻿<div class="col-md-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Sr. No</th>
+                            <th>Desgination</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".table").DataTable();
+
+        $("#categoryForms").on("submit", function (e) {
+
+            e.preventDefault();
+            let data = $(this).serialize();
+
+
+            $.ajax({
+                url: "/admin/"
+            })
+        })
+    })
+</script>

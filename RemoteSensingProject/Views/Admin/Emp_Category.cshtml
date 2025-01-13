@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "Emp_Category";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#" id="desginationTab">Desgination</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" id="department">Divison</a>
+        </li>
+    </ul>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Employee</button>
+</nav>
+<div class="row" id="mainContainer">
+</div>
+
+<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-sm modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Add <span>Designation</span></h5>
+
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="categoryForms">
+                    <div class="form-group">
+                        <label>
+                            Designation :
+                        </label>
+                        <input type="text" class="form-control" name="name"/>
+                        <input type="hidden" name="id"/>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Employee</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        loadPartialContent("_desgination")
+        $("#desginationTab").click(function () {
+            loadPartialContent("_desgination")
+        });
+
+        $("#desginationTab").click(function () {
+            loadPartialContent("_divison")
+        });
+
+        function loadPartialContent(partialView) {
+            $.get("/admin/getCategoryPartial", { partial: partialView }).done(function (res) {
+                $("#mainContainer").html(res)
+            }).fail(function () {
+                alert("Failed to load content.");
+            })
+                .always(function () {
+                    $("#loadingIndicator").hide();
+                });
+        }
+    })
+</script>
