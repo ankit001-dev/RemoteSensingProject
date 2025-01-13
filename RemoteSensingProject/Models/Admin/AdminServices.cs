@@ -90,7 +90,8 @@ namespace RemoteSensingProject.Models.Admin
                     con.Close();
                 cmd.Dispose();
             }
-        }public List<CommonResponse> ListDesgination()
+        }
+        public List<CommonResponse> ListDesgination()
         {
             try
             {
@@ -124,5 +125,45 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+        public bool AddEmployees(Employee_model emp)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "InsertEmployees");
+                cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@name", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@mobile", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@email", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@gender", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@role", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@devision", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@designation", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@profile", emp.EmployeeCode);
+
+                con.Open();
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
     }
 }
