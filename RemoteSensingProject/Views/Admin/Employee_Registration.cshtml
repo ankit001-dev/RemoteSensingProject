@@ -268,23 +268,23 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="subtitle" class="form-label"> Employee Code</label>
-                            <input type="text" class="form-control" required id="subtitle" autocomplete="off" placeholder="Enter Employee Code">
+                            <input type="text" class="form-control" name="EmployeeCode" required id="subtitle" autocomplete="off" placeholder="Enter Employee Code">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="subtitle" class="form-label"> Employee Name</label>
-                            <input type="text" class="form-control" required id="subtitle" autocomplete="off" placeholder="Enter Employee Name">
+                            <input type="text" class="form-control" name="EmployeeName" required id="subtitle" autocomplete="off" placeholder="Enter Employee Name">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="title" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" required id="title" placeholder="Enter Mobile">
+                            <input type="text" class="form-control" name="MobileNo" required id="title" placeholder="Enter Mobile">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="title" class="form-label">Email</label>
-                            <input type="text" class="form-control" required id="title" placeholder="Enter Email">
+                            <input type="text" class="form-control"  name="Email" required id="title" placeholder="Enter Email">
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="description" class="form-label">Select Role</label>
-                            <select class="form-select form-select-lg" required>
+                            <select class="form-select form-select-lg"  name="EmployeeRole" required>
                                 <option selected disabled>Select Role</option>
                                 <option value="projectManager">Project Manager</option>
                                 <option value="subOrdinate">Sub Ordinate</option>
@@ -293,7 +293,7 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="description" class="form-label">Select Division</label>
-                            <select class="form-select form-select-lg" required>
+                            <select class="form-select form-select-lg"  name="Division" required>
                                 <option selected disabled>Select Division</option>
                                 @if (ViewBag.division != null)
             {
@@ -311,7 +311,7 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="description" class="form-label">Select Designation</label>
-                            <select class="form-select form-select-lg" required>
+                            <select class="form-select form-select-lg"  name="Designation" required>
                                 <option selected>Select Designation</option>
                                 @if (ViewBag.designation != null)
                                 {
@@ -346,7 +346,7 @@
                        
                         <div class="mb-3 col-md-6">
                             <label for="upload" class="form-label">Upload Images</label>
-                            <input class="form-control" required type="file" id="fileupload">
+                            <input class="form-control" required type="file"  name="EmployeeImages" id="fileupload">
                         </div>
                     </div>
                     <div class="text-center">
@@ -437,8 +437,8 @@
         arrData.forEach(function (d) {
             formData.append(d.name, d.value);
         })
-        if ($("#fileupload").files.length > 0) {
-            formData.append("Image_url",$("#fileupload").get(0).files[0])
+        if ($("#fileupload").get(0).files.length > 0) {
+            formData.append("EmployeeImages", $("#fileupload").get(0).files[0])
         }
 
         $.ajax({

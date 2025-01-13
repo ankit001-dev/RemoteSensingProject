@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using static RemoteSensingProject.Models.Admin.main;
+using static RemoteSensingProject.Models.LoginManager.LoginServices;
 using System.Data.SqlClient;
 using System.Data;
 using System.Security.Policy;
 using System.Runtime.InteropServices;
+using System.Web.Razor.Generator;
+using RemoteSensingProject.Models.MailService;
+using System.Web.Services.Description;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
     {
+        mail _mail = new mail();
+
         public bool InsertDesgination(CommonResponse cr)
         {
             try
@@ -125,13 +131,42 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
-        public bool AddEmployees(Employee_model emp)
+
+        public bool AddUserIdPassword(int userId, string username, string password, string userRole)
         {
             try
             {
+                cmd = new SqlCommand("sp_manageLoginMaster", con);
+                cmd.Parameters.AddWithValue("@action", "InsertLoginData");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                cmd.Parameters.AddWithValue("@userName", username);
+                cmd.Parameters.AddWithValue("@password", password);
+                cmd.Parameters.AddWithValue("@userRole", userRole);
+                con.Open();
+                int res = cmd.ExecuteNonQuery();
+               
+                return res > 0 ? true : false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
 
+        }
+        public bool AddEmployees(Employee_model emp)
+        {
+                con.Open();
+            SqlTransaction transaction = con.BeginTransaction();
+            try
+            {
 
-                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd = new SqlCommand("sp_ManageEmployeeCategory", con,transaction);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", emp.Id!=0? "UpdateEmployees" : "InsertEmployees");
                 cmd.Parameters.AddWithValue("@id", emp.Id);
@@ -144,12 +179,33 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@devision", emp.Division);
                 cmd.Parameters.AddWithValue("@designation", emp.Designation);
                 cmd.Parameters.AddWithValue("@profile", emp.Image_url);
-
-                con.Open();
+                SqlParameter outputParam = new SqlParameter("@empId", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(outputParam);
                 int res = cmd.ExecuteNonQuery();
                 if (res > 0)
                 {
-                    return true;
+                        string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                        Random rnd=new Random();
+                        var empId = (int)outputParam.Value;
+                        var userName = emp.EmployeeName.Substring(0, 5) + "@" + emp.MobileNo.Substring(0, 5);
+                        string userpassword= "";
+                        for (int i = 0; i < 8; i++)
+                        {
+                            userpassword+= validChars[rnd.Next(validChars.Length)];
+                        }
+                    var loginRes = AddUserIdPassword(empId, userName, userpassword, emp.EmployeeRole);
+                    if (loginRes)
+                    {
+                        string subject = "Login Credential";
+                        string message = $"<p>Your user id : <b>{userName}</b></p><br><p>Password : <b>{userpassword}</b></p>";
+                        _mail.SendMail(emp.EmployeeName,emp.Email,subject,message);
+                    }
+                    transaction.Commit();
+
+                    return loginRes;
                 }
                 else
                 {
@@ -158,6 +214,7 @@ namespace RemoteSensingProject.Models.Admin
             }
             catch (Exception ex)
             {
+                transaction.Rollback();
                 throw ex;
             }
             finally
@@ -167,6 +224,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+
 
         public bool RemoveEmployees(int? id)
         {
