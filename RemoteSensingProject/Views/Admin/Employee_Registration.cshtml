@@ -302,7 +302,7 @@
                                         foreach(var item in ViewBag.division)
                     {
 
-                    <option @item.id>@item.name</option>
+                    <option value="@item.id">@item.name</option>
                     }
                 }
             }
@@ -320,7 +320,7 @@
                                         foreach (var item in ViewBag.designation)
                                         {
 
-                                            <option @item.id>@item.name</option>
+                                            <option value="@item.id">@item.name</option>
                                         }
                                     }
                                 }
@@ -448,9 +448,28 @@
             contentType:false,
             data: formData,
             success: function (res) {
-    alert(res)
+                if (res) {
+                    Swal.fire({
+                        title: "success",
+                        text: "Employee Added Successfully",
+                        icon: "success",
+                        didClose: () => {
+                            location.reload();
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: "error",
+                        text: "something went wrong",
+                        icon: "error"
+                    })
+                }
             },error:function(xhr){
-
+                Swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
             }
         })
 
