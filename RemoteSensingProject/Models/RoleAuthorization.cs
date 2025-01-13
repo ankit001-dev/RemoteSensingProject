@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
@@ -9,8 +12,6 @@ namespace RemoteSensingProject.Models
 {
     public class RoleAuthorization : RoleProvider
     {
-        private readonly LoginServices _loginServices = new LoginServices();
-       
         public override string ApplicationName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public override void AddUsersToRoles(string[] usernames, string[] roleNames)
@@ -42,7 +43,26 @@ namespace RemoteSensingProject.Models
         {
 
             List<string> role = new List<string>();
-            role = _loginServices.getUserRole(username);
+            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["con"].ConnectionString))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand("sp_manageLoginMaster", con))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;  
+                    cmd.Parameters.AddWithValue("@action", "getUserRole");
+                    cmd.Parameters.AddWithValue("@username", username);
+                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    {
+                        if (rd.HasRows)
+                        {
+                            while (rd.Read())
+                            {
+                                role.Add(rd["userRole"].ToString());
+                            }
+                        }
+                    }
+                }
+            }
             if (role != null && role.Count > 0)
             {
                 return role.ToArray();

@@ -28,7 +28,7 @@
     <link href="~/assets/vendors/select2/select2.min.css" rel="stylesheet" />
     <link rel="shortcut icon" href="../images/favicon.png" />
     <link href="~/assets/datatable/datatables.min.css" rel="stylesheet" />
-
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <style>
         .form-control {
             padding: 5px 15px !important;
@@ -75,6 +75,10 @@
 
         .btn-close {
             background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center / 0.8em auto no-repeat !important;
+        }
+
+        table.dataTable th.dt-type-numeric, table.dataTable th.dt-type-date, table.dataTable td.dt-type-numeric, table.dataTable td.dt-type-date {
+             text-align: left; 
         }
     </style>
 </head>
