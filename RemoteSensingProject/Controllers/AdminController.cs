@@ -60,7 +60,7 @@ namespace RemoteSensingProject.Controllers
             return Json(new
             {
                 status = res,
-                message = res ? "Desgination inserted successfully!"  : "Some issue found while processing your request !"
+                message = res ? "Divison inserted successfully!"  : "Some issue found while processing your request !"
             }, JsonRequestBehavior.AllowGet);
         }
 
