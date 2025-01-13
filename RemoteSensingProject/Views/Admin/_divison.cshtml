@@ -11,25 +11,57 @@
                         </tr>
                     </thead>
                     <tbody>
-                       @if(Model != null)
-                       {
-                           int i = 1;
-                           foreach(var item in Model as List<RemoteSensingProject.Models.Admin.main.CommonResponse>)
-                {
-                    <tr>
-                        <td>@i</td>
-                        <td>@item.name</td>
-                        <td>Action</td>
-                    </tr>
-                               i++;
-                           }
-                       }
+                        @if (Model != null)
+                        {
+                            int i = 1;
+                            foreach (var item in Model as List<RemoteSensingProject.Models.Admin.main.CommonResponse>)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.name</td>
+                                    <td>
+                                        <a href="#" class="editDivison" data-id="@item.id"> <i class="fa-solid fa-pen"></i></a>
+                                        <a href="#" class="deletDivion" data-id="@item.id"> <i class="fa-solid fa-trash text-danger"></i></a>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="addEmployeeCategory" tabindex="-1" aria-labelledby="addEmployeeCategory" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-sm modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Add <span id="modalTitle">Designation</span></h5>
+
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="categoryForms">
+                    <div class="form-group">
+                        <label>
+                            Name :
+                        </label>
+                        <input type="text" id="categoryValue" class="form-control" name="name" autocomplete="off" />
+                        <input type="hidden" name="id" id="categoryId" />
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery.validate.min.js"></script>
 <script>
     $(document).ready(function () {
         $(".table").DataTable();
@@ -37,42 +69,139 @@
         $("#categoryForms").on("submit", function (e) {
 
             e.preventDefault();
-            let data = $(this).serialize();
+            if ($(this).valid()) {
+                let data = $(this).serialize();
 
 
-            $.ajax({
-                url: "/admin/InsertDivision",
-                type: "post",
-                data: data,
-                success: function (res) {
-                    if (res.status) {
+                $.ajax({
+                    url: "/admin/InsertDivision",
+                    type: "post",
+                    data: data,
+                    success: function (res) {
+                        if (res.status) {
+                            Swal.fire({
+                                title: "Successfully !",
+                                text: res.message,
+                                icon: "success",
+                                didClose: () => {
+                                    loadPartialContent("_divison");
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                title: "Sorry !",
+                                text: res.message,
+                                icon: "warning"
+                            })
+                        }
+                    },
+                    error: function () {
                         Swal.fire({
-                            title: "Successfully !",
-                            text: res.message,
-                            icon: "success",
+                            title: "Server issue !",
+                            text: "Server is busy ! Please try after sometime.",
+                            icon: "error",
                             didClose: () => {
-                                location.reload(true)
+                                loadPartialContent("_divison");
                             }
                         })
-                    } else {
-                        Swal.fire({
-                            title: "Sorry !",
-                            text: res.message,
-                            icon: "warning"
-                        })
                     }
-                },
-                error: function () {
-                    Swal.fire({
-                        title: "Server issue !",
-                        text: "Server is busy ! Please try after sometime.",
-                        icon: "error",
-                        didClose: () => {
-                            location.reload(true)
+                })
+            }
+        })
+
+        function loadPartialContent(partialView) {
+            $("#loading").show();
+            $.get("/admin/getCategoryPartial", { partial: partialView }).done(function (res) {
+                $("#mainContainer").html(res)
+            }).fail(function () {
+                alert("Failed to load content.");
+            })
+                .always(function () {
+                    $("#loading").hide();
+                });
+        }
+
+
+        $(".deletDivion").click(function () {
+            let dataId = $(this).attr("data-id");
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/admin/removeDivison",
+                        type: "delete",
+                        data: { id: dataId },
+                        success: function (res) {
+                            if (res.status) {
+                                Swal.fire({
+                                    title: "Successfully !",
+                                    text: "Selected desgination has been deleted successfuly !",
+                                    icon: "success",
+                                    didClose: () => {
+                                        loadPartialContent("_divison");
+                                    }
+                                })
+                            }
+                            else {
+                                Swal.fire({
+                                    title: "Sorry !",
+                                    text: "Some issue occred while processing your request! Please try after sometime.",
+                                    icon: "warning"
+                                })
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: "Server busy !",
+                                text: "Server is busy! Please try after sometime.",
+                                icon: "error",
+                                didClose: () => {
+                                    loadPartialContent("_divison");
+                                }
+                            })
                         }
                     })
                 }
-            })
+            });
         })
+        $(".editDivison").click(function () {
+            $("#addEmployeeCategory").modal("show");
+            $("#categoryId").val($(this).attr("data-Id"));
+            let name = $(this).closest("tr").find("td").eq(1).text();
+            $("#categoryValue").val(name)
+        })
+
+        $("#categoryForms").validate({
+            rules: {
+                name: {
+                    required: true
+                }
+            },
+            messages: {
+                name: {
+                    required: "This field is required!"
+                }
+            },
+            errorClass: "is-invalid",
+            errorElement: "div",
+            errorPlacement: function (error, element) {
+                error.addClass("invalid-feedback");
+                error.insertAfter(element);
+            },
+            highlight: function (element) {
+                $(element).addClass("is-invalid").removeClass("is-valid");
+            },
+            unhighlight: function (element) {
+                $(element).removeClass("is-invalid").addClass("is-valid");
+            }
+        });
+
     })
 </script>

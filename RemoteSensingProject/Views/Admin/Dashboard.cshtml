@@ -62,7 +62,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h3 class="mb-2 text-success"></h3>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>20</span></p>
+                                            <p class="text-success"><span>@ViewBag.totalEmployee </span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -86,7 +86,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h3 class="mb-2 text-success"></h3>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>30</span></p>
+                                            <p class="text-success"><span>@ViewBag.totalProject</span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -110,7 +110,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h6 class="mb-2 text-success"></h6>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>10</span></p>
+                                            <p class="text-success"><span>@ViewBag.totalDelayProject</span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -121,7 +121,29 @@
                         </div>
                     </a>
                 </div>
-
+                <!-- Another Meeting's Card -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+                    <a href="/Admin/Project_Request" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0 text-nowrap">Ongoing Project</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h3 class="mb-2 text-success"></h3>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span>@ViewBag.totalOngoingProject</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <img src="~/assets/gif/notification.gif" height="60" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
                 <!-- Completed Project's Card -->
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
                     <a href="/Admin/Completed_Project" style="text-decoration: none; color: inherit;">
@@ -134,7 +156,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h3 class="mb-2 text-success"></h3>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>20</span></p>
+                                            <p class="text-success"><span>@ViewBag.totalCompleteProject</span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -158,7 +180,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h3 class="mb-2 text-success"></h3>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>10</span></p>
+                                            <p class="text-success"><span>@ViewBag.totalMeetings </span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -170,29 +192,7 @@
                     </a>
                 </div>
 
-                <!-- Another Meeting's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                    <a href="/Admin/Project_Request" style="text-decoration: none; color: inherit;">
-                        <div class="card uniform-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-baseline">
-                                    <h6 class="card-title mb-0 text-nowrap">Project Request</h6>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6 col-md-12 col-xl-5">
-                                        <h3 class="mb-2 text-success"></h3>
-                                        <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>3</span></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-12 col-xl-7">
-                                        <img src="~/assets/gif/notification.gif" height="60" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
+
 
             </div>
         </div>
@@ -282,13 +282,13 @@
                     <div class="col-6 d-flex justify-content-end">
                         <div>
                             <label class="d-flex align-items-center justify-content-end tx-10 text-uppercase fw-bolder">Total Projects <span class="p-1 ms-1 rounded-circle bg-secondary"></span></label>
-                            <h5 class="fw-bolder mb-0 text-end">80</h5>
+                            <h5 class="fw-bolder mb-0 text-end">@ViewBag.totalProject</h5>
                         </div>
                     </div>
                     <div class="col-6">
                         <div>
                             <label class="d-flex align-items-center tx-10 text-uppercase fw-bolder"><span class="p-1 me-1 rounded-circle bg-primary"></span> Completed Projects</label>
-                            <h5 class="fw-bolder mb-0">50</h5>
+                            <h5 class="fw-bolder mb-0">@ViewBag.totalCompleteProject</h5>
                         </div>
                     </div>
                 </div>
@@ -595,7 +595,7 @@
                     height: 260,
                     type: "radialBar"
                 },
-                series: [67],
+                series: [@ViewBag.totalCompleteProject],
                 colors: [colors.primary],
                 plotOptions: {
                     radialBar: {

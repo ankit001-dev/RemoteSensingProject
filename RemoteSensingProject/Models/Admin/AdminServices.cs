@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Security.Policy;
 using System.Runtime.InteropServices;
+using System.Web.UI.WebControls;
 using System.Web.Razor.Generator;
 using RemoteSensingProject.Models.MailService;
 using System.Web.Services.Description;
@@ -15,6 +16,7 @@ namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
     {
+        #region Employee Category
         mail _mail = new mail();
 
         public bool InsertDesgination(CommonResponse cr)
@@ -46,7 +48,7 @@ namespace RemoteSensingProject.Models.Admin
             {
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action" , cr.id > 0 ? "InsertDevision" : "UpdateDevision");
+                cmd.Parameters.AddWithValue("@action" , cr.id > 0 ? "UpdateDevision" : "InsertDevision");
                 cmd.Parameters.AddWithValue("@devisionName", cr.name);
                 cmd.Parameters.AddWithValue("@id", cr.id);
                 con.Open();
@@ -83,6 +85,7 @@ namespace RemoteSensingProject.Models.Admin
                             name = rd["devisionName"].ToString()
                         });
                     }
+                    rd.Close();
                 }
                 return list;
             }
@@ -117,6 +120,7 @@ namespace RemoteSensingProject.Models.Admin
                             name = rd["designationName"].ToString()
                         });
                     }
+                    rd.Close();
                 }
                 return list;
             }
@@ -131,6 +135,8 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+
+        public bool removeDesgination(int Id)
 
         public bool AddUserIdPassword(int userId, string username, string password, string userRole)
         {
@@ -165,9 +171,39 @@ namespace RemoteSensingProject.Models.Admin
             SqlTransaction transaction = con.BeginTransaction();
             try
             {
+                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
 
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con,transaction);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "deleteDesignation");
+                cmd.Parameters.AddWithValue("@id", Id);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public bool removeDivison(int Id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "deleteDevision");
+                cmd.Parameters.AddWithValue("@id", Id);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+
+            }
                 cmd.Parameters.AddWithValue("@action", emp.Id!=0? "UpdateEmployees" : "InsertEmployees");
                 cmd.Parameters.AddWithValue("@id", emp.Id);
                 cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
@@ -224,6 +260,8 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+        #endregion
+        public bool AddEmployees(Employee_model emp)
 
 
         public bool RemoveEmployees(int? id)
@@ -232,8 +270,16 @@ namespace RemoteSensingProject.Models.Admin
             {
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "DeleteEmployees");
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@action", "InsertEmployees");
+                cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@name", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@mobile", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@email", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@gender", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@role", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@devision", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@designation", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@profile", emp.EmployeeCode);
 
                 con.Open();
                 int res = cmd.ExecuteNonQuery();
@@ -257,6 +303,50 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+
+        #region Create PRoject
+        #endregion
+        #region /* Admin Dashboard Count */
+        public DashboardCount DashboardCount()
+        {
+            DashboardCount obj = null;
+            try
+            {
+
+                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "AdminDashboardCount");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                if (sdr.Read())
+                {
+                    obj = new DashboardCount();
+                    obj.TotalEmployee = sdr["TotalEmployee"].ToString();
+                    obj.TotalProject = sdr["TotalProject"].ToString();
+                    obj.TotalDelayproject = sdr["TotalDelayproject"].ToString();
+                    obj.TotalCompleteProject = sdr["TotalCompleteProject"].ToString();
+                    obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
+                    obj.TotalMeetings = sdr["TotalMeetings"].ToString();
+                }
+
+                sdr.Close();
+
+                return obj;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+
+            }
+        }
+        #endregion /* End */    
+
 
     }
 }
