@@ -75,6 +75,17 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        public ActionResult Employee_Registration(Employee_model emp)
+        {
+
+            var res = _adminServices.AddEmployees(emp);
+
+            return Json(res);
+            
+        }
+
         public ActionResult Add_Project()
         {
 
