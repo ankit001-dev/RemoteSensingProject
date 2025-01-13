@@ -79,16 +79,16 @@
 
 <script>
     $(document).ready(function () {
-        $("#desginationTab").triger("click")
+        loadPartialContent("_desgination")
         $("#desginationTab").click(function () {
             loadPartialContent("_desgination")
-            $(":#modalTitle").text("Desgination")
+            $("#modalTitle").text("Desgination")
             $("#formTypes").val("Desgination")
         });
 
         $("#divisonTab").click(function () {
             loadPartialContent("_divison")
-            $(":#modalTitle").text("Divison")
+            $("#modalTitle").text("Divison")
             $("#formTypes").val("Divison")
         });
 
