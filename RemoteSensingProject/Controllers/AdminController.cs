@@ -95,12 +95,14 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
+
+        #region add project
         public ActionResult Add_Project()
         {
 
             return View();
         }
-
+        #endregion
         public ActionResult Project_List()
         {
             return View();
