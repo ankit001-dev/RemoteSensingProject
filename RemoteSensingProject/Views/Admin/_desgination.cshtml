@@ -10,6 +10,21 @@
                             <th>Action</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            int i = 1;
+                            foreach (var item in Model as List<RemoteSensingProject.Models.Admin.main.CommonResponse>)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.name</td>
+                                    <td>Action</td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -33,9 +48,29 @@
                     if (res.status) {
                         Swal.fire({
                             title: "Successfully !",
-
+                            text: res.message,
+                            icon: "success",
+                            didClose: () => {
+                                location.reload(true)
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            title: "Sorry !",
+                            text: res.message,
+                            icon: "warning"
                         })
                     }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Server issue !",
+                        text: "Server is busy ! Please try after sometime.",
+                        icon: "error",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
                 }
             })
         })
