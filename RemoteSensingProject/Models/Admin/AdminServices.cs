@@ -129,9 +129,12 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
+
+
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "InsertEmployees");
+                cmd.Parameters.AddWithValue("@action", emp.Id!=0? "UpdateEmployees" : "InsertEmployees");
+                cmd.Parameters.AddWithValue("@id", emp.Id);
                 cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
                 cmd.Parameters.AddWithValue("@name", emp.EmployeeName);
                 cmd.Parameters.AddWithValue("@mobile", emp.MobileNo);
@@ -141,6 +144,38 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@devision", emp.Division);
                 cmd.Parameters.AddWithValue("@designation", emp.Designation);
                 cmd.Parameters.AddWithValue("@profile", emp.Image_url);
+
+                con.Open();
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public bool RemoveEmployees(int? id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "DeleteEmployees");
+                cmd.Parameters.AddWithValue("@id", id);
 
                 con.Open();
                 int res = cmd.ExecuteNonQuery();

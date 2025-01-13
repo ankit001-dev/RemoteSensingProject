@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -70,6 +71,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Employee_Registration()
         {
 
+            
             ViewBag.division = _adminServices.ListDivison();
             ViewBag.designation = _adminServices.ListDesgination();
 
@@ -79,11 +81,39 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult Employee_Registration(Employee_model emp)
         {
+            bool res = false;
+            string path = null;
+            if (emp.EmployeeImages != null)
+            {
+                var fileName = Guid.NewGuid() + DateTime.Now.ToString("ddMMyyyyhhmm") + emp.EmployeeImages.FileName;
+                  path = Path.Combine("/ProjectContent/Admin/Employee_Images", fileName);
+                emp.Image_url = path;
+            }
+            if (emp.Id != 0)
+            {
 
-            var res = _adminServices.AddEmployees(emp);
+             res = _adminServices.AddEmployees(emp);
 
+            }
+            else
+            {
+                res = _adminServices.AddEmployees(emp);
+
+            }
+            if (res)
+            {
+                emp.EmployeeImages.SaveAs(Server.MapPath(path));
+
+            }
             return Json(res);
             
+        }
+        [HttpGet]
+        public ActionResult DeleteEmployees(int id)
+        {
+            var res = _adminServices.RemoveEmployees(id);
+           
+                return Json(res,JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Add_Project()
