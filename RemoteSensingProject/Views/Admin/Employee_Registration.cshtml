@@ -264,7 +264,7 @@
 
             </div>
             <div class="modal-body">
-                <form class="forms-sample">
+                <form class="addEmployeeform">
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="subtitle" class="form-label"> Employee Code</label>
@@ -346,7 +346,7 @@
                        
                         <div class="mb-3 col-md-6">
                             <label for="upload" class="form-label">Upload Images</label>
-                            <input class="form-control" type="file" id="upload">
+                            <input class="form-control" type="file" id="fileupload">
                         </div>
                     </div>
                     <div class="text-center">
@@ -426,3 +426,34 @@
         </div>
     </div>
 </div>
+
+
+<script>
+
+    $("#addEmployeeform").submit(function (e) {
+        e.preventDefault();
+        let formData = new FormData();
+        let arrData = $(this).serializeArray();
+        arrData.forEach(function (d) {
+            formData.append(d.name, d.value);
+        })
+        if ($("#fileupload").files.length > 0) {
+            formData.append("Image_url",$("#fileupload").get(0).files[0])
+        }
+
+        $.ajax({
+            url: "/admin/Employee_Registration",
+            type: "post",
+            processData: false,
+            contentType:false,
+            data: formData,
+            success: function (res) {
+
+            },error:function(xhr){
+
+            }
+        })
+
+    })
+
+</script>
