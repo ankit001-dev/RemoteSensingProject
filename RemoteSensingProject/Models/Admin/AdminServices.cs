@@ -17,7 +17,7 @@ namespace RemoteSensingProject.Models.Admin
             {
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@mode" , cr.id > 0 ? "UpdateDesignation" : "InsertDesignation");
+                cmd.Parameters.AddWithValue("@action" , cr.id > 0 ? "UpdateDesignation" : "InsertDesignation");
                 cmd.Parameters.AddWithValue("@designationName", cr.name);
                 cmd.Parameters.AddWithValue("@id", cr.id);
                 con.Open();
@@ -40,7 +40,7 @@ namespace RemoteSensingProject.Models.Admin
             {
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@mode" , cr.id > 0 ? "InsertDevision" : "UpdateDevision");
+                cmd.Parameters.AddWithValue("@action" , cr.id > 0 ? "InsertDevision" : "UpdateDevision");
                 cmd.Parameters.AddWithValue("@devisionName", cr.name);
                 cmd.Parameters.AddWithValue("@id", cr.id);
                 con.Open();
@@ -64,7 +64,7 @@ namespace RemoteSensingProject.Models.Admin
                 List<CommonResponse> list = new List<CommonResponse>();
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@mode", "GetAllDevision");
+                cmd.Parameters.AddWithValue("@action", "GetAllDevision");
                 con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
@@ -97,7 +97,7 @@ namespace RemoteSensingProject.Models.Admin
                 List<CommonResponse> list = new List<CommonResponse>();
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@mode", "GetAllDesignation");
+                cmd.Parameters.AddWithValue("@action", "GetAllDesignation");
                 con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)

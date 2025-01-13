@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\css\style.css" />
+    <Content Include="assets\css\SweatAlert.min.css" />
     <Content Include="assets\datatable\datatables.css" />
     <Content Include="assets\datatable\datatables.js" />
     <Content Include="assets\datatable\datatables.min.css" />
@@ -201,6 +202,7 @@
     <Content Include="assets\js\dropzone.js" />
     <Content Include="assets\js\select2.js" />
     <Content Include="assets\js\slick.js" />
+    <Content Include="assets\js\sweetalert.min.js" />
     <Content Include="assets\js\tags-input.js" />
     <Content Include="assets\js\template.js" />
     <Content Include="assets\js\tinymce.js" />
