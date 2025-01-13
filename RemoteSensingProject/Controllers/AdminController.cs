@@ -70,6 +70,9 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Employee_Registration()
         {
 
+            ViewBag.division = _adminServices.ListDivison();
+            ViewBag.designation = _adminServices.ListDesgination();
+
             return View();
         }
         public ActionResult Add_Project()

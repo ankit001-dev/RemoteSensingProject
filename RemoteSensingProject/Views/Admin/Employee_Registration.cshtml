@@ -294,19 +294,36 @@
                         <div class="mb-3 col-md-6">
                             <label for="description" class="form-label">Select Division</label>
                             <select class="form-select form-select-lg">
-                                <option selected>Select Department</option>
-                                <option value="1">Department1</option>
-                                <option value="2">Department2</option>
-                                <option value="3">Department3</option>
+                                <option selected disabled>Select Division</option>
+                                @if (ViewBag.division != null)
+            {
+    if (ViewBag.division.Count > 0)
+                {
+                                        foreach(var item in ViewBag.division)
+                    {
+
+                    <option @item.id>@item.name</option>
+                    }
+                }
+            }
+                               
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="description" class="form-label">Select Designation</label>
                             <select class="form-select form-select-lg">
                                 <option selected>Select Designation</option>
-                                <option value="1">Designation1</option>
-                                <option value="2">Designation2</option>
-                                <option value="3">Designatio3</option>
+                                @if (ViewBag.designation != null)
+                                {
+                                    if (ViewBag.designation.Count > 0)
+                                    {
+                                        foreach (var item in ViewBag.designation)
+                                        {
+
+                                            <option @item.id>@item.name</option>
+                                        }
+                                    }
+                                }
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
