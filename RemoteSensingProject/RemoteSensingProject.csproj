@@ -162,6 +162,7 @@
     <Compile Include="Models\DataFactory.cs" />
     <Compile Include="Models\LoginManager\LoginServices.cs" />
     <Compile Include="Models\LoginManager\main.cs" />
+    <Compile Include="Models\MailService\mail.cs" />
     <Compile Include="Models\ProjectManager\main.cs" />
     <Compile Include="Models\RoleAuthorization.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
