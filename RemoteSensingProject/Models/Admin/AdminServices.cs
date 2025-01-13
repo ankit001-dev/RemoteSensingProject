@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Security.Policy;
 using System.Runtime.InteropServices;
+using System.Web.UI.WebControls;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
@@ -218,5 +219,48 @@ namespace RemoteSensingProject.Models.Admin
 
         #region Create PRoject
         #endregion
+    }
+}
+        }
+
+        #region /* Admin Dashboard Count */
+        public DashboardCount DashboardCount()
+        {
+            DashboardCount obj = null;
+            try
+            {
+
+                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "AdminDashboardCount");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+              
+                if (sdr.Read())
+                {
+                    obj = new DashboardCount();
+                    obj.TotalEmployee = sdr["TotalEmployee"].ToString();
+                    obj.TotalProject = sdr["TotalProject"].ToString();
+                    obj.TotalDelayproject = sdr["TotalDelayproject"].ToString();
+                    obj.TotalCompleteProject = sdr["TotalCompleteProject"].ToString();
+                    obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
+                    obj.TotalMeetings = sdr["TotalMeetings"].ToString();
+                }
+                
+                sdr.Close();
+
+                return obj;
+
+            }catch(Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+               
+            }
+        }
+        #endregion /* End */
     }
 }

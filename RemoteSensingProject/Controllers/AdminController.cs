@@ -19,7 +19,13 @@ namespace RemoteSensingProject.Controllers
         // GET: Admin
         public ActionResult Dashboard()
         {
-            ViewBag.Title = "Home Page";
+            var TotalCount = _adminServices.DashboardCount();
+            ViewBag.totalEmployee = TotalCount.TotalEmployee;
+            ViewBag.totalProject = TotalCount.TotalProject;
+            ViewBag.totalDelayProject = TotalCount.TotalDelayproject;
+            ViewBag.totalCompleteProject = TotalCount.TotalCompleteProject;
+            ViewBag.totalOngoingProject = TotalCount.TotalOngoingProject;
+            ViewBag.totalMeetings = TotalCount.TotalMeetings;
 
             return View();
         }
