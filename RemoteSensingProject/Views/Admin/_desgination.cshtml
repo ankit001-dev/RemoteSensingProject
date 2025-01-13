@@ -33,6 +33,33 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="addEmployeeCategory" tabindex="-1" aria-labelledby="addEmployeeCategory" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-sm modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Add <span id="modalTitle">Designation</span></h5>
+
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="categoryForms">
+                    <div class="form-group">
+                        <label>
+                            Name :
+                        </label>
+                        <input type="text" id="categoryValue" class="form-control" name="name" autocomplete="off" />
+                        <input type="hidden" name="id" id="categoryId" />
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script>

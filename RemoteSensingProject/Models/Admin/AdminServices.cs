@@ -11,6 +11,7 @@ namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
     {
+        #region Employee Category
         public bool InsertDesgination(CommonResponse cr)
         {
             try
@@ -127,36 +128,18 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
-        public bool AddEmployees(Employee_model emp)
+
+        public bool removeDesgination(int Id)
         {
             try
             {
-
-
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", emp.Id!=0? "UpdateEmployees" : "InsertEmployees");
-                cmd.Parameters.AddWithValue("@id", emp.Id);
-                cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@name", emp.EmployeeName);
-                cmd.Parameters.AddWithValue("@mobile", emp.MobileNo);
-                cmd.Parameters.AddWithValue("@email", emp.Email);
-                cmd.Parameters.AddWithValue("@gender", emp.Gender);
-                cmd.Parameters.AddWithValue("@role", emp.EmployeeRole);
-                cmd.Parameters.AddWithValue("@devision", emp.Division);
-                cmd.Parameters.AddWithValue("@designation", emp.Designation);
-                cmd.Parameters.AddWithValue("@profile", emp.Image_url);
-
+                cmd.Parameters.AddWithValue("@action", "deleteDesignation");
+                cmd.Parameters.AddWithValue("@id", Id);
                 con.Open();
-                int res = cmd.ExecuteNonQuery();
-                if (res > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return cmd.ExecuteNonQuery() > 0;
+
             }
             catch (Exception ex)
             {
@@ -169,15 +152,46 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
-
-        public bool RemoveEmployees(int? id)
+        public bool removeDivison(int Id)
         {
             try
             {
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "DeleteEmployees");
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@action", "deleteDevision");
+                cmd.Parameters.AddWithValue("@id", Id);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        #endregion
+        public bool AddEmployees(Employee_model emp)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "InsertEmployees");
+                cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@name", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@mobile", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@email", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@gender", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@role", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@devision", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@designation", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@profile", emp.EmployeeCode);
 
                 con.Open();
                 int res = cmd.ExecuteNonQuery();
