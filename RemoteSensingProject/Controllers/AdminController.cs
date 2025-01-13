@@ -53,6 +53,18 @@ namespace RemoteSensingProject.Controllers
                 message = res ? "Desgination inserted successfully!"  : "Some issue found while processing your request !"
             }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult InsertDivision(CommonResponse cr)
+        {
+            bool res = _adminServices.InsertDivison(cr);
+            return Json(new
+            {
+                status = res,
+                message = res ? "Desgination inserted successfully!"  : "Some issue found while processing your request !"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+
         #endregion
 
         public ActionResult Employee_Registration()
