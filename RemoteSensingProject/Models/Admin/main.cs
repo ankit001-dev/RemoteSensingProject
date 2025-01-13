@@ -90,6 +90,16 @@ namespace RemoteSensingProject.Models.Admin
             public string Notice { get; set; }
 
         }
-   
+        public class DashboardCount
+        {
+            public string TotalEmployee { get; set; }
+            public string TotalProject { get; set; }
+            public string TotalDelayproject { get; set; }
+            public string TotalCompleteProject { get; set; }
+            public string TotalOngoingProject { get; set; }
+            public string TotalMeetings { get; set; }
+
+        }
+
     }
 }
