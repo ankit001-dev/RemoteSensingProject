@@ -976,8 +976,9 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="obj\Debug\TempPE\" />
-    <Folder Include="Project_Content\" />
+    <Folder Include="ProjectContent\Admin\Meeting_Attachment\" />
     <Folder Include="ProjectContent\ProjectManager\" />
+    <Folder Include="Project_Content\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

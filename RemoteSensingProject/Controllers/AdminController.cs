@@ -172,13 +172,41 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         #region /* Meeting */
-        public ActionResult Min_Of_Meeting()
+        public ActionResult Min_Of_Meeting(int? id)
         {
             List<Employee_model> empList = new List<Employee_model>();
             empList = _adminServices.BindEmployee();
             ViewBag.Employee = empList;
+            Employee_model obj = new Employee_model();
 
-            return View();
+            return View(obj);
+        }
+        [HttpPost]
+        public ActionResult AddMeeting(Meeting_Model formData)
+        {
+            string path = null;
+            if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
+            {
+                var guid = Guid.NewGuid();
+                var FileExtension = Path.GetExtension(formData.Attachment.FileName);
+                var fileName = $"{guid}{FileExtension}";
+                 path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
+
+                formData.Attachment_Url = path;
+            }
+            bool status = _adminServices.insertMeeting(formData);
+            if (status)
+            {
+                formData.Attachment.SaveAs(Server.MapPath(path));
+            }
+            return Json(new { success = status }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult GetAllMeeting()
+        {
+            List<Meeting_Model> empList = new List<Meeting_Model>();
+            empList = _adminServices.getAllmeeting();
+            return Json(new { empList = empList },JsonRequestBehavior.AllowGet);
         }
 
         #endregion End Meeting
