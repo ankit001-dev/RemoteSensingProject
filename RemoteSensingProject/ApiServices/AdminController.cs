@@ -59,6 +59,56 @@ namespace RemoteSensingProject.ApiServices
 
         }
 
+
+        [HttpGet]
+        [Route("api/DivisonList")]
+        public IHttpActionResult DivisonList()
+        {
+            var data = _adminServices.ListDivison();
+            if(data != null && data.Count > 0)
+            {
+                return Ok(new
+                {
+                    status = true,
+                    StatusCode = 200,
+                    message = "All divison fetched !",
+                    data = data
+                });
+            }
+            else
+            {
+                return BadRequest(new
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    message = "Some issue found while processing request."
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/DesginationList")]
+        public IHttpActionResult DesginationList()
+        {
+            var data = _adminServices.ListDesgination();
+            if (data != null && data.Count > 0)
+            {
+                return Ok(new
+                {
+                    status = true,
+                    StatusCode = 200,
+                    message = "All desgination fetched !",
+                    data = data
+                });
+            }
+            else
+            {
+                return BadRequest(new
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    message = "Some issue found while processing request."
+                });
+            }
+        }
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);

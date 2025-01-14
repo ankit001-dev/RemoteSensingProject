@@ -148,6 +148,15 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
+
+        public ActionResult InsertProject(createProjectModel pm)
+        {
+            bool res = _adminServices.addProject(pm);
+            return Json(new
+            {
+                status = res
+            });
+        }
         #endregion
         public ActionResult Project_List()
         {
@@ -162,10 +171,17 @@ namespace RemoteSensingProject.Controllers
         {
             return View();
         }
+        #region /* Meeting */
         public ActionResult Min_Of_Meeting()
         {
+            List<Employee_model> empList = new List<Employee_model>();
+            empList = _adminServices.BindEmployee();
+            ViewBag.Employee = empList;
+
             return View();
         }
+
+        #endregion End Meeting
 
         public ActionResult MeetingConclusion()
         {

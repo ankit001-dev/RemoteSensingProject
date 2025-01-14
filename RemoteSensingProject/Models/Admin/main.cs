@@ -28,6 +28,12 @@ namespace RemoteSensingProject.Models.Admin
             public string Image_url { get; set; }
 
         }
+        public class createProjectModel
+        {
+            public Project_model pm { get; set; }
+            public List<Project_Budget> budgets { get; set; }
+            public List<Project_Statge> stages { get; set; }
+        }
         public class Project_model
         {
             public int Id { get; set; }
@@ -36,18 +42,19 @@ namespace RemoteSensingProject.Models.Admin
             public DateTime StartDate { get; set; }
             public string CompletionDate { get; set; }
             public string ProjectManager { get; set; }
-            public string SubOrdinate { get; set; }
+            public int[] SubOrdinate { get; set; }
             public float ProjectBudget { get; set; }
             public string ProjectType { get; set; }
             public string ProjectDescription { get; set; }
-
+            public string ProjectStage { get; set; }
         }
         public class Project_Budget
         {
             public int Id { get; set; }
             public string ProjectHeads { get; set; }
-            public string ProjectAmount { get; set; }
+            public decimal ProjectAmount { get; set; }
             public string Miscellaneous { get; set; }
+            public decimal Miscell_amt { get; set; }
             public string HeadsDescription { get; set; }
 
         }
@@ -72,6 +79,8 @@ namespace RemoteSensingProject.Models.Admin
             public HttpPostedFileBase Attachment { get; set; }
             public string Attachment_Url { get; set;}
             public string KeyPoint { get; set; }
+            public int EmployeeId { get; set; }
+            public int MeetingId { get; set; }
 
         }
         public class Meeting_Conclusion

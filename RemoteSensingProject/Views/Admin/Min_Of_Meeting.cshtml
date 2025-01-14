@@ -24,15 +24,15 @@
 
         <div class="card">
             <div class="card-body">
-                <form id="formDataMeet" method="post">
+                <form id="meetingform" method="post">
 
                     <div class="row gutters">
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Meating Type</label>
                                 <br />
-                                <input type="radio" name="meetingType" class="meetType" value="Online" checked>&nbsp;Online &nbsp; &nbsp;
-                                <input type="radio" name="meetingType" class="meetType" value="Offline">&nbsp;Offline &nbsp; &nbsp;
+                                <input type="radio" name="meetingType" class="meetType" value="online" checked>&nbsp;Online &nbsp; &nbsp;
+                                <input type="radio" name="meetingType" class="meetType" value="offline">&nbsp;Offline &nbsp; &nbsp;
 
                             </div>
                         </div>
@@ -40,11 +40,22 @@
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Meeting Member:</label>
+                                
                                 <select class="form-control" name="meetFor" id="meetFor" multiple>
-                                    <option>Member 1</option>
-                                    <option>Member 2</option>
-                                    <option>Member 3</option>
-                                    <option>Member 4</option>
+                                    @if (ViewBag.Employee!=null)
+                                    {
+                                        foreach(var item in ViewBag.Employee as List<RemoteSensingProject.Models.Admin.main.Employee_model> )
+                                        {
+                                            if(Model.meetMember==item.Id)
+                                            {
+                                                <option selected value="@item.Id">@item.EmployeeName</option>
+                                            }else
+                                            {
+                                                <option value="@item.Id">@item.EmployeeName</option>
+                                            }
+                                        }
+                                    }
+                                    <option value="2">Member 4</option>
                                 </select>
                             </div>
                         </div>
@@ -108,7 +119,6 @@
                     </div>
                     <p class="text-center">
                         <button id="createMeetingBtn" type="submit" class="btn btn-primary">Create Meeting</button>
-
                     </p>
 
                 </form>
@@ -222,4 +232,6 @@
     </script>
 
 
-
+<script>
+    
+</script>

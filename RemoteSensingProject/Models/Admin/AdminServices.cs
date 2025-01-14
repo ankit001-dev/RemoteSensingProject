@@ -280,7 +280,75 @@ namespace RemoteSensingProject.Models.Admin
 
 
 
-        #region Create PRoject
+        #region Create Project
+        public bool addProject(createProjectModel pm)
+        {
+            con.Open();
+            SqlTransaction tran = con.BeginTransaction();
+            try
+            {
+                cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertProject");
+                cmd.Parameters.AddWithValue("@title", pm.pm.ProjectTitle);
+                cmd.Parameters.AddWithValue("@assignDate", pm.pm.StartDate);
+                cmd.Parameters.AddWithValue("@startDate", pm.pm.StartDate);
+                cmd.Parameters.AddWithValue("@completionDate", pm.pm.CompletionDate);
+                cmd.Parameters.AddWithValue("@projectmanager", pm.pm.StartDate);
+                cmd.Parameters.AddWithValue("@budget", pm.pm.StartDate);
+                cmd.Parameters.AddWithValue("@description", pm.pm.StartDate);
+                cmd.Parameters.AddWithValue("@projectType", pm.pm.ProjectType);
+                cmd.Parameters.AddWithValue("@stage", pm.pm.StartDate);
+                cmd.Parameters.Add("@project_Id", SqlDbType.Int);
+                cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
+                int i = cmd.ExecuteNonQuery();
+                int projectId = Convert.ToInt32(cmd.Parameters["@project_Id"].Value != DBNull.Value ? cmd.Parameters["@project_Id"].Value : 0);
+                if(i > 0)
+                {
+                    if(pm.budgets != null && pm.budgets.Count > 0)
+                    {
+                        foreach(var item in pm.budgets)
+                        {
+                            cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@action", "insertProjectBudget");
+                            cmd.Parameters.AddWithValue("@project_Id", projectId);
+                            cmd.Parameters.AddWithValue("@heads", item.ProjectHeads);
+                            cmd.Parameters.AddWithValue("@headsAmount", item.ProjectAmount);
+                            cmd.Parameters.AddWithValue("@miscellaneous", item.Miscellaneous);
+                            cmd.Parameters.AddWithValue("@miscAmount", item.Miscell_amt);
+                            i += cmd.ExecuteNonQuery();
+                        }
+                    }
+                    if(pm.budgets != null && pm.budgets.Count > 0)
+                    {
+                        foreach(var item in pm.stages)
+                        {
+                            cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@action", "insertProjectStatge");
+                            cmd.Parameters.AddWithValue("@project_Id", projectId);
+                            cmd.Parameters.AddWithValue("@keyPoint", item.KeyPoint);
+                            cmd.Parameters.AddWithValue("@completeDate", item.CompletionDate);
+                            cmd.Parameters.AddWithValue("@stageDocument", item.Document_Url);
+                            i += cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                tran.Commit();
+                return i > 0;
+            }catch(Exception ex)
+            {
+                tran.Rollback();
+                return false;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
         #endregion
         #region /* Admin Dashboard Count */
         public DashboardCount DashboardCount()
@@ -288,7 +356,6 @@ namespace RemoteSensingProject.Models.Admin
             DashboardCount obj = null;
             try
             {
-
                 SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "AdminDashboardCount");
@@ -321,8 +388,90 @@ namespace RemoteSensingProject.Models.Admin
 
             }
         }
-        #endregion /* End */    
+        #endregion /* End */
 
+        #region Meeting 
+        public List<Employee_model> BindEmployee()
+        {
+            List<Employee_model> empList = new List<Employee_model>();
+            Employee_model empObj = null;
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "BindMeetingMember");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                while (sdr.HasRows)
+                {
+                    if (sdr.Read())
+                    {
+                        empObj = new Employee_model();
+                        empObj.Id = Convert.ToInt32(sdr["id"]);
+                        empObj.EmployeeName = sdr["name"].ToString();
+                    
+                    }
+                    empList.Add(empObj);
+                }
+              
+                sdr.Close();
+           
+            }catch(Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return empList;
+        }
 
+        public bool insertMeeting(Meeting_Model obj)
+        {
+            SqlTransaction transaction = con.BeginTransaction();
+          
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con,transaction);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertMeeting");
+                cmd.Parameters.AddWithValue("@MeetingType", obj.MeetingType);
+                cmd.Parameters.AddWithValue("@meetingLink", obj.MeetingLink);
+                cmd.Parameters.AddWithValue("@MeetingTitle", obj.MeetingTitle);
+                cmd.Parameters.AddWithValue("@meetingTime", obj.MeetingTime);
+                cmd.Parameters.AddWithValue("@meetingDocument", obj.Attachment);
+                SqlParameter outputParam = new SqlParameter("@meetingId", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(outputParam);
+                con.Open();
+                int i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    cmd.Parameters.AddWithValue("@action", "addMeetingMember");
+                    cmd.Parameters.AddWithValue("@employee",obj.EmployeeId);
+                    cmd.Parameters.AddWithValue("@meeting",obj.MeetingId);
+                    i = cmd.ExecuteNonQuery();
+
+                    return true;
+                }
+                else
+                {
+                   
+                    return false;
+                }
+            }catch(Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        #endregion End
     }
 }
