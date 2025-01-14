@@ -108,6 +108,15 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
+
+        public ActionResult InsertProject(createProjectModel pm)
+        {
+            bool res = _adminServices.addProject(pm);
+            return Json(new
+            {
+                status = res
+            });
+        }
         #endregion
         public ActionResult Project_List()
         {
