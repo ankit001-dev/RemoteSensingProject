@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Project_List";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    int i = 1;
 }
 <style>
     svg {
@@ -48,113 +49,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>01/01/2022</td>
-                        <td>India Stack Global</td>
-                        <td>01/01/2022</td>
-                        <td>26/04/2022</td>
-                        <td>Leonardo Payne</td>
-                        <td>
-                            <span class="badge bg-warning">Work in Progress</span>
-                        </td>
-                        <td class="text-center">
-                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                <li class="me-2"><a href="#"><i class="link-icon" data-feather="edit"></i></a></li>
-                                <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>01/01/2022</td>
-                        <td>National Informatics Centre (NIC)</td>
-                        <td>01/01/2022</td>
-                        <td>26/04/2022</td>
-                        <td>Carl Henson</td>
-                        <td><span class="badge bg-info">Pending</span></td>
-                        <td class="text-center">
-                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                <li class="me-2"><a href="#"><i class="link-icon" data-feather="edit"></i></a></li>
-                                <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>01/01/2022</td>
-                        <td>Ministry of Electronics and Information Technology</td>
-                        <td>01/05/2022</td>
-                        <td>10/09/2022</td>
-                        <td>Jensen Combs</td>
-                        <td><span class="badge bg-info">Pending</span></td>
-                        <td class="text-center">
-                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                <li class="me-2"><a href="#"><i class="link-icon" data-feather="edit"></i></a></li>
-                                <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>01/01/2022</td>
-                        <td>INSPIRE-MANAK</td>
-                        <td>01/01/2022</td>
-                        <td>31/11/2022</td>
-                        <td>Amiah Burton</td>
-                        <td>
-                            <span class="badge bg-warning">Work in Progress</span>
-                        </td>
-                        <td class="text-center">
-                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                <li class="me-2"><a href="#"><i class="link-icon" data-feather="edit"></i></a></li>
-                                <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>01/01/2022</td>
-                        <td>
-                            PPP Based Slum
-                            Rehabilitaiton in Junavadaj area
-                        </td>
-                        <td>01/01/2022</td>
-                        <td>31/12/2022</td>
-                        <td>Yaretzi Mayo</td>
-                        <td><span class="badge bg-info">Pending</span></td>
-                        <td class="text-center">
-                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                <li class="me-2"><a href="#"><i class="link-icon" data-feather="edit"></i></a></li>
-                                <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                            </ul>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>6</td>
-                        <td>01/01/2022</td>
-                        <td>
-                            Automatic Fare collection
-                            system
-                        </td>
-                        <td>01/01/2022</td>
-                        <td>31/12/2022</td>
-                        <td>Carl Henson</td>
-                        <td><span class="badge bg-success">Completed</span></td>
-                        <td class="text-center">
-                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                <li class="me-2"><a href="#"><i class="link-icon" data-feather="edit"></i></a></li>
-                                <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                            </ul>
-                        </td>
-                    </tr>
-                   
+                    @foreach (var item in ViewBag.ProjectList as List<RemoteSensingProject.Models.Admin.main.Project_model>)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.AssignDate</td>
+                            <td>@item.ProjectTitle</td>
+                            <td>@item.StartDate</td>
+                            <td>@item.CompletionDate</td>
+                            <td>@item.ProjectManager</td>
+                            <td>
+                                <span class="badge bg-warning">Work in Progress</span>
+                            </td>
+                            <td class="text-center">
+                                <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                    <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
+                                    <li class="me-2"><a href="#"><i class="link-icon" data-feather="edit"></i></a></li>
+                                    <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
+                                </ul>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+
                 </tbody>
             </table>
         </div>

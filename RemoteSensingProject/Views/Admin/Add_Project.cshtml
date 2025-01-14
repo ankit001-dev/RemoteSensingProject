@@ -80,6 +80,12 @@
                                 <input type="text" class="form-control form-control-sm" name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
                             </div>
                             <div class="col-lg-4 mb-3">
+                                <label for="title" class="form-label">Project Document</label>
+                                <input type="file" class="form-control form-control-sm" name="" id="projectDocument">
+                            </div>
+                            
+
+                            <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Project Type</label>
                                 <br />
                                 <label for="projectType" class="form-label">
@@ -218,7 +224,7 @@
                     </div>
                     <div class="col-lg-4 mb-3">
                         <label for="person" class="form-label">Pdf Upload</label>
-                        <input type="file" class="form-control form-control-sm">
+                        <input type="file" class="form-control form-control-sm stagesImages" name="pm.stages[${count}].Stage_Document"/>
                     </div>
                     <div class="col-lg-3 mb-3">
                         <label for="date" class="form-label">Complete Date</label>
@@ -293,8 +299,6 @@
     $("#createProjectForm").on("submit", function (e) {
         e.preventDefault();
 
-        let data = $(this).serialize();
-        console.log(data)
         Swal.fire({
             title: "Please wait !",
             text: "Processing your request ....",
@@ -306,11 +310,25 @@
             }
         });
 
+        let formData = new FormData(this);
+        let file = $("#projectDocument")[0].files[0];
+        if (file) {
+            formData.append("pm.pm.projectDocument", file);
+        }
+        $.each($(".stagesImages"), function (i, d) {
+             file = $(d)[0].files[0];
+            if (file) {
+                formData.append(`pm.stages[${d}].Stage_Document`, file);
+            }
+        });
+
 
         $.ajax({
             url: "/admin/InsertProject",
             type: "post",
-            data: data,
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function (res) {
                 if (res.status) {
                     Swal.fire({
