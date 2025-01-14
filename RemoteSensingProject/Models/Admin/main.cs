@@ -18,6 +18,7 @@ namespace RemoteSensingProject.Models.Admin
             public int Id { get; set; }
             public string EmployeeCode { get; set; }
             public string EmployeeName { get; set; }
+            public string CreationDate { get; set; }
             public long MobileNo { get; set; }
             public string Email { get; set; }
             public string EmployeeRole { get; set; }
@@ -26,6 +27,10 @@ namespace RemoteSensingProject.Models.Admin
             public string Gender { get; set; }
             public HttpPostedFileBase EmployeeImages { get; set; }
             public string Image_url { get; set; }
+            public string DevisionName { get; set; }
+            public string DesignationName { get; set; }
+            public bool Status { get; set; }
+            public bool ActiveStatus { get; set; }
 
         }
         public class createProjectModel
@@ -85,6 +90,8 @@ namespace RemoteSensingProject.Models.Admin
             public HttpPostedFileBase Attachment { get; set; }
             public string Attachment_Url { get; set;}
             public string KeyPoint { get; set; }
+            public int EmployeeId { get; set; }
+            public int MeetingId { get; set; }
 
         }
         public class Meeting_Conclusion

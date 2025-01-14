@@ -100,13 +100,13 @@ namespace RemoteSensingProject.Controllers
             ViewBag.division = _adminServices.ListDivison();
             ViewBag.designation = _adminServices.ListDesgination();
 
+            ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
 
         [HttpPost]
         public ActionResult Employee_Registration(Employee_model emp)
         {
-            bool res = false;
             string path = null;
             if (emp.EmployeeImages != null)
             {
@@ -114,20 +114,14 @@ namespace RemoteSensingProject.Controllers
                   path = Path.Combine("/ProjectContent/Admin/Employee_Images", fileName);
                 emp.Image_url = path;
             }
-            if (emp.Id != 0)
+
+
+            bool res = _adminServices.AddEmployees(emp);
+
+            
+            if (res && emp.EmployeeImages!=null)
             {
-
-             res = _adminServices.AddEmployees(emp);
-
-            }
-            else
-            {
-                res = _adminServices.AddEmployees(emp);
-
-            }
-            if (res)
-            {
-
+                
                 emp.EmployeeImages.SaveAs(Server.MapPath(path));
 
             }
@@ -138,6 +132,20 @@ namespace RemoteSensingProject.Controllers
         public ActionResult DeleteEmployees(int id)
         {
             var res = _adminServices.RemoveEmployees(id);
+           
+                return Json(res,JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult ChangeActieStatus(int id)
+        {
+            var res = _adminServices.ChangeActieStatus(id);
+           
+                return Json(res,JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult SelectEmployeeRecordById(int id)
+        {
+            var res = _adminServices.SelectEmployeeRecordById(id);
            
                 return Json(res,JsonRequestBehavior.AllowGet);
         }
@@ -208,10 +216,17 @@ namespace RemoteSensingProject.Controllers
         {
             return View();
         }
+        #region /* Meeting */
         public ActionResult Min_Of_Meeting()
         {
+            List<Employee_model> empList = new List<Employee_model>();
+            empList = _adminServices.BindEmployee();
+            ViewBag.Employee = empList;
+
             return View();
         }
+
+        #endregion End Meeting
 
         public ActionResult MeetingConclusion()
         {
