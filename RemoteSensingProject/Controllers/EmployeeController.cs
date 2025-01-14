@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace RemoteSensingProject.Controllers
 {
+    [Authorize(Roles="projectManager")]
     public class EmployeeController : Controller
     {
         // GET: Employee

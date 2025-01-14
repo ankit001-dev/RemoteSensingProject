@@ -139,98 +139,7 @@ namespace RemoteSensingProject.Models.Admin
         }
 
 
-        public bool AddEmployees(Employee_model emp)
-        {
-            con.Open();
-            SqlTransaction transaction = con.BeginTransaction();
-            try
-            {
-                string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                Random rnd = new Random();
-                var userName = emp.EmployeeName.Substring(0, 5) + "@" + emp.MobileNo.ToString().Substring(0, 5);
-                string userpassword = "";
-                for (int i = 0; i < 8; i++)
-                {
-                    userpassword += validChars[rnd.Next(validChars.Length)];
-                }
-
-                cmd = new SqlCommand("sp_AdminEmployees", con,transaction);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", emp.Id != 0 ? "UpdateEmployees" : "InsertEmployees");
-                cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@name", emp.EmployeeName);
-                cmd.Parameters.AddWithValue("@mobile", emp.MobileNo);
-                cmd.Parameters.AddWithValue("@email", emp.Email);
-                cmd.Parameters.AddWithValue("@gender", emp.Gender);
-                cmd.Parameters.AddWithValue("@role", emp.EmployeeRole);
-                cmd.Parameters.AddWithValue("@devision", emp.Division);
-                cmd.Parameters.AddWithValue("@designation", emp.Designation);
-                cmd.Parameters.AddWithValue("@profile", emp.Image_url);
-                cmd.Parameters.AddWithValue("@username", userName);
-                cmd.Parameters.AddWithValue("@password", userpassword);
-
-                int res = cmd.ExecuteNonQuery();
-                if (res > 0 && emp.Id==0)
-                {
-                        string subject = "Login Credential";
-                        string message = $"<p>Your user id : <b>{userName}</b></p><br><p>Password : <b>{userpassword}</b></p>";
-                        _mail.SendMail(emp.EmployeeName, emp.Email, subject, message);
-                    transaction.Commit();
-                    return true;
-                   
-                }
-                else
-                {
-                    return false;
-                }
-               
-
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public bool RemoveEmployees(int id)
-        {
-            try
-            {
-                cmd = new SqlCommand("sp_AdminEmployees", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "DeleteEmployees");
-                cmd.Parameters.AddWithValue("@id", id);
-
-                con.Open();
-                int res = cmd.ExecuteNonQuery();
-                if (res > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
+       
         public bool removeDivison(int Id)
         {
             try
@@ -279,6 +188,228 @@ namespace RemoteSensingProject.Models.Admin
         }
         #endregion
 
+        #region add Employee
+        public bool AddEmployees(Employee_model emp)
+        {
+            con.Open();
+            SqlTransaction transaction = con.BeginTransaction();
+            try
+            {
+                string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                Random rnd = new Random();
+                var userName = emp.EmployeeName.Substring(0, 5) + "@" + emp.MobileNo.ToString().PadLeft(4, '0').Substring(emp.MobileNo.ToString().Length - 4);
+                string userpassword = "";
+                if (emp.Id == 0)
+                {
+                    for (int i = 0; i < 8; i++)
+                    {
+                        userpassword += validChars[rnd.Next(validChars.Length)];
+                    }
+                }
+
+                var ActionType = emp.Id != 0 ? "UpdateEmployees" : "InsertEmployees";
+                cmd = new SqlCommand("sp_AdminEmployees", con, transaction);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", ActionType);
+                cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@id", emp.Id);
+                cmd.Parameters.AddWithValue("@name", emp.EmployeeName);
+                cmd.Parameters.AddWithValue("@mobile", emp.MobileNo);
+                cmd.Parameters.AddWithValue("@email", emp.Email);
+                cmd.Parameters.AddWithValue("@gender", emp.Gender);
+                cmd.Parameters.AddWithValue("@role", emp.EmployeeRole);
+                cmd.Parameters.AddWithValue("@devision", emp.Division);
+                cmd.Parameters.AddWithValue("@designation", emp.Designation);
+                cmd.Parameters.AddWithValue("@profile", emp.Image_url);
+                cmd.Parameters.AddWithValue("@username", userName);
+                cmd.Parameters.AddWithValue("@password", userpassword);
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0 && emp.Id == 0)
+                {
+                    string subject = "Login Credential";
+                    string message = $"<p>Your user id : <b>{userName}</b></p><br><p>Password : <b>{userpassword}</b></p>";
+                    _mail.SendMail(emp.EmployeeName, emp.Email, subject, message);
+                    transaction.Commit();
+                    return true;
+
+                }
+                else if(res>0)
+                {
+                    transaction.Commit();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public bool RemoveEmployees(int id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_AdminEmployees", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "DeleteEmployees");
+                cmd.Parameters.AddWithValue("@id", id);
+
+                con.Open();
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public List<Employee_model> SelectEmployeeRecord()
+        {
+            try { 
+            cmd = new SqlCommand("sp_AdminEmployees", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@action", "SelectEmployees");
+            con.Open();
+            var record = cmd.ExecuteReader();
+            List<Employee_model> empModel = new List<Employee_model>();
+            while (record.Read())
+            {
+                empModel.Add(new Employee_model
+                {
+                    Id = (int)record["id"],
+                    EmployeeCode = record["employeeCode"].ToString(),
+                    EmployeeName = record["name"].ToString(),
+                    DevisionName = record["devisionName"].ToString(),
+                    EmployeeRole = record["role"].ToString(),
+                    Division = (int)record["devision"],
+                    DesignationName = record["designationName"].ToString(),
+                    Status = (bool)record["status"],
+                    ActiveStatus = (bool)record["activeStatus"],
+                    CreationDate = Convert.ToDateTime(record["creationDate"]).ToString("dd-MM-yyyy"),
+                    Image_url = record["profile"]!=DBNull.Value ? record["profile"].ToString():null
+
+                });
+            }
+            return empModel;
+        }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public Employee_model SelectEmployeeRecordById(int id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_AdminEmployees", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "SelectEmployeesById");
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                Employee_model empModel=new Employee_model();
+                var record = cmd.ExecuteReader();
+                while (record.Read())
+                {
+                    empModel = new Employee_model
+                    {
+                        Id = (int)record["id"],
+                        EmployeeCode = record["employeeCode"].ToString(),
+                        Email = record["email"].ToString(),
+                        Gender = record["gender"].ToString(),
+                        MobileNo = (long)record["mobile"],
+                        EmployeeName = record["name"].ToString(),
+                        DevisionName = record["devisionName"].ToString(),
+                        Division = (int)record["devision"],
+                        Designation = (int)record["designation"],
+                        EmployeeRole = record["role"].ToString(),
+                        DesignationName = record["designationName"].ToString(),
+                        Status = (bool)record["status"],
+                        ActiveStatus = (bool)record["activeStatus"],
+                        CreationDate = Convert.ToDateTime(record["creationDate"]).ToString("dd-MM-yyyy"),
+                        Image_url = record["profile"] != null ? record["profile"].ToString() : null
+                    };
+                }
+                return empModel;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public bool ChangeActieStatus(int id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_AdminEmployees", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "ChangeActiveStatus");
+                cmd.Parameters.AddWithValue("@id", id);
+
+                con.Open();
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        #endregion
 
 
 
@@ -293,14 +424,16 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "insertProject");
                 cmd.Parameters.AddWithValue("@title", pm.pm.ProjectTitle);
-                cmd.Parameters.AddWithValue("@assignDate", pm.pm.StartDate);
+                cmd.Parameters.AddWithValue("@assignDate", pm.pm.AssignDate);
                 cmd.Parameters.AddWithValue("@startDate", pm.pm.StartDate);
                 cmd.Parameters.AddWithValue("@completionDate", pm.pm.CompletionDate);
-                cmd.Parameters.AddWithValue("@projectmanager", pm.pm.StartDate);
-                cmd.Parameters.AddWithValue("@budget", pm.pm.StartDate);
-                cmd.Parameters.AddWithValue("@description", pm.pm.StartDate);
+                cmd.Parameters.AddWithValue("@projectmanager", pm.pm.ProjectManager);
+                cmd.Parameters.AddWithValue("@budget", pm.pm.ProjectBudget);
+                cmd.Parameters.AddWithValue("@description", pm.pm.ProjectDescription);
+                cmd.Parameters.AddWithValue("@ProjectDocument", pm.pm.projectDocumentUrl);
                 cmd.Parameters.AddWithValue("@projectType", pm.pm.ProjectType);
-                cmd.Parameters.AddWithValue("@stage", pm.pm.StartDate);
+                cmd.Parameters.AddWithValue("@stage", pm.pm.ProjectStage);
+                cmd.Parameters.AddWithValue("@createdBy", "admin");
                 cmd.Parameters.Add("@project_Id", SqlDbType.Int);
                 cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
                 int i = cmd.ExecuteNonQuery();
@@ -322,7 +455,7 @@ namespace RemoteSensingProject.Models.Admin
                             i += cmd.ExecuteNonQuery();
                         }
                     }
-                    if(pm.budgets != null && pm.budgets.Count > 0)
+                    if(pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
                     {
                         foreach(var item in pm.stages)
                         {
@@ -335,6 +468,18 @@ namespace RemoteSensingProject.Models.Admin
                             cmd.Parameters.AddWithValue("@stageDocument", item.Document_Url);
                             i += cmd.ExecuteNonQuery();
                         }
+                    }
+
+                    if (pm.pm.ProjectType.Equals("External") && projectId > 0)
+                    {
+                        cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@action", "insertExternalProject");
+                        cmd.Parameters.AddWithValue("@project_Id", projectId);
+                        cmd.Parameters.AddWithValue("@DepartmentName", pm.pm.ProjectDepartment);
+                        cmd.Parameters.AddWithValue("@contactPerson", pm.pm.ContactPerson);
+                        cmd.Parameters.AddWithValue("@address", pm.pm.Address);
+                        i += cmd.ExecuteNonQuery();
                     }
                 }
                 tran.Commit();
@@ -351,7 +496,50 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+
+        public List<Project_model> Project_List()
+        {
+            try
+            {
+                List<Project_model> list = new List<Project_model>();
+                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "GetAllProject");
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new Project_model
+                        {
+                            Id = Convert.ToInt32(rd["id"]),
+                            ProjectTitle = rd["title"].ToString(),
+                            AssignDate = Convert.ToDateTime(rd["assignDate"]),
+                            StartDate = Convert.ToDateTime(rd["startDate"]),
+                            CompletionDate = Convert.ToDateTime(rd["completionDate"]).ToString("dd MMM yyyy"),
+                            ProjectManager = rd["name"].ToString()
+
+                        });
+                    }
+                }
+                return list;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+       
         #endregion
+
+
+
         #region /* Admin Dashboard Count */
         public DashboardCount DashboardCount()
         {
@@ -559,5 +747,35 @@ namespace RemoteSensingProject.Models.Admin
         }
        
         #endregion End
+
+        #region notice
+
+        public bool InsertNotice(Generate_Notice gn)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_manageNotice", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "InsertNotice");
+                cmd.Parameters.AddWithValue("@projectId",gn.ProjectId);
+                cmd.Parameters.AddWithValue("@noticeDocs", gn.Attachment_Url);
+                cmd.Parameters.AddWithValue("@noticedesc", gn.Notice);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        #endregion
+
     }
 }

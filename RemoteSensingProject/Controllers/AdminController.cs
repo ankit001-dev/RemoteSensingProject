@@ -94,19 +94,28 @@ namespace RemoteSensingProject.Controllers
 
         #endregion
 
-        public ActionResult Employee_Registration()
+        public ActionResult Employee_Registration(int? division)
         {
 
             ViewBag.division = _adminServices.ListDivison();
             ViewBag.designation = _adminServices.ListDesgination();
+            List<Employee_model> empList= new List<Employee_model>();
+            if (division!=null && division!=0)
+            {
+                empList = _adminServices.SelectEmployeeRecord().Where(e=>e.Division==division).ToList<Employee_model>();
 
+            }
+            else
+            {
+                empList = _adminServices.SelectEmployeeRecord();
+            }
+            ViewData["EmployeeList"] = empList;
             return View();
         }
 
         [HttpPost]
         public ActionResult Employee_Registration(Employee_model emp)
         {
-            bool res = false;
             string path = null;
             if (emp.EmployeeImages != null)
             {
@@ -114,20 +123,14 @@ namespace RemoteSensingProject.Controllers
                   path = Path.Combine("/ProjectContent/Admin/Employee_Images", fileName);
                 emp.Image_url = path;
             }
-            if (emp.Id != 0)
+
+
+            bool res = _adminServices.AddEmployees(emp);
+
+            
+            if (res && emp.EmployeeImages!=null)
             {
-
-             res = _adminServices.AddEmployees(emp);
-
-            }
-            else
-            {
-                res = _adminServices.AddEmployees(emp);
-
-            }
-            if (res)
-            {
-
+                
                 emp.EmployeeImages.SaveAs(Server.MapPath(path));
 
             }
@@ -141,27 +144,79 @@ namespace RemoteSensingProject.Controllers
            
                 return Json(res,JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
+        public ActionResult ChangeActieStatus(int id)
+        {
+            var res = _adminServices.ChangeActieStatus(id);
+           
+                return Json(res,JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult SelectEmployeeRecordById(int id)
+        {
+            var res = _adminServices.SelectEmployeeRecordById(id);
+           
+                return Json(res,JsonRequestBehavior.AllowGet);
+        }
 
         #region add project
         public ActionResult Add_Project()
         {
-
+            var data = _adminServices.SelectEmployeeRecord();
+            ViewBag.projectManager = data.Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
+            ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
             return View();
         }
-
         public ActionResult InsertProject(createProjectModel pm)
         {
+            if(pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
+            {
+                pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
+                pm.pm.projectDocumentUrl = "/ProjectContent/Admin/ProjectDocs/" + pm.pm.projectDocumentUrl;
+            }
+
+            if(pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
+            {
+                foreach(var item in pm.stages)
+                {
+                    if(item.Stage_Document != null && item.Stage_Document.FileName != "")
+                    {
+                        item.Document_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(item.Stage_Document.FileName);
+                        item.Document_Url = "/ProjectContent/Admin/ProjectDocs/" + item.Document_Url;
+                    }
+                }
+            }
+
             bool res = _adminServices.addProject(pm);
+            if (res)
+            {
+                if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
+                {
+                    pm.pm.projectDocument.SaveAs(Server.MapPath(pm.pm.projectDocumentUrl));
+                }
+
+                if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
+                {
+                    foreach (var item in pm.stages)
+                    {
+                        if (item.Stage_Document != null && item.Stage_Document.FileName != "")
+                        {
+                            item.Stage_Document.SaveAs(Server.MapPath(item.Document_Url));
+                        }
+                    }
+                }
+            }
             return Json(new
             {
                 status = res
-            });
+            }, JsonRequestBehavior.AllowGet);
         }
-        #endregion
         public ActionResult Project_List()
         {
+            ViewBag.ProjectList = _adminServices.Project_List();
             return View();
         }
+        #endregion
 
         public ActionResult All_Projects()
         {
@@ -260,8 +315,35 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Generate_Notice()
         {
+            ViewBag.ProjectList = _adminServices.Project_List();
+
             return View();
         }
+        public ActionResult GetProjectManagerByProjectId(int id)
+        {
+            var projectManager = _adminServices.Project_List().Where(e => e.Id == id).FirstOrDefault();
+            return Json(projectManager, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public ActionResult AddNotice(Generate_Notice gn)
+        {
+            string path = null;
+            if (gn.Attachment != null)
+            {
+                var fileName = Guid.NewGuid() + DateTime.Now.ToString("ddMMyyyyhhmm") + gn.Attachment.FileName;
+                path = Path.Combine("/ProjectContent/Admin/Employee_Images", fileName);
+                gn.Attachment_Url = path;
+            }
+
+            var res = _adminServices.InsertNotice(gn);
+            if (res)
+            {
+                gn.Attachment.SaveAs(Server.MapPath(path));
+            }
+            return Json(res);
+        }
+
         public ActionResult Notice_List()
         {
             return View();
