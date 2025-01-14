@@ -227,13 +227,16 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         #region /* Meeting */
-        public ActionResult Min_Of_Meeting(int? id)
+        public ActionResult Min_Of_Meeting(string Id="")
         {
             List<Employee_model> empList = new List<Employee_model>();
             empList = _adminServices.BindEmployee();
             ViewBag.Employee = empList;
-            Employee_model obj = new Employee_model();
-
+            Meeting_Model obj = new Meeting_Model();
+            if(!string.IsNullOrEmpty(Id))
+            {
+                obj = _adminServices.getMeetingById(Id);
+            }
             return View(obj);
         }
         [HttpPost]

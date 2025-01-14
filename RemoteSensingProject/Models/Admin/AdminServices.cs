@@ -726,6 +726,7 @@ namespace RemoteSensingProject.Models.Admin
                 while (sdr.Read())
                 {
                     obj = new Meeting_Model();
+                    obj.Id = Convert.ToInt32(sdr["id"]);
                     obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
                     obj.MeetingType = sdr["meetingType"].ToString();
                     obj.MeetingLink = sdr["meetingLink"].ToString();
@@ -745,7 +746,68 @@ namespace RemoteSensingProject.Models.Admin
             }
             return _list;
         }
-       
+
+        public Meeting_Model getMeetingById(string Id)
+        {
+            Meeting_Model obj = new Meeting_Model();
+            string empLoyee = "";
+            string[] employeeId = null;
+            string empid = "";
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id", Id);
+                cmd.Parameters.AddWithValue("@action", "getMeetingById");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.Read())
+                {
+                    obj.Id = Convert.ToInt32(sdr["id"]);
+                    obj.MeetingType = sdr["meetingType"].ToString();
+                    obj.MeetingLink = sdr["meetingLink"].ToString();
+                    obj.empId = sdr["empId"].ToString();
+                    obj.meetingId = sdr["meetingId"].ToString();
+                    empLoyee = obj.empId;
+                    employeeId = empLoyee.Split(',');
+                    empid = employeeId[0];  
+                }
+                sdr.Close();
+
+                cmd.Parameters.Clear();
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id", empid);
+                cmd.Parameters.AddWithValue("@action", "getMeetingMemberById");
+                SqlDataReader sdr2 = cmd.ExecuteReader();
+                if (sdr2.Read()) 
+                {
+                    obj.MeetingMember = sdr2["name"].ToString(); 
+                }
+                sdr2.Close();
+
+                cmd.Parameters.Clear();
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@meetingId", Id);
+                cmd.Parameters.AddWithValue("@action", "getMeetingPoint");
+                SqlDataReader sdr3 = cmd.ExecuteReader();
+                if (sdr3.Read()) 
+                {
+                    obj.KeyPoint = sdr3["keyPoint"].ToString(); 
+                }
+                sdr3.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+            return obj;
+        }
+
         #endregion End
 
         #region notice

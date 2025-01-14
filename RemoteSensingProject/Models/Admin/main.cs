@@ -98,6 +98,8 @@ namespace RemoteSensingProject.Models.Admin
            
             public string[] keyPointList { get; set; }
             public int CompleteStatus { get; set; }
+            public string empId { get; set; }
+            public string meetingId { get; set; }
 
         }
         public class Meeting_Conclusion
