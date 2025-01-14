@@ -48,10 +48,16 @@ namespace RemoteSensingProject.Models.Admin
             public string CompletionDate { get; set; }
             public string ProjectManager { get; set; }
             public int[] SubOrdinate { get; set; }
+            public HttpPostedFileBase projectDocument { get; set; }
+            public string projectDocumentUrl { get; set; }
             public float ProjectBudget { get; set; }
             public string ProjectType { get; set; }
             public string ProjectDescription { get; set; }
             public string ProjectStage { get; set; }
+            public string ProjectDepartment { get; set; }
+            public string ContactPerson { get; set; }
+            public string Address { get; set; }
+           
         }
         public class Project_Budget
         {

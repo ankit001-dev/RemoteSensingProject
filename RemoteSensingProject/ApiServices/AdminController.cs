@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -8,6 +9,7 @@ using System.Web.Http;
 using RemoteSensingProject.Controllers;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
+using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.LoginManager.main;
 
 namespace RemoteSensingProject.ApiServices
@@ -59,6 +61,129 @@ namespace RemoteSensingProject.ApiServices
 
         }
 
+        #region Employee Registration
+        [HttpPost]
+        [Route("api/EmployeeRegistration")]
+        public IHttpActionResult Emp_Register()
+        {
+            var request = HttpContext.Current.Request;
+            var empData = new Employee_model
+            {
+                Id = Convert.ToInt32(request.Form.Get("Id")),
+                EmployeeCode = request.Form.Get("EmployeeCode"),
+                EmployeeName = request.Form.Get("EmployeeName"),
+                MobileNo = Convert.ToInt64(request.Form.Get("MobileNo")),
+                Email = request.Form.Get("Email"),
+                EmployeeRole = request.Form.Get("EmployeeRole"),
+                Division = Convert.ToInt32(request.Form.Get("Division")),
+                Designation = Convert.ToInt32(request.Form.Get("Designation")),
+                Gender = request.Form.Get("Gender"),
+                Image_url = request.Form.Get("Image_url")
+            };
+            var file = request.Files["EmployeeImages"];
+            if(file != null && file.FileName != "")
+            {
+                empData.Image_url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                empData.Image_url = "/ProjectContent/Admin/Employee_Images/" + empData.Image_url;
+            }
+            else if(string.IsNullOrEmpty(empData.Image_url))
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 404,
+                    message = "Employee image is not found. Try with employee image profile."
+                });
+            }
+
+            List<string> validationErrors = new List<string>();
+
+            if (string.IsNullOrWhiteSpace(empData.EmployeeCode))
+                validationErrors.Add("Employee Code is required.");
+
+            if (string.IsNullOrWhiteSpace(empData.EmployeeName))
+                validationErrors.Add("Employee Name is required.");
+
+            if (empData.MobileNo == 0 || empData.MobileNo.ToString().Length != 10)
+                validationErrors.Add("A valid 10-digit Mobile Number is required.");
+
+            if (string.IsNullOrWhiteSpace(empData.Email) || !empData.Email.Contains("@"))
+                validationErrors.Add("A valid Email address is required.");
+
+            if (string.IsNullOrWhiteSpace(empData.EmployeeRole))
+                validationErrors.Add("Employee Role is required.");
+
+            if (empData.Division <= 0)
+                validationErrors.Add("Division must be selected.");
+
+            if (empData.Designation <= 0)
+                validationErrors.Add("Designation must be selected.");
+
+            if (string.IsNullOrWhiteSpace(empData.Gender) ||
+                !(empData.Gender.Equals("Male", StringComparison.OrdinalIgnoreCase) ||
+                  empData.Gender.Equals("Female", StringComparison.OrdinalIgnoreCase) ||
+                  empData.Gender.Equals("Other", StringComparison.OrdinalIgnoreCase)))
+                validationErrors.Add("Gender must be Male, Female, or Other.");
+
+            
+
+            if (validationErrors.Any())
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = string.Join("\n", validationErrors)
+                });
+               
+            }
+            else
+            {
+                bool res = _adminServices.AddEmployees(empData);
+                if (res)
+                {
+                    if(file != null && file.FileName != "")
+                    {
+                        file.SaveAs(HttpContext.Current.Server.MapPath(empData.Image_url));
+                    }
+                }
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode= res ? 200 : 500,
+                    message = res ? "Employee registration completed successfully !" : "Some issue occured while processing with your request. Please try after sometime."
+                });
+            }
+        }
+        #endregion
+
+        #region Admin Dashboard
+        [HttpGet]
+        [Route("api/adminDashboard")]
+        public IHttpActionResult adminDashboard()
+        {
+            var data = _adminServices.DashboardCount();
+            if (data != null)
+            {
+                return Ok(new
+                {
+                    status = true,
+                    StatusCode = 200,
+                    message = "Data Found !",
+                    data = data
+                });
+            }
+            else
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 404,
+                    message = "Admin dashboard not found !"
+                });
+            }
+        }
+        #endregion
 
         [HttpGet]
         [Route("api/DivisonList")]
