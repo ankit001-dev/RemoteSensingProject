@@ -105,6 +105,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             public int Id { get; set; }
             public string ProjectName { get; set; }
+            public int ProjectId { get; set; }
             public HttpPostedFileBase Attachment { get; set; }
             public string Attachment_Url { get; set; }
             public string Notice { get; set; }

@@ -286,8 +286,35 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Generate_Notice()
         {
+            ViewBag.ProjectList = _adminServices.Project_List();
+
             return View();
         }
+        public ActionResult GetProjectManagerByProjectId(int id)
+        {
+            var projectManager = _adminServices.Project_List().Where(e => e.Id == id).FirstOrDefault();
+            return Json(projectManager, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public ActionResult AddNotice(Generate_Notice gn)
+        {
+            string path = null;
+            if (gn.Attachment != null)
+            {
+                var fileName = Guid.NewGuid() + DateTime.Now.ToString("ddMMyyyyhhmm") + gn.Attachment.FileName;
+                path = Path.Combine("/ProjectContent/Admin/Employee_Images", fileName);
+                gn.Attachment_Url = path;
+            }
+
+            var res = _adminServices.InsertNotice(gn);
+            if (res)
+            {
+                gn.Attachment.SaveAs(Server.MapPath(path));
+            }
+            return Json(res);
+        }
+
         public ActionResult Notice_List()
         {
             return View();
