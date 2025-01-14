@@ -16,13 +16,13 @@ namespace RemoteSensingProject.Models.Admin
         public class Employee_model
         {
             public int Id { get; set; }
-            public int EmployeeCode { get; set; }
+            public string EmployeeCode { get; set; }
             public string EmployeeName { get; set; }
-            public string MobileNo { get; set; }
+            public long MobileNo { get; set; }
             public string Email { get; set; }
             public string EmployeeRole { get; set; }
-            public string Division { get; set; }
-            public string Designation { get; set; }
+            public int Division { get; set; }
+            public int Designation { get; set; }
             public string Gender { get; set; }
             public HttpPostedFileBase EmployeeImages { get; set; }
             public string Image_url { get; set; }
