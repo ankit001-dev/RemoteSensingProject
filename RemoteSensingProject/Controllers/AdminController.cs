@@ -100,6 +100,7 @@ namespace RemoteSensingProject.Controllers
             ViewBag.division = _adminServices.ListDivison();
             ViewBag.designation = _adminServices.ListDesgination();
 
+            ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
 
@@ -138,6 +139,20 @@ namespace RemoteSensingProject.Controllers
         public ActionResult DeleteEmployees(int id)
         {
             var res = _adminServices.RemoveEmployees(id);
+           
+                return Json(res,JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult ChangeActieStatus(int id)
+        {
+            var res = _adminServices.ChangeActieStatus(id);
+           
+                return Json(res,JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult SelectEmployeeRecordById(int id)
+        {
+            var res = _adminServices.SelectEmployeeRecordById(id);
            
                 return Json(res,JsonRequestBehavior.AllowGet);
         }
