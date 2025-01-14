@@ -156,7 +156,6 @@ C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\Remo
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
-
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Abstractions.dll
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Core.dll
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authorization.dll
@@ -276,7 +275,6 @@ C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
-
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
