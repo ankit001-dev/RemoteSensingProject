@@ -18,6 +18,7 @@ namespace RemoteSensingProject.Models.Admin
             public int Id { get; set; }
             public string EmployeeCode { get; set; }
             public string EmployeeName { get; set; }
+            public string CreationDate { get; set; }
             public long MobileNo { get; set; }
             public string Email { get; set; }
             public string EmployeeRole { get; set; }
@@ -26,7 +27,10 @@ namespace RemoteSensingProject.Models.Admin
             public string Gender { get; set; }
             public HttpPostedFileBase EmployeeImages { get; set; }
             public string Image_url { get; set; }
-       
+            public string DevisionName { get; set; }
+            public string DesignationName { get; set; }
+            public bool Status { get; set; }
+            public bool ActiveStatus { get; set; }
 
         }
         public class createProjectModel
@@ -44,10 +48,16 @@ namespace RemoteSensingProject.Models.Admin
             public string CompletionDate { get; set; }
             public string ProjectManager { get; set; }
             public int[] SubOrdinate { get; set; }
+            public HttpPostedFileBase projectDocument { get; set; }
+            public string projectDocumentUrl { get; set; }
             public float ProjectBudget { get; set; }
             public string ProjectType { get; set; }
             public string ProjectDescription { get; set; }
-            public string ProjectStage { get; set; }
+            public bool ProjectStage { get; set; }
+            public string ProjectDepartment { get; set; }
+            public string ContactPerson { get; set; }
+            public string Address { get; set; }
+           
         }
         public class Project_Budget
         {
@@ -101,6 +111,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             public int Id { get; set; }
             public string ProjectName { get; set; }
+            public int ProjectId { get; set; }
             public HttpPostedFileBase Attachment { get; set; }
             public string Attachment_Url { get; set; }
             public string Notice { get; set; }
