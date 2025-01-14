@@ -291,9 +291,15 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
-        public ActionResult GetProjectManagerByProjectId(int id)
+        public ActionResult GetProjectManagerByProjectId(int? id)
         {
-            var projectManager = _adminServices.Project_List().Where(e => e.Id == id).FirstOrDefault();
+            dynamic projectManager = null;
+            if (id.HasValue)
+            {
+
+             projectManager = _adminServices.Project_List().Where(e => e.Id == id).FirstOrDefault();
+            }
+            
             return Json(projectManager, JsonRequestBehavior.AllowGet);
 
         }
@@ -304,7 +310,7 @@ namespace RemoteSensingProject.Controllers
             if (gn.Attachment != null)
             {
                 var fileName = Guid.NewGuid() + DateTime.Now.ToString("ddMMyyyyhhmm") + gn.Attachment.FileName;
-                path = Path.Combine("/ProjectContent/Admin/Employee_Images", fileName);
+                path = Path.Combine("/ProjectContent/Admin/NoticeDocs", fileName);
                 gn.Attachment_Url = path;
             }
 
@@ -318,6 +324,8 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Notice_List()
         {
+            ViewData["NoticeList"] = _adminServices.getNoticeList();
+
             return View();
         }
 

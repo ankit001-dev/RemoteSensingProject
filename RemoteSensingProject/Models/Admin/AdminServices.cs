@@ -689,6 +689,46 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
+        public dynamic getNoticeList()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_manageNotice", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "SelectNotice");
+                con.Open();
+                List<Generate_Notice> noticeList = new List<Generate_Notice>();
+                var  res=cmd.ExecuteReader() ;
+                while (res.Read())
+                {
+                    noticeList.Add(new Generate_Notice
+                    {
+                        Id = (int)res["id"],
+                        ProjectId = (int)res["project_id"],
+                        ProjectManagerId = (int)res["empid"],
+                        Attachment_Url = res["NoticeDocument"] == null ? null : res["NoticeDocument"].ToString(),
+                        Notice = res["noticeDescription"].ToString(),
+                        ProjectManagerImage = res["profile"].ToString(),
+                        ProjectManager = res["name"].ToString(),
+                        ProjectName = res["title"].ToString(),
+                        noticeDate = Convert.ToDateTime(res["noticeDate"]).ToString("dd-MM-yyyy")
+
+                    });
+                }
+                return noticeList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
         #endregion
 
     }
