@@ -53,185 +53,54 @@
                     <table id="dataTableExample" class="table">
                         <thead>
                             <tr>
-                                <th class="text-center">ID</th>
-                                <th>Date</th>
-                                <th>Image</th>
+                                <th class="text-center">Sr</th>
+                                <th>EmployeeCode</th>
+                                <th>Role</th>
                                 <th>Name</th>
-                                <th>Department</th>
+                                <th>Division</th>
+                                <th>Designation</th>
+                                <th>Image</th>
+                                <th>Date</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-start">1</td>
-                                <td>25/09/2024</td>
-                                <td class="w-25">
-                                    <img src="~/Employee_Images/img.png" alt="image">
-                                </td>
-                                <td>Rahul Sharma</td>
-                                <td>Department</td>
-                                <td class="text-center">
-                                    <span class="form-check form-switch"><input type="checkbox" class="form-check-input" id="formSwitch1" checked></span>
-                                </td>
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
-                                            @*<div class="modal fade" id="viewslider" tabindex="-1" aria-labelledby="viewslider" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-body">
-                                                            <div class="sliderimages mb-3">
-                                                                <img src="../images/trending/trending2.jpg" alt="sliderimages">
-                                                            </div>
-                                                            <h5 class="mb-1">Slider Sub Title</h5>
-                                                            <h2 class="mb-1">Slider Title</h2>
-                                                            <p class="mb-0">
-                                                                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>*@
-                                        </li>
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
-                                        <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">2</td>
-                                <td>25/09/2024</td>
-                                <td class="w-25">
-                                    <img src="~/Employee_Images/img.png" alt="image">
-                                </td>
-                                <td>Vinay Kumar</td>
-                                <td>Department</td>
-                                <td class="text-center">
-                                    <span class="form-check form-switch"><input type="checkbox" class="form-check-input" id="formSwitch1" checked></span>
-                                </td>
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
-                                            @*<div class="modal fade" id="viewslider" tabindex="-1" aria-labelledby="viewslider" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-body">
-                                                            <div class="sliderimages mb-3">
-                                                                <img src="../images/trending/trending2.jpg" alt="sliderimages">
-                                                            </div>
-                                                            <h5 class="mb-1">Slider Sub Title</h5>
-                                                            <h2 class="mb-1">Slider Title</h2>
-                                                            <p class="mb-0">
-                                                                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>*@
-                                        </li>
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
-                                        <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">3</td>
-                                <td>25/09/2024</td>
-                                <td class="w-25">
-                                    <img src="~/Employee_Images/img.png" alt="image">
-                                </td>
-                                <td>Pooja tyagi</td>
-                                <td>Department</td>
-                                <td class="text-center">
-                                    <span class="form-check form-switch"><input type="checkbox" class="form-check-input" id="formSwitch1" checked></span>
-                                </td>
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
-                                            @*<div class="modal fade" id="viewslider" tabindex="-1" aria-labelledby="viewslider" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-body">
-                                                            <div class="sliderimages mb-3">
-                                                                <img src="../images/trending/trending2.jpg" alt="sliderimages">
-                                                            </div>
-                                                            <h5 class="mb-1">Slider Sub Title</h5>
-                                                            <h2 class="mb-1">Slider Title</h2>
-                                                            <p class="mb-0">
-                                                                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>*@
-                                        </li>
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
-                                        <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">4</td>
-                                <td>25/09/2024</td>
-                                <td class="w-25">
-                                    <img src="~/Employee_Images/img.png" alt="image">
-                                </td>
-                                <td>Rohan Gupta</td>
-                                <td>Department</td>
-                                <td class="text-center">
-                                    <span class="form-check form-switch"><input type="checkbox" class="form-check-input" id="formSwitch1" checked></span>
-                                </td>
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
-                                            @*<div class="modal fade" id="viewslider" tabindex="-1" aria-labelledby="viewslider" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-body">
-                                                            <div class="sliderimages mb-3">
-                                                                <img src="../images/trending/trending2.jpg" alt="sliderimages">
-                                                            </div>
-                                                            <h5 class="mb-1">Slider Sub Title</h5>
-                                                            <h2 class="mb-1">Slider Title</h2>
-                                                            <p class="mb-0">
-                                                                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>*@
-                                        </li>
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
-                                        <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">5</td>
-                                <td>25/09/2024</td>
-                                <td class="w-25">
-                                    <img src="~/Employee_Images/img.png" alt="image">
-                                </td>
-                                <td>Harsh Agarwal</td>
-                                <td>Department</td>
-                                <td class="text-center">
-                                    <span class="form-check form-switch"><input type="checkbox" class="form-check-input" id="formSwitch1" checked></span>
-                                </td>
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2">
-                                            <a href="#" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
-                                        </li>
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
-                                        <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
-                                    </ul>
-                                </td>
-                            </tr>
+                            @if (ViewData["EmployeeList"] != null)
+                                {
+                                    var count = 1;
+                                    foreach (var item in ViewData["EmployeeList"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                    {
+                                    <tr>
+                                        <td class="text-start">@count</td>
+                                        <td>@item.EmployeeCode</td>
+                                        <td>@item.EmployeeRole</td>
+                                        <td>@item.EmployeeName</td>
+                                        <td>@item.DevisionName</td>
+                                        <td>@item.DesignationName</td>
+                                        <td class="w-25">
+                                            <img src="@item.Image_url" class="w-100" height="50" alt="image">
+                                        </td>
+                                        <td>@item.CreationDate</td>
+                                        <td class="text-center">
+                                            <span class="form-check form-switch"><input type="checkbox" class="form-check-input activeSwitch"  data-id="@item.Id" checked="@item.ActiveStatus"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                                <li class="me-2">
+                                                    <a data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
+                                                  
+                                                </li>
+                                                <li class="me-2"><a class="editEmployee" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
+                                                <li><a class="deleteEmployee"  data-id="@item.Id"><i class="link-icon " data-feather="delete"></i></a></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    count++;
+                                }
+
+                            }
+
                         </tbody>
                     </table>
                 </div>
@@ -239,19 +108,6 @@
         </div>
     </div>
 </div>
-@*<div class="row">
-        <div class="dataTables_paginate">
-            <ul class="pagination">
-                <li class="paginate_button page-item">
-                    <a href="#" class="page-link">Previous</a>
-                </li>
-                <li class="paginate_button page-item active"><a href="#" class="page-link">1</a></li>
-                <li class="paginate_button page-item"><a href="#" class="page-link">2</a></li>
-                <li class="paginate_button page-item"><a href="#" class="page-link">3</a></li>
-                <li class="paginate_button page-item"><a href="#" class="page-link">Next</a></li>
-            </ul>
-        </div>
-    </div>*@
 
 <div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
@@ -265,26 +121,27 @@
             </div>
             <div class="modal-body">
                 <form class="addEmployeeform">
+                    <input type="hidden" id="employeeInpId" name="Id" />
                     <div class="row">
                         <div class="mb-3 col-md-6">
-                            <label for="subtitle" class="form-label"> Employee Code</label>
-                            <input type="text" class="form-control" name="EmployeeCode" required id="subtitle" autocomplete="off" placeholder="Enter Employee Code">
+                            <label for="employeeCode" class="form-label"> Employee Code</label>
+                            <input type="text" class="form-control" name="EmployeeCode" required id="employeeCode" autocomplete="off" placeholder="Enter Employee Code">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="subtitle" class="form-label"> Employee Name</label>
-                            <input type="text" class="form-control" name="EmployeeName" required id="subtitle" autocomplete="off" placeholder="Enter Employee Name">
+                            <label for="employeeName" class="form-label"> Employee Name</label>
+                            <input type="text" class="form-control" name="EmployeeName" required id="employeeName" autocomplete="off" placeholder="Enter Employee Name">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="title" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" name="MobileNo" required id="title" placeholder="Enter Mobile">
+                            <label for="employeemobno" class="form-label">Mobile</label>
+                            <input type="text" class="form-control" name="MobileNo" required id="employeemobno" placeholder="Enter Mobile">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="title" class="form-label">Email</label>
-                            <input type="text" class="form-control"  name="Email" required id="title" placeholder="Enter Email">
+                            <label for="employeeEmail" class="form-label">Email</label>
+                            <input type="text" class="form-control"  name="Email" required id="employeeEmail" placeholder="Enter Email">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="description" class="form-label">Select Role</label>
-                            <select class="form-select form-select-lg"  name="EmployeeRole" required>
+                            <label for="employeeRole" class="form-label">Select Role</label>
+                            <select class="form-select form-select-lg" id="employeeRole"  name="EmployeeRole" required>
                                 <option selected disabled>Select Role</option>
                                 <option value="projectManager">Project Manager</option>
                                 <option value="subOrdinate">Sub Ordinate</option>
@@ -292,8 +149,8 @@
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="description" class="form-label">Select Division</label>
-                            <select class="form-select form-select-lg"  name="Division" required>
+                            <label for="employeeDivision" class="form-label">Select Division</label>
+                            <select class="form-select form-select-lg" id="employeeDivision" name="Division" required>
                                 <option selected disabled>Select Division</option>
                                 @if (ViewBag.division != null)
             {
@@ -310,8 +167,8 @@
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="description" class="form-label">Select Designation</label>
-                            <select class="form-select form-select-lg"  name="Designation" required>
+                            <label for="employeeDesignation" class="form-label">Select Designation</label>
+                            <select class="form-select form-select-lg" id="employeeDesignation" name="Designation" required>
                                 <option selected>Select Designation</option>
                                 @if (ViewBag.designation != null)
                                 {
@@ -330,23 +187,23 @@
                             <label for="gender" class="form-label">Gender</label>
                             <div id="gender">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" required type="radio" name="gender" id="male" value="male">
+                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="male" value="male">
                                     <label class="form-check-label" for="male">Male</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" required type="radio" name="gender" id="female" value="female">
+                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="female" value="female">
                                     <label class="form-check-label" for="female">Female</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" required type="radio" name="gender" id="other" value="other">
+                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="other" value="other">
                                     <label class="form-check-label" for="other">Other</label>
                                 </div>
                             </div>
                         </div>
                        
                         <div class="mb-3 col-md-6">
-                            <label for="upload" class="form-label">Upload Images</label>
-                            <input class="form-control" required type="file"  name="EmployeeImages" id="fileupload">
+                            <label for="fileupload" class="form-label">Upload Images</label>
+                            <input class="form-control" required type="file" name="EmployeeImages" id="fileupload">
                         </div>
                     </div>
                     <div class="text-center">
@@ -364,8 +221,8 @@
             <div class="modal-body">
                 <!-- Slider Images and Title -->
                 <div class="sliderimages mb-3" style=" text-align: center; ">
-                    <img src="~/Employee_Images/img.png" alt="sliderimages">                
-                    <h5 class="mb-1">Harsh Agarwal</h5>
+                    <img src="~/ProjectContent/Admin/Employee_Images/img.png" class="employeeProfileImage rounded-circle" alt="sliderimages">                
+                    <h5 class="mb-1 EmployeeName">Harsh Agarwal</h5>
 
                 </div>
                 <!-- Static Information Start -->
@@ -373,52 +230,36 @@
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="employeeName" class="form-label">Employee Name</label>
-                            <p>Harsh Agarwal</p>
+                            <p class="EmployeeName">Harsh Agarwal</p>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="mobile" class="form-label">Mobile</label>
-                            <p>9876543210</p>
+                            <p class="mobileNumber">9876543210</p>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="email" class="form-label">Email</label>
-                            <p>harsh@example.com</p>
+                            <p class="empEmail">harsh@example.com</p>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="role" class="form-label">Role</label>
-                            <p>Project Manager</p>
+                            <p class="empRole">Project Manager</p>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="department" class="form-label">Department</label>
-                            <p>Department1</p>
+                            <p class="empDivision">Department1</p>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="designation" class="form-label">Designation</label>
-                            <p>Designation2</p>
+                            <p class="empDesignation">Designation2</p>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="gender" class="form-label">Gender</label>
-                            <p>Male</p>
+                            <p class="empgender">Male</p>
+                        </div>  <div class="mb-3 col-md-6">
+                            <label for="gender" class="form-label">Active Status</label>
+                            <p class="empActiveStatus"></p>
                         </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="address" class="form-label">Address</label>
-                            <p>1234 Main St, City, State</p>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="username" class="form-label">UserName</label>
-                            <p>harsh123</p>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="password" class="form-label">Password</label>
-                            <p>********</p> <!-- Or you can show the password if needed -->
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="uploadImages" class="form-label">Uploaded Images</label>
-                            <p>img.png</p>
-                        </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="uploadAadhar" class="form-label">Uploaded Aadhar Card</label>
-                            <p>aadhar.png</p>
-                        </div>
+                        
                     </div>
                 </div>
                 <!-- Static Information End -->
@@ -430,8 +271,24 @@
 
 <script>
 
+    function showLoading(action) {
+        Swal.fire({
+            title: "Auto close alert!",
+            html: "I will close in <b></b> milliseconds.",
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        if (!action) {
+            Swal.close();
+        }
+    }
+
     $(".addEmployeeform").submit(function (e) {
         e.preventDefault();
+        showLoading(true)
         let formData = new FormData();
         let arrData = $(this).serializeArray();
         arrData.forEach(function (d) {
@@ -475,4 +332,143 @@
 
     })
 
+    $(".activeSwitch").on('change', function () {
+        let id=$(this).attr("data-id")
+        $.ajax({
+            url: "/admin/ChangeActieStatus",
+            type: "get",
+            data: {id:id},
+            success: function (res) {
+                if (!res) {
+                    Swal.fire({
+                        title: "error",
+                        text: "something went wrong",
+                        icon: "error"
+                    })
+                }
+            }, error: function (xhr) {
+                Swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    })
+
+    $(".showEmployeeProfile").click(function () {
+        showLoading(true)
+        let id = $(this).attr("data-id");
+        $.ajax({
+            url: "/admin/SelectEmployeeRecordById",
+            type: "get",
+            data: { id: id },
+            success: function (res) {
+                console.log(res)
+                if (res != null) {
+                 
+                    $(".employeeProfileImage").attr("src", res.Image_url)
+                    $(".EmployeeName").text(res.EmployeeName)
+                    $(".mobileNumber").text(res.MobileNo)
+                    $(".empEmail").text(res.Email)
+                    $(".empRole").text(res.EmployeeRole)
+                    $(".empDivision").text(res.DevisionName)
+                    $(".empDesignation").text(res.DesignationName)
+                    $(".empgender").text(res.Gender)
+                    $(".empActiveStatus").html(res.ActiveStatus ? "<i class='fa-solid text-success fa-circle'></i> Active" : "<i class='fa-solid text-danger fa-circle'></i> Deactive")
+                }
+                showLoading(false)
+
+            }, error: function (xhr) {
+                Swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    })
+    $(".deleteEmployee").click(function () {
+       let id = $(this).attr("data-id");
+        Swal.fire({
+            title: "Do you really want to Delete?",
+            text: "you won't be able to revert",
+            icon:"warning",
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: "Delete",
+            denyButtonText: `Cancel`
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                showLoading(true)
+                $.ajax({
+                    url: "/admin/DeleteEmployees",
+                    type: "get",
+                    data: { id: id },
+                    success: function (res) {
+                        if (res) {
+                            Swal.fire({
+                                title: "success",
+                                text: "Employee Deleted Successfully",
+                                icon: "success",
+                                didClose: () => {
+                                    location.reload();
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                title: "error",
+                                text: "something went wrong",
+                                icon: "error"
+                            })
+                        }
+                    }, error: function (xhr) {
+                        Swal.fire({
+                            title: "error",
+                            text: "something went wrong",
+                            icon: "error"
+                        })
+                    }
+                })
+            }
+        })
+    })
+
+    $(".editEmployee").click(function (e) {
+        let id = $(this).attr("data-id");
+        $("#employeeInpId").val(id);
+        $("#fileupload").attr("required",false)
+        showLoading(true)
+        $.ajax({
+            url: "/admin/SelectEmployeeRecordById",
+            type: "get",
+            data: { id: id },
+            success: function (res) {
+                console.log(res)
+                if (res!=null) {
+                    $("#employeeCode").val(res.EmployeeCode)
+                    $("#employeeName").val(res.EmployeeName)
+                    $("#employeeEmail").val(res.Email)
+                    $("#employeemobno").val(res.MobileNo)
+                    $("#employeeDivision").val(res.Division)
+                    $("#employeeDesignation").val(res.Designation)
+                    $("#employeeRole").val(res.EmployeeRole)
+                    $(".employeeGender").each(function (i, d) {
+                        if (d.value == res.Gender) {
+                            d.setAttribute("checked",true)
+                        }
+                    })
+                }
+                showLoading(false)
+
+            }, error: function (xhr) {
+                Swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    })
 </script>

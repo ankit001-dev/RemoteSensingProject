@@ -156,6 +156,7 @@ C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\Remo
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
+<<<<<<< HEAD
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Abstractions.dll
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Core.dll
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authorization.dll
@@ -223,6 +224,60 @@ C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Diagnostics.DiagnosticSource.xml
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Text.Encodings.Web.xml
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Web.Http.Cors.xml
+=======
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csc.exe
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csc.exe.config
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csc.rsp
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csi.exe
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csi.exe.config
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csi.rsp
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CSharp.Core.targets
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.Managed.Core.CurrentVersions.targets
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.Managed.Core.targets
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.VisualBasic.Core.targets
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Buffers.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Collections.Immutable.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Memory.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Numerics.Vectors.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Reflection.Metadata.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Text.Encoding.CodePages.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Threading.Tasks.Extensions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.exe
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.exe.config
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.rsp
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\VBCSCompiler.exe
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Newtonsoft.Json.Bson.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Buffers.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Memory.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Numerics.Vectors.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Threading.Tasks.Extensions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Newtonsoft.Json.Bson.pdb
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Newtonsoft.Json.Bson.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Buffers.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Memory.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Numerics.Vectors.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Threading.Tasks.Extensions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.csproj.AssemblyReference.cache
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.csproj.CoreCompileInputs.cache
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
+>>>>>>> 587e21ae99c36649db569ab52a71861ff98e7727
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb

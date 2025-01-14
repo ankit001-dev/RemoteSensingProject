@@ -25,7 +25,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult AuthoriseLogin(string username, string password)
         {
             Credentials cr = _loginServices.Login(username, password);
-            if(cr.username.Equals(username) && cr.password.Equals(password))
+            if(!string.IsNullOrEmpty(cr.username)&& !string.IsNullOrEmpty(cr.password) &&cr.username.Equals(username) && cr.password.Equals(password))
             {
                 string url = "";
                 switch (cr.role)
@@ -33,8 +33,8 @@ namespace RemoteSensingProject.Controllers
                     case string role when role.Equals("admin"):
                         url = "/admin/Dashboard";
                         break;
-                    case string role when role.Equals("employee"):
-                        url = "/employee/dashborad";
+                    case string role when role.Equals("projectManager"):
+                        url = "/employee/dashboard";
                         break;
                 }
 
