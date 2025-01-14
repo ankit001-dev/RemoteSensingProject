@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -101,12 +102,53 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
+
+        [HttpPost]
+        public ActionResult Employee_Registration(Employee_model emp)
+        {
+            bool res = false;
+            string path = null;
+            if (emp.EmployeeImages != null)
+            {
+                var fileName = Guid.NewGuid() + DateTime.Now.ToString("ddMMyyyyhhmm") + emp.EmployeeImages.FileName;
+                  path = Path.Combine("/ProjectContent/Admin/Employee_Images", fileName);
+                emp.Image_url = path;
+            }
+            if (emp.Id != 0)
+            {
+
+             res = _adminServices.AddEmployees(emp);
+
+            }
+            else
+            {
+                res = _adminServices.AddEmployees(emp);
+
+            }
+            if (res)
+            {
+
+                emp.EmployeeImages.SaveAs(Server.MapPath(path));
+
+            }
+            return Json(res);
+            
+        }
+        [HttpGet]
+        public ActionResult DeleteEmployees(int id)
+        {
+            var res = _adminServices.RemoveEmployees(id);
+           
+                return Json(res,JsonRequestBehavior.AllowGet);
+        }
+
+        #region add project
         public ActionResult Add_Project()
         {
 
             return View();
         }
-
+        #endregion
         public ActionResult Project_List()
         {
             return View();
