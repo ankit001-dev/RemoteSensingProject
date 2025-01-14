@@ -12,6 +12,8 @@ using System.Web.UI.WebControls;
 using System.Web.Razor.Generator;
 using RemoteSensingProject.Models.MailService;
 using System.Web.Services.Description;
+using System.IO;
+using Microsoft.Ajax.Utilities;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
@@ -590,23 +592,21 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@action", "BindMeetingMember");
                 con.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
-                while (sdr.HasRows)
+                while (sdr.Read())
                 {
-                    if (sdr.Read())
-                    {
-                        empObj = new Employee_model();
-                        empObj.Id = Convert.ToInt32(sdr["id"]);
-                        empObj.EmployeeName = sdr["name"].ToString();
-                    
-                    }
+                    empObj = new Employee_model();
+                    empObj.Id = Convert.ToInt32(sdr["id"]);
+                    empObj.EmployeeName = sdr["name"].ToString();
+                    empObj.EmployeeRole = sdr["role"].ToString();
+
                     empList.Add(empObj);
                 }
-              
+
                 sdr.Close();
-           
+
             }catch(Exception ex)
             {
-                throw new Exception("An error accured", ex);
+                throw new Exception("An error accured",ex);
             }
             finally
             {
@@ -617,49 +617,197 @@ namespace RemoteSensingProject.Models.Admin
 
         public bool insertMeeting(Meeting_Model obj)
         {
+            con.Open();
             SqlTransaction transaction = con.BeginTransaction();
-          
+
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con,transaction);
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con, transaction);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "insertMeeting");
                 cmd.Parameters.AddWithValue("@MeetingType", obj.MeetingType);
                 cmd.Parameters.AddWithValue("@meetingLink", obj.MeetingLink);
                 cmd.Parameters.AddWithValue("@MeetingTitle", obj.MeetingTitle);
                 cmd.Parameters.AddWithValue("@meetingTime", obj.MeetingTime);
-                cmd.Parameters.AddWithValue("@meetingDocument", obj.Attachment);
+                cmd.Parameters.AddWithValue("@meetingDocument", obj.Attachment_Url);
+
                 SqlParameter outputParam = new SqlParameter("@meetingId", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
                 };
                 cmd.Parameters.Add(outputParam);
-                con.Open();
+
                 int i = cmd.ExecuteNonQuery();
+
                 if (i > 0)
                 {
-                    cmd.Parameters.AddWithValue("@action", "addMeetingMember");
-                    cmd.Parameters.AddWithValue("@employee",obj.EmployeeId);
-                    cmd.Parameters.AddWithValue("@meeting",obj.MeetingId);
-                    i = cmd.ExecuteNonQuery();
+                    int meetingId = (int)outputParam.Value;
 
+                    if (obj.meetingMemberList != null)
+                    {
+                        foreach (var member in obj.meetingMemberList)
+                        {
+                            var members = member.Split(',');
+
+                            foreach (var individualMember in members)
+                            {
+                                cmd.Parameters.Clear();
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@action", "addMeetingMember");
+                                cmd.Parameters.AddWithValue("@employee", individualMember); 
+                                cmd.Parameters.AddWithValue("@meeting", meetingId);
+
+                                int i2 = cmd.ExecuteNonQuery();
+                                if (i2 <= 0)
+                                {
+                                    transaction.Rollback();
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+
+                    if (obj.keyPointList != null)
+                    {
+                        foreach (var key in obj.keyPointList)
+                        {
+                            var keys=key.Split(','); 
+                            foreach(var individualKey in keys)
+                            {
+                                cmd.Parameters.Clear();
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@action", "addMeetingKeyPoint");
+                                cmd.Parameters.AddWithValue("@keyPoint", individualKey);
+                                cmd.Parameters.AddWithValue("@meeting", meetingId);
+
+                                int i3 = cmd.ExecuteNonQuery();
+                                if (i3 <= 0)
+                                {
+                                    transaction.Rollback();
+                                    return false;
+                                }
+                            }
+                        
+                        }
+                    }
+
+                    transaction.Commit();
                     return true;
                 }
                 else
                 {
-                   
+                    transaction.Rollback();
                     return false;
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 transaction.Rollback();
-                throw new Exception("An error accured", ex);
+                throw new Exception("An error occurred while inserting the meeting", ex);
             }
             finally
             {
                 con.Close();
             }
         }
+        public List<Meeting_Model> getAllmeeting()
+        {
+            List<Meeting_Model> _list = new List<Meeting_Model>();
+            Meeting_Model obj = null;
+            try
+            {
+
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getAllmeeting");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+             
+                while (sdr.Read())
+                {
+                    obj = new Meeting_Model();
+                    obj.Id = Convert.ToInt32(sdr["id"]);
+                    obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
+                    obj.MeetingType = sdr["meetingType"].ToString();
+                    obj.MeetingLink = sdr["meetingLink"].ToString();
+                    obj.MeetingTitle = sdr["MeetingTitle"].ToString();
+                    obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy"); 
+                    _list.Add(obj);
+                }
+           
+                sdr.Close();
+            }catch(Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return _list;
+        }
+
+        public Meeting_Model getMeetingById(string Id)
+        {
+            Meeting_Model obj = new Meeting_Model();
+            string empLoyee = "";
+            string[] employeeId = null;
+            string empid = "";
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id", Id);
+                cmd.Parameters.AddWithValue("@action", "getMeetingById");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.Read())
+                {
+                    obj.Id = Convert.ToInt32(sdr["id"]);
+                    obj.MeetingType = sdr["meetingType"].ToString();
+                    obj.MeetingLink = sdr["meetingLink"].ToString();
+                    obj.empId = sdr["empId"].ToString();
+                    obj.meetingId = sdr["meetingId"].ToString();
+                    empLoyee = obj.empId;
+                    employeeId = empLoyee.Split(',');
+                    empid = employeeId[0];  
+                }
+                sdr.Close();
+
+                cmd.Parameters.Clear();
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@id", empid);
+                cmd.Parameters.AddWithValue("@action", "getMeetingMemberById");
+                SqlDataReader sdr2 = cmd.ExecuteReader();
+                if (sdr2.Read()) 
+                {
+                    obj.MeetingMember = sdr2["name"].ToString(); 
+                }
+                sdr2.Close();
+
+                cmd.Parameters.Clear();
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@meetingId", Id);
+                cmd.Parameters.AddWithValue("@action", "getMeetingPoint");
+                SqlDataReader sdr3 = cmd.ExecuteReader();
+                if (sdr3.Read()) 
+                {
+                    obj.KeyPoint = sdr3["keyPoint"].ToString(); 
+                }
+                sdr3.Close();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+
+            return obj;
+        }
+
         #endregion End
 
         #region notice
