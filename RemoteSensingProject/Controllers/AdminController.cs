@@ -107,7 +107,6 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult Employee_Registration(Employee_model emp)
         {
-            bool res = false;
             string path = null;
             if (emp.EmployeeImages != null)
             {
@@ -115,20 +114,14 @@ namespace RemoteSensingProject.Controllers
                   path = Path.Combine("/ProjectContent/Admin/Employee_Images", fileName);
                 emp.Image_url = path;
             }
-            if (emp.Id != 0)
+
+
+            bool res = _adminServices.AddEmployees(emp);
+
+            
+            if (res && emp.EmployeeImages!=null)
             {
-
-             res = _adminServices.AddEmployees(emp);
-
-            }
-            else
-            {
-                res = _adminServices.AddEmployees(emp);
-
-            }
-            if (res)
-            {
-
+                
                 emp.EmployeeImages.SaveAs(Server.MapPath(path));
 
             }

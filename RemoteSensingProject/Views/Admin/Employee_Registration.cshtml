@@ -89,24 +89,9 @@
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 <li class="me-2">
                                                     <a data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
-                                                    @*<div class="modal fade" id="viewslider" tabindex="-1" aria-labelledby="viewslider" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-body">
-                                                <div class="sliderimages mb-3">
-                                                    <img src="../images/trending/trending2.jpg" alt="sliderimages">
-                                                </div>
-                                                <h5 class="mb-1">Slider Sub Title</h5>
-                                                <h2 class="mb-1">Slider Title</h2>
-                                                <p class="mb-0">
-                                                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>*@
+                                                  
                                                 </li>
-                                                <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
+                                                <li class="me-2"><a class="editEmployee" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
                                                 <li><a class="deleteEmployee"  data-id="@item.Id"><i class="link-icon " data-feather="delete"></i></a></li>
                                             </ul>
                                         </td>
@@ -123,19 +108,6 @@
         </div>
     </div>
 </div>
-@*<div class="row">
-        <div class="dataTables_paginate">
-            <ul class="pagination">
-                <li class="paginate_button page-item">
-                    <a href="#" class="page-link">Previous</a>
-                </li>
-                <li class="paginate_button page-item active"><a href="#" class="page-link">1</a></li>
-                <li class="paginate_button page-item"><a href="#" class="page-link">2</a></li>
-                <li class="paginate_button page-item"><a href="#" class="page-link">3</a></li>
-                <li class="paginate_button page-item"><a href="#" class="page-link">Next</a></li>
-            </ul>
-        </div>
-    </div>*@
 
 <div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
@@ -149,26 +121,27 @@
             </div>
             <div class="modal-body">
                 <form class="addEmployeeform">
+                    <input type="hidden" id="employeeInpId" name="Id" />
                     <div class="row">
                         <div class="mb-3 col-md-6">
-                            <label for="subtitle" class="form-label"> Employee Code</label>
-                            <input type="text" class="form-control" name="EmployeeCode" required id="subtitle" autocomplete="off" placeholder="Enter Employee Code">
+                            <label for="employeeCode" class="form-label"> Employee Code</label>
+                            <input type="text" class="form-control" name="EmployeeCode" required id="employeeCode" autocomplete="off" placeholder="Enter Employee Code">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="subtitle" class="form-label"> Employee Name</label>
-                            <input type="text" class="form-control" name="EmployeeName" required id="subtitle" autocomplete="off" placeholder="Enter Employee Name">
+                            <label for="employeeName" class="form-label"> Employee Name</label>
+                            <input type="text" class="form-control" name="EmployeeName" required id="employeeName" autocomplete="off" placeholder="Enter Employee Name">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="title" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" name="MobileNo" required id="title" placeholder="Enter Mobile">
+                            <label for="employeemobno" class="form-label">Mobile</label>
+                            <input type="text" class="form-control" name="MobileNo" required id="employeemobno" placeholder="Enter Mobile">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="title" class="form-label">Email</label>
-                            <input type="text" class="form-control"  name="Email" required id="title" placeholder="Enter Email">
+                            <label for="employeeEmail" class="form-label">Email</label>
+                            <input type="text" class="form-control"  name="Email" required id="employeeEmail" placeholder="Enter Email">
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="description" class="form-label">Select Role</label>
-                            <select class="form-select form-select-lg"  name="EmployeeRole" required>
+                            <label for="employeeRole" class="form-label">Select Role</label>
+                            <select class="form-select form-select-lg" id="employeeRole"  name="EmployeeRole" required>
                                 <option selected disabled>Select Role</option>
                                 <option value="projectManager">Project Manager</option>
                                 <option value="subOrdinate">Sub Ordinate</option>
@@ -176,8 +149,8 @@
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="description" class="form-label">Select Division</label>
-                            <select class="form-select form-select-lg"  name="Division" required>
+                            <label for="employeeDivision" class="form-label">Select Division</label>
+                            <select class="form-select form-select-lg" id="employeeDivision" name="Division" required>
                                 <option selected disabled>Select Division</option>
                                 @if (ViewBag.division != null)
             {
@@ -194,8 +167,8 @@
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="description" class="form-label">Select Designation</label>
-                            <select class="form-select form-select-lg"  name="Designation" required>
+                            <label for="employeeDesignation" class="form-label">Select Designation</label>
+                            <select class="form-select form-select-lg" id="employeeDesignation" name="Designation" required>
                                 <option selected>Select Designation</option>
                                 @if (ViewBag.designation != null)
                                 {
@@ -214,23 +187,23 @@
                             <label for="gender" class="form-label">Gender</label>
                             <div id="gender">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" required type="radio" name="gender" id="male" value="male">
+                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="male" value="male">
                                     <label class="form-check-label" for="male">Male</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" required type="radio" name="gender" id="female" value="female">
+                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="female" value="female">
                                     <label class="form-check-label" for="female">Female</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" required type="radio" name="gender" id="other" value="other">
+                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="other" value="other">
                                     <label class="form-check-label" for="other">Other</label>
                                 </div>
                             </div>
                         </div>
                        
                         <div class="mb-3 col-md-6">
-                            <label for="upload" class="form-label">Upload Images</label>
-                            <input class="form-control" required type="file"  name="EmployeeImages" id="fileupload">
+                            <label for="fileupload" class="form-label">Upload Images</label>
+                            <input class="form-control" required type="file" name="EmployeeImages" id="fileupload">
                         </div>
                     </div>
                     <div class="text-center">
@@ -393,6 +366,7 @@
             success: function (res) {
                 console.log(res)
                 if (res != null) {
+                 
                     $(".employeeProfileImage").attr("src", res.Image_url)
                     $(".EmployeeName").text(res.EmployeeName)
                     $(".mobileNumber").text(res.MobileNo)
@@ -401,7 +375,7 @@
                     $(".empDivision").text(res.DevisionName)
                     $(".empDesignation").text(res.DesignationName)
                     $(".empgender").text(res.Gender)
-                    $(".empActiveStatus").html(res.ActiveStatus ? "<i class='fa-solid text-success fa-circle'></i> Active" :"<i class='fa-solid text-danger fa-circle'></i> Deactive")
+                    $(".empActiveStatus").html(res.ActiveStatus ? "<i class='fa-solid text-success fa-circle'></i> Active" : "<i class='fa-solid text-danger fa-circle'></i> Deactive")
                 }
                 showLoading(false)
 
@@ -456,6 +430,43 @@
                             icon: "error"
                         })
                     }
+                })
+            }
+        })
+    })
+
+    $(".editEmployee").click(function (e) {
+        let id = $(this).attr("data-id");
+        $("#employeeInpId").val(id);
+        $("#fileupload").attr("required",false)
+        showLoading(true)
+        $.ajax({
+            url: "/admin/SelectEmployeeRecordById",
+            type: "get",
+            data: { id: id },
+            success: function (res) {
+                console.log(res)
+                if (res!=null) {
+                    $("#employeeCode").val(res.EmployeeCode)
+                    $("#employeeName").val(res.EmployeeName)
+                    $("#employeeEmail").val(res.Email)
+                    $("#employeemobno").val(res.MobileNo)
+                    $("#employeeDivision").val(res.Division)
+                    $("#employeeDesignation").val(res.Designation)
+                    $("#employeeRole").val(res.EmployeeRole)
+                    $(".employeeGender").each(function (i, d) {
+                        if (d.value == res.Gender) {
+                            d.setAttribute("checked",true)
+                        }
+                    })
+                }
+                showLoading(false)
+
+            }, error: function (xhr) {
+                Swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
                 })
             }
         })

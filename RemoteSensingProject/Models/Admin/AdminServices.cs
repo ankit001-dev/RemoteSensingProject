@@ -197,15 +197,20 @@ namespace RemoteSensingProject.Models.Admin
                 Random rnd = new Random();
                 var userName = emp.EmployeeName.Substring(0, 5) + "@" + emp.MobileNo.ToString().Substring(0, 5);
                 string userpassword = "";
-                for (int i = 0; i < 8; i++)
+                if (emp.Id == 0)
                 {
-                    userpassword += validChars[rnd.Next(validChars.Length)];
+                    for (int i = 0; i < 8; i++)
+                    {
+                        userpassword += validChars[rnd.Next(validChars.Length)];
+                    }
                 }
 
+                var ActionType = emp.Id != 0 ? "UpdateEmployees" : "InsertEmployees";
                 cmd = new SqlCommand("sp_AdminEmployees", con, transaction);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", emp.Id != 0 ? "UpdateEmployees" : "InsertEmployees");
+                cmd.Parameters.AddWithValue("@action", ActionType);
                 cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@id", emp.Id);
                 cmd.Parameters.AddWithValue("@name", emp.EmployeeName);
                 cmd.Parameters.AddWithValue("@mobile", emp.MobileNo);
                 cmd.Parameters.AddWithValue("@email", emp.Email);
@@ -216,7 +221,6 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@profile", emp.Image_url);
                 cmd.Parameters.AddWithValue("@username", userName);
                 cmd.Parameters.AddWithValue("@password", userpassword);
-
                 int res = cmd.ExecuteNonQuery();
                 if (res > 0 && emp.Id == 0)
                 {
@@ -226,6 +230,11 @@ namespace RemoteSensingProject.Models.Admin
                     transaction.Commit();
                     return true;
 
+                }
+                else if(res>0)
+                {
+                    transaction.Commit();
+                    return true;
                 }
                 else
                 {
