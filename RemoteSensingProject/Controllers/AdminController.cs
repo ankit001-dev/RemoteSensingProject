@@ -148,20 +148,57 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
-
+        [HttpPost]
         public ActionResult InsertProject(createProjectModel pm)
         {
+            if(pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
+            {
+                pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
+                pm.pm.projectDocumentUrl = "/ProjectContent/Admin/ProjectDocs/" + pm.pm.projectDocumentUrl;
+            }
+
+            if(pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
+            {
+                foreach(var item in pm.stages)
+                {
+                    if(item.Stage_Document != null && item.Stage_Document.FileName != "")
+                    {
+                        item.Document_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(item.Stage_Document.FileName);
+                        item.Document_Url = "/ProjectContent/Admin/ProjectDocs/" + item.Document_Url;
+                    }
+                }
+            }
+
             bool res = _adminServices.addProject(pm);
+            if (res)
+            {
+                if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
+                {
+                    pm.pm.projectDocument.SaveAs(Server.MapPath(pm.pm.projectDocumentUrl));
+                }
+
+                if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
+                {
+                    foreach (var item in pm.stages)
+                    {
+                        if (item.Stage_Document != null && item.Stage_Document.FileName != "")
+                        {
+                            item.Stage_Document.SaveAs(Server.MapPath(item.Document_Url));
+                        }
+                    }
+                }
+            }
             return Json(new
             {
                 status = res
-            });
+            }, JsonRequestBehavior.AllowGet);
         }
-        #endregion
         public ActionResult Project_List()
         {
+            ViewBag.ProjectList = _adminServices.Project_List();
             return View();
         }
+        #endregion
 
         public ActionResult All_Projects()
         {
