@@ -276,6 +276,7 @@
     <Compile Include="Models\DataFactory.cs" />
     <Compile Include="Models\LoginManager\LoginServices.cs" />
     <Compile Include="Models\LoginManager\main.cs" />
+    <Compile Include="Models\MailService\mail.cs" />
     <Compile Include="Models\ProjectManager\main.cs" />
     <Compile Include="Models\RoleAuthorization.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
@@ -898,6 +899,7 @@
     <Content Include="obj\Debug\build.force" />
     <Content Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <Content Include="obj\Debug\RemoteSensingProject.csproj.AssemblyReference.cache" />
+    <Content Include="ProjectContent\Admin\Employee_Images\img.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -975,6 +977,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="obj\Debug\TempPE\" />
     <Folder Include="Project_Content\" />
+    <Folder Include="ProjectContent\ProjectManager\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
