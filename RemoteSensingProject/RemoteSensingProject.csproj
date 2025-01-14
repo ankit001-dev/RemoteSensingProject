@@ -976,6 +976,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="obj\Debug\TempPE\" />
+    <Folder Include="Project_Content\" />
     <Folder Include="ProjectContent\ProjectManager\" />
   </ItemGroup>
   <ItemGroup>
