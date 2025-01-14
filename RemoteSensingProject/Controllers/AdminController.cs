@@ -94,13 +94,22 @@ namespace RemoteSensingProject.Controllers
 
         #endregion
 
-        public ActionResult Employee_Registration()
+        public ActionResult Employee_Registration(int? division)
         {
 
             ViewBag.division = _adminServices.ListDivison();
             ViewBag.designation = _adminServices.ListDesgination();
+            List<Employee_model> empList= new List<Employee_model>();
+            if (division!=null && division!=0)
+            {
+                empList = _adminServices.SelectEmployeeRecord().Where(e=>e.Division==division).ToList<Employee_model>();
 
-            ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord();
+            }
+            else
+            {
+                empList = _adminServices.SelectEmployeeRecord();
+            }
+            ViewData["EmployeeList"] = empList;
             return View();
         }
 

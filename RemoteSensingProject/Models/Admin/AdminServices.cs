@@ -307,6 +307,7 @@ namespace RemoteSensingProject.Models.Admin
                     EmployeeName = record["name"].ToString(),
                     DevisionName = record["devisionName"].ToString(),
                     EmployeeRole = record["role"].ToString(),
+                    Division = (int)record["devision"],
                     DesignationName = record["designationName"].ToString(),
                     Status = (bool)record["status"],
                     ActiveStatus = (bool)record["activeStatus"],
