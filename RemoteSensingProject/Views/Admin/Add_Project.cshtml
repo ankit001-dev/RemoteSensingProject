@@ -21,23 +21,23 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <form class="forms-sample">
+                    <form class="forms-sample" id="createProjectForm">
                         <div class="row">
                             <div class="col-lg-4 mb-3">
                                 <label for="upload" class="form-label">Title</label>
-                                <input type="text" class="form-control form-control-sm" id="daynight" placeholder="Enter Project Title">
+                                <input type="text" name="pm.pm.ProjectTitle" class="form-control form-control-sm" id="daynight" placeholder="Enter Project Title">
                             </div>
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Assign Date</label>
                                 <div class="input-group date datepicker datePickerExample">
-                                    <input type="text" class="form-control form-control-sm">
+                                    <input type="text" class="form-control form-control-sm" name="pm.pm.AssignDate">
                                     <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                                 </div>
                             </div>
                             <div class="col-lg-4 mb-3">
                                 <label for="subtitle" class="form-label">Start Date</label>
                                 <div class="input-group date datepicker datePickerExample">
-                                    <input type="text" class="form-control form-control-sm">
+                                    <input type="text" class="form-control form-control-sm" name="pm.pm.StartDate">
                                     <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                                 </div>
                             </div>
@@ -46,7 +46,7 @@
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Completion Date</label>
                                 <div class="input-group date datepicker datePickerExample">
-                                    <input type="text" class="form-control form-control-sm">
+                                    <input type="text" class="form-control form-control-sm" name="pm.pm.CompletionDate">
                                     <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                                 </div>
                             </div>
@@ -55,7 +55,7 @@
 
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Project Manager</label>
-                                <select class="form-control form-control-sm">
+                                <select class="form-control form-control-sm" name="pm.pm.ProjectManager">
                                     <option>Name1</option>
                                     <option>Name2</option>
                                     <option>Name3</option>
@@ -64,7 +64,7 @@
                             </div>
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Sub-Ordinate</label>
-                                <select class="form-control form-control-sm" multiple>
+                                <select class="form-control form-control-sm" name="pm.pm.SubOrdinate" multiple>
                                     <option>Member1</option>
                                     <option>Member2</option>
                                     <option>Member3</option>
@@ -75,18 +75,18 @@
                         <div class="row">
                             <div class="col-lg-4 mb-3">
                                 <div class="d-flex justify-content-between">
-                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="0 "> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
+                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
                                    </div>
-                                <input type="text" class="form-control form-control-sm" id="budgetAmount" placeholder="Enter Project Budget">
+                                <input type="text" class="form-control form-control-sm" name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
                             </div>
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Project Type</label>
                                 <br />
                                 <label for="projectType" class="form-label">
-                                    <input type="radio" name="projectType" class="form-check-input" value="Internal" checked /><span>Internal</span>
+                                    <input type="radio" name="pm.pm.ProjectType" class="form-check-input" value="Internal" checked /><span>Internal</span>
                                 </label>
                                 <label for="stage" class="form-label ms-2">
-                                    <input type="radio" name="projectType" class="form-check-input" value="External" /> <span>External</span>
+                                    <input type="radio" name="pm.pm.ProjectType" class="form-check-input" value="External" /> <span>External</span>
                                 </label>
                             </div>
 
@@ -94,10 +94,10 @@
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label w-100">Stage</label>
                                 <label for="stage" class="form-label">
-                                    <input type="radio" name="stage" class="form-check-input" value="Yes" /> <span>Yes</span>
+                                    <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="Yes" /> <span>Yes</span>
                                 </label>
                                 <label for="stage" class="form-label ms-2">
-                                    <input type="radio" name="stage" class="form-check-input" value="No" checked /><span>No</span>
+                                    <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="No" checked /><span>No</span>
                                 </label>
 
 
@@ -111,11 +111,11 @@
                                 <div class="row budgetList">
                                     <div class="col-lg-5 mb-3">
                                         <label for="title" class="form-label">Heads</label>
-                                        <input type="text" class="form-control form-control-sm" id="" placeholder="Enter Key Point">
+                                        <input type="text" class="form-control form-control-sm" name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point">
                                     </div>
                                     <div class="col-lg-5 mb-3">
                                         <label for="title" class="form-label">Amount</label>
-                                        <input type="text" class="form-control form-control-sm" id="person" placeholder="Enter Contact Person Name">
+                                        <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter Contact Person Name">
                                     </div>
 
 
@@ -125,11 +125,11 @@
                                         <label for="title" class="form-label">
                                             Miscellaneous
                                         </label>
-                                        <input type="text" class="form-control form-control-sm" id="" placeholder="Enter Key Point">
+                                        <input type="text" class="form-control form-control-sm" name="pm.budgets[0].Miscellaneous" id="" placeholder="Enter Key Point">
                                     </div>
                                     <div class="col-lg-5 mb-3">
-                                        <label for="title" class="form-label">Amount</label>
-                                        <input type="text" class="form-control form-control-sm" id="person" placeholder="Enter Contact Person Name">
+                                        <label for="misAmount" class="form-label">Amount</label>
+                                        <input type="text" class="form-control form-control-sm" id="misAmount" name="pm.budgets[0].Miscell_amt" placeholder="Enter amount">
                                     </div>
 
 
@@ -172,7 +172,7 @@
                         <div class="row">
                             <div class="col-lg-12 mb-3">
                                 <label for="description" class="form-label"> Description</label>
-<textarea class="form-control form-control-sm" name="tinymce" id="tinymceExample" rows="10" placeholder="Project Description"></textarea>
+<textarea class="form-control form-control-sm" name="pm.pm.ProjectDescription" id="tinymceExample" rows="10" placeholder="Project Description"></textarea>
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Project</button>
@@ -194,7 +194,7 @@
     })
     $(document).ready(function () {
         
-        $("input[name='stage']").click(function () {
+        $("input[name='pm.pm.ProjectStage']").click(function () {
             if ($(this).val() === "Yes") {
                 $("#stageItemContainer").show();
                 $("#addStageIcon").show().click(); 
@@ -214,7 +214,7 @@
                 <div class="row stageListItem">
                     <div class="col-lg-4 mb-3">
                         <label for="venue" class="form-label">Key Point</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Enter Key Point">
+                        <input type="text" class="form-control form-control-sm" name="pm.stages[${count}].KeyPoint" placeholder="Enter Key Point">
                     </div>
                     <div class="col-lg-4 mb-3">
                         <label for="person" class="form-label">Pdf Upload</label>
@@ -222,7 +222,7 @@
                     </div>
                     <div class="col-lg-3 mb-3">
                         <label for="date" class="form-label">Complete Date</label>
-                        <input type="date" class="form-control form-control-sm">
+                        <input type="date" class="form-control form-control-sm" name="pm.stages[${count}].CompletionDate">
                     </div>
                     <div class="col-lg-1 text-center mb-3" style="line-height:6;">
                         <a href="#" class="deleteCurrntRow">
@@ -247,7 +247,7 @@
         });
 
        
-        $("input[name='projectType']").click(function () {
+        $("input[name='pm.pm.ProjectType']").click(function () {
             if ($(this).val() === "External") {
                 $("#projectTypeDetailContainer").show();
             } else {
@@ -256,17 +256,17 @@
         });
         //managing budget section
 
-
         $("#addBudgetItem").click(function () {
+            let count = $(this).attr("data-count");
             $("#budgetContainerBox").show();
             let ele = `<div class="row budgetList">
     <div class="col-lg-5 mb-3">
         <label for="title" class="form-label">Heads</label>
-        <input type="text" class="form-control form-control-sm" id="venue" placeholder="Enter Key Point">
+        <input type="text" class="form-control form-control-sm" name="pm.budgets[${count}].ProjectHeads" id="venue" placeholder="Enter Key Point">
     </div>
     <div class="col-lg-5 mb-3">
         <label for="title" class="form-label">Amount</label>
-        <input type="text" class="form-control form-control-sm" id="person" placeholder="Enter Contact Person Name">
+        <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[${count}].ProjectAmount" placeholder="Enter Contact Person Name">
     </div>
     <div class="col-lg-2 text-center mb-3" style="line-height:6;">
         <a href="#" class="deleteCurrntRow">
@@ -279,8 +279,64 @@
         })
         $("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
             e.preventDefault();
+            let i = $("#budgetContainerBox #addBudgetItem").attr("data-count");
+            if (i > 0)
+                i--;
+            $("#budgetContainerBox #addBudgetItem").attr("data-count", i);
             $(this).closest(".row.budgetList").remove(); 
         })
     });
 
+</script>
+
+<script>
+    $("#createProjectForm").on("submit", function (e) {
+        e.preventDefault();
+
+        let data = $(this).serialize();
+        console.log(data)
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request ....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+
+        $.ajax({
+            url: "/admin/InsertProject",
+            type: "post",
+            data: data,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: "Project created successfully !",
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true);
+                        }
+                    })
+                }
+                else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: "Some issue occured while processing your request ! Please try after sometime.",
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue !",
+                    text: "Server is busy ! Try after sometime.",
+                    icon: "error"
+                })
+            }
+        })
+    })
 </script>
