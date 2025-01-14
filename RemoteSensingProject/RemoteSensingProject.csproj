@@ -901,6 +901,10 @@
     <Content Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <Content Include="obj\Debug\RemoteSensingProject.csproj.AssemblyReference.cache" />
     <Content Include="ProjectContent\Admin\Employee_Images\img.png" />
+    <Content Include="ProjectContent\Admin\Meeting_Attachment\09b16bf3-4191-48eb-b04a-e9fde6a9df45.png" />
+    <Content Include="ProjectContent\Admin\Meeting_Attachment\1086f5bd-cf9d-48d0-8710-e80d9a45824f.png" />
+    <Content Include="ProjectContent\Admin\Meeting_Attachment\246e7cfd-95e4-4aa1-a402-3f6825560b23.png" />
+    <Content Include="ProjectContent\Admin\Meeting_Attachment\ed2cd55c-a52d-40c9-a405-becaffd7949f.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
