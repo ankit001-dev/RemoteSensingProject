@@ -156,8 +156,6 @@ C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\Remo
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
-<<<<<<< HEAD
-<<<<<<< HEAD
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
@@ -210,8 +208,6 @@ C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
-=======
-=======
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
@@ -246,7 +242,6 @@ D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.exe.c
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.rsp
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\VBCSCompiler.exe
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\VBCSCompiler.exe.config
->>>>>>> b009cf9cee05d27a8dd2a2a356cf4f5aae2c00e7
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Abstractions.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Core.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authorization.dll
@@ -399,4 +394,70 @@ C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Diagnostics.DiagnosticSource.xml
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Text.Encodings.Web.xml
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Web.Http.Cors.xml
->>>>>>> 2c3d7ea869afb3115e37744cbe3a8a7d9be3f926
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Core.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authorization.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authorization.Policy.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Hosting.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Hosting.Server.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Http.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Http.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Http.Extensions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Mvc.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Mvc.Core.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.ResponseCaching.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Routing.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Routing.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.WebUtilities.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.DependencyModel.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.Hosting.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.ObjectPool.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.Options.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.Primitives.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Net.Http.Headers.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Owin.Cors.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Owin.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Owin.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.ComponentModel.Annotations.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Diagnostics.DiagnosticSource.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Text.Encodings.Web.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Web.Cors.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Web.Http.Cors.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Core.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authorization.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authorization.Policy.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Hosting.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Hosting.Server.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Http.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Http.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Http.Extensions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Http.Features.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Mvc.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Mvc.Core.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.ResponseCaching.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Routing.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Routing.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.WebUtilities.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.Configuration.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.DependencyInjection.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.DependencyInjection.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.FileProviders.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.Hosting.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.Logging.Abstractions.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.ObjectPool.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.Options.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extensions.Primitives.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Net.Http.Headers.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Owin.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Owin.Cors.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Diagnostics.DiagnosticSource.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Text.Encodings.Web.xml
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Web.Http.Cors.xml
