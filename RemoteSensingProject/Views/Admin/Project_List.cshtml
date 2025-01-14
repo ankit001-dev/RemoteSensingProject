@@ -63,7 +63,7 @@
                             </td>
                             <td class="text-center">
                                 <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                    <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
+                                    <li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>
                                     <li class="me-2"><a href="#"><i class="link-icon" data-feather="edit"></i></a></li>
                                     <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
                                 </ul>
@@ -249,3 +249,36 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    $(".viewProject").click(function () {
+        let id = $(this).attr("data-Id");
+        Swal.fire({
+            title: "Please wait...",
+            text: "Processing your request ...",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            timer: 100000,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+        $.ajax({
+            url: "/admin/GetProjectById",
+            type: "get",
+            data: { Id: id },
+            success: function (res) {
+                if (res.status) {
+                    console.log(res)
+                }
+            },
+            error: function (res) {
+                
+            },
+            complete: function (res) {
+
+            }
+        })
+    })
+</script>
