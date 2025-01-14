@@ -237,13 +237,44 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         #region /* Meeting */
-        public ActionResult Min_Of_Meeting()
+        public ActionResult Min_Of_Meeting(string Id="")
         {
             List<Employee_model> empList = new List<Employee_model>();
             empList = _adminServices.BindEmployee();
             ViewBag.Employee = empList;
+            Meeting_Model obj = new Meeting_Model();
+            if(!string.IsNullOrEmpty(Id))
+            {
+                obj = _adminServices.getMeetingById(Id);
+            }
+            return View(obj);
+        }
+        [HttpPost]
+        public ActionResult AddMeeting(Meeting_Model formData)
+        {
+            string path = null;
+            if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
+            {
+                var guid = Guid.NewGuid();
+                var FileExtension = Path.GetExtension(formData.Attachment.FileName);
+                var fileName = $"{guid}{FileExtension}";
+                 path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
 
-            return View();
+                formData.Attachment_Url = path;
+            }
+            bool status = _adminServices.insertMeeting(formData);
+            if (status)
+            {
+                formData.Attachment.SaveAs(Server.MapPath(path));
+            }
+            return Json(new { success = status }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult GetAllMeeting()
+        {
+            List<Meeting_Model> empList = new List<Meeting_Model>();
+            empList = _adminServices.getAllmeeting();
+            return Json(new { empList = empList },JsonRequestBehavior.AllowGet);
         }
 
         #endregion End Meeting
@@ -297,10 +328,45 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Generate_Notice()
         {
+            ViewBag.ProjectList = _adminServices.Project_List();
+
             return View();
         }
+        public ActionResult GetProjectManagerByProjectId(int? id)
+        {
+            dynamic projectManager = null;
+            if (id.HasValue)
+            {
+
+             projectManager = _adminServices.Project_List().Where(e => e.Id == id).FirstOrDefault();
+            }
+            
+            return Json(projectManager, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public ActionResult AddNotice(Generate_Notice gn)
+        {
+            string path = null;
+            if (gn.Attachment != null)
+            {
+                var fileName = Guid.NewGuid() + DateTime.Now.ToString("ddMMyyyyhhmm") + gn.Attachment.FileName;
+                path = Path.Combine("/ProjectContent/Admin/NoticeDocs", fileName);
+                gn.Attachment_Url = path;
+            }
+
+            var res = _adminServices.InsertNotice(gn);
+            if (res)
+            {
+                gn.Attachment.SaveAs(Server.MapPath(path));
+            }
+            return Json(res);
+        }
+
         public ActionResult Notice_List()
         {
+            ViewData["NoticeList"] = _adminServices.getNoticeList();
+
             return View();
         }
 

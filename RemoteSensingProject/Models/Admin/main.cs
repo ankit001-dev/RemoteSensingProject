@@ -86,12 +86,20 @@ namespace RemoteSensingProject.Models.Admin
             public string MeetingMember { get; set; }
             public string MeetingLink { get; set; }
             public string MeetingTitle { get; set; }
+            public string MeetingDate { get; set; }
             public DateTime MeetingTime { get; set; }
             public HttpPostedFileBase Attachment { get; set; }
             public string Attachment_Url { get; set;}
             public string KeyPoint { get; set; }
+            public int status { get; set; }
             public int EmployeeId { get; set; }
             public int MeetingId { get; set; }
+            public string[] meetingMemberList { get; set; }
+           
+            public string[] keyPointList { get; set; }
+            public int CompleteStatus { get; set; }
+            public string empId { get; set; }
+            public string meetingId { get; set; }
 
         }
         public class Meeting_Conclusion
@@ -105,9 +113,14 @@ namespace RemoteSensingProject.Models.Admin
         {
             public int Id { get; set; }
             public string ProjectName { get; set; }
+            public string ProjectManager { get; set; }
+            public string ProjectManagerImage { get; set; }
+            public int ProjectManagerId { get; set; }
+            public int ProjectId { get; set; }
             public HttpPostedFileBase Attachment { get; set; }
             public string Attachment_Url { get; set; }
             public string Notice { get; set; }
+            public string noticeDate { get; set; }
 
         }
         public class DashboardCount

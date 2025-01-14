@@ -10,6 +10,24 @@
         color: #444;
         line-height: 13px;
     }
+    .badge {
+        display: inline-block;
+        padding: 0.25em 0.5em;
+        font-size: 0.875em;
+        font-weight: bold;
+        color: #fff;
+        border-radius: 0.25rem;
+        text-align: center;
+    }
+
+    .badge-pending {
+        background-color: #ffc107; /* Yellow for pending */
+    }
+
+    .badge-completed {
+        background-color: #28a745; /* Green for completed */
+    }
+
 </style>
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
@@ -31,8 +49,8 @@
                             <div class="form-group">
                                 <label>Meating Type</label>
                                 <br />
-                                <input type="radio" name="meetingType" class="meetType" value="online" checked>&nbsp;Online &nbsp; &nbsp;
-                                <input type="radio" name="meetingType" class="meetType" value="offline">&nbsp;Offline &nbsp; &nbsp;
+                                <input type="radio" id="meetingType" name="MeetingType" class="meetType" value="online" checked>&nbsp;Online &nbsp; &nbsp;
+                                <input type="radio" id="meetingType" name="MeetingType" class="meetType" value="offline">&nbsp;Offline &nbsp; &nbsp;
 
                             </div>
                         </div>
@@ -41,36 +59,35 @@
                             <div class="form-group">
                                 <label>Meeting Member:</label>
                                 
-                                <select class="form-control" name="meetFor" id="meetFor" multiple>
+                                <select class="form-control" id="MeetingMember" name="MeetingMember" multiple>
                                     @if (ViewBag.Employee!=null)
                                     {
                                         foreach(var item in ViewBag.Employee as List<RemoteSensingProject.Models.Admin.main.Employee_model> )
                                         {
-                                            if(Model.meetMember==item.Id)
+                                            if(Model.Id==item.Id)
                                             {
-                                                <option selected value="@item.Id">@item.EmployeeName</option>
+                                                <option selected value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
                                             }else
                                             {
-                                                <option value="@item.Id">@item.EmployeeName</option>
+                                                <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
                                             }
                                         }
-                                    }
-                                    <option value="2">Member 4</option>
+                                     }
                                 </select>
                             </div>
                         </div>
 
-                        <div class="col-lg-4 mb-3 col-12" id="venueEle" style="display:none;">
+                        @*<div class="col-lg-4 mb-3 col-12" id="venueEle" style="display:none;">
                             <div class="form-group">
                                 <label> Venue</label>
                                 <input type="text" class="form-control" name="venue" placeholder="Enter Venue ">
                             </div>
-                        </div>
+                        </div>*@
 
                         <div class="col-lg-4 mb-3 col-12" id="meetingLinkContainer">
                             <div class="form-group">
                                 <label>Meeting Link</label>
-                                <input type="text" class="form-control" name="meetinglink" placeholder="Enter meeting link">
+                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink" placeholder="Enter meeting link">
                             </div>
                         </div>
 
@@ -80,19 +97,19 @@
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Meeting Title</label>
-                                <input type="text" class="form-control" id="meetingtitle" name="meetingtitle" placeholder="Enter Meeting Title">
+                                <input type="text" class="form-control" id="meetingtitle" name="MeetingTitle" placeholder="Enter Meeting Title">
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label> Meeting Time</label>
-                                <input type="datetime-local" class="form-control" id="meetingdatetime" name="meetingdatetime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
+                                <input type="datetime-local" class="form-control" id="meetingdatetime" name="MeetingTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label> Attachment</label>
-                                <input class="form-control" type="file" id="upload">
+                                <input class="form-control" type="file" id="Attachment" name="Attachment">
                             </div>
                         </div>
                     </div>
@@ -106,7 +123,7 @@
                             <div class="col-sm-6 col-12">
 
                                 <div class="form-group m-0">
-                                    <input type="text" class="form-control keypointDetails" placeholder="Enter Key Points">
+                                    <input type="text" class="form-control keypointDetails" id="keyPoint" name="keyPoint" placeholder="Enter Key Points">
                                 </div>
                             </div>
                             <div class="col-lg-4 mb-3 col-12">
@@ -117,6 +134,7 @@
                             </div>
                         </div>
                     </div>
+
                     <p class="text-center">
                         <button id="createMeetingBtn" type="submit" class="btn btn-primary">Create Meeting</button>
                     </p>
@@ -135,19 +153,19 @@
                 <div class="table-container">
 
                     <div class="table-responsive">
-                        <table id="dataTableExample" class="table custom-table">
+                        <table id="meetingTable" class="table custom-table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>SR.No.</th>
                                     <th>Meeting Name</th>
                                     <th>Meeting Mode</th>
-                                    <th>Venue</th>
+                                    <th>Meeting Date</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                @*<tr>
                                     <td>1</td>
                                     <td>Pardhan Mantri Awaas Yojana (PMAY-G)</td>
                                     <td>Offile</td>
@@ -162,7 +180,7 @@
                                         </ul>
                                     </td>
 
-                                </tr>
+                                </tr>*@
                             </tbody>
                         </table>
                     </div>
@@ -178,7 +196,7 @@
         $(document).ready(function () {
             $('#tbl_Member').DataTable();
             $('#basicExample').DataTable();
-            $("#meetFor").select2({
+            $("#MeetingMember").select2({
                 placeholder: "--Select Member--"
             })
             $('#select_all').on('click', function () {
@@ -197,18 +215,18 @@
             $("#add-btn").click(function () {
                 i++;
                 const inputField = `
-<div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
+          <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
             <div class="col-sm-2 col-12"><label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point ${i}</label></div>
 
             <div class="col-sm-6 col-12">
                 <div class="form-group m-0">
-                    <input type="text" class="form-control keypointDetails" placeholder="Enter Key Points">
+                    <input type="text" id="keyPoint" name="keyPoint" class="form-control keypointDetails" placeholder="Enter Key Points">
                 </div>
             </div>
             <div class="col-sm-2">
                 <a href="#" class="remove-btn" title="Remove key"><i class="fa-solid fa-trash text-danger fs-5"></i></a>
             </div>
-</div>`;
+       </div>`;
                 $("#keypoints-container").append(inputField);
             });
 
@@ -233,5 +251,121 @@
 
 
 <script>
-    
+    $(document).ready(function () {
+
+
+        $("#meetingform").on("submit", function (event) {
+            event.preventDefault();
+
+            let formData = new FormData();
+            let meetingMemberList = [];
+            let keyPointList = [];
+
+            var arrData = $(this).serializeArray();
+            arrData.forEach(function (para) {
+                if (para.name == "MeetingMember") {
+                    meetingMemberList.push(para.value)
+                } else if (para.name == "keyPoint") {
+                    keyPointList.push(para.value)
+                } else {
+                    formData.append(para.name, para.value)
+                }
+            });
+
+            if ($("#Attachment").get(0).files.length > 0) {
+                formData.append("Attachment", $("#Attachment").get(0).files[0])
+            }
+            formData.append("meetingMemberList", meetingMemberList)
+            formData.append("keyPointList", keyPointList)
+            console.log(formData);
+            debugger
+           
+
+            $.ajax({
+                url: '/Admin/AddMeeting',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Success',
+                            icon: 'success',
+                            text: 'Meeting Added Successfully!',
+                            confirmButtonText: 'ok'
+                        }).then(()=> {
+                            window.location.reload();
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            icon: 'error',
+                            text: 'Failed to added meeting',
+                            confirmButtonText: 'ok'
+                        })
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error occurred:", {
+                        status: status,
+                        error: error,
+                        response: xhr.responseText
+                    });
+                    Swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        text: 'An error occurred while adding the meeting. Please try again.',
+                        confirmButtonText: 'ok'
+                    })
+                }
+            });
+        });
+
+
+    });
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        $('#meetingTable').DataTable();
+
+        $.ajax({
+            url: '/Admin/GetAllMeeting',
+            type: 'GET',
+            success: function (res) {
+                $('#meetingTable tbody').empty();
+                var rows = '';
+                $.each(res.empList, function (index, item) {
+                    rows += `<tr>
+                    <td>${index + 1}</td>
+                    <td>${item.MeetingTitle}</td>
+                    <td>${item.MeetingType}</td>
+                    <td>${item.MeetingDate}</td>
+                <td>
+                      <span class="${item.CompleteStatus == 0 ? 'badge badge-pending' : 'badge badge-completed'}">
+                        ${item.CompleteStatus == 0 ? 'Pending' : 'Completed'}
+                      </span>
+                    </td>
+
+                    <td>
+                            <ul class="d-flex list-unstyled justify-content-evenly">
+                            <li>
+                                <a href="/admin/MeetingConclusion"><i class="fa-solid fa-circle-plus" style="color:orange" title="Add Conclusion"></i></a>
+                            </li>
+                            <li><a href="/Admin/Min_Of_Meeting?Id=${item.Id}"><i class="fa-solid fa-pencil"></i></a></li>
+                        </ul>
+                    </td>
+                    </tr>`;
+                });
+                $('#meetingTable tbody').append(rows);
+            },
+            error: function (xhr, error) {
+                console.log("An error accured", error);
+            }
+        })
+    })
 </script>
