@@ -72,6 +72,8 @@ namespace RemoteSensingProject.Models.Admin
             public HttpPostedFileBase Attachment { get; set; }
             public string Attachment_Url { get; set;}
             public string KeyPoint { get; set; }
+            public int EmployeeId { get; set; }
+            public int MeetingId { get; set; }
 
         }
         public class Meeting_Conclusion

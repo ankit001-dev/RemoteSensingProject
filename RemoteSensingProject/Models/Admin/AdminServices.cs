@@ -223,7 +223,6 @@ namespace RemoteSensingProject.Models.Admin
             DashboardCount obj = null;
             try
             {
-
                 SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "AdminDashboardCount");
@@ -256,5 +255,89 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
         #endregion /* End */
+
+        #region Meeting 
+        public List<Employee_model> BindEmployee()
+        {
+            List<Employee_model> empList = new List<Employee_model>();
+            Employee_model empObj = null;
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "BindMeetingMember");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                while (sdr.HasRows)
+                {
+                    if (sdr.Read())
+                    {
+                        empObj = new Employee_model();
+                        empObj.Id = Convert.ToInt32(sdr["id"]);
+                        empObj.EmployeeName = sdr["name"].ToString();
+                    
+                    }
+                    empList.Add(empObj);
+                }
+              
+                sdr.Close();
+           
+            }catch(Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+            return empList;
+        }
+
+        public bool insertMeeting(Meeting_Model obj)
+        {
+            SqlTransaction transaction = con.BeginTransaction();
+          
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con,transaction);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertMeeting");
+                cmd.Parameters.AddWithValue("@MeetingType", obj.MeetingType);
+                cmd.Parameters.AddWithValue("@meetingLink", obj.MeetingLink);
+                cmd.Parameters.AddWithValue("@MeetingTitle", obj.MeetingTitle);
+                cmd.Parameters.AddWithValue("@meetingTime", obj.MeetingTime);
+                cmd.Parameters.AddWithValue("@meetingDocument", obj.Attachment);
+                SqlParameter outputParam = new SqlParameter("@meetingId", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+                cmd.Parameters.Add(outputParam);
+                con.Open();
+                int i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    cmd.Parameters.AddWithValue("@action", "addMeetingMember");
+                    cmd.Parameters.AddWithValue("@employee",obj.EmployeeId);
+                    cmd.Parameters.AddWithValue("@meeting",obj.MeetingId);
+                    i = cmd.ExecuteNonQuery();
+
+                    return true;
+                }
+                else
+                {
+                   
+                    return false;
+                }
+            }catch(Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        #endregion End
     }
 }
