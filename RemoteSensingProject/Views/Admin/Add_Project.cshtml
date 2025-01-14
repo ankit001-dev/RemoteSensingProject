@@ -56,19 +56,21 @@
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Project Manager</label>
                                 <select class="form-control form-control-sm" name="pm.pm.ProjectManager">
-                                    <option>Name1</option>
-                                    <option>Name2</option>
-                                    <option>Name3</option>
-                                    <option>Name4</option>
+                                    <option value="">Select an Option</option>
+                                    @foreach(var item in ViewBag.projectManager as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+            {
+                <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
+            }
                                 </select>
                             </div>
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Sub-Ordinate</label>
                                 <select class="form-control form-control-sm" name="pm.pm.SubOrdinate" multiple>
-                                    <option>Member1</option>
-                                    <option>Member2</option>
-                                    <option>Member3</option>
-                                    <option>Member4</option>
+                                    <option value="">Select an Option</option>
+                                    @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                    {
+                                        <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
+                                    }
                                 </select>
                             </div>
                         </div>
@@ -81,7 +83,7 @@
                             </div>
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Project Document</label>
-                                <input type="file" class="form-control form-control-sm" name="" id="projectDocument">
+                                <input type="file" class="form-control form-control-sm" name="" id="projectDocumentFile">
                             </div>
                             
 
@@ -100,10 +102,10 @@
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label w-100">Stage</label>
                                 <label for="stage" class="form-label">
-                                    <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="Yes" /> <span>Yes</span>
+                                    <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="true" /> <span>Yes</span>
                                 </label>
                                 <label for="stage" class="form-label ms-2">
-                                    <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="No" checked /><span>No</span>
+                                    <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="false" checked /><span>No</span>
                                 </label>
 
 
@@ -311,7 +313,7 @@
         });
 
         let formData = new FormData(this);
-        let file = $("#projectDocument")[0].files[0];
+        let file = $("#projectDocumentFile")[0].files[0];
         if (file) {
             formData.append("pm.pm.projectDocument", file);
         }
@@ -348,7 +350,13 @@
                     })
                 }
             },
-            error: function () {
+            error: function (xhr, status, error) {
+                console.log("Error Details:");
+                console.log("XHR Object: ", xhr);
+                console.log("Status: ", status);
+                console.log("Error Message: ", error);
+                console.log("Response Text: ", xhr.responseText);
+                console.log("HTTP Status Code: ", xhr.status);
                 Swal.fire({
                     title: "Server issue !",
                     text: "Server is busy ! Try after sometime.",

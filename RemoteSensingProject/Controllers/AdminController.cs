@@ -153,10 +153,11 @@ namespace RemoteSensingProject.Controllers
         #region add project
         public ActionResult Add_Project()
         {
-
+            var data = _adminServices.SelectEmployeeRecord();
+            ViewBag.projectManager = data.Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
+            ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
             return View();
         }
-        [HttpPost]
         public ActionResult InsertProject(createProjectModel pm)
         {
             if(pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")

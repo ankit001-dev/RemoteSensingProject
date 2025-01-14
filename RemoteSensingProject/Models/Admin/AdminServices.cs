@@ -311,7 +311,7 @@ namespace RemoteSensingProject.Models.Admin
                     Status = (bool)record["status"],
                     ActiveStatus = (bool)record["activeStatus"],
                     CreationDate = Convert.ToDateTime(record["creationDate"]).ToString("dd-MM-yyyy"),
-                    Image_url = record["profile"]!=null?record["profile"].ToString():null
+                    Image_url = record["profile"]!=DBNull.Value ? record["profile"].ToString():null
 
                 });
             }
