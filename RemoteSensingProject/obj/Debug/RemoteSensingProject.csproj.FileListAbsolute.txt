@@ -1,55 +1,3 @@
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csc.exe
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csc.exe.config
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csc.rsp
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csi.exe
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csi.exe.config
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csi.rsp
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CSharp.Core.targets
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.Managed.Core.CurrentVersions.targets
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.Managed.Core.targets
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.VisualBasic.Core.targets
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Buffers.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Collections.Immutable.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Memory.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Numerics.Vectors.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Reflection.Metadata.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Runtime.CompilerServices.Unsafe.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Text.Encoding.CodePages.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Threading.Tasks.Extensions.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.exe
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.exe.config
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.rsp
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\VBCSCompiler.exe
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\VBCSCompiler.exe.config
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Newtonsoft.Json.Bson.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Buffers.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Memory.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Numerics.Vectors.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Runtime.CompilerServices.Unsafe.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Threading.Tasks.Extensions.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Newtonsoft.Json.Bson.pdb
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Newtonsoft.Json.Bson.xml
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Buffers.xml
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Memory.xml
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Numerics.Vectors.xml
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Runtime.CompilerServices.Unsafe.xml
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Threading.Tasks.Extensions.xml
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.csproj.AssemblyReference.cache
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.csproj.CoreCompileInputs.cache
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
-D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
 G:\Sahbag Project\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 G:\Sahbag Project\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 G:\Sahbag Project\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
@@ -209,6 +157,7 @@ C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\Remo
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 C:\Users\2\source\repos\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
 <<<<<<< HEAD
+<<<<<<< HEAD
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
@@ -262,6 +211,42 @@ C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
 =======
+=======
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csc.exe
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csc.exe.config
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csc.rsp
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csi.exe
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csi.exe.config
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\csi.rsp
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.Build.Tasks.CodeAnalysis.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.CSharp.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.CSharp.Scripting.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.Scripting.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CodeAnalysis.VisualBasic.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.CSharp.Core.targets
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.DiaSymReader.Native.amd64.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.DiaSymReader.Native.x86.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.Managed.Core.CurrentVersions.targets
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.Managed.Core.targets
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\Microsoft.VisualBasic.Core.targets
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Buffers.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Collections.Immutable.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Memory.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Numerics.Vectors.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Reflection.Metadata.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Runtime.CompilerServices.Unsafe.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Text.Encoding.CodePages.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\System.Threading.Tasks.Extensions.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.exe
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.exe.config
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\vbc.rsp
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\VBCSCompiler.exe
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\roslyn\VBCSCompiler.exe.config
+>>>>>>> b009cf9cee05d27a8dd2a2a356cf4f5aae2c00e7
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Abstractions.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Core.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authorization.dll
@@ -292,10 +277,16 @@ D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extens
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Net.Http.Headers.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Owin.Cors.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Owin.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Newtonsoft.Json.Bson.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Owin.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Buffers.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.ComponentModel.Annotations.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Diagnostics.DiagnosticSource.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Memory.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Numerics.Vectors.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Runtime.CompilerServices.Unsafe.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Text.Encodings.Web.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Threading.Tasks.Extensions.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Web.Cors.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Web.Http.Cors.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Abstractions.xml
@@ -326,9 +317,21 @@ D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Extens
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Net.Http.Headers.xml
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Owin.xml
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.Owin.Cors.xml
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Newtonsoft.Json.Bson.pdb
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\Newtonsoft.Json.Bson.xml
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Buffers.xml
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Diagnostics.DiagnosticSource.xml
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Memory.xml
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Numerics.Vectors.xml
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Runtime.CompilerServices.Unsafe.xml
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Text.Encodings.Web.xml
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Threading.Tasks.Extensions.xml
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\System.Web.Http.Cors.xml
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.csproj.AssemblyReference.cache
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.csproj.CoreCompileInputs.cache
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
+D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Abstractions.dll
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authentication.Core.dll
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.AspNetCore.Authorization.dll
