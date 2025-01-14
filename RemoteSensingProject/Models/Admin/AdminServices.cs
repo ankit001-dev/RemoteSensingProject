@@ -3,16 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using static RemoteSensingProject.Models.Admin.main;
+using static RemoteSensingProject.Models.LoginManager.LoginServices;
 using System.Data.SqlClient;
 using System.Data;
 using System.Security.Policy;
 using System.Runtime.InteropServices;
 using System.Web.UI.WebControls;
+using System.Web.Razor.Generator;
+using RemoteSensingProject.Models.MailService;
+using System.Web.Services.Description;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
     {
         #region Employee Category
+        mail _mail = new mail();
+
         public bool InsertDesgination(CommonResponse cr)
         {
             try
@@ -130,17 +136,87 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public bool removeDesgination(int Id)
+
+        public bool AddEmployees(Employee_model emp)
+        {
+            con.Open();
+            SqlTransaction transaction = con.BeginTransaction();
+            try
+            {
+                string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                Random rnd = new Random();
+                var userName = emp.EmployeeName.Substring(0, 5) + "@" + emp.MobileNo.ToString().Substring(0, 5);
+                string userpassword = "";
+                for (int i = 0; i < 8; i++)
+                {
+                    userpassword += validChars[rnd.Next(validChars.Length)];
+                }
+
+                cmd = new SqlCommand("sp_AdminEmployees", con,transaction);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", emp.Id != 0 ? "UpdateEmployees" : "InsertEmployees");
+                cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
+                cmd.Parameters.AddWithValue("@name", emp.EmployeeName);
+                cmd.Parameters.AddWithValue("@mobile", emp.MobileNo);
+                cmd.Parameters.AddWithValue("@email", emp.Email);
+                cmd.Parameters.AddWithValue("@gender", emp.Gender);
+                cmd.Parameters.AddWithValue("@role", emp.EmployeeRole);
+                cmd.Parameters.AddWithValue("@devision", emp.Division);
+                cmd.Parameters.AddWithValue("@designation", emp.Designation);
+                cmd.Parameters.AddWithValue("@profile", emp.Image_url);
+                cmd.Parameters.AddWithValue("@username", userName);
+                cmd.Parameters.AddWithValue("@password", userpassword);
+
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0 && emp.Id==0)
+                {
+                        string subject = "Login Credential";
+                        string message = $"<p>Your user id : <b>{userName}</b></p><br><p>Password : <b>{userpassword}</b></p>";
+                        _mail.SendMail(emp.EmployeeName, emp.Email, subject, message);
+                    transaction.Commit();
+                    return true;
+                   
+                }
+                else
+                {
+                    return false;
+                }
+               
+
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public bool RemoveEmployees(int id)
         {
             try
             {
-                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd = new SqlCommand("sp_AdminEmployees", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "deleteDesignation");
-                cmd.Parameters.AddWithValue("@id", Id);
-                con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.Parameters.AddWithValue("@action", "DeleteEmployees");
+                cmd.Parameters.AddWithValue("@id", id);
 
+                con.Open();
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
@@ -176,34 +252,17 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
-        #endregion
-        public bool AddEmployees(Employee_model emp)
+        public bool removeDesgination(int Id)
         {
             try
             {
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "InsertEmployees");
-                cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@name", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@mobile", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@email", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@gender", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@role", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@devision", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@designation", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@profile", emp.EmployeeCode);
-
+                cmd.Parameters.AddWithValue("@action", "deleteDesignation");
+                cmd.Parameters.AddWithValue("@id", Id);
                 con.Open();
-                int res = cmd.ExecuteNonQuery();
-                if (res > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return cmd.ExecuteNonQuery() > 0;
+
             }
             catch (Exception ex)
             {
@@ -216,7 +275,13 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+        #endregion
 
+
+
+
+        #region Create PRoject
+        #endregion
         #region /* Admin Dashboard Count */
         public DashboardCount DashboardCount()
         {
@@ -228,7 +293,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@action", "AdminDashboardCount");
                 con.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
-              
+
                 if (sdr.Read())
                 {
                     obj = new DashboardCount();
@@ -239,19 +304,20 @@ namespace RemoteSensingProject.Models.Admin
                     obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
                     obj.TotalMeetings = sdr["TotalMeetings"].ToString();
                 }
-                
+
                 sdr.Close();
 
                 return obj;
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
             }
             finally
             {
                 con.Close();
-               
+
             }
         }
         #endregion /* End */
