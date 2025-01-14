@@ -533,6 +533,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+       
         #endregion
 
 
@@ -660,5 +661,35 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
         #endregion End
+
+        #region notice
+
+        public bool InsertNotice(Generate_Notice gn)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_manageNotice", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "InsertNotice");
+                cmd.Parameters.AddWithValue("@projectId",gn.ProjectId);
+                cmd.Parameters.AddWithValue("@noticeDocs", gn.Attachment_Url);
+                cmd.Parameters.AddWithValue("@noticedesc", gn.Notice);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        #endregion
+
     }
 }

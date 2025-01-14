@@ -16,26 +16,26 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-sm-3">
-                        <h6 class="mb-2 text-success">Send Notice To Project Manager</h6>
-                    </div>
-                    <div class="col-sm-9">
-                        <span>Project Name. :- <label style="color: #029e9d">Project</label></span> ||
-                        <span>Project Manager :- <label style="color: #029e9d">Mr. Shuresh Kumar</label></span> ||
-                        <span>Completion Date :- <label style="color: #029e9d">12/12/2024</label></span>
-                    </div>
+                <div class="row" id="projectmanagerdesc">
+                   
                 </div>
                 <hr />
                 <form class="forms-sample">
                     <div class="row">
                         <div class="col-lg-6 mb-3">
                             <label for="upload" class="form-label">Project Name</label>
-                                <select class="form-select form-select-lg">
+                                <select class="form-select form-select-lg" id="selectProject">
                                     <option selected>--Select Project--</option>
-                                    <option value="1">Project1</option>
-                                    <option value="2">Project2</option>
-                                    <option value="3">Project3</option>
+                                    @if (ViewBag.ProjectList != null) {
+    if (ViewBag.ProjectList.Count > 0)
+                {
+                                            foreach(var item in ViewBag.ProjectList)
+                    {
+                        <option value="@item.Id">@item.ProjectTitle</option>
+                    }
+                    <option></option>
+                }
+                                    }
                                 </select>
                         </div> 
                         <div class="col-lg-6 mb-3">
@@ -61,3 +61,35 @@
 </div>
 
 
+<script>
+    $("#selectProject").on("change", function () {
+        let pId = $(this).val();
+        $.ajax({
+            url: "/admin/GetProjectManagerByProjectId",
+            type: "get",
+            data: { id: pId },
+            success: function (res) {
+                if (res != null) {
+                    $("#projectmanagerdesc").html(
+                        `
+                         <div class="col-sm-3">
+     <h6 class="mb-2 text-success">Send Notice To Project Manager</h6>
+ </div>
+ <div class="col-sm-9">
+     <span>Project Name. :- <label style="color: #029e9d">${res.ProjectTitle}</label></span> ||
+     <span>Project Manager :- <label style="color: #029e9d">${res.ProjectManager}</label></span> ||
+     <span>Completion Date :- <label style="color: #029e9d">${res.CompletionDate}</label></span>
+ </div>
+                        `
+                    )
+                }
+            }, error: function (xhr) {
+                Swal.fire({
+                    title: "error",
+                    text: "some error occured",
+                    icon:"error"
+                })
+            }
+        })
+    })
+</script>
