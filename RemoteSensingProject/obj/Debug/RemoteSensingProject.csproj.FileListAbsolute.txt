@@ -276,11 +276,7 @@ C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 0f6aa39ee040ce385e14f6743cf990611b044515
->>>>>>> e28d24bf5cb5a10e0ee0d677703f860bfee7f9d0
+
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
