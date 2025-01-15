@@ -223,7 +223,6 @@ C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\Microsoft.
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Diagnostics.DiagnosticSource.xml
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Text.Encodings.Web.xml
 C:\Users\2\Source\Repos\RemoteSensingProject\RemoteSensingProject\bin\System.Web.Http.Cors.xml
-<<<<<<< HEAD
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
@@ -276,8 +275,6 @@ C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
-=======
->>>>>>> 0f6aa39ee040ce385e14f6743cf990611b044515
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
