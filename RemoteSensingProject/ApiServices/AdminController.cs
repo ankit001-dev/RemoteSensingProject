@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using Microsoft.Ajax.Utilities;
 using RemoteSensingProject.Controllers;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
@@ -190,8 +191,6 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-
-
                 var data = _adminServices.SelectEmployeeRecord();
                 if (data != null && data.Count > 0)
                 {
@@ -389,9 +388,8 @@ namespace RemoteSensingProject.ApiServices
                         message = "Invalid request id !"
                     });
                 }
-
-                var data = _adminServices.SelectEmployeeRecord().Where(d => d.Id == Id);
-                if (data.Any())
+                var data = _adminServices.SelectEmployeeRecordById(Id);
+                if (data.Id <=0)
                 {
                     return BadRequest(new
                     {
@@ -459,6 +457,205 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        #endregion
+
+        #region Add Project
+        [HttpGet]
+        [Route("api/adminProjectList")]
+        public IHttpActionResult getProjectList()
+        {
+            try
+            {
+                var data = _adminServices.Project_List();
+                if (!data.Any())
+                {
+                    return BadRequest(new
+                    {
+                        status = false,
+                        StatusCode = 404,
+                        message = "Data not found !"
+                    });
+                }
+                return Ok(new
+                {
+                    status = true,
+                    StatusCode = 200,
+                    message = "Data found !",
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message,
+                    data = ex
+                });
+            }
+        }
+
+            [HttpPost]
+        [Route("api/adminCreateProject")]
+        public IHttpActionResult CreateProject()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formData = new Project_model
+                {
+                    ProjectTitle = request.Form.Get("ProjectTitle"),
+                    AssignDate = Convert.ToDateTime(request.Form.Get("AssignDate")),
+                    StartDate = Convert.ToDateTime(request.Form.Get("StartDate")),
+                    CompletionDate = Convert.ToDateTime(request.Form.Get("CompletionDate")),
+                    ProjectManager = request.Form.Get("ProjectManager"),
+                    ProjectBudget = Convert.ToDecimal(request.Form.Get("ProjectManager")),
+                    ProjectDescription = request.Form.Get("ProjectDescription"),
+                    projectDocumentUrl = request.Form.Get("projectDocumentUrl"),
+                    ProjectType = request.Form.Get("ProjectType"),
+                    ProjectStage = Convert.ToBoolean(request.Form.Get("ProjectStage"))
+                };
+                if (request.Form["SubOrdinate"] != null)
+                {
+                    formData.SubOrdinate = request.Form["SubOrdinate"].Split(',').Select(value => int.Parse(value.ToString())).ToArray();
+                }
+                if (formData.ProjectType.Equals("External"))
+                {
+                    formData.ContactPerson = request.Form.Get("ContactPerson");
+                    formData.ProjectDepartment = request.Form.Get("ProjectDepartment");
+                    formData.Address = request.Form.Get("Address");
+                }
+                var file = request.Files["ProjectStage"];
+                if (file != null && file.FileName != "")
+                {
+                    formData.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    formData.projectDocumentUrl = "/ProjectContent/Admin/PrjectDocs/" + formData.projectDocumentUrl;
+                }
+                // Validations
+                List<string> validationErrors = new List<string>();
+                if (string.IsNullOrWhiteSpace(formData.ProjectTitle))
+                    validationErrors.Add("Project Title is required.");
+
+                if (formData.AssignDate == null)
+                    validationErrors.Add("Assign Date is required.");
+
+                if (formData.StartDate == null)
+                    validationErrors.Add("Start Date is required.");
+
+                if (formData.CompletionDate == null)
+                    validationErrors.Add("Completion Date is required.");
+
+                if (string.IsNullOrWhiteSpace(formData.ProjectManager))
+                    validationErrors.Add("Project Manager is required.");
+
+                if (string.IsNullOrWhiteSpace(formData.ProjectBudget.ToString()))
+                    validationErrors.Add("Project Budget is required.");
+
+
+                if (!decimal.TryParse(request.Form.Get("ProjectBudget"), out decimal projectBudget))
+                    validationErrors.Add("Invalid Project Budget format.");
+
+                if (validationErrors.Any())
+                {
+                    return BadRequest(new
+                    {
+                        status = false,
+                        StatusCode = 500,
+                        message = string.Join("\n", validationErrors)
+                    });
+                }
+                else
+                {
+                    bool res = _adminServices.createApiProject(formData);
+                    return Ok(new
+                    {
+                        status = res,
+                        StatusCode = res ? 200 : 500,
+                        message = res ? "Project created successfully !" : "Some issue occured ! Please try after sometime."
+                    });
+                }
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message,
+                    data = ex
+                });
+            }
+        }
+
+        [HttpPost]
+        [Route("api/adminAddBudgets")]
+        public IHttpActionResult AddBudgets()
+        {
+            try{
+                var request = HttpContext.Current.Request;
+                // Validations
+                List<string> validationErrors = new List<string>();
+                if (string.IsNullOrWhiteSpace(request.Form.Get("Project_Id")))
+                    validationErrors.Add("Project ID is required.");
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("ProjectHeads")))
+                    validationErrors.Add("Project Heads is required.");
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("ProjectAmount")))
+                    validationErrors.Add("Project Amount is required.");
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("Miscell_amt")))
+                    validationErrors.Add("Miscellaneous Amount is required.");
+
+                if (!int.TryParse(request.Form.Get("Project_Id"), out int projectId))
+                    validationErrors.Add("Invalid Project ID format.");
+
+                if (!decimal.TryParse(request.Form.Get("ProjectAmount"), out decimal projectAmount))
+                    validationErrors.Add("Invalid Project Amount format.");
+
+                if (!decimal.TryParse(request.Form.Get("Miscell_amt"), out decimal miscellAmt))
+                    validationErrors.Add("Invalid Miscellaneous Amount format.");
+
+                var formData = new Project_Budget
+                {
+                    Project_Id = Convert.ToInt32(request.Form.Get("Project_Id")),
+                    ProjectHeads = request.Form.Get("ProjectHeads"),
+                    ProjectAmount = Convert.ToDecimal(request.Form.Get("ProjectAmount")),
+                    Miscellaneous = request.Form.Get("Miscellaneous"),
+                    Miscell_amt = Convert.ToDecimal("Miscell_amt")
+                };
+                if (validationErrors.Any())
+                {
+                    return BadRequest(new
+                    {
+                        status = false,
+                        StatusCode = 500,
+                        message = string.Join("\n", validationErrors)
+                    });
+                }
+                bool res = _adminServices.insertProjectBudgets(formData);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res ? "Project budget added successfully !" : "Some issue occured !"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message,
+                    data = ex
+                });
+            }
+        }
+
+
+        [HttpPost]
+        [Route("api/")]
         #endregion
 
         [HttpGet]
