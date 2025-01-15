@@ -315,7 +315,6 @@ namespace RemoteSensingProject.Models.Admin
                     ActiveStatus = (bool)record["activeStatus"],
                     CreationDate = Convert.ToDateTime(record["creationDate"]).ToString("dd-MM-yyyy"),
                     Image_url = record["profile"]!=DBNull.Value ? record["profile"].ToString():null
-
                 });
             }
             return empModel;
@@ -331,6 +330,9 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+
+
+
 
         public Employee_model SelectEmployeeRecordById(int id)
         {
@@ -517,7 +519,7 @@ namespace RemoteSensingProject.Models.Admin
                             ProjectTitle = rd["title"].ToString(),
                             AssignDate = Convert.ToDateTime(rd["assignDate"]),
                             StartDate = Convert.ToDateTime(rd["startDate"]),
-                            CompletionDate = Convert.ToDateTime(rd["completionDate"]).ToString("dd MMM yyyy"),
+                            CompletionDate = Convert.ToDateTime(rd["completionDate"]),
                             ProjectManager = rd["name"].ToString()
 
                         });
@@ -526,11 +528,79 @@ namespace RemoteSensingProject.Models.Admin
                 return list;
             }catch(Exception ex)
             {
-                throw ex;
+                throw ex; 
             }
             finally
             {
                 if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+
+        public createProjectModel GetProjectById(int id)
+        {
+            try
+            {
+                createProjectModel cpm = new createProjectModel();
+                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "GetProjectById");
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    List<Project_Statge> stagesList = new List<Project_Statge>();
+                    List<Project_Budget> budgetList = new List<Project_Budget>();
+                    while (rd.Read())
+                    {
+                        cpm.pm.Id = Convert.ToInt32(rd["id"]);
+                        cpm.pm.ProjectTitle = rd["title"].ToString();
+                        cpm.pm.AssignDate = Convert.ToDateTime(rd["assignDate"]);
+                        cpm.pm.CompletionDate = Convert.ToDateTime(rd["completionDate"]);
+                        cpm.pm.StartDate = Convert.ToDateTime(rd["startDate"]);
+                        cpm.pm.ProjectManager = rd["name"].ToString();
+                        cpm.pm.ProjectBudget = Convert.ToDecimal(rd["name"]);
+                        cpm.pm.ProjectDescription = rd["description"].ToString();
+                        cpm.pm.projectDocumentUrl = rd["ProjectDocument"].ToString();
+                        cpm.pm.ProjectType = rd["projectType"].ToString();
+                        cpm.pm.ProjectStage = Convert.ToBoolean(rd["stage"]);
+                        if (cpm.pm.ProjectStage)
+                        {
+                            stagesList.Add(new Project_Statge
+                            {
+                                Id = Convert.ToInt32(rd["StageId"]),
+                                KeyPoint = rd["keyPoint"].ToString(),
+                                CompletionDate = Convert.ToDateTime(rd["completeDate"]),
+                                Document_Url = rd["stageDocument"].ToString()
+                            });
+                        }
+
+                        if(cpm.pm.ProjectBudget > 0) {
+                            budgetList.Add(new Project_Budget
+                            {
+                                Id = Convert.ToInt32(rd["BudgetId"]),
+                                ProjectHeads = rd["heads"].ToString(),
+                                ProjectAmount = Convert.ToDecimal(rd["headsAmount"]),
+                                Miscellaneous = rd["miscellaneous"].ToString(),
+                                Miscell_amt = Convert.ToDecimal(rd["miscAmount"])
+                            });
+                        }
+                    }
+
+                    cpm.budgets = budgetList;
+                    cpm.stages = stagesList;
+                }
+                return cpm;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
                     con.Close();
                 cmd.Dispose();
             }

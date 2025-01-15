@@ -167,6 +167,16 @@ namespace RemoteSensingProject.Controllers
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
             return View();
         }
+
+        public ActionResult GetProjectById(int Id)
+        {
+            var data = _adminServices.GetProjectById(Id);
+            return Json(new
+            {
+                status = true,
+                data = data
+            });
+        }
         public ActionResult InsertProject(createProjectModel pm)
         {
             if(pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
