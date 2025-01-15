@@ -332,6 +332,7 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
+        [HttpGet]
         public ActionResult GetProjectManagerByProjectId(int? id)
         {
             dynamic projectManager = null;
@@ -344,6 +345,22 @@ namespace RemoteSensingProject.Controllers
             return Json(projectManager, JsonRequestBehavior.AllowGet);
 
         }
+        [HttpGet]
+        public ActionResult GetProjectById(int? id)
+        {
+            dynamic project = null;
+            if (id.HasValue)
+            {
+
+             project = _adminServices.GetProjectById((int)id);
+
+            }
+
+            return Json(project, JsonRequestBehavior.AllowGet);
+
+        }
+
+
 
         public ActionResult AddNotice(Generate_Notice gn)
         {
@@ -356,16 +373,28 @@ namespace RemoteSensingProject.Controllers
             }
 
             var res = _adminServices.InsertNotice(gn);
-            if (res)
+            if (res && gn.Attachment!=null)
             {
                 gn.Attachment.SaveAs(Server.MapPath(path));
             }
             return Json(res);
         }
 
-        public ActionResult Notice_List()
+        public ActionResult Notice_List(int? projectId)
         {
-            ViewData["NoticeList"] = _adminServices.getNoticeList();
+            dynamic noticeList = null;
+            if (projectId.HasValue)
+            {
+                noticeList= _adminServices.getNoticeList().Where(e=>e.ProjectId== projectId).ToList();
+            }
+            else
+            {
+                noticeList = _adminServices.getNoticeList();
+
+            }
+            ViewBag.ProjectList = _adminServices.Project_List();
+
+            ViewData["NoticeList"] = noticeList;
 
             return View();
         }

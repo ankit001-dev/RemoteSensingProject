@@ -20,25 +20,30 @@
 
 
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
-    <form class="forms-sample">
         <div class="row align-items-center">
             <div class="col-lg-3">
                 <h5>Notice Lists</h5>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="text" placeholder="Search by Project Manager" class="form-control">
+                <input type="text" id="searchbyProjecManager" placeholder="Search by Project Manager" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
-                <select class="form-select form-select-lg">
-                    <option selected>Search by Project</option>
-                    <option value="1">Project1</option>
-                    <option value="2">Project2</option>
-                    <option value="3">Project3</option>
+                <select class="form-select form-select-lg" id="filterByProject">
+                    <option selected value=null>--Select Project--</option>
+                    @if (ViewBag.ProjectList != null)
+                    {
+                        if (ViewBag.ProjectList.Count > 0)
+                        {
+                            foreach (var item in ViewBag.ProjectList)
+                            {
+                                <option value="@item.Id" @(int.TryParse(Request.QueryString["projectId"],out int projectId) && projectId==item.Id ? "selected":"") >@item.ProjectTitle</option>
+                            }
+                        }
+                    }
                 </select>
             </div>
-            
+
         </div>
-    </form>
 </div>
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -48,7 +53,7 @@
                     <table id="dataTableExample" class="table">
                         <thead>
                             <tr>
-                                <th class="text-center">ID</th>
+                                <th class="text-center">Sr</th>
                                 <th>Date</th>
                                 <th>Image</th>
                                 <th>Project Manager</th>
@@ -59,34 +64,35 @@
                         </thead>
                         <tbody>
                             @if (ViewData["NoticeList"] != null)
-                                        {
-                                            var count = 1;
-                                            foreach (var item in ViewData["NoticeList"] as List<RemoteSensingProject.Models.Admin.main.Generate_Notice>)
-                                            {
+                            {
+                                var count = 1;
+                                foreach (var item in ViewData["NoticeList"] as List<RemoteSensingProject.Models.Admin.main.Generate_Notice>)
+                                {
                                     <tr>
                                         <td class="text-start">@count</td>
                                         <td>@item.noticeDate</td>
-                                        <td >
+                                        <td>
                                             <img src="@item.ProjectManagerImage" class="w-75 text-center" height="100" alt="image">
                                         </td>
                                         <td> <a href="#" data-bs-toggle="modal" class="showEmployeeProfile" data-id="@item.ProjectManagerId" data-bs-target="#viewslider">@item.ProjectManager</a></td>
-                                        <td><a href="#"  data-bs-toggle="modal"  data-bs-target="#addslider">@item.ProjectName</a></td>
+                                        <td><a href="#" data-bs-toggle="modal" class="showProjectDetail" data-id="@item.ProjectId" data-bs-target="#addslider">@item.ProjectName</a></td>
                                         <td> <a href="@item.Attachment_Url" target="_blank"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a></td>
                                         <td class="text-center">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 <li class="me-2">
-                                                    <a href="/admin/View_Notice" target="_blank"><i class="link-icon" data-feather="file"></i></a>
+                                                    <a href="#" onclick="shownotice(`@item.Notice`)"><i class="link-icon" data-feather="file"></i></a>
 
                                                 </li>
+                                                <li class="me-2">
+                                                    <a href="#" data-bs-toggle="modal" onclick="updateNotice(`@item.Notice`,@item.Id,@item.ProjectId)" class="editNoticeBtn" data-bs-target="#editNoticeModal"><i class="fa-solid fa-pen-to-square"></i></a>
 
+                                                </li>
                                             </ul>
                                         </td>
                                     </tr>
+                                    count++;
                                 }
-                                count++;
                             }
-
-                            
                         </tbody>
                     </table>
                 </div>
@@ -161,17 +167,17 @@
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Title</label>
                         <br />
-                        <span>PPP Based Slum Rehabilitaiton</span>
+                        <span class="projectTitle"></span>
                     </div>
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Project Manager</label>
                         <br />
-                        <span>Leonardo Payne</span>
+                        <span class="managerName"></span>
                     </div>
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Assign Date</label>
                         <br />
-                        <span>10/12/2022</span>
+                        <span class="assignDate"></span>
                     </div>
 
                     <hr />
@@ -180,17 +186,17 @@
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Start Date</label>
                         <br />
-                        <span>12/01/2023</span>
+                        <span class="startDate"></span>
                     </div>
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Completion Date</label>
                         <br />
-                        <span>01/12/2023</span>
+                        <span class="completeDate"></span>
                     </div>
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Project Type</label>
                         <br />
-                        <span>External</span>
+                        <span class="projectType"></span>
                     </div>
 
                     <hr />
@@ -199,17 +205,17 @@
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Department Name</label>
                         <br />
-                        <span>Macreel Infosoft Pvt. Ltd.</span>
+                        <span class="departmentName"></span>
                     </div>
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Contact Person</label>
                         <br />
-                        <span>Person 1</span>
+                        <span class="contantPerson"></span>
                     </div>
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Address</label>
                         <br />
-                        <span>Noida Sector 63</span>
+                        <span class="address"></span>
                     </div>
                     <hr />
                 </div>
@@ -217,105 +223,84 @@
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Budget</label>
                         <br />
-                        <span>2.3 Cr</span>
+                        <span class="budget"></span>
                     </div>
                     <div class="col-sm-4 mb-2">
-                        <label class="form-label fw-bolder">Sub-Ordinate</label>
-                        <ul class="d-flex list-unstyled justify-content-between m-0">
-                            <li>Member 1</li>
-                            <li>Member 2</li>
-                            <li>Member 3</li>
-                        </ul>
+                        <label class="form-label fw-bolder">Sub-Ordinate</label><br />
+                        <span class="subMember"></span>
                     </div>
                     <div class="col-sm-4 mb-2">
                         <label class="form-label fw-bolder">Stage</label>
                         <br />
-                        <span>Yes</span>
+                        <span class="stageValue"></span>
                     </div>
                     <hr />
                 </div>
                 <div class="stageSection">
-                    <label class="form-label"><a href="stage1">Stage 1</a></label>
-                    <div class="row">
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Key</label>
-                            <br />
-                            <span>Project Initiation</span>
-                        </div>
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Pdf Document</label>
-                            <br />
-                            <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                        </div>
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Completion Date</label>
-                            <br />
-                            <span>02/03/2023</span>
-                        </div>
-                        <hr />
-                    </div>
-                    <label class="form-label"><a href="stage2">Stage 2</a></label>
-                    <div class="row">
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Key</label>
-                            <br />
-                            <span>Project Planing</span>
-                        </div>
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Pdf Document</label>
-                            <br />
-                            <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                        </div>
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Completion Date</label>
-                            <br />
-                            <span>01/05/2023</span>
-                        </div>
-                        <hr />
-                    </div>
-                    <label class="form-label"><a href="stage3">Stage 3</a></label>
-                    <div class="row">
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Key</label>
-                            <br />
-                            <span>Project Execution</span>
-                        </div>
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Pdf Document</label>
-                            <br />
-                            <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                        </div>
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Completion Date</label>
-                            <br />
-                            <span>01/07/2023</span>
-                        </div>
-                        <hr />
-                    </div>
-                    <label class="form-label"><a href="stage4">Stage 4</a></label>
-                    <div class="row">
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Key</label>
-                            <br />
-                            <span>Project Monitoring and controlling</span>
-                        </div>
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Pdf Document</label>
-                            <br />
-                            <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                        </div>
-                        <div class="col-sm-4 mb-2">
-                            <label class="form-label fw-bolder">Completion Date</label>
-                            <br />
-                            <span>01/09/2023</span>
-                        </div>
-                        <hr />
-                    </div>
+                    <div class="projectstageContainer"></div>
+                    <div class="projectBudgetContainer"></div>
                     <div class="row">
                         <label class="form-label fw-bolder">Description</label>
-                        <p>This project aims to develop an innovative mobile app that enhances daily productivity by integrating task management, calendar scheduling, and reminder functionalities. Targeted at busy professionals, the app will feature a user-friendly interface and customizable settings to streamline workflow and improve time management. User feedback will guide iterative improvements.</p>
+                        <p class="projectDescription"></p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="editNoticeModal" tabindex="-1" aria-labelledby="editNoticeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="editNoticeModalLabel">Update Notice</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row" id="projectmanagerdesc">
+
+                </div>
+                <hr />
+                <form class="editNoticeModal">
+                    <input type="hidden" id="noticeId" name="id" />
+                    <div class="row">
+                        <div class="col-lg-6 mb-3">
+                            <label for="upload" class="form-label">Project Name</label>
+                            <select required name="ProjectId" class="form-select form-select-lg" id="selectProject">
+                                <option selected disabled>--Select Project--</option>
+                                @if (ViewBag.ProjectList != null)
+                                {
+                                    if (ViewBag.ProjectList.Count > 0)
+                                    {
+                                        foreach (var item in ViewBag.ProjectList)
+                                        {
+                                            <option value="@item.Id">@item.ProjectTitle</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-6 mb-3">
+                            <label for="upload" class="form-label">Attachment</label>
+                            <input class="form-control" type="file" name="Attachment" id="upload">
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 mb-3">
+                            <label for="description" class="form-label"> Write Notice</label>
+                            <textarea required class="form-control form-control-sm" name="Notice" id="summernote" rows="10" placeholder=""></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Update Notice</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -367,4 +352,219 @@
             }
         })
     })
+
+    $(".showProjectDetail").click(function () {
+        showLoading(true)
+        let id = $(this).attr("data-id");
+        $.ajax({
+            url: "/admin/GetProjectById",
+            type: "get",
+            data: { id: id },
+            success: function (res) {
+                console.log(res)
+                if (res != null) {
+                    $(".projectTitle").text(res.pm.ProjectTitle || "N/A")
+                    $(".managerName").text(res.pm.ProjectManager || "N/A")
+                    $(".assignDate").text(res.pm.AssignDatestring || "N/A")
+                    $(".startDate").text(res.pm.startDateString || "N/A")
+                    $(".completeDate").text(res.pm.CompletionDatestring || "N/A")
+                    $(".projectType").text(res.pm.ProjectType || "N/A")
+                    $(".departmentName").text(res.pm.ProjectDepartment || "N/A")
+                    $(".contantPerson").text(res.pm.ContactPerson || "N/A")
+                    $(".address").text(res.pm.Address || "N/A")
+                    $(".budget").text(res.pm.ProjectBudget)
+                    $(".subMember").text(res.pm.SubOrdinate != null ? res.SubOrdinate.toString() : "N/A")
+                    $(".stageValue").text(res.pm.ProjectStage ? "Yes" : "No")
+                    $(".projectDescription").text(res.pm.ProjectDescription || "N/A")
+                    $(".projectstageContainer").empty();
+                    $(".projectBudgetContainer").empty();
+                    if (res.stages.length > 0) {
+                        res.stages.forEach(function (d, i) {
+                            $(".projectstageContainer").append(`
+     <label class="form-label"><a href="stage1">Stage ${i + 1}</a></label>
+ <div class="row">
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Key</label>
+         <br />
+         <span>${d.KeyPoint}</span>
+     </div>
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Pdf Document</label>
+         <br />
+         <a href="${d.Document_Url}"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+     </div>
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Completion Date</label>
+         <br />
+         <span>${d.CompletionDate}</span>
+     </div>
+     <hr />
+ </div>
+                            `)
+                        })
+                    }
+                    if (res.budgets.length > 0) {
+                        res.budgets.forEach(function (d, i) {
+                            $(".projectstageContainer").append(`
+    <label class="form-label"><a href="stage1">Budget Head ${i + 1}</a></label>
+<div class="row">
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Key</label>
+        <br />
+        <span>${d.ProjectHeads}</span>
+    </div>
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Amount</label>
+        <br />
+       <span>${d.ProjectAmount}</span>
+    </div>
+
+    <hr />
+</div>
+                           `)
+                        })
+                        if (res.budgets[0].Miscellaneous != null) {
+                            $(".projectstageContainer").append(`
+    <label class="form-label"><a href="stage1">Miscellaneous</a></label>
+<div class="row">
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Key</label>
+        <br />
+        <span>${res.budgets[0].Miscellaneous}</span>
+    </div>
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Amount</label>
+        <br />
+       <span>${res.budgets[0].Miscell_amt}</span>
+    </div>
+
+    <hr />
+</div>
+                           `)
+                        }
+
+                    }
+                }
+                showLoading(false)
+
+            }, error: function (xhr) {
+                Swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    })
+
+    function getProjectManagerData(id) {
+        $.ajax({
+            url: "/admin/GetProjectManagerByProjectId",
+            type: "get",
+            data: { id: id },
+            success: function (res) {
+                if (res != null) {
+                    $("#projectmanagerdesc").html(
+                        `
+                        <div class="col-sm-3">
+    <h6 class="mb-2 text-success">Send Notice To Project Manager</h6>
+</div>
+<div class="col-sm-9">
+    <span>Project Name. :- <label style="color: #029e9d">${res.ProjectTitle}</label></span> ||
+    <span>Project Manager :- <label style="color: #029e9d">${res.ProjectManager}</label></span> ||
+    <span>Completion Date :- <label style="color: #029e9d">${res.CompletionDatestring}</label></span>
+</div>
+                       `
+                    )
+                } else {
+                    $("#projectmanagerdesc").html("")
+                }
+            }, error: function (xhr) {
+                $("#projectmanagerdesc").html("")
+
+            }
+        })
+    }
+    $("#selectProject").on("change", function () {
+        let pId = $(this).val() || null;
+        getProjectManagerData(pId)
+    })
+
+    function updateNotice(data,id,pId) {
+        $("#selectProject").val(pId)
+        getProjectManagerData(pId)
+        $("#noticeId").val(id)
+        $("#summernote").summernote('code', data);
+
+    }
+
+    $(".editNoticeModal").submit(function (e) {
+        e.preventDefault();
+        let formData = new FormData();
+        let arrData = $(this).serializeArray();
+        arrData.forEach(function (d) {
+            formData.append(d.name, d.value);
+        })
+        showLoading(true)
+
+        if ($("#upload").get(0).files.length > 0) {
+            formData.append("Attachment", $("#upload").get(0).files[0])
+        }
+        $.ajax({
+            url: "/admin/AddNotice",
+            type: "post",
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (res) {
+                if (res) {
+                    Swal.fire({
+                        title: "success",
+                        text: "Notice Updated Successfully",
+                        icon: "success",
+                        didClose: () => {
+                            location.reload()
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: "error",
+                        text: "some error occured",
+                        icon: "error"
+                    })
+                }
+
+            }, error: function (xhr) {
+                Swal.fire({
+                    title: "error",
+                    text: "some error occured",
+                    icon: "error"
+                })
+            }
+        })
+    })
+
+    $("#filterByProject").change(function () {
+        let id = $(this).val();
+        if (id!=null) {
+
+            location.href = "/admin/Notice_List?projectId=" + id;
+        } else {
+            location.href = "/admin/Notice_List"
+
+        }
+    })
+
+    $('#searchbyProjecManager').on('keyup', function () {
+        let table = $("#dataTableExample").DataTable();
+        table.columns(3).search(this.value).draw();
+    });
+
+    function shownotice(data) {
+        var newTab = window.open();
+        let htmlContent = "" + data + ""
+        newTab.document.write(htmlContent);
+        newTab.document.close();
+        newTab.print();
+    }
 </script>

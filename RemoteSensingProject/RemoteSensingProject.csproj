@@ -283,8 +283,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\CkEditor\ckeditor.js" />
-    <Content Include="assets\CkEditor\contents.css" />
     <Content Include="assets\css\style.css" />
     <Content Include="assets\css\SweatAlert.min.css" />
     <Content Include="assets\datatable\datatables.css" />
@@ -323,6 +321,8 @@
     <Content Include="assets\js\tags-input.js" />
     <Content Include="assets\js\template.js" />
     <Content Include="assets\js\tinymce.js" />
+    <Content Include="assets\Summernotes\summernote.min.css" />
+    <Content Include="assets\Summernotes\summernote.min.js" />
     <Content Include="assets\vendors\apexcharts\apexcharts.min.js" />
     <Content Include="assets\vendors\bootstrap-datepicker\bootstrap-datepicker.min.css" />
     <Content Include="assets\vendors\bootstrap-datepicker\bootstrap-datepicker.min.js" />
@@ -912,6 +912,9 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include=".vs\RemoteSensingProject.csproj.dtbcache.json" />
+    <Content Include="assets\Summernotes\summernote.woff" />
+    <Content Include="assets\Summernotes\summernote.eot" />
+    <Content Include="assets\Summernotes\summernote.ttf" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
     <Content Include="Scripts\jquery-3.7.1.min.js" />
