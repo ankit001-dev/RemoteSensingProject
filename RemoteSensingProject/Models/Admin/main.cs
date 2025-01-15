@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Web;
+using System.Web.Mvc;
 
 namespace RemoteSensingProject.Models.Admin
 {
@@ -44,8 +45,11 @@ namespace RemoteSensingProject.Models.Admin
             public int Id { get; set; }
             public string ProjectTitle { get; set; }
             public DateTime AssignDate { get; set; }
+            public string AssignDatestring { get; set; }
             public DateTime StartDate { get; set; }
+            public string startDateString { get; set; }
             public DateTime CompletionDate { get; set; }
+            public string CompletionDatestring { get; set; }
             public string ProjectManager { get; set; }
             public int[] SubOrdinate { get; set; }
             public HttpPostedFileBase projectDocument { get; set; }
@@ -119,6 +123,7 @@ namespace RemoteSensingProject.Models.Admin
             public int ProjectId { get; set; }
             public HttpPostedFileBase Attachment { get; set; }
             public string Attachment_Url { get; set; }
+            [AllowHtml]
             public string Notice { get; set; }
             public string noticeDate { get; set; }
 
