@@ -702,13 +702,21 @@ namespace RemoteSensingProject.Models.Admin
             {
                 SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con, transaction);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "insertMeeting");
+         
                 cmd.Parameters.AddWithValue("@MeetingType", obj.MeetingType);
                 cmd.Parameters.AddWithValue("@meetingLink", obj.MeetingLink);
                 cmd.Parameters.AddWithValue("@MeetingTitle", obj.MeetingTitle);
                 cmd.Parameters.AddWithValue("@meetingTime", obj.MeetingTime);
                 cmd.Parameters.AddWithValue("@meetingDocument", obj.Attachment_Url);
-
+                cmd.Parameters.AddWithValue("@Id", obj.Id);
+                if (obj.Id > 0)
+                {
+                    cmd.Parameters.AddWithValue("@action", "updateMeeting");
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@action", "insertMeeting");
+                }
                 SqlParameter outputParam = new SqlParameter("@meetingId", SqlDbType.Int)
                 {
                     Direction = ParameterDirection.Output
@@ -825,62 +833,81 @@ namespace RemoteSensingProject.Models.Admin
             return _list;
         }
 
-        public Meeting_Model getMeetingById(string Id)
+        public Meeting_Model getMeetingById(string id)
         {
             Meeting_Model obj = new Meeting_Model();
-            string empLoyee = "";
-            string[] employeeId = null;
-            string empid = "";
+
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@id", Id);
-                cmd.Parameters.AddWithValue("@action", "getMeetingById");
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.Read())
-                {
-                    obj.Id = Convert.ToInt32(sdr["id"]);
-                    obj.MeetingType = sdr["meetingType"].ToString();
-                    obj.MeetingLink = sdr["meetingLink"].ToString();
-                    obj.empId = sdr["empId"].ToString();
-                    obj.meetingId = sdr["meetingId"].ToString();
-                    empLoyee = obj.empId;
-                    employeeId = empLoyee.Split(',');
-                    empid = employeeId[0];  
-                }
-                sdr.Close();
 
-                cmd.Parameters.Clear();
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@id", empid);
-                cmd.Parameters.AddWithValue("@action", "getMeetingMemberById");
-                SqlDataReader sdr2 = cmd.ExecuteReader();
-                if (sdr2.Read()) 
+                // Get meeting details
+                using (SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con))
                 {
-                    obj.MeetingMember = sdr2["name"].ToString(); 
-                }
-                sdr2.Close();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.Parameters.AddWithValue("@action", "getMeetingById");
 
-                cmd.Parameters.Clear();
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@meetingId", Id);
-                cmd.Parameters.AddWithValue("@action", "getMeetingPoint");
-                SqlDataReader sdr3 = cmd.ExecuteReader();
-                if (sdr3.Read()) 
-                {
-                    obj.KeyPoint = sdr3["keyPoint"].ToString(); 
+                    using (SqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        if (sdr.Read())
+                        {
+                            obj.Id = Convert.ToInt32(sdr["id"]);
+                            obj.MeetingType = sdr["meetingType"].ToString();
+                            obj.MeetingLink = sdr["meetingLink"].ToString();
+                            obj.MeetingTitle = sdr["meetingTitle"].ToString();
+                            obj.MeetingTime = Convert.ToDateTime(sdr["meetingTime"]);
+                            obj.empId = sdr["empId"].ToString();
+                            obj.KeyPoint = sdr["meetingKey"].ToString();
+
+                        }
+                    }
                 }
-                sdr3.Close();
+                if (!string.IsNullOrEmpty(obj.KeyPoint))
+                {
+                    if (obj.meetingKeyPoint == null)
+                    {
+                        obj.meetingKeyPoint = new List<string>();
+                    }
+                    foreach (var key in obj.KeyPoint.Split(','))
+                    {
+                        obj.meetingKeyPoint.Add(key);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(obj.empId))
+                {
+                    if (obj.empName == null && obj.memberId == null)
+                    {
+                        obj.empName = new List<string>();
+                        obj.memberId = new List<string>();
+                    }
+                    foreach (var emp in obj.empId.Split(','))
+                    {
+                        using (SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@id", emp);
+                            cmd.Parameters.AddWithValue("@action", "getMeetingMemberById");
+
+                            using (SqlDataReader sdr2 = cmd.ExecuteReader())
+                            {
+                                if (sdr2.Read())
+                                {
+                                    obj.MeetingMember = sdr2["name"].ToString();
+                                    obj.empName.Add(obj.MeetingMember);
+                                    obj.memberId.Add(emp);
+                                }
+                            }
+                        }
+                    }
+                }
+
+
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred", ex);
-            }
-            finally
-            {
-                con.Close();
+                throw new Exception("An error occurred while fetching meeting details", ex);
             }
 
             return obj;
