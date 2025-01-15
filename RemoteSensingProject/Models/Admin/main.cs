@@ -89,18 +89,19 @@ namespace RemoteSensingProject.Models.Admin
             public string MeetingDate { get; set; }
             public DateTime MeetingTime { get; set; }
             public HttpPostedFileBase Attachment { get; set; }
-            public string Attachment_Url { get; set;}
+            public string Attachment_Url { get; set; }
             public string KeyPoint { get; set; }
             public int status { get; set; }
             public int EmployeeId { get; set; }
             public int MeetingId { get; set; }
             public string[] meetingMemberList { get; set; }
-           
             public string[] keyPointList { get; set; }
             public int CompleteStatus { get; set; }
             public string empId { get; set; }
             public string meetingId { get; set; }
-
+            public List<string> empName { get; set; }
+            public List<string> meetingKeyPoint { get; set; }
+            public List<string> memberId { get; set; }
         }
         public class Meeting_Conclusion
         {
