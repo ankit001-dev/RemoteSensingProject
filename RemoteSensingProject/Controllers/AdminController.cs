@@ -168,7 +168,7 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult GetProjectById(int Id)
+        public ActionResult GetProjecDatatById(int Id)
         {
             var data = _adminServices.GetProjectById(Id);
             return Json(new
