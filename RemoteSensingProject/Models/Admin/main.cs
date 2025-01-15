@@ -45,12 +45,12 @@ namespace RemoteSensingProject.Models.Admin
             public string ProjectTitle { get; set; }
             public DateTime AssignDate { get; set; }
             public DateTime StartDate { get; set; }
-            public string CompletionDate { get; set; }
+            public DateTime CompletionDate { get; set; }
             public string ProjectManager { get; set; }
             public int[] SubOrdinate { get; set; }
             public HttpPostedFileBase projectDocument { get; set; }
             public string projectDocumentUrl { get; set; }
-            public float ProjectBudget { get; set; }
+            public decimal ProjectBudget { get; set; }
             public string ProjectType { get; set; }
             public string ProjectDescription { get; set; }
             public bool ProjectStage { get; set; }
