@@ -77,11 +77,7 @@
     </style>
 </head>
 <body>
-    @{
-
-        var user = Session["usertype"].ToString();
-
-    }
+   
     <div class="main-wrapper">
 
         <nav class="sidebar">
@@ -101,200 +97,8 @@
             </div>
             <div class="sidebar-body">
                 <ul class="nav">
-                    @if (user == "Admin")
-                    {
-                        <li class="nav-item active">
-                            <a href="/Admin/Dashboard" class="nav-link">
-                                <i class="link-icon" data-feather="box"></i>
-                                <span class="link-title">Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/Admin/Employee_Registration" class="nav-link">
-                                <i class="link-icon" data-feather="user"></i>
-                                <span class="link-title">Employee Registration</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#category" role="button" aria-expanded="false" aria-controls="category">
-                                <i class="link-icon" data-feather="list"></i>
-                                <span class="link-title">Project Section</span>
-                                <i class="link-arrow" data-feather="chevron-down"></i>
-                            </a>
-                            <div class="collapse" id="category">
-                                <ul class="nav sub-menu">
-                                    <li class="nav-item">
-                                        <a href="/Admin/Project_Request" class="nav-link">Project Request</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/Admin/Add_Project" class="nav-link">Add Project</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/Admin/Project_List" class="nav-link">Project List</a>
-                                    </li>
-
-                                    <li class="nav-item">
-                                        <a href="/Admin/All_Projects" class="nav-link">All Projects</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/Admin/Min_Of_Meeting" class="nav-link">
-                                <i class="link-icon" data-feather="pocket"></i>
-                                <span class="link-title">Create Meeting</span>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#events" role="button" aria-expanded="false" aria-controls="events">
-                                <i class="link-icon" data-feather="columns"></i>
-                                <span class="link-title">Notice</span>
-                                <i class="link-arrow" data-feather="chevron-down"></i>
-                            </a>
-                            <div class="collapse" id="events">
-                                <ul class="nav sub-menu">
-                                    <li class="nav-item">
-                                        <a href="/admin/Generate_Notice" class="nav-link">Generate Notice</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/admin/Notice_List" class="nav-link">Notice List</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#reports" role="button" aria-expanded="false" aria-controls="reports">
-                                <i class="link-icon" data-feather="file"></i>
-                                <span class="link-title">Reports</span>
-                                <i class="link-arrow" data-feather="chevron-down"></i>
-                            </a>
-                            <div class="collapse" id="reports">
-                                <ul class="nav sub-menu">
-                                    <li class="nav-item">
-                                        <a href="/Admin/Member_Report" class="nav-link">Employee Report</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/Admin/All_Projects" class="nav-link">Project Report</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/Admin/Pending_Project" class="nav-link">Pending Project Report</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/Admin/Completed_Project" class="nav-link">Completed Project Report</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="/Admin/Meeting_Report" class="nav-link">Meeting Report</a>
-                                    </li>
-
-                                     <li class="nav-item">
-                                        <a href="/Admin/Expense_Report" class="nav-link">Expenses Report</a>
-                                    </li>
-
-
-                                </ul>
-                            </div>
-                        </li>
-                        @*<li class="nav-item">
-                <a href="about-sec.html" class="nav-link">
-                    <i class="link-icon" data-feather="file"></i>
-                    <span class="link-title">About Section</span>
-                </a>
-            </li>*@
-                        @*<li class="nav-item">
-                <a href="title-section.html" class="nav-link">
-                    <i class="link-icon" data-feather="type"></i>
-                    <span class="link-title">Content Management</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="services-list.html" class="nav-link">
-                    <i class="link-icon" data-feather="columns"></i>
-                    <span class="link-title">Sevices Section</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="gallery.html" class="nav-link">
-                    <i class="link-icon" data-feather="image"></i>
-                    <span class="link-title">Gallery Section</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#events" role="button" aria-expanded="false" aria-controls="events">
-                    <i class="link-icon" data-feather="user"></i>
-                    <span class="link-title">Package Management</span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="events">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="events.html" class="nav-link">All Package Lists</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="addevents.html" class="nav-link">Add Package</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a href="testimonial.html" class="nav-link">
-                    <i class="link-icon" data-feather="pocket"></i>
-                    <span class="link-title">Testimonial Section</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="appointment.html" class="nav-link">
-                    <i class="link-icon" data-feather="table"></i>
-                    <span class="link-title">Booking Section</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="coupon.html" class="nav-link">
-                    <i class="link-icon" data-feather="gift"></i>
-                    <span class="link-title">Coupons</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#users" role="button" aria-expanded="false" aria-controls="users">
-                    <i class="link-icon" data-feather="user"></i>
-                    <span class="link-title">User Management</span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="users">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="user-manage.html" class="nav-link">All User Lists</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="adduser.html" class="nav-link">Add User</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#setting" role="button" aria-expanded="false" aria-controls="setting">
-                    <i class="link-icon" data-feather="settings"></i>
-                    <span class="link-title">Settings</span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="setting">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="company-profile.html" class="nav-link">Company Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="role-manange-list.html" class="nav-link">Role Management</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="configuration.html" class="nav-link">Configuration</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>*@
-                    }
-                    @if (user == "ProjectManager")
-                    {
+                   
+                  
                         <li class="nav-item active">
                             <a href="/Employee/Dashboard" class="nav-link">
                                 <i class="link-icon" data-feather="box"></i>
@@ -374,7 +178,7 @@
                                 </ul>
                             </div>
                         </li>
-                    }
+                    
                 </ul>
             </div>
         </nav>
@@ -404,8 +208,6 @@
                             </a>
                             <div class="dropdown-menu p-0" aria-labelledby="notificationDropdown">
 
-                                @if (user == "ProjectManager")
-                                {
                                     <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
                                         <p>6 New Notifications</p>
                                         <a class="text-muted">Clear all</a>
@@ -449,9 +251,7 @@
                                         <a href="/Employee/meetings">View all</a>
                                     </div>
 
-                                }
-                                else
-                                {
+                             
                                     <div class="px-3 py-2 d-flex align-items-center justify-content-between border-bottom">
                                         <p>6 New Notifications</p>
                                         <a class="text-muted">Clear all</a>
@@ -493,10 +293,10 @@
                                         <img class="wd-80 ht-80 rounded-circle" src="~/Employee_Images/img.png" alt>
                                     </div>
                                     <div class="text-center">
-                                        <p class="tx-16 fw-bolder">@Session["username"]</p>
+                                        <p class="tx-16 fw-bolder"></p>
                                         <p class="tx-12 text-muted">
                                             <a href="https://htmldesigntemplates.com/cdn-cgi/l/email-protection" class="__cf_email__"
-                                               data-cfemail="c1afa4adb2aeafaf81a6aca0a8adefa2aeac">[@Session["username"]]</a>
+                                               data-cfemail="c1afa4adb2aeafaf81a6aca0a8adefa2aeac"></a>
                                         </p>
                                     </div>
                                 </div>
