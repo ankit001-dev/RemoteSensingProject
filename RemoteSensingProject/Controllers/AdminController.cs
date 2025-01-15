@@ -175,7 +175,7 @@ namespace RemoteSensingProject.Controllers
             {
                 status = true,
                 data = data
-            });
+            }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult InsertProject(createProjectModel pm)
         {
