@@ -283,6 +283,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\CkEditor\ckeditor.js" />
+    <Content Include="assets\CkEditor\contents.css" />
     <Content Include="assets\css\style.css" />
     <Content Include="assets\css\SweatAlert.min.css" />
     <Content Include="assets\datatable\datatables.css" />
@@ -979,6 +981,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="obj\Debug\TempPE\" />
+    <Folder Include="ProjectContent\Admin\NoticeDocs\" />
     <Folder Include="ProjectContent\Admin\ProjectDocs\" />
     <Folder Include="ProjectContent\ProjectManager\" />
   </ItemGroup>
