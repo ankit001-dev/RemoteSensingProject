@@ -30,20 +30,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 2,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -54,7 +42,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
               "ViewState": "AgIAAKQBAAAAAAAAAIAwwNIBAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-14T13:36:31.963Z"
+              "WhenOpened": "2025-01-14T13:36:31.963Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -66,7 +55,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Employee_Registration.cshtml",
               "ViewState": "AgIAAAcBAAAAAAAAAAAAAAcBAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-14T13:33:57.356Z"
+              "WhenOpened": "2025-01-14T13:33:57.356Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -76,7 +66,7 @@
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Notice_List.cshtml",
               "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Notice_List.cshtml",
               "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Notice_List.cshtml",
-              "ViewState": "AgIAADEAAAAAAAAAAAAqwDoAAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAADQAAAAAAAAAAAAqwEQAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-01-14T13:12:07.256Z",
               "EditorCaption": ""
@@ -91,7 +81,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
               "ViewState": "AgIAABcCAAAAAAAAAAAvwGACAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T08:43:59.516Z"
+              "WhenOpened": "2025-01-13T08:43:59.516Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -103,7 +94,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Controllers\\AdminController.cs",
               "ViewState": "AgIAACEBAAAAAAAAAAAswEMBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:54:55.572Z"
+              "WhenOpened": "2025-01-13T04:54:55.572Z",
+              "EditorCaption": ""
             }
           ]
         }
