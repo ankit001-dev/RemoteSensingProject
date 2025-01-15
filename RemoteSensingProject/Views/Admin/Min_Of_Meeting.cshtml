@@ -49,8 +49,19 @@
                             <div class="form-group">
                                 <label>Meating Type</label>
                                 <br />
-                                <input type="radio" id="meetingType" name="MeetingType" class="meetType" value="online" checked>&nbsp;Online &nbsp; &nbsp;
-                                <input type="radio" id="meetingType" name="MeetingType" class="meetType" value="offline">&nbsp;Offline &nbsp; &nbsp;
+                                @if (Model.MeetingType != null)
+                                {
+                                    <input type="radio" id="meetingTypeOnline" name="MeetingType" class="meetType" value="online" @(Model.MeetingType == "online" ? "checked" : "")><span>Online</span>
+                                    <input type="radio" id="meetingTypeOffline" name="MeetingType" class="meetType" value="offline" @(Model.MeetingType == "offline" ? "checked" : "")><span>Offline</span>
+                                }
+                                else
+                                {
+                                    <input type="radio" id="meetingTypeOnline" name="MeetingType" class="meetType" value="online" checked><span>Online</span>
+                                    <input type="radio" id="meetingTypeOffline" name="MeetingType" class="meetType" value="offline"><span>Offline</span>
+                                }
+
+                                @*<input type="radio" id="meetingType" name="MeetingType" class="meetType" value="online" checked>&nbsp;Online &nbsp; &nbsp;
+                    <input type="radio" id="meetingType" name="MeetingType" class="meetType" value="offline">&nbsp;Offline &nbsp; &nbsp;*@
 
                             </div>
                         </div>
@@ -58,36 +69,39 @@
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Meeting Member:</label>
-                                
+
                                 <select class="form-control" id="MeetingMember" name="MeetingMember" multiple>
-                                    @if (ViewBag.Employee!=null)
+
+                                    @if (ViewBag.Employee != null)
                                     {
-                                        foreach(var item in ViewBag.Employee as List<RemoteSensingProject.Models.Admin.main.Employee_model> )
+                                        foreach (var item in ViewBag.Employee as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
                                         {
-                                            if(Model.Id==item.Id)
+                                            if (Model.memberId != null)
                                             {
-                                                <option selected value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
-                                            }else
+                                                if (Model.memberId.Contains(item.Id.ToString()))
+                                                {
+                                                    <option selected value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
+                                                }
+                                            }
+                                            else
                                             {
                                                 <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
                                             }
+
                                         }
-                                     }
+                                    }
                                 </select>
                             </div>
                         </div>
 
-                        @*<div class="col-lg-4 mb-3 col-12" id="venueEle" style="display:none;">
-                            <div class="form-group">
-                                <label> Venue</label>
-                                <input type="text" class="form-control" name="venue" placeholder="Enter Venue ">
-                            </div>
-                        </div>*@
-
                         <div class="col-lg-4 mb-3 col-12" id="meetingLinkContainer">
                             <div class="form-group">
                                 <label>Meeting Link</label>
-                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink" placeholder="Enter meeting link">
+                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink" value="@Model.MeetingLink" placeholder="Enter meeting link">
                             </div>
                         </div>
 
@@ -97,13 +111,13 @@
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Meeting Title</label>
-                                <input type="text" class="form-control" id="meetingtitle" name="MeetingTitle" placeholder="Enter Meeting Title">
+                                <input type="text" class="form-control" id="meetingtitle" name="MeetingTitle" value="@Model.MeetingTitle" placeholder="Enter Meeting Title">
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label> Meeting Time</label>
-                                <input type="datetime-local" class="form-control" id="meetingdatetime" name="MeetingTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
+                                <input type="datetime-local" class="form-control" id="meetingdatetime" name="MeetingTime" value="@Model.MeetingTime.ToString("yyyy-MM-ddTHH:mm")"  min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3 col-12">
@@ -114,30 +128,63 @@
                         </div>
                     </div>
 
-
                     <div id="keypoints-container">
                         <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div class="col-sm-2">
-                                <label style="display: block;font-weight:bold; margin-bottom: 5px;"> Key Point 1 </label>
-                            </div>
-                            <div class="col-sm-6 col-12">
+                            @if (Model.meetingKeyPoint != null)
+                            {
+                                int index = 1;
+                                foreach (var key in Model.meetingKeyPoint)
+                                {
+                                    <div class="col-sm-2">
+                                        <label style="display: block;font-weight:bold; margin-bottom: 5px;"> Key Point @index </label>
+                                    </div>
+                                    <div class="col-sm-6 col-12">
 
-                                <div class="form-group m-0">
-                                    <input type="text" class="form-control keypointDetails" id="keyPoint" name="keyPoint" placeholder="Enter Key Points">
+                                        <div class="form-group m-0">
+                                            <input type="text" class="form-control keypointDetails" id="keyPoint" name="keyPoint" value="@key" placeholder="Enter Key Points">
+                                        </div>
+                                    </div>
+
+                                    index++;
+                                }
+
+                            }
+                            else
+                            {
+                                <div class="col-sm-2">
+                                    <label style="display: block;font-weight:bold; margin-bottom: 5px;"> Key Point 1 </label>
                                 </div>
-                            </div>
+                                <div class="col-sm-6 col-12">
+
+                                    <div class="form-group m-0">
+                                        <input type="text" class="form-control keypointDetails" id="keyPoint" name="keyPoint" placeholder="Enter Key Points">
+                                    </div>
+                                </div>
+                            }
+
                             <div class="col-lg-4 mb-3 col-12">
                                 <label style="display: block;font-weight:bold; margin-bottom: 5px;"></label>
                                 <div class="form-group m-0">
                                     <a href="#" id="add-btn" title="Add Another Key"><i class="fa-solid fa-circle-plus"></i> Add Another Key</a>
                                 </div>
                             </div>
+
                         </div>
                     </div>
+                    <input type="hidden" class="form-control" value="@Model.Id" id="Id" name="Id"/>
+                    @if (Model.Id != null)
+                    {
+                        <p class="text-center">
+                            <button id="createMeetingBtn" type="button" class="btn btn-success">Update Meeting</button>
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="text-center">
+                            <button id="createMeetingBtn" type="button" class="btn btn-primary">Create Meeting</button>
+                        </p>
+                    }
 
-                    <p class="text-center">
-                        <button id="createMeetingBtn" type="submit" class="btn btn-primary">Create Meeting</button>
-                    </p>
 
                 </form>
 
@@ -257,29 +304,31 @@
         $("#meetingform").on("submit", function (event) {
             event.preventDefault();
 
-            let formData = new FormData();
+            let formData = {};
             let meetingMemberList = [];
             let keyPointList = [];
 
             var arrData = $(this).serializeArray();
+
             arrData.forEach(function (para) {
                 if (para.name == "MeetingMember") {
                     meetingMemberList.push(para.value)
-                } else if (para.name == "keyPoint") {
+                }
+                else if (para.name == "keyPoint") {
                     keyPointList.push(para.value)
-                } else {
-                    formData.append(para.name, para.value)
+                }
+                else {
+                    formData[para.name]= para.value
                 }
             });
 
             if ($("#Attachment").get(0).files.length > 0) {
-                formData.append("Attachment", $("#Attachment").get(0).files[0])
+                formData["Attachment"]= $("#Attachment").get(0).files[0]
             }
-            formData.append("meetingMemberList", meetingMemberList)
-            formData.append("keyPointList", keyPointList)
-            console.log(formData);
+            formData["meetingMemberList"]= meetingMemberList
+            formData["keyPointList"]=keyPointList
+
             debugger
-           
 
             $.ajax({
                 url: '/Admin/AddMeeting',
