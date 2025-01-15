@@ -24,7 +24,7 @@
                     <div class="row">
                         <div class="col-lg-6 mb-3">
                             <label for="upload" class="form-label">Project Name</label>
-                                <select name="ProjectId" class="form-select form-select-lg" id="selectProject">
+                                <select required name="ProjectId" class="form-select form-select-lg" id="selectProject">
                                     <option selected>--Select Project--</option>
                                     @if (ViewBag.ProjectList != null) {
     if (ViewBag.ProjectList.Count > 0)
@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col-lg-12 mb-3">
                             <label for="description" class="form-label"> Write Notice</label>
-                    <textarea class="form-control form-control-sm" name="Notice" id="editor" rows="10" placeholder=""></textarea>
+                    <textarea required class="form-control form-control-sm" name="Notice" id="summernote" rows="10" placeholder=""></textarea>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Send Notice</button>
@@ -91,7 +91,7 @@
  <div class="col-sm-9">
      <span>Project Name. :- <label style="color: #029e9d">${res.ProjectTitle}</label></span> ||
      <span>Project Manager :- <label style="color: #029e9d">${res.ProjectManager}</label></span> ||
-     <span>Completion Date :- <label style="color: #029e9d">${res.CompletionDate}</label></span>
+     <span>Completion Date :- <label style="color: #029e9d">${res.CompletionDatestring}</label></span>
  </div>
                         `
                     )
@@ -131,6 +131,7 @@
                         icon: "success",
                         didClose: () => {
                             document.querySelector(".noticeForm").reset();
+                            $("#summernote").summernote('code', '');
                         }
                     })
                 } else {
