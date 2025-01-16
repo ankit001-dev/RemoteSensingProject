@@ -59,6 +59,7 @@ namespace RemoteSensingProject.Models.Admin
             public string ProjectType { get; set; }
             public string ProjectDescription { get; set; }
             public bool ProjectStage { get; set; }
+            public bool ProjectStatus { get; set; }
             public string ProjectDepartment { get; set; }
             public string ContactPerson { get; set; }
             public string Address { get; set; }
