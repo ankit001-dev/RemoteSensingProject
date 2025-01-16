@@ -568,6 +568,13 @@ namespace RemoteSensingProject.ApiServices
                 else
                 {
                     bool res = _adminServices.createApiProject(formData);
+                    if (res)
+                    {
+                        if(file != null && file.FileName != "")
+                        {
+                            file.SaveAs(HttpContext.Current.Server.MapPath(formData.projectDocumentUrl));
+                        }
+                    }
                     return Ok(new
                     {
                         status = res,
@@ -654,8 +661,7 @@ namespace RemoteSensingProject.ApiServices
         }
 
 
-        [HttpPost]
-        [Route("api/")]
+        
         #endregion
 
         [HttpGet]
