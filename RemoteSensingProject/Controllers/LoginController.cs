@@ -25,6 +25,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult AuthoriseLogin(string username, string password)
         {
             Credentials cr = _loginServices.Login(username, password);
+
             if(!string.IsNullOrEmpty(cr.username)&& !string.IsNullOrEmpty(cr.password) &&cr.username.Equals(username) && cr.password.Equals(password))
             {
                 string url = "";
