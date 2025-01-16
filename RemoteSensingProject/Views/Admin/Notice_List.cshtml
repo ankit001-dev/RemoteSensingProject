@@ -363,17 +363,17 @@
             success: function (res) {
                 console.log(res)
                 if (res != null) {
+                    let subordinates=[]
                     $(".projectTitle").text(res.pm.ProjectTitle || "N/A")
                     $(".managerName").text(res.pm.ProjectManager || "N/A")
-                    $(".assignDate").text(res.pm.AssignDatestring || "N/A")
-                    $(".startDate").text(res.pm.startDateString || "N/A")
+                    $(".assignDate").text(res.pm.AssignDateString || "N/A")
+                    $(".startDate").text(res.pm.StartDateString || "N/A")
                     $(".completeDate").text(res.pm.CompletionDatestring || "N/A")
                     $(".projectType").text(res.pm.ProjectType || "N/A")
                     $(".departmentName").text(res.pm.ProjectDepartment || "N/A")
                     $(".contantPerson").text(res.pm.ContactPerson || "N/A")
                     $(".address").text(res.pm.Address || "N/A")
                     $(".budget").text(res.pm.ProjectBudget)
-                    $(".subMember").text(res.pm.SubOrdinate != null ? res.SubOrdinate.toString() : "N/A")
                     $(".stageValue").text(res.pm.ProjectStage ? "Yes" : "No")
                     $(".projectDescription").text(res.pm.ProjectDescription || "N/A")
                     $(".projectstageContainer").empty();
@@ -441,6 +441,16 @@
     <hr />
 </div>
                            `)
+                            if (res.SubOrdinate.length > 0) {
+                                res.SubOrdinate.forEach(function (e) {
+                                    subordinates.push(e.Name)
+                                })
+
+                                $(".subMember").text(subordinates.toString())
+                            } else {
+                                $(".subMember").text("N/A")
+
+                            }
                         }
 
                     }
