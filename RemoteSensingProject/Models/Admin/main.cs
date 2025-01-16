@@ -30,6 +30,7 @@ namespace RemoteSensingProject.Models.Admin
             public string DevisionName { get; set; }
             public string DesignationName { get; set; }
             public bool Status { get; set; }
+            public int meetingId { get; set; }
             public bool ActiveStatus { get; set; }
 
         }

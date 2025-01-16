@@ -1050,10 +1050,10 @@ namespace RemoteSensingProject.Models.Admin
 
         public List<Meeting_Model> getAllmeeting()
         {
-            List<Meeting_Model> _list = new List<Meeting_Model>();
-            Meeting_Model obj = null;
             try
             {
+            List<Meeting_Model> _list = new List<Meeting_Model>();
+            Meeting_Model obj = null;
                 SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getAllmeeting");
@@ -1073,6 +1073,7 @@ namespace RemoteSensingProject.Models.Admin
                 }
 
                 sdr.Close();
+            return _list;
             }
             catch (Exception ex)
             {
@@ -1082,7 +1083,6 @@ namespace RemoteSensingProject.Models.Admin
             {
                 con.Close();
             }
-            return _list;
         }
 
         public Meeting_Model getMeetingById(int id)
@@ -1116,12 +1116,17 @@ namespace RemoteSensingProject.Models.Admin
                             List<KeyPoint> keyDict = new List<KeyPoint>();
                             foreach (var key in sdr["meetingKey"].ToString().Split(','))
                             {
+                                if (!string.IsNullOrEmpty(key))
+                                {
+
                                 keyDict.Add(new KeyPoint { Id = int.Parse(key.Split(':')[0]), keyPoint = key.Split(':')[1] });
+                                }
                             }
                             obj.MeetingKeyPointDict = keyDict;
                         }
                     }
                 }
+
 
                 if (!string.IsNullOrEmpty(obj.empId))
                 {
@@ -1130,6 +1135,7 @@ namespace RemoteSensingProject.Models.Admin
                         obj.empName = new List<string>();
                         obj.memberId = new List<string>();
                     }
+                    if (obj.empId != null) { 
                     foreach (var emp in obj.empId.Split(','))
                     {
                         using (SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con))
@@ -1149,6 +1155,7 @@ namespace RemoteSensingProject.Models.Admin
                             }
                         }
                     }
+                    }
                 }
 
 
@@ -1157,8 +1164,55 @@ namespace RemoteSensingProject.Models.Admin
             {
                 throw new Exception("An error occurred while fetching meeting details", ex);
             }
-
+            finally
+            {
+                con.Close();
+                cmd.Dispose();
+            }
             return obj;
+        }
+
+        public List<Employee_model> GetMeetingMemberList(int id)
+        {
+            try {
+
+                con.Open();
+                cmd.Parameters.Clear();
+                cmd = new SqlCommand("sp_ManageMeeting", con);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@action", "getMeetingMemberById");
+                cmd.CommandType = CommandType.StoredProcedure;
+                List<Employee_model> empModel = new List<Employee_model>();
+               
+                SqlDataReader res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        empModel.Add(new Employee_model
+                        {
+                            Id = (int)res["id"],
+                            EmployeeCode = res["employeeCode"].ToString(),
+                            EmployeeName = res["name"].ToString(),
+                            EmployeeRole = res["role"].ToString(),
+                            MobileNo = (long)res["mobile"],
+                            Email = res["email"].ToString(),
+                            meetingId = (int)res["meetingId"]
+                        });
+
+                    }
+                }
+                return empModel;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+    }
+            finally
+            {
+                con.Close();
+                cmd.Dispose();
+            }
         }
 
         #endregion End
