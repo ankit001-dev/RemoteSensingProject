@@ -161,7 +161,7 @@
 
 <!--update Modal -->
 <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="updateModalLabel">Update Meeting Detail</h1>
@@ -169,14 +169,14 @@
             </div>
             <div class="modal-body">
                 <form id="updateMeetingModal" method="post" enctype="multipart/form-data">
-
+                    <input type="hidden" name="Id" id="meetingId" />
                     <div class="row gutters">
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Meeting Type</label>
                                 <br />
-                                <input type="radio" id="meetingTypeOnline" name="MeetingType" class="meetType" value="online" checked><span>Online</span>
-                                <input type="radio" id="meetingTypeOffline" name="MeetingType" class="meetType" value="offline"><span>Offline</span>
+                                <input type="radio" id="meetingTypeOnline" name="MeetingType" class="meetType" value="online" checked><span> Online </span>
+                                <input type="radio" id="meetingTypeOffline" name="MeetingType" class="meetType" value="offline"><span> Offline </span>
                             </div>
                         </div>
 
@@ -201,7 +201,7 @@
                         <div class="col-lg-4 mb-3 col-12" id="meetingLinkContainer">
                             <div class="form-group">
                                 <label>Meeting Link</label>
-                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink"  placeholder="Enter meeting link">
+                                <input type="text" class="form-control" id="updatemeetinglink" name="MeetingLink"  placeholder="Enter meeting link">
                             </div>
                         </div>
                     </div>
@@ -209,37 +209,37 @@
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Meeting Title</label>
-                                <input type="text" class="form-control" id="meetingtitle" name="MeetingTitle"  placeholder="Enter Meeting Title">
+                                <input type="text" class="form-control" id="updatemeetingtitle" name="MeetingTitle"  placeholder="Enter Meeting Title">
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Meeting Time</label>
-                                <input type="datetime-local" class="form-control" id="meetingdatetime" name="MeetingTime"  min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
+                                <input type="datetime-local" class="form-control" id="updatemeetingdatetime" name="MeetingTime"  min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Attachment</label>
-                                <input class="form-control" type="file" id="Attachment" name="Attachment">
+                                <input class="form-control" type="file" id="updateAttachment" name="Attachment">
                             </div>
                         </div>
                     </div>
 
-                    <div id="keypoints-container">
+                    <div id="updatekeypoints-container">
                         <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
                             <div class="col-sm-2">
                                 <label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point 1</label>
                             </div>
                             <div class="col-sm-6 col-12">
                                 <div class="form-group m-0">
-                                    <input type="text" class="form-control keypointDetails" id="keyPoint" name="keyPointList" placeholder="Enter Key Points">
+                                    <input type="text" class="form-control updatekeypointDetails" id="keyPoint" name="keyPointList" placeholder="Enter Key Points">
                                 </div>
                             </div>
                             <div class="col-lg-4 mb-3 col-12">
                                 <label style="display: block;font-weight:bold; margin-bottom: 5px;"></label>
                                 <div class="form-group m-0">
-                                    <a href="#" id="add-btn" title="Add Another Key"><i class="fa-solid fa-circle-plus"></i> Add Another Key</a>
+                                    <a href="#" id="addUpdate-btn" title="Add Another Key"><i class="fa-solid fa-circle-plus"></i> Add Another Key</a>
                                 </div>
                             </div>
                         </div>
@@ -304,7 +304,29 @@
             $("#keypoints-container").append(inputField);
         });
 
+         $("#addUpdate-btn").click(function () {
+     i++;
+     const inputField = `
+   <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
+     <div class="col-sm-2 col-12"><label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point ${i}</label></div>
+
+     <div class="col-sm-6 col-12">
+         <div class="form-group m-0">
+             <input type="text" id="keyPoint" name="keyPointList" class="form-control updatekeypointDetails" placeholder="Enter Key Points">
+         </div>
+     </div>
+     <div class="col-sm-2">
+         <a href="#" class="remove-btn" title="Remove key"><i class="fa-solid fa-trash text-danger fs-5"></i></a>
+     </div>
+</div>`;
+     $("#updatekeypoints-container").append(inputField);
+ });
+
         $("#keypoints-container").on("click", ".remove-btn", function () {
+            $(this).parents(".keyItems").remove();
+            i--;
+        }); 
+        $("#updatekeypoints-container").on("click", ".remove-btn", function () {
             $(this).parents(".keyItems").remove();
             i--;
         });
@@ -341,8 +363,9 @@
                 if (para.name == "MeetingMember") {
                     meetingMemberList.push(para.value);
                 }
-                else if (para.name == "keyPoint") {
-                    keyPointList.push(para.value);
+                else if (para.name == "keyPointList") {
+             keyPointList.push(para.value);
+
                 }
                 else {
                     formData.append(para.name, para.value);
@@ -353,7 +376,7 @@
                 formData.append("Attachment", $("#Attachment").get(0).files[0]);
             }
             formData.append("meetingMemberList", meetingMemberList) 
-            formData.append("keyPointList", keyPointList) 
+            formData.append("KeyPointList", keyPointList) 
             debugger
 
             $.ajax({
@@ -396,6 +419,82 @@
                 }
             });
         });
+
+
+         $("#updateMeetingModal").on("submit", function (event) {
+     event.preventDefault();
+
+     let formData = new FormData();
+     let meetingMemberList = [];
+     let keyPointList = [];
+     let KeyPointId=[]
+
+     var arrData = $(this).serializeArray();
+
+     $(".updatekeypointDetails").each(function(i,d){
+                    keyPointList.push(d.value);
+                    KeyPointId.push(Number(d.getAttribute("data-id")) ||0)
+
+     })
+
+     arrData.forEach(function (para) {
+         if (para.name == "MeetingMember") {
+             meetingMemberList.push(para.value);
+         }
+         else if (para.name == "keyPointList") {
+         }
+         else {
+             formData.append(para.name, para.value);
+         }
+     });
+     if ($("#Attachment").get(0).files.length > 0) {
+         formData.append("Attachment", $("#Attachment").get(0).files[0]);
+     }
+     formData.append("meetingMemberList", meetingMemberList) 
+     formData.append("keyPointList", keyPointList) 
+     formData.append("KeypointId", KeyPointId) 
+     debugger
+     $.ajax({
+         url: '/Admin/UpdateMeeting',
+         type: 'POST',
+         processData: false, // Important: Don't process data
+         contentType: false, // Important: Don't set content type
+         data: formData,
+         success: function (response) {
+             if (response.success) {
+                 Swal.fire({
+                     title: 'Success',
+                     icon: 'success',
+                     text: 'Meeting Updated Successfully!',
+                     confirmButtonText: 'ok'
+                 }).then(() => {
+                     window.location.reload();
+                 })
+             } else {
+                 Swal.fire({
+                     title: 'Error',
+                     icon: 'error',
+                     text: 'Failed to added meeting',
+                     confirmButtonText: 'ok'
+                 })
+             }
+         },
+         error: function (xhr, status, error) {
+             console.error("Error occurred:", {
+                 status: status,
+                 error: error,
+                 response: xhr
+             });
+             Swal.fire({
+                 title: 'Error',
+                 icon: 'error',
+                 text: 'An error occurred while adding the meeting. Please try again.',
+                 confirmButtonText: 'ok'
+             })
+         }
+     });
+ });
+
 
 
     });
@@ -445,13 +544,39 @@
     })
 
     function updateMeeting(id) {
+        $(".updateKeyItem").remove()
         $("#updateModal").modal("show")
+        $("#meetingId").val(id)
         $.ajax({
             url: '/Admin/GetMeetingById',
             type: 'get',
             data: {id:id},
             success: function (res) {
                 console.log(res)
+                if(res!=null){
+                    $("#updatemeetinglink").val(res.MeetingLink)
+                    $("#updatemeetingtitle").val(res.MeetingTitle)
+                    $("#updatemeetingdatetime").val(res.MeetingTimeString)
+                    $("#updateMeetingMember").val(res.memberId).change();
+                    if(res.MeetingKeyPointDict.length>0){
+                        res.MeetingKeyPointDict.forEach(function(d,i){
+         const inputField = `
+   <div class="row gutters keyItems updateKeyItem" style="display: flex; align-items: center; margin-bottom: 10px;">
+     <div class="col-sm-2 col-12"><label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point ${i+1}</label></div>
+
+     <div class="col-sm-6 col-12">
+         <div class="form-group m-0">
+             <input type="text" id="keyPoint" data-id="${d.Id}" name="keyPointList" value="${d.keyPoint}" class="form-control updatekeypointDetails" placeholder="Enter Key Points">
+         </div>
+     </div>
+     <div class="col-sm-2">
+         <a href="#" class="remove-btn" title="Remove key"><i class="fa-solid fa-trash text-danger fs-5"></i></a>
+     </div>
+</div>`;
+     $("#updatekeypoints-container").append(inputField);
+                        })
+                    }
+                }
             },
             error: function (xhr, status, error) {
                 console.error("Error occurred:", {

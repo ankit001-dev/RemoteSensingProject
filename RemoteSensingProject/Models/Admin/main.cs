@@ -88,7 +88,6 @@ namespace RemoteSensingProject.Models.Admin
             public HttpPostedFileBase Stage_Document { get; set; }
             public string Document_Url { get; set; }
             public DateTime CompletionDate { get; set; }
-
         }
         public class Meeting_Model
         {
@@ -99,6 +98,7 @@ namespace RemoteSensingProject.Models.Admin
             public string MeetingTitle { get; set; }
             public string MeetingDate { get; set; }
             public DateTime MeetingTime { get; set; }
+            public string MeetingTimeString { get; set; }
             public HttpPostedFileBase Attachment { get; set; }
             public string Attachment_Url { get; set; }
             public string KeyPoint { get; set; }
@@ -113,8 +113,14 @@ namespace RemoteSensingProject.Models.Admin
             public List<string> empName { get; set; }
             public List<string> meetingKeyPoint { get; set; }
             public List<string> memberId { get; set; }
-        }
+            public List<KeyPoint> MeetingKeyPointDict { get; set; }
 
+        }
+        public class KeyPoint
+        {
+            public int Id { get; set; }
+            public string keyPoint { get; set; }
+        }
         public class AddMeeting_Model
         {
             public int Id { get; set; }
@@ -129,7 +135,9 @@ namespace RemoteSensingProject.Models.Admin
             public int status { get; set; }
             public List<int> meetingMemberList { get; set; }
             public List<string> keyPointList { get; set; }
+            public List<string> KeypointId { get; set; }
             public int CompleteStatus { get; set; }
+        
         }
 
         public class Meeting_Conclusion

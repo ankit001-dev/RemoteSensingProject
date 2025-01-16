@@ -28,12 +28,13 @@ namespace RemoteSensingProject.Models.Admin
             {
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action" , cr.id > 0 ? "UpdateDesignation" : "InsertDesignation");
+                cmd.Parameters.AddWithValue("@action", cr.id > 0 ? "UpdateDesignation" : "InsertDesignation");
                 cmd.Parameters.AddWithValue("@designationName", cr.name);
                 cmd.Parameters.AddWithValue("@id", cr.id);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -51,12 +52,13 @@ namespace RemoteSensingProject.Models.Admin
             {
                 cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action" , cr.id > 0 ? "UpdateDevision" : "InsertDevision");
+                cmd.Parameters.AddWithValue("@action", cr.id > 0 ? "UpdateDevision" : "InsertDevision");
                 cmd.Parameters.AddWithValue("@devisionName", cr.name);
                 cmd.Parameters.AddWithValue("@id", cr.id);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -140,7 +142,7 @@ namespace RemoteSensingProject.Models.Admin
         }
 
 
-       
+
         public bool removeDivison(int Id)
         {
             try
@@ -234,7 +236,7 @@ namespace RemoteSensingProject.Models.Admin
                     return true;
 
                 }
-                else if(res>0)
+                else if (res > 0)
                 {
                     transaction.Commit();
                     return true;
@@ -294,34 +296,35 @@ namespace RemoteSensingProject.Models.Admin
 
         public List<Employee_model> SelectEmployeeRecord()
         {
-            try { 
-            cmd = new SqlCommand("sp_AdminEmployees", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@action", "SelectEmployees");
-            con.Open();
-            var record = cmd.ExecuteReader();
-            List<Employee_model> empModel = new List<Employee_model>();
-            while (record.Read())
+            try
             {
-                empModel.Add(new Employee_model
+                cmd = new SqlCommand("sp_AdminEmployees", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "SelectEmployees");
+                con.Open();
+                var record = cmd.ExecuteReader();
+                List<Employee_model> empModel = new List<Employee_model>();
+                while (record.Read())
                 {
-                    Id = (int)record["id"],
-                    EmployeeCode = record["employeeCode"].ToString(),
-                    EmployeeName = record["name"].ToString(),
-                    DevisionName = record["devisionName"].ToString(),
-                    Email = record["email"].ToString(),
-                    MobileNo = Convert.ToInt64(record["mobile"]),
-                    EmployeeRole = record["role"].ToString(),
-                    Division = (int)record["devision"],
-                    DesignationName = record["designationName"].ToString(),
-                    Status = (bool)record["status"],
-                    ActiveStatus = (bool)record["activeStatus"],
-                    CreationDate = Convert.ToDateTime(record["creationDate"]).ToString("dd-MM-yyyy"),
-                    Image_url = record["profile"]!=DBNull.Value ? record["profile"].ToString():null
-                });
+                    empModel.Add(new Employee_model
+                    {
+                        Id = (int)record["id"],
+                        EmployeeCode = record["employeeCode"].ToString(),
+                        EmployeeName = record["name"].ToString(),
+                        DevisionName = record["devisionName"].ToString(),
+                        Email = record["email"].ToString(),
+                        MobileNo = Convert.ToInt64(record["mobile"]),
+                        EmployeeRole = record["role"].ToString(),
+                        Division = (int)record["devision"],
+                        DesignationName = record["designationName"].ToString(),
+                        Status = (bool)record["status"],
+                        ActiveStatus = (bool)record["activeStatus"],
+                        CreationDate = Convert.ToDateTime(record["creationDate"]).ToString("dd-MM-yyyy"),
+                        Image_url = record["profile"] != DBNull.Value ? record["profile"].ToString() : null
+                    });
+                }
+                return empModel;
             }
-            return empModel;
-        }
             catch (Exception ex)
             {
                 throw ex;
@@ -346,7 +349,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@action", "SelectEmployeesById");
                 cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
-                Employee_model empModel=new Employee_model();
+                Employee_model empModel = new Employee_model();
                 var record = cmd.ExecuteReader();
                 while (record.Read())
                 {
@@ -444,11 +447,11 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
                 int i = cmd.ExecuteNonQuery();
                 int projectId = Convert.ToInt32(cmd.Parameters["@project_Id"].Value != DBNull.Value ? cmd.Parameters["@project_Id"].Value : 0);
-                if(i > 0)
+                if (i > 0)
                 {
-                    if(pm.budgets != null && pm.budgets.Count > 0)
+                    if (pm.budgets != null && pm.budgets.Count > 0)
                     {
-                        foreach(var item in pm.budgets)
+                        foreach (var item in pm.budgets)
                         {
                             cmd = new SqlCommand("sp_adminAddproject", con, tran);
                             cmd.CommandType = CommandType.StoredProcedure;
@@ -461,9 +464,9 @@ namespace RemoteSensingProject.Models.Admin
                             i += cmd.ExecuteNonQuery();
                         }
                     }
-                    if(pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
+                    if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
                     {
-                        foreach(var item in pm.stages)
+                        foreach (var item in pm.stages)
                         {
                             cmd = new SqlCommand("sp_adminAddproject", con, tran);
                             cmd.CommandType = CommandType.StoredProcedure;
@@ -490,7 +493,7 @@ namespace RemoteSensingProject.Models.Admin
 
                     if (pm.pm.SubOrdinate.Length > 0)
                     {
-                        foreach(var item in pm.pm.SubOrdinate)
+                        foreach (var item in pm.pm.SubOrdinate)
                         {
                             cmd = new SqlCommand("sp_adminAddproject", con, tran);
                             cmd.CommandType = CommandType.StoredProcedure;
@@ -504,7 +507,8 @@ namespace RemoteSensingProject.Models.Admin
                 }
                 tran.Commit();
                 return i > 0;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 tran.Rollback();
                 return false;
@@ -552,9 +556,10 @@ namespace RemoteSensingProject.Models.Admin
                     }
                 }
                 return list;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                throw ex; 
+                throw ex;
             }
             finally
             {
@@ -582,7 +587,7 @@ namespace RemoteSensingProject.Models.Admin
                 Project_model pm = new Project_model();
                 if (rd.HasRows)
                 {
-                    
+
                     while (rd.Read())
                     {
                         pm.Id = Convert.ToInt32(rd["id"]);
@@ -638,7 +643,7 @@ namespace RemoteSensingProject.Models.Admin
                                 });
                             }
                         }
-                       
+
                     }
                 }
                 cpm.pm = pm;
@@ -647,7 +652,7 @@ namespace RemoteSensingProject.Models.Admin
                 cpm.stages = stagesList;
                 return cpm;
             }
-                    catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -712,7 +717,8 @@ namespace RemoteSensingProject.Models.Admin
                 }
                 tran.Commit();
                 return i > 0;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 tran.Rollback();
                 throw ex;
@@ -725,7 +731,8 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public bool insertProjectStages(Project_Statge stg) {
+        public bool insertProjectStages(Project_Statge stg)
+        {
             try
             {
                 cmd = new SqlCommand("sp_adminAddproject", con);
@@ -737,7 +744,7 @@ namespace RemoteSensingProject.Models.Admin
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -839,9 +846,10 @@ namespace RemoteSensingProject.Models.Admin
 
                 sdr.Close();
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                throw new Exception("An error accured",ex);
+                throw new Exception("An error accured", ex);
             }
             finally
             {
@@ -859,7 +867,7 @@ namespace RemoteSensingProject.Models.Admin
             {
                 SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con, transaction);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-         
+
                 cmd.Parameters.AddWithValue("@MeetingType", obj.MeetingType);
                 cmd.Parameters.AddWithValue("@meetingLink", obj.MeetingLink);
                 cmd.Parameters.AddWithValue("@MeetingTitle", obj.MeetingTitle);
@@ -888,22 +896,22 @@ namespace RemoteSensingProject.Models.Admin
 
                     if (obj.meetingMemberList != null)
                     {
-                      
 
-                            foreach (var individualMember in obj.meetingMemberList)
+
+                        foreach (var individualMember in obj.meetingMemberList)
+                        {
+
+                            if (individualMember != 0)
                             {
-                                 
-                                if (individualMember != 0)
-                                {
-                                    cmd.Parameters.Clear();
-                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                                    cmd.Parameters.AddWithValue("@action", "addMeetingMember");
-                                    cmd.Parameters.AddWithValue("@employee", individualMember);
-                                    cmd.Parameters.AddWithValue("@meeting", meetingId);
-                                     i = cmd.ExecuteNonQuery();
-                                }
-                              
+                                cmd.Parameters.Clear();
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@action", "addMeetingMember");
+                                cmd.Parameters.AddWithValue("@employee", individualMember);
+                                cmd.Parameters.AddWithValue("@meeting", meetingId);
+                                i = cmd.ExecuteNonQuery();
                             }
+
+                        }
                         if (i <= 0)
                         {
                             transaction.Rollback();
@@ -924,12 +932,12 @@ namespace RemoteSensingProject.Models.Admin
                                 cmd.Parameters.AddWithValue("@meeting", meetingId);
                                 i = cmd.ExecuteNonQuery();
                             }
-                                if (i <= 0)
-                                {
-                                    transaction.Rollback();
-                                    return false;
-                                }
-                        
+                            if (i <= 0)
+                            {
+                                transaction.Rollback();
+                                return false;
+                            }
+
                         }
                     }
 
@@ -952,19 +960,107 @@ namespace RemoteSensingProject.Models.Admin
                 con.Close();
             }
         }
+
+        public bool UpdateMeeting(AddMeeting_Model obj)
+        {
+            con.Open();
+            SqlTransaction transaction = con.BeginTransaction();
+
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con, transaction);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                cmd.Parameters.AddWithValue("@MeetingType", obj.MeetingType);
+                cmd.Parameters.AddWithValue("@meetingLink", obj.MeetingLink);
+                cmd.Parameters.AddWithValue("@MeetingTitle", obj.MeetingTitle);
+                cmd.Parameters.AddWithValue("@meetingTime", obj.MeetingTime);
+                cmd.Parameters.AddWithValue("@meetingDocument", obj.Attachment_Url);
+                cmd.Parameters.AddWithValue("@Id", obj.Id);
+                cmd.Parameters.AddWithValue("@action", "updateMeeting");
+
+                int i = cmd.ExecuteNonQuery();
+
+                if (i > 0)
+                {
+                    if (obj.meetingMemberList != null)
+                    {
+
+
+                        foreach (var individualMember in obj.meetingMemberList)
+                        {
+
+                            if (individualMember != 0)
+                            {
+                                cmd.Parameters.Clear();
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@action", "updateMember");
+                                cmd.Parameters.AddWithValue("@employee", individualMember);
+                                cmd.Parameters.AddWithValue("@meeting", obj.Id);
+                                i = cmd.ExecuteNonQuery();
+                            }
+
+                        }
+                        if (i <= 0)
+                        {
+                            transaction.Rollback();
+                            return false;
+                        }
+                    }
+
+
+                    for (var j = 0; j < obj.KeypointId[0].ToString().Split(',').Length; j++)
+                    {
+                        if (!string.IsNullOrEmpty(obj.KeypointId[0].ToString().Split(',')[j]) && !string.IsNullOrEmpty(obj.keyPointList[0].ToString().Split(',')[j]))
+                        {
+                            cmd.Parameters.Clear();
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@action", "updateKeyPoint");
+                            cmd.Parameters.AddWithValue("@keyPoint", obj.keyPointList[0].ToString().Split(',')[j]);
+                            cmd.Parameters.AddWithValue("@id", obj.KeypointId[0].ToString().Split(',')[j]);
+                            cmd.Parameters.AddWithValue("@meeting", obj.Id);
+                            i = cmd.ExecuteNonQuery();
+                        }
+                    }
+                    if (i <= 0)
+                    {
+                        transaction.Rollback();
+                        return false;
+                    }
+
+
+                    transaction.Commit();
+                    return true;
+                }
+                else
+                {
+                    transaction.Rollback();
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception("An error occurred while inserting the meeting", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
         public List<Meeting_Model> getAllmeeting()
         {
             List<Meeting_Model> _list = new List<Meeting_Model>();
             Meeting_Model obj = null;
             try
             {
-
                 SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getAllmeeting");
                 con.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
-             
+
                 while (sdr.Read())
                 {
                     obj = new Meeting_Model();
@@ -973,12 +1069,13 @@ namespace RemoteSensingProject.Models.Admin
                     obj.MeetingType = sdr["meetingType"].ToString();
                     obj.MeetingLink = sdr["meetingLink"].ToString();
                     obj.MeetingTitle = sdr["MeetingTitle"].ToString();
-                    obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy"); 
+                    obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
                     _list.Add(obj);
                 }
-           
+
                 sdr.Close();
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
             }
@@ -992,11 +1089,9 @@ namespace RemoteSensingProject.Models.Admin
         public Meeting_Model getMeetingById(int id)
         {
             Meeting_Model obj = new Meeting_Model();
-
             try
             {
                 con.Open();
-
                 // Get meeting details
                 using (SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con))
                 {
@@ -1013,21 +1108,19 @@ namespace RemoteSensingProject.Models.Admin
                             obj.MeetingLink = sdr["meetingLink"].ToString();
                             obj.MeetingTitle = sdr["meetingTitle"].ToString();
                             obj.MeetingTime = Convert.ToDateTime(sdr["meetingTime"]);
+                            obj.MeetingTimeString = Convert.ToDateTime(sdr["meetingTime"]).ToString("yyyy-MM-ddTHH:mm");
                             obj.empId = sdr["empId"].ToString();
-                            obj.KeyPoint = sdr["meetingKey"].ToString();
 
                         }
-                    }
-                }
-                if (!string.IsNullOrEmpty(obj.KeyPoint))
-                {
-                    if (obj.meetingKeyPoint == null)
-                    {
-                        obj.meetingKeyPoint = new List<string>();
-                    }
-                    foreach (var key in obj.KeyPoint.Split(','))
-                    {
-                        obj.meetingKeyPoint.Add(key);
+                        if (sdr["meetingKey"] != null)
+                        {
+                            List<KeyPoint> keyDict = new List<KeyPoint>();
+                            foreach (var key in sdr["meetingKey"].ToString().Split(','))
+                            {
+                                keyDict.Add(new KeyPoint { Id = int.Parse(key.Split(':')[0]), keyPoint = key.Split(':')[1] });
+                            }
+                            obj.MeetingKeyPointDict = keyDict;
+                        }
                     }
                 }
 
@@ -1079,9 +1172,9 @@ namespace RemoteSensingProject.Models.Admin
             {
                 cmd = new SqlCommand("sp_manageNotice", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", gn.Id>0?"UpdateNotice":"InsertNotice");
-                cmd.Parameters.AddWithValue("@projectId",gn.ProjectId);
-                cmd.Parameters.AddWithValue("@id",gn.Id);
+                cmd.Parameters.AddWithValue("@action", gn.Id > 0 ? "UpdateNotice" : "InsertNotice");
+                cmd.Parameters.AddWithValue("@projectId", gn.ProjectId);
+                cmd.Parameters.AddWithValue("@id", gn.Id);
                 cmd.Parameters.AddWithValue("@noticeDocs", gn.Attachment_Url);
                 cmd.Parameters.AddWithValue("@noticedesc", gn.Notice);
                 con.Open();
@@ -1108,7 +1201,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@action", "SelectNotice");
                 con.Open();
                 List<Generate_Notice> noticeList = new List<Generate_Notice>();
-                var  res=cmd.ExecuteReader() ;
+                var res = cmd.ExecuteReader();
                 while (res.Read())
                 {
                     noticeList.Add(new Generate_Notice
