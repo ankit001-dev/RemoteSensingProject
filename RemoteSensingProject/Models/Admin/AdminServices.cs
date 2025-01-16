@@ -844,7 +844,7 @@ namespace RemoteSensingProject.Models.Admin
             return empList;
         }
 
-        public bool insertMeeting(Meeting_Model obj)
+        public bool insertMeeting(AddMeeting_Model obj)
         {
             con.Open();
             SqlTransaction transaction = con.BeginTransaction();
@@ -882,25 +882,26 @@ namespace RemoteSensingProject.Models.Admin
 
                     if (obj.meetingMemberList != null)
                     {
-                        foreach (var member in obj.meetingMemberList)
-                        {
-                            var members = member.Split(',');
+                      
 
-                            foreach (var individualMember in members)
+                            foreach (var individualMember in obj.meetingMemberList)
                             {
-                                cmd.Parameters.Clear();
-                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                                cmd.Parameters.AddWithValue("@action", "addMeetingMember");
-                                cmd.Parameters.AddWithValue("@employee", individualMember); 
-                                cmd.Parameters.AddWithValue("@meeting", meetingId);
-
-                                int i2 = cmd.ExecuteNonQuery();
-                                if (i2 <= 0)
+                                 
+                                if (individualMember != 0)
                                 {
-                                    transaction.Rollback();
-                                    return false;
+                                    cmd.Parameters.Clear();
+                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                    cmd.Parameters.AddWithValue("@action", "addMeetingMember");
+                                    cmd.Parameters.AddWithValue("@employee", individualMember);
+                                    cmd.Parameters.AddWithValue("@meeting", meetingId);
+                                     i = cmd.ExecuteNonQuery();
                                 }
+                              
                             }
+                        if (i <= 0)
+                        {
+                            transaction.Rollback();
+                            return false;
                         }
                     }
 
@@ -908,22 +909,20 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         foreach (var key in obj.keyPointList)
                         {
-                            var keys=key.Split(','); 
-                            foreach(var individualKey in keys)
+                            if (!string.IsNullOrEmpty(key))
                             {
                                 cmd.Parameters.Clear();
                                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                                 cmd.Parameters.AddWithValue("@action", "addMeetingKeyPoint");
-                                cmd.Parameters.AddWithValue("@keyPoint", individualKey);
+                                cmd.Parameters.AddWithValue("@keyPoint", key);
                                 cmd.Parameters.AddWithValue("@meeting", meetingId);
-
-                                int i3 = cmd.ExecuteNonQuery();
-                                if (i3 <= 0)
+                                i = cmd.ExecuteNonQuery();
+                            }
+                                if (i <= 0)
                                 {
                                     transaction.Rollback();
                                     return false;
                                 }
-                            }
                         
                         }
                     }
@@ -984,7 +983,7 @@ namespace RemoteSensingProject.Models.Admin
             return _list;
         }
 
-        public Meeting_Model getMeetingById(string id)
+        public Meeting_Model getMeetingById(int id)
         {
             Meeting_Model obj = new Meeting_Model();
 

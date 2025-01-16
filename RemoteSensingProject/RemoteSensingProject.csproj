@@ -278,6 +278,7 @@
     <Compile Include="Models\LoginManager\main.cs" />
     <Compile Include="Models\MailService\mail.cs" />
     <Compile Include="Models\ProjectManager\main.cs" />
+    <Compile Include="Models\ProjectManager\ManagerService.cs" />
     <Compile Include="Models\RoleAuthorization.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
