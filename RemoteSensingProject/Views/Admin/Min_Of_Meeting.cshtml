@@ -64,7 +64,7 @@
                                         {
                                             if (item != null)
                                             {
-                                            <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
+                                                <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
                                             }
                                         }
                                     }
@@ -75,7 +75,13 @@
                         <div class="col-lg-4 mb-3 col-12" id="meetingLinkContainer">
                             <div class="form-group">
                                 <label>Meeting Link</label>
-                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink" value="" placeholder="Enter meeting link">
+                                <input type="url" class="form-control" id="meetinglink" name="MeetingLink" placeholder="Enter meeting link">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3 col-12" id="venueEle" style="display: none;">
+                            <div class="form-group">
+                                <label>Meeting Address</label>
+                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink" placeholder="Enter meeting address">
                             </div>
                         </div>
                     </div>
@@ -200,9 +206,16 @@
                         <div class="col-lg-4 mb-3 col-12" id="meetingLinkContainer">
                             <div class="form-group">
                                 <label>Meeting Link</label>
-                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink"  placeholder="Enter meeting link">
+                                <input type="url" class="form-control" id="meetinglink" name="MeetingLink"  placeholder="Enter meeting link">
                             </div>
                         </div>
+                        <div class="col-lg-4 mb-3 col-12" id="venueEle" style="display: none;">
+                            <div class="form-group">
+                                <label>Meeting Address</label>
+                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink"  placeholder="Enter meeting address">
+                            </div>
+                        </div>
+
                     </div>
                     <div class="row gutters">
                         <div class="col-lg-4 mb-3 col-12">
@@ -309,8 +322,10 @@
         });
 
         $(".meetType").change(function () {
-            $("#venueEle").toggle($(this).val() === "Offline");
-            $("#meetingLinkContainer").toggle($(this).val() == "Online");
+            debugger;
+            const selectedValue = $(this).val().trim().toLowerCase();
+            $("#venueEle").toggle(selectedValue === "offline");
+            $("#meetingLinkContainer").toggle(selectedValue === "online");
         });
 
         $("#meetFor").change(function () {
