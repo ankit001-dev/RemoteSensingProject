@@ -542,12 +542,8 @@ namespace RemoteSensingProject.Models.Admin
                             ProjectDescription = rd["description"].ToString(),
                             projectDocumentUrl = rd["ProjectDocument"].ToString(),
                             ProjectType = rd["projectType"].ToString(),
-                            ProjectStage = Convert.ToBoolean(rd["stage"])
-                        
-                    });
-                            StartDate = Convert.ToDateTime(rd["startDate"]),
-                            CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
-                            ProjectManager = rd["name"].ToString()
+                            ProjectStage = Convert.ToBoolean(rd["stage"]),
+                            CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy")
 
                         });
                     }
@@ -571,19 +567,19 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 createProjectModel cpm = new createProjectModel();
-                Project_model pmodel = new Project_model();
                 cmd = new SqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetProjectById");
                 cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
+                List<Project_Statge> stagesList = new List<Project_Statge>();
+                List<Project_Budget> budgetList = new List<Project_Budget>();
+                List<Project_Subordination> subList = new List<Project_Subordination>();
+                Project_model pm = new Project_model();
                 if (rd.HasRows)
                 {
-                    List<Project_Statge> stagesList = new List<Project_Statge>();
-                    List<Project_Budget> budgetList = new List<Project_Budget>();
-                    List<Project_Subordination> subList = new List<Project_Subordination>();
-                    Project_model pm = new Project_model();
+                    
                     while (rd.Read())
                     {
                         pm.Id = Convert.ToInt32(rd["id"]);
@@ -604,25 +600,6 @@ namespace RemoteSensingProject.Models.Admin
                             pm.ContactPerson = rd["contactPerson"].ToString();
                         }
                         if (pm.ProjectStage)
-                     pmodel.Id = Convert.ToInt32(rd["id"] != null ? rd["id"]:0);
-                     pmodel.ProjectTitle = rd["title"].ToString();
-                     pmodel.AssignDatestring = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy");
-                     pmodel.CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy");
-                     pmodel.startDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy");
-                     pmodel.ProjectManager = rd["managerName"].ToString();
-                     pmodel.ProjectBudget = Convert.ToDecimal(rd["budget"]);
-                     pmodel.ProjectDescription = rd["description"].ToString();
-                     pmodel.projectDocumentUrl = rd["ProjectDocument"].ToString();
-                     pmodel.ProjectType = rd["projectType"].ToString();
-                        if (rd["projectType"].ToString().ToLower() == "external")
-                        {
-                            pmodel.ProjectDepartment = rd["departmentName"].ToString();
-                            pmodel.ContactPerson = rd["contactPerson"].ToString();
-                            pmodel.SubOrdinate = rd["subMember"] != null ? rd["subMember"].ToString().Split(',').Select(e => int.Parse(e)).ToArray() : new int[0];
-                        }
-                     pmodel.Address = rd["address"].ToString();
-                     pmodel.ProjectStage = Convert.ToBoolean(rd["stage"]);
-                        if ((bool)rd["stage"] && rd["stageId"]!=null)
                         {
                             stagesList.Add(new Project_Statge
                             {
@@ -641,27 +618,30 @@ namespace RemoteSensingProject.Models.Admin
                                 EmpCode = rd["subCode"].ToString()
                             });
                         }
-                        if(pm.ProjectBudget > 0) {
-
-                        if (rd["budgetId"]!=null) {
-                            budgetList.Add(new Project_Budget
+                        if (pm.ProjectBudget > 0)
+                        {
+                            if (rd["budgetId"] != null)
                             {
-                                Id = Convert.ToInt32(rd["BudgetId"]),
-                                ProjectHeads = rd["heads"].ToString(),
-                                ProjectAmount = Convert.ToDecimal(rd["headsAmount"]),
-                                Miscellaneous = rd["miscellaneous"].ToString(),
-                                Miscell_amt = Convert.ToDecimal(rd["miscAmount"])
-                            });
+                                budgetList.Add(new Project_Budget
+                                {
+                                    Id = Convert.ToInt32(rd["BudgetId"]),
+                                    ProjectHeads = rd["heads"].ToString(),
+                                    ProjectAmount = Convert.ToDecimal(rd["headsAmount"]),
+                                    Miscellaneous = rd["miscellaneous"].ToString(),
+                                    Miscell_amt = Convert.ToDecimal(rd["miscAmount"])
+                                });
+                            }
                         }
+                       
                     }
-                    cpm.pm = pm;
-                    cpm.SubOrdinate = subList;
-                    cpm.pm = pmodel;
-                    cpm.budgets = budgetList;
-                    cpm.stages = stagesList;
                 }
+                cpm.pm = pm;
+                cpm.SubOrdinate = subList;
+                cpm.budgets = budgetList;
+                cpm.stages = stagesList;
                 return cpm;
-            }catch(Exception ex)
+            }
+                    catch(Exception ex)
             {
                 throw ex;
             }
@@ -864,7 +844,7 @@ namespace RemoteSensingProject.Models.Admin
             return empList;
         }
 
-        public bool insertMeeting(Meeting_Model obj)
+        public bool insertMeeting(AddMeeting_Model obj)
         {
             con.Open();
             SqlTransaction transaction = con.BeginTransaction();
@@ -902,25 +882,26 @@ namespace RemoteSensingProject.Models.Admin
 
                     if (obj.meetingMemberList != null)
                     {
-                        foreach (var member in obj.meetingMemberList)
-                        {
-                            var members = member.Split(',');
+                      
 
-                            foreach (var individualMember in members)
+                            foreach (var individualMember in obj.meetingMemberList)
                             {
-                                cmd.Parameters.Clear();
-                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                                cmd.Parameters.AddWithValue("@action", "addMeetingMember");
-                                cmd.Parameters.AddWithValue("@employee", individualMember); 
-                                cmd.Parameters.AddWithValue("@meeting", meetingId);
-
-                                int i2 = cmd.ExecuteNonQuery();
-                                if (i2 <= 0)
+                                 
+                                if (individualMember != 0)
                                 {
-                                    transaction.Rollback();
-                                    return false;
+                                    cmd.Parameters.Clear();
+                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                    cmd.Parameters.AddWithValue("@action", "addMeetingMember");
+                                    cmd.Parameters.AddWithValue("@employee", individualMember);
+                                    cmd.Parameters.AddWithValue("@meeting", meetingId);
+                                     i = cmd.ExecuteNonQuery();
                                 }
+                              
                             }
+                        if (i <= 0)
+                        {
+                            transaction.Rollback();
+                            return false;
                         }
                     }
 
@@ -928,22 +909,20 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         foreach (var key in obj.keyPointList)
                         {
-                            var keys=key.Split(','); 
-                            foreach(var individualKey in keys)
+                            if (!string.IsNullOrEmpty(key))
                             {
                                 cmd.Parameters.Clear();
                                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                                 cmd.Parameters.AddWithValue("@action", "addMeetingKeyPoint");
-                                cmd.Parameters.AddWithValue("@keyPoint", individualKey);
+                                cmd.Parameters.AddWithValue("@keyPoint", key);
                                 cmd.Parameters.AddWithValue("@meeting", meetingId);
-
-                                int i3 = cmd.ExecuteNonQuery();
-                                if (i3 <= 0)
+                                i = cmd.ExecuteNonQuery();
+                            }
+                                if (i <= 0)
                                 {
                                     transaction.Rollback();
                                     return false;
                                 }
-                            }
                         
                         }
                     }
@@ -1004,7 +983,7 @@ namespace RemoteSensingProject.Models.Admin
             return _list;
         }
 
-        public Meeting_Model getMeetingById(string id)
+        public Meeting_Model getMeetingById(int id)
         {
             Meeting_Model obj = new Meeting_Model();
 

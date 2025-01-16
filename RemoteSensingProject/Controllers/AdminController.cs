@@ -168,7 +168,7 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult GetProjectById(int Id)
+        public ActionResult GetProjecDatatById(int Id)
         {
             var data = _adminServices.GetProjectById(Id);
             return Json(new
@@ -237,20 +237,14 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         #region /* Meeting */
-        public ActionResult Min_Of_Meeting(string Id="")
+        public ActionResult Min_Of_Meeting()
         {
-            List<Employee_model> empList = new List<Employee_model>();
-            empList = _adminServices.BindEmployee();
-            ViewBag.Employee = empList;
-            Meeting_Model obj = new Meeting_Model();
-            if(!string.IsNullOrEmpty(Id))
-            {
-                obj = _adminServices.getMeetingById(Id);
-            }
-            return View(obj);
+          
+            var empList = _adminServices.BindEmployee();
+            return View(empList);
         }
         [HttpPost]
-        public ActionResult AddMeeting(Meeting_Model formData)
+        public ActionResult AddMeeting(AddMeeting_Model formData)
         {
             string path = null;
             if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
@@ -258,7 +252,7 @@ namespace RemoteSensingProject.Controllers
                 var guid = Guid.NewGuid();
                 var FileExtension = Path.GetExtension(formData.Attachment.FileName);
                 var fileName = $"{guid}{FileExtension}";
-                 path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
+                path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
 
                 formData.Attachment_Url = path;
             }
@@ -269,6 +263,15 @@ namespace RemoteSensingProject.Controllers
             }
             return Json(new { success = status }, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public ActionResult GetMeetingById(int id)
+        {
+           var obj = _adminServices.getMeetingById(id);
+            return Json(obj,JsonRequestBehavior.AllowGet);
+
+        }
+
         [HttpGet]
         public ActionResult GetAllMeeting()
         {
