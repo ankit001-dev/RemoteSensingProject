@@ -14,6 +14,7 @@ using RemoteSensingProject.Models.MailService;
 using System.Web.Services.Description;
 using System.IO;
 using Microsoft.Ajax.Utilities;
+using System.Web.ModelBinding;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
@@ -308,6 +309,8 @@ namespace RemoteSensingProject.Models.Admin
                     EmployeeCode = record["employeeCode"].ToString(),
                     EmployeeName = record["name"].ToString(),
                     DevisionName = record["devisionName"].ToString(),
+                    Email = record["email"].ToString(),
+                    MobileNo = Convert.ToInt64(record["mobile"]),
                     EmployeeRole = record["role"].ToString(),
                     Division = (int)record["devision"],
                     DesignationName = record["designationName"].ToString(),
@@ -483,6 +486,20 @@ namespace RemoteSensingProject.Models.Admin
                         cmd.Parameters.AddWithValue("@address", pm.pm.Address);
                         i += cmd.ExecuteNonQuery();
                     }
+
+                    if (pm.pm.SubOrdinate.Length > 0)
+                    {
+                        foreach(var item in pm.pm.SubOrdinate)
+                        {
+                            cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@action", "insertSubOrdinate");
+                            cmd.Parameters.AddWithValue("@project_Id", projectId);
+                            cmd.Parameters.AddWithValue("@id", item);
+                            cmd.Parameters.AddWithValue("@projectmanager", pm.pm.ProjectManager);
+                            i += cmd.ExecuteNonQuery();
+                        }
+                    }
                 }
                 tran.Commit();
                 return i > 0;
@@ -518,8 +535,18 @@ namespace RemoteSensingProject.Models.Admin
                             Id = Convert.ToInt32(rd["id"]),
                             ProjectTitle = rd["title"].ToString(),
                             AssignDate = Convert.ToDateTime(rd["assignDate"]),
-                            StartDate = Convert.ToDateTime(rd["startDate"]),
                             CompletionDate = Convert.ToDateTime(rd["completionDate"]),
+                            StartDate = Convert.ToDateTime(rd["startDate"]),
+                            ProjectManager = rd["name"].ToString(),
+                            ProjectBudget = Convert.ToDecimal(rd["budget"]),
+                            ProjectDescription = rd["description"].ToString(),
+                            projectDocumentUrl = rd["ProjectDocument"].ToString(),
+                            ProjectType = rd["projectType"].ToString(),
+                            ProjectStage = Convert.ToBoolean(rd["stage"])
+                        
+                    });
+                            StartDate = Convert.ToDateTime(rd["startDate"]),
+                            CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
                             ProjectManager = rd["name"].ToString()
 
                         });
@@ -544,6 +571,7 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 createProjectModel cpm = new createProjectModel();
+                Project_model pmodel = new Project_model();
                 cmd = new SqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetProjectById");
@@ -554,20 +582,47 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     List<Project_Statge> stagesList = new List<Project_Statge>();
                     List<Project_Budget> budgetList = new List<Project_Budget>();
+                    List<Project_Subordination> subList = new List<Project_Subordination>();
+                    Project_model pm = new Project_model();
                     while (rd.Read())
                     {
-                        cpm.pm.Id = Convert.ToInt32(rd["id"]);
-                        cpm.pm.ProjectTitle = rd["title"].ToString();
-                        cpm.pm.AssignDate = Convert.ToDateTime(rd["assignDate"]);
-                        cpm.pm.CompletionDate = Convert.ToDateTime(rd["completionDate"]);
-                        cpm.pm.StartDate = Convert.ToDateTime(rd["startDate"]);
-                        cpm.pm.ProjectManager = rd["name"].ToString();
-                        cpm.pm.ProjectBudget = Convert.ToDecimal(rd["name"]);
-                        cpm.pm.ProjectDescription = rd["description"].ToString();
-                        cpm.pm.projectDocumentUrl = rd["ProjectDocument"].ToString();
-                        cpm.pm.ProjectType = rd["projectType"].ToString();
-                        cpm.pm.ProjectStage = Convert.ToBoolean(rd["stage"]);
-                        if (cpm.pm.ProjectStage)
+                        pm.Id = Convert.ToInt32(rd["id"]);
+                        pm.ProjectTitle = rd["title"].ToString();
+                        pm.AssignDate = Convert.ToDateTime(rd["assignDate"]);
+                        pm.CompletionDate = Convert.ToDateTime(rd["completionDate"]);
+                        pm.StartDate = Convert.ToDateTime(rd["startDate"]);
+                        pm.ProjectManager = rd["ManagerName"].ToString();
+                        pm.ProjectBudget = Convert.ToDecimal(rd["budget"]);
+                        pm.ProjectDescription = rd["description"].ToString();
+                        pm.projectDocumentUrl = rd["ProjectDocument"].ToString();
+                        pm.ProjectType = rd["projectType"].ToString();
+                        pm.ProjectStage = Convert.ToBoolean(rd["stage"]);
+                        if (pm.ProjectType.Equals("External"))
+                        {
+                            pm.Address = rd["address"].ToString();
+                            pm.ProjectDepartment = rd["DepartmentName"].ToString();
+                            pm.ContactPerson = rd["contactPerson"].ToString();
+                        }
+                        if (pm.ProjectStage)
+                     pmodel.Id = Convert.ToInt32(rd["id"] != null ? rd["id"]:0);
+                     pmodel.ProjectTitle = rd["title"].ToString();
+                     pmodel.AssignDatestring = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy");
+                     pmodel.CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy");
+                     pmodel.startDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy");
+                     pmodel.ProjectManager = rd["managerName"].ToString();
+                     pmodel.ProjectBudget = Convert.ToDecimal(rd["budget"]);
+                     pmodel.ProjectDescription = rd["description"].ToString();
+                     pmodel.projectDocumentUrl = rd["ProjectDocument"].ToString();
+                     pmodel.ProjectType = rd["projectType"].ToString();
+                        if (rd["projectType"].ToString().ToLower() == "external")
+                        {
+                            pmodel.ProjectDepartment = rd["departmentName"].ToString();
+                            pmodel.ContactPerson = rd["contactPerson"].ToString();
+                            pmodel.SubOrdinate = rd["subMember"] != null ? rd["subMember"].ToString().Split(',').Select(e => int.Parse(e)).ToArray() : new int[0];
+                        }
+                     pmodel.Address = rd["address"].ToString();
+                     pmodel.ProjectStage = Convert.ToBoolean(rd["stage"]);
+                        if ((bool)rd["stage"] && rd["stageId"]!=null)
                         {
                             stagesList.Add(new Project_Statge
                             {
@@ -577,8 +632,18 @@ namespace RemoteSensingProject.Models.Admin
                                 Document_Url = rd["stageDocument"].ToString()
                             });
                         }
+                        if (rd["SubordinateLinkId"] != DBNull.Value)
+                        {
+                            subList.Add(new Project_Subordination
+                            {
+                                Id = Convert.ToInt32(rd["SubordinateLinkId"]),
+                                Name = rd["subName"].ToString(),
+                                EmpCode = rd["subCode"].ToString()
+                            });
+                        }
+                        if(pm.ProjectBudget > 0) {
 
-                        if(cpm.pm.ProjectBudget > 0) {
+                        if (rd["budgetId"]!=null) {
                             budgetList.Add(new Project_Budget
                             {
                                 Id = Convert.ToInt32(rd["BudgetId"]),
@@ -589,7 +654,9 @@ namespace RemoteSensingProject.Models.Admin
                             });
                         }
                     }
-
+                    cpm.pm = pm;
+                    cpm.SubOrdinate = subList;
+                    cpm.pm = pmodel;
                     cpm.budgets = budgetList;
                     cpm.stages = stagesList;
                 }
@@ -605,10 +672,122 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
-       
+
         #endregion
 
+        #region Api Create Project
+        public bool createApiProject(Project_model pm)
+        {
+            con.Open();
+            SqlTransaction tran = con.BeginTransaction();
+            try
+            {
+                cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertProject");
+                cmd.Parameters.AddWithValue("@title", pm.ProjectTitle);
+                cmd.Parameters.AddWithValue("@assignDate", pm.AssignDate);
+                cmd.Parameters.AddWithValue("@startDate", pm.StartDate);
+                cmd.Parameters.AddWithValue("@completionDate", pm.CompletionDate);
+                cmd.Parameters.AddWithValue("@projectmanager", pm.ProjectManager);
+                cmd.Parameters.AddWithValue("@budget", pm.ProjectBudget);
+                cmd.Parameters.AddWithValue("@description", pm.ProjectDescription);
+                cmd.Parameters.AddWithValue("@ProjectDocument", pm.projectDocumentUrl);
+                cmd.Parameters.AddWithValue("@projectType", pm.ProjectType);
+                cmd.Parameters.AddWithValue("@stage", pm.ProjectStage);
+                cmd.Parameters.AddWithValue("@createdBy", "admin");
+                cmd.Parameters.Add("@project_Id", SqlDbType.Int);
+                cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
+                int i = cmd.ExecuteNonQuery();
+                int projectId = Convert.ToInt32(cmd.Parameters["@project_Id"].Value != DBNull.Value ? cmd.Parameters["@project_Id"].Value : 0);
+                if (pm.ProjectType.Equals("External") && projectId > 0)
+                {
+                    cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@action", "insertExternalProject");
+                    cmd.Parameters.AddWithValue("@project_Id", projectId);
+                    cmd.Parameters.AddWithValue("@DepartmentName", pm.ProjectDepartment);
+                    cmd.Parameters.AddWithValue("@contactPerson", pm.ContactPerson);
+                    cmd.Parameters.AddWithValue("@address", pm.Address);
+                    i += cmd.ExecuteNonQuery();
+                }
+                if (pm.SubOrdinate.Length > 0)
+                {
+                    foreach (var item in pm.SubOrdinate)
+                    {
+                        cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@action", "insertSubOrdinate");
+                        cmd.Parameters.AddWithValue("@project_Id", projectId);
+                        cmd.Parameters.AddWithValue("@id", item);
+                        cmd.Parameters.AddWithValue("@projectmanager", pm.ProjectManager);
+                        i += cmd.ExecuteNonQuery();
+                    }
+                }
+                tran.Commit();
+                return i > 0;
+            }catch(Exception ex)
+            {
+                tran.Rollback();
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
 
+        public bool insertProjectStages(Project_Statge stg) {
+            try
+            {
+                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertProjectStatge");
+                cmd.Parameters.AddWithValue("@project_Id", stg.Project_Id);
+                cmd.Parameters.AddWithValue("@keyPoint", stg.KeyPoint);
+                cmd.Parameters.AddWithValue("@completeDate", stg.Document_Url);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+            }
+        }
+
+        public bool insertProjectBudgets(Project_Budget bdg)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertProjectBudget");
+                cmd.Parameters.AddWithValue("@project_Id", bdg.Project_Id);
+                cmd.Parameters.AddWithValue("@heads", bdg.ProjectHeads);
+                cmd.Parameters.AddWithValue("@headsAmount", bdg.ProjectAmount);
+                cmd.Parameters.AddWithValue("@miscellaneous", bdg.Miscellaneous);
+                cmd.Parameters.AddWithValue("@miscAmount", bdg.Miscell_amt);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+            }
+        }
+        #endregion
 
         #region /* Admin Dashboard Count */
         public DashboardCount DashboardCount()
@@ -915,8 +1094,9 @@ namespace RemoteSensingProject.Models.Admin
             {
                 cmd = new SqlCommand("sp_manageNotice", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "InsertNotice");
+                cmd.Parameters.AddWithValue("@action", gn.Id>0?"UpdateNotice":"InsertNotice");
                 cmd.Parameters.AddWithValue("@projectId",gn.ProjectId);
+                cmd.Parameters.AddWithValue("@id",gn.Id);
                 cmd.Parameters.AddWithValue("@noticeDocs", gn.Attachment_Url);
                 cmd.Parameters.AddWithValue("@noticedesc", gn.Notice);
                 con.Open();
@@ -934,7 +1114,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public dynamic getNoticeList()
+        public List<Generate_Notice> getNoticeList()
         {
             try
             {
