@@ -41,6 +41,10 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string Upadtedat { get; set; }
         public string CreatedBy { get; set;}
         public int CompleteionStatus { get; set;}
+        public int ApproveStatus { get; set;}
+        public string CompletionDatestring { get; set; }
+        public string AssignDateString { get; set; }
+        public string StartDateString { get; set; }
     }
     
         public class ApprovedProject

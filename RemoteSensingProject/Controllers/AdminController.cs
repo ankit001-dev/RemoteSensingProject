@@ -165,6 +165,7 @@ namespace RemoteSensingProject.Controllers
             var data = _adminServices.SelectEmployeeRecord();
             ViewBag.projectManager = data.Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
+
             return View();
         }
 

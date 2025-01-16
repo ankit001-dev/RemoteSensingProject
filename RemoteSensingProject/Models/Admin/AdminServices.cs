@@ -439,6 +439,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@projectType", pm.pm.ProjectType);
                 cmd.Parameters.AddWithValue("@stage", pm.pm.ProjectStage);
                 cmd.Parameters.AddWithValue("@createdBy", "admin");
+                cmd.Parameters.AddWithValue("@ApproveStatus", 1);
                 cmd.Parameters.Add("@project_Id", SqlDbType.Int);
                 cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
                 int i = cmd.ExecuteNonQuery();
@@ -535,16 +536,16 @@ namespace RemoteSensingProject.Models.Admin
                             Id = Convert.ToInt32(rd["id"]),
                             ProjectTitle = rd["title"].ToString(),
                             AssignDate = Convert.ToDateTime(rd["assignDate"]),
-                            AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
                             CompletionDate = Convert.ToDateTime(rd["completionDate"]),
                             StartDate = Convert.ToDateTime(rd["startDate"]),
-                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
                             ProjectManager = rd["name"].ToString(),
                             ProjectBudget = Convert.ToDecimal(rd["budget"]),
                             ProjectDescription = rd["description"].ToString(),
                             projectDocumentUrl = rd["ProjectDocument"].ToString(),
                             ProjectType = rd["projectType"].ToString(),
                             ProjectStage = Convert.ToBoolean(rd["stage"]),
+                            AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
+                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
                             CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy")
 
                         });
