@@ -16,14 +16,15 @@
                 <h5>Project Lists</h5>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="text" placeholder="Search by project name" class="form-control">
+                <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
-                <select class="form-select form-select-lg">
-                    <option selected>Project Status</option>
-                    <option value="1">Work in Progress</option>
-                    <option value="2">Pending</option>
-                    <option value="3">Completed</option>
+                <select class="form-select form-select-lg" id="filterProjectStatus">
+                    <option value="" selected>Project Status</option>
+                    <option value="Work in Progress">Work in Progress</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Delay">Delay</option>
                 </select>
             </div>
         </div>
@@ -53,13 +54,32 @@
                     {
                         <tr>
                             <td>@i</td>
-                            <td>@item.AssignDate</td>
+                            <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
                             <td>@item.ProjectTitle</td>
-                            <td>@item.StartDate</td>
-                            <td>@item.CompletionDate</td>
+                            <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
+                            <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
                             <td>@item.ProjectManager</td>
                             <td>
-                                <span class="badge bg-warning">Work in Progress</span>
+                                @if (item.ProjectStatus)
+                                    {
+                                        <span class="badge bg-success">Completed</span>
+                                    }
+                                     else if(item.CompletionDate < DateTime.Now)
+                                    {
+                                        <span class="badge bg-danger">Delay</span>
+                                    }
+                                    else if(item.StartDate < DateTime.Now)
+                                    {
+
+
+<span class="badge bg-warning">Work in Progress</span>
+}
+else
+                {
+                            <span class="badge bg-primary">Pending</span>
+                }
+                                
+                                
                             </td>
                             <td class="text-center">
                                 <ul class="d-flex list-unstyled mb-0 justify-content-center">
@@ -141,7 +161,34 @@
                             stages += "</div>";
                         }
                     }
-                    
+                    let ExternalProject = ""
+                    if (res.data.pm.ProjectType === "External") {
+                        ExternalProject = `<div class="row">
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Department Name</label>
+        <br />
+        <span>${res.data.pm.ProjectDepartment}</span>
+    </div>
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Contact Person</label>
+        <br />
+        <span>${res.data.pm.ContactPerson}</span>
+    </div>
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Address</label>
+        <br />
+        <span>${res.data.pm.Address}</span>
+    </div>
+    <hr />
+</div>`;
+                    }
+
+                    let subOrdinates = "";
+                    if (res.data.SubOrdinate.length > 0) {
+                        $.each(res.data.SubOrdinate, function (i, d) {
+                            subOrdinates += ` <li>${d.Name}(${d.EmpCode})</li>`;
+                        })
+                    }
                     let all_element = `<div class="row">
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Title</label>
@@ -180,24 +227,7 @@
 
      <hr />
  </div>
- <div class="row">
-     <div class="col-sm-4 mb-2">
-         <label class="form-label fw-bolder">Department Name</label>
-         <br />
-         <span>${res.data.pm.ProjectTitle}</span>
-     </div>
-     <div class="col-sm-4 mb-2">
-         <label class="form-label fw-bolder">Contact Person</label>
-         <br />
-         <span>${res.data.pm.ProjectTitle}</span>
-     </div>
-     <div class="col-sm-4 mb-2">
-         <label class="form-label fw-bolder">Address</label>
-         <br />
-         <span>${res.data.pm.ProjectTitle}</span>
-     </div>
-     <hr />
- </div>
+ ${res.data.pm.ProjectType === "External" ? ExternalProject : ""}
  <div class="row">
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Budget</label>
@@ -207,9 +237,7 @@
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Sub-Ordinate</label>
          <ul class="d-flex list-unstyled justify-content-between m-0">
-             <li>Member 1</li>
-             <li>Member 2</li>
-             <li>Member 3</li>
+             ${subOrdinates}
          </ul>
      </div>
      <div class="col-sm-4 mb-2">
@@ -245,4 +273,20 @@
             }
         })
     })
+
+    $(document).ready(function () {
+
+  
+
+        $("#searchProjectBy").on("input", function () {
+            var table = $("#dataTableExample").DataTable();
+            table.column(2).search(this.value).draw()
+        });
+        $("#filterProjectStatus").on("change", function () {
+            var table = $("#dataTableExample").DataTable();
+                table.column(6).search(this.value).draw()
+            
+
+        })
+    });
 </script>
