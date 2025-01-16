@@ -5,11 +5,12 @@
 }
 
 <style>
-   
+
     .select2-container--default .select2-selection--single .select2-selection__rendered {
         color: #444;
         line-height: 13px;
     }
+
     .badge {
         display: inline-block;
         padding: 0.25em 0.5em;
@@ -27,7 +28,6 @@
     .badge-completed {
         background-color: #28a745; /* Green for completed */
     }
-
 </style>
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
@@ -42,56 +42,30 @@
 
         <div class="card">
             <div class="card-body">
-                <form id="meetingform" method="post">
+                <form id="meetingforms" method="post" enctype="multipart/form-data" >
 
                     <div class="row gutters">
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
-                                <label>Meating Type</label>
+                                <label>Meeting Type</label>
                                 <br />
-                                @if (Model.MeetingType != null)
-                                {
-                                    <input type="radio" id="meetingTypeOnline" name="MeetingType" class="meetType" value="online" @(Model.MeetingType == "online" ? "checked" : "")><span>Online</span>
-                                    <input type="radio" id="meetingTypeOffline" name="MeetingType" class="meetType" value="offline" @(Model.MeetingType == "offline" ? "checked" : "")><span>Offline</span>
-                                }
-                                else
-                                {
-                                    <input type="radio" id="meetingTypeOnline" name="MeetingType" class="meetType" value="online" checked><span>Online</span>
-                                    <input type="radio" id="meetingTypeOffline" name="MeetingType" class="meetType" value="offline"><span>Offline</span>
-                                }
-
-                                @*<input type="radio" id="meetingType" name="MeetingType" class="meetType" value="online" checked>&nbsp;Online &nbsp; &nbsp;
-                    <input type="radio" id="meetingType" name="MeetingType" class="meetType" value="offline">&nbsp;Offline &nbsp; &nbsp;*@
-
+                                <input type="radio" id="meetingTypeOnline" name="MeetingType" class="meetType" value="online" checked><span>Online</span>
+                                <input type="radio" id="meetingTypeOffline" name="MeetingType" class="meetType" value="offline"><span>Offline</span>
                             </div>
                         </div>
 
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Meeting Member:</label>
-
-                                <select class="form-control" id="MeetingMember" name="MeetingMember" multiple>
-
-                                    @if (ViewBag.Employee != null)
+                                <select class="form-control select2" id="MeetingMember" name="meetingMemberList" multiple>
+                                    @if (Model != null)
                                     {
-                                        foreach (var item in ViewBag.Employee as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                        foreach (var item in Model)
                                         {
-                                            if (Model.memberId != null)
+                                            if (item != null)
                                             {
-                                                if (Model.memberId.Contains(item.Id.ToString()))
-                                                {
-                                                    <option selected value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
-                                                }
-                                                else
-                                                {
-                                                    <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
-                                                }
+                                            <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
                                             }
-                                            else
-                                            {
-                                                <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
-                                            }
-
                                         }
                                     }
                                 </select>
@@ -101,28 +75,26 @@
                         <div class="col-lg-4 mb-3 col-12" id="meetingLinkContainer">
                             <div class="form-group">
                                 <label>Meeting Link</label>
-                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink" value="@Model.MeetingLink" placeholder="Enter meeting link">
+                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink" value="" placeholder="Enter meeting link">
                             </div>
                         </div>
-
-
                     </div>
                     <div class="row gutters">
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
                                 <label>Meeting Title</label>
-                                <input type="text" class="form-control" id="meetingtitle" name="MeetingTitle" value="@Model.MeetingTitle" placeholder="Enter Meeting Title">
+                                <input type="text" class="form-control" id="meetingtitle" name="MeetingTitle" value="" placeholder="Enter Meeting Title">
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
-                                <label> Meeting Time</label>
-                                <input type="datetime-local" class="form-control" id="meetingdatetime" name="MeetingTime" value="@Model.MeetingTime.ToString("yyyy-MM-ddTHH:mm")"  min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
+                                <label>Meeting Time</label>
+                                <input type="datetime-local" class="form-control" id="meetingdatetime" name="MeetingTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
-                                <label> Attachment</label>
+                                <label>Attachment</label>
                                 <input class="form-control" type="file" id="Attachment" name="Attachment">
                             </div>
                         </div>
@@ -130,62 +102,25 @@
 
                     <div id="keypoints-container">
                         <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
-                            @if (Model.meetingKeyPoint != null)
-                            {
-                                int index = 1;
-                                foreach (var key in Model.meetingKeyPoint)
-                                {
-                                    <div class="col-sm-2">
-                                        <label style="display: block;font-weight:bold; margin-bottom: 5px;"> Key Point @index </label>
-                                    </div>
-                                    <div class="col-sm-6 col-12">
-
-                                        <div class="form-group m-0">
-                                            <input type="text" class="form-control keypointDetails" id="keyPoint" name="keyPoint" value="@key" placeholder="Enter Key Points">
-                                        </div>
-                                    </div>
-
-                                    index++;
-                                }
-
-                            }
-                            else
-                            {
-                                <div class="col-sm-2">
-                                    <label style="display: block;font-weight:bold; margin-bottom: 5px;"> Key Point 1 </label>
+                            <div class="col-sm-2">
+                                <label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point 1</label>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <div class="form-group m-0">
+                                    <input type="text" class="form-control keypointDetails" id="keyPoint" name="keyPointList" placeholder="Enter Key Points">
                                 </div>
-                                <div class="col-sm-6 col-12">
-
-                                    <div class="form-group m-0">
-                                        <input type="text" class="form-control keypointDetails" id="keyPoint" name="keyPoint" placeholder="Enter Key Points">
-                                    </div>
-                                </div>
-                            }
-
+                            </div>
                             <div class="col-lg-4 mb-3 col-12">
                                 <label style="display: block;font-weight:bold; margin-bottom: 5px;"></label>
                                 <div class="form-group m-0">
                                     <a href="#" id="add-btn" title="Add Another Key"><i class="fa-solid fa-circle-plus"></i> Add Another Key</a>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-                    <input type="hidden" class="form-control" value="@Model.Id" id="Id" name="Id"/>
-                    @if (Model.Id != null)
-                    {
-                        <p class="text-center">
-                            <button id="createMeetingBtn" type="button" class="btn btn-success">Update Meeting</button>
-                        </p>
-                    }
-                    else
-                    {
-                        <p class="text-center">
-                            <button id="createMeetingBtn" type="button" class="btn btn-primary">Create Meeting</button>
-                        </p>
-                    }
-
-
+                    <p class="text-center">
+                        <button id="createMeetingBtn" type="submit" class="btn btn-primary">Create Meeting</button>
+                    </p>
                 </form>
 
             </div>
@@ -212,22 +147,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @*<tr>
-                                    <td>1</td>
-                                    <td>Pardhan Mantri Awaas Yojana (PMAY-G)</td>
-                                    <td>Offile</td>
-                                    <td>Block A, Hall-120, UK</td>
-                                    <td>Pending</td>
-                                    <td>
-                                        <ul class="d-flex list-unstyled justify-content-evenly">
-                                            <li>
-                                                <a href="/admin/MeetingConclusion"><i class="fa-solid fa-circle-plus" style="color:orange" title="Add Conclusion"></i></a>
-                                            </li>
-                                            <li><a href="#"><i class="fa-solid fa-pencil"></i></a></li>
-                                        </ul>
-                                    </td>
-
-                                </tr>*@
+                              
                             </tbody>
                         </table>
                     </div>
@@ -236,75 +156,181 @@
         </div>
 
     </div>
-    </div>
-    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
-    <script>
+</div>
 
+<!--update Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="updateModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateMeetingModal" method="post" enctype="multipart/form-data">
+
+                    <div class="row gutters">
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Type</label>
+                                <br />
+                                <input type="radio" id="meetingTypeOnline" name="MeetingType" class="meetType" value="online" checked><span>Online</span>
+                                <input type="radio" id="meetingTypeOffline" name="MeetingType" class="meetType" value="offline"><span>Offline</span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Member:</label>
+                                <select class="form-control" id="updateMeetingMember" name="meetingMemberList" multiple>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            if (item != null)
+                                            {
+                                                <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-3 col-12" id="meetingLinkContainer">
+                            <div class="form-group">
+                                <label>Meeting Link</label>
+                                <input type="text" class="form-control" id="meetinglink" name="MeetingLink"  placeholder="Enter meeting link">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row gutters">
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Title</label>
+                                <input type="text" class="form-control" id="meetingtitle" name="MeetingTitle"  placeholder="Enter Meeting Title">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Time</label>
+                                <input type="datetime-local" class="form-control" id="meetingdatetime" name="MeetingTime"  min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Attachment</label>
+                                <input class="form-control" type="file" id="Attachment" name="Attachment">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="keypoints-container">
+                        <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div class="col-sm-2">
+                                <label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point 1</label>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <div class="form-group m-0">
+                                    <input type="text" class="form-control keypointDetails" id="keyPoint" name="keyPointList" placeholder="Enter Key Points">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3 col-12">
+                                <label style="display: block;font-weight:bold; margin-bottom: 5px;"></label>
+                                <div class="form-group m-0">
+                                    <a href="#" id="add-btn" title="Add Another Key"><i class="fa-solid fa-circle-plus"></i> Add Another Key</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center">
+                        <button id="createMeetingBtn" type="submit" class="btn btn-primary">Update Meeting</button>
+                    </p>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script>
+
+    $(document).ready(function () {
         $(document).ready(function () {
             $('#tbl_Member').DataTable();
             $('#basicExample').DataTable();
+            $("#updateMeetingMember").select2({
+                placeholder: "--Select Member--"
+            })
             $("#MeetingMember").select2({
                 placeholder: "--Select Member--"
             })
-            $('#select_all').on('click', function () {
-                const isChecked = $(this).prop("checked");
-                const nodes = $('#tblMem').DataTable().rows({ 'search': 'applied' }).nodes().to$();
-                nodes.find('input.selMember').prop("checked", isChecked);
-            });
+        })
+       
+        $('#select_all').on('click', function () {
+            const isChecked = $(this).prop("checked");
+            const nodes = $('#tblMem').DataTable().rows({ 'search': 'applied' }).nodes().to$();
+            nodes.find('input.selMember').prop("checked", isChecked);
+        });
 
-            $('#tblMem').on('change', 'input.selMember', function () {
-                const nodes = $('#tblMem').DataTable().rows({ 'search': 'applied' }).nodes().to$();
-                const allChecked = nodes.find('input.selMember:checked').length === nodes.find('input.selMember').length;
-                $('#select_all').prop('checked', allChecked);
-            });
+        $('#tblMem').on('change', 'input.selMember', function () {
+            const nodes = $('#tblMem').DataTable().rows({ 'search': 'applied' }).nodes().to$();
+            const allChecked = nodes.find('input.selMember:checked').length === nodes.find('input.selMember').length;
+            $('#select_all').prop('checked', allChecked);
+        });
 
-            let i = 1;
-            $("#add-btn").click(function () {
-                i++;
-                const inputField = `
+        let i = 1;
+        $("#add-btn").click(function () {
+            i++;
+            const inputField = `
           <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
             <div class="col-sm-2 col-12"><label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point ${i}</label></div>
 
             <div class="col-sm-6 col-12">
                 <div class="form-group m-0">
-                    <input type="text" id="keyPoint" name="keyPoint" class="form-control keypointDetails" placeholder="Enter Key Points">
+                    <input type="text" id="keyPoint" name="keyPointList" class="form-control keypointDetails" placeholder="Enter Key Points">
                 </div>
             </div>
             <div class="col-sm-2">
                 <a href="#" class="remove-btn" title="Remove key"><i class="fa-solid fa-trash text-danger fs-5"></i></a>
             </div>
        </div>`;
-                $("#keypoints-container").append(inputField);
-            });
-
-            $("#keypoints-container").on("click", ".remove-btn", function () {
-                $(this).parents(".keyItems").remove();
-                i--;
-            });
-
-            $(".meetType").change(function () {
-                $("#venueEle").toggle($(this).val() === "Offline");
-                $("#meetingLinkContainer").toggle($(this).val() == "Online");
-            });
-
-            $("#meetFor").change(function () {
-                const id = $(this).val();
-                const tabletype = $("#meetFor option:selected").attr("data-type");
-
-
-            });
+            $("#keypoints-container").append(inputField);
         });
-    </script>
+
+        $("#keypoints-container").on("click", ".remove-btn", function () {
+            $(this).parents(".keyItems").remove();
+            i--;
+        });
+
+        $(".meetType").change(function () {
+            $("#venueEle").toggle($(this).val() === "Offline");
+            $("#meetingLinkContainer").toggle($(this).val() == "Online");
+        });
+
+        $("#meetFor").change(function () {
+            const id = $(this).val();
+            const tabletype = $("#meetFor option:selected").attr("data-type");
+
+
+        });
+    });
+</script>
 
 
 <script>
     $(document).ready(function () {
 
 
-        $("#meetingform").on("submit", function (event) {
+        $("#meetingforms").on("submit", function (event) {
             event.preventDefault();
 
-            let formData = {};
+            let formData = new FormData();
             let meetingMemberList = [];
             let keyPointList = [];
 
@@ -312,29 +338,28 @@
 
             arrData.forEach(function (para) {
                 if (para.name == "MeetingMember") {
-                    meetingMemberList.push(para.value)
+                    meetingMemberList.push(para.value);
                 }
                 else if (para.name == "keyPoint") {
-                    keyPointList.push(para.value)
+                    keyPointList.push(para.value);
                 }
                 else {
-                    formData[para.name]= para.value
+                    formData.append(para.name, para.value);
                 }
             });
 
             if ($("#Attachment").get(0).files.length > 0) {
-                formData["Attachment"]= $("#Attachment").get(0).files[0]
+                formData.append("Attachment", $("#Attachment").get(0).files[0]);
             }
-            formData["meetingMemberList"]= meetingMemberList
-            formData["keyPointList"]=keyPointList
-
+            formData.append("meetingMemberList", meetingMemberList) 
+            formData.append("keyPointList", keyPointList) 
             debugger
 
             $.ajax({
                 url: '/Admin/AddMeeting',
                 type: 'POST',
-                processData: false,
-                contentType: false,
+                processData: false, // Important: Don't process data
+                contentType: false, // Important: Don't set content type
                 data: formData,
                 success: function (response) {
                     if (response.success) {
@@ -343,7 +368,7 @@
                             icon: 'success',
                             text: 'Meeting Added Successfully!',
                             confirmButtonText: 'ok'
-                        }).then(()=> {
+                        }).then(() => {
                             window.location.reload();
                         })
                     } else {
@@ -359,7 +384,7 @@
                     console.error("Error occurred:", {
                         status: status,
                         error: error,
-                        response: xhr.responseText
+                        response: xhr
                     });
                     Swal.fire({
                         title: 'Error',
@@ -405,7 +430,7 @@
                             <li>
                                 <a href="/admin/MeetingConclusion"><i class="fa-solid fa-circle-plus" style="color:orange" title="Add Conclusion"></i></a>
                             </li>
-                            <li><a href="/Admin/Min_Of_Meeting?Id=${item.Id}"><i class="fa-solid fa-pencil"></i></a></li>
+                            <li><a onclick='updateMeeting(${item.Id})'><i class="fa-solid fa-pencil"></i></a></li>
                         </ul>
                     </td>
                     </tr>`;
@@ -417,4 +442,29 @@
             }
         })
     })
+
+    function updateMeeting(id) {
+        $("#updateModal").modal("show")
+        $.ajax({
+            url: '/Admin/GetMeetingById',
+            type: 'get',
+            data: {id:id},
+            success: function (res) {
+                console.log(res)
+            },
+            error: function (xhr, status, error) {
+                console.error("Error occurred:", {
+                    status: status,
+                    error: error,
+                    response: xhr
+                });
+                Swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: 'An error occurred while adding the meeting. Please try again.',
+                    confirmButtonText: 'ok'
+                })
+            }
+        });
+    }
 </script>

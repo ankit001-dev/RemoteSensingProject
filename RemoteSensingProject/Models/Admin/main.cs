@@ -107,6 +107,24 @@ namespace RemoteSensingProject.Models.Admin
             public List<string> meetingKeyPoint { get; set; }
             public List<string> memberId { get; set; }
         }
+
+        public class AddMeeting_Model
+        {
+            public int Id { get; set; }
+            public string MeetingType { get; set; }
+            public string MeetingMember { get; set; }
+            public string MeetingLink { get; set; }
+            public string MeetingTitle { get; set; }
+            public string MeetingDate { get; set; }
+            public DateTime MeetingTime { get; set; }
+            public HttpPostedFileBase Attachment { get; set; }
+            public string Attachment_Url { get; set; }
+            public int status { get; set; }
+            public List<int> meetingMemberList { get; set; }
+            public List<string> keyPointList { get; set; }
+            public int CompleteStatus { get; set; }
+        }
+
         public class Meeting_Conclusion
         {
             public int Id { get; set; }
@@ -114,6 +132,7 @@ namespace RemoteSensingProject.Models.Admin
             public string Conclusion { get; set; }
             public DateTime NextDate { get; set; }
         }
+
         public class Generate_Notice
         {
             public int Id { get; set; }
