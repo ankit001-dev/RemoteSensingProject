@@ -51,16 +51,14 @@
                                 </div>
                             </div>
 
-
-
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Project Manager</label>
                                 <select class="form-control form-control-sm" name="pm.pm.ProjectManager">
                                     <option value="">Select an Option</option>
                                     @foreach(var item in ViewBag.projectManager as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
-            {
-                <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
-            }
+                                     {
+                                         <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
+                                     }
                                 </select>
                             </div>
                             <div class="col-lg-4 mb-3">
@@ -227,7 +225,7 @@
                     <div class="col-lg-4 mb-3">
                         <label for="person" class="form-label">Pdf Upload</label>
                         <input type="file" class="form-control form-control-sm stagesImages" name="pm.stages[${count}].Stage_Document"/>
-                    </div>
+                    </div>  
                     <div class="col-lg-3 mb-3">
                         <label for="date" class="form-label">Complete Date</label>
                         <input type="date" class="form-control form-control-sm" name="pm.stages[${count}].CompletionDate">

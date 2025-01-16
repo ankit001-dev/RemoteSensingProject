@@ -22,7 +22,7 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <form class="forms-sample">
+                <form class="forms-sample" id="createProjectForm">
                     <div class="row">
                         <div class="col-lg-4 mb-3">
                             <label for="upload" class="form-label">Title</label>
@@ -63,15 +63,20 @@
                                 <option>Name4</option>
                             </select>
                         </div>*@
-                        <div class="col-lg-4 mb-3">
-                            <label for="title" class="form-label">Sub-Ordinate</label>
-                            <select class="form-control form-control-sm" multiple>
-                                <option>Member1</option>
-                                <option>Member2</option>
-                                <option>Member3</option>
-                                <option>Member4</option>
-                            </select>
-                        </div>
+                    <div class="col-lg-4 mb-3">
+                        <label for="title" class="form-label">Sub-Ordinate</label>
+                        <select class="form-control form-control-sm" name="pm.pm.SubOrdinate" multiple>
+                            <option value="">Select an Option</option>
+                            @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                            {
+                                <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-4 mb-3">
+                        <label for="title" class="form-label">Project Document</label>
+                        <input type="file" class="form-control form-control-sm" name="" id="projectDocumentFile">
+                    </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4 mb-3">
@@ -215,11 +220,11 @@
                 <div class="row stageListItem">
                     <div class="col-lg-4 mb-3">
                         <label for="venue" class="form-label">Key Point</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Enter Key Point">
+                     <input type="text" class="form-control form-control-sm" name="pm.stages[${count}].KeyPoint" placeholder="Enter Key Point">
                     </div>
                     <div class="col-lg-4 mb-3">
                         <label for="person" class="form-label">Pdf Upload</label>
-                        <input type="file" class="form-control form-control-sm">
+                      <input type="file" class="form-control form-control-sm stagesImages" name="pm.stages[${count}].Stage_Document"/>
                     </div>
                     <div class="col-lg-3 mb-3">
                         <label for="date" class="form-label">Complete Date</label>
@@ -283,5 +288,76 @@
             $(this).closest(".row.budgetList").remove();
         })
     });
+
+</script>
+
+<script>
+    $("#createProjectForm").on("submit", function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request ....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        let formData = new FormData(this);
+        let file = $("#projectDocumentFile")[0].files[0];
+        if (file) {
+            formData.append("pm.pm.projectDocument", file);
+        }
+        $.each($(".stagesImages"), function (i, d) {
+            file = $(d)[0].files[0];
+            if (file) {
+                formData.append(`pm.stages[${d}].Stage_Document`, file);
+            }
+        });
+
+
+        $.ajax({
+            url: "/admin/InsertProject",
+            type: "post",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: "Project created successfully !",
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true);
+                        }
+                    })
+                }
+                else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: "Some issue occured while processing your request ! Please try after sometime.",
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log("Error Details:");
+                console.log("XHR Object: ", xhr);
+                console.log("Status: ", status);
+                console.log("Error Message: ", error);
+                console.log("Response Text: ", xhr.responseText);
+                console.log("HTTP Status Code: ", xhr.status);
+                Swal.fire({
+                    title: "Server issue !",
+                    text: "Server is busy ! Try after sometime.",
+                    icon: "error"
+                })
+            }
+        })
+    })
 
 </script>
