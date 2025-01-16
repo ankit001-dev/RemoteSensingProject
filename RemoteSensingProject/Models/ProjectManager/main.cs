@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -14,7 +15,12 @@ namespace RemoteSensingProject.Models.ProjectManager
         public DateTime CompletionDate { get; set; }
         public string ProjectStatus { get; set; }
     }
-
+    public class UserCredential
+    {
+        public string role { get; set; }
+        public string username { get; set; }
+        public int userId { get; set; }
+    }
     public class ProjectList
     {
         public int Id { get; set; } // Unique identifier for the project
@@ -24,6 +30,17 @@ namespace RemoteSensingProject.Models.ProjectManager
         public DateTime CompletionDate { get; set; }
         public string ProjectStatus { get; set; } // e.g., Running, Completed, Delayed
         public string Status { get; set; } // Additional status field (define its purpose)
+        public string Title { get; set; }
+        public int managerId { get; set; }
+        public float budget { get; set; }
+        public string Description { set; get; }
+        public string ProjectDocument { get; set; }
+        public string projectType { get; set; }
+        public string stage { get; set; }
+        public string CreatedAt { get; set; }
+        public string Upadtedat { get; set; }
+        public string CreatedBy { get; set;}
+        public int CompleteionStatus { get; set;}
     }
     
         public class ApprovedProject

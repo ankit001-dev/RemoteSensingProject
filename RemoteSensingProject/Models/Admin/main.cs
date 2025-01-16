@@ -39,9 +39,10 @@ namespace RemoteSensingProject.Models.Admin
             public Project_model pm { get; set; }
             public List<Project_Budget> budgets { get; set; }
             public List<Project_Statge> stages { get; set; }
+            public List<Project_Subordination> SubOrdinate { get; set; }
         }
         public class Project_model
-        {
+        {        
             public int Id { get; set; }
             public string ProjectTitle { get; set; }
             public DateTime AssignDate { get; set; }
@@ -66,6 +67,7 @@ namespace RemoteSensingProject.Models.Admin
         public class Project_Budget
         {
             public int Id { get; set; }
+            public int Project_Id { get; set; }
             public string ProjectHeads { get; set; }
             public decimal ProjectAmount { get; set; }
             public string Miscellaneous { get; set; }
@@ -73,10 +75,16 @@ namespace RemoteSensingProject.Models.Admin
             public string HeadsDescription { get; set; }
 
         }
-
+        public class Project_Subordination
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string EmpCode { get; set; }
+        }
         public class Project_Statge
         {
             public int Id { get; set; } 
+            public int Project_Id { get; set; }
             public string KeyPoint { get; set; }
             public HttpPostedFileBase Stage_Document { get; set; }
             public string Document_Url { get; set; }

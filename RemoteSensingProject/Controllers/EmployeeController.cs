@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RemoteSensingProject.Models.ProjectManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,6 +10,7 @@ namespace RemoteSensingProject.Controllers
     [Authorize(Roles="projectManager")]
     public class EmployeeController : Controller
     {
+        private readonly ManagerService _managerServices;
         // GET: Employee
         public ActionResult Dashboard()
         {
@@ -23,11 +25,20 @@ namespace RemoteSensingProject.Controllers
         {
             return View();
         }
-
+        #region /* Assign Project */
         public ActionResult Assigned_Project()
         {
+           
             return View();
         }
+        public ActionResult GetAllProjectByManager(string userId)
+        {
+
+            List<ProjectList> _list = new List<ProjectList>();
+            _list = _managerServices.getAllProjectByManager(userId);
+            return Json(new {_list=_list},JsonRequestBehavior.AllowGet);
+        }
+        #endregion /* End */
         public ActionResult Approved_Project()
         {
             return View();
