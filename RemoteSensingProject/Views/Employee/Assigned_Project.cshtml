@@ -16,11 +16,11 @@
                 <h5>Assigned Project Lists</h5>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="text" placeholder="Search by project name" class="form-control">
+                <input type="text" id="searchByProjectName" name="searchByProjectName" placeholder="Search by project name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
-                <select class="form-select form-select-lg">
-                    <option selected>Project Status</option>
+                <select id="statusFilter"class="form-select form-select-lg">
+                    <option selected disabled>Project Status</option>
                     <option value="1">Work in Progress</option>
                     <option value="2">Pending</option>
                     <option value="3">Completed</option>
@@ -34,12 +34,12 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="projectTable" class="dataTableExample">
+                    <table id="projectTable" class="dataTableExample" style="width:100%">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Assign Date</th>
+                                <th>Sr No.</th>
                                 <th>Project Name</th>
+                                <th>Assign Date</th>
                                 <th>Start Date</th>
                                 <th>Completion Date</th>
                                 <th>Project Status</th>
@@ -260,12 +260,21 @@
         </div>
     </div>
 </div>
-<script src="~/Scripts/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+
+
 
 <script>
     $(document).ready(function () {
-        $("#projectTable").DataTable();
+
+        $('#searchByProjectName').on('keyup', function () {
+            let table = $("#projectTable").DataTable();
+            debugger
+            table.columns(1).search($(this).val()).draw();
+        });
+        setTimeout(() => {
+
+            $('#searchByProjectName').trigger('keyup')
+        },1000)
 
         $.ajax({
             url: "/Employee/GetAllProjectByManager",
@@ -274,17 +283,33 @@
                 $("#projectTable tbody").empty();
 
                 $.each(res._list, function (index, item) {
-                    var statusText = item.Status == 1 ? 'Pending' : 'Process';
-                    var row = `<tr>
+                    var statusLabel = item.CompleteionStatus === 0 && item.ApproveStatus === 1
+                        ? "Processing"
+                        : item.CompleteionStatus === 1 && item.ApproveStatus === 1
+                            ? "Completed"
+                            : "Pending";
+
+                    var badgeColor =
+                        item.CompleteionStatus === 0 && item.ApproveStatus === 1
+                            ? "badge bg-warning text-dark"
+                            : item.CompleteionStatus === 1 && item.ApproveStatus === 1
+                                ? "badge bg-success"
+                                : "badge bg-secondary";
+
+                var row = `<tr>
                 <td>${index + 1}</td>
-                <td>${item.AssignDate}</td>
                 <td>${item.Title}</td>
-                <td>${item.StartDate}</td>
-                <td>${item.CompletionDate}</td>
-                <td>${statusText}</td>
+                <td>${item.AssignDateString}</td>
+                <td>${item.StartDateString}</td>
+                <td>${item.CompletionDatestring}</td>
+                <td><span class="${badgeColor}">${statusLabel}</span></td>
                 <td class="text-center">
                     <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
+                        <li class="me-2">
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#addslider">
+                                <i class="link-icon" data-feather="eye"></i>
+                            </a>
+                        </li>
                         <li class="me-2">
                             <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
                                 <i class="link-icon" data-feather="calendar" style="color:orangered"></i>
@@ -314,5 +339,91 @@
             }
         });
 
+
     })
 </script>
+
+<script>
+    $(document).ready(function () {
+
+        $("#statusFilter").on("change", function () {
+            var projectStatus = $(this).val();
+            debugger
+            $.ajax({
+                url: "/Employee/filterProject",
+                type: "GET",
+                data: {
+                    projectStatus: projectStatus
+                },
+                success: function (res) {
+                    $("#projectTable tbody").empty();
+
+                    $.each(res._list, function (index, item) {
+                        var statusLabel = item.CompleteionStatus === 0 && item.ApproveStatus === 1
+                            ? "Processing"
+                            : item.CompleteionStatus === 1 && item.ApproveStatus === 1
+                                ? "Completed"
+                                : "Pending";
+
+                        var badgeColor =
+                            item.CompleteionStatus === 0 && item.ApproveStatus === 1
+                                ? "badge bg-warning text-dark"
+                                : item.CompleteionStatus === 1 && item.ApproveStatus === 1
+                                    ? "badge bg-success"
+                                    : "badge bg-secondary";
+
+                        var row = `<tr>
+                             <td>${index + 1}</td>
+                             <td>${item.Title}</td>
+                             <td>${item.AssignDateString}</td>
+                             <td>${item.StartDateString}</td>
+                             <td>${item.CompletionDatestring}</td>
+                             <td><span class="${badgeColor}">${statusLabel}</span></td>
+                             <td class="text-center">
+                                 <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                     <li class="me-2">
+                                         <a href="#" data-bs-toggle="modal" data-bs-target="#addslider">
+                                             <i class="link-icon" data-feather="eye"></i>
+                                         </a>
+                                     </li>
+                                     <li class="me-2">
+                                         <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
+                                             <i class="link-icon" data-feather="calendar" style="color:orangered"></i>
+                                         </a>
+                                     </li>
+                                     <li class="me-2">
+                                         <a href="/Employee/Update_Project_Stage/" title="Update Stages">
+                                             <i class="link-icon text-info" data-feather="plus-circle"></i>
+                                         </a>
+                                     </li>
+                                     <li class="me-2">
+                                         <a href="/Employee/Add_Expenses/" title="Add Expenses">
+                                             <i class="link-icon text-danger" data-feather="file-plus"></i>
+                                         </a>
+                                     </li>
+                                 </ul>
+                             </td>
+                         </tr>`;
+
+                        $("#projectTable tbody").append(row);
+                    });
+
+                    // Reinitialize feather icons
+                    feather.replace();
+
+                },
+                error: function (xhr, error) {
+                    console.log("An error occurred", error);
+                }
+            });
+        })
+
+
+    })
+
+  
+  
+</script>
+
+
+
