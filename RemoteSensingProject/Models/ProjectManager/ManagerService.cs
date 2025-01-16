@@ -21,6 +21,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@projectManager", userId);
                 con.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
+                
                 while (sdr.Read())
                 {
                     obj = new ProjectList();
@@ -42,7 +43,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
             return _list;
         }
-        public UserCredential getManagerDetails(string userId)
+        public UserCredential getManagerDetails(string managerName)
         {
             UserCredential _details = new UserCredential();
             try
@@ -50,15 +51,15 @@ namespace RemoteSensingProject.Models.ProjectManager
                 SqlCommand cmd = new SqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getManagerDetails");
-                cmd.Parameters.AddWithValue("@action", userId);
+                cmd.Parameters.AddWithValue("@username", managerName);
                 con.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
                 while (sdr.Read())
                 {
                     _details = new UserCredential();
                     _details.username = sdr["username"].ToString();
-                    _details.userId = Convert.ToInt32(sdr["userId"]);
-                    _details.role = sdr["role"].ToString();
+                    _details.userId = sdr["userid"].ToString();
+                    _details.userRole = sdr["userRole"].ToString();
 
                 }
                 sdr.Close();

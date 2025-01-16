@@ -17,9 +17,9 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class UserCredential
     {
-        public string role { get; set; }
+        public string userRole { get; set; }
         public string username { get; set; }
-        public int userId { get; set; }
+        public string userId { get; set; }
     }
     public class ProjectList
     {
