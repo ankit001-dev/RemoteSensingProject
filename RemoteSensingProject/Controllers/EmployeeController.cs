@@ -33,6 +33,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult GetAllProjectByManager(string userId)
         {
+            var managerId=User.Identity.Name;
 
             List<ProjectList> _list = new List<ProjectList>();
             _list = _managerServices.getAllProjectByManager(userId);
