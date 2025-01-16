@@ -535,8 +535,10 @@ namespace RemoteSensingProject.Models.Admin
                             Id = Convert.ToInt32(rd["id"]),
                             ProjectTitle = rd["title"].ToString(),
                             AssignDate = Convert.ToDateTime(rd["assignDate"]),
+                            AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
                             CompletionDate = Convert.ToDateTime(rd["completionDate"]),
                             StartDate = Convert.ToDateTime(rd["startDate"]),
+                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
                             ProjectManager = rd["name"].ToString(),
                             ProjectBudget = Convert.ToDecimal(rd["budget"]),
                             ProjectDescription = rd["description"].ToString(),
@@ -585,8 +587,11 @@ namespace RemoteSensingProject.Models.Admin
                         pm.Id = Convert.ToInt32(rd["id"]);
                         pm.ProjectTitle = rd["title"].ToString();
                         pm.AssignDate = Convert.ToDateTime(rd["assignDate"]);
+                        pm.AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy");
                         pm.CompletionDate = Convert.ToDateTime(rd["completionDate"]);
+                        pm.CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy");
                         pm.StartDate = Convert.ToDateTime(rd["startDate"]);
+                        pm.StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy");
                         pm.ProjectManager = rd["ManagerName"].ToString();
                         pm.ProjectBudget = Convert.ToDecimal(rd["budget"]);
                         pm.ProjectDescription = rd["description"].ToString();

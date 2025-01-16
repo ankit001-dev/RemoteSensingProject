@@ -28,6 +28,7 @@
     .badge-completed {
         background-color: #28a745; /* Green for completed */
     }
+   
 </style>
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
@@ -162,8 +163,8 @@
 <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="updateModalLabel">Modal title</h1>
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="updateModalLabel">Update Meeting Detail</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -181,19 +182,19 @@
 
                         <div class="col-lg-4 mb-3 col-12">
                             <div class="form-group">
-                                <label>Meeting Member:</label>
-                                <select class="form-control" id="updateMeetingMember" name="meetingMemberList" multiple>
-                                    @if (Model != null)
-                                    {
-                                        foreach (var item in Model)
-                                        {
-                                            if (item != null)
-                                            {
-                                                <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
-                                            }
-                                        }
-                                    }
-                                </select>
+                                <label>Meeting Member:</label><br />
+                                                              <select class="form-control select2" id="updateMeetingMember" name="meetingMemberList" multiple>
+                                                                  @if (Model != null)
+                                                                  {
+                                                                      foreach (var item in Model)
+                                                                      {
+                                                                          if (item != null)
+                                                                          {
+                                                                              <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
+                                                                          }
+                                                                      }
+                                                                  }
+                                                              </select>
                             </div>
                         </div>
 
@@ -264,14 +265,14 @@
         $(document).ready(function () {
             $('#tbl_Member').DataTable();
             $('#basicExample').DataTable();
-            $("#updateMeetingMember").select2({
-                placeholder: "--Select Member--"
-            })
-            $("#MeetingMember").select2({
-                placeholder: "--Select Member--"
-            })
+          
+            setTimeout(()=>{
+                          $(".select2").select2({
+              placeholder: "--Select Member--"
+          })
+            },1000)
+          
         })
-       
         $('#select_all').on('click', function () {
             const isChecked = $(this).prop("checked");
             const nodes = $('#tblMem').DataTable().rows({ 'search': 'applied' }).nodes().to$();

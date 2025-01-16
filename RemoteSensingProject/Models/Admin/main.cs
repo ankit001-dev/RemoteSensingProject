@@ -49,6 +49,8 @@ namespace RemoteSensingProject.Models.Admin
             public DateTime CompletionDate { get; set; }
             public string ProjectManager { get; set; }
             public string CompletionDatestring { get; set; }
+            public string AssignDateString { get; set; }
+            public string StartDateString { get; set; }
             public int[] SubOrdinate { get; set; }
             public HttpPostedFileBase projectDocument { get; set; }
             public string projectDocumentUrl { get; set; }
