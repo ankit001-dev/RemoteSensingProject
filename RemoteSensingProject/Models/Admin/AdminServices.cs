@@ -604,6 +604,7 @@ namespace RemoteSensingProject.Models.Admin
                         pm.projectDocumentUrl = rd["ProjectDocument"].ToString();
                         pm.ProjectType = rd["projectType"].ToString();
                         pm.ProjectStage = Convert.ToBoolean(rd["stage"]);
+                        pm.ProjectStage = Convert.ToBoolean(rd["CompleteStatus"]);
                         if (pm.ProjectType.Equals("External"))
                         {
                             pm.Address = rd["address"].ToString();

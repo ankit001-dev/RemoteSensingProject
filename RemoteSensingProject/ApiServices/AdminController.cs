@@ -457,6 +457,87 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
+
+        [HttpGet]
+        [Route("api/adminDelayProject")]
+        public IHttpActionResult DelayProject()
+        {
+            try
+            {
+                var data = _adminServices.Project_List().Where(d => d.CompletionDate < DateTime.Now).ToList();
+                return Ok(new
+                {
+                    status = true,
+                    message = "Delay project data !",
+                    data = data,
+
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/adminOngoingProject")]
+        public IHttpActionResult ongoingProject()
+        {
+            try
+            {
+                var data = _adminServices.Project_List().Where(d => d.CompletionDate > DateTime.Now).ToList();
+                return Ok(new
+                {
+                    status = true,
+                    message = "Delay project data !",
+                    data = data,
+
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/adminCompleteProject")]
+
+        public IHttpActionResult completeProject()
+        {
+            try
+            {
+                var data = _adminServices.Project_List().Where(d => d.ProjectStatus).ToList();
+                return Ok(new
+                {
+                    status = true,
+                    message = "Delay project data !",
+                    data = data,
+
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
         #endregion
 
         #region Create Project
@@ -511,7 +592,7 @@ namespace RemoteSensingProject.ApiServices
                     StartDate = Convert.ToDateTime(request.Form.Get("StartDate")),
                     CompletionDate = Convert.ToDateTime(request.Form.Get("CompletionDate")),
                     ProjectManager = request.Form.Get("ProjectManager"),
-                    ProjectBudget = Convert.ToDecimal(request.Form.Get("ProjectManager")),
+                    ProjectBudget = Convert.ToDecimal(request.Form.Get("ProjectBudget")),
                     ProjectDescription = request.Form.Get("ProjectDescription"),
                     projectDocumentUrl = request.Form.Get("projectDocumentUrl"),
                     ProjectType = request.Form.Get("ProjectType"),
