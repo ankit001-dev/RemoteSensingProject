@@ -17,9 +17,9 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class UserCredential
     {
-        public string role { get; set; }
+        public string userRole { get; set; }
         public string username { get; set; }
-        public int userId { get; set; }
+        public string userId { get; set; }
     }
     public class ProjectList
     {
@@ -41,6 +41,10 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string Upadtedat { get; set; }
         public string CreatedBy { get; set;}
         public int CompleteionStatus { get; set;}
+        public int ApproveStatus { get; set;}
+        public string CompletionDatestring { get; set; }
+        public string AssignDateString { get; set; }
+        public string StartDateString { get; set; }
     }
     
         public class ApprovedProject

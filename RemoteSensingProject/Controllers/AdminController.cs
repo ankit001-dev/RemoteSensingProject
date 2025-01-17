@@ -168,6 +168,7 @@ namespace RemoteSensingProject.Controllers
             var data = _adminServices.SelectEmployeeRecord();
             ViewBag.projectManager = data.Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
+
             return View();
         }
 
@@ -264,6 +265,26 @@ namespace RemoteSensingProject.Controllers
             }
             bool status = _adminServices.insertMeeting(formData);
             if (status)
+            {
+                formData.Attachment.SaveAs(Server.MapPath(path));
+            }
+            return Json(new { success = status }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult UpdateMeeting(AddMeeting_Model formData)
+        {
+            string path = null;
+            if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
+            {
+                var guid = Guid.NewGuid();
+                var FileExtension = Path.GetExtension(formData.Attachment.FileName);
+                var fileName = $"{guid}{FileExtension}";
+                path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
+
+                formData.Attachment_Url = path;
+            }
+            bool status = _adminServices.UpdateMeeting(formData);
+            if (status && formData.Attachment!=null)
             {
                 formData.Attachment.SaveAs(Server.MapPath(path));
             }
