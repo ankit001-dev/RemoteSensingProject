@@ -19,11 +19,11 @@
                 <input type="text" id="searchByProjectName" name="searchByProjectName" placeholder="Search by project name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
-                <select id="statusFilter"class="form-select form-select-lg">
-                    <option selected disabled>Project Status</option>
-                    <option value="1">Work in Progress</option>
-                    <option value="2">Pending</option>
-                    <option value="3">Completed</option>
+                <select class="form-select form-select-lg" id="filterProjectStatus">
+                    <option value="" selected>Project Status</option>
+                    <option value="Work in Progress">Work in Progress</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
                 </select>
             </div>
         </div>
@@ -268,7 +268,7 @@
 
         $('#searchByProjectName').on('keyup', function () {
             let table = $("#projectTable").DataTable();
-            debugger
+           
             table.columns(1).search($(this).val()).draw();
         });
         setTimeout(() => {
@@ -281,20 +281,25 @@
             type: "GET",
             success: function (res) {
                 $("#projectTable tbody").empty();
-
+           
                 $.each(res._list, function (index, item) {
-                    var statusLabel = item.CompleteionStatus === 0 && item.ApproveStatus === 1
-                        ? "Processing"
-                        : item.CompleteionStatus === 1 && item.ApproveStatus === 1
+                    var todayDate = new Date();
+                    var currentDate = ("0" + todayDate.getDate()).slice(-2) + "-" +
+                        ("0" + (todayDate.getMonth() + 1)).slice(-2) + "-" +
+                        todayDate.getFullYear();
+                    debugger
+                    var statusLabel = item.CompleteionStatus === 0 && item.StartDateString <= currentDate
+                        ? "Work in Progress"
+                        : item.CompleteionStatus === 1 && item.CompletionDatestring < currentDate
                             ? "Completed"
                             : "Pending";
 
                     var badgeColor =
-                        item.CompleteionStatus === 0 && item.ApproveStatus === 1
-                            ? "badge bg-warning text-dark"
-                            : item.CompleteionStatus === 1 && item.ApproveStatus === 1
-                                ? "badge bg-success"
-                                : "badge bg-secondary";
+                        item.CompleteionStatus === 0 && item.StartDateString <= currentDate
+                            ? " fw-bold text-secondary" 
+                            : item.CompleteionStatus === 0 && item.StartDateString < currentDate
+                                ? " fw-bold " 
+                                : " fw-bold text-warning font-italic"; 
 
                 var row = `<tr>
                 <td>${index + 1}</td>
@@ -341,9 +346,16 @@
 
 
     })
+
+    $(document).ready(function () {
+        $("#filterProjectStatus").on("change", function () {
+            var table = $("#projectTable").DataTable();
+            table.column(5).search(this.value).draw();
+        })
+    })
 </script>
 
-<script>
+@*<script>
     $(document).ready(function () {
 
         $("#statusFilter").on("change", function () {
@@ -421,9 +433,9 @@
 
     })
 
+
   
-  
-</script>
+</script>*@
 
 
 
