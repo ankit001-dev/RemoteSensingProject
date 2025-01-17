@@ -94,8 +94,6 @@ namespace RemoteSensingProject.Controllers
 
         #endregion
 
-        #region Employee
-
         public ActionResult Employee_Registration(int? division)
         {
 
@@ -161,7 +159,6 @@ namespace RemoteSensingProject.Controllers
                 return Json(res,JsonRequestBehavior.AllowGet);
         }
 
-        #endregion
         #region add project
         public ActionResult Add_Project()
         {
@@ -230,15 +227,14 @@ namespace RemoteSensingProject.Controllers
             ViewBag.ProjectList = _adminServices.Project_List();
             return View();
         }
+        #endregion
+
         public ActionResult All_Projects()
         {
             ViewBag.ManagerList = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
             ViewBag.ProjectList = _adminServices.Project_List();
             return View();
         }
-        #endregion
-
-
         public ActionResult Project_Request()
         {
             return View();
@@ -309,11 +305,9 @@ namespace RemoteSensingProject.Controllers
 
         #endregion End Meeting
 
-        public ActionResult MeetingConclusion(int meeting)
+        public ActionResult MeetingConclusion()
         {
-            var obj = _adminServices.getMeetingById(meeting);
-            ViewBag.getMember = _adminServices.GetMeetingMemberList(meeting);
-            return View(obj);
+            return View();
         }
         public ActionResult Project_Detail()
         {
@@ -324,15 +318,13 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult View_Project_Stage(int Id)
+        public ActionResult View_Project_Stage()
         {
-            ViewBag.ProjectStages = _adminServices.ProjectStagesList(Id);
             return View();
         }
 
-        public ActionResult View_Expenses(int Id)
+        public ActionResult View_Expenses()
         {
-            ViewBag.ProjectExpenses = _adminServices.ProjectBudgetList(Id);
             return View();
         }
         #region reports

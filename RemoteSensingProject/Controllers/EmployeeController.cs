@@ -35,13 +35,20 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult InsertProject(createProjectModel pm)
         {
+            var managerName = User.Identity.Name;
+            UserCredential userObj = new UserCredential();
+            userObj = _managerServices.getManagerDetails(managerName);
+            if(userObj != null)
+            {
+                pm.pm.ProjectManager = userObj.userId;
+            }
             if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
             {
                 pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
                 pm.pm.projectDocumentUrl = "/ProjectContent/ProjectManager/ProjectDocs/" + pm.pm.projectDocumentUrl;
             }
 
-            if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
+            if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
             {
                 foreach (var item in pm.stages)
                 {
@@ -53,7 +60,8 @@ namespace RemoteSensingProject.Controllers
                 }
             }
 
-            bool res = _adminServices.addProject(pm);
+            bool res = _managerServices.addManagerProject(pm);
+
             if (res)
             {
                 if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
@@ -79,8 +87,15 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Project_List()
         {
+            var managerName = User.Identity.Name;
+            UserCredential userObj = new UserCredential();
+            userObj = _managerServices.getManagerDetails(managerName);
+            ViewBag.ProjectList = _managerServices.Project_List(userObj.userId);
             return View();
         }
+     
+
+
         #region /* Assign Project */
         public ActionResult Assigned_Project()
         {
@@ -159,11 +174,42 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Notice()
+        public ActionResult Notice(int? projectId)
         {
+            dynamic noticeList = null;
+            var managerName = User.Identity.Name;
+            UserCredential userObj = new UserCredential();
+            userObj = _managerServices.getManagerDetails(managerName);
+            if (projectId.HasValue)
+            {
+                noticeList = _adminServices.getNoticeList().Where(e => e.ProjectManagerId == projectId).ToList();
+            }
+            else
+            {
+                noticeList = _managerServices.getNoticeList(userObj.userId);
+
+
+            }
+            ViewBag.ProjectList = _adminServices.Project_List();
+
+            ViewData["NoticeList"] = noticeList;
+
             return View();
         }
+        [HttpGet]
+        public ActionResult GetProjectById(int? id)
+        {
+            dynamic project = null;
+            if (id.HasValue)
+            {
 
+                project = _managerServices.GetProjectById((int)id);
+
+            }
+
+            return Json(project, JsonRequestBehavior.AllowGet);
+
+        }
         public ActionResult All_Project_Report()
         {
             return View();
