@@ -186,7 +186,7 @@ namespace RemoteSensingProject.Controllers
             if(pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
             {
                 pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
-                pm.pm.projectDocumentUrl = "/ProjectContent/Admin/ProjectDocs/" + pm.pm.projectDocumentUrl;
+                pm.pm.projectDocumentUrl = Path.Combine("/ProjectContent/Admin/ProjectDocs/", pm.pm.projectDocumentUrl);
             }
 
             if(pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
@@ -196,7 +196,7 @@ namespace RemoteSensingProject.Controllers
                     if(item.Stage_Document != null && item.Stage_Document.FileName != "")
                     {
                         item.Document_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(item.Stage_Document.FileName);
-                        item.Document_Url = "/ProjectContent/Admin/ProjectDocs/" + item.Document_Url;
+                        item.Document_Url = Path.Combine("/ProjectContent/Admin/ProjectDocs/", item.Document_Url);
                     }
                 }
             }
@@ -232,7 +232,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult All_Projects()
         {
-            ViewBag.ManagerList = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager"));
+            ViewBag.ManagerList = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
             ViewBag.ProjectList = _adminServices.Project_List();
             return View();
         }
@@ -335,7 +335,7 @@ namespace RemoteSensingProject.Controllers
             ViewBag.ProjectExpenses = _adminServices.ProjectBudgetList(Id);
             return View();
         }
-
+        #region reports
         public ActionResult Project_Report()
         {
             return View();
@@ -343,11 +343,14 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Meeting_Report()
         {
+            ViewBag.MeetingList = _adminServices.getAllmeeting();
             return View();
         }
 
         public ActionResult Member_Report()
         {
+            ViewBag.MemberList = _adminServices.SelectEmployeeRecord();
+            ViewBag.DivisonList = _adminServices.ListDivison();
             return View();
         }
 
@@ -360,6 +363,7 @@ namespace RemoteSensingProject.Controllers
         {
             return View();
         }
+        #endregion
         public ActionResult Generate_Notice()
         {
             ViewBag.ProjectList = _adminServices.Project_List();

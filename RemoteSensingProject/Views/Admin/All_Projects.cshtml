@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "All_Projects";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    int i = 1;
 }
 
 <style>
@@ -19,7 +20,6 @@
 
     .progress {
         height: 100% !important;
-        width: 70%;
         background-color: #4caf50 !important;
         border-radius: 5px !important;
         text-align: center !important;
@@ -35,22 +35,24 @@
                 <h5>All Project Lists</h5>
             </div>
             <div class="col-lg-4 col-md-6">
-                <input type="text" placeholder="Search by project name" class="form-control">
+                <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
-                <select class="form-select form-select-lg">
-                    <option selected>Serch by Project Manager</option>
-                    <option value="1">Manager1</option>
-                    <option value="2">Manager2</option>
-                    <option value="3">Manager3</option>
+                <select class="form-select form-select-lg" id="searchByProjectManager">
+                    <option selected value="">Serch by Project Manager</option>
+                   @foreach(var item in ViewBag.ManagerList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+            {
+                <option>@item.EmployeeName</option>
+            }
                 </select>
             </div>
             <div class="col-lg-3 col-md-6">
-                <select class="form-select form-select-lg">
-                    <option selected>Project Status</option>
-                    <option value="1">Work in Progress</option>
-                    <option value="2">Pending</option>
-                    <option value="3">Completed</option>
+                <select class="form-select form-select-lg" id="filterProjectStatus">
+                    <option selected value="">Project Status</option>
+                    <option>Work in Progress</option>
+                    <option>Pending</option>
+                    <option>Delay</option>
+                    <option>Completed</option>
                 </select>
             </div>
         </div>
@@ -79,7 +81,7 @@
                             @foreach (var item in ViewBag.ProjectList as List<RemoteSensingProject.Models.Admin.main.Project_model>)
                             {
                                 <tr>
-                                    <td class="text-center">1</td>
+                                    <td class="text-center">@i</td>
                                     <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
                                     <td>@item.ProjectManager</td>
                                     <td>@item.ProjectTitle</td>
@@ -87,7 +89,7 @@
                                     <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
                                     <td>
                                         <div class="progress-bar">
-                                            <div class="progress">70%</div>
+                                            <div class="progress" style="width:0%; color:black;">0%</div>
                                         </div>
                                     </td>
                                     <td>
@@ -143,6 +145,7 @@
                                         </ul>
                                     </td>
                                 </tr>
+                                i++;
                             }
 
                         </tbody>
@@ -332,14 +335,17 @@
 
         $("#searchProjectBy").on("input", function () {
             var table = $("#dataTableExample").DataTable();
-            table.column(2).search(this.value).draw()
+            table.column(3).search(this.value).draw()
         });
         $("#filterProjectStatus").on("change", function () {
             var table = $("#dataTableExample").DataTable();
-            table.column(6).search(this.value).draw()
-
-
+            table.column(7).search(this.value).draw()
         })
+        $("#searchByProjectManager").on("change", function () {
+            var table = $("#dataTableExample").DataTable();
+            table.column(2).search(this.value).draw()
+        })
+
     });
 </script>
 
