@@ -15,13 +15,19 @@
                     <table id="tblheaderdetails" class="meeting-table table">
                         <tr>
                             <th>Meeting Title : </th>
-                            <td>Pardhan Mantri Awaas Yojana (PMAY-G)</td>
+                            <td>@Model.MeetingTitle</td>
                             <th></th>
                             <th>Time :</th>
-                            <td>05/07/2024 11:34 AM</td>
+                            <td>@Model.MeetingTimeString</td>
                             <th></th>
-                            <th>Venue :</th>
-                            <td>Block A, Hall-120, UK</td>
+                            <th>Type :</th>
+                            <td>@Model.MeetingType</td>
+                            @if (@Model.MeetingType.ToLower() == "offline")
+                            {
+                                <th>Venue :</th>
+                                <td>@Model.MeetingLink</td>
+                            }
+
                         </tr>
                     </table>
                 </div>
@@ -36,6 +42,8 @@
                             <thead>
                                 <tr>
                                     <th>  <input type="checkbox" name="select_all" value="1" id="select_all" onclick="toggle(this);"> All Present</th>
+                                    <th>Sr</th>
+                                    <th>Code</th>
                                     <th>Name</th>
                                     <th>Type</th>
                                     <th>Contact No</th>
@@ -43,48 +51,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <th><input type="checkbox" name="emp_id[]"></th>
-                                    <td>Mr. Shivam Sharma</td>
-                                    <td>Project Manager</td>
-                                    <td>74373975435</td>
-                                    <td>test12@gmail.com</td>
-                                </tr>
-                                <tr>
-                                    <th><input type="checkbox" name="emp_id[]"></th>
-                                    <td>Shri Ganga Sharma</td>
-                                    <td>employee</td>
-                                    <td>74373975435</td>
-                                    <td>test12@gmail.com</td>
-                                </tr>
-                                <tr>
-                                    <th><input type="checkbox" name="emp_id[]"></th>
-                                    <td>Mr. Ramesh</td>
-                                    <td>employee</td>
-                                    <td>74373975435</td>
-                                    <td>test12@gmail.com</td>
-                                </tr>
-                                <tr>
-                                    <th><input type="checkbox" name="emp_id[]"></th>
-                                    <td>Mr. Mohan Singh</td>
-                                    <td>Project Manager</td>
-                                    <td>74373975435</td>
-                                    <td>test12@gmail.com</td>
-                                </tr>
-                                <tr>
-                                    <th><input type="checkbox" name="emp_id[]"></th>
-                                    <td>Mr. Mukesh Kumar</td>
-                                    <td>employee</td>
-                                    <td>74373975435</td>
-                                    <td>test12@gmail.com</td>
-                                </tr>
-                                <tr>
-                                    <th><input type="checkbox" name="emp_id[]"></th>
-                                    <td>Mr. Rohan</td>
-                                    <td>Project Manager</td>
-                                    <td>74373975435</td>
-                                    <td>test12@gmail.com</td>
-                                </tr>
+                                @if (ViewBag.getMember != null)
+                                {
+                                    int count = 1;
+                                    foreach (var item in ViewBag.getMember)
+                                    {
+                                        <tr>
+                                            <th><input type="checkbox" value="@item.Id" name="emp_id[]"></th>
+                                            <td>@count</td>
+                                            <td>@item.EmployeeCode</td>
+                                            <td>@item.EmployeeName</td>
+                                            <td>@item.EmployeeRole</td>
+                                            <td>@item.MobileNo</td>
+                                            <td>@item.Email</td>
+                                        </tr>
+                                        count++;
+                                    }
+
+                                }
+
                             </tbody>
 
                             <tfoot>
@@ -108,29 +93,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Key Point 1</td>
-                        <td>
-                            Confirming the topics to be discussed and any adjustments to the agenda.
-                        </td>
-                        <td> <input type="text" placeholder="Please Write Response" name="response" class="form-control" /> </td>
-                    </tr>
-                    <tr>
-                        <td>Key Point 2</td>
-                        <td>
-                            Highlighting any upcoming events, deadlines, or milestones that require attention.
-                        </td>
-                        <td> <input type="text" placeholder="Please Write Response" name="response" class="form-control" /> </td>
-
-                    </tr>
-                    <tr>
-                        <td>Key Point 3</td>
-                        <td>
-                            Summarizing key takeaways, thanking participants for their contributions, and confirming the next steps.
-                        </td>
-                        <td> <input type="text" placeholder="Please Write Response" name="response" class="form-control" /> </td>
-
-                    </tr>
+                    @if (Model != null)
+                                {
+                                    int i = 1;
+                                    foreach (var item in Model.MeetingKeyPointDict)
+                                    {
+                            <tr>
+                                <td>Key Point @i</td>
+                                <td>
+                                    @item.keyPoint
+                                </td>
+                                <td> <input type="text" data-id="@item.Id" placeholder="Please Write Response" name="response" class="form-control" /> </td>
+                            </tr>
+                            i++;
+                        }
+                    }
                     <!-- Add more rows as needed -->
                 </tbody>
             </table>

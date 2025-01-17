@@ -309,9 +309,11 @@ namespace RemoteSensingProject.Controllers
 
         #endregion End Meeting
 
-        public ActionResult MeetingConclusion()
+        public ActionResult MeetingConclusion(int meeting)
         {
-            return View();
+            var obj = _adminServices.getMeetingById(meeting);
+            ViewBag.getMember = _adminServices.GetMeetingMemberList(meeting);
+            return View(obj);
         }
         public ActionResult Project_Detail()
         {
