@@ -441,7 +441,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@ProjectDocument", pm.pm.projectDocumentUrl);
                 cmd.Parameters.AddWithValue("@projectType", pm.pm.ProjectType);
                 cmd.Parameters.AddWithValue("@stage", pm.pm.ProjectStage);
-                cmd.Parameters.AddWithValue("@createdBy", "projectManager");
+                cmd.Parameters.AddWithValue("@createdBy", "admin");
                 cmd.Parameters.AddWithValue("@ApproveStatus", 1);
                 cmd.Parameters.Add("@project_Id", SqlDbType.Int);
                 cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
