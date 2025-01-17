@@ -842,8 +842,6 @@ namespace RemoteSensingProject.ApiServices
                 if (string.IsNullOrWhiteSpace(request.Form.Get("keyPointList")))
                     validationErrors.Add("Key points is required.");
 
-
-                
                 var formData = new AddMeeting_Model
                 {
                     Id = Convert.ToInt32(request.Form.Get("Id")),

@@ -284,9 +284,7 @@ else
         });
         $("#filterProjectStatus").on("change", function () {
             var table = $("#dataTableExample").DataTable();
-                table.column(6).search(this.value).draw()
-            
-
+            table.column(6).search(this.value).draw();
         })
     });
 </script>
