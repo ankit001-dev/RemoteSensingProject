@@ -315,7 +315,7 @@ namespace RemoteSensingProject.Models.Admin
                         DevisionName = record["devisionName"].ToString(),
                         Email = record["email"].ToString(),
                         MobileNo = Convert.ToInt64(record["mobile"]),
-                        EmployeeRole = record["role"].ToString(),
+                        EmployeeRole = record["role"].ToString().Trim(),
                         Division = (int)record["devision"],
                         DesignationName = record["designationName"].ToString(),
                         Status = (bool)record["status"],
@@ -465,7 +465,7 @@ namespace RemoteSensingProject.Models.Admin
                             i += cmd.ExecuteNonQuery();
                         }
                     }
-                    if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
+                    if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
                     {
                         foreach (var item in pm.stages)
                         {
@@ -583,8 +583,6 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
-                List<Project_Statge> stagesList = new List<Project_Statge>();
-                List<Project_Budget> budgetList = new List<Project_Budget>();
                 List<Project_Subordination> subList = new List<Project_Subordination>();
                 Project_model pm = new Project_model();
                 if (rd.HasRows)
@@ -612,20 +610,6 @@ namespace RemoteSensingProject.Models.Admin
                             pm.ProjectDepartment = rd["DepartmentName"].ToString();
                             pm.ContactPerson = rd["contactPerson"].ToString();
                         }
-                        if (pm.ProjectStage)
-                        {
-                            if(rd["StageId"] != DBNull.Value)
-                            {
-
-                            stagesList.Add(new Project_Statge
-                            {
-                                Id = Convert.ToInt32(rd["StageId"]),
-                                KeyPoint = rd["keyPoint"].ToString(),
-                                CompletionDate = Convert.ToDateTime(rd["completeDate"]),
-                                Document_Url = rd["stageDocument"].ToString()
-                            });
-                            }
-                        }
                         if (rd["SubordinateLinkId"] != DBNull.Value)
                         {
                             subList.Add(new Project_Subordination
@@ -635,27 +619,14 @@ namespace RemoteSensingProject.Models.Admin
                                 EmpCode = rd["subCode"].ToString()
                             });
                         }
-                        if (pm.ProjectBudget > 0)
-                        {
-                            if (rd["budgetId"] != DBNull.Value)
-                            {
-                                budgetList.Add(new Project_Budget
-                                {
-                                    Id = Convert.ToInt32(rd["BudgetId"]),
-                                    ProjectHeads = rd["heads"].ToString(),
-                                    ProjectAmount = Convert.ToDecimal(rd["headsAmount"]),
-                                    Miscellaneous = rd["miscellaneous"].ToString(),
-                                    Miscell_amt = Convert.ToDecimal(rd["miscAmount"])
-                                });
-                            }
-                        }
-
                     }
+
+                    rd.Close();
                 }
                 cpm.pm = pm;
                 cpm.SubOrdinate = subList;
-                cpm.budgets = budgetList;
-                cpm.stages = stagesList;
+                cpm.budgets = ProjectBudgetList(id);
+                cpm.stages = ProjectStagesList(id); 
                 return cpm;
             }
             catch (Exception ex)
@@ -797,7 +768,8 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetBudgetByProjectId");
                 cmd.Parameters.AddWithValue("@id", Id);
-                con.Open();
+                if(con.State == ConnectionState.Closed)
+                    con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
@@ -836,7 +808,8 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetProjectStageByProjectId");
                 cmd.Parameters.AddWithValue("@id", Id);
-                con.Open();
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {

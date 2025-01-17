@@ -56,5 +56,11 @@ namespace RemoteSensingProject.Controllers
                 }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("login");
+        }
     }
 }
