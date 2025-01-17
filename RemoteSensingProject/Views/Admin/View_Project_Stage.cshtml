@@ -71,54 +71,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-start">Stage 1</td>
-                                <td>Project Initiation</td>
-                                <td>
-                                    <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                </td>
-                                <td>30/09/2024</td>
-                                <td><span class="badge bg-success">Completed</span></td>
-                                <td>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#viewStatusModal"><i class="link-icon" data-feather="eye"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Stage 2</td>
-                                <td>Project Planing</td>
-                                <td>
-                                    <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                </td>
-                                <td>30/10/2024</td>
-                                <td><span class="badge bg-danger">Delay by 10 Days</span></td>
-                                <td>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Stage 3</td>
-                                <td>Project Execution</td>
-                                <td>
-                                    <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                </td>
-                                <td>30/11/2024</td>
-                                <td><span class="badge bg-info">Pending</span></td>
-                                <td>
-                                    @*<a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>*@
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Stage 4</td>
-                                <td>Project Monitoring and controlling</td>
-                                <td>
-                                    <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                </td>
-                                <td>30/12/2024</td>
-                                <td><span class="badge bg-info">Pending</span></td>
-                                <td>
-                                    @*<a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>*@
-                                </td>
-                            </tr>
+                            @foreach(var item in ViewBag.ProjectStages as List<RemoteSensingProject.Models.Admin.main.Project_Statge>)
+            {
+<tr>
+    <td class="text-start">Stage 1</td>
+    <td>@item.KeyPoint</td>
+    <td>
+        <a href="@item.Document_Url"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+    </td>
+    <td>30/09/2024</td>
+    <td><span class="badge bg-success">Completed</span></td>
+    <td>
+        <a href="#" data-bs-toggle="modal" data-bs-target="#viewStatusModal"><i class="link-icon" data-feather="eye"></i></a>
+    </td>
+</tr>
+            }
                         </tbody>
                     </table>
                 </div>
