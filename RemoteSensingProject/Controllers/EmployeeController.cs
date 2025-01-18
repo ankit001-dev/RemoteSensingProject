@@ -190,11 +190,23 @@ namespace RemoteSensingProject.Controllers
             ViewBag.ProjectStages = _managerServices.ProjectStagesList(Id);
             return View();
         }
-
-        public ActionResult AddStageStatus(Project_Statge obj)
+        [HttpPost]
+        public ActionResult AddStageStatus(Project_Statge formData)
         {
+            if(formData.StageDocument !=null && formData.StageDocument.ContentLength > 0)
+            {
+                formData.StageDocument_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(formData.StageDocument.FileName);
+                formData.StageDocument_Url = Path.Combine("/ProjectContent/ProjectManager/ProjectDocs/", formData.StageDocument_Url);
+            }
             string message = "";
-            bool status = _managerServices.insertStageStatus(obj);
+            bool status = _managerServices.insertStageStatus(formData);
+            if (status)
+            {
+                if(formData.StageDocument !=null && formData.StageDocument.FileName != "")
+                {
+                    formData.StageDocument.SaveAs(Server.MapPath(formData.StageDocument_Url));
+                }
+            }
             if (status)
             { 
                
