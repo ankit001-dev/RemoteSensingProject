@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Controllers
@@ -24,6 +25,17 @@ namespace RemoteSensingProject.Controllers
         // GET: Employee
         public ActionResult Dashboard()
         {
+            var managerName = User.Identity.Name;
+            UserCredential userObj = new UserCredential();
+            userObj = _managerServices.getManagerDetails(managerName);
+
+            var TotalCount = _managerServices.DashboardCount(userObj.userId);
+            ViewBag.TotalAssignProject = TotalCount.TotalAssignProject;
+            ViewBag.TotaCompleteProject = TotalCount.TotaCompleteProject;
+            ViewBag.TotalDelayProject = TotalCount.TotalDelayProject;
+            ViewBag.TotalOngoingProject = TotalCount.TotalOngoingProject;
+            ViewBag.TotalNotice = TotalCount.TotalNotice;
+
             return View();
         }
         public ActionResult Add_Project()
@@ -117,30 +129,39 @@ namespace RemoteSensingProject.Controllers
             _list = _managerServices.getAllProjectByManager(userObj.userId);
             return Json(new {_list=_list},JsonRequestBehavior.AllowGet);
         }
-        public ActionResult filterProject(string projectStatus)
+        public ActionResult GetProjecDatatById(int Id)
         {
-            var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
-            
-            List<ProjectList> _list = new List<ProjectList>();
-            if (Convert.ToInt32(projectStatus) == 1)
+            var data = _managerServices.GetProjectById(Id);
+            return Json(new
             {
-                _list = _managerServices.getAllProjectByManager(userObj.userId).Where(e => e.CompleteionStatus == 0 && e.ApproveStatus == 1).ToList<ProjectList>();
-            }else if (Convert.ToInt32(projectStatus) == 3)
-            {
-                _list=_managerServices.getAllProjectByManager(userObj.userId).Where(e=>e.CompleteionStatus==1 && e.ApproveStatus==1).ToList<ProjectList>();
-            }else if(Convert.ToInt32(projectStatus) == 2)
-            {
-                _list = _managerServices.getAllProjectByManager(userObj.userId).Where(e => e.CompleteionStatus == 0 && e.ApproveStatus == 0).ToList<ProjectList>();
-            }
-            else
-            {
-                _list = _managerServices.getAllProjectByManager(userObj.userId);
-            }
-  
-            return Json(new { _list=_list},JsonRequestBehavior.AllowGet);
+                status = true,
+                data = data
+            }, JsonRequestBehavior.AllowGet);
         }
+        //public ActionResult filterProject(string projectStatus)
+        //{
+        //    var managerName = User.Identity.Name;
+        //    UserCredential userObj = new UserCredential();
+        //    userObj = _managerServices.getManagerDetails(managerName);
+
+        //    List<ProjectList> _list = new List<ProjectList>();
+        //    if (Convert.ToInt32(projectStatus) == 1)
+        //    {
+        //        _list = _managerServices.getAllProjectByManager(userObj.userId).Where(e => e.CompleteionStatus == 0 && e.ApproveStatus == 1).ToList<ProjectList>();
+        //    }else if (Convert.ToInt32(projectStatus) == 3)
+        //    {
+        //        _list=_managerServices.getAllProjectByManager(userObj.userId).Where(e=>e.CompleteionStatus==1 && e.ApproveStatus==1).ToList<ProjectList>();
+        //    }else if(Convert.ToInt32(projectStatus) == 2)
+        //    {
+        //        _list = _managerServices.getAllProjectByManager(userObj.userId).Where(e => e.CompleteionStatus == 0 && e.ApproveStatus == 0).ToList<ProjectList>();
+        //    }
+        //    else
+        //    {
+        //        _list = _managerServices.getAllProjectByManager(userObj.userId);
+        //    }
+
+        //    return Json(new { _list=_list},JsonRequestBehavior.AllowGet);
+        //}
         #endregion /* End */
         public ActionResult Approved_Project()
         {
@@ -165,11 +186,29 @@ namespace RemoteSensingProject.Controllers
         #endregion
 
         public ActionResult Update_Project_Stage()
+        public ActionResult Update_Project_Stage(int Id)
         {
+            ViewBag.ProjectStages = _managerServices.ProjectStagesList(Id);
             return View();
         }
 
         public ActionResult Add_Expenses(int Id)
+        public ActionResult AddStageStatus(Project_Statge obj)
+        {
+            string message = "";
+            bool status = _managerServices.insertStageStatus(obj);
+            if (status)
+            { 
+               
+                message = "Satges Updated Successfully !";
+            }
+            else
+            {
+                message = "Failed To Update Stages";
+            }
+            return Json(new {message=message,status=status },JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Add_Expenses()
         {
             ViewData["ProjectStages"] = _adminServices.ProjectBudgetList(Id);
             return View();

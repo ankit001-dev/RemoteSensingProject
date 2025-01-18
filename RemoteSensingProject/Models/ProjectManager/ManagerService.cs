@@ -11,6 +11,46 @@ namespace RemoteSensingProject.Models.ProjectManager
 {
     public class ManagerService : DataFactory
     {
+        #region /* Dashboard Count */
+        public DashboardCount DashboardCount(string userId)
+        {
+            DashboardCount obj = null;
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "ManagerDashboardCount");
+                cmd.Parameters.AddWithValue("@projectManager", userId);
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                if (sdr.Read())
+                {
+                    obj = new DashboardCount();
+                    obj.TotalAssignProject = sdr["TotalAssignProject"].ToString();
+                    obj.TotaCompleteProject = sdr["TotaCompleteProject"].ToString();
+                    obj.TotalDelayProject = sdr["TotalDelayproject"].ToString();
+                    obj.TotalNotice = sdr["TotalNotice"].ToString();
+                    obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
+                }
+
+                sdr.Close();
+
+                return obj;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+
+            }
+        }
+
+        #endregion 
         #region /* Assign Project */
         public List<ProjectList> getAllProjectByManager(string userId)
         {
@@ -314,6 +354,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@project_Id", projectId);
                 con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
+                List<Project_Subordination> subList = new List<Project_Subordination>();
+                Project_model pm = new Project_model();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
@@ -401,8 +443,148 @@ namespace RemoteSensingProject.Models.ProjectManager
                 }
                 return list;
             }catch(Exception ex)
+                            pm.Address = rd["address"].ToString();
+                            pm.ProjectDepartment = rd["DepartmentName"].ToString();
+                            pm.ContactPerson = rd["contactPerson"].ToString();
+                        }
+                        if (rd["SubordinateLinkId"] != DBNull.Value)
+                        {
+                            subList.Add(new Project_Subordination
+                            {
+                                Id = Convert.ToInt32(rd["SubordinateLinkId"]),
+                                Name = rd["subName"].ToString(),
+                                EmpCode = rd["subCode"].ToString()
+                            });
+                        }
+                    }
+
+                    rd.Close();
+                }
+                cpm.pm = pm;
+                cpm.SubOrdinate = subList;
+                cpm.budgets = ProjectBudgetList(id);
+                cpm.stages = ProjectStagesList(id);
+                return cpm;
+            }
+            catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public List<Project_Budget> ProjectBudgetList(int Id)
+        {
+            try
+            {
+                List<Project_Budget> list = new List<Project_Budget>();
+                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "GetBudgetByProjectId");
+                cmd.Parameters.AddWithValue("@id", Id);
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new Project_Budget
+                        {
+                            Id = Convert.ToInt32(rd["id"]),
+                            Project_Id = Convert.ToInt32(rd["project_id"]),
+                            ProjectHeads = rd["heads"].ToString(),
+                            ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0),
+                            Miscellaneous = rd["miscellaneous"].ToString(),
+                            Miscell_amt = Convert.ToDecimal(rd["miscAmount"] != DBNull.Value ? rd["miscAmount"] : 0.00)
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public List<Project_Statge> ProjectStagesList(int Id)
+        {
+            try
+            {
+                List<Project_Statge> list = new List<Project_Statge>();
+                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "GetProjectStageByProjectId");
+                cmd.Parameters.AddWithValue("@id", Id);
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new Project_Statge
+                        {
+                            Id = Convert.ToInt32(rd["id"]),
+                            Project_Id = Convert.ToInt32(rd["project_id"]),
+                            KeyPoint = rd["keyPoint"].ToString(),
+                            CompletionDate = Convert.ToDateTime(rd["completeDate"]),
+                            CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
+                           Document_Url = rd["stageDocument"].ToString(),
+                            Status = rd["status"].ToString(),
+                            completionStatus = Convert.ToInt32(rd["completionStatus"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public bool insertStageStatus(Project_Statge obj)
+        {
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageStageStatus", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertStageStatus");
+                cmd.Parameters.AddWithValue("@stageId", obj.Project_Id);
+                cmd.Parameters.AddWithValue("@Comment", obj.Comment);
+                cmd.Parameters.AddWithValue("@CompletionPrecentage", obj.CompletionPrecentage);
+                cmd.Parameters.AddWithValue("@StageDocument", obj.StageDocument_Url);
+                con.Open();
+                int i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception("An error accured", ex);
             }
             finally
             {

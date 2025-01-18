@@ -52,52 +52,100 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-start">Stage 1</td>
-                                <td>Project Initiation</td>
-                                <td>
-                                    <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                </td>
-                                <td>30/09/2024</td>
-                                <td><span class="badge bg-success">Completed</span></td>
-                                <td><a href="#" data-bs-toggle="modal" data-bs-target="#viewStatusModal"><i class="link-icon" data-feather="eye"></i></a></td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Stage 2</td>
-                                <td>Project Planing</td>
-                                <td>
-                                    <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                </td>
-                                <td>30/10/2024</td>
-                                <td><span class="badge bg-danger">Delay by 10 Days</span></td>
-                                <td>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
+                            @{ int index = 1; }
+                            @if (ViewBag.ProjectStages != null)
+                            {
+                                var currentDate = DateTime.Now.Date;
 
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Stage 3</td>
-                                <td>Project Execution</td>
-                                <td>
-                                    <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                </td>
-                                <td>30/11/2024</td>
-                                <td><span class="badge bg-info">Pending</span></td>
-                                <td><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Stage 4</td>
-                                <td>Project Monitoring and controlling</td>
-                                <td>
-                                    <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                </td>
-                                <td>30/12/2024</td>
-                                <td><span class="badge bg-info">Pending</span></td>
-                                <td>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
-                                </td>
-                            </tr>
+                                foreach (var stages in ViewBag.ProjectStages)
+                                {
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>@stages.KeyPoint</td>
+                                        <td>
+                                            <img src="@stages.Document_Url" height="60" width="100" />
+                                        </td>
+                                        <td>@stages.CompletionDatestring</td>
+                                        <td>
+                                            @if (stages.completionStatus == 1 && stages.CompletionDate < currentDate)
+                                            {
+                                                <span class="badge bg-success">Completed</span>
+                                            }
+                                            else if (stages.completionStatus == 0 && stages.CompletionDate < currentDate)
+                                            {
+                                                <span class="badge bg-danger">Delay by 10 Days</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-info">Pending</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (stages.completionStatus == 1 && stages.CompletionDate < currentDate)
+                                            {
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#viewStatusModal"><i class="link-icon" data-feather="eye"></i></a>
+                                            }
+                                            else if (stages.completionStatus == 0 && stages.CompletionDate < currentDate)
+                                            {
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
+                                            }
+                                            else
+                                            {
+                                                <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                    index++;
+                                }
+                            }
+
+                            @*<tr>
+            <td class="text-start">Stage 1</td>
+            <td>Project Initiation</td>
+            <td>
+                <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+            </td>
+            <td>30/09/2024</td>
+            <td><span class="badge bg-success">Completed</span></td>
+            <td><a href="#" data-bs-toggle="modal" data-bs-target="#viewStatusModal"><i class="link-icon" data-feather="eye"></i></a></td>
+        </tr>
+        <tr>
+            <td class="text-start">Stage 2</td>
+            <td>Project Planing</td>
+            <td>
+                <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+            </td>
+            <td>30/10/2024</td>
+            <td><span class="badge bg-danger">Delay by 10 Days</span></td>
+            <td>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
+
+                <a href="#" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
+            </td>
+        </tr>
+        <tr>
+            <td class="text-start">Stage 3</td>
+            <td>Project Execution</td>
+            <td>
+                <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+            </td>
+            <td>30/11/2024</td>
+            <td><span class="badge bg-info">Pending</span></td>
+            <td><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></td>
+        </tr>
+        <tr>
+            <td class="text-start">Stage 4</td>
+            <td>Project Monitoring and controlling</td>
+            <td>
+                <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+            </td>
+            <td>30/12/2024</td>
+            <td><span class="badge bg-info">Pending</span></td>
+            <td>
+                <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
+            </td>
+        </tr>*@
                         </tbody>
                     </table>
                 </div>
@@ -118,26 +166,27 @@
                 <form class="forms-sample" id="statusForm">
                     <div class="mb-3">
                         <label for="status" class="form-label">Status</label>
-                        <select class="form-select" id="status" name="status">
+                        <select class="form-select" id="completionStatus" name="completionStatus">
                             <option value="">Select Status</option>
-                            <option value="completed">Completed</option>
-                            <option value="delayed">Delayed</option>
+                            <option value="1">Completed</option>
+                            <option value="0">Delayed</option>
                         </select>
                     </div>
 
                     <div id="completedFields" class="d-none">
                         <div class="mb-3">
                             <label for="comment" class="form-label">Comment</label>
-                            <textarea class="form-control form-control-sm" name="tinymce" id="tinymceExample" rows="10" placeholder="Project Description"></textarea>
+                            <textarea class="form-control form-control-sm" name="Comment" id="Comment" rows="10" placeholder="Project Description"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="completion" class="form-label">Completion in %</label>
-                            <input type="number" class="form-control" id="completion" placeholder="Enter Completion Percentage" min="0" max="100">
+                            <input type="number" class="form-control" id="CompletionPrecentage" name="CompletionPrecentage" placeholder="Enter Completion Percentage" min="0" max="100">
                         </div>
                         <div class="mb-3">
                             <label for="upload" class="form-label">Upload Document</label>
-                            <input class="form-control" type="file" id="upload">
+                            <input class="form-control" type="file" id="StageDocument" name="StageDocument">
                         </div>
+                    </div>
                     </div>
 
                     <div id="delayedFields" class="d-none">
@@ -239,4 +288,9 @@
 
 </script>
 
+<script>
+    $(document).ready(function () {
+
+    })
+</script>
 

@@ -96,7 +96,15 @@ namespace RemoteSensingProject.Models.Admin
             public string KeyPoint { get; set; }
             public HttpPostedFileBase Stage_Document { get; set; }
             public string Document_Url { get; set; }
+            public string Status { get; set; }
+            public int completionStatus { get; set; }
             public DateTime CompletionDate { get; set; }
+            public string CompletionDatestring { get; set; }
+            public string Comment { get; set; }
+            public string CompletionPrecentage { get; set; }
+            public HttpPostedFileBase StageDocument { get; set; }
+            public string StageDocument_Url { get; set; }
+            public string DelayReason { get; set; }
         }
         public class Meeting_Model
         {
