@@ -32,8 +32,33 @@ namespace RemoteSensingProject.Models.Admin
             public bool Status { get; set; }
             public int meetingId { get; set; }
             public bool ActiveStatus { get; set; }
+            public bool PresentStatus { get; set; }
 
         }
+
+        public class MeetingConclusion
+        {
+            public int Id { get; set; }
+            public int Meeting { get; set; }
+            public List<string> KeyPointId { get; set; }
+            public List<string> MemberId { get; set; }
+            public List<string> KeyResponse { get; set; }
+            public string Conclusion { get; set; }
+            public DateTime? NextFollowUpDate { get; set; }
+            public string NextFollow { get; set; }
+            public bool FollowUpStatus { get; set; }
+            public string MeetingDate { get; set; }
+            public string mode { get; set; }
+            public string address { get; set; }
+            public List<string> MeetingMemberList { get; set; }
+        }
+
+        public class KeyPointResponse
+        {
+            public string KeyPoint { get; set; }
+            public string Response { get; set; }
+        }
+
         public class createProjectModel
         {
             public Project_model pm { get; set; }
@@ -129,6 +154,7 @@ namespace RemoteSensingProject.Models.Admin
             public string MeetingType { get; set; }
             public string MeetingMember { get; set; }
             public string MeetingLink { get; set; }
+            public string MeetingAddress { get; set; }
             public string MeetingTitle { get; set; }
             public string MeetingDate { get; set; }
             public DateTime MeetingTime { get; set; }
