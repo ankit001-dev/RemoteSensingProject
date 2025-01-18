@@ -67,6 +67,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 while (sdr.Read())
                 {
                     obj = new ProjectList();
+                    obj.Id = Convert.ToInt32(sdr["id"]);
                     obj.Title = sdr["title"].ToString();
                     obj.AssignDateString = Convert.ToDateTime(sdr["AssignDate"]).ToString("dd-MM-yyyy");
                     obj.StartDateString = Convert.ToDateTime(sdr["StartDate"]).ToString("dd-MM-yyyy");
@@ -443,7 +444,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                             Project_Id = Convert.ToInt32(rd["project_id"]),
                             KeyPoint = rd["keyPoint"].ToString(),
                             CompletionDate = Convert.ToDateTime(rd["completeDate"]),
-                            Document_Url = rd["stageDocument"].ToString()
+                            CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
+                           Document_Url = rd["stageDocument"].ToString(),
+                            Status = rd["status"].ToString(),
+                            completionStatus = Convert.ToInt32(rd["completionStatus"])
                         });
                     }
                 }
@@ -452,6 +456,38 @@ namespace RemoteSensingProject.Models.ProjectManager
             catch (Exception ex)
             {
                 throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public bool insertStageStatus(Project_Statge obj)
+        {
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageStageStatus", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertStageStatus");
+                cmd.Parameters.AddWithValue("@stageId", obj.Project_Id);
+                cmd.Parameters.AddWithValue("@Comment", obj.Comment);
+                cmd.Parameters.AddWithValue("@CompletionPrecentage", obj.CompletionPrecentage);
+                cmd.Parameters.AddWithValue("@StageDocument", obj.StageDocument_Url);
+                con.Open();
+                int i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception("An error accured", ex);
             }
             finally
             {

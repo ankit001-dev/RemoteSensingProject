@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Controllers
@@ -123,12 +124,21 @@ namespace RemoteSensingProject.Controllers
             _list = _managerServices.getAllProjectByManager(userObj.userId);
             return Json(new {_list=_list},JsonRequestBehavior.AllowGet);
         }
+        public ActionResult GetProjecDatatById(int Id)
+        {
+            var data = _managerServices.GetProjectById(Id);
+            return Json(new
+            {
+                status = true,
+                data = data
+            }, JsonRequestBehavior.AllowGet);
+        }
         //public ActionResult filterProject(string projectStatus)
         //{
         //    var managerName = User.Identity.Name;
         //    UserCredential userObj = new UserCredential();
         //    userObj = _managerServices.getManagerDetails(managerName);
-            
+
         //    List<ProjectList> _list = new List<ProjectList>();
         //    if (Convert.ToInt32(projectStatus) == 1)
         //    {
@@ -144,7 +154,7 @@ namespace RemoteSensingProject.Controllers
         //    {
         //        _list = _managerServices.getAllProjectByManager(userObj.userId);
         //    }
-  
+
         //    return Json(new { _list=_list},JsonRequestBehavior.AllowGet);
         //}
         #endregion /* End */
@@ -157,11 +167,26 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Update_Project_Stage()
+        public ActionResult Update_Project_Stage(int Id)
         {
+            ViewBag.ProjectStages = _managerServices.ProjectStagesList(Id);
             return View();
         }
-
+        public ActionResult AddStageStatus(Project_Statge obj)
+        {
+            string message = "";
+            bool status = _managerServices.insertStageStatus(obj);
+            if (status)
+            { 
+               
+                message = "Satges Updated Successfully !";
+            }
+            else
+            {
+                message = "Failed To Update Stages";
+            }
+            return Json(new {message=message,status=status },JsonRequestBehavior.AllowGet);
+        }
         public ActionResult Add_Expenses()
         {
             return View();
