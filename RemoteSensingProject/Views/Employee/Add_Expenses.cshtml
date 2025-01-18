@@ -22,6 +22,8 @@
                                 <th>Head</th>
                                 <th class="text-center">Amount</th>
                                 <th class="text-center">Expended Amount</th>
+                                <th class="text-center">Approved Amount</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -31,11 +33,13 @@
                 {
 <tr>
     <td class="text-start">@i</td>
-    <td><a href="#" class="headExpense" data-Id="@item.Id">@item.ProjectHeads</a><a href="#" class="addExpences" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a></td>
+    <td>@item.ProjectHeads</td>
     <td class="text-center">
         @item.ProjectAmount
     </td>
     <td class="text-center">0</td>
+    <td class="text-center">0</td>
+    <td class="text-center"><a href="#" class="addExpences" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a> <a href="#" class="headExpense" data-Id="@item.Id"><i class="fa-solid fa-eye"></i></a></td>
 </tr>        i++;
                 }
             }
@@ -52,7 +56,7 @@
 </div>
 
 
-<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+<div class="modal fade" id="addExpencesModal" tabindex="-1" aria-labelledby="addExpencesModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -65,36 +69,34 @@
                         <div class="row expense-row">
                             <div class="mb-3 col-md-6">
                                 <label for="title" class="form-label">Title</label>
-                                <input type="text" class="form-control" name="title[]" autocomplete="off" placeholder="Enter Expense Title">
+                                <input type="text" class="form-control" name="list[0].title" autocomplete="off" placeholder="Enter Expense Title">
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="date" class="form-label">Date</label>
-                                <div class="input-group date datepicker datePickerExample">
-                                    <input type="text" class="form-control form-control-sm" name="date[]">
-                                    <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
+                                <div class="input-group">
+                                    <input type="date" class="form-control form-control-sm" name="list[0].date">
                                 </div>
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="amount" class="form-label">Amount</label>
-                                <input type="number" class="form-control" name="amount[]" autocomplete="off" placeholder="Enter Amount">
+                                <input type="number" class="form-control" name="list[0].amount" autocomplete="off" placeholder="Enter Amount">
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="upload" class="form-label">Upload Attachment</label>
-                                <input class="form-control" type="file" name="upload[]">
+                                <input class="form-control headsSlip" type="file">
                             </div>
                             <div class="col-lg-10 mb-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control form-control-sm" name="description[]" rows="2" placeholder="Project Description"></textarea>
+                                <textarea class="form-control form-control-sm" name="list[0].description" rows="2" placeholder="Description"></textarea>
                             </div>
-                            <div class="col-lg-2 text-end">
-                                <br />
-                                <a class=" remove-row"><i class="link-icon text-danger" data-feather="trash-2"></i></a>
-                            </div>
+                            <input type="hidden" name="list[0].projectId" value="@Request.QueryString["Id"]"/>
+                            <input type="hidden" name="list[0].projectHeadId" id="projectHeadId"/>
+                            
                             <hr>
                         </div>
                     </div>
                     <div class="text-start">
-                        <a class="cursor-pointer" id="addMore"><i class="link-icon" data-feather="plus"></i> Add More</a>
+                        <a class="cursor-pointer" id="addMore" data-count="1" data-projectHeadId=""><i class="link-icon" data-feather="plus"></i> Add More</a>
                     </div>
                     <div class="text-center mt-3">
                         <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Expenses</button>
@@ -137,46 +139,52 @@
 
 <script>
         // Function to add more rows
-        $('#addMore').on('click', function () {
+    $('#addMore').on('click', function () {
+        let count = $(this).attr("data-count");
+        let projectHeadId = $(this).attr("data-projectHeadId")
             var newRow = `
             <div class="row expense-row">
                 <div class="mb-3 col-md-6">
                     <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" name="title[]" autocomplete="off" placeholder="Enter Expense Title">
+                    <input type="text" class="form-control" name="list[${count}].title" autocomplete="off" placeholder="Enter Expense Title">
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="date" class="form-label">Date</label>
-                    <div class="input-group date datepicker datePickerExample">
-                        <input type="text" class="form-control form-control-sm" name="date[]">
-                        <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
+                    <div class="input-group">
+                        <input type="date" class="form-control form-control-sm" name="list[${count}].date">
                     </div>
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="amount" class="form-label">Amount</label>
-                    <input type="number" class="form-control" name="amount[]" autocomplete="off" placeholder="Enter Amount">
+                    <input type="number" class="form-control" name="list[${count}].amount" autocomplete="off" placeholder="Enter Amount">
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="upload" class="form-label">Upload Attachment</label>
-                    <input class="form-control" type="file" name="upload[]">
+                    <input class="form-control headsSlip" type="file">
                 </div>
                 <div class="col-lg-12 mb-3">
                     <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control form-control-sm" name="description[]" rows="2" placeholder="Project Description"></textarea>
+                    <textarea class="form-control form-control-sm" name="list[${count}].description" rows="2" placeholder="Description"></textarea>
                 </div>
+                <input type="hidden" name="list[${count}].projectId" value="@Request.QueryString["Id"]"/>
+                <input type="hidden" name="list[${count}].projectHeadId" value="${projectHeadId}"/>
                 <div class="col-lg-12 text-end">
                     <a class=" remove-row"><i class="link-icon text-danger" data-feather="trash-2"></i></a>
                 <hr>
             </div>`;
-            $('#expenseRows').append(newRow);
+        $('#expenseRows').append(newRow);
+        $(this).attr("data-count", count + 1);
             feather.replace(); // Reinitialize feather icons
         });
 
         // Function to remove a row
-        $(document).on('click', '.remove-row', function () {
-            $(this).closest('.expense-row').remove();
+    $(document).on('click', '.remove-row', function () {
+        let count = $("#addMore").attr("data-count", count);
+        $(this).closest('.expense-row').remove();
+        $("#addMore").attr("data-count", count - 1);
         });
 
-       
+
 
     $(".headExpense").click(function () {
         let headId = $(this).attr("data-Id");
@@ -205,7 +213,7 @@
                     $.each(res.data, function (i, d) {
                         element += `  <tr>
                               <td>${i + 1}</td>
-                              <td>${d.date}</td>
+                              <td>${convertToDate(d.date)}</td>
                               <td>${d.title}</td>
                               <td>${d.description}</td>
                               <td>${d.amount}</td>
@@ -218,7 +226,7 @@
                 else {
                     $("#ViewBudgetExpenses").modal("show");
                 }
-                
+
             },
             error: function () {
                 Swal.fire({
@@ -233,9 +241,75 @@
         })
     })
 
+    function convertToDate(date) {
+        let dateObj = new Date(date);
+        return dateObj.toLocaleDateString();
+    }
+
     $(".addExpences").click(function () {
         let dataId = $(this).attr("data-Id");
-       
+        $("#addMore").attr("data-projectHeadId", dataId)
+        $("#projectHeadId").val(dataId);
+        $("#addExpencesModal").modal("show");
+    })
+
+
+    $("#expenseForm").on("submit", function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        $.each($(".headsSlip"), function (i, d) {
+            let file = d.files[0];
+            if (file) {
+                formData.append(`list[${i}].Attatchment_file`, file);
+            }
+        });
+
+        Swal.fire({
+            title: "Please wait ...",
+            text: "Processing your request ....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+        $.ajax({
+            url: "/employee/InsertExpenses",
+            type: "post",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: "Expences added successfully !",
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true);
+                        }
+                    })
+                }
+                else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: "Some issue occured",
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server busy !",
+                    text: "Server is busy ! Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
     })
 </script>
 

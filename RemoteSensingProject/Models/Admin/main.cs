@@ -63,6 +63,7 @@ namespace RemoteSensingProject.Models.Admin
             public string ProjectDepartment { get; set; }
             public string ContactPerson { get; set; }
             public string Address { get; set; }
+            public string createdBy { get; set; }
            
         }
 

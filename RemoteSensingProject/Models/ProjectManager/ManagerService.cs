@@ -23,7 +23,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@projectManager", userId);
                 con.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
-
                 if (sdr.Read())
                 {
                     obj = new DashboardCount();
@@ -89,6 +88,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
             return _list;
         }
+       
         public UserCredential getManagerDetails(string managerName)
         {
             UserCredential _details = new UserCredential();
@@ -227,7 +227,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 List<Project_model> list = new List<Project_model>();
                 cmd = new SqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "GetAllProjectByManager");
+                cmd.Parameters.AddWithValue("@action", "getManagerProject");
                 cmd.Parameters.AddWithValue("@projectManager", userId);
                 con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
@@ -269,7 +269,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        #endregion /* End */
+        #endregion /* End */ 
 
         #region Notice
         public List<Generate_Notice> getNoticeList(string userId)
