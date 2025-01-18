@@ -460,8 +460,6 @@ namespace RemoteSensingProject.Models.Admin
                             cmd.Parameters.AddWithValue("@project_Id", projectId);
                             cmd.Parameters.AddWithValue("@heads", item.ProjectHeads);
                             cmd.Parameters.AddWithValue("@headsAmount", item.ProjectAmount);
-                            cmd.Parameters.AddWithValue("@miscellaneous", item.Miscellaneous);
-                            cmd.Parameters.AddWithValue("@miscAmount", item.Miscell_amt);
                             i += cmd.ExecuteNonQuery();
                         }
                     }
@@ -604,7 +602,7 @@ namespace RemoteSensingProject.Models.Admin
                         pm.projectDocumentUrl = rd["ProjectDocument"].ToString();
                         pm.ProjectType = rd["projectType"].ToString();
                         pm.ProjectStage = Convert.ToBoolean(rd["stage"]);
-                        pm.ProjectStage = Convert.ToBoolean(rd["CompleteStatus"]);
+                        pm.ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]);
                         if (pm.ProjectType.Equals("External"))
                         {
                             pm.Address = rd["address"].ToString();
@@ -744,8 +742,6 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@project_Id", bdg.Project_Id);
                 cmd.Parameters.AddWithValue("@heads", bdg.ProjectHeads);
                 cmd.Parameters.AddWithValue("@headsAmount", bdg.ProjectAmount);
-                cmd.Parameters.AddWithValue("@miscellaneous", bdg.Miscellaneous);
-                cmd.Parameters.AddWithValue("@miscAmount", bdg.Miscell_amt);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -781,9 +777,7 @@ namespace RemoteSensingProject.Models.Admin
                             Id = Convert.ToInt32(rd["id"]),
                             Project_Id = Convert.ToInt32(rd["project_id"]),
                             ProjectHeads = rd["heads"].ToString(),
-                            ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0),
-                            Miscellaneous = rd["miscellaneous"].ToString(),
-                            Miscell_amt = Convert.ToDecimal(rd["miscAmount"] != DBNull.Value ? rd["miscAmount"] : 0.00)
+                            ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0)
                         });
                     }
                 }
@@ -1360,5 +1354,7 @@ namespace RemoteSensingProject.Models.Admin
 
         #endregion
 
+
+        
     }
 }

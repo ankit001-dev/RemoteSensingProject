@@ -105,4 +105,17 @@ namespace RemoteSensingProject.Models.ProjectManager
         public DateTime CompletionDate { get; set; } // The completion date of the project
     }
 
+    public class ProjectExpenses
+    {
+        public int Id { get; set; }
+        public int projectId { get; set; }
+        public int projectHeadId { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public DateTime date { get; set; }
+        public decimal amount { get; set; }
+        public HttpPostedFile Attatchment_file { get; set; }
+        public string attatchment_url { get; set; }
+    }
+
 }

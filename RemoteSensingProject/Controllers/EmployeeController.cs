@@ -111,7 +111,12 @@ namespace RemoteSensingProject.Controllers
         #region /* Assign Project */
         public ActionResult Assigned_Project()
         {
-           
+            var managerName = User.Identity.Name;
+            UserCredential userObj = new UserCredential();
+            userObj = _managerServices.getManagerDetails(managerName);
+
+            List<ProjectList> _list = new List<ProjectList>();
+            ViewData["AssignedProjectList"] = _managerServices.getAllProjectByManager(userObj.userId);
             return View();
         }
         public ActionResult GetAllProjectByManager()
@@ -126,7 +131,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult GetProjecDatatById(int Id)
         {
-            var data = _managerServices.GetProjectById(Id);
+            var data = _adminServices.GetProjectById(Id);
             return Json(new
             {
                 status = true,
@@ -162,16 +167,30 @@ namespace RemoteSensingProject.Controllers
         {
             return View();
         }
-        public ActionResult Weekly_Update_Project()
+        #region weekly update
+        public ActionResult Weekly_Update_Project(int Id)
         {
+            ViewBag.WeeklyUpdateList = _managerServices.WeeklyUpdateList(Id);
             return View();
         }
+
+        public JsonResult UpdateWeekly(Project_WeeklyUpdate pwu)
+        {
+            bool res = _managerServices.updateWeeklyStatus(pwu);
+            return Json(new
+            {
+                status = res,
+                message = res ? "Weekly updated successfully !" : "Some issue conflicted !"
+            }); 
+        }
+        #endregion
 
         public ActionResult Update_Project_Stage(int Id)
         {
             ViewBag.ProjectStages = _managerServices.ProjectStagesList(Id);
             return View();
         }
+
         public ActionResult AddStageStatus(Project_Statge obj)
         {
             string message = "";
@@ -187,8 +206,9 @@ namespace RemoteSensingProject.Controllers
             }
             return Json(new {message=message,status=status },JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Add_Expenses()
+        public ActionResult Add_Expenses(int Id)
         {
+            ViewData["ProjectStages"] = _adminServices.ProjectBudgetList(Id);
             return View();
         }
         public ActionResult Min_Of_Meeting()
@@ -238,9 +258,7 @@ namespace RemoteSensingProject.Controllers
             dynamic project = null;
             if (id.HasValue)
             {
-
-                project = _managerServices.GetProjectById((int)id);
-
+                project = _adminServices.GetProjectById((int)id);
             }
 
             return Json(project, JsonRequestBehavior.AllowGet);

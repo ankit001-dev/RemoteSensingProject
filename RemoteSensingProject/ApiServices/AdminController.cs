@@ -707,9 +707,7 @@ namespace RemoteSensingProject.ApiServices
                     Id = Convert.ToInt32(request.Form.Get("Id")),
                     Project_Id = Convert.ToInt32(request.Form.Get("Project_Id")),
                     ProjectHeads = request.Form.Get("ProjectHeads"),
-                    ProjectAmount = Convert.ToDecimal(request.Form.Get("ProjectAmount")),
-                    Miscellaneous = request.Form.Get("Miscellaneous"),
-                    Miscell_amt = Convert.ToDecimal(request.Form.Get("Miscell_amt"))
+                    ProjectAmount = Convert.ToDecimal(request.Form.Get("ProjectAmount"))
                 };
 
                 if (validationErrors.Any())
@@ -724,7 +722,7 @@ namespace RemoteSensingProject.ApiServices
 
                 decimal ProjectBudget = _adminServices.GetProjectById(formData.Project_Id).pm.ProjectBudget;
                 decimal totalBudgets = _adminServices.ProjectBudgetList(formData.Project_Id).Sum(x => x.ProjectAmount);
-                if (totalBudgets <= ProjectBudget && ProjectBudget >= (formData.ProjectAmount + formData.Miscell_amt))
+                if ((totalBudgets + formData.ProjectAmount) <= ProjectBudget)
                 {
                     bool res = _adminServices.insertProjectBudgets(formData);
                     return Ok(new

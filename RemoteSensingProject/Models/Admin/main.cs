@@ -65,14 +65,21 @@ namespace RemoteSensingProject.Models.Admin
             public string Address { get; set; }
            
         }
+
+        public class Project_WeeklyUpdate
+        {
+            public int Id { get; set; }
+            public string comments { get; set; }
+            public int ProjectId { get; set; }
+            public int completionPerc { get; set; }
+            public DateTime date { get; set; } 
+        }
         public class Project_Budget
         {
             public int Id { get; set; }
             public int Project_Id { get; set; }
             public string ProjectHeads { get; set; }
             public decimal ProjectAmount { get; set; }
-            public string Miscellaneous { get; set; }
-            public decimal Miscell_amt { get; set; }
             public string HeadsDescription { get; set; }
 
         }
