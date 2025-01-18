@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Models.ProjectManager
@@ -27,6 +28,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 while (sdr.Read())
                 {
                     obj = new ProjectList();
+                    obj.Id = Convert.ToInt32(sdr["id"]);
                     obj.Title = sdr["title"].ToString();
                     obj.AssignDateString = Convert.ToDateTime(sdr["AssignDate"]).ToString("dd-MM-yyyy");
                     obj.StartDateString = Convert.ToDateTime(sdr["StartDate"]).ToString("dd-MM-yyyy");
@@ -118,8 +120,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                             cmd.Parameters.AddWithValue("@project_Id", projectId);
                             cmd.Parameters.AddWithValue("@heads", item.ProjectHeads);
                             cmd.Parameters.AddWithValue("@headsAmount", item.ProjectAmount);
-                            cmd.Parameters.AddWithValue("@miscellaneous", item.Miscellaneous);
-                            cmd.Parameters.AddWithValue("@miscAmount", item.Miscell_amt);
                             i += cmd.ExecuteNonQuery();
                         }
                     }
@@ -272,104 +272,145 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public createProjectModel GetProjectById(int id)
+       
+        #endregion
+
+        #region update weekly update
+        public bool updateWeeklyStatus(Project_WeeklyUpdate pwu)
         {
             try
             {
-                createProjectModel cpm = new createProjectModel();
-                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "GetProjectById");
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@action", "insertUpdate");
+                cmd.Parameters.AddWithValue("@project_Id", pwu.ProjectId);
+                cmd.Parameters.AddWithValue("@w_date", pwu.date);
+                cmd.Parameters.AddWithValue("@comment", pwu.comments);
+                cmd.Parameters.AddWithValue("@completion", pwu.completionPerc);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public List<Project_WeeklyUpdate> WeeklyUpdateList(int projectId)
+        {
+            try
+            {
+                List<Project_WeeklyUpdate> list = new List<Project_WeeklyUpdate>();
+                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectAllByProject");
+                cmd.Parameters.AddWithValue("@project_Id", projectId);
                 con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
-                List<Project_Statge> stagesList = new List<Project_Statge>();
-                List<Project_Budget> budgetList = new List<Project_Budget>();
-                List<Project_Subordination> subList = new List<Project_Subordination>();
-                Project_model pm = new Project_model();
                 if (rd.HasRows)
                 {
-
                     while (rd.Read())
                     {
-                        pm.Id = Convert.ToInt32(rd["id"]);
-                        pm.ProjectTitle = rd["title"].ToString();
-                        pm.AssignDate = Convert.ToDateTime(rd["assignDate"]);
-                        pm.AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy");
-                        pm.CompletionDate = Convert.ToDateTime(rd["completionDate"]);
-                        pm.CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy");
-                        pm.StartDate = Convert.ToDateTime(rd["startDate"]);
-                        pm.StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy");
-                        pm.ProjectManager = rd["ManagerName"].ToString();
-                        pm.ProjectBudget = Convert.ToDecimal(rd["budget"]);
-                        pm.ProjectDescription = rd["description"].ToString();
-                        pm.projectDocumentUrl = rd["ProjectDocument"].ToString();
-                        pm.ProjectType = rd["projectType"].ToString();
-                        pm.ProjectStage = Convert.ToBoolean(rd["stage"]);
-                        if (pm.ProjectType.Equals("External"))
+                        list.Add(new Project_WeeklyUpdate
                         {
-                            pm.Address = rd["address"].ToString();
-                            pm.ProjectDepartment = rd["DepartmentName"].ToString();
-                            pm.ContactPerson = rd["contactPerson"].ToString();
-                        }
-                        if (pm.ProjectStage)
-                        {
-
-                            if (rd["StageId"] != DBNull.Value)
-                            {
-
-                                stagesList.Add(new Project_Statge
-                                {
-                                    Id = Convert.ToInt32(rd["StageId"]),
-                                    KeyPoint = rd["keyPoint"].ToString(),
-                                    CompletionDate = Convert.ToDateTime(rd["completeDate"]),
-                                    Document_Url = rd["stageDocument"].ToString()
-                                });
-                            }
-                        }
-                        if (rd["SubordinateLinkId"] != DBNull.Value)
-                        {
-                            subList.Add(new Project_Subordination
-                            {
-                                Id = Convert.ToInt32(rd["SubordinateLinkId"]),
-                                Name = rd["subName"].ToString(),
-                                EmpCode = rd["subCode"].ToString()
-                            });
-                        }
-                        if (pm.ProjectBudget > 0)
-                        {
-                            if (rd["budgetId"] != DBNull.Value)
-                            {
-                                budgetList.Add(new Project_Budget
-                                {
-                                    Id = Convert.ToInt32(rd["BudgetId"]),
-                                    ProjectHeads = rd["heads"].ToString(),
-                                    ProjectAmount = Convert.ToDecimal(rd["headsAmount"]),
-                                    Miscellaneous = rd["miscellaneous"].ToString(),
-                                    Miscell_amt = Convert.ToDecimal(rd["miscAmount"])
-                                });
-                            }
-                        }
-
+                            Id = Convert.ToInt32(rd["id"]),
+                            date = Convert.ToDateTime(rd["w_date"]),
+                            comments = rd["comment"].ToString(),
+                            completionPerc = Convert.ToInt32(rd["completion"])
+                        });
                     }
                 }
-                cpm.pm = pm;
-                cpm.SubOrdinate = subList;
-                cpm.budgets = budgetList;
-                cpm.stages = stagesList;
-                return cpm;
+                return list;
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 throw ex;
             }
             finally
             {
-                if (con.State == System.Data.ConnectionState.Open)
+                if (con.State == ConnectionState.Open)
                     con.Close();
                 cmd.Dispose();
             }
         }
-        #endregion 
+        #endregion
+
+
+        #region Project Expences
+        public bool insertExpences(ProjectExpenses exp)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertExpences");
+                cmd.Parameters.AddWithValue("@project_id", exp.projectId);
+                cmd.Parameters.AddWithValue("@id", exp.projectHeadId);
+                cmd.Parameters.AddWithValue("@title", exp.title);
+                cmd.Parameters.AddWithValue("@w_date",exp.date);
+                cmd.Parameters.AddWithValue("@amount", exp.amount);
+                cmd.Parameters.AddWithValue("@attatchment", exp.attatchment_url);
+                cmd.Parameters.AddWithValue("@comment", exp.description);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public List<ProjectExpenses> ExpencesList(int projectId, int headId)
+        {
+            try
+            {
+                List<ProjectExpenses> list = new List<ProjectExpenses>();
+                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectExpenses");
+                cmd.Parameters.AddWithValue("@project_id", projectId);
+                cmd.Parameters.AddWithValue("@id", headId);
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new ProjectExpenses
+                        {
+                            Id = Convert.ToInt32(rd["id"]),
+                            title = rd["title"].ToString(),
+                            date = Convert.ToDateTime(rd["insertDate"]),
+                            amount = Convert.ToDecimal(rd["amount"]),
+                            attatchment_url = rd["attatchment"].ToString(),
+                            description = rd["description"].ToString()
+                        });
+                    }
+                }
+                return list;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        #endregion
     }
 }
