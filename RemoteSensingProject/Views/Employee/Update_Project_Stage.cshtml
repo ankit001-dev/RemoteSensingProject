@@ -32,6 +32,7 @@
             </div>
         </form>
     </div>*@
+
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -40,7 +41,7 @@
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="dataTableExample" class="table">
+                    <table id="dataTableExample" class="table" width="100%">
                         <thead>
                             <tr>
                                 <th class="text-center">Stage</th>
@@ -192,7 +193,7 @@
                     <div id="delayedFields" class="d-none">
                         <div class="mb-3">
                             <label for="delayReason" class="form-label">Reason for Delay</label>
-                            <textarea class="form-control form-control-sm" name="delayReason" id="delayReason" rows="4" placeholder="Enter Reason for Delay"></textarea>
+                            <textarea class="form-control form-control-sm" name="DelayReason" id="DelayReason" rows="4" placeholder="Enter Reason for Delay"></textarea>
                         </div>
                         <div class="mb-3">
                             <label for="upload" class="form-label">Upload Document</label>
@@ -274,10 +275,10 @@
         const completedFields = document.getElementById('completedFields');
         const delayedFields = document.getElementById('delayedFields');
 
-        if (this.value === 'completed') {
+        if (this.value === 1) {
             completedFields.classList.remove('d-none');
             delayedFields.classList.add('d-none');
-        } else if (this.value === 'delayed') {
+        } else if (this.value === 1) {
             delayedFields.classList.remove('d-none');
             completedFields.classList.add('d-none');
         } else {
@@ -288,9 +289,5 @@
 
 </script>
 
-<script>
-    $(document).ready(function () {
 
-    })
-</script>
 
