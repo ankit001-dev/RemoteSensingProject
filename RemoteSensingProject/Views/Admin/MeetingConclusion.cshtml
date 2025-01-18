@@ -7,144 +7,168 @@
 
 <div class="row gutters mt-2">
     <div class="card">
-        <div class="card-body">
-            <h4>Meeting Conclusion</h4>
-            <hr />
-            <div class="row gutters">
-                <div class="table-responsive">
-                    <table id="tblheaderdetails" class="meeting-table table">
-                        <tr>
-                            <th>Meeting Title : </th>
-                            <td>@Model.MeetingTitle</td>
-                            <th></th>
-                            <th>Time :</th>
-                            <td>@Model.MeetingTimeString</td>
-                            <th></th>
-                            <th>Type :</th>
-                            <td>@Model.MeetingType</td>
-                            @if (@Model.MeetingType.ToLower() == "offline")
-                            {
-                                <th>Venue :</th>
-                                <td>@Model.MeetingLink</td>
-                            }
-
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="card-body">
-                    <div class="card-title d-flex justify-content-between">
-                        <h5 style="color: #029e9d;"><i class="fa-solid fa-list"></i>&nbsp;Invited Members List</h5>
-                        <h6 class="text-danger"> Please Check  CheckBox for Present</h6>
-                    </div>
+        <form>
+            <div class="card-body">
+                <h4>Meeting Conclusion</h4>
+                <hr />
+                <div class="row gutters">
                     <div class="table-responsive">
-                        <table id="basicExample" class="table custom-table" width="100%" border="1" style="font-size: 12px; text-align: center">
-                            <thead>
-                                <tr>
-                                    <th>  <input type="checkbox" name="select_all" value="1" id="select_all" onclick="toggle(this);"> All Present</th>
-                                    <th>Sr</th>
-                                    <th>Code</th>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                    <th>Contact No</th>
-                                    <th>Email</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (ViewBag.getMember != null)
+                        <table id="tblheaderdetails" class="meeting-table table">
+                            <tr>
+                                <th>Meeting Title : </th>
+                                <td>@Model.MeetingTitle</td>
+                                <th></th>
+                                <th>Time :</th>
+                                <td>@Model.MeetingTimeString</td>
+                                <th></th>
+                                <th>Type :</th>
+                                <td>@Model.MeetingType</td>
+                                @if (@Model.MeetingType.ToLower() == "offline")
                                 {
-                                    int count = 1;
-                                    foreach (var item in ViewBag.getMember)
-                                    {
-                                        <tr>
-                                            <th><input type="checkbox" value="@item.Id" name="emp_id[]"></th>
-                                            <td>@count</td>
-                                            <td>@item.EmployeeCode</td>
-                                            <td>@item.EmployeeName</td>
-                                            <td>@item.EmployeeRole</td>
-                                            <td>@item.MobileNo</td>
-                                            <td>@item.Email</td>
-                                        </tr>
-                                        count++;
-                                    }
-
+                                    <th>Venue :</th>
+                                    <td>@Model.MeetingLink</td>
                                 }
 
-                            </tbody>
-
-                            <tfoot>
-
-                            </tfoot>
+                            </tr>
                         </table>
                     </div>
+                    <div class="card-body">
+                        <div class="card-title d-flex justify-content-between">
+                            <h5 style="color: #029e9d;"><i class="fa-solid fa-list"></i>&nbsp;Invited Members List</h5>
+                            <h6 class="text-danger"> Please Check  CheckBox for Present</h6>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="basicExample" class="table custom-table" width="100%" border="1" style="font-size: 12px; text-align: center">
+                                <thead>
+                                    <tr>
+                                        <th>  <input type="checkbox" name="select_all" value="1" id="select_all" onclick="toggle(this);"> All Present</th>
+                                        <th>Sr</th>
+                                        <th>Code</th>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Contact No</th>
+                                        <th>Email</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        Stack<int> memberRecord = new Stack<int>();
+                                        if (ViewBag.getMember != null)
+                                        {
+                                            int count = 1;
+                                            foreach (var item in ViewBag.getMember)
+                                            {
+                                                memberRecord.Push(item.Id);
+                                                <tr>
+                                                    <th><input type="checkbox" class="employeeCheckBox" value="@item.Id" name="emp_id[]"></th>
+                                                    <td>@count</td>
+                                                    <td>@item.EmployeeCode</td>
+                                                    <td>@item.EmployeeName</td>
+                                                    <td>@item.EmployeeRole</td>
+                                                    <td>@item.MobileNo</td>
+                                                    <td>@item.Email</td>
+                                                </tr>
+                                                count++;
+                                            }
+
+                                        }
+                                    }
+
+                                </tbody>
+
+                                <tfoot>
+
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
 
-            </div>
+                <hr />
 
-            <hr />
-
-            <a href="#" class="fw-bolder fs-4">Key Points</a>
-            <table id="keypointtbl" class="table">
-                <thead>
-                    <tr>
-                        <th>Index</th>
-                        <th> Key Points</th>
-                        <th>Response</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null)
-                                {
-                                    int i = 1;
-                                    foreach (var item in Model.MeetingKeyPointDict)
-                                    {
-                            <tr>
-                                <td>Key Point @i</td>
-                                <td>
-                                    @item.keyPoint
-                                </td>
-                                <td> <input type="text" data-id="@item.Id" placeholder="Please Write Response" name="response" class="form-control" /> </td>
-                            </tr>
-                            i++;
+                <a href="#" class="fw-bolder fs-4">Key Points</a>
+                <table id="keypointtbl" class="table">
+                    <thead>
+                        <tr>
+                            <th>Index</th>
+                            <th> Key Points</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null)
+                        {
+                            int i = 1;
+                            foreach (var item in Model.MeetingKeyPointDict)
+                            {
+                                <tr>
+                                    <td>Key Point @i</td>
+                                    <td>
+                                        @item.keyPoint
+                                    </td>
+                                    <td> <input type="text" data-id="@item.Id" placeholder="Please Write Response" name="response" class="keyResponse form-control" /> </td>
+                                </tr>
+                                i++;
+                            }
                         }
-                    }
-                    <!-- Add more rows as needed -->
-                </tbody>
-            </table>
-            <br />
-            <div class="row gutters mt-2">
-                <div class="col-sm-6 col-12">
-                    <div class="form-group">
-                        <label> Conclusion</label>
-                        <textarea class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion" rows="1"></textarea>
-                        @*<input type="text" class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion ">*@
+                        <!-- Add more rows as needed -->
+                    </tbody>
+                </table>
+                <br />
+                <div class="row gutters mt-1">
+                    <div class="col-sm-12 col-12 mb-2">
+                        Next Follow Up? :
+                        <input type="radio" name="FollowUpStatus" value="1" class="followUpdate" /> Yes&nbsp;
+                        <input type="radio" name="FollowUpStatus" checked value="0" class="followUpdate" /> No
+                    </div>
+                    <div class="col-sm-6 col-12">
+                        <div class="form-group">
+                            <label> Conclusion</label>
+                            <textarea class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion" rows="1"></textarea>
+                            @*<input type="text" class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion ">*@
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-12 d-none nexFollowUpDateContainer">
+                        <div class="form-group">
+                            <label> Next Follow Up</label>
+                            <input type="date" id="nextfolloupdate" name="nextfolloupdate" class="form-control" />
+                        </div>
+                    </div> <div class="col-sm-6 col-12 mt-2 d-none nexFollowUpDateContainer">
+                        <div class="form-group">
+                            <label>Meeting Member:</label><br />
+                            <select class="form-control select2" id="MeetingMember" name="meetingMemberList" multiple>
+                                @if (ViewBag.empList != null)
+                                {
+                                    foreach (var item in ViewBag.empList)
+                                    {
+                                        if (item != null)
+                                        {
+                                            <option value="@item.Id" @(memberRecord.Contains(item.Id) ? "selected" : "")>@item.EmployeeName - @item.EmployeeRole</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <div class="col-sm-6 col-12">
-                    <div class="form-group">
-                        <label> Next Follow Up</label>
-                        <input type="date" name="nextfolloupdate" class="form-control" />
+
+
+
+                <div class="row gutters mt-2">
+                    <div class="col-sm-4 col-12">
+
                     </div>
+                    <div class="col-sm-4 col-12">
+                        <div class="form-group">
+                            <a href="javascript:void()" class="btn btn-primary" id="subMeetingConBtn" style="width:80%">Submit Meeting Conclusion</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-12">
+                    </div>
+
                 </div>
             </div>
-
-
-
-            <div class="row gutters mt-2">
-                <div class="col-sm-4 col-12">
-
-                </div>
-                <div class="col-sm-4 col-12">
-                    <div class="form-group">
-                        <a href="javascript:void()" class="btn btn-primary" style="width:80%">Submit Meeting Conclusion</a>
-                    </div>
-                </div>
-                <div class="col-sm-4 col-12">
-                </div>
-
-            </div>
-
-        </div>
     </div>
 
 </div>
@@ -162,83 +186,44 @@
                         <thead>
                             <tr>
                                 <th>Venue</th>
+                                <th>Mode</th>
                                 <th>Conclusion</th>
-                                <th>Status</th>
                                 <th>Next FolloUp Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>
-                                    05/07/2024 11:34 AM, h-160 Noida sector 63
-                                </td>
-                                <td>
-                                    It explains that roads are built to facilitate transportation but constant heavy traffic can damage roads through conditions like alligator cracking, potholes, and edge cracking
-                                </td>
-                                <td>
-                                    pending
-                                </td>
-                                <td>
-                                    10/07/2024
-                                </td>
+                            @if (ViewBag.MeetingConclusion != null)
+                            {
+                                if (ViewBag.MeetingConclusion.Count > 0)
+                                {
+                                    foreach (var item in ViewBag.MeetingConclusion)
+                                    {
+                                    <tr>
+                                        <td>
+                                           @item.MeetingDate @(item.MeetingDate.ToLower()=="offline"?item.address:"")
+                                        </td><td>
+                                           @item.mode
+                                        </td>
+                                        <td>
+                                           @item.Conclusion
+                                        </td>
+                                        <td>
+                                          @item.NextFollow
+                                        </td>
 
-                                <td>
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-solid fa-circle-user" style="font-size:18px; color:green" title="View Meeting Members"> </i></a></li>
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list" style="font-size:18px; color:red" title="View Key Points"> </i></a></li>
+                                        <td>
+                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                                <li class="me-2"><a href="#" data-id="@item.Id" class="ShowPresentMember" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-solid fa-circle-user" style="font-size:18px; color:green" title="View Meeting Members"> </i></a></li>
+                                                <li class="me-2"><a href="#" data-id="@item.Id" class="showKeyResponse" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list" style="font-size:18px; color:red" title="View Key Points"> </i></a></li>
 
-                                    </ul>
+                                            </ul>
 
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    05/07/2024 11:34 AM, h-160 Noida sector 63
-                                </td>
-                                <td>
-                                    It explains that roads are built to facilitate transportation but constant heavy traffic can damage roads through conditions like alligator cracking, potholes, and edge cracking
-                                </td>
-                                <td>
-                                    cancel
-                                </td>
-                                <td>
-                                    10/07/2024
-                                </td>
-
-                                <td>
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-solid fa-circle-user" style="font-size:18px; color:green" title="View Meeting Members"> </i></a></li>
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list" style="font-size:18px; color:red" title="View Key Points"> </i></a></li>
-
-                                    </ul>
-
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    05/07/2024 11:34 AM, h-160 Noida sector 63
-                                </td>
-                                <td>
-                                    It explains that roads are built to facilitate transportation but constant heavy traffic can damage roads through conditions like alligator cracking, potholes, and edge cracking
-                                </td>
-                                <td>
-                                    complete
-                                </td>
-                                <td>
-                                    10/07/2024
-                                </td>
-
-                                <td>
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-solid fa-circle-user" style="font-size:18px; color:green" title="View Meeting Members"> </i></a></li>
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list" style="font-size:18px; color:red" title="View Key Points"> </i></a></li>
-
-                                    </ul>
-
-                                </td>
-                            </tr>
+                                        </td>
+                                    </tr>
+                                    }
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -262,44 +247,14 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-
-                            <td><img src="/Employee_Images/img.png" alt="sliderimages" style="height: 20px;width: 20px;"> Mr. Mohan Singh	<span class="text-secondary">(Project Manager)</span></td>
-                            <td>Joined</td>
-                        </tr>
-                        <tr>
-                            <td><img src="/Employee_Images/img.png" alt="sliderimages" style="height: 20px;width: 20px;"> Mr. Mukesh Kumar <span class="text-secondary">(Project Manager)</span></td>
-                            <td>Joined</td>
-                        </tr>
-                        <tr>
-                            <td><img src="/Employee_Images/img.png" alt="sliderimages" style="height: 20px;width: 20px;"> Mr. Rohan <span class="text-secondary">(Sub-Coordinate)</span></td>
-                            <td>Joined</td>
-                        </tr>
-                        <tr>
-                            <td><img src="/Employee_Images/img.png" alt="sliderimages" style="height: 20px;width: 20px;"> Mr. Ramesh <span class="text-secondary">(IS)</span></td>
-                            <td>Joined</td>
-                        </tr>
-                        <tr>
-                            <td><img src="/Employee_Images/img.png" alt="sliderimages" style="height: 20px;width: 20px;"> Shri Ganga Sharma	<span class="text-secondary">(Sub-Coordinate)</span></td>
-                            <td>Did Not Join<span style="color:red">(remark)</span></td>
-                        </tr>
-                        <tr>
-                            <td><img src="/Employee_Images/img.png" alt="sliderimages" style="height: 20px;width: 20px;"> Mr. Shivam Sharma	<span class="text-secondary">(Sub-Coordinate)</span></td>
-                            <td>Joined</td>
-                        </tr>
+                    <tbody id="presentMemberContainer">
+                       
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </div>
-
-
-
-
-
-
 
 <div class="modal fade" id="customModalTwo" tabindex="-1" aria-labelledby="customModalTwo" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
@@ -316,27 +271,8 @@
                             <th>Response</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Confirming the topics to be discussed and any adjustments to the agenda.</td>
-                            <td>Confirming the topics to be discussed and any adjustments to the agenda.</td>
-                        </tr>
-                        <tr>
-                            <td>Identifying tasks or actions that need to be taken, along with deadlines and responsible parties.</td>
-                            <td>Identifying tasks or actions that need to be taken, along with deadlines and responsible parties.</td>
-                        </tr>
-                        <tr>
-                            <td>Discussing any challenges, obstacles, or risks that need attention or resolution.</td>
-                            <td>Discussing any challenges, obstacles, or risks that need attention or resolution.</td>
-                        </tr>
-                        <tr>
-                            <td>Highlighting any upcoming events, deadlines, or milestones that require attention.</td>
-                            <td>Highlighting any upcoming events, deadlines, or milestones that require attention.</td>
-                        </tr>
-                        <tr>
-                            <td>Summarizing key takeaways, thanking participants for their contributions, and confirming the next steps.</td>
-                            <td>Summarizing key takeaways, thanking participants for their contributions, and confirming the next steps.</td>
-                        </tr>
+                    <tbody id="responseContainer">
+                       
                     </tbody>
                 </table>
             </div>
@@ -345,11 +281,30 @@
 </div>
 
 
-
-
-
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
 <script>
+    $(document).ready(function () {
+
+        setTimeout(() => {
+            $(".select2").select2({
+                placeholder: "--Select Member--"
+            })
+        }, 1000)
+    })
+       
+    function showLoading(action) {
+        Swal.fire({
+            title: "Please Wait..!",
+            text: "Request are under process.",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        if (!action) {
+            Swal.close();
+        }
+    }
 
     $(document).ready(function () {
         initializeDataTable();
@@ -367,6 +322,17 @@
             $('#tblparticipatemembers').DataTable().destroy();
         }
     }
+
+    $(".followUpdate").on("change", function () {
+        if ($(this).val() == "1") {
+            $(".nexFollowUpDateContainer").removeClass("d-none")
+            $(".nexFollowUpDateContainer").attr("required",true)
+        } else {
+            $(".nexFollowUpDateContainer").addClass("d-none")
+            $(".nexFollowUpDateContainer").attr("required", false)
+
+        }
+    })
 </script>
 
 
@@ -399,4 +365,157 @@
             checkboxes[i].checked = source.checked;
         }
     }
+
+    $("#subMeetingConBtn").click(function (e) {
+        let employee = []
+        let followUpStatus = $(".followUpdate:checked").val()
+        let conclusion = $("#meetingconclusion").val()
+        let nextFollowUpDate = $("#nextfolloupdate").val()
+        let keyResponse = []
+        let keyId = []
+        let meetingMember = $("#MeetingMember").val();
+
+        let KeyPointCount = 0;
+
+        $(".keyResponse").each(function (i, d) {
+            if (d.value != ""){
+            KeyPointCount++;
+                keyResponse.push(d.value)
+                keyId.push(Number(d.getAttribute("data-id")))
+            }
+        })
+        if (KeyPointCount != $(".keyResponse").length) {
+            Swal.fire({
+                text: "All KeyPoint Are Required",
+                title: "warning",
+                icon: "warning"
+            })
+            return
+        } else if (conclusion == "") {
+            Swal.fire({
+                text: "Conclusion Are Required",
+                title: "warning",
+                icon: "warning"
+            })
+            return
+        } else if (followUpStatus == "1" && nextFollowUpDate == "" || meetingMember.length<=0) {
+            Swal.fire({
+                text: "Follow Up Date and Next Meeting Member Are Required",
+                title: "warning",
+                icon: "warning"
+            })
+            return
+        }
+        $(".employeeCheckBox:checked").each(function (i, d) {
+            employee.push(Number(d.value))
+        })
+        debugger
+        let url = new URL(window.location.href);
+        let params = new URLSearchParams(url.search);
+
+
+        let formData = new FormData();
+        formData.append("Meeting", params.get("meeting") )
+        formData.append("KeyPointId", keyId)
+        formData.append("KeyResponse", keyResponse)
+        formData.append("Conclusion", conclusion)
+        formData.append("FollowUpStatus", followUpStatus== "1" ? true : false )
+        formData.append("NextFollowUpDate", nextFollowUpDate)
+        formData.append("MemberId", employee)
+        formData.append("MeetingMemberList", meetingMember)
+        showLoading(true)
+
+        $.ajax({
+            url: "/admin/AddMeetingConclusion",
+            type: "post",
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function (res) {
+                if (res) {
+                    Swal.fire({
+                        text: "Conclusion Added Successfully",
+                        title: "success",
+                        icon: "success",
+                        didClose: () => {
+                            location.href ="/Admin/Min_Of_Meeting";
+                        }
+                    })
+                } else {
+                    swal.fire({
+                        title: "error",
+                        text: "something went wrong",
+                        icon: "error"
+                    })
+                }
+            }, error: function (xhr) {
+                swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon:"error"
+                })
+            }
+        })
+
+    })
+
+    $(".ShowPresentMember").click(function () {
+        let id = $(this).attr("data-id");
+        $.ajax({
+            url: "/admin/getPresentMember",
+            type: "get",
+            data: {id:id},
+            success: function (res) {
+                console.log(res)
+                if (res != null) {
+                    $("#presentMemberContainer").empty();
+                    if (res.length > 0) {
+                        res.forEach(function (d) {
+                            $("#presentMemberContainer").append(` <tr>
+
+     <td><img src="${d.Image_url}" alt="sliderimages" style="height: 20px;width: 20px;"> ${d.EmployeeName}	<span class="text-secondary">(${d.EmployeeRole})</span></td>
+     <td>${d.PresentStatus?"Joined":"Not Joined"}</td>
+ </tr>`)
+                        })
+                    }
+                }
+            }, error: function (xhr) {
+                swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    })
+    $(".showKeyResponse").click(function () {
+        let id = $(this).attr("data-id");
+        $.ajax({
+            url: "/admin/getKeypointResponse",
+            type: "get",
+            data: {id:id},
+            success: function (res) {
+                console.log(res)
+                if (res != null) {
+                    $("#responseContainer").empty();
+                    if (res.length > 0) {
+                        res.forEach(function (d) {
+                            $("#responseContainer").append(` <tr>
+
+      <td>${d.KeyPoint}</td>
+ <td>${d.Response}</td>
+ </tr>`)
+                        })
+                    }
+                }
+            }, error: function (xhr) {
+                swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    })
+
 </script>

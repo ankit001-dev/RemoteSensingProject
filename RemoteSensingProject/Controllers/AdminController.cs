@@ -250,6 +250,13 @@ namespace RemoteSensingProject.Controllers
             var empList = _adminServices.BindEmployee();
             return View(empList);
         }
+
+        public ActionResult GetConclusions(int id)
+        {
+            var res = _adminServices.getConclusion(id);
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost]
         public ActionResult AddMeeting(AddMeeting_Model formData)
         {
@@ -311,9 +318,27 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult MeetingConclusion(int meeting)
         {
+            ViewBag.empList = _adminServices.BindEmployee();
             var obj = _adminServices.getMeetingById(meeting);
             ViewBag.getMember = _adminServices.GetMeetingMemberList(meeting);
+            ViewBag.MeetingConclusion = _adminServices.getConclusion(meeting);
             return View(obj);
+        }
+        [HttpPost]
+        public ActionResult AddMeetingConclusion(MeetingConclusion mc)
+        {
+            var res = _adminServices.AddMeetingResponse(mc);
+            return Json(res);
+        }
+        public ActionResult getPresentMember(int id)
+        {
+            var res = _adminServices.getPresentMember(id);
+            return Json(res,JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult getKeypointResponse(int id)
+        {
+            var res = _adminServices.getKeypointResponse(id);
+            return Json(res,JsonRequestBehavior.AllowGet);
         }
         public ActionResult Project_Detail()
         {
@@ -343,7 +368,9 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Meeting_Report()
         {
-            return View();
+            var empList = _adminServices.BindEmployee();
+
+            return View(empList);
         }
 
         public ActionResult Member_Report()
