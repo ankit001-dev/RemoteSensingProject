@@ -131,7 +131,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult GetProjecDatatById(int Id)
         {
-            var data = _managerServices.GetProjectById(Id);
+            var data = _adminServices.GetProjectById(Id);
             return Json(new
             {
                 status = true,
@@ -185,14 +185,12 @@ namespace RemoteSensingProject.Controllers
         }
         #endregion
 
-        public ActionResult Update_Project_Stage()
         public ActionResult Update_Project_Stage(int Id)
         {
             ViewBag.ProjectStages = _managerServices.ProjectStagesList(Id);
             return View();
         }
 
-        public ActionResult Add_Expenses(int Id)
         public ActionResult AddStageStatus(Project_Statge obj)
         {
             string message = "";
@@ -208,7 +206,7 @@ namespace RemoteSensingProject.Controllers
             }
             return Json(new {message=message,status=status },JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Add_Expenses()
+        public ActionResult Add_Expenses(int Id)
         {
             ViewData["ProjectStages"] = _adminServices.ProjectBudgetList(Id);
             return View();

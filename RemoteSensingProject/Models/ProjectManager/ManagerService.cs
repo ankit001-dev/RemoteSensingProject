@@ -443,30 +443,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                 }
                 return list;
             }catch(Exception ex)
-                            pm.Address = rd["address"].ToString();
-                            pm.ProjectDepartment = rd["DepartmentName"].ToString();
-                            pm.ContactPerson = rd["contactPerson"].ToString();
-                        }
-                        if (rd["SubordinateLinkId"] != DBNull.Value)
-                        {
-                            subList.Add(new Project_Subordination
-                            {
-                                Id = Convert.ToInt32(rd["SubordinateLinkId"]),
-                                Name = rd["subName"].ToString(),
-                                EmpCode = rd["subCode"].ToString()
-                            });
-                        }
-                    }
-
-                    rd.Close();
-                }
-                cpm.pm = pm;
-                cpm.SubOrdinate = subList;
-                cpm.budgets = ProjectBudgetList(id);
-                cpm.stages = ProjectStagesList(id);
-                return cpm;
-            }
-            catch (Exception ex)
             {
                 throw ex;
             }
@@ -498,9 +474,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             Id = Convert.ToInt32(rd["id"]),
                             Project_Id = Convert.ToInt32(rd["project_id"]),
                             ProjectHeads = rd["heads"].ToString(),
-                            ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0),
-                            Miscellaneous = rd["miscellaneous"].ToString(),
-                            Miscell_amt = Convert.ToDecimal(rd["miscAmount"] != DBNull.Value ? rd["miscAmount"] : 0.00)
+                            ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0)
                         });
                     }
                 }
