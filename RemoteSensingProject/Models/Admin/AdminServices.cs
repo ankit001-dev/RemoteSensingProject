@@ -1,23 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using static RemoteSensingProject.Models.Admin.main;
-using static RemoteSensingProject.Models.LoginManager.LoginServices;
 using System.Data.SqlClient;
 using System.Data;
-using System.Security.Policy;
-using System.Runtime.InteropServices;
-using System.Web.UI.WebControls;
-using System.Web.Razor.Generator;
 using RemoteSensingProject.Models.MailService;
-using System.Web.Services.Description;
-using System.IO;
-using Microsoft.Ajax.Utilities;
-using System.Web.ModelBinding;
-using Microsoft.AspNetCore.Routing.Internal;
-using Microsoft.Owin.BuilderProperties;
-using RemoteSensingProject.Models.ProjectManager;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
@@ -925,6 +911,8 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@MeetingType", obj.MeetingType);
                 cmd.Parameters.AddWithValue("@meetingLink", obj.MeetingType.ToLower() == "offline" ? obj.MeetingAddress : obj.MeetingLink);
                 cmd.Parameters.AddWithValue("@MeetingTitle", obj.MeetingTitle);
+                cmd.Parameters.AddWithValue("@createrId", obj.CreaterId);
+                cmd.Parameters.AddWithValue("@createdBy", obj.CreaterId!=null?"projectManager":"admin");
                 cmd.Parameters.AddWithValue("@meetingTime", obj.MeetingTime);
                 cmd.Parameters.AddWithValue("@meetingDocument", obj.Attachment_Url);
                 cmd.Parameters.AddWithValue("@Id", obj.Id);
@@ -1122,6 +1110,7 @@ namespace RemoteSensingProject.Models.Admin
                     obj.MeetingType = sdr["meetingType"].ToString();
                     obj.MeetingLink = sdr["meetingLink"].ToString();
                     obj.MeetingTitle = sdr["MeetingTitle"].ToString();
+                    obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]):0;
                     obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
                     _list.Add(obj);
                 }

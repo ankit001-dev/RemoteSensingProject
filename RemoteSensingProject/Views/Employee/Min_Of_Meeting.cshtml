@@ -10,163 +10,396 @@
         color: #444;
         line-height: 13px;
     }
+
+    .badge {
+        display: inline-block;
+        padding: 0.25em 0.5em;
+        font-size: 0.875em;
+        font-weight: bold;
+        color: #fff;
+        border-radius: 0.25rem;
+        text-align: center;
+    }
+
+    .badge-pending {
+        background-color: #ffc107; /* Yellow for pending */
+    }
+
+    .badge-completed {
+        background-color: #28a745; /* Green for completed */
+    }
+    /* Increase the z-index of the Select2 dropdown */
+    .select2-dropdown {
+        z-index: 9999 !important; /* Make sure it is on top of other UI elements */
+    }
+
+    /* If you have other elements with a high z-index (like Bootstrap modal), adjust them accordingly */
+    .modal-backdrop {
+        z-index: 1040 !important; /* Bootstrap modal backdrop */
+    }
+
+    .modal {
+        z-index: 1050 !important; /* Bootstrap modal */
+    }
 </style>
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item"><a href="popup-ads.html">Minute of meeting</a></li>
-        <li class="breadcrumb-item active" aria-current="page">/Create Meeting</li>
+        <li class="breadcrumb-item active" aria-current="page">/Add Meeting</li>
     </ol>
+    <a href="/Admin/Meeting_Report" class="btn btn-primary"><i class="link-icon" data-feather="arrow-left"></i> Back To List</a>
 </nav>
 
 <div class="row">
-    <div class="card">
-        <div class="card-body">
-            <h4 class="mb-4">Create Meeting</h4>
-            <form id="formDataMeet" method="post">
+    <div class="col-md-12 grid-margin stretch-card">
 
-                <div class="row gutters">
-                    <div class="col-lg-4 mb-3 col-12">
-                        <div class="form-group">
-                            <label>Meating Type</label>
-                            <br />
-                            <input type="radio" name="meetingType" class="meetType" value="Online" checked>&nbsp;Online &nbsp; &nbsp;
-                            <input type="radio" name="meetingType" class="meetType" value="Offline">&nbsp;Offline &nbsp; &nbsp;
+        <div class="card">
+            <div class="card-body">
+                <form id="meetingforms" method="post" enctype="multipart/form-data">
 
+                    <div class="row gutters">
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Type</label>
+                                <br />
+                                <input type="radio" id="meetingTypeOnline" name="MeetingType" class="meetType" value="online" checked><span>Online</span>
+                                <input type="radio" required id="meetingTypeOffline" name="MeetingType" class="meetType" value="offline"><span>Offline</span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Member:</label>
+                                <select class="form-control select2" required id="MeetingMember" name="meetingMemberList" multiple>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            if (item != null)
+                                            {
+                                                <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-3 col-12" id="meetingLinkContainer">
+                            <div class="form-group">
+                                <label>Meeting Link</label>
+                                <input type="url" class="form-control meetinglink" id="meetinglink" name="MeetingLink" placeholder="Enter meeting link">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3 col-12" id="venueEle" style="display: none;">
+                            <div class="form-group">
+                                <label>Meeting Address</label>
+                                <input type="text" class="form-control meetinglink" id="meetingaddress" name="MeetingAddress" placeholder="Enter meeting address">
+                            </div>
                         </div>
                     </div>
-
-                    <div class="col-lg-4 mb-3 col-12">
-                        <div class="form-group">
-                            <label>Meeting Member:</label>
-                            <select class="form-control" name="meetFor" id="meetFor" multiple>
-                                <option>Member 1</option>
-                                <option>Member 2</option>
-                                <option>Member 3</option>
-                                <option>Member 4</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 mb-3 col-12" id="venueEle" style="display:none;">
-                        <div class="form-group">
-                            <label> Venue</label>
-                            <input type="text" class="form-control" name="venue" placeholder="Enter Venue ">
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 mb-3 col-12" id="meetingLinkContainer">
-                        <div class="form-group">
-                            <label>Meeting Link</label>
-                            <input type="text" class="form-control" name="meetinglink" placeholder="Enter meeting link">
-                        </div>
-                    </div>
-
-
-                </div>
-                <div class="row gutters">
-                    <div class="col-lg-4 mb-3 col-12">
-                        <div class="form-group">
-                            <label>Meeting Title</label>
-                            <input type="text" class="form-control" id="meetingtitle" name="meetingtitle" placeholder="Enter Meeting Title">
-                        </div>
-                    </div>
-                    <div class="col-lg-4 mb-3 col-12">
-                        <div class="form-group">
-                            <label> Meeting Time</label>
-                            <input type="datetime-local" class="form-control" id="meetingdatetime" name="meetingdatetime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
-                        </div>
-                    </div>
-                    <div class="col-lg-4 mb-3 col-12">
-                        <div class="form-group">
-                            <label> Attachment</label>
-                            <input class="form-control" type="file" id="upload">
-                        </div>
-                    </div>
-                </div>
-
-
-                <div id="keypoints-container">
-                    <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
-                        <div class="col-sm-2">
-                            <label style="display: block;font-weight:bold; margin-bottom: 5px;"> Key Point 1 </label>
-                        </div>
-                        <div class="col-sm-6 col-12">
-
-                            <div class="form-group m-0">
-                                <input type="text" class="form-control keypointDetails" placeholder="Enter Key Points">
+                    <div class="row gutters">
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Title</label>
+                                <input type="text" class="form-control" required id="meetingtitle" name="MeetingTitle" value="" placeholder="Enter Meeting Title">
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3 col-12">
-                            <label style="display: block;font-weight:bold; margin-bottom: 5px;"></label>
-                            <div class="form-group m-0">
-                                <a href="#" id="add-btn" title="Add Another Key"><i class="fa-solid fa-circle-plus"></i> Add Another Key</a>
+                            <div class="form-group">
+                                <label>Meeting Time</label>
+                                <input type="datetime-local" required class="form-control" id="meetingdatetime" name="MeetingTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Attachment</label>
+                                <input class="form-control" type="file" id="Attachment" name="Attachment">
                             </div>
                         </div>
                     </div>
-                </div>
-                <p class="text-center">
-                    <button id="createMeetingBtn" type="submit" class="btn btn-primary">Create Meeting</button>
 
-                </p>
+                    <div id="keypoints-container">
+                        <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div class="col-sm-2">
+                                <label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point 1</label>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <div class="form-group m-0">
+                                    <input type="text" class="form-control keypointDetails" id="keyPoint" name="keyPointList" placeholder="Enter Key Points">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3 col-12">
+                                <label style="display: block;font-weight:bold; margin-bottom: 5px;"></label>
+                                <div class="form-group m-0">
+                                    <a href="#" id="add-btn" title="Add Another Key"><i class="fa-solid fa-circle-plus"></i> Add Another Key</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center">
+                        <button id="createMeetingBtn" type="submit" class="btn btn-primary">Create Meeting</button>
+                    </p>
+                </form>
 
-            </form>
+            </div>
 
         </div>
-
     </div>
+    <div class="col-md-12 grid-margin stretch-card">
 
-    <div class="card my-4 p-3">
-        <div class="card-body">
-            <h4 class="mb-4">Meeting List</h4>
-            <div class="table-container">
+        <div class="card my-4 p-3">
+            <div class="card-body">
+                <h4 class="mb-4">Meeting List</h4>
+                <div class="table-container">
 
-                <div class="table-responsive">
-                    <table id="dataTableExample" class="table custom-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Meeting Name</th>
-                                <th>Meeting Mode</th>
-                                <th>Venue</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Pardhan Mantri Awaas Yojana (PMAY-G)</td>
-                                <td>Offile</td>
-                                <td>Block A, Hall-120, UK</td>
-                                <td>Pending</td>
-                                <td>
-                                    <ul class="d-flex list-unstyled justify-content-evenly">
-                                        <li>
-                                            <a href="/employee/Meeting_Conclusion"><i class="fa-solid fa-eye"></i></a>
-                                        </li>
-                                        <li><a href="#"><i class="fa-solid fa-pencil"></i></a></li>
-                                    </ul>
-                                </td>
-
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="meetingTable" class="table custom-table">
+                            <thead>
+                                <tr>
+                                    <th>SR.No.</th>
+                                    <th>Meeting Name</th>
+                                    <th>Meeting Mode</th>
+                                    <th>Meeting Date</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
-
-
 </div>
+
+<!--update Modal -->
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="updateModalLabel">Update Meeting Detail</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="updateMeetingModal" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="Id" id="meetingId" />
+                    <div class="row gutters">
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Type</label>
+                                <br />
+                                <input type="radio" id="meetingTypeOnline" name="MeetingType" class="updatemeetType" value="online" checked><span> Online </span>
+                                <input type="radio" id="meetingTypeOffline" name="MeetingType" class="updatemeetType" value="offline"><span> Offline </span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Member:</label><br />
+                                <select class="form-control" id="updateMeetingMember" name="meetingMemberList" multiple>
+                                    @if (Model != null)
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            if (item != null)
+                                            {
+                                                <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-3 col-12" id="updatemeetingLinkContainer">
+                            <div class="form-group">
+                                <label>Meeting Link</label>
+                                <input type="url" class="form-control " id="updatemeetinglink" name="MeetingLink" placeholder="Enter meeting link">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3 col-12" id="updatevenueEle" style="display: none;">
+                            <div class="form-group">
+                                <label>Meeting Address</label>
+                                <input type="text" class="form-control " id="updatemeetingaddress" name="MeetingAddress" placeholder="Enter meeting address">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row gutters">
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Title</label>
+                                <input type="text" class="form-control" id="updatemeetingtitle" name="MeetingTitle" placeholder="Enter Meeting Title">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Meeting Time</label>
+                                <input type="datetime-local" class="form-control" id="updatemeetingdatetime" name="MeetingTime" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" placeholder="Enter Meeting Time">
+                            </div>
+                        </div>
+                        <div class="col-lg-4 mb-3 col-12">
+                            <div class="form-group">
+                                <label>Attachment</label>
+                                <input class="form-control" type="file" id="updateAttachment" name="Attachment">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="updatekeypoints-container">
+                        <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div class="col-sm-2">
+                                <label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point 1</label>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <div class="form-group m-0">
+                                    <input type="text" class="form-control updatekeypointDetails" id="keyPoint" name="keyPointList" placeholder="Enter Key Points">
+                                </div>
+                            </div>
+                            <div class="col-lg-4 mb-3 col-12">
+                                <label style="display: block;font-weight:bold; margin-bottom: 5px;"></label>
+                                <div class="form-group m-0">
+                                    <a href="#" id="addUpdate-btn" title="Add Another Key"><i class="fa-solid fa-circle-plus"></i> Add Another Key</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-center">
+                        <button id="createMeetingBtn" type="submit" class="btn btn-primary">Update Meeting</button>
+                    </p>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AllMemmberDetails" tabindex="-1" aria-labelledby="AllMemmberDetails" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <h1 class="modal-title fs-5 text-light" id="exampleModalLabel">All Meeting Members</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Meeting Member Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="presentMemberContainer">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="customModalTwo" tabindex="-1" aria-labelledby="customModalTwo" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">Key Points Details</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Key Points</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody id="responseContainer">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal show all conclusion-->
+<div class="modal fade" id="AllConclusionModal" tabindex="-1" aria-labelledby="AllConclusionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="AllConclusionModalLabel">Conclusions</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-container">
+
+                    <div class="table-responsive">
+                        <table id="dataTableExamples" class="table table-striped">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Venue</th>
+                                    <th>Mode</th>
+                                    <th>Conclusion</th>
+                                    <th>Next FolloUp Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="conclusionContainer">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
 <script>
 
+
+    function showLoading(action) {
+        Swal.fire({
+            title: "Please Wait..!",
+            text: "Request are under process.",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        if (!action) {
+            Swal.close();
+        }
+    }
+
     $(document).ready(function () {
+        document.getElementById('AllMemmberDetails').addEventListener('hide.bs.modal', function () {
+            $('#AllConclusionModal').modal('show');
+        }); document.getElementById('customModalTwo').addEventListener('hide.bs.modal', function () {
+            $('#AllConclusionModal').modal('show');
+        });
+
+
         $('#tbl_Member').DataTable();
         $('#basicExample').DataTable();
-        $("#meetFor").select2({
+        $(".select2").select2({
             placeholder: "--Select Member--"
         })
+        $("#updateMeetingMember").select2({
+            placeholder: "--Select Member--",
+            width: '100%'
+        })
+
+
+
         $('#select_all').on('click', function () {
             const isChecked = $(this).prop("checked");
             const nodes = $('#tblMem').DataTable().rows({ 'search': 'applied' }).nodes().to$();
@@ -183,29 +416,76 @@
         $("#add-btn").click(function () {
             i++;
             const inputField = `
-<div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
-    <div class="col-sm-2 col-12"><label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point ${i}</label></div>
+          <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
+            <div class="col-sm-2 col-12"><label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point ${i}</label></div>
 
-    <div class="col-sm-6 col-12">
-        <div class="form-group m-0">
-            <input type="text" class="form-control keypointDetails" placeholder="Enter Key Points">
-        </div>
-    </div>
-    <div class="col-sm-2">
-        <a href="#" class="remove-btn" title="Remove key"><i class="fa-solid fa-trash text-danger fs-5"></i></a>
-    </div>
-</div>`;
+            <div class="col-sm-6 col-12">
+                <div class="form-group m-0">
+                    <input type="text" id="keyPoint" name="keyPointList" class="form-control keypointDetails" placeholder="Enter Key Points">
+                </div>
+            </div>
+            <div class="col-sm-2">
+                <a href="#" class="remove-btn" title="Remove key"><i class="fa-solid fa-trash text-danger fs-5"></i></a>
+            </div>
+       </div>`;
             $("#keypoints-container").append(inputField);
+        });
+
+        $("#addUpdate-btn").click(function () {
+            i++;
+            const inputField = `
+   <div class="row gutters keyItems" style="display: flex; align-items: center; margin-bottom: 10px;">
+     <div class="col-sm-2 col-12"><label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point ${i}</label></div>
+
+     <div class="col-sm-6 col-12">
+         <div class="form-group m-0">
+             <input type="text" id="keyPoint" name="keyPointList" class="form-control updatekeypointDetails" placeholder="Enter Key Points">
+         </div>
+     </div>
+     <div class="col-sm-2">
+         <a href="#" class="remove-btn" title="Remove key"><i class="fa-solid fa-trash text-danger fs-5"></i></a>
+     </div>
+</div>`;
+            $("#updatekeypoints-container").append(inputField);
         });
 
         $("#keypoints-container").on("click", ".remove-btn", function () {
             $(this).parents(".keyItems").remove();
             i--;
         });
+        $("#updatekeypoints-container").on("click", ".remove-btn", function () {
+            $(this).parents(".keyItems").remove();
+            i--;
+        });
 
         $(".meetType").change(function () {
-            $("#venueEle").toggle($(this).val() === "Offline");
-            $("#meetingLinkContainer").toggle($(this).val() == "Online");
+            debugger;
+            const selectedValue = $(this).val().trim().toLowerCase();
+            $("#venueEle").toggle(selectedValue === "offline");
+            $("#meetingLinkContainer").toggle(selectedValue === "online");
+            if (selectedValue == "offline") {
+                $("#meetinglink").attr("required", false);
+                $("#meetingaddress").attr("required", true);
+            } else {
+                $("#meetinglink").attr("required", true);
+                $("#meetingaddress").attr("required", false);
+            }
+        }); $(".updatemeetType").change(function () {
+            debugger;
+            const selectedValue = $(this).val().trim().toLowerCase();
+            $("#updatevenueEle").toggle(selectedValue === "offline");
+            $("#updatemeetingLinkContainer").toggle(selectedValue === "online");
+            if (selectedValue == "offline") {
+                $("#updatemeetinglink").attr("required", false);
+                $("#updatemeetingaddress").attr("required", true);
+
+
+            } else {
+                $("#updatemeetinglink").attr("required", true);
+                $("#updatemeetingaddress").attr("required", false);
+
+
+            }
         });
 
         $("#meetFor").change(function () {
@@ -218,6 +498,394 @@
 </script>
 
 
+<script>
+    $(document).ready(function () {
+
+
+        $("#meetingforms").on("submit", function (event) {
+            event.preventDefault();
+            showLoading(true);
+            let formData = new FormData();
+            let meetingMemberList = [];
+            let keyPointList = [];
+
+            var arrData = $(this).serializeArray();
+
+            arrData.forEach(function (para) {
+                if (para.name == "MeetingMember") {
+                    meetingMemberList.push(para.value);
+                }
+                else if (para.name == "keyPointList") {
+                    keyPointList.push(para.value);
+
+                }
+                else {
+                    formData.append(para.name, para.value);
+                }
+            });
+
+            if ($("#Attachment").get(0).files.length > 0) {
+                formData.append("Attachment", $("#Attachment").get(0).files[0]);
+            }
+            formData.append("meetingMemberList", meetingMemberList)
+            formData.append("KeyPointList", keyPointList)
+            debugger
+
+            $.ajax({
+                url: '/employee/AddMeeting',
+                type: 'POST',
+                processData: false, // Important: Don't process data
+                contentType: false, // Important: Don't set content type
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Success',
+                            icon: 'success',
+                            text: 'Meeting Added Successfully!',
+                            confirmButtonText: 'ok'
+                        }).then(() => {
+                            window.location.reload();
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            icon: 'error',
+                            text: 'Failed to add meeting',
+                            confirmButtonText: 'ok'
+                        })
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error occurred:", {
+                        status: status,
+                        error: error,
+                        response: xhr
+                    });
+                    Swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        text: 'An error occurred while adding the meeting. Please try again.',
+                        confirmButtonText: 'ok'
+                    })
+                }
+            });
+        });
+
+
+        $("#updateMeetingModal").on("submit", function (event) {
+            event.preventDefault();
+            showLoading(true);
+
+            let formData = new FormData();
+            let meetingMemberList = [];
+            let keyPointList = [];
+            let KeyPointId = []
+
+            var arrData = $(this).serializeArray();
+
+            $(".updatekeypointDetails").each(function (i, d) {
+                keyPointList.push(d.value);
+                KeyPointId.push(Number(d.getAttribute("data-id")) || 0)
+
+            })
+
+            arrData.forEach(function (para) {
+                if (para.name == "MeetingMember") {
+                    meetingMemberList.push(para.value);
+                }
+                else if (para.name == "keyPointList") {
+                }
+                else {
+                    formData.append(para.name, para.value);
+
+                }
+            });
+            if ($("#Attachment").get(0).files.length > 0) {
+                formData.append("Attachment", $("#Attachment").get(0).files[0]);
+            }
+            formData.append("meetingMemberList", meetingMemberList)
+            formData.append("keyPointList", keyPointList)
+            formData.append("KeypointId", KeyPointId)
+            debugger
+            $.ajax({
+                url: '/employee/UpdateMeeting',
+                type: 'POST',
+                processData: false, // Important: Don't process data
+                contentType: false, // Important: Don't set content type
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            title: 'Success',
+                            icon: 'success',
+                            text: 'Meeting Updated Successfully!',
+                            confirmButtonText: 'ok'
+                        }).then(() => {
+                            window.location.reload();
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            icon: 'error',
+                            text: 'Failed to added meeting',
+                            confirmButtonText: 'ok'
+                        })
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error occurred:", {
+                        status: status,
+                        error: error,
+                        response: xhr
+                    });
+                    Swal.fire({
+                        title: 'Error',
+                        icon: 'error',
+                        text: 'An error occurred while adding the meeting. Please try again.',
+                        confirmButtonText: 'ok'
+                    })
+                }
+            });
+        });
 
 
 
+    });
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+
+        setTimeout(() => {
+
+            $('#meetingTable').DataTable();
+        }, 1000)
+
+        $.ajax({
+            url: '/employee/GetAllMeeting',
+            type: 'GET',
+            success: function (res) {
+                $('#meetingTable tbody').empty();
+                var rows = '';
+                $.each(res.empList, function (index, item) {
+                    rows += `<tr>
+                    <td>${index + 1}</td>
+                    <td>${item.MeetingTitle}</td>
+                    <td>${item.MeetingType}</td>
+                    <td>${item.MeetingDate}</td>
+                <td>
+                      <span class="${item.CompleteStatus == 0 ? 'badge badge-pending' : 'badge badge-completed'}">
+                        ${item.CompleteStatus == 0 ? 'Pending' : 'Completed'}
+                      </span>
+                    </td>
+                    <td>
+                            <ul class="d-flex list-unstyled justify-content-evenly">
+                            ${item.CompleteStatus == 0 ? `<li>        <a href="/employee/Meeting_Conclusion?meeting=${item.Id}"><i class="fa-solid fa-circle-plus" style="color:orange" title="Add Conclusion"></i></a>
+                            </li >
+                        <li><a onclick='updateMeeting(${item.Id})' role="button"><i class="fa-solid text-primary fa-pencil"></i></a></li>` : `<i onclick="showAllConclusion(${item.Id})" role="button" class="fa-solid text-primary fa-eye"></i>`
+                        }
+                        </ul>
+                    </td>
+                    </tr>`;
+                });
+                $('#meetingTable tbody').append(rows);
+            },
+            error: function (xhr, error) {
+                console.log("An error accured", error);
+            }
+        })
+    })
+
+    function showAllConclusion(id) {
+        $("#AllConclusionModal").modal("show")
+        showLoading(true);
+
+        $.ajax({
+            url: '/employee/GetConclusions',
+            type: 'get',
+            data: { id: id },
+            success: function (res) {
+                $("#conclusionContainer").empty();
+                if (res != null) {
+                    if (res.length > 0) {
+                        res.forEach(function (d) {
+                            $("#conclusionContainer").append(`
+
+             <tr>
+                 <td>
+                     ${d.MeetingDate} ${d.MeetingDate.toLowerCase() == "offline" ? item.address : ""}
+                 </td>
+                 <td>
+                    ${d.mode}
+                 </td>
+                 <td>
+                     ${d.Conclusion}
+                 </td>
+                 <td>
+                     ${d.NextFollow}
+                 </td>
+
+                 <td>
+                     <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                         <li class="me-2"><a href="#" onclick="ShowPresentMember(${d.Id})" class="ShowPresentMember" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-solid fa-circle-user" style="font-size:18px; color:green" title="View Meeting Members"> </i></a></li>
+                         <li class="me-2"><a href="#" onclick="showKeyResponse(${d.Id})" class="showKeyResponse" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list" style="font-size:18px; color:red" title="View Key Points"> </i></a></li>
+
+                     </ul>
+
+                 </td>
+             </tr>
+         }
+     }
+ }`)
+                        })
+                    }
+                }
+                showLoading(false);
+
+            }, error: function (xhr) {
+                console.log(xhr)
+                Swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: 'An error occurred.',
+                    confirmButtonText: 'ok'
+                })
+            }
+        })
+    }
+
+    function updateMeeting(id) {
+        showLoading(true);
+
+        $(".updateKeyItem").remove()
+        $("#updateModal").modal("show")
+        $("#meetingId").val(id)
+        $.ajax({
+            url: '/employee/GetMeetingById',
+            type: 'get',
+            data: { id: id },
+            success: function (res) {
+                showLoading(false);
+                console.log(res)
+                if (res != null) {
+                    $(".updatemeetType").each(function (i, d) {
+                        if (res.MeetingType.toLowerCase() == d.value) {
+
+                            d.setAttribute("checked", true)
+                        }
+                    })
+
+                    $("#updatevenueEle").toggle(res.MeetingType.toLowerCase() == "offline");
+                    $("#updatemeetingLinkContainer").toggle(res.MeetingType.toLowerCase() == "online");
+                    if (res.MeetingType.toLowerCase() == "offline") {
+
+                        $("#updatemeetingaddress").val(res.MeetingLink)
+                        $("#updatemeetingaddress").attr("required", true)
+                        $("#updatemeetinglink").attr("required", false)
+
+                    } else {
+                        $("#updatemeetinglink").val(res.MeetingLink)
+                        $("#updatemeetinglink").attr("required", true)
+                        $("#updatemeetingaddress").attr("required", false)
+
+                    }
+                    $("#updatemeetingtitle").val(res.MeetingTitle)
+                    $("#updatemeetingdatetime").val(res.MeetingTimeString)
+                    $("#updateMeetingMember").val(res.memberId).change();
+                    if (res.MeetingKeyPointDict.length > 0) {
+                        res.MeetingKeyPointDict.forEach(function (d, i) {
+                            const inputField = `
+   <div class="row gutters keyItems updateKeyItem" style="display: flex; align-items: center; margin-bottom: 10px;">
+     <div class="col-sm-2 col-12"><label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point ${i + 1}</label></div>
+
+     <div class="col-sm-6 col-12">
+         <div class="form-group m-0">
+             <input type="text" id="keyPoint" data-id="${d.Id}" name="keyPointList" value="${d.keyPoint}" class="form-control updatekeypointDetails " placeholder="Enter Key Points">
+         </div>
+     </div>
+     <div class="col-sm-2">
+         <a href="#" class="remove-btn" title="Remove key"><i class="fa-solid fa-trash text-danger fs-5"></i></a>
+     </div>
+</div>`;
+                            $("#updatekeypoints-container").append(inputField);
+                        })
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error occurred:", {
+                    status: status,
+                    error: error,
+                    response: xhr
+                });
+                Swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: 'An error occurred while adding the meeting. Please try again.',
+                    confirmButtonText: 'ok'
+                })
+            }
+        });
+    }
+
+
+    function ShowPresentMember(id) {
+        $.ajax({
+            url: "/employee/getPresentMember",
+            type: "get",
+            data: { id: id },
+            success: function (res) {
+                console.log(res)
+                if (res != null) {
+                    $("#presentMemberContainer").empty();
+                    if (res.length > 0) {
+                        res.forEach(function (d) {
+                            $("#presentMemberContainer").append(` <tr>
+
+     <td><img src="${d.Image_url}" alt="sliderimages" style="height: 20px;width: 20px;"> ${d.EmployeeName}	<span class="text-secondary">(${d.EmployeeRole})</span></td>
+     <td>${d.PresentStatus ? "Joined" : "Not Joined"}</td>
+ </tr>`)
+                        })
+                    }
+                }
+            }, error: function (xhr) {
+                swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    }
+    function showKeyResponse(id) {
+        $.ajax({
+            url: "/employee/getKeypointResponse",
+            type: "get",
+            data: { id: id },
+            success: function (res) {
+                console.log(res)
+                if (res != null) {
+                    $("#responseContainer").empty();
+                    if (res.length > 0) {
+                        res.forEach(function (d) {
+                            $("#responseContainer").append(` <tr>
+
+      <td>${d.KeyPoint}</td>
+ <td>${d.Response}</td>
+ </tr>`)
+                        })
+                    }
+                }
+            }, error: function (xhr) {
+                swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    }
+</script>

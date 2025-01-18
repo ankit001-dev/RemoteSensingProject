@@ -193,12 +193,6 @@ src : url('/assets/Summernotes/summernote.eot'),
                                     <a href="/Admin/All_Projects" class="nav-link">Project Report</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/Admin/Pending_Project" class="nav-link">Pending Project Report</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/Admin/Completed_Project" class="nav-link">Completed Project Report</a>
-                                </li>
-                                <li class="nav-item">
                                     <a href="/Admin/Meeting_Report" class="nav-link">Meeting Report</a>
                                 </li>
 
@@ -444,7 +438,20 @@ src : url('/assets/Summernotes/summernote.eot'),
 
     <script src="~/assets/js/datepicker.js"></script>
     <script src="~/assets/datatable/datatables.min.js"></script>
+
     <script src="~/assets/vendors/select2/select2.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css"/>
+
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.print.min.js"></script>
+
+
     <script>
         $(document).ready(function () {
             $('#dataTableExample').DataTable({

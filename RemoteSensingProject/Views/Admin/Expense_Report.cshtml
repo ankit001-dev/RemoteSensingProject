@@ -40,9 +40,16 @@
             <div class="col-lg-4 col-md-6">
                 <select class="form-select form-select-lg">
                     <option>--Select Project--</option>
-                    <option value="1" selected>Project1</option>
-                    <option value="2">Project2</option>
-                    <option value="3">Project3</option>
+                    @if (ViewBag.ProjectList != null)
+                    {
+                        if (ViewBag.ProjectList.Count > 0)
+                        {
+                            foreach (var item in ViewBag.ProjectList)
+                            {
+                                <option value="@item.Id" >@item.ProjectTitle</option>
+                            }
+                        }
+                    }   
                 </select>
             </div>
             <div class="col-lg-4 col-md-6">
@@ -107,6 +114,27 @@
             expenseDetailsDiv.setAttribute('hidden', true);
         }
     };
+
+    function getExpenses(pId, hId) {
+
+
+        $.ajax({
+            url: "/employee/GetExpenses",
+            type: "get",
+            data: { pId: pId, hId: hId },
+            success: function (res) {
+                console.log(res);
+            }, error: function (xhr) {
+                Swal.fire({
+                    title: "error",
+                    text: "some error occured",
+                    icon:"error"
+                })
+            }
+        })
+
+    }
+
 </script>
 
 

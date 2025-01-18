@@ -29,6 +29,43 @@
     .select2-dropdown {
         z-index: 9999 !important; /* Make sure it is on top of other UI elements */
     }
+    /* Custom button styling */
+    .dt-button {
+        font-size: 14px !important;
+        padding: 10px 20px !important;
+        border-radius: 4px !important;
+        border: none !important;
+        cursor: pointer !important;
+        margin-right: 5px !important;
+        display: inline-block !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+        /* Excel button (Green) */
+        .dt-button.buttons-excel {
+            background-color: #3b9f42 !important; /* Excel-like green */
+            color: white !important;
+        }
+
+            .dt-button.buttons-excel:hover {
+                background-color: #2a7c2f !important; /* Darker green on hover */
+            }
+
+        /* PDF button (Red) */
+        .dt-button.buttons-pdf {
+            background-color: #e74c3c !important; /* PDF-like red */
+            color: white !important;
+        }
+
+            .dt-button.buttons-pdf:hover {
+                background-color: #c0392b !important; /* Darker red on hover */
+            }
+
+    /* Additional styling for the buttons wrapper */
+    .dataTables_wrapper .dt-buttons {
+        margin-bottom: 10px !important;
+    }
 </style>
 
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
@@ -37,7 +74,7 @@
             <div class="col-lg-2">
                 <div class="t-header"><h4 class="mb-2 text-primary"><a href="#">Meeting Lists</a></h4></div>
             </div>
-            <div class="col-lg-6 col-md-6">
+            <div class="col-lg-4 col-md-6">
                 <input type="search" id="searchmeetingName" placeholder="Search by meeting name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
@@ -48,10 +85,10 @@
                 </select>
             </div>
             <div class="col-lg-3 col-md-6">
-                <select class="form-select form-select-lg" id="searchByMeetingMode">
+                <select class="form-select form-select-lg" id="searchmeetingMode">
                     <option selected value="">-- Meeting Mode --</option>
-                    <option>Online</option>
-                    <option>Offline</option>
+                    <option value="online">Online</option>
+                    <option value="offline">Offline</option>
                 </select>
             </div>
 
@@ -197,7 +234,13 @@
 
         setTimeout(() => {
 
-            $('#meetingTable').DataTable();
+            $('#meetingTable').DataTable({
+                layout: {
+                    topStart: {
+                        buttons: ['excel', 'pdf']
+                    }
+                }
+            });
         }, 1000)
 
         $.ajax({
@@ -348,6 +391,7 @@
             }
         })
     }
+    $(document).ready(function () {
 
     $('#searchmeetingName').on('keyup', function () {
         let table = $("#meetingTable").DataTable();
@@ -356,10 +400,14 @@
     $('#searchmeetingName').on('keyup', function () {
         let table = $("#meetingTable").DataTable();
         table.columns(1).search(this.value).draw();
+    }); $('#searchmeetingMode').on('change', function () {
+        let table = $("#meetingTable").DataTable();
+        table.columns(2).search(this.value).draw();
     });
     $('#searchByMeetingStatus').on('change', function () {
     debugger
         let table = $("#meetingTable").DataTable();
         table.columns(4).search(this.value).draw();
+    });
     });
 </script>
