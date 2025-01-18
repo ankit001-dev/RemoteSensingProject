@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Controllers
@@ -13,9 +14,13 @@ namespace RemoteSensingProject.Controllers
     public class AdminController : Controller
     {
         private readonly AdminServices _adminServices;
+        private readonly ManagerService _managerServices;
+
         public AdminController()
         {
-            _adminServices = new AdminServices();   
+            _adminServices = new AdminServices();  
+            _managerServices = new ManagerService();
+
         }
         // GET: Admin
         public ActionResult Dashboard()
@@ -312,7 +317,7 @@ namespace RemoteSensingProject.Controllers
 
         #endregion End Meeting
 
-        public ActionResult MeetingConclusion()
+        public ActionResult MeetingConclusion(int meeting)
         {
             ViewBag.empList = _adminServices.BindEmployee();
             var obj = _adminServices.getMeetingById(meeting);
@@ -464,8 +469,14 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Expense_Report()
         {
+            ViewBag.ProjectList = _adminServices.Project_List();
+
             return View();
         }
-
+        public ActionResult GetExpenses(int pId, int hId)
+        {
+            var res = _managerServices.ExpencesList(pId, hId);
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
     }
 }
