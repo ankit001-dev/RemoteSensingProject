@@ -287,7 +287,6 @@
   <ItemGroup>
     <Content Include="assets\css\style.css" />
     <Content Include="assets\css\SweatAlert.min.css" />
-    <Content Include="assets\datatable\dataTables.buttons.js" />
     <Content Include="assets\datatable\datatables.css" />
     <Content Include="assets\datatable\datatables.js" />
     <Content Include="assets\datatable\datatables.min.css" />
