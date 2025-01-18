@@ -22,26 +22,6 @@
     </ol>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Weekly Status</button>
 </nav>
-@*<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
-    <form class="forms-sample">
-        <div class="row align-items-center">
-            <div class="col-lg-3">
-                <h5>Employee Lists</h5>
-            </div>
-            <div class="col-lg-6 col-md-6">
-                <input type="text" placeholder="Search by employee name" class="form-control">
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <select class="form-select form-select-lg">
-                    <option selected>Department</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-            </div>
-        </div>
-    </form>
-</div>*@
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -57,15 +37,19 @@
                               </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-start">1</td>
-                                <td>25/09/2024</td>
-                                <td class="w-25">
-                                    This project aims to develop an innovative mobile app that enhances daily productivity by integrating task management, calendar scheduling, and reminder functionalities.
-                                </td>
-                                <td>10%</td>
-                                
-                            </tr>
+                            @foreach (var item in ViewBag.WeeklyUpdateList as List<RemoteSensingProject.Models.Admin.main.Project_WeeklyUpdate>)
+                            {
+                                <tr>
+                                    <td class="text-start">1</td>
+                                    <td>@Convert.ToDateTime(item.date).ToString("dd MMM yyyy")</td>
+                                    <td class="w-25">
+                                        @item.comments
+                                    </td>
+                                    <td>@item.completionPerc%</td>
+
+                                </tr>
+                            }
+
                         </tbody>
                     </table>
                 </div>
@@ -81,7 +65,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Add Weekly Status</h5>
             </div>
             <div class="modal-body">
-                <form class="forms-sample">
+                <form class="forms-sample" id="weeklyUpdateForm">
                     <div class="row">
                         <div class="mb-3 col-md-12">
                             <label for="subtitle" class="form-label">Date</label>
@@ -90,13 +74,13 @@
                         </div>
                         <div class="mb-3 col-md-12">
                             <label for="subtitle" class="form-label">Comment</label>
-                            <textarea class="form-control form-control-sm" name="tinymce" id="tinymceExample" rows="10" placeholder="Enter Comment"></textarea>
+                            <textarea class="form-control form-control-sm" name="comments" id="tinymceExample" rows="10" placeholder="Enter Comment"></textarea>
                         </div>
                         <div class="mb-3 col-md-12">
                             <label for="title" class="form-label">Completion in %</label>
-                            <input type="number" class="form-control" id="title" placeholder="Enter Completion in %">
+                            <input type="number" class="form-control" id="title" name="completionPerc" placeholder="Enter Completion in %">
                         </div>
-
+                        <input type="hidden" name="ProjectId" value="@Request.QueryString["Id"]"/>
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Update Status</button>
@@ -107,3 +91,54 @@
     </div>
 </div>
 
+<script>
+    $("#weeklyUpdateForm").on("submit", function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Please wait ...",
+            text: "Processing your request...",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+
+        let formData = $(this).serialize();
+        $.ajax({
+            url : "/employee/UpdateWeekly",
+            type : "post",
+            data: formData,
+            success: function (res) {
+                if (res) {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: res.message,
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                }
+                else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: res.message,
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server busy !",
+                    text: "Server is busy ! Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
+    })
+</script>

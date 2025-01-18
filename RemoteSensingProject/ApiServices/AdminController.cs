@@ -102,7 +102,7 @@ namespace RemoteSensingProject.ApiServices
                 if (file != null && file.FileName != "")
                 {
                     empData.Image_url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    empData.Image_url = "/ProjectContent/Admin/Employee_Images/" + empData.Image_url;
+                    empData.Image_url = Path.Combine("/ProjectContent/Admin/Employee_Images/", empData.Image_url);
                 }
                 else if (string.IsNullOrEmpty(empData.Image_url))
                 {
@@ -457,6 +457,87 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
+
+        [HttpGet]
+        [Route("api/adminDelayProject")]
+        public IHttpActionResult DelayProject()
+        {
+            try
+            {
+                var data = _adminServices.Project_List().Where(d => d.CompletionDate < DateTime.Now).ToList();
+                return Ok(new
+                {
+                    status = true,
+                    message = "Delay project data !",
+                    data = data,
+
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/adminOngoingProject")]
+        public IHttpActionResult ongoingProject()
+        {
+            try
+            {
+                var data = _adminServices.Project_List().Where(d => d.CompletionDate > DateTime.Now).ToList();
+                return Ok(new
+                {
+                    status = true,
+                    message = "Delay project data !",
+                    data = data,
+
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/adminCompleteProject")]
+
+        public IHttpActionResult completeProject()
+        {
+            try
+            {
+                var data = _adminServices.Project_List().Where(d => d.ProjectStatus).ToList();
+                return Ok(new
+                {
+                    status = true,
+                    message = "Delay project data !",
+                    data = data,
+
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
         #endregion
 
         #region Create Project
@@ -496,7 +577,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-            [HttpPost]
+        [HttpPost]
         [Route("api/adminCreateProject")]
         public IHttpActionResult CreateProject()
         {
@@ -511,7 +592,7 @@ namespace RemoteSensingProject.ApiServices
                     StartDate = Convert.ToDateTime(request.Form.Get("StartDate")),
                     CompletionDate = Convert.ToDateTime(request.Form.Get("CompletionDate")),
                     ProjectManager = request.Form.Get("ProjectManager"),
-                    ProjectBudget = Convert.ToDecimal(request.Form.Get("ProjectManager")),
+                    ProjectBudget = Convert.ToDecimal(request.Form.Get("ProjectBudget")),
                     ProjectDescription = request.Form.Get("ProjectDescription"),
                     projectDocumentUrl = request.Form.Get("projectDocumentUrl"),
                     ProjectType = request.Form.Get("ProjectType"),
@@ -527,11 +608,11 @@ namespace RemoteSensingProject.ApiServices
                     formData.ProjectDepartment = request.Form.Get("ProjectDepartment");
                     formData.Address = request.Form.Get("Address");
                 }
-                var file = request.Files["ProjectStage"];
+                var file = request.Files["projectDocument"];
                 if (file != null && file.FileName != "")
                 {
                     formData.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    formData.projectDocumentUrl = "/ProjectContent/Admin/PrjectDocs/" + formData.projectDocumentUrl;
+                    formData.projectDocumentUrl = Path.Combine("/ProjectContent/Admin/ProjectDocs/", formData.projectDocumentUrl);
                 }
                 // Validations
                 List<string> validationErrors = new List<string>();
@@ -612,26 +693,21 @@ namespace RemoteSensingProject.ApiServices
                 if (string.IsNullOrWhiteSpace(request.Form.Get("ProjectAmount")))
                     validationErrors.Add("Project Amount is required.");
 
-                if (string.IsNullOrWhiteSpace(request.Form.Get("Miscell_amt")))
-                    validationErrors.Add("Miscellaneous Amount is required.");
-
+                
                 if (!int.TryParse(request.Form.Get("Project_Id"), out int projectId))
                     validationErrors.Add("Invalid Project ID format.");
 
                 if (!decimal.TryParse(request.Form.Get("ProjectAmount"), out decimal projectAmount))
                     validationErrors.Add("Invalid Project Amount format.");
 
-                if (!decimal.TryParse(request.Form.Get("Miscell_amt"), out decimal miscellAmt))
-                    validationErrors.Add("Invalid Miscellaneous Amount format.");
+               
 
                 var formData = new Project_Budget
                 {
                     Id = Convert.ToInt32(request.Form.Get("Id")),
                     Project_Id = Convert.ToInt32(request.Form.Get("Project_Id")),
                     ProjectHeads = request.Form.Get("ProjectHeads"),
-                    ProjectAmount = Convert.ToDecimal(request.Form.Get("ProjectAmount")),
-                    Miscellaneous = request.Form.Get("Miscellaneous"),
-                    Miscell_amt = Convert.ToDecimal(request.Form.Get("Miscell_amt"))
+                    ProjectAmount = Convert.ToDecimal(request.Form.Get("ProjectAmount"))
                 };
 
                 if (validationErrors.Any())
@@ -646,10 +722,8 @@ namespace RemoteSensingProject.ApiServices
 
                 decimal ProjectBudget = _adminServices.GetProjectById(formData.Project_Id).pm.ProjectBudget;
                 decimal totalBudgets = _adminServices.ProjectBudgetList(formData.Project_Id).Sum(x => x.ProjectAmount);
-                if (totalBudgets >= ProjectBudget)
+                if ((totalBudgets + formData.ProjectAmount) <= ProjectBudget)
                 {
-
-
                     bool res = _adminServices.insertProjectBudgets(formData);
                     return Ok(new
                     {
@@ -718,10 +792,14 @@ namespace RemoteSensingProject.ApiServices
                 if (file != null && file.FileName != "")
                 {
                     formData.Document_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    formData.Document_Url = "/ProjectContent/Admin/ProjectDocs/" + formData.Document_Url;
+                    formData.Document_Url = Path.Combine("/ProjectContent/Admin/ProjectDocs/", formData.Document_Url);
                 }
 
                 bool res = _adminServices.insertProjectStages(formData);
+                if (res && file != null && file.FileName != "")
+                {
+                    file.SaveAs(HttpContext.Current.Server.MapPath(formData.Document_Url));
+                }
                 return Ok(new
                 {
                     status = res,
@@ -740,7 +818,28 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-
+        [HttpGet]
+        [Route("api/GetadminProjectDetailById")]
+        public IHttpActionResult GetProjectById(int Id)
+        {
+            try
+            {
+                var data = _adminServices.GetProjectById(Id);
+                return Ok(new
+                {
+                    status = true,
+                    data = data
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpGet]
         [Route("api/GetProjectBudgets")]
@@ -842,8 +941,6 @@ namespace RemoteSensingProject.ApiServices
                 if (string.IsNullOrWhiteSpace(request.Form.Get("keyPointList")))
                     validationErrors.Add("Key points is required.");
 
-
-                
                 var formData = new AddMeeting_Model
                 {
                     Id = Convert.ToInt32(request.Form.Get("Id")),
@@ -857,7 +954,7 @@ namespace RemoteSensingProject.ApiServices
                 if (file != null && file.FileName != "")
                 {
                     formData.Attachment_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    formData.Attachment_Url = "/ProjectContent/Admin/Meeting_Attachment/" + formData.Attachment_Url;
+                    formData.Attachment_Url = Path.Combine("/ProjectContent/Admin/Meeting_Attachment/", formData.Attachment_Url);
                 }
                 else if (string.IsNullOrWhiteSpace(request.Form.Get("Attachment_Url")))
                     validationErrors.Add("Meeting attachment is required.");
@@ -882,6 +979,13 @@ namespace RemoteSensingProject.ApiServices
                     });
                 }
                 bool res = _adminServices.insertMeeting(formData);
+                if (res)
+                {
+                    if(file != null && file.FileName != "")
+                    {
+                        file.SaveAs(HttpContext.Current.Server.MapPath(formData.Attachment_Url));
+                    }
+                }
                 return Ok(new
                 {
                     status = res,
@@ -985,7 +1089,7 @@ namespace RemoteSensingProject.ApiServices
             if(file != null && file.FileName != "")
             {
                 formData.Attachment_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                formData.Attachment_Url = "/ProjectContent/Admin/NoticeDocs/" + formData.Attachment_Url;
+                formData.Attachment_Url = Path.Combine("/ProjectContent/Admin/NoticeDocs/", formData.Attachment_Url);
             }
 
             bool res = _adminServices.InsertNotice(formData);

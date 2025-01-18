@@ -6,6 +6,17 @@ using System.Web;
 
 namespace RemoteSensingProject.Models.ProjectManager
 {
+    public class DashboardCount
+    {
+        public string TotalAssignProject { get; set; }
+        public string TotaCompleteProject { get; set; }
+        public string TotalDelayProject { get; set; }
+        public string TotalMeeting { get; set; }
+        public string TotalOngoingProject { get; set; }
+        public string TotalMeetings { get; set; }
+        public string TotalNotice { get; set; }
+
+    }
     public class AssignedProject
     {
         public int Id { get; set; } // Unique identifier for the project
@@ -92,6 +103,19 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string ProjectName { get; set; } // The name of the project
         public DateTime StartDate { get; set; } // The start date of the project
         public DateTime CompletionDate { get; set; } // The completion date of the project
+    }
+
+    public class ProjectExpenses
+    {
+        public int Id { get; set; }
+        public int projectId { get; set; }
+        public int projectHeadId { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public DateTime date { get; set; }
+        public decimal amount { get; set; }
+        public HttpPostedFile Attatchment_file { get; set; }
+        public string attatchment_url { get; set; }
     }
 
 }
