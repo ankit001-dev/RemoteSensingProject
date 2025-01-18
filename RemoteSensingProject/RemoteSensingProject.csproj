@@ -287,6 +287,7 @@
   <ItemGroup>
     <Content Include="assets\css\style.css" />
     <Content Include="assets\css\SweatAlert.min.css" />
+    <Content Include="assets\datatable\dataTables.buttons.js" />
     <Content Include="assets\datatable\datatables.css" />
     <Content Include="assets\datatable\datatables.js" />
     <Content Include="assets\datatable\datatables.min.css" />
@@ -941,7 +942,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Admin\Add_Project.cshtml" />
     <Content Include="Views\Admin\All_Projects.cshtml" />
-    <Content Include="Views\Admin\Completed_Project.cshtml" />
     <Content Include="Views\Admin\Dashboard.cshtml" />
     <Content Include="Views\Admin\Employee_Registration.cshtml" />
     <Content Include="Views\Admin\Expense_Report.cshtml" />
@@ -951,7 +951,6 @@
     <Content Include="Views\Admin\Member_Report.cshtml" />
     <Content Include="Views\Admin\Min_Of_Meeting.cshtml" />
     <Content Include="Views\Admin\Notice_List.cshtml" />
-    <Content Include="Views\Admin\Pending_Project.cshtml" />
     <Content Include="Views\Admin\Project_List.cshtml" />
     <Content Include="Views\Admin\Project_Report.cshtml" />
     <Content Include="Views\Admin\Project_Request.cshtml" />
@@ -988,6 +987,7 @@
     <Folder Include="obj\Debug\TempPE\" />
     <Folder Include="ProjectContent\Admin\NoticeDocs\" />
     <Folder Include="ProjectContent\Admin\ProjectDocs\" />
+    <Folder Include="ProjectContent\ProjectManager\Meeting_Attachment\" />
     <Folder Include="ProjectContent\ProjectManager\ProjectDocs\" />
   </ItemGroup>
   <ItemGroup>
