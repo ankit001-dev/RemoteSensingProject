@@ -82,19 +82,6 @@
                                     </td>
                                 </tr>
                             }
-                            @if (ViewBag.ProjectExpenses != null && ViewBag.ProjectExpenses.Count > 0)
-                            {
-                                <tr>
-                                    <td class="text-start">1</td>
-                                    <td><a href="#" data-bs-toggle="modal" data-bs-target="#addslider">@ViewBag.ProjectExpenses[0].Miscellaneous</a></td>
-                                    <td class="text-center">
-                                        @ViewBag.ProjectExpenses[0].Miscell_amt
-                                    </td>
-                                    <td class="text-center">
-                                        0
-                                    </td>
-                                </tr>
-                            }
                         </tbody>
                     </table>
                     @*<div class="text-center">

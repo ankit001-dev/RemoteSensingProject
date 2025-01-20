@@ -218,19 +218,148 @@ namespace RemoteSensingProject.Controllers
             }
             return Json(new {message=message,status=status },JsonRequestBehavior.AllowGet);
         }
+        #region Project expenses
         public ActionResult Add_Expenses(int Id)
         {
             ViewData["ProjectStages"] = _adminServices.ProjectBudgetList(Id);
             return View();
         }
+
+        public ActionResult InsertExpenses(List<ProjectExpenses> list)
+        {
+            if(list.Count > 0)
+            {
+                bool res = false;
+                foreach(var item in list)
+                {
+                    var file = item.Attatchment_file;
+                    if(file != null && file.FileName != "")
+                    {
+                        item.attatchment_url = DateTime.Now.ToString("ddMMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        item.attatchment_url = Path.Combine("/ProjectContent/ProjectManager/HeadsSlip/", item.attatchment_url);
+                    }
+                   res = _managerServices.insertExpences(item);
+
+                    if (res)
+                    {
+                        if(file != null && file.FileName != "")
+                        {
+                            file.SaveAs(Server.MapPath(item.attatchment_url));
+                        }
+                    }
+                }
+
+                return Json(new
+                {
+                    status = res,
+                    message = res ? "Project created successfully !" : "Some issue occured !"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = false,
+                    message  = "Server is busy !"
+                });
+            }
+        }
+        #endregion
         public ActionResult Min_Of_Meeting()
         {
-            return View();
+
+            var empList = _adminServices.BindEmployee().Where(e=>e.EmployeeRole=="subOrdinate");
+            return View(empList);
         }
 
-        public ActionResult Meeting_Conclusion()
+        public ActionResult GetConclusions(int id)
         {
-            return View();
+            var res = _adminServices.getConclusion(id);
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AddMeeting(AddMeeting_Model formData)
+        {
+            string path = null;
+            if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
+            {
+                var guid = Guid.NewGuid();
+                var FileExtension = Path.GetExtension(formData.Attachment.FileName);
+                var fileName = $"{guid}{FileExtension}";
+                path = Path.Combine("/ProjectContent/ProjectManager/Meeting_Attachment", fileName);
+
+                formData.Attachment_Url = path;
+            }
+            var userId = _managerServices.getManagerDetails(User.Identity.Name);
+            formData.CreaterId = int.Parse(userId.userId);
+            bool status = _adminServices.insertMeeting(formData);
+            if (status)
+            {
+                formData.Attachment.SaveAs(Server.MapPath(path));
+            }
+            return Json(new { success = status }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult UpdateMeeting(AddMeeting_Model formData)
+        {
+            string path = null;
+            if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
+            {
+                var guid = Guid.NewGuid();
+                var FileExtension = Path.GetExtension(formData.Attachment.FileName);
+                var fileName = $"{guid}{FileExtension}";
+                path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
+
+                formData.Attachment_Url = path;
+            }
+            bool status = _adminServices.UpdateMeeting(formData);
+            if (status && formData.Attachment != null)
+            {
+                formData.Attachment.SaveAs(Server.MapPath(path));
+            }
+            return Json(new { success = status }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult GetMeetingById(int id)
+        {
+            var obj = _adminServices.getMeetingById(id);
+            return Json(obj, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpGet]
+        public ActionResult GetAllMeeting()
+        {
+            var id = _managerServices.getManagerDetails(User.Identity.Name).userId;
+            List<Meeting_Model> empList = new List<Meeting_Model>();
+            empList = _adminServices.getAllmeeting().Where(e=>e.CreaterId.ToString()==id).ToList();
+            return Json(new { empList = empList }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult Meeting_Conclusion(int meeting)
+        {
+            ViewBag.empList = _adminServices.BindEmployee();
+            var obj = _adminServices.getMeetingById(meeting);
+            ViewBag.getMember = _adminServices.GetMeetingMemberList(meeting);
+            ViewBag.MeetingConclusion = _adminServices.getConclusion(meeting);
+            return View(obj);
+        }
+        [HttpPost]
+        public ActionResult AddMeetingConclusion(MeetingConclusion mc)
+        {
+            var res = _adminServices.AddMeetingResponse(mc);
+            return Json(res);
+        }
+        public ActionResult getPresentMember(int id)
+        {
+            var res = _adminServices.getPresentMember(id);
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult getKeypointResponse(int id)
+        {
+            var res = _adminServices.getKeypointResponse(id);
+            return Json(res, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Meetings()
         {
@@ -291,6 +420,7 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
+       
 
     }
 }

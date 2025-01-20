@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Controllers
@@ -13,9 +14,13 @@ namespace RemoteSensingProject.Controllers
     public class AdminController : Controller
     {
         private readonly AdminServices _adminServices;
+        private readonly ManagerService _managerServices;
+
         public AdminController()
         {
-            _adminServices = new AdminServices();   
+            _adminServices = new AdminServices();  
+            _managerServices = new ManagerService();
+
         }
         // GET: Admin
         public ActionResult Dashboard()
@@ -340,18 +345,22 @@ namespace RemoteSensingProject.Controllers
         {
             return View();
         }
-        public ActionResult View_Weekly_Update()
+        public ActionResult View_Weekly_Update(int Id)
         {
+            ManagerService ms = new ManagerService();
+            ViewData["weeklyUpdate"] = ms.WeeklyUpdateList(Id);
             return View();
         }
 
-        public ActionResult View_Project_Stage()
+        public ActionResult View_Project_Stage(int Id)
         {
+            ViewBag.ProjectStages = _adminServices.ProjectStagesList(Id);
             return View();
         }
 
-        public ActionResult View_Expenses()
+        public ActionResult View_Expenses(int Id)
         {
+            ViewBag.ProjectExpenses = _adminServices.ProjectBudgetList(Id);
             return View();
         }
         #region reports
@@ -464,8 +473,14 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Expense_Report()
         {
+            ViewBag.ProjectList = _adminServices.Project_List();
+
             return View();
         }
-
+        public ActionResult GetExpenses(int pId, int hId)
+        {
+            var res = _managerServices.ExpencesList(pId, hId);
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
     }
 }

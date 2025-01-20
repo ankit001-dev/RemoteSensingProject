@@ -596,7 +596,8 @@ namespace RemoteSensingProject.ApiServices
                     ProjectDescription = request.Form.Get("ProjectDescription"),
                     projectDocumentUrl = request.Form.Get("projectDocumentUrl"),
                     ProjectType = request.Form.Get("ProjectType"),
-                    ProjectStage = Convert.ToBoolean(request.Form.Get("ProjectStage"))
+                    ProjectStage = Convert.ToBoolean(request.Form.Get("ProjectStage")),
+                    createdBy = request.Form.Get("createdBy")
                 };
                 if (request.Form["SubOrdinate"] != null)
                 {

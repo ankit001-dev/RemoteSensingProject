@@ -88,6 +88,7 @@ namespace RemoteSensingProject.Models.Admin
             public string ProjectDepartment { get; set; }
             public string ContactPerson { get; set; }
             public string Address { get; set; }
+            public string createdBy { get; set; }
            
         }
 
@@ -147,6 +148,7 @@ namespace RemoteSensingProject.Models.Admin
             public int status { get; set; }
             public int EmployeeId { get; set; }
             public int MeetingId { get; set; }
+            public int CreaterId { get; set; }
             public string[] meetingMemberList { get; set; }
             public string[] keyPointList { get; set; }
             public int CompleteStatus { get; set; }
@@ -180,6 +182,7 @@ namespace RemoteSensingProject.Models.Admin
             public List<string> keyPointList { get; set; }
             public List<string> KeypointId { get; set; }
             public int CompleteStatus { get; set; }
+            public int? CreaterId { get; set; }
         
         }
 

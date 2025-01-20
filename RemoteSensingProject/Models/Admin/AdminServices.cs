@@ -650,7 +650,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@ProjectDocument", pm.projectDocumentUrl);
                 cmd.Parameters.AddWithValue("@projectType", pm.ProjectType);
                 cmd.Parameters.AddWithValue("@stage", pm.ProjectStage);
-                cmd.Parameters.AddWithValue("@createdBy", "admin");
+                cmd.Parameters.AddWithValue("@createdBy", pm.createdBy);
                 cmd.Parameters.Add("@project_Id", SqlDbType.Int);
                 cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
                 int i = cmd.ExecuteNonQuery();
@@ -911,6 +911,8 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@MeetingType", obj.MeetingType);
                 cmd.Parameters.AddWithValue("@meetingLink", obj.MeetingType.ToLower() == "offline" ? obj.MeetingAddress : obj.MeetingLink);
                 cmd.Parameters.AddWithValue("@MeetingTitle", obj.MeetingTitle);
+                cmd.Parameters.AddWithValue("@createrId", obj.CreaterId);
+                cmd.Parameters.AddWithValue("@createdBy", obj.CreaterId!=null?"projectManager":"admin");
                 cmd.Parameters.AddWithValue("@meetingTime", obj.MeetingTime);
                 cmd.Parameters.AddWithValue("@meetingDocument", obj.Attachment_Url);
                 cmd.Parameters.AddWithValue("@Id", obj.Id);
@@ -1108,6 +1110,7 @@ namespace RemoteSensingProject.Models.Admin
                     obj.MeetingType = sdr["meetingType"].ToString();
                     obj.MeetingLink = sdr["meetingLink"].ToString();
                     obj.MeetingTitle = sdr["MeetingTitle"].ToString();
+                    obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]):0;
                     obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
                     _list.Add(obj);
                 }
