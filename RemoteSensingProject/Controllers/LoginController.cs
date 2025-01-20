@@ -40,6 +40,9 @@ namespace RemoteSensingProject.Controllers
                     case string role when role.Equals("accounts"):
                         url = "/accounts/dashboard";
                         break;
+                    case string role when role.Equals("subOrdinate"):
+                        url = "/SubOrdinate/dashboard";
+                        break;
                 }
 
                 FormsAuthentication.SetAuthCookie(username, false);

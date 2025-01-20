@@ -927,8 +927,6 @@ namespace RemoteSensingProject.ApiServices
                 if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingType")))
                     validationErrors.Add("Meeting Type is required.");
 
-                if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingLink")))
-                    validationErrors.Add("Meeting address is required.");
 
                 if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTitle")))
                     validationErrors.Add("Meeting title is required.");
@@ -948,6 +946,7 @@ namespace RemoteSensingProject.ApiServices
                     MeetingType = request.Form.Get("MeetingType"),
                     MeetingLink = request.Form.Get("MeetingLink"),
                     MeetingTitle = request.Form.Get("MeetingTitle"),
+                    MeetingAddress = request.Form.Get("MeetingAddress"),
                     MeetingTime = Convert.ToDateTime(request.Form.Get("MeetingTime")),
                     Attachment_Url = request.Form.Get("Attachment_Url")
                 };
@@ -1004,6 +1003,99 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+
+        [HttpPut]
+        [Route("api/updateadminMeeting")]
+        public IHttpActionResult UpdateMeeting()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                List<string> validationErrors = new List<string>();
+                if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingType")))
+                    validationErrors.Add("Meeting Type is required.");
+
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTitle")))
+                    validationErrors.Add("Meeting title is required.");
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTime")))
+                    validationErrors.Add("Meeting time is required.");
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("meetingMemberList")))
+                    validationErrors.Add("Meeting member is required.");
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("keyPointList")))
+                    validationErrors.Add("Key points is required.");
+
+                var formData = new AddMeeting_Model
+                {
+                    Id = Convert.ToInt32(request.Form.Get("Id")),
+                    MeetingType = request.Form.Get("MeetingType"),
+                    MeetingLink = request.Form.Get("MeetingLink"),
+                    MeetingAddress = request.Form.Get("MeetingAddress"),
+                    MeetingTitle = request.Form.Get("MeetingTitle"),
+                    MeetingTime = Convert.ToDateTime(request.Form.Get("MeetingTime")),
+                    Attachment_Url = request.Form.Get("Attachment_Url")
+                };
+                var file = request.Files["Attachment"];
+                if (file != null && file.FileName != "")
+                {
+                    formData.Attachment_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    formData.Attachment_Url = Path.Combine("/ProjectContent/Admin/Meeting_Attachment/", formData.Attachment_Url);
+                }
+                else if (string.IsNullOrWhiteSpace(request.Form.Get("Attachment_Url")))
+                    validationErrors.Add("Meeting attachment is required.");
+
+                if (request.Form["meetingMemberList"] != null)
+                {
+                    formData.meetingMemberList = request.Form["meetingMemberList"].Split(',').Select(value => int.Parse(value.ToString())).ToList();
+                }
+
+                if (request.Form["keyPointList"] != null)
+                {
+                    formData.keyPointList = request.Form["keyPointList"].Split(',').ToList();
+                }
+
+                if (request.Form["KeypointId"] != null)
+                {
+                    formData.KeypointId = request.Form["KeypointId"].Split(',').ToList();
+                }
+
+                if (validationErrors.Any())
+                {
+                    return BadRequest(new
+                    {
+                        status = false,
+                        StatusCode = 500,
+                        message = string.Join("\n", validationErrors)
+                    });
+                }
+                bool res = _adminServices.UpdateMeeting(formData);
+                if (res)
+                {
+                    if (file != null && file.FileName != "")
+                    {
+                        file.SaveAs(HttpContext.Current.Server.MapPath(formData.Attachment_Url));
+                    }
+                }
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res ? "Meeting created successfully !" : "Some issue occured while processing request."
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
         [HttpGet]
         [Route("api/adminMeetingList")]
         public IHttpActionResult MeetingList()
@@ -1028,6 +1120,196 @@ namespace RemoteSensingProject.ApiServices
                     data = data
                 });
             }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/GetMeetingById")]
+        public IHttpActionResult GetMeetingById(int Id)
+        {
+            try
+            {
+                var data = _adminServices.getMeetingById(Id);
+                return Ok(new
+                {
+                    status = true,
+                    StatusCode = 200,
+                    data = data
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/GetMeetingMemberListById")]
+        public IHttpActionResult GetMeetingMemberList(int meetId)
+        {
+            try
+            {
+                var data = _adminServices.GetMeetingMemberList(meetId);
+                return Ok(new
+                {
+                    status = true,
+                    StatusCode = 200,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/getMeetingKeyResponse")]
+        public IHttpActionResult GetMeetingKeyResponse(int id)
+        {
+            try
+            {
+                var data = _adminServices.getKeypointResponse(id);
+                return Ok(new
+                {
+                    status = true,
+                    StatusCode = 200,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/getMeetingPresentMember")]
+        public IHttpActionResult GetMeetingPresentMember(int MeetId)
+        {
+            try
+            {
+                var data = _adminServices.getPresentMember(MeetId);
+                return Ok(new
+                {
+                    status = true,
+                    StatusCode = 200,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpPost]
+        [Route("api/UpdateMeetingConclusion")]
+        public IHttpActionResult UpdateMeetingConclusion()
+        {
+            try
+            {
+
+                var request = HttpContext.Current.Request;
+                List<string> validationErrors = new List<string>();
+                if (string.IsNullOrWhiteSpace(request.Form.Get("Meeting")))
+                    validationErrors.Add("Meeting Id is required.");
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("Conclusion")))
+                    validationErrors.Add("Meeting conclusion is required.");
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("FollowUpStatus")))
+                    validationErrors.Add("Follow up status is required.");
+
+                var formData = new MeetingConclusion
+                {
+                    Meeting = Convert.ToInt32(request.Form.Get("Meeting")),
+                    Conclusion = request.Form.Get("Conclusion"),
+                    FollowUpStatus = Convert.ToBoolean(request.Form.Get("FollowUpStatus")),
+                    NextFollowUpDate = string.IsNullOrWhiteSpace(request.Form["NextFollowUpDate"])
+    ? (DateTime?)null
+    : DateTime.Parse(request.Form["NextFollowUpDate"])
+                };
+                if (request.Form["MeetingMemberList"] != null)
+                {
+                    formData.MeetingMemberList = request.Form["MeetingMemberList"].Split(',').ToList();
+                }
+                else
+                {
+                    validationErrors.Add("Meeting member list is required !");
+                }
+                if (request.Form["MemberId"] != null)
+                {
+                    formData.MemberId = request.Form["MemberId"].Split(',').ToList();
+                }
+                else
+                {
+                    validationErrors.Add("Member Id is required !");
+                }
+                if (request.Form["KeyResponse"] != null)
+                {
+                    formData.KeyResponse = request.Form["KeyResponse"].Split(',').ToList();
+                }
+                else
+                {
+                    validationErrors.Add("Key responses is required !");
+                }
+                if (request.Form["KeyPointId"] != null)
+                {
+                    formData.KeyPointId = request.Form["KeyPointId"].Split(',').ToList();
+                }
+                else
+                {
+                    validationErrors.Add("Key Id is required !");
+                }
+                if (validationErrors.Any())
+                {
+                    return BadRequest(new
+                    {
+                        status = false,
+                        StatusCode = 500,
+                        message = string.Join("\n", validationErrors)
+                    });
+                }
+                bool res = _adminServices.AddMeetingResponse(formData);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res ? "Meeting created successfully !" : "Some issue occured while processing request."
+                });
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {

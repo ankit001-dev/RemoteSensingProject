@@ -41,33 +41,33 @@
                                         </td>
                                         <td>@stages.CompletionDatestring</td>
                                         <td>
-                                            @if (stages.completionStatus == 1 && stages.CompletionDate < currentDate)
+                                            @if (stages.completionStatus == 1 && ( stages.CompletionDate < currentDate || stages.CompletionDate > currentDate))
                                             {
                                                 <span class="badge bg-success">Completed</span>
                                             }
-                                            else if (stages.completionStatus == 0 && stages.CompletionDate < currentDate)
+                                            else if (stages.completionStatus == 0 && stages.CompletionDate > currentDate)
                                             {
                                                 <span class="badge bg-danger">Delay </span>
                                             }
-                                            else
+                                            else 
                                             {
                                                 <span class="badge bg-info">Pending</span>
                                             }
                                         </td>
                                         <td>
-                                            @if (stages.completionStatus == 1 && stages.CompletionDate < currentDate)
+                                            @if (stages.completionStatus == 1 && (stages.CompletionDate < currentDate || stages.CompletionDate > currentDate))
                                             {
                                                 <a href="#" id="viewCompleteDetails" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#viewStatusModal">
                                                     <i class="link-icon" data-feather="eye"></i>
                                                 </a>
 
                                             }
-                                            else if (stages.completionStatus == 0 && stages.CompletionDate < currentDate)
+                                            else if (stages.completionStatus == 0 && stages.CompletionDate > currentDate)
                                             {
                                                 <a href="#" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
                                                 <a href="#" id="viewDetail" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
                                             }
-                                            else
+                                            else 
                                             {
                                                 <a href="#" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
                                             }

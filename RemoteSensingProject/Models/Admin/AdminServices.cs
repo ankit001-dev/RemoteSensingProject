@@ -1027,11 +1027,8 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     if (obj.meetingMemberList != null)
                     {
-
-
                         foreach (var individualMember in obj.meetingMemberList)
                         {
-
                             if (individualMember != 0)
                             {
                                 cmd.Parameters.Clear();
@@ -1050,16 +1047,20 @@ namespace RemoteSensingProject.Models.Admin
                         }
                     }
 
-
-                    for (var j = 0; j < obj.KeypointId[0].ToString().Split(',').Length; j++)
+                    foreach(var item in obj.KeypointId)
                     {
-                        if (!string.IsNullOrEmpty(obj.KeypointId[0].ToString().Split(',')[j]) && !string.IsNullOrEmpty(obj.keyPointList[0].ToString().Split(',')[j]))
+
+                    }
+
+                    for (var j = 0; j < obj.KeypointId.Count; j++)
+                    {
+                        if (!string.IsNullOrEmpty(obj.KeypointId[j].ToString()) && !string.IsNullOrEmpty(obj.keyPointList[j].ToString()))
                         {
                             cmd.Parameters.Clear();
                             cmd.CommandType = System.Data.CommandType.StoredProcedure;
                             cmd.Parameters.AddWithValue("@action", "updateKeyPoint");
-                            cmd.Parameters.AddWithValue("@keyPoint", obj.keyPointList[0].ToString().Split(',')[j]);
-                            cmd.Parameters.AddWithValue("@id", obj.KeypointId[0].ToString().Split(',')[j]);
+                            cmd.Parameters.AddWithValue("@keyPoint", obj.keyPointList[j].ToString());
+                            cmd.Parameters.AddWithValue("@id", obj.KeypointId[j]);
                             cmd.Parameters.AddWithValue("@meeting", obj.Id);
                             i = cmd.ExecuteNonQuery();
                         }
@@ -1262,11 +1263,10 @@ namespace RemoteSensingProject.Models.Admin
 
         public bool AddMeetingResponse(MeetingConclusion mc)
         {
-                con.Open();
+            con.Open();
             SqlTransaction transaction = con.BeginTransaction();
             try
             {
-
                 cmd.Parameters.Clear();
                 cmd = new SqlCommand("sp_meetingConslusion", con, transaction);
                 cmd.Parameters.AddWithValue("@action", "insertConclusion");
@@ -1288,7 +1288,7 @@ namespace RemoteSensingProject.Models.Admin
                     int cId = (int)outputParam.Value;
                     if (mc.MemberId.Count > 0)
                     {
-                        foreach(var item in mc.MemberId[0].Split(',')) {
+                        foreach(var item in mc.MemberId) {
                             if (!string.IsNullOrEmpty(item)){
                                 cmd.Parameters.Clear();
                                 cmd = new SqlCommand("sp_meetingConslusion", con, transaction);
@@ -1309,13 +1309,13 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         if (mc.KeyPointId.Count > 0)
                         {
-                            for(var i = 0; i < mc.KeyPointId[0].Split(',').Length; i++) 
+                            for(var i = 0; i < mc.KeyPointId.Count; i++) 
                             {
                                 cmd.Parameters.Clear();
                                 cmd = new SqlCommand("sp_meetingConslusion", con, transaction);
                                 cmd.Parameters.AddWithValue("@action", "isertKeypointResponse");
-                                cmd.Parameters.AddWithValue("@keyId", mc.KeyPointId[0].Split(',')[i]);
-                                cmd.Parameters.AddWithValue("@response", mc.KeyResponse[0].Split(',')[i]);
+                                cmd.Parameters.AddWithValue("@keyId", mc.KeyPointId[i]);
+                                cmd.Parameters.AddWithValue("@response", mc.KeyResponse[i]);
                                 cmd.Parameters.AddWithValue("@id", cId);
                                 cmd.CommandType = CommandType.StoredProcedure;
                                 res = cmd.ExecuteNonQuery();
@@ -1330,7 +1330,7 @@ namespace RemoteSensingProject.Models.Admin
 
                     if (mc.MeetingMemberList != null && mc.FollowUpStatus)
                     {
-                        foreach (var individualMember in mc.MeetingMemberList[0].Split(','))
+                        foreach (var individualMember in mc.MeetingMemberList)
                         {
 
                             if (!string.IsNullOrEmpty(individualMember))
@@ -1372,8 +1372,6 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
-
-
         public List<MeetingConclusion> getConclusion(int id)
         {
             try
@@ -1461,7 +1459,6 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-
                 cmd.Parameters.Clear();
                 cmd = new SqlCommand("sp_meetingConslusion", con);
                 cmd.Parameters.AddWithValue("@action", "KeyPointResponse");
