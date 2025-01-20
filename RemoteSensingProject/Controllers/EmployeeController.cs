@@ -271,7 +271,8 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult GetConclusions(int id)
         {
-            var res = _adminServices.getConclusion(id);
+            var userId = _managerServices.getManagerDetails(User.Identity.Name);
+            var res = _managerServices.getConclusionForMeeting(id, int.Parse(userId.userId));
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
@@ -361,9 +362,20 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Meetings()
         {
             var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            var res = _adminServices.getAllmeeting().Where(e => e.CreaterId == 0 && e.memberId.Contains(userId.userId)).ToList();
-            return View();
+            var res = _managerServices.getAllmeeting(int.Parse(userId.userId));
+            return View(res);
         }
+
+
+        public ActionResult GetMemberResponse(getMemberResponse mr)
+        {
+            var userId = _managerServices.getManagerDetails(User.Identity.Name);
+            mr.MemberId = int.Parse(userId.userId);
+            var res = _managerServices.GetResponseFromMember(mr);
+            return Json(res);
+        }
+
+       
 
         public ActionResult MyProfile()
         {

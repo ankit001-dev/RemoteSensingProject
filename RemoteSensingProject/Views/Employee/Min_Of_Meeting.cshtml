@@ -342,8 +342,6 @@
                         <table id="dataTableExamples" class="table table-striped">
                             <thead class="table-primary">
                                 <tr>
-                                    <th>Venue</th>
-                                    <th>Mode</th>
                                     <th>Conclusion</th>
                                     <th>Next FolloUp Date</th>
                                     <th>Action</th>
@@ -715,12 +713,6 @@
 
              <tr>
                  <td>
-                     ${d.MeetingDate} ${d.MeetingDate.toLowerCase() == "offline" ? item.address : ""}
-                 </td>
-                 <td>
-                    ${d.mode}
-                 </td>
-                 <td>
                      ${d.Conclusion}
                  </td>
                  <td>
@@ -740,6 +732,9 @@
      }
  }`)
                         })
+                    } else {
+                        $("#conclusionContainer").html("<p>no result found</p>")
+
                     }
                 }
                 showLoading(false);
