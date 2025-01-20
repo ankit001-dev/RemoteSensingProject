@@ -73,9 +73,9 @@
                                             {
                                                 <span class="badge bg-warning text-dark">Processing</span>
                                             }
-                                            else 
+                                            else
                                             {
-                                               <span class="badge bg-secondary">Pending</span>
+                                                <span class="badge bg-secondary">Pending</span>
                                             }
                                         </td>
                                         <td class="text-center">
@@ -86,21 +86,14 @@
                                                     </a>
 
                                                 </li>
+
                                                 <li class="me-2">
-                                                    <a href="/Employee/Weekly_Update_Project?Id=@item.Id" title="Weekly Update">
-                                                        <i class="link-icon" data-feather="calendar" style="color:orangered"></i>
+                                                    <a href="#" id="viewCompleteDetails" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#viewStatusModal">
+                                                        <i class="link-icon text-success" data-feather="plus-circle"></i>
                                                     </a>
+
                                                 </li>
-                                                <li class="me-2">
-                                                    <a href="/Employee/Update_Project_Stage?Id=@item.Id" title="Update Stages">
-                                                        <i class="link-icon text-info" data-feather="plus-circle"></i>
-                                                    </a>
-                                                </li>
-                                                <li class="me-2">
-                                                    <a href="/Employee/Add_Expenses?Id=@item.Id" title="Add Expenses">
-                                                        <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                                    </a>
-                                                </li>
+
                                             </ul>
                                         </td>
                                     </tr>
@@ -162,6 +155,110 @@
 
     </div>
 </div>
+
+<div class="modal fade" id="viewStatusModal" tabindex="-1" aria-labelledby="viewStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header text-center text-white">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title float-start" id="viewStatusModalLabel">Raise Problem</h5>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="problemForm">
+                    <input type="hidden" id="projectId" name="Project_Id" />
+                    <div class="mb-3">
+                        <label for="upload" class="form-label">Title</label>
+                        <input class="form-control" type="text" id="title" name="Title" placeholder="Enter Problem Title">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="delayReason" class="form-label">Description</label>
+                        <textarea class="form-control form-control-sm" name="Description" id="description" rows="4" placeholder="Enter Problem Description"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="upload" class="form-label">Upload Image</label>
+                        <input class="form-control" type="file" id="attachment" name="Attachment">
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Problem</button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $('body').on('click', 'a[data-bs-toggle="modal"]', function () {
+            const projectId = $(this).data('id');
+
+            $('#projectId').val(projectId);
+            debugger
+
+        });
+    });
+
+    
+</script>
+
+<script>
+    $("#problemForm").on("submit", function (e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+
+        debugger
+        if ($("#attachment").get(0).files.length > 0) {
+            formData.append("Attachment", $("#attachment").get(0).files[0]);
+
+        }
+
+        $.ajax({
+            url: "/SubOrdinate/AddRaiseProblem",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.status == true) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Project Problem was added successfully.',
+                        confirmButtonText: "OK"
+                    }).then(() => {
+                        window.location.reload();
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Something went wrong!',
+                        text: 'Project Problem could not be added.'
+                    });
+                }
+            },
+            error: function (xhr, error) {
+                console.error("Error:", error);
+                console.error("Details:", xhr.responseText);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'An error occurred while processing your request.'
+                });
+            }
+        })
+    })
+</script>
+
+
 
 <script>
     $(document).ready(function () {
@@ -262,7 +359,7 @@
 
 
 <script>
-    $(document).on("click",".viewProject", function () {
+    $(document).on("click", ".viewProject", function () {
         let id = $(this).attr("data-Id");
         debugger
         Swal.fire({
