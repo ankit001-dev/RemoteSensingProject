@@ -1,10 +1,11 @@
 ﻿
 @{
     ViewBag.Title = "Assigned_Project";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    var assignedData = ViewData["AssignedProjectList"] as List<RemoteSensingProject.Models.ProjectManager.ProjectList>;
+    Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
+    var assignedData = ViewData["AssignedProjectList"] as List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList>;
     int i = 1;
 }
+
 
 <style>
     .link-icon {
@@ -21,7 +22,7 @@
                 <input type="text" id="searchByProjectName" name="searchByProjectName" placeholder="Search by project name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
-                <select id="statusFilter"class="form-select form-select-lg">
+                <select id="statusFilter" class="form-select form-select-lg">
                     <option selected value="">Project Status</option>
                     <option value="Processing">Work in Progress</option>
                     <option value="Pending">Pending</option>
@@ -41,6 +42,7 @@
                             <tr>
                                 <th>Sr No.</th>
                                 <th>Project Name</th>
+                                <th>Assigned By</th>
                                 <th>Assign Date</th>
                                 <th>Start Date</th>
                                 <th>Completion Date</th>
@@ -49,93 +51,94 @@
                             </tr>
                         </thead>
                         <tbody>
-                           @if(assignedData != null && assignedData.Count > 0)
+                            @if (assignedData != null && assignedData.Count > 0)
+                            {
+                                var currentDate = DateTime.Now.Date;
 
-                           {
-                               var currentDate = DateTime.Now.Date;
-                               foreach (var item in assignedData)
-                               {
-                    <tr>
-                        <td>@i</td>
-                        <td>@item.Title</td>
-                        <td>@item.AssignDateString</td>
-                        <td>@item.StartDateString</td>
-                        <td>@item.CompletionDatestring</td>
-                        <td>
-                            @if (item.CompleteionStatus == 1 && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
-                            {
-                                <span class="badge bg-success">Completed</span>
-                            }
-                            else if (item.CompleteionStatus == 0 && item.CompletionDate > currentDate)
-                            {
-                                <span class="badge bg-warning text-dark">Processing</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-secondary">Pending</span>
-                            }
-                        </td>
-                        <td class="text-center">
-                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                <li class="me-2">
-                                    <a href="#" class="viewProject" data-id="@item.Id">
-                                        <i class="link-icon" data-feather="eye"></i>
-                                    </a>
+                                foreach (var item in assignedData)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.Title</td>
+                                        <td>@item.CreatedBy</td>
+                                        <td>@item.AssignDateString</td>
+                                        <td>@item.StartDateString</td>
+                                        <td>@item.CompletionDatestring</td>
+                                        <td>
+                                            @if (item.CompleteionStatus == 1 && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
+                                            {
+                                                <span class="badge bg-success">Completed</span>
+                                            }
+                                            else if (item.CompleteionStatus == 0 && item.CompletionDate > currentDate)
+                                            {
+                                                <span class="badge bg-warning text-dark">Processing</span>
+                                            }
+                                            else 
+                                            {
+                                               <span class="badge bg-secondary">Pending</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                                <li class="me-2">
+                                                    <a href="#" class="viewProject" data-id="@item.Id">
+                                                        <i class="link-icon" data-feather="eye"></i>
+                                                    </a>
 
-                                </li>
-                                <li class="me-2">
-                                    <a href="/Employee/Weekly_Update_Project?Id=@item.Id" title="Weekly Update">
-                                        <i class="link-icon" data-feather="calendar" style="color:orangered"></i>
-                                    </a>
-                                </li>
-                                <li class="me-2">
-                                    <a href="/Employee/Update_Project_Stage?Id=@item.Id" title="Update Stages">
-                                        <i class="link-icon text-info" data-feather="plus-circle"></i>
-                                    </a>
-                                </li>
-                                <li class="me-2">
-                                    <a href="/Employee/Add_Expenses?Id=@item.Id" title="Add Expenses">
-                                        <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-                                   i++;
-                               }
-                           }
+                                                </li>
+                                                <li class="me-2">
+                                                    <a href="/Employee/Weekly_Update_Project?Id=@item.Id" title="Weekly Update">
+                                                        <i class="link-icon" data-feather="calendar" style="color:orangered"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="me-2">
+                                                    <a href="/Employee/Update_Project_Stage?Id=@item.Id" title="Update Stages">
+                                                        <i class="link-icon text-info" data-feather="plus-circle"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="me-2">
+                                                    <a href="/Employee/Add_Expenses?Id=@item.Id" title="Add Expenses">
+                                                        <i class="link-icon text-danger" data-feather="file-plus"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
                             @*<tr>
-                                <td>1</td>
-                                <td>01/01/2022</td>
-                                <td>India Stack Global</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-                                <td>
-                                    <span class="badge bg-warning">Work in Progress</span>
-                                </td>
+                                    <td>1</td>
+                                    <td>01/01/2022</td>
+                                    <td>India Stack Global</td>
+                                    <td>01/01/2022</td>
+                                    <td>26/04/2022</td>
+                                    <td>
+                                        <span class="badge bg-warning">Work in Progress</span>
+                                    </td>
 
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
-                                                <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                            </a>
-                                        </li>
+                                    <td class="text-center">
+                                        <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                            <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
+                                            <li class="me-2">
+                                                <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
+                                                    <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
+                                                </a>
+                                            </li>
 
-                                        <li class="me-2">
-                                            <a href="/Employee/Update_Project_Stage/" title="Update Stages">
-                                                <i class="link-icon text-info" data-feather="plus-circle"> </i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Add_Expenses/" title="Add Expenses">
-                                                <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>*@
+                                            <li class="me-2">
+                                                <a href="/Employee/Update_Project_Stage/" title="Update Stages">
+                                                    <i class="link-icon text-info" data-feather="plus-circle"> </i>
+                                                </a>
+                                            </li>
+                                            <li class="me-2">
+                                                <a href="/Employee/Add_Expenses/" title="Add Expenses">
+                                                    <i class="link-icon text-danger" data-feather="file-plus"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>*@
 
                         </tbody>
                     </table>
@@ -165,7 +168,7 @@
         var table = $("#projectTable").DataTable();
         $("#statusFilter").on("change", function () {
             var projectStatus = $(this).val();
-            table.column(5).search(projectStatus).draw();
+            table.column(6).search(projectStatus).draw();
         })
 
         $('#searchByProjectName').on('keyup', function () {
@@ -216,7 +219,7 @@
                          <li class="me-2">
                          <a href="#" class="viewProject" data-Id="${item.Id}"><i class="link-icon" data-feather="eye"></i></a>
                          </li>
-                       
+
                         <li class="me-2">
                             <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
                                 <i class="link-icon" data-feather="calendar" style="color:orangered"></i>
@@ -274,7 +277,7 @@
         });
 
         $.ajax({
-            url: "/Employee/GetProjecDatatById",
+            url: "/subOrdinate/GetProjecDatatById",
             type: "get",
             data: { Id: id },
             success: function (res) {

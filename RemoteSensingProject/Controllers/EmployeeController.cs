@@ -15,12 +15,13 @@ namespace RemoteSensingProject.Controllers
     public class EmployeeController : Controller
     {
         private readonly ManagerService _managerServices;
+        private readonly AdminServices _adminServices;
         public EmployeeController()
         {
             _managerServices = new ManagerService();
             _adminServices = new AdminServices();
         }
-        private readonly AdminServices _adminServices;
+    
        
         // GET: Employee
         public ActionResult Dashboard()
