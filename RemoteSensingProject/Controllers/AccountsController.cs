@@ -26,7 +26,11 @@ namespace RemoteSensingProject.Controllers
         public ActionResult RejectList()
         {
             return View();
-        }     
+        }
+        public ActionResult Meeting_List()
+        {
+            return View();
+        }
         public ActionResult FundReport()
         {
             return View();
