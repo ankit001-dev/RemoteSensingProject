@@ -345,18 +345,22 @@ namespace RemoteSensingProject.Controllers
         {
             return View();
         }
-        public ActionResult View_Weekly_Update()
+        public ActionResult View_Weekly_Update(int Id)
         {
+            ManagerService ms = new ManagerService();
+            ViewData["weeklyUpdate"] = ms.WeeklyUpdateList(Id);
             return View();
         }
 
-        public ActionResult View_Project_Stage()
+        public ActionResult View_Project_Stage(int Id)
         {
+            ViewBag.ProjectStages = _adminServices.ProjectStagesList(Id);
             return View();
         }
 
-        public ActionResult View_Expenses()
+        public ActionResult View_Expenses(int Id)
         {
+            ViewBag.ProjectExpenses = _adminServices.ProjectBudgetList(Id);
             return View();
         }
         #region reports

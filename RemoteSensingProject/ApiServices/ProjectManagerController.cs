@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
@@ -66,11 +67,26 @@ namespace RemoteSensingProject.ApiServices
         #region dashboard
         [HttpGet]
         [Route("api/ManagerDashboard")]
-        public IHttpActionResult Dashboard(int userId)
+        public IHttpActionResult Dashboard(string userId)
         {
             try
             {
-                return Ok();
+                if (string.IsNullOrWhiteSpace(userId))
+                {
+                    return Ok(new
+                    {
+                        status = false,
+                        StatusCode = 500,
+                        message = "Invalid userid !"
+                    });
+                }
+                var data = _managerService.DashboardCount(userId);
+                return Ok(new
+                {
+                    status =true,
+                    message = "Data found !",
+                    data = data
+                });
             }catch(Exception ex)
             {
                 return BadRequest(new
@@ -90,7 +106,26 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                return Ok();
+                var data = _managerService.getAllProjectByManager(userId.ToString());
+                if (data.Any())
+                {
+                    return Ok(new
+                    {
+                        status = true,
+                        StatusCode = 200,
+                        message = "Data found !",
+                        data = data
+                    });
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        status = false,
+                        StatusCode = 500,
+                        message = "Data not found !"
+                    });
+                }
             }catch(Exception ex)
             {
                 return BadRequest(new
@@ -101,6 +136,48 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        #endregion
+
+        #region Project
+        [HttpGet]
+        [Route("api/getManagerProject")]
+        public IHttpActionResult GetProjectList(int userId)
+        {
+            try
+            {
+                var data = _managerService.Project_List(userId.ToString());
+                if (data.Any())
+                {
+                    return Ok(new
+                    {
+                        status = true,
+                        StatusCode = 200,
+                        message = "Data found !",
+                        data = data
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = false,
+                        StatusCode = 500,
+                        message = "Data not found !"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        
         #endregion
         private IHttpActionResult BadRequest(object value)
         {

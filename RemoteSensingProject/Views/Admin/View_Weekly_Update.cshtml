@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "View_Weekly_Update";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var dataList = ViewData["weeklyUpdate"] as List<RemoteSensingProject.Models.Admin.main.Project_WeeklyUpdate>;
+    int i = 1;
 }
 
 
@@ -58,15 +60,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-start">1</td>
-                                <td>25/09/2024</td>
-                                <td class="w-25">
-                                    This project aims to develop an innovative mobile app that enhances daily productivity by integrating task management, calendar scheduling, and reminder functionalities.
-                                </td>
-                                <td>10%</td>
+                            @if (dataList != null && dataList.Count > 0)
+                            {
+                                foreach (var item in dataList)
+                                {
 
-                            </tr>
+
+                                <tr>
+                                    <td class="text-start">@i</td>
+                                    <td>@item.date</td>
+                                    <td class="w-25">
+                                        @item.comments
+                                    </td>
+                                    <td>@item.completionPerc%</td>
+
+                                </tr>
+                                }
+                            }
+
                         </tbody>
                     </table>
                 </div>

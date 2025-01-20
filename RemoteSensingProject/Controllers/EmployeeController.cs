@@ -218,11 +218,53 @@ namespace RemoteSensingProject.Controllers
             }
             return Json(new {message=message,status=status },JsonRequestBehavior.AllowGet);
         }
+        #region Project expenses
         public ActionResult Add_Expenses(int Id)
         {
             ViewData["ProjectStages"] = _adminServices.ProjectBudgetList(Id);
             return View();
         }
+
+        public ActionResult InsertExpenses(List<ProjectExpenses> list)
+        {
+            if(list.Count > 0)
+            {
+                bool res = false;
+                foreach(var item in list)
+                {
+                    var file = item.Attatchment_file;
+                    if(file != null && file.FileName != "")
+                    {
+                        item.attatchment_url = DateTime.Now.ToString("ddMMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        item.attatchment_url = Path.Combine("/ProjectContent/ProjectManager/HeadsSlip/", item.attatchment_url);
+                    }
+                   res = _managerServices.insertExpences(item);
+
+                    if (res)
+                    {
+                        if(file != null && file.FileName != "")
+                        {
+                            file.SaveAs(Server.MapPath(item.attatchment_url));
+                        }
+                    }
+                }
+
+                return Json(new
+                {
+                    status = res,
+                    message = res ? "Project created successfully !" : "Some issue occured !"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = false,
+                    message  = "Server is busy !"
+                });
+            }
+        }
+        #endregion
         public ActionResult Min_Of_Meeting()
         {
 
