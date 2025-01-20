@@ -265,6 +265,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -980,6 +981,12 @@
     <Content Include="Views\Admin\Emp_Category.cshtml" />
     <Content Include="Views\Admin\_desgination.cshtml" />
     <Content Include="Views\Admin\_divison.cshtml" />
+    <Content Include="Views\Shared\_AccountLayout.cshtml" />
+    <Content Include="Views\Accounts\Dashboard.cshtml" />
+    <Content Include="Views\Accounts\Requests.cshtml" />
+    <Content Include="Views\Accounts\ApprovedList.cshtml" />
+    <Content Include="Views\Accounts\RejectList.cshtml" />
+    <Content Include="Views\Accounts\FundReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
