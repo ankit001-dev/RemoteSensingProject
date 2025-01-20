@@ -172,7 +172,7 @@
               "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\EmployeeController.cs",
               "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\EmployeeController.cs",
               "RelativeToolTip": "RemoteSensingProject\\Controllers\\EmployeeController.cs",
-              "ViewState": "AQIAAJsAAAAAAAAAAAAowJQAAAAJAAAA",
+              "ViewState": "AQIAAJ4AAAAAAAAAAAAowKoAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-13T11:06:52.791Z",
               "IsPinned": true,
@@ -262,8 +262,8 @@
               "Title": "Update_Project_Stage.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Update_Project_Stage.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Update_Project_Stage.cshtml",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Update_Project_Stage.cshtml*",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Update_Project_Stage.cshtml*",
+              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Update_Project_Stage.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Update_Project_Stage.cshtml",
               "ViewState": "AQIAAK0AAAAAAAAAAAAAALUAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2025-01-18T06:00:41.717Z",
@@ -277,6 +277,10 @@
             {
               "$type": "Bookmark",
               "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Bookmark",
@@ -316,7 +320,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Controllers\\AdminController.cs",
               "ViewState": "AQIAAPYAAAAAAAAAAAAAAEkBAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:54:55.572Z"
+              "WhenOpened": "2025-01-13T04:54:55.572Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -352,7 +357,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Models\\ProjectManager\\ManagerService.cs",
               "ViewState": "AQIAAH4CAAAAAAAAAAAYwI4CAAApAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-15T12:45:34.132Z"
+              "WhenOpened": "2025-01-15T12:45:34.132Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -364,7 +370,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
               "ViewState": "AQIAAAgDAAAAAAAAAAAtwBYDAAAQAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T08:43:59.516Z"
+              "WhenOpened": "2025-01-13T08:43:59.516Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
