@@ -270,6 +270,7 @@
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\SubOrdinateController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -282,6 +283,8 @@
     <Compile Include="Models\ProjectManager\main.cs" />
     <Compile Include="Models\ProjectManager\ManagerService.cs" />
     <Compile Include="Models\RoleAuthorization.cs" />
+    <Compile Include="Models\SubOrdinate\main.cs" />
+    <Compile Include="Models\SubOrdinate\SubOrinateService.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -987,6 +990,10 @@
     <Content Include="Views\Accounts\ApprovedList.cshtml" />
     <Content Include="Views\Accounts\RejectList.cshtml" />
     <Content Include="Views\Accounts\FundReport.cshtml" />
+    <Content Include="Views\SubOrdinate\Dashboard.cshtml" />
+    <Content Include="Views\SubOrdinate\Assigned_Project.cshtml" />
+    <Content Include="Views\Shared\_subOrdinateLayout.cshtml" />
+    <Content Include="Views\SubOrdinate\Meeting_List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
