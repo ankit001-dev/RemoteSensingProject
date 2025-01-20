@@ -5,33 +5,6 @@
 
 
 
-@*<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item active" aria-current="page">Project Stages Status Update</li>
-        </ol>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Weekly Status</button>
-    </nav>*@
-@*<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
-        <form class="forms-sample">
-            <div class="row align-items-center">
-                <div class="col-lg-3">
-                    <h5>Employee Lists</h5>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <input type="text" placeholder="Search by employee name" class="form-control">
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <select class="form-select form-select-lg">
-                        <option selected>Department</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-            </div>
-        </form>
-    </div>*@
-
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -59,7 +32,8 @@
 
                                 foreach (var stages in ViewBag.ProjectStages)
                                 {
-                                    <tr>
+                                    <tr data-project-id="@stages.Project_Id">
+
                                         <td>@index</td>
                                         <td>@stages.KeyPoint</td>
                                         <td>
@@ -73,7 +47,7 @@
                                             }
                                             else if (stages.completionStatus == 0 && stages.CompletionDate < currentDate)
                                             {
-                                                <span class="badge bg-danger">Delay by 10 Days</span>
+                                                <span class="badge bg-danger">Delay </span>
                                             }
                                             else
                                             {
@@ -83,12 +57,15 @@
                                         <td>
                                             @if (stages.completionStatus == 1 && stages.CompletionDate < currentDate)
                                             {
-                                                <a href="#" data-bs-toggle="modal" data-bs-target="#viewStatusModal"><i class="link-icon" data-feather="eye"></i></a>
+                                                <a href="#" id="viewCompleteDetails" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#viewStatusModal">
+                                                    <i class="link-icon" data-feather="eye"></i>
+                                                </a>
+
                                             }
                                             else if (stages.completionStatus == 0 && stages.CompletionDate < currentDate)
                                             {
                                                 <a href="#" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
-                                                <a href="#" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
+                                                <a href="#" id="viewDetail" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
                                             }
                                             else
                                             {
@@ -101,41 +78,42 @@
                             }
 
                             @*<tr>
-            <td class="text-start">Stage 2</td>
-            <td>Project Planing</td>
-            <td>
-                <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-            </td>
-            <td>30/10/2024</td>
-            <td><span class="badge bg-danger">Delay by 10 Days</span></td>
-            <td>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
+                                    <td class="text-start">Stage 2</td>
+                                    <td>Project Planing</td>
+                                    <td>
+                                        <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+                                    </td>
+                                    <td>30/10/2024</td>
+                                    <td><span class="badge bg-danger">Delay by 10 Days</span></td>
+                                    <td>
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
 
-                <a href="#" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
-            </td>
-        </tr>
-        <tr>
-            <td class="text-start">Stage 3</td>
-            <td>Project Execution</td>
-            <td>
-                <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-            </td>
-            <td>30/11/2024</td>
-            <td><span class="badge bg-info">Pending</span></td>
-            <td><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></td>
-        </tr>
-        <tr>
-            <td class="text-start">Stage 4</td>
-            <td>Project Monitoring and controlling</td>
-            <td>
-                <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-            </td>
-            <td>30/12/2024</td>
-            <td><span class="badge bg-info">Pending</span></td>
-            <td>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
-            </td>
-        </tr>*@
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">Stage 3</td>
+                                    <td>Project Execution</td>
+                                    <td>
+                                        <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+                                    </td>
+                                    <td>30/11/2024</td>
+                                    <td><span class="badge bg-info">Pending</span></td>
+                                    <td><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start">Stage 4</td>
+                                    <td>Project Monitoring and controlling</td>
+                                    <td>
+                                        <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+                                    </td>
+                                    <td>30/12/2024</td>
+                                    <td><span class="badge bg-info">Pending</span></td>
+                                    <td>
+                                        <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
+                                    </td>
+                                </tr>*@
+
                         </tbody>
                     </table>
                 </div>
@@ -154,10 +132,10 @@
             </div>
             <div class="modal-body">
                 <form class="forms-sample" id="statusForm">
-                    <input type="hidden" class="form-control" name="Project_Id" id="projectId" />
+                    <input type="hidden" class="form-control" name="Stage_Id" id="stageId" />
                     <div class="mb-3">
                         <label for="status" class="form-label">Status</label>
-                        <select class="form-select" id="status" name="completionStatus">
+                        <select class="form-select" id="status" name="Status">
                             <option value="">Select Status</option>
                             <option value="completed">Completed</option>
                             <option value="delayed">Delayed</option>
@@ -186,7 +164,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="upload" class="form-label">Upload Document</label>
-                            <input class="form-control" type="file" id="upload" name="StageDocument">
+                            <input class="form-control" type="file" id="delayedUpload" name="DelayedStageDocument">
                         </div>
                     </div>
 
@@ -199,7 +177,7 @@
     </div>
 </div>
 
-@*<div class="modal fade" id="viewStatusModal" tabindex="-1" aria-labelledby="viewStatusModalLabel" aria-hidden="true">
+<div class="modal fade" id="viewStatusModal" tabindex="-1" aria-labelledby="viewStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header text-center text-white">
@@ -208,27 +186,27 @@
                 <h5 class="modal-title float-start" id="viewStatusModalLabel">View Detail</h5>
             </div>
             <div class="modal-body">
-                <div id="viewCompletedFields">
-                    <h6>Comment:</h6>
-                    <p>This project aims to develop an innovative mobile app that enhances daily productivity by integrating task management, calendar scheduling, and reminder functionalities.</p>
-                    <hr />
-                    <h6>Completion Percentage:</h6>
-                    <p>10%</p>
-                    <hr />
+                <div id="viewCompleteStatus">
+                    @*<h6>Comment:</h6>
+                        <p>This project aims to develop an innovative mobile app that enhances daily productivity by integrating task management, calendar scheduling, and reminder functionalities.</p>
+                        <hr />
+                        <h6>Completion Percentage:</h6>
+                        <p>10%</p>
+                        <hr />
 
-                    <h6>Document:</h6>
-                    <p>
-                        <a href="#" aria-label="Download PDF">
-                            <i class="fa-regular fa-file-pdf"></i> Download Document
-                        </a>
-                    </p>
+                        <h6>Document:</h6>
+                        <p>
+                            <a href="#" aria-label="Download PDF">
+                                <i class="fa-regular fa-file-pdf"></i> Download Document
+                            </a>
+                        </p>*@
                 </div>
             </div>            <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-</div>*@
+</div>
 
 <div class="modal fade" id="viewDelayStatusModal" tabindex="-1" aria-labelledby="viewStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -240,17 +218,7 @@
             </div>
             <div class="modal-body">
                 <div id="viewCompletedFields">
-                    <h6>Reason:</h6>
-                    <p>This project aims to develop an innovative mobile app that enhances daily productivity by integrating task management, calendar scheduling, and reminder functionalities.</p>
-                    <hr />
 
-
-                    <h6>Document:</h6>
-                    <p>
-                        <a href="#" aria-label="Download PDF">
-                            <i class="fa-regular fa-file-pdf"></i> Download Document
-                        </a>
-                    </p>
                 </div>
             </div>            <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
@@ -279,14 +247,14 @@
 </script>
 
 <script>
- 
+
     $(document).ready(function () {
         // Ensure that the 'a' elements exist and have data-bs-toggle="modal" attribute
         $('body').on('click', 'a[data-bs-toggle="modal"]', function () {
-            const projectId = $(this).data('id');
+            const stageIdValue = $(this).data('id');
 
-            $('#projectId').val(projectId);
-            debugger
+            $('#stageId').val(stageIdValue);
+
         });
     });
 
@@ -299,20 +267,30 @@
         event.preventDefault();
 
         var formData = new FormData(this);
-        const projectId = $('#projectId').val();
+        const stageId = $('#stageId').val();
+        formData.append("Stage_Id", stageId);
 
-        formData.append("projectId", projectId);
+        var projectId = $("#dataTableExample tbody tr:first").data("project-id");
+        if (projectId) {
+            formData.append("Project_Id", projectId);
+        }
+
+        debugger
+
         if ($("#upload").get(0).files.length > 0) {
             formData.append("StageDocument", $("#upload").get(0).files[0]);
         }
-     
+        if ($("#delayedUpload").get(0).files.length > 0) {
+            formData.append("DelayedStageDocument", $("#delayedUpload").get(0).files[0]);
+        }
+        debugger
 
         $.ajax({
             url: "/Employee/AddStageStatus",
             type: "POST",
             data: formData,
-            contentType: false, 
-            processData: false, 
+            contentType: false,
+            processData: false,
             success: function (res) {
                 if (res.status == true) {
                     Swal.fire({
@@ -344,5 +322,97 @@
         });
     });
 
+
+</script>
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '#viewCompleteDetails', function (e) {
+            e.preventDefault();
+
+            const id = $(this).data('id'); // Retrieve the ID from data attribute
+
+            // Clear the modal content before making the request
+            $('#viewCompleteStatus').empty();
+
+            $.ajax({
+                url: '/Employee/ViewStageCompleteStatus',
+                type: 'GET',
+                data: { stageId: id },
+                success: function (res) {
+                    console.log(res)
+                    const modalContent = `
+                <h6>Update Date:</h6>
+                <p>${res.data.CreatedDate}</p>
+                <hr />
+                 <h6>Comment:</h6>
+                <p>${res.data.Comment}</p>
+                <hr />
+                <h6>Completion Percentage:</h6>
+                <p>${res.data.CompletionPrecentage}%</p>
+                <hr />
+                <h6>Document:</h6>
+                <p>
+                    <a href="${res.data.StageDocument_Url}" aria-label="Download PDF" target="_blank">
+                        <i class="fa-regular fa-file-pdf"></i> Download Document
+                    </a>
+                </p>
+            `;
+                    $('#viewCompleteStatus').append(modalContent);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                    const errorMessage = `<p class="text-danger">Failed to load data. Please try again.</p>`;
+                    $('#viewCompleteStatus').append(errorMessage);
+                }
+            });
+        });
+    });
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $(document).on('click', '#viewDetail', function (e) {
+            e.preventDefault();
+
+            var dataId = $(this).data('id');
+            debugger
+            $.ajax({
+                url: '/Employee/ViewDelayReason',
+                type: 'GET',
+                data: { stageId: dataId },
+                success: function (res) {
+                    var completedFields = $('#viewCompletedFields');
+                    completedFields.empty();
+
+                    $.each(res.stageList, function (index, item) {
+                        completedFields.append(`
+                        <div class="delay-reason-item">
+                            <h6>Update Date:</h6>
+                            <p>${item.CreatedDate}</p> 
+                             <hr />
+                            <h6>Reason:</h6>
+                            <p>${item.DelayReason}</p>
+                            <hr />
+                            <h6>Document:</h6>
+                            <p>
+                                <a href="${item.StageDocument_Url}" aria-label="Download PDF" target="_blank">
+                                    <i class="fa-regular fa-file-pdf"></i> Download Document
+                                </a>
+                            </p>
+                            <hr />
+                        </div>
+                    `);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        });
+
+
+    });
 
 </script>
