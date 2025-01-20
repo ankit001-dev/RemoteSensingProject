@@ -13,7 +13,6 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string TotalDelayProject { get; set; }
         public string TotalMeeting { get; set; }
         public string TotalOngoingProject { get; set; }
-        public string TotalMeetings { get; set; }
         public string TotalNotice { get; set; }
 
     }

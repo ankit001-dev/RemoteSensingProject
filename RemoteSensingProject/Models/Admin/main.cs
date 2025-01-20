@@ -117,9 +117,11 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class Project_Statge
         {
-            public int Id { get; set; } 
+            public int Id { get; set; }
             public int Project_Id { get; set; }
+            public int Stage_Id { get; set; }
             public string KeyPoint { get; set; }
+            public string Reason { get; set; }
             public HttpPostedFileBase Stage_Document { get; set; }
             public string Document_Url { get; set; }
             public string Status { get; set; }
@@ -129,8 +131,10 @@ namespace RemoteSensingProject.Models.Admin
             public string Comment { get; set; }
             public string CompletionPrecentage { get; set; }
             public HttpPostedFileBase StageDocument { get; set; }
+            public HttpPostedFileBase DelayedStageDocument { get; set; }
             public string StageDocument_Url { get; set; }
             public string DelayReason { get; set; }
+            public string CreatedDate { get; set; }
         }
         public class Meeting_Model
         {
