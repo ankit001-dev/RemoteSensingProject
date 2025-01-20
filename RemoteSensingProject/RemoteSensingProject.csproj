@@ -986,7 +986,7 @@
     <Folder Include="obj\Debug\TempPE\" />
     <Folder Include="ProjectContent\Admin\NoticeDocs\" />
     <Folder Include="ProjectContent\Admin\ProjectDocs\" />
-    <Folder Include="ProjectContent\ProjectManager\Meeting_Attachment\" />
+    <Folder Include="ProjectContent\ProjectManager\HeadsSlip\" />
     <Folder Include="ProjectContent\ProjectManager\ProjectDocs\" />
   </ItemGroup>
   <ItemGroup>
