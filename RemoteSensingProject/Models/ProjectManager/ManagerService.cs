@@ -492,6 +492,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
+        #region Satges
         public List<Project_Statge> ProjectStagesList(int Id)
         {
             try
@@ -515,7 +516,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             KeyPoint = rd["keyPoint"].ToString(),
                             CompletionDate = Convert.ToDateTime(rd["completeDate"]),
                             CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
-                           Document_Url = rd["stageDocument"].ToString(),
+                            Document_Url = rd["stageDocument"].ToString(),
                             Status = rd["status"].ToString(),
                             completionStatus = Convert.ToInt32(rd["completionStatus"])
                         });
@@ -530,33 +531,96 @@ namespace RemoteSensingProject.Models.ProjectManager
             finally
             {
                 if (con.State == ConnectionState.Open)
-                if (con.State == ConnectionState.Open)
-                    con.Close();
+                    if (con.State == ConnectionState.Open)
+                        con.Close();
                 cmd.Dispose();
             }
         }
-        public bool insertStageStatus(Project_Statge obj)
+        public bool InsertStageStatus(Project_Statge obj)
         {
             try
             {
+                using (SqlCommand cmd = new SqlCommand("sp_ManageStageStatus", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@action", "insertStageStatus");
+                    cmd.Parameters.AddWithValue("@stageId", obj.Stage_Id);
+                    cmd.Parameters.AddWithValue("@Comment", obj.Comment);
+                    cmd.Parameters.AddWithValue("@CompletionPrecentage", obj.CompletionPrecentage);
+                    cmd.Parameters.AddWithValue("@StageDocument", obj.StageDocument_Url ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@DelayReason", obj.DelayReason ?? (object)DBNull.Value);
+                    if (obj.DelayReason != null)
+                    {
+                        cmd.Parameters.AddWithValue("@updateStatus", "delay" ?? (object)DBNull.Value);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@updateStatus", "completed" ?? (object)DBNull.Value);
+                    }
+                    con.Open();
+                    int i = cmd.ExecuteNonQuery();
+
+                    if (obj.Status == "completed")
+                    {
+                        using (SqlCommand updateCmd = new SqlCommand("sp_ManageStageStatus", con))
+                        {
+                            updateCmd.CommandType = CommandType.StoredProcedure;
+                            updateCmd.Parameters.AddWithValue("@action", "updateStageCompetionStatus");
+                            updateCmd.Parameters.AddWithValue("@completionStatus", 1);
+                            updateCmd.Parameters.AddWithValue("@project_Id", obj.Project_Id);
+
+                            updateCmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    if (i > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while inserting stage status.", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+            }
+        }
+
+        public List<Project_Statge> getStageDelayReason(string stageId)
+        {
+            try
+            {
+                List<Project_Statge> stageList = new List<Project_Statge>();
+                Project_Statge stage = null;
                 SqlCommand cmd = new SqlCommand("sp_ManageStageStatus", con);
+                cmd.Parameters.AddWithValue("@action", "viewDealyReason");
+                cmd.Parameters.AddWithValue("@stageId", stageId);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "insertStageStatus");
-                cmd.Parameters.AddWithValue("@stageId", obj.Project_Id);
-                cmd.Parameters.AddWithValue("@Comment", obj.Comment);
-                cmd.Parameters.AddWithValue("@CompletionPrecentage", obj.CompletionPrecentage);
-                cmd.Parameters.AddWithValue("@StageDocument", obj.StageDocument_Url);
                 con.Open();
-                int i = cmd.ExecuteNonQuery();
-                if (i > 0)
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
                 {
-                    return true;
+                    while (sdr.Read())
+                    {
+                        stage = new Project_Statge();
+                        stage.StageDocument_Url = sdr["StageDocument"].ToString();
+                        stage.DelayReason = sdr["DelayReason"].ToString();
+                        stage.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                        stageList.Add(stage);
+                    }
                 }
-                else
-                {
-                    return false;
-                }
-            }catch(Exception ex)
+
+                return stageList;
+            }
+            catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
             }
@@ -566,7 +630,49 @@ namespace RemoteSensingProject.Models.ProjectManager
                     con.Close();
                 cmd.Dispose();
             }
+
         }
+        public Project_Statge getCompleteStatus(string stageId)
+        {
+            try
+            {
+
+                Project_Statge stage = null;
+                SqlCommand cmd = new SqlCommand("sp_ManageStageStatus", con);
+                cmd.Parameters.AddWithValue("@action", "viewCompleteStatus");
+                cmd.Parameters.AddWithValue("@stageId", stageId);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    while (sdr.Read())
+                    {
+                        stage = new Project_Statge();
+                        stage.Comment = sdr["Comment"].ToString();
+                        stage.CompletionPrecentage = sdr["CompletionPrecentage"].ToString();
+                        stage.StageDocument_Url = sdr["StageDocument"].ToString();
+                        stage.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+
+                    }
+                }
+
+                return stage;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+
+        }
+        #endregion Update Stages
+
         #endregion
     }
 }
