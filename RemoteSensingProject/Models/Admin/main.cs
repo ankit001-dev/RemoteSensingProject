@@ -33,7 +33,8 @@ namespace RemoteSensingProject.Models.Admin
             public int meetingId { get; set; }
             public bool ActiveStatus { get; set; }
             public bool PresentStatus { get; set; }
-
+            public int AppStatus { get; set; }
+            public string Reason { get; set; }
         }
 
         public class MeetingConclusion
@@ -156,6 +157,7 @@ namespace RemoteSensingProject.Models.Admin
             public string[] meetingMemberList { get; set; }
             public string[] keyPointList { get; set; }
             public int CompleteStatus { get; set; }
+            public int AppStatus { get; set; }
             public string empId { get; set; }
             public string meetingId { get; set; }
             public List<string> empName { get; set; }

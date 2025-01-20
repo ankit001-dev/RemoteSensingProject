@@ -306,6 +306,13 @@ namespace RemoteSensingProject.Controllers
             return Json(obj,JsonRequestBehavior.AllowGet);
 
         }
+        [HttpGet]
+        public ActionResult GetMemberJoiningStatusByMeeting(int meetingId)
+        {
+
+            var res = _managerServices.getMemberJoiningStatus(meetingId);
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpGet]
         public ActionResult GetAllMeeting()

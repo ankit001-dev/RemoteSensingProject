@@ -31,6 +31,15 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string username { get; set; }
         public string userId { get; set; }
     }
+
+    public class GetConclusion
+    {
+        public int Id { get; set; }
+        public string Conclusion { get; set; }
+        public string FollowDate { get; set; }
+        
+    }
+
     public class ProjectList
     {
         public int Id { get; set; } // Unique identifier for the project
@@ -76,6 +85,16 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string MeetAddress { get; set; } // Meeting location or link
         public string MeetStatus { get; set; } // e.g., Scheduled, Completed, Canceled
         public string Status { get; set; } // Additional status field (define its purpose)
+    }
+
+    public class getMemberResponse
+    {
+        public int Id { get; set; }
+        public int MemberId { get; set; }
+        public int MeetingId { get; set; }
+        public int? ConclusionId { get; set; }
+        public int ApprovedStatus { get; set; }
+        public string reason { get; set; }
     }
 
     public class AllProjectReport

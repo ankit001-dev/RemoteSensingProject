@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Antlr.Runtime.Tree;
+using Microsoft.AspNetCore.Routing;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
-
+using System.Web.UI;
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Models.ProjectManager
@@ -672,6 +674,152 @@ namespace RemoteSensingProject.Models.ProjectManager
 
         }
         #endregion Update Stages
+
+        #endregion
+
+        #region meetings
+
+        public bool GetResponseFromMember(getMemberResponse mr)
+        {
+            try
+            {
+                cmd.Parameters.Clear();
+                cmd = new SqlCommand("sp_manageMemberResponseForMeeting", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getResponseFromMemberForMeeting");
+                cmd.Parameters.AddWithValue("@appStatus", mr.ApprovedStatus);
+                cmd.Parameters.AddWithValue("@reason", mr.reason);
+                cmd.Parameters.AddWithValue("@meeting", mr.MeetingId);
+                cmd.Parameters.AddWithValue("@employee", mr.MemberId);
+                con.Open();
+                int res=cmd.ExecuteNonQuery();
+                return res > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public List<Meeting_Model> getAllmeeting(int id)
+        {
+            try
+            {
+                List<Meeting_Model> _list = new List<Meeting_Model>();
+                Meeting_Model obj = null;
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectMeetingForProjectManager");
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    obj = new Meeting_Model();
+                    obj.Id = Convert.ToInt32(sdr["id"]);
+                    obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
+                    obj.MeetingType = sdr["meetingType"].ToString();
+                    obj.MeetingLink = sdr["meetingLink"].ToString();
+                    obj.MeetingTitle = sdr["MeetingTitle"].ToString();
+                    obj.AppStatus = sdr["appStatus"] != DBNull.Value ? (int)sdr["appStatus"] : 0;
+                    obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
+                    obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
+                    obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
+                    _list.Add(obj);
+                }
+
+                sdr.Close();
+                return _list;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        public List<GetConclusion> getConclusionForMeeting(int meetingId,int userId)
+        {
+            try
+            {
+                List<GetConclusion> _list = new List<GetConclusion>();
+                GetConclusion obj = null;
+                SqlCommand cmd = new SqlCommand("sp_meetingConslusion", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectConclusionForProjectManager");
+                cmd.Parameters.AddWithValue("@memberId", userId);
+                cmd.Parameters.AddWithValue("@meeting", meetingId);
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    obj.Id = (int)sdr["id"];
+                        obj.Conclusion = sdr["conclusion"].ToString();
+                    obj.FollowDate = sdr["nextFollow"]!=DBNull.Value? Convert.ToDateTime(sdr["nextFollow"]).ToString("dd-MM-yyyy"):"N/A";
+                }
+
+                sdr.Close();
+                return _list;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+
+        public List<Employee_model> getMemberJoiningStatus(int meetingId) { 
+            try
+            {
+
+                cmd.Parameters.Clear();
+                cmd = new SqlCommand("sp_manageMemberResponseForMeeting", con);
+                cmd.Parameters.AddWithValue("@action", "selectMemberJoiningStatus");
+                cmd.Parameters.AddWithValue("@meeting", meetingId);
+                cmd.CommandType = CommandType.StoredProcedure;
+                List<Employee_model> meetingc = new List<Employee_model>();
+
+                con.Open();
+                SqlDataReader rdr = cmd.ExecuteReader();
+                if (rdr.HasRows)
+                {
+                    while (rdr.Read())
+                    {
+                        meetingc.Add(new Employee_model
+                        {
+                            EmployeeName = rdr["name"].ToString(),
+                            Image_url = rdr["profile"].ToString(),
+                            EmployeeRole = rdr["role"].ToString(),
+                            AppStatus = rdr["appstatus"] != DBNull.Value ? (int)rdr["appstatus"] : 0,
+                            Reason=rdr["reason"]!=DBNull.Value?rdr["reason"].ToString():"N/A",
+                        });
+                    }
+                }
+                return meetingc;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+                cmd.Dispose();
+            }
+        }
 
         #endregion
     }
