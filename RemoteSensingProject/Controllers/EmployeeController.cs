@@ -360,6 +360,8 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Meetings()
         {
+            var userId = _managerServices.getManagerDetails(User.Identity.Name);
+            var res = _adminServices.getAllmeeting().Where(e => e.CreaterId == 0 && e.memberId.Contains(userId.userId)).ToList();
             return View();
         }
 
