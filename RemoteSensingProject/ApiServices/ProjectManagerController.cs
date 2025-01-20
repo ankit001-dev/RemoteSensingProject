@@ -259,7 +259,7 @@ namespace RemoteSensingProject.ApiServices
                     formData.StageDocument_Url = Path.Combine("/ProjectContent/ProjectManager/ProjectDocs/", formData.StageDocument_Url);
                 }
 
-                bool res = _managerService.insertStageStatus(formData);
+                bool res = _managerService.InsertStageStatus(formData);
                 return Ok(new
                 {
                     status = res,
