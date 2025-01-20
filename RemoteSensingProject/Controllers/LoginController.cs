@@ -36,6 +36,9 @@ namespace RemoteSensingProject.Controllers
                         break;
                     case string role when role.Equals("projectManager"):
                         url = "/employee/dashboard";
+                        break; 
+                    case string role when role.Equals("accounts"):
+                        url = "/accounts/dashboard";
                         break;
                 }
 
