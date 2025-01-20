@@ -311,7 +311,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult GetAllMeeting()
         {
             List<Meeting_Model> empList = new List<Meeting_Model>();
-            empList = _adminServices.getAllmeeting();
+            empList = _adminServices.getAllmeeting().Where(e=>e.CreaterId==0).ToList();
             return Json(new { empList = empList },JsonRequestBehavior.AllowGet);
         }
 
