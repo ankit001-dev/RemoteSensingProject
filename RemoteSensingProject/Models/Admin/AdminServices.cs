@@ -1,23 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using static RemoteSensingProject.Models.Admin.main;
-using static RemoteSensingProject.Models.LoginManager.LoginServices;
 using System.Data.SqlClient;
 using System.Data;
-using System.Security.Policy;
-using System.Runtime.InteropServices;
-using System.Web.UI.WebControls;
-using System.Web.Razor.Generator;
 using RemoteSensingProject.Models.MailService;
-using System.Web.Services.Description;
-using System.IO;
-using Microsoft.Ajax.Utilities;
-using System.Web.ModelBinding;
-using Microsoft.AspNetCore.Routing.Internal;
-using Microsoft.Owin.BuilderProperties;
-using RemoteSensingProject.Models.ProjectManager;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory

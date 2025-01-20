@@ -312,7 +312,7 @@ namespace RemoteSensingProject.Controllers
 
         #endregion End Meeting
 
-        public ActionResult MeetingConclusion()
+        public ActionResult MeetingConclusion(int meeting)
         {
             ViewBag.empList = _adminServices.BindEmployee();
             var obj = _adminServices.getMeetingById(meeting);
