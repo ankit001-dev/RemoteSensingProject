@@ -152,32 +152,20 @@
                                         <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                             <li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>
                                             <li class="me-2">
-                                                <a href="/Admin/View_Weekly_Update/" title="View Weekly Update">
+                                                <a href="/Admin/View_Weekly_Update?Id=@item.Id" title="View Weekly Update">
                                                     <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
                                                 </a>
                                             </li>
 
                                             <li class="me-2">
-                                                <a href="/Admin/View_Project_Stage/@item.Id" title="Update Stages">
+                                                <a href="/Admin/View_Project_Stage?Id=@item.Id" title="Update Stages">
                                                     <i class="link-icon text-info" data-feather="plus-circle"> </i>
                                                 </a>
                                             </li>
                                             <li class="me-2">
-                                                <a href="/Admin/View_Expenses/@item.Id" title="Add Expenses">
+                                                <a href="/Admin/View_Expenses?Id=@item.Id" title="Add Expenses">
                                                     <i class="link-icon text-danger" data-feather="file-plus"></i>
                                                 </a>
-                                            </li>
-                                            <li class="me-2">
-                                                <div class="dropdown mb-2">
-                                                    <button class="btn p-0" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                        <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                                                    </button>
-                                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                                                        <a class="dropdown-item d-flex align-items-center"><i data-feather="file" class="icon-sm me-2"></i> <span class>Excel</span></a>
-                                                        <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>PDF</span></a>
-                                                        <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
-                                                    </div>
-                                                </div>
                                             </li>
                                         </ul>
                                     </td>

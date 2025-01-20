@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "View_Expenses";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    int i = 1;
 }
 
 <style>
@@ -28,7 +29,7 @@
         <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item active" aria-current="page">Project Stages Status Update</li>
         </ol>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Weekly Status</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ViewBudgetExpenses"><i class="link-icon" data-feather="plus"></i> Add Weekly Status</button>
     </nav>*@
 @*<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
         <form class="forms-sample">
@@ -72,8 +73,8 @@
                             @foreach (var item in ViewBag.ProjectExpenses as List<RemoteSensingProject.Models.Admin.main.Project_Budget>)
                             {
                                 <tr>
-                                    <td class="text-start">1</td>
-                                    <td><a href="#" data-bs-toggle="modal" data-bs-target="#addslider">@item.ProjectHeads</a></td>
+                                    <td class="text-start">@i</td>
+                                    <td><a href="#" class="headExpense" data-Id="@item.Id">@item.ProjectHeads</a></td>
                                     <td class="text-center">
                                         @item.ProjectAmount
                                     </td>
@@ -81,12 +82,11 @@
                                         0
                                     </td>
                                 </tr>
+                                i++;
                             }
                         </tbody>
                     </table>
-                    @*<div class="text-center">
-                            <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Expenses</button>
-                        </div>*@
+                  
                 </div>
             </div>
         </div>
@@ -100,7 +100,7 @@
 
 
 
-<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+<div class="modal fade" id="ViewBudgetExpenses" tabindex="-1" aria-labelledby="ViewBudgetExpenses" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex">
@@ -121,16 +121,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>10/02/2004</td>
-                                <td>Item 1</td>
-                                <td>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero cupiditate, distinctio doloribus molestias cum possimus nam nemo nisi excepturi repudiandae ea consequuntur eveniet sunt voluptate totam! Architecto adipisci explicabo magnam.
-                                </td>
-                                <td>15000</td>
-                                <td><a href="#document">Reciept</a></td>
-                            </tr>
+                            
                         </tbody>
                     </table>
                 </div>
@@ -138,3 +129,67 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    
+    $(".headExpense").click(function () {
+        let headId = $(this).attr("data-Id");
+        let projectId = @Request.QueryString["Id"];
+
+            Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request...",
+            timer: 100000,
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: "/api/getProjectExpencesList",
+            type: "get",
+            data: { projectId: projectId, headId: headId },
+            success: function (res) {
+                $("#viewBudgetExpensesBody").empty();
+                if (res.status) {
+
+                    let element = "";
+                    $.each(res.data, function (i, d) {
+                        element += `  <tr>
+                              <td>${i + 1}</td>
+                              <td>${convertToDate(d.date)}</td>
+                              <td>${d.title}</td>
+                              <td>${d.description}</td>
+                              <td>${d.amount}</td>
+                              <td><a href="${d.attatchment_url}">Reciept</a></td>
+                          </tr>`
+                    });
+                    $("#viewBudgetExpensesBody").append(element);
+                    $("#ViewBudgetExpenses").modal("show");
+                }
+                else {
+                    $("#ViewBudgetExpenses").modal("show");
+                }
+
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue !",
+                    text: "Server is busy. Please try after sometime.",
+                    icon: "error"
+                });
+            },
+            complete: function () {
+                Swal.close();
+            }
+        })
+    })
+
+    function convertToDate(date) {
+        let dateObj = new Date(date);
+        return dateObj.toLocaleDateString();
+    }
+</script>

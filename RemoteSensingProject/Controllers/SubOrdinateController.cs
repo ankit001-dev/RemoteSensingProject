@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.IO;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -49,6 +50,32 @@ namespace RemoteSensingProject.Controllers
         }
 
         #endregion End Assigned
+        #region Raise Problem
+        public ActionResult AddRaiseProblem(Raise_Problem formData)
+        {
+            string path = null;
+            if(formData.Attachment !=null && formData.Attachment.ContentLength > 0)
+            {
+                var guid = Guid.NewGuid();
+                var FileExtension = Path.GetExtension(formData.Attachment.FileName);
+                var fileName = $"{guid}{FileExtension}";
+                path = Path.Combine("/ProjectContent/SubOrdinate/ProblemDocs", fileName);
+
+                formData.Attchment_Url = path;
+            }
+            bool status = _subOrdinate.InsertSubOrdinateProblem(formData);
+            if (status)
+            {
+                formData.Attachment.SaveAs(Server.MapPath(path));
+            }
+           
+            return Json(new { status=status},JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult SubOrdinateProblemList()
+        {
+            return View();
+        }
+        #endregion End Problem
         public ActionResult Meeting_List()
         {
             return View();

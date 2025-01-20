@@ -15,9 +15,9 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-       public ActionResult Requests()
+        public ActionResult Requests()
         {
-            return View();
+             return View();
         } 
         public ActionResult ApprovedList()
         {
