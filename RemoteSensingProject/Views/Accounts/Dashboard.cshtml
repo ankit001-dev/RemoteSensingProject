@@ -1,0 +1,646 @@
+﻿
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+
+@*<div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+        <div>
+            <h4 class="mb-3 mb-md-0">Welcome to Travelin Dashboard</h4>
+        </div>
+    </div>*@
+@*<style>
+        .card-body {
+            padding: 1rem 0.5rem;
+        }
+    </style>*@
+
+<style>
+    .uniform-card {
+        /*        height: 200px;
+    */ width: 160px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+    }
+
+        .uniform-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 10px;
+        }
+
+        .uniform-card .card-title {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .uniform-card p.text-success {
+            font-size: 14px;
+        }
+
+        .uniform-card img {
+            margin: 0 auto;
+        }
+</style>
+
+<div class="row">
+    <div class="col-12 col-xl-12 stretch-card">
+        <div class="row flex-grow-1">
+
+            <!-- Employee's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+                <a href="/Admin/Employee_Registration" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span> </span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <img src="~/assets/gif/success.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Project's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+                <a href="/Admin/All_Projects" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0">Project's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span></span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <img src="~/assets/gif/project.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Pending Project's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+                <a href="/Admin/Pending_Project" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Delay Project's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h6 class="mb-2 text-success"></h6>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span></span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <img src="~/assets/gif/file.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Another Meeting's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+                <a href="/Admin/Project_Request" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Ongoing Project</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span></span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <img src="~/assets/gif/notification.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Completed Project's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+                <a href="/Admin/Completed_Project" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Completed Project's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span></span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <img src="~/assets/gif/checklist.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Meeting's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+                <a href="/Admin/Meeting_Report" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span> </span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <img src="~/assets/gif/discussion.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
+@*<div class="row">
+        <div class="col-12 col-xl-12 grid-margin stretch-card">
+            <div class="card overflow-hidden">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-baseline mb-4 mb-md-3">
+                        <h6 class="card-title mb-0">Travel data</h6>
+                        <div class="dropdown">
+                            <button class="btn p-0" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span class>View</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span class>Edit</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span class>Delete</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>Print</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-start">
+                        <div class="col-md-7">
+                            <p class="text-muted tx-13 mb-3 mb-md-0">Revenue is the income that a business has from its normal business activities, usually from the sale of goods and services to customers.</p>
+                        </div>
+                        <div class="col-md-5 d-flex justify-content-md-end">
+                            <div class="btn-group mb-3 mb-md-0" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-outline-primary">Today</button>
+                                <button type="button" class="btn btn-outline-primary d-none d-md-block">Week</button>
+                                <button type="button" class="btn btn-primary">Month</button>
+                                <button type="button" class="btn btn-outline-primary">Year</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="revenueChart"></div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+<div class="row">
+    <div class="col-lg-7 col-xl-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-baseline mb-2">
+                    <h6 class="card-title mb-0">Project Status</h6>
+                    <div class="dropdown mb-2">
+                        <button class="btn p-0" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span class>View</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span class>Edit</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span class>Delete</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>Print</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted">Check the current project status on the dashboard for detailed updates.</p>
+                <div id="monthlySalesChart"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5 col-xl-4 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title mb-0">Project Data</h6>
+                    <div class="dropdown mb-2">
+                        <button class="btn p-0" type="button" id="dropdownMenuButton5" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span class>View</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span class>Edit</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span class>Delete</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>Print</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div id="storageChart"></div>
+                <div class="row mb-3">
+                    <div class="col-6 d-flex justify-content-end">
+                        <div>
+                            <label class="d-flex align-items-center justify-content-end tx-10 text-uppercase fw-bolder">Total Projects <span class="p-1 ms-1 rounded-circle bg-secondary"></span></label>
+                            <h5 class="fw-bolder mb-0 text-end"></h5>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div>
+                            <label class="d-flex align-items-center tx-10 text-uppercase fw-bolder"><span class="p-1 me-1 rounded-circle bg-primary"></span> Completed Projects</label>
+                            <h5 class="fw-bolder mb-0"></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button class="btn btn-primary">View More</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-5 col-xl-4 grid-margin grid-margin-xl-0 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-baseline mb-2">
+                    <h6 class="card-title mb-0">Top Employee's</h6>
+                    <div class="dropdown mb-2">
+                        <button class="btn p-0" type="button" id="dropdownMenuButton6" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton6">
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span class>View</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span class>Edit</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span class>Delete</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>Print</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column">
+                    <a class="d-flex align-items-center border-bottom pb-3">
+                        <div class="me-3">
+                            <img src="/Employee_Images/img.png" class="rounded-circle wd-35" alt="user">
+                        </div>
+                        <div class="w-100">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="text-body mb-2">Leonardo Payne</h6>
+                                <p class="text-muted tx-12">20 Project's</p>
+                            </div>
+                            <p class="text-muted tx-13">Department</p>
+                        </div>
+                    </a>
+                    <a class="d-flex align-items-center border-bottom py-3">
+                        <div class="me-3">
+                            <img src="/Employee_Images/img.png" class="rounded-circle wd-35" alt="user">
+                        </div>
+                        <div class="w-100">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="text-body mb-2">Carl Henson</h6>
+                                <p class="text-muted tx-12">20 Project's</p>
+                            </div>
+                            <p class="text-muted tx-13">Department</p>
+                        </div>
+                    </a>
+                    <a class="d-flex align-items-center border-bottom py-3">
+                        <div class="me-3">
+                            <img src="/Employee_Images/img.png" class="rounded-circle wd-35" alt="user">
+                        </div>
+                        <div class="w-100">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="text-body mb-2">Jensen Combs</h6>
+                                <p class="text-muted tx-12">20 Project's</p>
+                            </div>
+                            <p class="text-muted tx-13">Department</p>
+                        </div>
+                    </a>
+                    <a class="d-flex align-items-center border-bottom py-3">
+                        <div class="me-3">
+                            <img src="/Employee_Images/img.png" class="rounded-circle wd-35" alt="user">
+                        </div>
+                        <div class="w-100">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="text-body mb-2">Amiah Burton</h6>
+                                <p class="text-muted tx-12">20 Project's</p>
+                            </div>
+                            <p class="text-muted tx-13">Department</p>
+                        </div>
+                    </a>
+                    <a class="d-flex align-items-center border-bottom py-3">
+                        <div class="me-3">
+                            <img src="/Employee_Images/img.png" class="rounded-circle wd-35" alt="user">
+                        </div>
+                        <div class="w-100">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="text-body mb-2">Yaretzi Mayo</h6>
+                                <p class="text-muted tx-12">20 Project's</p>
+                            </div>
+                            <p class="text-muted tx-13">Department</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-7 col-xl-8 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-baseline mb-2">
+                    <h6 class="card-title mb-0">Projects</h6>
+                    <div class="dropdown mb-2">
+                        <button class="btn p-0" type="button" id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span class>View</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span class>Edit</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span class>Delete</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>Print</span></a>
+                            <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="pt-0">#</th>
+                                <th class="pt-0">Project Name</th>
+                                <th class="pt-0">Start Date</th>
+                                <th class="pt-0">Due Date</th>
+                                <th class="pt-0">Status</th>
+                                <th class="pt-0">Assign</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Travelin jQuery</td>
+                                <td>01/01/2022</td>
+                                <td>26/04/2022</td>
+                                <td><span class="badge bg-danger">Released</span></td>
+                                <td>Leonardo Payne</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Travelin Angular</td>
+                                <td>01/01/2022</td>
+                                <td>26/04/2022</td>
+                                <td><span class="badge bg-success">Review</span></td>
+                                <td>Carl Henson</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Travelin ReactJs</td>
+                                <td>01/05/2022</td>
+                                <td>10/09/2022</td>
+                                <td><span class="badge bg-info">Pending</span></td>
+                                <td>Jensen Combs</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>Travelin VueJs</td>
+                                <td>01/01/2022</td>
+                                <td>31/11/2022</td>
+                                <td>
+                                    <span class="badge bg-warning">Work in Progress</span>
+                                </td>
+                                <td>Amiah Burton</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Travelin Laravel</td>
+                                <td>01/01/2022</td>
+                                <td>31/12/2022</td>
+                                <td><span class="badge bg-danger">Coming soon</span></td>
+                                <td>Yaretzi Mayo</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>Travelin NodeJs</td>
+                                <td>01/01/2022</td>
+                                <td>31/12/2022</td>
+                                <td><span class="badge bg-primary">Coming soon</span></td>
+                                <td>Carl Henson</td>
+                            </tr>
+                            <tr>
+                                <td class="border-bottom">3</td>
+                                <td class="border-bottom">Travelin EmberJs</td>
+                                <td class="border-bottom">01/05/2022</td>
+                                <td class="border-bottom">10/11/2022</td>
+                                <td class="border-bottom"><span class="badge bg-info">Pending</span></td>
+                                <td class="border-bottom">Jensen Combs</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+@*<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>*@
+
+<script>
+    $(document).ready(function () {
+        if ($('#monthlySalesChart').length) {
+            var options = {
+                chart: {
+                    type: 'bar',
+                    height: '318',
+                    parentHeightOffset: 0,
+                    foreColor: '#6c757d', // Replacing colors.bodyColor with a gray color
+                    background: '#ffffff', // Replacing colors.cardBg with white
+                    toolbar: {
+                        show: false
+                    },
+                },
+                theme: {
+                    mode: 'light'
+                },
+                tooltip: {
+                    theme: 'light'
+                },
+                colors: ['#1aa7a6'], // Primary color for the bars (blue)
+                fill: {
+                    opacity: .9
+                },
+                grid: {
+                    padding: {
+                        bottom: -4
+                    },
+                    borderColor: '#D6E9E9', // Replacing colors.gridBorder with a light gray color
+                    xaxis: {
+                        lines: {
+                            show: true
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Completed',
+                    data: [70, 20, 40, 30, 60, 61, 88, 43, 10, 45, 60, 24]
+                }],
+                xaxis: {
+                    type: 'category', // Change type from 'datetime' to 'category'
+                    categories: ['Project1', 'Project2', 'Project3', 'Project4', 'Project5', 'Project6', 'Project7', 'Project8', 'Project9', 'Project10', 'Project11', 'Project12'], // Updated categories
+                    axisBorder: {
+                        color: '#dee2e6', // Light gray color
+                    },
+                    axisTicks: {
+                        color: '#dee2e6', // Light gray color
+                    },
+                },
+                yaxis: {
+                    min: 0,
+                    max: 100,
+                    tickAmount: 5,
+                    title: {
+                        text: 'Project Completion',
+                        style: {
+                            fontSize: '12px',
+                            color: '#adb5bd',
+                            fontFamily: 'inherit',
+                        }
+                    },
+                },
+                legend: {
+                    show: true,
+                    position: "top",
+                    horizontalAlign: 'center',
+                    fontFamily: 'inherit', // Replace with your desired font
+                    itemMargin: {
+                        horizontal: 8,
+                        vertical: 0
+                    },
+                },
+                stroke: {
+                    width: 0
+                },
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        fontSize: '10px',
+                        fontFamily: 'inherit', // Replace with your desired font
+                    },
+                    offsetY: -27
+                },
+                plotOptions: {
+                    bar: {
+                        columnWidth: "50%",
+                        borderRadius: 4,
+                        dataLabels: {
+                            position: 'top',
+                            orientation: 'vertical',
+                        }
+                    },
+                },
+            };
+
+            var apexBarChart = new ApexCharts(document.querySelector("#monthlySalesChart"), options);
+            apexBarChart.render();
+        }
+
+
+        if ($('#storageChart').length) {
+            var colors = {
+                primary: '#029e9d', // Set the primary color to #029e9d
+                light: '#f3f3f3',   // You can define other colors like light, muted, etc.
+                muted: '#6c757d',
+                bodyColor: '#212529'
+            };
+            var options = {
+                chart: {
+                    height: 260,
+                    type: "radialBar"
+                },
+                series: [],
+                colors: [colors.primary],
+                plotOptions: {
+                    radialBar: {
+                        hollow: {
+                            margin: 15,
+                            size: "70%"
+                        },
+                        track: {
+                            show: true,
+                            background: colors.light,
+                            strokeWidth: '100%',
+                            opacity: 1,
+                            margin: 5,
+                        },
+                        dataLabels: {
+                            showOn: "always",
+                            name: {
+                                offsetY: -11,
+                                show: true,
+                                color: colors.muted,
+                                fontSize: "13px"
+                            },
+                            value: {
+                                color: colors.bodyColor,
+                                fontSize: "30px",
+                                show: true
+                            }
+                        }
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                stroke: {
+                    lineCap: "round",
+                },
+                labels: ["Project Data"]
+            };
+
+            var chart = new ApexCharts(document.querySelector("#storageChart"), options);
+            chart.render();
+        }
+
+    });
+</script>
+
+
