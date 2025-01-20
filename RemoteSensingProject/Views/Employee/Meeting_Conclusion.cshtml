@@ -362,99 +362,105 @@
             checkboxes[i].checked = source.checked;
         }
     }
+ $("#subMeetingConBtn").click(function (e) {
+     e.preventDefault();
+     debugger
+     let formData = new FormData();
+     let followUpStatus = $(".followUpdate:checked").val();
+     let conclusion = $("#meetingconclusion").val();
+     let nextFollowUpDate = $("#nextfolloupdate").val();
+     let meetingMember = $("#MeetingMember").val();
+     let keyPointCount = 0;
+     let meetingId = "@Request.QueryString["meeting"]";
+     formData.append("mc.Meeting", meetingId);
+     formData.append("mc.Conclusion", conclusion.trim());
+     formData.append("mc.FollowUpStatus", followUpStatus === "1");
+     formData.append("mc.NextFollowUpDate", nextFollowUpDate.trim());
+     formData.append("mc.MeetingMemberList", meetingMember);
 
-    $("#subMeetingConBtn").click(function (e) {
-        let employee = []
-        let followUpStatus = $(".followUpdate:checked").val()
-        let conclusion = $("#meetingconclusion").val()
-        let nextFollowUpDate = $("#nextfolloupdate").val()
-        let keyResponse = []
-        let keyId = []
-        let meetingMember = $("#MeetingMember").val();
+     $(".keyResponse").each(function (i, d) {
+         if (d.value.trim() !== "") {
+             keyPointCount++;
+             formData.append(`mc.KeyPointId[${i}]`, Number(d.getAttribute("data-id")));
+             formData.append(`mc.KeyResponse[${i}]`, d.value.trim());
+         }
+     });
 
-        let KeyPointCount = 0;
+     if (keyPointCount !== $(".keyResponse").length) {
+         Swal.fire({
+             text: "All KeyPoints are required.",
+             title: "Warning",
+             icon: "warning",
+         });
+         return;
+     }
 
-        $(".keyResponse").each(function (i, d) {
-            if (d.value != "") {
-                KeyPointCount++;
-                keyResponse.push(d.value)
-                keyId.push(Number(d.getAttribute("data-id")))
-            }
-        })
-        if (KeyPointCount != $(".keyResponse").length) {
-            Swal.fire({
-                text: "All KeyPoint Are Required",
-                title: "warning",
-                icon: "warning"
-            })
-            return
-        } else if (conclusion == "") {
-            Swal.fire({
-                text: "Conclusion Are Required",
-                title: "warning",
-                icon: "warning"
-            })
-            return
-        } else if (followUpStatus == "1" && nextFollowUpDate == "" || meetingMember.length <= 0) {
-            Swal.fire({
-                text: "Follow Up Date and Next Meeting Member Are Required",
-                title: "warning",
-                icon: "warning"
-            })
-            return
-        }
-        $(".employeeCheckBox:checked").each(function (i, d) {
-            employee.push(Number(d.value))
-        })
-        debugger
-        let url = new URL(window.location.href);
-        let params = new URLSearchParams(url.search);
+     if (conclusion.trim() === "") {
+         Swal.fire({
+             text: "Conclusion is required.",
+             title: "Warning",
+             icon: "warning",
+         });
+         return;
+     }
+
+     if (followUpStatus === "1" && (nextFollowUpDate.trim() === "" || meetingMember.length <= 0)) {
+         Swal.fire({
+             text: "Follow-Up Date and Next Meeting Member are required.",
+             title: "Warning",
+             icon: "warning",
+         });
+         return;
+     }
+
+     $(".employeeCheckBox:checked").each(function (i, d) {
+         formData.append(`mc.MemberId[${i}]`, d.value);
+     });
 
 
-        let formData = new FormData();
-        formData.append("Meeting", params.get("meeting"))
-        formData.append("KeyPointId", keyId)
-        formData.append("KeyResponse", keyResponse)
-        formData.append("Conclusion", conclusion)
-        formData.append("FollowUpStatus", followUpStatus == "1" ? true : false)
-        formData.append("NextFollowUpDate", nextFollowUpDate)
-        formData.append("MemberId", employee)
-        formData.append("MeetingMemberList", meetingMember)
-        showLoading(true)
+     for (let [key, value] of formData.entries()) {
+         console.log(`${key}: ${value}`);
+     }
+     showLoading(true);
 
-        $.ajax({
-            url: "/employee/AddMeetingConclusion",
-            type: "post",
-            processData: false,
-            contentType: false,
-            data: formData,
-            success: function (res) {
-                if (res) {
-                    Swal.fire({
-                        text: "Conclusion Added Successfully",
-                        title: "success",
-                        icon: "success",
-                        didClose: () => {
-                            location.href = "/employee/Min_Of_Meeting";
-                        }
-                    })
-                } else {
-                    swal.fire({
-                        title: "error",
-                        text: "something went wrong",
-                        icon: "error"
-                    })
-                }
-            }, error: function (xhr) {
-                swal.fire({
-                    title: "error",
-                    text: "something went wrong",
-                    icon: "error"
-                })
-            }
-        })
+     $.ajax({
+         url: "/admin/AddMeetingConclusion",
+         type: "POST",
+         processData: false,
+         contentType: false,
+         data: formData,
+         success: function (res) {
+             showLoading(false);
 
-    })
+             if (res) {
+                 Swal.fire({
+                     text: "Conclusion added successfully.",
+                     title: "Success",
+                     icon: "success",
+                 }).then(() => {
+                     location.href = "/Admin/Min_Of_Meeting";
+                 });
+             } else {
+                 Swal.fire({
+                     title: "Error",
+                     text: "Something went wrong.",
+                     icon: "error",
+                 });
+             }
+         },
+         error: function (xhr) {
+             showLoading(false);
+
+             console.error("Error occurred:", xhr.responseText);
+
+             Swal.fire({
+                 title: "Error",
+                 text: "An error occurred while adding the conclusion. Please try again.",
+                 icon: "error",
+             });
+         },
+     });
+ });
 
     $(".ShowPresentMember").click(function () {
         let id = $(this).attr("data-id");

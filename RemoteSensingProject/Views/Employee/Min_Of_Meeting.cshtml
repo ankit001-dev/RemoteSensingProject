@@ -577,78 +577,68 @@
             event.preventDefault();
             showLoading(true);
 
-            let formData = new FormData();
-            let meetingMemberList = [];
-            let keyPointList = [];
-            let KeyPointId = []
+            let formData = new FormData(this);
 
-            var arrData = $(this).serializeArray();
 
             $(".updatekeypointDetails").each(function (i, d) {
-                keyPointList.push(d.value);
-                KeyPointId.push(Number(d.getAttribute("data-id")) || 0)
-
-            })
-
-            arrData.forEach(function (para) {
-                if (para.name == "MeetingMember") {
-                    meetingMemberList.push(para.value);
-                }
-                else if (para.name == "keyPointList") {
-                }
-                else {
-                    formData.append(para.name, para.value);
-
-                }
+                formData.append(`keyPointList[${i}]`, d.value);
+                formData.append(`KeyPointId[${i}]`, d.getAttribute("data-id") || 0);
             });
-            if ($("#Attachment").get(0).files.length > 0) {
-                formData.append("Attachment", $("#Attachment").get(0).files[0]);
+
+            let attachment = $("#Attachment").get(0).files[0];
+            if (attachment) {
+                formData.append("Attachment", attachment);
             }
-            formData.append("meetingMemberList", meetingMemberList)
-            formData.append("keyPointList", keyPointList)
-            formData.append("KeypointId", KeyPointId)
-            debugger
+
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+
             $.ajax({
-                url: '/employee/UpdateMeeting',
+                url: '/Admin/UpdateMeeting',
                 type: 'POST',
-                processData: false, // Important: Don't process data
-                contentType: false, // Important: Don't set content type
+                processData: false,
+                contentType: false,
                 data: formData,
                 success: function (response) {
+                    showLoading(false);
+
                     if (response.success) {
                         Swal.fire({
                             title: 'Success',
                             icon: 'success',
                             text: 'Meeting Updated Successfully!',
-                            confirmButtonText: 'ok'
+                            confirmButtonText: 'OK'
                         }).then(() => {
                             window.location.reload();
-                        })
+                        });
                     } else {
                         Swal.fire({
                             title: 'Error',
                             icon: 'error',
-                            text: 'Failed to added meeting',
-                            confirmButtonText: 'ok'
-                        })
+                            text: 'Failed to update the meeting.',
+                            confirmButtonText: 'OK'
+                        });
                     }
                 },
                 error: function (xhr, status, error) {
-                    console.error("Error occurred:", {
+                    showLoading(false);
+
+                    console.error("AJAX Error:", {
                         status: status,
                         error: error,
-                        response: xhr
+                        response: xhr.responseText
                     });
+
                     Swal.fire({
                         title: 'Error',
                         icon: 'error',
-                        text: 'An error occurred while adding the meeting. Please try again.',
-                        confirmButtonText: 'ok'
-                    })
+                        text: 'An error occurred while updating the meeting. Please try again.',
+                        confirmButtonText: 'OK'
+                    });
                 }
             });
         });
-
 
 
     });
