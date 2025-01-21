@@ -109,7 +109,8 @@
                                 <th>Project Name</th>
                                 <th>Start Date</th>
                                 <th>Completion Date</th>
-                                <th>Completion in %</th>
+                                <th>Physical in %</th>
+                                <th>Financial in %</th>
                                 <th>Project Status</th>
                                 <th>Action</th>
                             </tr>
@@ -127,6 +128,10 @@
                                     <td>
                                         <div class="progress-bar">
                                             <div class="progress" style="width:@item.physicalcomplete%; color:black;">@item.physicalcomplete%</div>
+                                        </div>
+                                    </td> <td>
+                                        <div class="progress-bar">
+                                            <div class="progress" style="width:@item.Percentage%; color:black;">@item.Percentage%</div>
                                         </div>
                                     </td>
                                     <td>

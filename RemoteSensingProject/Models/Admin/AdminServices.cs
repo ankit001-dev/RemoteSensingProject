@@ -531,6 +531,7 @@ namespace RemoteSensingProject.Models.Admin
                             CompletionDate = Convert.ToDateTime(rd["completionDate"]),
                             StartDate = Convert.ToDateTime(rd["startDate"]),
                             ProjectManager = rd["name"].ToString(),
+                            Percentage = rd["financialStatusPercentage"]!=DBNull.Value?rd["financialStatusPercentage"].ToString():"",
                             ProjectBudget = Convert.ToDecimal(rd["budget"]),
                             ProjectDescription = rd["description"].ToString(),
                             projectDocumentUrl = rd["ProjectDocument"].ToString(),

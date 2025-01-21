@@ -66,9 +66,11 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string CompletionDatestring { get; set; }
         public string AssignDateString { get; set; }
         public string StartDateString { get; set; }
+        public float Percentage { get; set; }
+
     }
-    
-        public class ApprovedProject
+
+    public class ApprovedProject
     {
         public int Id { get; set; } // Unique identifier
         public DateTime AssignDate { get; set; }
@@ -130,6 +132,8 @@ namespace RemoteSensingProject.Models.ProjectManager
         public int Id { get; set; }
         public int projectId { get; set; }
         public int projectHeadId { get; set; }
+        public int AppStatus { get; set; }
+        public float AppAmount { get; set; }
         public string title { get; set; }
         public string description { get; set; }
         public DateTime date { get; set; }
