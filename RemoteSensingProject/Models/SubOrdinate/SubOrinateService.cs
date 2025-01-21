@@ -119,15 +119,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
             }
 
         }
-        //public List<ProjectList> getAllSubOrdinateProblem()
-        //{
-        //    List<ProjectList> problemList = new List<ProjectList>();
-        //    ProjectList obj = null;
-        //    SqlCommand cmd = new SqlCommand();
-
-        //    return 
-        //}
-     
+ 
         #endregion Problem End 
     }
 }

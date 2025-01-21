@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 
 using static RemoteSensingProject.Models.Admin.main;
+using static RemoteSensingProject.Models.SubOrdinate.main;
 
 namespace RemoteSensingProject.Models.ProjectManager
 {
@@ -314,7 +315,47 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
+
+        public List<Raise_Problem> getAllSubOrdinateProblem(string projectManager)
+        {
+            try
+            {
+                List<Raise_Problem> problemList = new List<Raise_Problem>();
+                Raise_Problem obj = null;
+                SqlCommand cmd = new SqlCommand("sp_ManageSubordinateProjectProblem", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getAllProblemListByManager");
+                cmd.Parameters.AddWithValue("@projectManager", projectManager);
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    while (sdr.Read())
+                    {
+                        obj = new Raise_Problem();
+                        obj.ProjectName = sdr["ProjectName"].ToString();
+                        obj.Title = sdr["Title"].ToString();
+                        obj.Description = sdr["Description"].ToString();
+                        obj.Attchment_Url = sdr["Attachment"].ToString();
+                        obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                        problemList.Add(obj);
+                    }
+                }
+                return problemList;
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
        
+        }
         #endregion
 
         #region update weekly update
