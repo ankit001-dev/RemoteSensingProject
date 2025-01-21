@@ -261,6 +261,7 @@
   <ItemGroup>
     <Compile Include="ApiServices\AdminController.cs" />
     <Compile Include="ApiServices\ProjectManagerController.cs" />
+    <Compile Include="ApiServices\SubOrdinateController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

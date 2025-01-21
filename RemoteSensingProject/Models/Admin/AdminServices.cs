@@ -915,7 +915,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@meetingLink", obj.MeetingType.ToLower() == "offline" ? obj.MeetingAddress : obj.MeetingLink);
                 cmd.Parameters.AddWithValue("@MeetingTitle", obj.MeetingTitle);
                 cmd.Parameters.AddWithValue("@createrId", obj.CreaterId);
-                cmd.Parameters.AddWithValue("@createdBy", obj.CreaterId!=null?"projectManager":"admin");
+                cmd.Parameters.AddWithValue("@createdBy", obj.CreaterId!=null && obj.CreaterId > 0?"projectManager":"admin");
                 cmd.Parameters.AddWithValue("@meetingTime", obj.MeetingTime);
                 cmd.Parameters.AddWithValue("@meetingDocument", obj.Attachment_Url);
                 cmd.Parameters.AddWithValue("@Id", obj.Id);
@@ -932,9 +932,7 @@ namespace RemoteSensingProject.Models.Admin
                     Direction = ParameterDirection.Output
                 };
                 cmd.Parameters.Add(outputParam);
-
                 int i = cmd.ExecuteNonQuery();
-
                 if (i > 0)
                 {
                     int meetingId = (int)outputParam.Value;

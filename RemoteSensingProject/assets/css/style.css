@@ -25169,8 +25169,7 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^=col-]:last-
   background-color: #029e9d;
 }
 
-.select2-container .select2-selection--single,
-.select2-container .select2-selection--multiple {
+.select2-container .select2-selection--single{
   height: 27px;
 }
 
@@ -25193,7 +25192,7 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^=col-]:last-
 }
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
   background-color: #029e9d;
-  color: #fff;
+  color: black;
   border-color: #029e9d;
   padding: 1px 8px;
   border-radius: 0.15rem;
