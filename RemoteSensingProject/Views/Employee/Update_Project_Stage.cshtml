@@ -37,35 +37,34 @@
                                         <td>@index</td>
                                         <td>@stages.KeyPoint</td>
                                         <td>
-                                            <img src="@stages.Document_Url" height="60" width="100" />
+                                            <a href="@stages.Document_Url" target="_blank">Document</a>
                                         </td>
                                         <td>@stages.CompletionDatestring</td>
                                         <td>
-                                            @if (stages.completionStatus == 1 && ( stages.CompletionDate < currentDate || stages.CompletionDate > currentDate))
+                                            @if (stages.Status.Equals("completed", StringComparison.OrdinalIgnoreCase))
                                             {
                                                 <span class="badge bg-success">Completed</span>
                                             }
-                                            else if (stages.completionStatus == 0 && stages.CompletionDate > currentDate)
+                                            else if (stages.Status.Equals("delay", StringComparison.OrdinalIgnoreCase) || stages.CompletionDate < currentDate)
                                             {
-                                                <span class="badge bg-danger">Delay </span>
+                                                <span class="badge bg-danger">Delay</span>
                                             }
-                                            else 
+                                            else
                                             {
                                                 <span class="badge bg-info">Pending</span>
                                             }
+                                            
                                         </td>
                                         <td>
-                                            @if (stages.completionStatus == 1 && (stages.CompletionDate < currentDate || stages.CompletionDate > currentDate))
+                                            @if (stages.Status.Equals("completed", StringComparison.OrdinalIgnoreCase))
                                             {
-                                                <a href="#" id="viewCompleteDetails" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#viewStatusModal">
-                                                    <i class="link-icon" data-feather="eye"></i>
-                                                </a>
+                                                <a href="#" class="viewDetail" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
 
                                             }
-                                            else if (stages.completionStatus == 0 && stages.CompletionDate > currentDate)
+                                            else if (stages.Status.Equals("delay", StringComparison.OrdinalIgnoreCase) || stages.CompletionDate < currentDate)
                                             {
                                                 <a href="#" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
-                                                <a href="#" id="viewDetail" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
+                                                <a href="#" class="viewDetail" data-id="@stages.Id" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
                                             }
                                             else 
                                             {
@@ -76,43 +75,6 @@
                                     index++;
                                 }
                             }
-
-                            @*<tr>
-                                    <td class="text-start">Stage 2</td>
-                                    <td>Project Planing</td>
-                                    <td>
-                                        <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                    </td>
-                                    <td>30/10/2024</td>
-                                    <td><span class="badge bg-danger">Delay by 10 Days</span></td>
-                                    <td>
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
-
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#viewDelayStatusModal"><i class="link-icon" data-feather="eye"></i></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-start">Stage 3</td>
-                                    <td>Project Execution</td>
-                                    <td>
-                                        <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                    </td>
-                                    <td>30/11/2024</td>
-                                    <td><span class="badge bg-info">Pending</span></td>
-                                    <td><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></td>
-                                </tr>
-                                <tr>
-                                    <td class="text-start">Stage 4</td>
-                                    <td>Project Monitoring and controlling</td>
-                                    <td>
-                                        <a href="#"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-                                    </td>
-                                    <td>30/12/2024</td>
-                                    <td><span class="badge bg-info">Pending</span></td>
-                                    <td>
-                                        <a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a>
-                                    </td>
-                                </tr>*@
 
                         </tbody>
                     </table>
@@ -138,36 +100,26 @@
                         <select class="form-select" id="status" name="Status">
                             <option value="">Select Status</option>
                             <option value="completed">Completed</option>
-                            <option value="delayed">Delayed</option>
+                            <option value="delaye">Delayed</option>
                         </select>
                     </div>
 
                     <div id="completedFields" class="d-none">
                         <div class="mb-3">
                             <label for="comment" class="form-label">Comment</label>
-                            <textarea class="form-control form-control-sm" name="Comment" id="Comment" rows="10" placeholder="Project Description"></textarea>
+                            <textarea class="form-control form-control-sm" name="Comment" id="Comment" rows="10" placeholder="Write Message "></textarea>
                         </div>
-                        <div class="mb-3">
-                            <label for="completion" class="form-label">Completion in %</label>
-                            <input type="number" class="form-control" id="completion" name="CompletionPrecentage" placeholder="Enter Completion Percentage" min="0" max="100">
+                        <div id="delayFeilds">
+                            <div class="mb-3">
+                                <label for="completion" class="form-label">Completion in %</label>
+                                <input type="number" class="form-control" id="completion" name="CompletionPrecentage" placeholder="Enter Completion Percentage" min="0" max="100">
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="upload" class="form-label">Upload Document</label>
                             <input class="form-control" type="file" id="upload" name="StageDocument">
                         </div>
                     </div>
-
-                    <div id="delayedFields" class="d-none">
-                        <div class="mb-3">
-                            <label for="delayReason" class="form-label">Reason for Delay</label>
-                            <textarea class="form-control form-control-sm" name="DelayReason" id="delayReason" rows="4" placeholder="Enter Reason for Delay"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="upload" class="form-label">Upload Document</label>
-                            <input class="form-control" type="file" id="delayedUpload" name="DelayedStageDocument">
-                        </div>
-                    </div>
-
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Status</button>
                     </div>
@@ -177,36 +129,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="viewStatusModal" tabindex="-1" aria-labelledby="viewStatusModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header text-center text-white">
-                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                <h5 class="modal-title float-start" id="viewStatusModalLabel">View Detail</h5>
-            </div>
-            <div class="modal-body">
-                <div id="viewCompleteStatus">
-                    @*<h6>Comment:</h6>
-                        <p>This project aims to develop an innovative mobile app that enhances daily productivity by integrating task management, calendar scheduling, and reminder functionalities.</p>
-                        <hr />
-                        <h6>Completion Percentage:</h6>
-                        <p>10%</p>
-                        <hr />
-
-                        <h6>Document:</h6>
-                        <p>
-                            <a href="#" aria-label="Download PDF">
-                                <i class="fa-regular fa-file-pdf"></i> Download Document
-                            </a>
-                        </p>*@
-                </div>
-            </div>            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="modal fade" id="viewDelayStatusModal" tabindex="-1" aria-labelledby="viewStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -220,7 +142,8 @@
                 <div id="viewCompletedFields">
 
                 </div>
-            </div>            <div class="modal-footer">
+            </div>
+            <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -230,17 +153,16 @@
 <script>
     document.getElementById('status').addEventListener('change', function () {
         const completedFields = document.getElementById('completedFields');
-        const delayedFields = document.getElementById('delayedFields');
+        const delayedFields = document.getElementById('delayFeilds');
 
         if (this.value === 'completed') {
             completedFields.classList.remove('d-none');
-            delayedFields.classList.add('d-none');
-        } else if (this.value === 'delayed') {
             delayedFields.classList.remove('d-none');
-            completedFields.classList.add('d-none');
+        } else if (this.value === 'delayed') {
+            delayedFields.classList.add('d-none');
+            completedFields.classList.remove('d-none');
         } else {
             completedFields.classList.add('d-none');
-            delayedFields.classList.add('d-none');
         }
     });
 
@@ -269,21 +191,14 @@
         var formData = new FormData(this);
         const stageId = $('#stageId').val();
         formData.append("Stage_Id", stageId);
-
         var projectId = $("#dataTableExample tbody tr:first").data("project-id");
         if (projectId) {
             formData.append("Project_Id", projectId);
         }
 
-        debugger
-
         if ($("#upload").get(0).files.length > 0) {
             formData.append("StageDocument", $("#upload").get(0).files[0]);
         }
-        if ($("#delayedUpload").get(0).files.length > 0) {
-            formData.append("DelayedStageDocument", $("#delayedUpload").get(0).files[0]);
-        }
-        debugger
 
         $.ajax({
             url: "/Employee/AddStageStatus",
@@ -373,13 +288,13 @@
 <script>
 
     $(document).ready(function () {
-        $(document).on('click', '#viewDetail', function (e) {
+        $(document).on('click', '.viewDetail', function (e) {
             e.preventDefault();
 
             var dataId = $(this).data('id');
             debugger
             $.ajax({
-                url: '/Employee/ViewDelayReason',
+                url: '/Employee/viewStagesReason',
                 type: 'GET',
                 data: { stageId: dataId },
                 success: function (res) {
@@ -389,11 +304,15 @@
                     $.each(res.stageList, function (index, item) {
                         completedFields.append(`
                         <div class="delay-reason-item">
-                            <h6>Update Date:</h6>
+                            <h6>Status:</h6>
+                            <p>${item.Status}</p> 
+                             <hr />
+                             <h6>Update Date:</h6>
                             <p>${item.CreatedDate}</p> 
                              <hr />
+
                             <h6>Reason:</h6>
-                            <p>${item.DelayReason}</p>
+                            <p>${item.Comment}</p>
                             <hr />
                             <h6>Document:</h6>
                             <p>

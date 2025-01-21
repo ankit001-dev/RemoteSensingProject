@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Numerics;
 using System.Web;
 
 namespace RemoteSensingProject.Models.ProjectManager
@@ -35,6 +36,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     {
         public int Id { get; set; } // Unique identifier for the project
         public DateTime AssignDate { get; set; }
+        public DateTime CurrentDate => DateTime.Now;
         public string ProjectName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime CompletionDate { get; set; }
@@ -117,4 +119,13 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string attatchment_url { get; set; }
     }
 
+    public class OuterSource
+    {
+        public int Id { get; set; }
+        public int EmpId { get; set; }
+        public string EmpName { get; set; }
+        public long mobileNo { get; set; } 
+        public string gender { get; set; }
+        public string email { get; set; }
+    }
 }

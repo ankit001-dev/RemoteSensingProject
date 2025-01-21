@@ -1,0 +1,161 @@
+﻿
+@{
+    ViewBag.Title = "OutSource";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+}
+
+<style>
+    .modal-body .sliderimages img {
+        width: 20% !important;
+        height: 20%;
+        border-radius: 10px;
+    }
+
+    svg {
+        height: 20px;
+    }
+
+    .link-icon {
+        height: 16px;
+    }
+</style>
+
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">/Out Source</li>
+    </ol>
+    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add OutSource</button>
+</nav>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <div class="row align-items-center">
+        <div class="col-lg-3">
+            <h5>Employee Lists</h5>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <input type="text" placeholder="Search by employee name" id="searchByEmployeeName" class="form-control">
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <select class="form-select form-select-lg" id="filterDivision">
+                <option selected value=null>--Select Dicision--</option>
+                @if (ViewBag.division != null)
+                {
+                    if (ViewBag.division.Count > 0)
+                    {
+                        foreach (var item in ViewBag.division)
+                        {
+
+                            <option value="@item.id" @(int.TryParse(Request.QueryString["Division"], out int divisionId) && divisionId == item.id ? "selected" : "")>
+                                @item.name
+                        </option>
+                    }
+                }
+            }
+            </select>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr</th>
+                                <th>Name</th>
+                                <th>Contact No.</th>
+                                <th>Email</th>
+                                <th>Gender</th>
+                                <th>Date</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewData["EmployeeList"] != null)
+                            {
+                                var count = 1;
+                                foreach (var item in ViewData["EmployeeList"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                {
+                                    <tr>
+                                        <td class="text-start">@count</td>
+                                        <td>@item.EmployeeName</td>
+                                        <td>@item.MobileNo</td>
+                                        <td>@item.Email</td>
+                                        <td>@item.Gender</td>
+                                        <td>@item.CreationDate</td>
+                                        <td class="text-center">
+                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                                <li class="me-2">
+                                                    <a data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
+
+                                                </li>
+                                                <li class="me-2"><a class="editEmployee" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
+                                                <li><a class="deleteEmployee" data-id="@item.Id"><i class="link-icon " data-feather="delete"></i></a></li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    count++;
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-sm modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel"><span class="actionType">Add</span> OutSource</h5>
+
+            </div>
+            <div class="modal-body">
+                <form class="addEmployeeform">
+                    <input type="hidden" id="employeeInpId" name="Id" />
+                        <div class="form-group">
+                            <label for="employeeName" class="form-label"> Employee Name</label>
+                            <input type="text" class="form-control" name="EmployeeName" required id="employeeName" autocomplete="off" placeholder="Enter Employee Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="employeemobno" class="form-label">Mobile</label>
+                            <input type="number" class="form-control" name="MobileNo" required id="employeemobno" placeholder="Enter Mobile">
+                        </div>
+                        <div class="form-group">
+                            <label for="employeeEmail" class="form-label">Email</label>
+                            <input type="text" class="form-control" name="Email" required id="employeeEmail" placeholder="Enter Email">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender" class="form-label">Gender</label>
+                            <div id="gender">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="male" value="male">
+                                    <label class="form-check-label" for="male">Male</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="female" value="female">
+                                    <label class="form-check-label" for="female">Female</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="other" value="other">
+                                    <label class="form-check-label" for="other">Other</label>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

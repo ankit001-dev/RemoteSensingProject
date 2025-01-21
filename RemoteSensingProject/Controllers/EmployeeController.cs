@@ -39,6 +39,13 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
+
+        #region OutSource
+        public ActionResult OutSource()
+        {
+            return View();
+        }
+        #endregion
         public ActionResult Add_Project()
         {
             var data = _adminServices.SelectEmployeeRecord();
@@ -201,21 +208,12 @@ namespace RemoteSensingProject.Controllers
             }
             return Json(new { message = message, status = status }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult ViewDelayReason(string stageId)
+        public ActionResult viewStagesReason(string stageId)
         {
-
             List<Project_Statge> stageList = new List<Project_Statge>();
-            stageList = _managerServices.getStageDelayReason(stageId);
+            stageList = _managerServices.ViewStagesComments(stageId);
             return Json(new { stageList = stageList }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult ViewStageCompleteStatus(string stageId)
-        {
-
-            Project_Statge data = new Project_Statge();
-            data = _managerServices.getCompleteStatus(stageId);
-            return Json(new { data = data }, JsonRequestBehavior.AllowGet);
-        }
-
         #region Project expenses
         public ActionResult Add_Expenses(int Id)
         {

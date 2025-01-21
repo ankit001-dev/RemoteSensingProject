@@ -911,6 +911,7 @@
     <Content Include="ProjectContent\Admin\Meeting_Attachment\1086f5bd-cf9d-48d0-8710-e80d9a45824f.png" />
     <Content Include="ProjectContent\Admin\Meeting_Attachment\246e7cfd-95e4-4aa1-a402-3f6825560b23.png" />
     <Content Include="ProjectContent\Admin\Meeting_Attachment\ed2cd55c-a52d-40c9-a405-becaffd7949f.png" />
+    <Content Include="ProjectContent\ProjectManager\Meeting_Attachment\b20d9b34-1533-4177-be6f-9700fbda98da.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -994,6 +995,7 @@
     <Content Include="Views\SubOrdinate\Assigned_Project.cshtml" />
     <Content Include="Views\Shared\_subOrdinateLayout.cshtml" />
     <Content Include="Views\SubOrdinate\Meeting_List.cshtml" />
+    <Content Include="Views\Employee\OutSource.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
