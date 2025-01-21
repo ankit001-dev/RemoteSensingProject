@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "View_Project_Stage";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    int i = 1;
 }
 
 
@@ -72,20 +73,35 @@
                         </thead>
                         <tbody>
                             @foreach(var item in ViewBag.ProjectStages as List<RemoteSensingProject.Models.Admin.main.Project_Statge>)
-            {
-<tr>
-    <td class="text-start">Stage 1</td>
-    <td>@item.KeyPoint</td>
-    <td>
-        <a href="@item.Document_Url"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-    </td>
-    <td>30/09/2024</td>
-    <td><span class="badge bg-success">Completed</span></td>
-    <td>
-        <a href="#" data-bs-toggle="modal" data-bs-target="#viewStatusModal"><i class="link-icon" data-feather="eye"></i></a>
-    </td>
-</tr>
-            }
+                             {
+                            <tr>
+                                <td class="text-start">Stage @i</td>
+                                <td>@item.KeyPoint</td>
+                                <td>
+                                    <a href="@item.Document_Url"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+                                </td>
+                                <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
+                                <td>
+                                    @if (item.Status.Equals("completed", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        <span class="badge bg-success">Completed</span>
+                                    }
+                                    else if (item.Status.Equals("delay", StringComparison.OrdinalIgnoreCase) || item.CompletionDate < DateTime.Now)
+                                    {
+                                        <span class="badge bg-secondary">Delay</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Not Started</span>
+                                    }
+
+                                </td>
+                                <td>
+                                    <a href="#" class="ViewStagesStatus" data-id="@item.Id"><i class="link-icon" data-feather="eye"></i></a>
+                                </td>
+                            </tr>
+                                i++;
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -105,51 +121,10 @@
             </div>
             <div class="modal-body">
                 <div id="viewCompletedFields">
-                    <h6>Comment:</h6>
-                    <p>This project aims to develop an innovative mobile app that enhances daily productivity by integrating task management, calendar scheduling, and reminder functionalities.</p>
-                    <hr />
-                    <h6>Completion Percentage:</h6>
-                    <p>10%</p>
-                    <hr />
-
-                    <h6>Document:</h6>
-                    <p>
-                        <a href="#" aria-label="Download PDF">
-                            <i class="fa-regular fa-file-pdf"></i> Download Document
-                        </a>
-                    </p>
-                </div>
-            </div>            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="viewDelayStatusModal" tabindex="-1" aria-labelledby="viewStatusModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header text-center text-white">
-                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
-
-                <h5 class="modal-title float-start" id="viewStatusModalLabel">View Detail</h5>
-            </div>
-            <div class="modal-body">
-                <div id="viewCompletedFields">
-                    <h6>Reason:</h6>
-                    <p>This project aims to develop an innovative mobile app that enhances daily productivity by integrating task management, calendar scheduling, and reminder functionalities.</p>
-                    <hr />
                    
-
-                    <h6>Document:</h6>
-                    <p>
-                        <a href="#" aria-label="Download PDF">
-                            <i class="fa-regular fa-file-pdf"></i> Download Document
-                        </a>
-                    </p>
                 </div>
-            </div>            <div class="modal-footer">
+            </div>            
+            <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -157,3 +132,53 @@
 </div>
 
 
+
+<script>
+
+    $(document).ready(function () {
+        $(document).on('click', '.ViewStagesStatus', function (e) {
+            e.preventDefault();
+            var dataId = $(this).data('id');
+            debugger
+            $.ajax({
+                url: '/Employee/viewStagesReason',
+                type: 'GET',
+                data: { stageId: dataId },
+                success: function (res) {
+                    var completedFields = $('#viewCompletedFields');
+                    completedFields.empty();
+                    $.each(res.stageList, function (index, item) {
+                        completedFields.append(`
+                        <div class="delay-reason-item">
+                            <h6>Status:</h6>
+                            <p>${item.Status}</p> 
+                             <hr />
+                             <h6>Update Date:</h6>
+                            <p>${item.CreatedDate}</p> 
+                             <hr />
+
+                            <h6>Reason:</h6>
+                            <p>${item.Comment}</p>
+                            <hr />
+                            <h6>Document:</h6>
+                            <p>
+                                <a href="${item.StageDocument_Url}" aria-label="Download PDF" target="_blank">
+                                    <i class="fa-regular fa-file-pdf"></i> Download Document
+                                </a>
+                            </p>
+                            <hr />
+                        </div>
+                    `);
+                    });
+                    $("#viewStatusModal").modal("show");
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                }
+            });
+        });
+
+
+    });
+
+</script>

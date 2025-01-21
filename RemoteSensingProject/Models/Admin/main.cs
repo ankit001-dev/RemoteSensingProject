@@ -70,7 +70,9 @@ namespace RemoteSensingProject.Models.Admin
         public class Project_model
         {        
             public int Id { get; set; }
+            public decimal physicalcomplete { get; set; }
             public string ProjectTitle { get; set; }
+            public DateTime CurrentDate => DateTime.Now;
             public DateTime AssignDate { get; set; }
             public DateTime StartDate { get; set; }
             public DateTime CompletionDate { get; set; }

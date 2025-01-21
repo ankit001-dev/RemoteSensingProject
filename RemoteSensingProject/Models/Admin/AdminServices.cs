@@ -535,6 +535,7 @@ namespace RemoteSensingProject.Models.Admin
                             ProjectDescription = rd["description"].ToString(),
                             projectDocumentUrl = rd["ProjectDocument"].ToString(),
                             ProjectType = rd["projectType"].ToString(),
+                            physicalcomplete = Convert.ToDecimal(rd["completionPercentage"]),
                             ProjectStage = Convert.ToBoolean(rd["stage"]),
                             CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
@@ -805,6 +806,7 @@ namespace RemoteSensingProject.Models.Admin
                             Project_Id = Convert.ToInt32(rd["project_id"]),
                             KeyPoint = rd["keyPoint"].ToString(),
                             CompletionDate = Convert.ToDateTime(rd["completeDate"]),
+                            Status = rd["StagesStatus"].ToString(),
                             Document_Url = rd["stageDocument"].ToString()
                         });
                     }

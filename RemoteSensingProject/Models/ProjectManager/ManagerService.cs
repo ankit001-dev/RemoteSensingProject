@@ -79,6 +79,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.Status = sdr["status"].ToString();
                     obj.CompleteionStatus = Convert.ToInt32(sdr["CompleteStatus"]);
                     obj.ApproveStatus = Convert.ToInt32(sdr["ApproveStatus"]);
+                    obj.stage = sdr["stage"].ToString();
                     _list.Add(obj);
                 }
                 sdr.Close();
@@ -521,7 +522,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             CompletionDate = Convert.ToDateTime(rd["completeDate"]),
                             CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
                             Document_Url = rd["stageDocument"].ToString(),
-                            Status = rd["status"].ToString(),
+                            Status = rd["StagesStatus"] != DBNull.Value ? rd["StagesStatus"].ToString() : "Pending",
                             completionStatus = Convert.ToInt32(rd["completionStatus"])
                         });
                     }
@@ -552,15 +553,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.Parameters.AddWithValue("@Comment", obj.Comment);
                     cmd.Parameters.AddWithValue("@CompletionPrecentage", obj.CompletionPrecentage);
                     cmd.Parameters.AddWithValue("@StageDocument", obj.StageDocument_Url ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@DelayReason", obj.DelayReason ?? (object)DBNull.Value);
-                    if (obj.DelayReason != null)
-                    {
-                        cmd.Parameters.AddWithValue("@updateStatus", "delay" ?? (object)DBNull.Value);
-                    }
-                    else
-                    {
-                        cmd.Parameters.AddWithValue("@updateStatus", "completed" ?? (object)DBNull.Value);
-                    }
+                    cmd.Parameters.AddWithValue("@updateStatus", obj.Status);
                     con.Open();
                     int i = cmd.ExecuteNonQuery();
 
@@ -598,7 +591,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Project_Statge> getStageDelayReason(string stageId)
+        public List<Project_Statge> ViewStagesComments(string stageId)
         {
             try
             {
@@ -616,7 +609,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         stage = new Project_Statge();
                         stage.StageDocument_Url = sdr["StageDocument"].ToString();
-                        stage.DelayReason = sdr["DelayReason"].ToString();
+                        stage.Comment = sdr["Comment"].ToString();
+                        stage.Status = sdr["updateStatus"].ToString();
                         stage.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
                         stageList.Add(stage);
                     }
@@ -636,36 +630,37 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
 
         }
-        public Project_Statge getCompleteStatus(string stageId)
+        #endregion Create OutSource
+        public bool insertOutSource(OuterSource os)
         {
             try
             {
-
-                Project_Statge stage = null;
-                SqlCommand cmd = new SqlCommand("sp_ManageStageStatus", con);
-                cmd.Parameters.AddWithValue("@action", "viewCompleteStatus");
-                cmd.Parameters.AddWithValue("@stageId", stageId);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
+                string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                Random rnd = new Random();
+                var userName = os.EmpName.Substring(0, 5) + "@" + os.mobileNo.ToString().PadLeft(4, '0').Substring(os.mobileNo.ToString().Length - 4);
+                string userpassword = "";
+                if (os.Id == 0)
                 {
-                    while (sdr.Read())
+                    for (int i = 0; i < 8; i++)
                     {
-                        stage = new Project_Statge();
-                        stage.Comment = sdr["Comment"].ToString();
-                        stage.CompletionPrecentage = sdr["CompletionPrecentage"].ToString();
-                        stage.StageDocument_Url = sdr["StageDocument"].ToString();
-                        stage.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
-
+                        userpassword += validChars[rnd.Next(validChars.Length)];
                     }
                 }
-
-                return stage;
-            }
-            catch (Exception ex)
+                cmd = new SqlCommand("sp_manageOutSource", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "createOutSource");
+                cmd.Parameters.AddWithValue("@EmpId", os.EmpId);
+                cmd.Parameters.AddWithValue("@outCode", userName);
+                cmd.Parameters.AddWithValue("@emp_name", os.EmpName);
+                cmd.Parameters.AddWithValue("@emp_mobile", os.mobileNo);
+                cmd.Parameters.AddWithValue("@emp_email", os.email);
+                cmd.Parameters.AddWithValue("@emp_gender", os.gender);
+                cmd.Parameters.AddWithValue("@password", userpassword);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }catch(Exception ex)
             {
-                throw new Exception("An error accured", ex);
+                throw ex;
             }
             finally
             {
@@ -673,10 +668,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     con.Close();
                 cmd.Dispose();
             }
-
         }
-        #endregion Update Stages
-
         #endregion
 
         #region meetings
