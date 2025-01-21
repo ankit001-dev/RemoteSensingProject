@@ -247,7 +247,7 @@ namespace RemoteSensingProject.ApiServices
                 var request = HttpContext.Current.Request;
                 var formData = new Project_Statge
                 {
-                    Project_Id = Convert.ToInt32(request.Form.Get("Project_Id")),
+                    Stage_Id = Convert.ToInt32(request.Form.Get("Stage_Id")),
                     Comment = request.Form.Get("Comment"),
                     CompletionPrecentage = request.Form.Get("CompletionPrecentage"),
                     StageDocument_Url = request.Form.Get("StageDocument_Url"),
@@ -422,6 +422,78 @@ namespace RemoteSensingProject.ApiServices
         }
 
 
+        [HttpGet]
+        [Route("api/getManagerCompleteProject")]
+        public IHttpActionResult GetCompleteProject(int userId)
+        {
+            try
+            {
+                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.ProjectStatus).ToList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/getmanagerdelayProject")]
+        public IHttpActionResult getmanagerDelay(int userId)
+        {
+            try
+            {
+                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.CompletionDate < DateTime.Now).ToList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getmanagerOngoingProject")]
+        public IHttpActionResult onGoingProject(int userId)
+        {
+            try
+            {
+                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.StartDate > DateTime.Now && d.CompletionDate < DateTime.Now).ToList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
         #endregion
 
         #region Notice
@@ -486,6 +558,42 @@ namespace RemoteSensingProject.ApiServices
                     message = "Data Not found!"
                 });
             }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+
+        #region outsource
+        [HttpPost]
+        [Route("api/CreateOutSource")]
+        public IHttpActionResult CreateSource()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formData = new OuterSource
+                {
+                    EmpName = request.Form.Get("EmpName"),
+                    mobileNo = Convert.ToInt64(request.Form.Get("mobileNo")),
+                    gender = request.Form.Get("gender"),
+                    email = request.Form.Get("email")
+                };
+                bool res = _managerService.insertOutSource(formData);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res ? "Outsource created successfully !" : "Some issue occured"
+                });
+            }
+            catch(Exception ex)
             {
                 return BadRequest(new
                 {

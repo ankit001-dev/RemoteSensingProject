@@ -67,7 +67,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@projectManager", userId);
                 con.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
-                
                 while (sdr.Read())
                 {
                     obj = new ProjectList();
@@ -81,7 +80,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.Status = sdr["status"].ToString();
                     obj.CompleteionStatus = Convert.ToInt32(sdr["CompleteStatus"]);
                     obj.ApproveStatus = Convert.ToInt32(sdr["ApproveStatus"]);
-                    obj.stage = sdr["stage"].ToString();
+                    obj.budget = (float)Convert.ToDecimal(sdr["budget"]);
+                    obj.stage = Convert.ToBoolean(sdr["stage"].ToString());
                     _list.Add(obj);
                 }
                 sdr.Close();

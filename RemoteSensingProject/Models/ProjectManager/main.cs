@@ -58,7 +58,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string Description { set; get; }
         public string ProjectDocument { get; set; }
         public string projectType { get; set; }
-        public string stage { get; set; }
+        public bool stage { get; set; }
         public string CreatedAt { get; set; }
         public string Upadtedat { get; set; }
         public string CreatedBy { get; set;}
