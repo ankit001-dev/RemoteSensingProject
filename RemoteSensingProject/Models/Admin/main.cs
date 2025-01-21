@@ -81,6 +81,7 @@ namespace RemoteSensingProject.Models.Admin
             public string AssignDateString { get; set; }
             public string StartDateString { get; set; }
             public int[] SubOrdinate { get; set; }
+            public int ProjectId { get; set; }
             public HttpPostedFileBase projectDocument { get; set; }
             public string projectDocumentUrl { get; set; }
             public decimal ProjectBudget { get; set; }
@@ -92,6 +93,7 @@ namespace RemoteSensingProject.Models.Admin
             public string ContactPerson { get; set; }
             public string Address { get; set; }
             public string createdBy { get; set; }
+            public string Percentage { get; set; }
            
         }
 
@@ -107,6 +109,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             public int Id { get; set; }
             public int Project_Id { get; set; }
+            public int HeadId { get; set; }
             public string ProjectHeads { get; set; }
             public decimal ProjectAmount { get; set; }
             public string HeadsDescription { get; set; }
