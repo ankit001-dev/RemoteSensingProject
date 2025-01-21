@@ -995,12 +995,7 @@
     <Content Include="Views\SubOrdinate\Assigned_Project.cshtml" />
     <Content Include="Views\Shared\_subOrdinateLayout.cshtml" />
     <Content Include="Views\SubOrdinate\Meeting_List.cshtml" />
-<<<<<<< HEAD
-    <Content Include="Views\Accounts\Meeting_List.cshtml" />
-    <Content Include="Views\Employee\SubOrdinateProblemList.cshtml" />
-=======
     <Content Include="Views\Employee\OutSource.cshtml" />
->>>>>>> 76c0cd8ca851ab0e16274395a669f2431e3768e4
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1009,7 +1004,6 @@
     <Folder Include="ProjectContent\Admin\ProjectDocs\" />
     <Folder Include="ProjectContent\ProjectManager\HeadsSlip\" />
     <Folder Include="ProjectContent\ProjectManager\ProjectDocs\" />
-    <Folder Include="ProjectContent\SubOrdinate\ProblemDocs\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
