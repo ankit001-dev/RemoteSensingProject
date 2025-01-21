@@ -107,6 +107,7 @@ namespace RemoteSensingProject.Models.Admin
             public string ProjectHeads { get; set; }
             public decimal ProjectAmount { get; set; }
             public string HeadsDescription { get; set; }
+            public string CompletionDatestring { get; set; }
 
         }
         public class Project_Subordination

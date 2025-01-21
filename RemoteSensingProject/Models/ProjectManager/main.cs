@@ -16,6 +16,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string TotalNotice { get; set; }
 
     }
+
     public class AssignedProject
     {
         public int Id { get; set; } // Unique identifier for the project

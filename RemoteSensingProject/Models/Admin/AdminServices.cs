@@ -628,6 +628,8 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
+    
+
         #endregion
 
         #region Api Create Project
@@ -804,6 +806,7 @@ namespace RemoteSensingProject.Models.Admin
                             Project_Id = Convert.ToInt32(rd["project_id"]),
                             KeyPoint = rd["keyPoint"].ToString(),
                             CompletionDate = Convert.ToDateTime(rd["completeDate"]),
+                            CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
                             Document_Url = rd["stageDocument"].ToString()
                         });
                     }

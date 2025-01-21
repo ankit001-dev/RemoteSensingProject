@@ -71,10 +71,7 @@ namespace RemoteSensingProject.Controllers
            
             return Json(new { status=status},JsonRequestBehavior.AllowGet);
         }
-        public ActionResult SubOrdinateProblemList()
-        {
-            return View();
-        }
+       
         #endregion End Problem
         public ActionResult Meeting_List()
         {

@@ -405,6 +405,15 @@ namespace RemoteSensingProject.Controllers
             return Json(project, JsonRequestBehavior.AllowGet);
 
         }
+        public ActionResult SubOrdinateProblemList()
+        {
+            var managerName = User.Identity.Name;
+            UserCredential userObj = new UserCredential();
+            userObj = _managerServices.getManagerDetails(managerName);
+            ViewBag.ProjectProblemList = _managerServices.getAllSubOrdinateProblem(userObj.userId);
+
+            return View();
+        }
         public ActionResult All_Project_Report()
         {
             return View();
