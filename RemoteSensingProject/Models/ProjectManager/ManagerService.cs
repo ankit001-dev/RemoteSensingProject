@@ -34,6 +34,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.TotalDelayProject = sdr["TotalDelayproject"].ToString();
                     obj.TotalNotice = sdr["TotalNotice"].ToString();
                     obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
+                    obj.TotalMeeting = sdr["totalMeetings"].ToString();
                 }
 
                 sdr.Close();
@@ -275,6 +276,58 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
+
+        public List<Project_model> All_Project_List(string userId)
+        {
+            try
+            {
+                List<Project_model> list = new List<Project_model>();
+                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getAllManagerProject");
+                cmd.Parameters.AddWithValue("@projectManager", userId);
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new Project_model
+                        {
+                            Id = Convert.ToInt32(rd["id"]),
+                            ProjectTitle = rd["title"].ToString(),
+                            AssignDate = Convert.ToDateTime(rd["assignDate"]),
+                            CompletionDate = Convert.ToDateTime(rd["completionDate"]),
+                            StartDate = Convert.ToDateTime(rd["startDate"]),
+                            ProjectManager = rd["name"].ToString(),
+                            ProjectBudget = Convert.ToDecimal(rd["budget"]),
+                            ProjectDescription = rd["description"].ToString(),
+                            projectDocumentUrl = rd["ProjectDocument"].ToString(),
+                            ProjectType = rd["projectType"].ToString(),
+                            ProjectStage = Convert.ToBoolean(rd["stage"]),
+                            CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
+                            ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
+                            AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
+                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
+                            createdBy = rd["createdBy"].ToString()
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+
         #endregion /* End */ 
 
         #region Notice

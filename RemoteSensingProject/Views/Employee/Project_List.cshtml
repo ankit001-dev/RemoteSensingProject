@@ -1,13 +1,6 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Project_List";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
-}
-
-
-@{
-    ViewBag.Title = "Project_List";
-    Layout = "~/Views/Shared/_adminLayout.cshtml";
     int i = 1;
 }
 <style>
@@ -61,7 +54,7 @@
                             <td>@i</td>
                             <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
                             <td>@item.ProjectTitle</td>
-                            <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
+                            <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
                             <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
                             <td>
                                 @if (item.ProjectStatus)
@@ -89,7 +82,6 @@
                                 <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                     <li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>
                                     <li class="me-2"><a href="#"><i class="link-icon" data-feather="edit"></i></a></li>
-                                    <li><a href="#"><i class="link-icon" data-feather="delete"></i></a></li>
                                 </ul>
                             </td>
                         </tr>

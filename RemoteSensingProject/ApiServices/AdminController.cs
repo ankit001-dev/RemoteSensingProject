@@ -948,7 +948,8 @@ namespace RemoteSensingProject.ApiServices
                     MeetingTitle = request.Form.Get("MeetingTitle"),
                     MeetingAddress = request.Form.Get("MeetingAddress"),
                     MeetingTime = Convert.ToDateTime(request.Form.Get("MeetingTime")),
-                    Attachment_Url = request.Form.Get("Attachment_Url")
+                    Attachment_Url = request.Form.Get("Attachment_Url"),
+                    CreaterId = Convert.ToInt32(request.Form["CreaterId"] ?? "0")
                 };
                 var file = request.Files["Attachment"];
                 if (file != null && file.FileName != "")
@@ -1014,7 +1015,6 @@ namespace RemoteSensingProject.ApiServices
                 List<string> validationErrors = new List<string>();
                 if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingType")))
                     validationErrors.Add("Meeting Type is required.");
-
 
                 if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTitle")))
                     validationErrors.Add("Meeting title is required.");
@@ -1096,6 +1096,8 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
+
         [HttpGet]
         [Route("api/adminMeetingList")]
         public IHttpActionResult MeetingList()
