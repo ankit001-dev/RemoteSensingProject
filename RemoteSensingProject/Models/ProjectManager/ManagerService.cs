@@ -326,6 +326,107 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
+
+        public List<Project_model> GetNotStartedProject_List(string userId)
+        {
+            try
+            {
+                List<Project_model> list = new List<Project_model>();
+                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getNotStartedProjectByManager");
+                cmd.Parameters.AddWithValue("@projectManager", userId);
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new Project_model
+                        {
+                            Id = Convert.ToInt32(rd["id"]),
+                            ProjectTitle = rd["title"].ToString(),
+                            AssignDate = Convert.ToDateTime(rd["assignDate"]),
+                            CompletionDate = Convert.ToDateTime(rd["completionDate"]),
+                            StartDate = Convert.ToDateTime(rd["startDate"]),
+                            ProjectManager = rd["name"].ToString(),
+                            ProjectBudget = Convert.ToDecimal(rd["budget"]),
+                            ProjectDescription = rd["description"].ToString(),
+                            projectDocumentUrl = rd["ProjectDocument"].ToString(),
+                            ProjectType = rd["projectType"].ToString(),
+                            ProjectStage = Convert.ToBoolean(rd["stage"]),
+                            CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
+                            ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
+                            AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
+                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
+                            createdBy = rd["createdBy"].ToString()
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }  
+        public List<Project_model> GetCompleteProject_List(string userId)
+        {
+            try
+            {
+                List<Project_model> list = new List<Project_model>();
+                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getCompleteprojectByManager");
+                cmd.Parameters.AddWithValue("@projectManager", userId);
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new Project_model
+                        {
+                            Id = Convert.ToInt32(rd["id"]),
+                            ProjectTitle = rd["title"].ToString(),
+                            AssignDate = Convert.ToDateTime(rd["assignDate"]),
+                            CompletionDate = Convert.ToDateTime(rd["completionDate"]),
+                            StartDate = Convert.ToDateTime(rd["startDate"]),
+                            ProjectManager = rd["name"].ToString(),
+                            ProjectBudget = Convert.ToDecimal(rd["budget"]),
+                            ProjectDescription = rd["description"].ToString(),
+                            projectDocumentUrl = rd["ProjectDocument"].ToString(),
+                            ProjectType = rd["projectType"].ToString(),
+                            ProjectStage = Convert.ToBoolean(rd["stage"]),
+                            CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
+                            ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
+                            AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
+                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
+                            createdBy = rd["createdBy"].ToString()
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+
         #endregion /* End */ 
 
         #region Notice
@@ -530,6 +631,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                         list.Add(new ProjectExpenses
                         {
                             Id = Convert.ToInt32(rd["id"]),
+                            projectHeadId = Convert.ToInt32(rd["budgetHeadId"]),
+                            AppStatus = rd["AppStatus"] != DBNull.Value? Convert.ToInt32(rd["AppStatus"]):0,
+                            AppAmount = rd["AppAmount"]!=DBNull.Value? float.Parse(rd["AppAmount"].ToString()):0,
                             title = rd["title"].ToString(),
                             date = Convert.ToDateTime(rd["insertDate"]),
                             DateString = Convert.ToDateTime(rd["insertDate"]).ToString("dd-MM-yyyy"),
