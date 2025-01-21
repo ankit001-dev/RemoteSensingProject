@@ -58,6 +58,7 @@ namespace RemoteSensingProject.ApiServices
 
 
         #endregion
+
         #region Raise Problem
         [HttpPost]
         [Route("api/SubOrdinateRaiseProblem")]
@@ -123,7 +124,6 @@ namespace RemoteSensingProject.ApiServices
                     data = ex
                 });
             }
-         
       
          }
         #endregion 
