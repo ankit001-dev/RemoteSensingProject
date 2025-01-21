@@ -342,7 +342,6 @@ D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSens
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSe.934AC579.Up2Date
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.dll
 D:\Ankit Projects\RemoteSensingProject\RemoteSensingProject\obj\Debug\RemoteSensingProject.pdb
-C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Numerics.Vectors.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll.config
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\RemoteSensingProject.pdb
@@ -413,6 +412,7 @@ C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.ComponentModel.Annotations.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Diagnostics.DiagnosticSource.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Memory.dll
+C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Numerics.Vectors.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Runtime.CompilerServices.Unsafe.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Text.Encodings.Web.dll
 C:\Users\1\source\repos\Remote Sensing\RemoteSensingProject\RemoteSensingProject\bin\System.Threading.Tasks.Extensions.dll
