@@ -257,11 +257,18 @@ namespace RemoteSensingProject.ApiServices
                 var file = request.Files["StageDocument"];
                 if(file != null && file.FileName != "")
                 {
-                    formData.StageDocument_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(formData.StageDocument.FileName);
+                    formData.StageDocument_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     formData.StageDocument_Url = Path.Combine("/ProjectContent/ProjectManager/ProjectDocs/", formData.StageDocument_Url);
                 }
 
                 bool res = _managerService.InsertStageStatus(formData);
+                if (res)
+                {
+                    if (file != null && file.FileName != "")
+                    {
+                        file.SaveAs(HttpContext.Current.Server.MapPath(formData.StageDocument_Url));
+                    }
+                    }
                 return Ok(new
                 {
                     status = res,
@@ -566,6 +573,17 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
+
+        //[HttpPost]
+        //[Route("api/updateMemberStatus")]
+        //public IHttpActionResult updateManagerStatus()
+        //{
+        //    try
+        //    {
+        //        var request = HttpContext.Current.Request;
+        //    }
+        //}
         #endregion
 
 
@@ -579,6 +597,7 @@ namespace RemoteSensingProject.ApiServices
                 var request = HttpContext.Current.Request;
                 var formData = new OuterSource
                 {
+                    EmpId = Convert.ToInt32(request.Form.Get("EmpId")),
                     EmpName = request.Form.Get("EmpName"),
                     mobileNo = Convert.ToInt64(request.Form.Get("mobileNo")),
                     gender = request.Form.Get("gender"),
@@ -602,7 +621,34 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
+        [HttpGet]
+        [Route("api/GetOuterSourceList")]
+        public IHttpActionResult GetOuterSourceListById(int userId)
+        {
+            try
+            {
+                var data = _managerService.selectAllOutSOurceList(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Any() ? 200 : 500,
+                    message = data.Any() ? "Data found !" : "Some issue occured !",
+                    data = data
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
+
+
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);

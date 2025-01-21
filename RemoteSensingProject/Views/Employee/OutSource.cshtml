@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "OutSource";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["UserList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
 }
 
 <style>
@@ -50,33 +51,20 @@
                                 <th>Contact No.</th>
                                 <th>Email</th>
                                 <th>Gender</th>
-                                <th>Date</th>
-                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if (ViewData["EmployeeList"] != null)
+                            @if (data != null && data.Count > 0)
                             {
                                 var count = 1;
-                                foreach (var item in ViewData["EmployeeList"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                foreach (var item in data)
                                 {
                                     <tr>
                                         <td class="text-start">@count</td>
-                                        <td>@item.EmployeeName</td>
-                                        <td>@item.MobileNo</td>
-                                        <td>@item.Email</td>
-                                        <td>@item.Gender</td>
-                                        <td>@item.CreationDate</td>
-                                        <td class="text-center">
-                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                <li class="me-2">
-                                                    <a data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
-
-                                                </li>
-                                                <li class="me-2"><a class="editEmployee" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
-                                                <li><a class="deleteEmployee" data-id="@item.Id"><i class="link-icon " data-feather="delete"></i></a></li>
-                                            </ul>
-                                        </td>
+                                        <td>@item.EmpName</td>
+                                        <td>@item.mobileNo</td>
+                                        <td>@item.email</td>
+                                        <td>@item.gender</td>
                                     </tr>
                                     count++;
                                 }
@@ -102,7 +90,7 @@
 
             </div>
             <div class="modal-body">
-                <form class="addEmployeeform">
+                <form id="addEmployeeform">
                     <input type="hidden" id="employeeInpId" name="Id" />
                         <div class="form-group">
                             <label for="employeeName" class="form-label"> Employee Name</label>
@@ -167,7 +155,7 @@
         });
         let data = new FormData(this);
         $.ajax({
-            url: "/api/CreateOutSource",
+            url: "/employee/CreateOutSource",
             type: "Post",
             data: data,
             contentType: false,
@@ -193,7 +181,7 @@
             error: function () {
                 Swal.fire({
                     title: "Server issue",
-                    text: res.message,
+                    text: "Server is not respondig. Please try after sometime.",
                     icon: "error",
                     didClose: () => {
                         location.reload(true)

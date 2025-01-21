@@ -997,6 +997,7 @@
     <Content Include="Views\Shared\_subOrdinateLayout.cshtml" />
     <Content Include="Views\SubOrdinate\Meeting_List.cshtml" />
     <Content Include="Views\Employee\OutSource.cshtml" />
+    <Content Include="Views\Employee\All_Project_List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
