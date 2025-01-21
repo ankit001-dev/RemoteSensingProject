@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.Ajax.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 
 namespace RemoteSensingProject.Models.SubOrdinate
@@ -82,5 +84,42 @@ namespace RemoteSensingProject.Models.SubOrdinate
             }
             return _list;
         }
+
+        #region Rasie Problem
+        public bool InsertSubOrdinateProblem(Raise_Problem raise)
+        {
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageSubordinateProjectProblem", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertProblem");
+                cmd.Parameters.AddWithValue("@Project_Id", raise.Project_Id);
+                cmd.Parameters.AddWithValue("@Title", raise.Title);
+                cmd.Parameters.AddWithValue("@Description", raise.Description);
+                cmd.Parameters.AddWithValue("@Attachment", raise.Attchment_Url);
+                con.Open();
+                int i = cmd.ExecuteNonQuery();
+                if (i > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }catch(Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+
+        }
+ 
+        #endregion Problem End 
     }
 }
