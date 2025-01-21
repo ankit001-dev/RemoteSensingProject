@@ -459,6 +459,42 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
+        #region Manager Meeting
+        [HttpGet]
+        [Route("api/managerMeetingList")]
+        public IHttpActionResult managerMeeting(int managerId)
+        {
+            try
+            {
+                var data = _adminServices.getAllmeeting().Where(d => d.CreaterId == managerId).ToString();
+                if (data.Any())
+                {
+                    return Ok(new
+                    {
+                        status = true,
+                        StatusCode = 200,
+                        message = "Data found",
+                        data = data
+                    });
+                }
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = "Data Not found!"
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);
