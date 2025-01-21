@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Http.Results;
 using System.Web.Mvc;
 using System.Web.Services.Description;
 using static RemoteSensingProject.Models.Admin.main;
@@ -43,7 +44,22 @@ namespace RemoteSensingProject.Controllers
         #region OutSource
         public ActionResult OutSource()
         {
+            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj);
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateOutSource(OuterSource os)
+        {
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+            os.EmpId = Convert.ToInt32(userObj);
+            bool res = _managerServices.insertOutSource(os);
+            return Json(new
+            {
+                status = res,
+                message = res ? "Outsource created succesfully !" : "Some issue occured !"
+            });
         }
         #endregion
         public ActionResult Add_Project()
@@ -114,7 +130,12 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
      
-
+        public ActionResult All_Project_List()
+        {
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+            ViewData["ProjectList"] = _managerServices.All_Project_List(userObj);
+            return View();
+        }
 
         #region /* Assign Project */
         public ActionResult Assigned_Project()
@@ -420,7 +441,6 @@ namespace RemoteSensingProject.Controllers
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
             ViewBag.ProjectProblemList = _managerServices.getAllSubOrdinateProblem(userObj.userId);
-
             return View();
         }
         public ActionResult All_Project_Report()

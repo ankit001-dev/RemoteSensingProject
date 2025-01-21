@@ -762,6 +762,43 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
+
+        public List<OuterSource> selectAllOutSOurceList(int userId)
+        {
+            try
+            {
+                List<OuterSource> list = new List<OuterSource>();
+                cmd = new SqlCommand("sp_manageOutSource", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectAll");
+                cmd.Parameters.AddWithValue("@empId", userId);
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new OuterSource
+                        {
+                            EmpName = rd["emp_name"].ToString(),
+                            mobileNo= Convert.ToInt64(rd["emp_mobile"]),
+                            email = rd["emp_email"].ToString(),
+                            gender = rd["emp_gender"].ToString()
+                        });
+                    }
+                }
+                return list;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
         #endregion
 
         #region meetings
