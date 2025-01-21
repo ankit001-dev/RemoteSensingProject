@@ -481,6 +481,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             Id = Convert.ToInt32(rd["id"]),
                             title = rd["title"].ToString(),
                             date = Convert.ToDateTime(rd["insertDate"]),
+                            DateString = Convert.ToDateTime(rd["insertDate"]).ToString("dd-MM-yyyy"),
                             amount = Convert.ToDecimal(rd["amount"]),
                             attatchment_url = rd["attatchment"].ToString(),
                             description = rd["description"].ToString()

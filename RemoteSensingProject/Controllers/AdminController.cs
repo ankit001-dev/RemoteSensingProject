@@ -484,10 +484,16 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
+        public ActionResult getHeadsByProject(int id)
+        {
+            List<Project_model> _headList = new List<Project_model>();
+            _headList = _adminServices.getHeadByProject(id);
+            return Json(new { _headList = _headList },JsonRequestBehavior.AllowGet);
+        }
         public ActionResult GetExpenses(int pId, int hId)
         {
-            var res = _managerServices.ExpencesList(pId, hId);
-            return Json(res, JsonRequestBehavior.AllowGet);
+            var _list = _managerServices.ExpencesList(pId, hId);
+            return Json(new { _list = _list }, JsonRequestBehavior.AllowGet);
         }
     }
 }
