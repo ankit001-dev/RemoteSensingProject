@@ -17,6 +17,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string TotalNotice { get; set; }
 
     }
+
     public class AssignedProject
     {
         public int Id { get; set; } // Unique identifier for the project
@@ -136,6 +137,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public decimal amount { get; set; }
         public HttpPostedFileBase Attatchment_file { get; set; }
         public string attatchment_url { get; set; }
+        public string DateString { get; set; }
     }
 
     public class OuterSource
