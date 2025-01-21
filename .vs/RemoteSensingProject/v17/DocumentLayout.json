@@ -87,7 +87,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Models\\ProjectManager\\ManagerService.cs",
               "ViewState": "AgIAAAcDAAAAAAAAAAAAACUDAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-20T13:23:36.312Z"
+              "WhenOpened": "2025-01-20T13:23:36.312Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -99,7 +100,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Min_Of_Meeting.cshtml",
               "ViewState": "AgIAAJIDAAAAAAAAAAAkwKoDAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-20T12:18:21.105Z"
+              "WhenOpened": "2025-01-20T12:18:21.105Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -111,7 +113,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Controllers\\LoginController.cs",
               "ViewState": "AgIAACsAAAAAAAAAAAAwwD4AAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-20T05:46:32.559Z"
+              "WhenOpened": "2025-01-20T05:46:32.559Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -123,7 +126,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Dashboard.cshtml",
               "ViewState": "AgIAAFICAAAAAAAAAAAwwIMCAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-20T05:44:47.736Z"
+              "WhenOpened": "2025-01-20T05:44:47.736Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -135,7 +139,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-20T05:43:32.458Z"
+              "WhenOpened": "2025-01-20T05:43:32.458Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -147,7 +152,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Controllers\\AccountsController.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAAAAB0AAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-20T05:26:09.092Z"
+              "WhenOpened": "2025-01-20T05:26:09.092Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -159,7 +165,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Meeting_Conclusion.cshtml",
               "ViewState": "AgIAAOkBAAAAAAAAAAAqwOoBAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-18T13:39:01.443Z"
+              "WhenOpened": "2025-01-18T13:39:01.443Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -171,7 +178,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Expense_Report.cshtml",
               "ViewState": "AgIAACEAAAAAAAAAAAAAADMAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-18T12:43:41.099Z"
+              "WhenOpened": "2025-01-18T12:43:41.099Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -183,7 +191,8 @@
               "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Meeting_Report.cshtml",
               "ViewState": "AgIAAHQBAAAAAAAAAIAwwJIBAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-18T10:39:39.671Z"
+              "WhenOpened": "2025-01-18T10:39:39.671Z",
+              "EditorCaption": ""
             }
           ]
         }
