@@ -631,6 +631,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                         list.Add(new ProjectExpenses
                         {
                             Id = Convert.ToInt32(rd["id"]),
+                            projectHeadId = Convert.ToInt32(rd["budgetHeadId"]),
+                            AppStatus = rd["AppStatus"] != DBNull.Value? Convert.ToInt32(rd["AppStatus"]):0,
+                            AppAmount = rd["AppAmount"]!=DBNull.Value? float.Parse(rd["AppAmount"].ToString()):0,
                             title = rd["title"].ToString(),
                             date = Convert.ToDateTime(rd["insertDate"]),
                             DateString = Convert.ToDateTime(rd["insertDate"]).ToString("dd-MM-yyyy"),

@@ -9,7 +9,6 @@
     }
 </style>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
-    <form class="forms-sample">
         <div class="row align-items-center">
             <div class="col-lg-3">
                 <h5>Project Lists</h5>
@@ -27,7 +26,6 @@
                 </select>
             </div>
         </div>
-    </form>
 </div>
 <div class="card">
     <div class="card-body">
@@ -123,7 +121,7 @@
             }
         })
         $.ajax({
-            url: "/Admin/GetProjecDatatById",
+            url: "/Employee/GetProjecDatatById",
             type: "get",
             data: { Id: id },
             success: function (res) {
@@ -271,9 +269,6 @@
     })
 
     $(document).ready(function () {
-
-
-
         $("#searchProjectBy").on("input", function () {
             var table = $("#dataTableExample").DataTable();
             table.column(2).search(this.value).draw()
