@@ -100,7 +100,7 @@
                         <select class="form-select" id="status" name="Status">
                             <option value="">Select Status</option>
                             <option value="completed">Completed</option>
-                            <option value="delaye">Delayed</option>
+                            <option value="delay">Delayed</option>
                         </select>
                     </div>
 
@@ -158,7 +158,7 @@
         if (this.value === 'completed') {
             completedFields.classList.remove('d-none');
             delayedFields.classList.remove('d-none');
-        } else if (this.value === 'delayed') {
+        } else if (this.value === 'delay') {
             delayedFields.classList.add('d-none');
             completedFields.classList.remove('d-none');
         } else {

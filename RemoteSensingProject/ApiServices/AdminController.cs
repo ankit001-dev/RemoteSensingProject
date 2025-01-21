@@ -1233,6 +1233,31 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        
+        [HttpGet]
+        [Route("api/getMeetingConclusion")]
+        public IHttpActionResult GetMeetingCoclusion(int MeetId)
+        {
+            try
+            {
+                var data = _adminServices.getConclusion(MeetId);
+                return Ok(new
+                {
+                    status = true,
+                    StatusCode = 200,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
 
 
         [HttpPost]
@@ -1321,6 +1346,8 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
+
         #endregion
 
 
