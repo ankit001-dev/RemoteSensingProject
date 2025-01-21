@@ -4,6 +4,7 @@ using static RemoteSensingProject.Models.Admin.main;
 using System.Data.SqlClient;
 using System.Data;
 using RemoteSensingProject.Models.MailService;
+using System.Linq;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
@@ -534,6 +535,7 @@ namespace RemoteSensingProject.Models.Admin
                             ProjectDescription = rd["description"].ToString(),
                             projectDocumentUrl = rd["ProjectDocument"].ToString(),
                             ProjectType = rd["projectType"].ToString(),
+                            physicalcomplete = Convert.ToDecimal(rd["completionPercentage"]),
                             ProjectStage = Convert.ToBoolean(rd["stage"]),
                             CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
@@ -806,7 +808,7 @@ namespace RemoteSensingProject.Models.Admin
                             Project_Id = Convert.ToInt32(rd["project_id"]),
                             KeyPoint = rd["keyPoint"].ToString(),
                             CompletionDate = Convert.ToDateTime(rd["completeDate"]),
-                            CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
+                            Status = rd["StagesStatus"].ToString(),
                             Document_Url = rd["stageDocument"].ToString()
                         });
                     }
@@ -1114,6 +1116,7 @@ namespace RemoteSensingProject.Models.Admin
                     obj.MeetingType = sdr["meetingType"].ToString();
                     obj.MeetingLink = sdr["meetingLink"].ToString();
                     obj.MeetingTitle = sdr["MeetingTitle"].ToString();
+                    obj.memberId = sdr["memberId"]!=DBNull.Value?sdr["memberId"].ToString().Split(',').ToList():new List<string>();
                     obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]):0;
                     obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
                     _list.Add(obj);
@@ -1155,7 +1158,7 @@ namespace RemoteSensingProject.Models.Admin
                             obj.MeetingTitle = sdr["meetingTitle"].ToString();
                             obj.MeetingTime = Convert.ToDateTime(sdr["meetingTime"]);
                             obj.MeetingTimeString = Convert.ToDateTime(sdr["meetingTime"]).ToString("yyyy-MM-ddTHH:mm");
-                            obj.empId = sdr["empId"].ToString();
+                            obj.memberId = sdr["empId"]!=DBNull.Value? sdr["empId"].ToString().Split(',').ToList() :new List<string>();
 
                         }
                         if (sdr["meetingKey"] != null)
@@ -1175,35 +1178,35 @@ namespace RemoteSensingProject.Models.Admin
                 }
 
 
-                if (!string.IsNullOrEmpty(obj.empId))
-                {
-                    if (obj.empName == null && obj.memberId == null)
-                    {
-                        obj.empName = new List<string>();
-                        obj.memberId = new List<string>();
-                    }
-                    if (obj.empId != null) { 
-                    foreach (var emp in obj.empId.Split(','))
-                    {
-                        using (SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con))
-                        {
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddWithValue("@id", emp);
-                            cmd.Parameters.AddWithValue("@action", "getMeetingMemberById");
+                //if (!string.IsNullOrEmpty(obj.empId))
+                //{
+                //    if (obj.empName == null && obj.memberId == null)
+                //    {
+                //        obj.empName = new List<string>();
+                //        obj.memberId = new List<string>();
+                //    }
+                //    if (obj.empId != null) { 
+                //    foreach (var emp in obj.empId.Split(','))
+                //    {
+                //        using (SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con))
+                //        {
+                //            cmd.CommandType = CommandType.StoredProcedure;
+                //            cmd.Parameters.AddWithValue("@id", emp);
+                //            cmd.Parameters.AddWithValue("@action", "getMeetingMemberById");
 
-                            using (SqlDataReader sdr2 = cmd.ExecuteReader())
-                            {
-                                if (sdr2.Read())
-                                {
-                                    obj.MeetingMember = sdr2["name"].ToString();
-                                    obj.empName.Add(obj.MeetingMember);
-                                    obj.memberId.Add(emp);
-                                }
-                            }
-                        }
-                    }
-                    }
-                }
+                //            using (SqlDataReader sdr2 = cmd.ExecuteReader())
+                //            {
+                //                if (sdr2.Read())
+                //                {
+                //                    obj.MeetingMember = sdr2["name"].ToString();
+                //                    obj.empName.Add(obj.MeetingMember);
+                //                    obj.memberId.Add(emp);
+                //                }
+                //            }
+                //        }
+                //    }
+                //    }
+                //}
 
 
             }

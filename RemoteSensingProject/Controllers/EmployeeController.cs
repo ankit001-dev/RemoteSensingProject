@@ -39,6 +39,13 @@ namespace RemoteSensingProject.Controllers
 
             return View();
         }
+
+        #region OutSource
+        public ActionResult OutSource()
+        {
+            return View();
+        }
+        #endregion
         public ActionResult Add_Project()
         {
             var data = _adminServices.SelectEmployeeRecord();
@@ -201,21 +208,12 @@ namespace RemoteSensingProject.Controllers
             }
             return Json(new { message = message, status = status }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult ViewDelayReason(string stageId)
+        public ActionResult viewStagesReason(string stageId)
         {
-
             List<Project_Statge> stageList = new List<Project_Statge>();
-            stageList = _managerServices.getStageDelayReason(stageId);
+            stageList = _managerServices.ViewStagesComments(stageId);
             return Json(new { stageList = stageList }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult ViewStageCompleteStatus(string stageId)
-        {
-
-            Project_Statge data = new Project_Statge();
-            data = _managerServices.getCompleteStatus(stageId);
-            return Json(new { data = data }, JsonRequestBehavior.AllowGet);
-        }
-
         #region Project expenses
         public ActionResult Add_Expenses(int Id)
         {
@@ -272,7 +270,8 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult GetConclusions(int id)
         {
-            var res = _adminServices.getConclusion(id);
+            var userId = _managerServices.getManagerDetails(User.Identity.Name);
+            var res = _managerServices.getConclusionForMeeting(id, int.Parse(userId.userId));
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
@@ -362,9 +361,20 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Meetings()
         {
             var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            var res = _adminServices.getAllmeeting().Where(e => e.CreaterId == 0 && e.memberId.Contains(userId.userId)).ToList();
-            return View();
+            var res = _managerServices.getAllmeeting(int.Parse(userId.userId));
+            return View(res);
         }
+
+
+        public ActionResult GetMemberResponse(getMemberResponse mr)
+        {
+            var userId = _managerServices.getManagerDetails(User.Identity.Name);
+            mr.MemberId = int.Parse(userId.userId);
+            var res = _managerServices.GetResponseFromMember(mr);
+            return Json(res);
+        }
+
+       
 
         public ActionResult MyProfile()
         {

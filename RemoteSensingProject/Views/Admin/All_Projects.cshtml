@@ -100,7 +100,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table" id="dataTableExamples">
+                    <table class="table" id="AllProjectList">
                         <thead>
                             <tr>
                                 <th>S.No.</th>
@@ -126,11 +126,11 @@
                                     <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
                                     <td>
                                         <div class="progress-bar">
-                                            <div class="progress" style="width:0%; color:black;">0%</div>
+                                            <div class="progress" style="width:@item.physicalcomplete%; color:black;">@item.physicalcomplete%</div>
                                         </div>
                                     </td>
                                     <td>
-                                        @if (item.ProjectStatus)
+                                        @if (item.ProjectStatus || item.physicalcomplete == 100)
                                         {
                                             <span class="badge bg-success">Completed</span>
                                         }
@@ -359,25 +359,30 @@
 
 
         $("#searchProjectBy").on("input", function () {
-            var table = $("#dataTableExamples").DataTable();
+            var table = $("#AllProjectList").DataTable();
             table.column(3).search(this.value).draw()
         });
         $("#filterProjectStatus").on("change", function () {
-            var table = $("#dataTableExamples").DataTable();
+            var table = $("#AllProjectList").DataTable();
             table.column(7).search(this.value).draw()
         })
         $("#searchByProjectManager").on("change", function () {
-            var table = $("#dataTableExamples").DataTable();
+            var table = $("#AllProjectList").DataTable();
             table.column(2).search(this.value).draw()
         })
 
-        $('#dataTableExamples').DataTable({
+        $('#AllProjectList').DataTable({
+            deferRender: false,
             layout: {
                 topStart: {
                     buttons: ['excel', 'pdf']
                 }
+            },
+            drawCallback: function () {
+                feather.replace();
             }
         });
+        feather.replace();
     });
 </script>
 

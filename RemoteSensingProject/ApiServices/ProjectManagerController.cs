@@ -250,7 +250,9 @@ namespace RemoteSensingProject.ApiServices
                     Project_Id = Convert.ToInt32(request.Form.Get("Project_Id")),
                     Comment = request.Form.Get("Comment"),
                     CompletionPrecentage = request.Form.Get("CompletionPrecentage"),
-                    StageDocument_Url = request.Form.Get("StageDocument_Url")
+                    StageDocument_Url = request.Form.Get("StageDocument_Url"),
+                    Status = request.Form.Get("Status")
+
                 };
                 var file = request.Files["StageDocument"];
                 if(file != null && file.FileName != "")
@@ -268,6 +270,32 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
             catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/ViewStagesComments")]
+        public IHttpActionResult stagesList(int stageId)
+        {
+            try
+            {
+
+                var data = _managerService.ViewStagesComments(stageId.ToString());
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }catch(Exception ex)
             {
                 return BadRequest(new
                 {
