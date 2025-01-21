@@ -432,15 +432,24 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Pending_Project_Report()
         {
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+            ViewData["NotStartedProject"] = _managerServices.GetNotStartedProject_List(userObj);
             return View();
         }
 
         public ActionResult Complete_Project_Report()
         {
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+            ViewData["CompleteProjectList"] = _managerServices.GetCompleteProject_List(userObj);
             return View();
         }
 
-       
+        public ActionResult Expense_Report()
+        {
+            return View();
+        }
+
+
 
     }
 }

@@ -254,6 +254,7 @@ namespace RemoteSensingProject.ApiServices
                     Status = request.Form.Get("Status")
 
                 };
+
                 var file = request.Files["StageDocument"];
                 if(file != null && file.FileName != "")
                 {
