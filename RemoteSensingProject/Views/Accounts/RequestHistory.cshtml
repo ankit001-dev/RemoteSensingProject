@@ -1,15 +1,32 @@
 ﻿
 @{
-    ViewBag.Title = "Requests";
+    ViewBag.Title = "RequestHistory";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
+
 <style>
-    body{
-        padding:0 !important;
+    body {
+        padding: 0 !important;
     }
 </style>
-
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <div class="row align-items-center">
+        <div class="col-lg-3">
+            <h5>Project Lists</h5>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <select class="form-select form-select-lg" id="filterProjectStatus">
+                <option value="" selected>Project Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+            </select>
+        </div>
+    </div>
+</div>
 <div class="card">
     <div class="card-body">
         <div class="d-flex justify-content-between align-items-baseline mb-2">
@@ -23,35 +40,38 @@
                         <th class="pt-0">Assign Date</th>
                         <th class="pt-0">Project Name</th>
                         <th class="pt-0">Start Date</th>
+                        <th class="pt-0">Approve Status</th>
                         <th class="pt-0">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @{
-if (ViewBag.ProjectList != null) { 
-                                    int i = 1;
-                                    foreach (var item in ViewBag.ProjectList as List<RemoteSensingProject.Models.Accounts.main.Project_model>)
-                                    {
-                        <tr>
-                            <td>@i</td>
-                            <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
-                            <td>@item.ProjectTitle</td>
-                            <td>@Convert.ToDateTime(item.StartDateString).ToString("dd MMM yyyy")</td>
-                            <td class="text-center">
-                                <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                    <li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>
-                                    <li class="me-2">
-                                        <a href="/accounts/Expenses?Id=@item.Id" title="Add Expenses">
-                                            <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </td>
-                        </tr>
+                        if (ViewBag.ProjectList != null)
+                        {
+                            int i = 1;
+                            foreach (var item in ViewBag.ProjectList as List<RemoteSensingProject.Models.Accounts.main.Project_model>)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
+                                    <td>@item.ProjectTitle</td>
+                                    <td>@Convert.ToDateTime(item.StartDateString).ToString("dd MMM yyyy")</td>
+                                    <td><span class='text-light px-2 border-0 rounded-1 @(item.ApproveStatus?"bg-success":"bg-warning")'>@(item.ApproveStatus?"Completed":"Pending")</span></td>
+                                    <td class="text-center">
+                                        <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                            <li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>
+                                            <li class="me-2">
+                                                <a href="/accounts/Expenses?Id=@item.Id" title="Add Expenses">
+                                                    <i class="link-icon text-danger" data-feather="file-plus"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
                                 i++;
                             }
                         }
-                        }
+                    }
                 </tbody>
             </table>
         </div>
@@ -232,5 +252,16 @@ if (ViewBag.ProjectList != null) {
             }
         })
     })
+
+    $(document).ready(function () {
+        $("#searchProjectBy").on("input", function () {
+            var table = $("#dataTableExample").DataTable();
+            table.column(2).search(this.value).draw()
+        });
+        $("#filterProjectStatus").on("change", function () {
+            var table = $("#dataTableExample").DataTable();
+            table.column(4).search(this.value).draw();
+        })
+    });
 </script>
 

@@ -45,6 +45,7 @@
                                 <th>Start Date</th>
                                 <th>Completion Date</th>
                                 <th>Project Status</th>
+                                <th>Financial Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -74,6 +75,11 @@
                             {
                                 <span class="badge bg-secondary">Pending</span>
                             }
+                        </td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress" style="width:@item.Percentage%; color:black;">@item.Percentage%</div>
+                            </div>
                         </td>
                         <td class="text-center">
                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
