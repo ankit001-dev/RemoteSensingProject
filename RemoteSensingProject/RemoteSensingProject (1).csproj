@@ -275,8 +275,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Accounts\AccountService.cs" />
-    <Compile Include="Models\Accounts\main.cs" />
     <Compile Include="Models\Admin\AdminServices.cs" />
     <Compile Include="Models\Admin\main.cs" />
     <Compile Include="Models\DataFactory.cs" />
@@ -991,18 +989,14 @@
     <Content Include="Views\Shared\_AccountLayout.cshtml" />
     <Content Include="Views\Accounts\Dashboard.cshtml" />
     <Content Include="Views\Accounts\Requests.cshtml" />
+    <Content Include="Views\Accounts\ApprovedList.cshtml" />
+    <Content Include="Views\Accounts\RejectList.cshtml" />
     <Content Include="Views\Accounts\FundReport.cshtml" />
     <Content Include="Views\SubOrdinate\Dashboard.cshtml" />
     <Content Include="Views\SubOrdinate\Assigned_Project.cshtml" />
     <Content Include="Views\Shared\_subOrdinateLayout.cshtml" />
     <Content Include="Views\SubOrdinate\Meeting_List.cshtml" />
     <Content Include="Views\Employee\OutSource.cshtml" />
-<<<<<<< HEAD:RemoteSensingProject/RemoteSensingProject.csproj
-    <Content Include="Views\Accounts\Expenses.cshtml" />
-    <Content Include="Views\Accounts\RequestHistory.cshtml" />
-=======
-    <Content Include="Views\Employee\Expense_Report.cshtml" />
->>>>>>> 39f4175296751baf030719eb365c56a0ad03f5d8:RemoteSensingProject/RemoteSensingProject (1).csproj
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
