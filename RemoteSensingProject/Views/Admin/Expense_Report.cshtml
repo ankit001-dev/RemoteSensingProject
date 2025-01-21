@@ -27,6 +27,42 @@
         color: white !important;
         justify-content: center;
     }
+    .dt-button {
+        font-size: 14px !important;
+        padding: 10px 20px !important;
+        border-radius: 4px !important;
+        border: none !important;
+        cursor: pointer !important;
+        margin-right: 5px !important;
+        display: inline-block !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+        /* Excel button (Green) */
+        .dt-button.buttons-excel {
+            background-color: #3b9f42 !important; /* Excel-like green */
+            color: white !important;
+        }
+
+            .dt-button.buttons-excel:hover {
+                background-color: #2a7c2f !important; /* Darker green on hover */
+            }
+
+        /* PDF button (Red) */
+        .dt-button.buttons-pdf {
+            background-color: #e74c3c !important; /* PDF-like red */
+            color: white !important;
+        }
+
+            .dt-button.buttons-pdf:hover {
+                background-color: #c0392b !important; /* Darker red on hover */
+            }
+
+    /* Additional styling for the buttons wrapper */
+    .dataTables_wrapper .dt-buttons {
+        margin-bottom: 10px !important;
+    }
 </style>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <form class="forms-sample">
@@ -37,7 +73,7 @@
             @*<div class="col-lg-4 col-md-6">
                     <input type="text" placeholder="Search by project name" class="form-control">
                 </div>*@
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-6 col-md-6">
                 <select id="projectName" class="form-select form-select-lg">
                     <option>--Select Project--</option>
                     @if (ViewBag.ProjectList != null)
@@ -52,17 +88,13 @@
                     }
                 </select>
             </div>
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-4 col-md-6 ">
                 <select class="form-select form-select-lg expenses" id="expenseDropdown">
                     <option selected>--Select head--</option>
                     @*<option value="1">Project Expenses</option>
                         <option value="2">Equipment Expenses</option>
                         <option value="3">Miscellaneous Expenses</option>*@
                 </select>
-            </div>
-            <div class="col-lg-2 col-md-6 float-end text-center">
-                <img src="~/assets/gif/pdf (1).png" height="30" />
-                <img src="~/assets/gif/office365.png" height="30" />
             </div>
         </div>
     </form>
@@ -72,7 +104,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table" id="dataTableExample">
+                    <table class="table" id="dataTableExamples">
                         <thead>
                             <tr>
                                 <th>S.No.</th>
@@ -83,7 +115,7 @@
                                 <th>Receipt</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="">
                             <!----Dynamic Data---->
                         </tbody>
                     </table>
@@ -116,12 +148,13 @@
             type: "get",
             data: { pId: pId, hId: hId },
             success: function (res) {
-                const $tbody = $("#dataTableExample tbody");
+                const $tbody = $("#dataTableExamples tbody");
                 $tbody.empty();
-
-                if (Array.isArray(res._list) && res._list.length > 0) {
-                    $.each(res._list, function (index, item) {
-                        const row = `
+                if (res != null) { 
+                    if (res._list.length > 0) {
+                        if (Array.isArray(res._list) && res._list.length > 0) {
+                            $.each(res._list, function (index, item) {
+                                const row = `
                     <tr>
                         <td>${index + 1}</td>
                         <td>${item.DateString}</td>
@@ -130,11 +163,13 @@
                         <td>${item.amount}</td>
                         <td><a href="${item.attachment_url}" target="_blank" title="View Attachment">View</a></td>
                     </tr>`;
-                        $tbody.append(row);
-                    });
-                } else {
-                    $tbody.append('<tr><td colspan="6" class="text-center">No expenses available</td></tr>');
-                }
+                                $tbody.append(row);
+                            });
+                        } else {
+                            $tbody.append('<tr><td colspan="6" class="text-center">No expenses available</td></tr>');
+                        }
+                    }
+            }
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);
@@ -176,6 +211,15 @@
                 }
             });
         });
+        setTimeout(() => {
+            $('#dataTableExamples').DataTable({
+                layout: {
+                    topStart: {
+                        buttons: ['excel', 'pdf']
+                    }
+                }
+            });
+        },1000)
     });
 
 </script>
