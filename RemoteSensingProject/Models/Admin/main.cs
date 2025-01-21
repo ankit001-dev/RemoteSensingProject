@@ -93,6 +93,7 @@ namespace RemoteSensingProject.Models.Admin
             public string ContactPerson { get; set; }
             public string Address { get; set; }
             public string createdBy { get; set; }
+            public string heads { get; set; }
             public string Percentage { get; set; }
            
         }
@@ -113,6 +114,7 @@ namespace RemoteSensingProject.Models.Admin
             public string ProjectHeads { get; set; }
             public decimal ProjectAmount { get; set; }
             public string HeadsDescription { get; set; }
+            public string CompletionDatestring { get; set; }
 
         }
         public class Project_Subordination

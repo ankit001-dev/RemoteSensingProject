@@ -28,7 +28,7 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-       public ActionResult Requests()
+        public ActionResult Requests()
         {
             ViewBag.ProjectList = _accountSerivce.Project_List().Where(e=>e.ApproveStatus==false).ToList();
             return View();
@@ -60,7 +60,11 @@ namespace RemoteSensingProject.Controllers
         {
             ViewBag.ProjectList = _accountSerivce.Project_List().ToList();
             return View();
-        } 
+        }
+        public ActionResult Meeting_List()
+        {
+            return View();
+        }
         public ActionResult FundReport()
         {
             return View();

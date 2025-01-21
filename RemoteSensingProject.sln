@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteSensingProject", "RemoteSensingProject\RemoteSensingProject.csproj", "{CC32A7FD-784D-4264-8526-F802B19C82D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteSensingProject (1)", "RemoteSensingProject\RemoteSensingProject (1).csproj", "{CC32A7FD-784D-4264-8526-F802B19C82D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

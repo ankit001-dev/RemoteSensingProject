@@ -260,17 +260,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiServices\AdminController.cs" />
+    <Compile Include="ApiServices\ProjectManagerController.cs" />
+    <Compile Include="ApiServices\SubOrdinateController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\SubOrdinateController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Accounts\AccountService.cs" />
+    <Compile Include="Models\Accounts\main.cs" />
     <Compile Include="Models\Admin\AdminServices.cs" />
     <Compile Include="Models\Admin\main.cs" />
     <Compile Include="Models\DataFactory.cs" />
@@ -280,6 +286,8 @@
     <Compile Include="Models\ProjectManager\main.cs" />
     <Compile Include="Models\ProjectManager\ManagerService.cs" />
     <Compile Include="Models\RoleAuthorization.cs" />
+    <Compile Include="Models\SubOrdinate\main.cs" />
+    <Compile Include="Models\SubOrdinate\SubOrinateService.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -906,6 +914,7 @@
     <Content Include="ProjectContent\Admin\Meeting_Attachment\1086f5bd-cf9d-48d0-8710-e80d9a45824f.png" />
     <Content Include="ProjectContent\Admin\Meeting_Attachment\246e7cfd-95e4-4aa1-a402-3f6825560b23.png" />
     <Content Include="ProjectContent\Admin\Meeting_Attachment\ed2cd55c-a52d-40c9-a405-becaffd7949f.png" />
+    <Content Include="ProjectContent\ProjectManager\Meeting_Attachment\b20d9b34-1533-4177-be6f-9700fbda98da.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -940,7 +949,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Admin\Add_Project.cshtml" />
     <Content Include="Views\Admin\All_Projects.cshtml" />
-    <Content Include="Views\Admin\Completed_Project.cshtml" />
     <Content Include="Views\Admin\Dashboard.cshtml" />
     <Content Include="Views\Admin\Employee_Registration.cshtml" />
     <Content Include="Views\Admin\Expense_Report.cshtml" />
@@ -950,7 +958,6 @@
     <Content Include="Views\Admin\Member_Report.cshtml" />
     <Content Include="Views\Admin\Min_Of_Meeting.cshtml" />
     <Content Include="Views\Admin\Notice_List.cshtml" />
-    <Content Include="Views\Admin\Pending_Project.cshtml" />
     <Content Include="Views\Admin\Project_List.cshtml" />
     <Content Include="Views\Admin\Project_Report.cshtml" />
     <Content Include="Views\Admin\Project_Request.cshtml" />
@@ -981,12 +988,28 @@
     <Content Include="Views\Admin\Emp_Category.cshtml" />
     <Content Include="Views\Admin\_desgination.cshtml" />
     <Content Include="Views\Admin\_divison.cshtml" />
+    <Content Include="Views\Shared\_AccountLayout.cshtml" />
+    <Content Include="Views\Accounts\Dashboard.cshtml" />
+    <Content Include="Views\Accounts\Requests.cshtml" />
+    <Content Include="Views\Accounts\FundReport.cshtml" />
+    <Content Include="Views\SubOrdinate\Dashboard.cshtml" />
+    <Content Include="Views\SubOrdinate\Assigned_Project.cshtml" />
+    <Content Include="Views\Shared\_subOrdinateLayout.cshtml" />
+    <Content Include="Views\SubOrdinate\Meeting_List.cshtml" />
+    <Content Include="Views\Employee\OutSource.cshtml" />
+<<<<<<< HEAD:RemoteSensingProject/RemoteSensingProject.csproj
+    <Content Include="Views\Accounts\Expenses.cshtml" />
+    <Content Include="Views\Accounts\RequestHistory.cshtml" />
+=======
+    <Content Include="Views\Employee\Expense_Report.cshtml" />
+>>>>>>> 39f4175296751baf030719eb365c56a0ad03f5d8:RemoteSensingProject/RemoteSensingProject (1).csproj
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="obj\Debug\TempPE\" />
     <Folder Include="ProjectContent\Admin\NoticeDocs\" />
     <Folder Include="ProjectContent\Admin\ProjectDocs\" />
+    <Folder Include="ProjectContent\ProjectManager\HeadsSlip\" />
     <Folder Include="ProjectContent\ProjectManager\ProjectDocs\" />
   </ItemGroup>
   <ItemGroup>
