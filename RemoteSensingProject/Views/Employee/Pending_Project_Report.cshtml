@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "Pending_Project_Report";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["NotStartedProject"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    int i = 1;
 }
 
 <style>
@@ -35,7 +37,7 @@
                 <h5>All Project Lists</h5>
             </div>
             <div class="col-lg-4 col-md-6">
-                <input type="text" placeholder="Search by project name" class="form-control">
+                <input type="text" placeholder="Search by project name" id="searchByProjectName" class="form-control">
             </div>
             @*<div class="col-lg-3 col-md-6">
                     <select class="form-select form-select-lg">
@@ -45,14 +47,14 @@
                         <option value="3">Manager3</option>
                     </select>
                 </div>*@
-            <div class="col-lg-3 col-md-3">
-                <select class="form-select form-select-lg">
-                    <option selected>Project Status</option>
-                    <option value="1">Work in Progress</option>
-                    <option value="2">Pending</option>
-                    <option value="3">Completed</option>
-                </select>
-            </div>
+        <div class="col-lg-3 col-md-3">
+            <select id="statusFilter" class="form-select form-select-lg">
+                <option selected>Project Status</option>
+                <option value="Processing">Work in Progress</option>
+                <option value="Not Started">Not Started</option>
+                <option value="Completed">Completed</option>
+            </select>
+        </div>
         </div>
     </form>
 </div>
@@ -64,264 +66,46 @@
                     <table class="table" id="dataTableExample">
                         <thead>
                             <tr>
-                                <th>S.No.</th>
-                                <th>Assign Date</th>
+                                <th>Sr No.</th>
                                 <th>Project Name</th>
+                                <th>Assign Date</th>
                                 <th>Start Date</th>
                                 <th>Completion Date</th>
-                                <th>Action</th>
+                                <th>Project Status</th>
+                                <th>Image</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td class="text-center">1</td>
-                                <td>01/01/2022</td>
-                                <td>India Stack Global</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-
-
-
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
-                                                <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                            </a>
-                                        </li>
-
-                                        <li class="me-2">
-                                            <a href="/Employee/Update_Project_Stage/" title="Update Stages">
-                                                <i class="link-icon text-info" data-feather="plus-circle"> </i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Add_Expenses/" title="Add Expenses">
-                                                <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <div class="dropdown mb-2">
-                                                <button class="btn p-0" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="file" class="icon-sm me-2"></i> <span class>Excel</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>PDF</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">2</td>
-                                <td>01/01/2022</td>
-                                <td>National Informatics Centre (NIC)</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
-                                                <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                            </a>
-                                        </li>
-
-                                        <li class="me-2">
-                                            <a href="/Employee/Update_Project_Stage/" title="Update Stages">
-                                                <i class="link-icon text-info" data-feather="plus-circle"> </i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Add_Expenses/" title="Add Expenses">
-                                                <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <div class="dropdown mb-2">
-                                                <button class="btn p-0" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="file" class="icon-sm me-2"></i> <span class>Excel</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>PDF</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">3</td>
-                                <td>01/01/2022</td>
-                                <td>Ministry of Electronics and Information Technology</td>
-                                <td>01/05/2022</td>
-                                <td>10/09/2022</td>
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
-                                                <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                            </a>
-                                        </li>
-
-                                        <li class="me-2">
-                                            <a href="/Employee/Update_Project_Stage/" title="Update Stages">
-                                                <i class="link-icon text-info" data-feather="plus-circle"> </i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Add_Expenses/" title="Add Expenses">
-                                                <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <div class="dropdown mb-2">
-                                                <button class="btn p-0" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="file" class="icon-sm me-2"></i> <span class>Excel</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>PDF</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">4</td>
-                                <td>01/01/2022</td>
-                                <td>INSPIRE-MANAK</td>
-                                <td>01/01/2022</td>
-                                <td>31/11/2022</td>
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
-                                                <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                            </a>
-                                        </li>
-
-                                        <li class="me-2">
-                                            <a href="/Employee/Update_Project_Stage/" title="Update Stages">
-                                                <i class="link-icon text-info" data-feather="plus-circle"> </i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Add_Expenses/" title="Add Expenses">
-                                                <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <div class="dropdown mb-2">
-                                                <button class="btn p-0" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="file" class="icon-sm me-2"></i> <span class>Excel</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>PDF</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">5</td>
-                                <td>01/01/2022</td>
-                                <td>
-                                    PPP Based Slum
-                                    Rehabilitaiton in Junavadaj area
-                                </td>
-                                <td>01/01/2022</td>
-                                <td>31/12/2022</td>
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
-                                                <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                            </a>
-                                        </li>
-
-                                        <li class="me-2">
-                                            <a href="/Employee/Update_Project_Stage/" title="Update Stages">
-                                                <i class="link-icon text-info" data-feather="plus-circle"> </i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Add_Expenses/" title="Add Expenses">
-                                                <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <div class="dropdown mb-2">
-                                                <button class="btn p-0" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="file" class="icon-sm me-2"></i> <span class>Excel</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>PDF</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-center">6</td>
-                                <td>01/01/2022</td>
-                                <td>
-                                    Automatic Fare collection
-                                    system
-                                </td>
-                                <td>01/01/2022</td>
-                                <td>31/12/2022</td>
-                                <td class="text-center">
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
-                                                <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                            </a>
-                                        </li>
-
-                                        <li class="me-2">
-                                            <a href="/Employee/Update_Project_Stage/" title="Update Stages">
-                                                <i class="link-icon text-info" data-feather="plus-circle"> </i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <a href="/Employee/Add_Expenses/" title="Add Expenses">
-                                                <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                            </a>
-                                        </li>
-                                        <li class="me-2">
-                                            <div class="dropdown mb-2">
-                                                <button class="btn p-0" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                                                </button>
-                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="file" class="icon-sm me-2"></i> <span class>Excel</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>PDF</span></a>
-                                                    <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>
+                            @if (data != null && data.Count > 0)
+                            {
+                                var currentDate = DateTime.Now.Date;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.ProjectTitle</td>
+                                        <td>@item.AssignDateString</td>
+                                        <td>@item.StartDateString</td>
+                                        <td>@item.CompletionDatestring</td>
+                                        <td>
+                                            @if (item.ProjectStatus && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
+                                            {
+                                                <span class="badge bg-success">Completed</span>
+                                            }
+                                            else if (!item.ProjectStatus && item.CompletionDate > currentDate)
+                                            {
+                                                <span class="badge bg-warning text-dark">Processing</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">Not Started</span>
+                                            }
+                                        </td>
+                                        <td><a href="@item.projectDocumentUrl" target="_blank" title="View Attachment">View</a></td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
 
                         </tbody>
                     </table>
@@ -502,5 +286,24 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function () {
+
+
+        $("#statusFilter").on("change", function () {
+            var table = $("#dataTableExample").DataTable();
+            var projectStatus = $(this).val();
+
+            table.column(5).search(projectStatus).draw();
+        });
+
+        $('#searchByProjectName').on('keyup', function () {
+            var table = $("#dataTableExample").DataTable();
+            table.column(1).search($(this).val()).draw();
+        });
+    });
+</script>
 
 

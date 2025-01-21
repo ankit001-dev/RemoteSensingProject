@@ -38,7 +38,7 @@
                     <input type="text" placeholder="Search by project name" class="form-control">
                 </div>*@
             <div class="col-lg-4 col-md-6">
-                <select class="form-select form-select-lg">
+                <select id="projectName" class="form-select form-select-lg">
                     <option>--Select Project--</option>
                     @if (ViewBag.ProjectList != null)
                     {
@@ -46,18 +46,18 @@
                         {
                             foreach (var item in ViewBag.ProjectList)
                             {
-                                <option value="@item.Id" >@item.ProjectTitle</option>
+                                <option value="@item.Id">@item.ProjectTitle</option>
                             }
                         }
-                    }   
+                    }
                 </select>
             </div>
             <div class="col-lg-4 col-md-6">
-                <select class="form-select form-select-lg" id="expenseDropdown">
+                <select class="form-select form-select-lg expenses" id="expenseDropdown">
                     <option selected>--Select head--</option>
-                    <option value="1">Project Expenses</option>
-                    <option value="2">Equipment Expenses</option>
-                    <option value="3">Miscellaneous Expenses</option>
+                    @*<option value="1">Project Expenses</option>
+                        <option value="2">Equipment Expenses</option>
+                        <option value="3">Miscellaneous Expenses</option>*@
                 </select>
             </div>
             <div class="col-lg-2 col-md-6 float-end text-center">
@@ -84,16 +84,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>10/02/2004</td>
-                                <td>Item 1</td>
-                                <td>
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero cupiditate, distinctio doloribus molestias cum possimus nam nemo nisi excepturi repudiandae ea consequuntur eveniet sunt voluptate totam! Architecto adipisci explicabo magnam.
-                                </td>
-                                <td>15000</td>
-                                <td><a href="#document">Receipt</a></td>
-                            </tr>
+                            <!----Dynamic Data---->
                         </tbody>
                     </table>
                 </div>
@@ -103,41 +94,91 @@
 </div>
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
 
+
 <script>
     document.getElementById('expenseDropdown').onchange = function () {
         var selectedValue = this.value;
         var expenseDetailsDiv = document.getElementById('expenseDetails');
-
+        const projectId = $("#projectName").val();
+        debugger
         if (selectedValue) {
             expenseDetailsDiv.removeAttribute('hidden');
+            getExpenses(selectedValue, projectId)
         } else {
             expenseDetailsDiv.setAttribute('hidden', true);
         }
+  
     };
 
     function getExpenses(pId, hId) {
-
-
         $.ajax({
-            url: "/employee/GetExpenses",
+            url: "/Admin/GetExpenses",
             type: "get",
             data: { pId: pId, hId: hId },
             success: function (res) {
-                console.log(res);
-            }, error: function (xhr) {
-                Swal.fire({
-                    title: "error",
-                    text: "some error occured",
-                    icon:"error"
-                })
-            }
-        })
+                const $tbody = $("#dataTableExample tbody");
+                $tbody.empty();
 
+                if (Array.isArray(res._list) && res._list.length > 0) {
+                    $.each(res._list, function (index, item) {
+                        const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.DateString}</td>
+                        <td>${item.title}</td>
+                        <td>${item.description}</td>
+                        <td>${item.amount}</td>
+                        <td><a href="${item.attachment_url}" target="_blank" title="View Attachment">View</a></td>
+                    </tr>`;
+                        $tbody.append(row);
+                    });
+                } else {
+                    $tbody.append('<tr><td colspan="6" class="text-center">No expenses available</td></tr>');
+                }
+            },
+            error: function (xhr) {
+                console.error("Error:", xhr.responseText);
+                Swal.fire({
+                    title: "Error",
+                    text: "An error occurred while fetching the expenses.",
+                    icon: "error"
+                });
+            }
+        });
     }
+
+
 
 </script>
 
+<script>
+    $(document).ready(function () {
+        $("#projectName").on("change", function () {
+            const projectId = $(this).val();
 
+            $.ajax({
+                url: "/Admin/getHeadsByProject",
+                type: "GET",
+                data: { id: projectId },
+                success: function (res) {
+                    $(".expenses").empty();
+                    console.log(res._headList)
+                    $(".expenses").append('<option selected>--Select head--</option>');
+
+                    $.each(res._headList, function (index, item) {
+                        var row = `<option value="${item.Id}">${item.heads}</option>`;
+                        $(".expenses").append(row);
+                    });
+
+                },
+                error: function (xhr, error) {
+                    console.log("An error occurred:", error);
+                }
+            });
+        });
+    });
+
+</script>
 
 
 

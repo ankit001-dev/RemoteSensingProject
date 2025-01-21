@@ -58,5 +58,17 @@ namespace RemoteSensingProject.Models.SubOrdinate
             public string AssignDateString { get; set; }
             public string StartDateString { get; set; }
         }
+        public class Raise_Problem
+        {
+            public int ProblemId { get; set; }
+            public int Project_Id { get; set; }
+            public string ProjectName { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public HttpPostedFileBase Attachment { get; set; }
+            public string Attchment_Url { get; set; }
+            public string CreatedDate { get; set; }
+          
+        }
     }
 }

@@ -36,7 +36,7 @@ namespace RemoteSensingProject.Controllers
             ViewBag.TotalDelayProject = TotalCount.TotalDelayProject;
             ViewBag.TotalOngoingProject = TotalCount.TotalOngoingProject;
             ViewBag.TotalNotice = TotalCount.TotalNotice;
-
+            ViewBag.TotalMeeting = TotalCount.TotalMeeting;
             return View();
         }
 
@@ -385,8 +385,7 @@ namespace RemoteSensingProject.Controllers
         {
             dynamic noticeList = null;
             var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
+            UserCredential userObj = _managerServices.getManagerDetails(managerName);
             if (projectId.HasValue)
             {
                 noticeList = _adminServices.getNoticeList().Where(e => e.ProjectManagerId == projectId).ToList();
@@ -415,22 +414,42 @@ namespace RemoteSensingProject.Controllers
             return Json(project, JsonRequestBehavior.AllowGet);
 
         }
+        public ActionResult SubOrdinateProblemList()
+        {
+            var managerName = User.Identity.Name;
+            UserCredential userObj = new UserCredential();
+            userObj = _managerServices.getManagerDetails(managerName);
+            ViewBag.ProjectProblemList = _managerServices.getAllSubOrdinateProblem(userObj.userId);
+
+            return View();
+        }
         public ActionResult All_Project_Report()
         {
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+            ViewData["ProjectList"] = _managerServices.All_Project_List(userObj);
             return View();
         }
 
         public ActionResult Pending_Project_Report()
         {
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+            ViewData["NotStartedProject"] = _managerServices.GetNotStartedProject_List(userObj);
             return View();
         }
 
         public ActionResult Complete_Project_Report()
         {
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+            ViewData["CompleteProjectList"] = _managerServices.GetCompleteProject_List(userObj);
             return View();
         }
 
-       
+        public ActionResult Expense_Report()
+        {
+            return View();
+        }
+
+
 
     }
 }

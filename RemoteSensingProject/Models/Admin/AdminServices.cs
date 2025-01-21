@@ -559,7 +559,40 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
-
+        public List<Project_model> getHeadByProject(int projectId)
+        {
+            try
+            {
+                List<Project_model> _headList = new List<Project_model>();
+                Project_model obj = null;
+                SqlCommand cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getHeadByProject");
+                cmd.Parameters.AddWithValue("@id", projectId);
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    while (sdr.Read())
+                    {
+                        obj = new Project_model();
+                        obj.Id = Convert.ToInt32(sdr["id"]);
+                        obj.heads = sdr["heads"].ToString();
+                        _headList.Add(obj);
+                    }
+                }
+                return _headList;
+            }catch(Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
 
         public createProjectModel GetProjectById(int id)
         {
@@ -630,6 +663,8 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+
+    
 
         #endregion
 
@@ -807,7 +842,8 @@ namespace RemoteSensingProject.Models.Admin
                             Project_Id = Convert.ToInt32(rd["project_id"]),
                             KeyPoint = rd["keyPoint"].ToString(),
                             CompletionDate = Convert.ToDateTime(rd["completeDate"]),
-                            Status = rd["StagesStatus"].ToString(),
+                            CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
+                           Status = rd["StagesStatus"].ToString(),
                             Document_Url = rd["stageDocument"].ToString()
                         });
                     }
@@ -916,7 +952,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@meetingLink", obj.MeetingType.ToLower() == "offline" ? obj.MeetingAddress : obj.MeetingLink);
                 cmd.Parameters.AddWithValue("@MeetingTitle", obj.MeetingTitle);
                 cmd.Parameters.AddWithValue("@createrId", obj.CreaterId);
-                cmd.Parameters.AddWithValue("@createdBy", obj.CreaterId!=null?"projectManager":"admin");
+                cmd.Parameters.AddWithValue("@createdBy", obj.CreaterId!=null && obj.CreaterId > 0?"projectManager":"admin");
                 cmd.Parameters.AddWithValue("@meetingTime", obj.MeetingTime);
                 cmd.Parameters.AddWithValue("@meetingDocument", obj.Attachment_Url);
                 cmd.Parameters.AddWithValue("@Id", obj.Id);
@@ -933,9 +969,7 @@ namespace RemoteSensingProject.Models.Admin
                     Direction = ParameterDirection.Output
                 };
                 cmd.Parameters.Add(outputParam);
-
                 int i = cmd.ExecuteNonQuery();
-
                 if (i > 0)
                 {
                     int meetingId = (int)outputParam.Value;
