@@ -1,0 +1,192 @@
+﻿
+@{
+    ViewBag.Title = "CreateTask";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var outSourceList = ViewData["OutSourceList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
+    var TaskList = ViewData["TaskList"] as List<RemoteSensingProject.Models.ProjectManager.OutSourceTask>;
+    int i = 1;
+}
+
+<style>
+    .modal-body .sliderimages img {
+        width: 20% !important;
+        height: 20%;
+        border-radius: 10px;
+    }
+
+    svg {
+        height: 20px;
+    }
+
+    .link-icon {
+        height: 16px;
+    }
+</style>
+
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">/Out Source</li>
+    </ol>
+    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Create task</button>
+</nav>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <div class="row align-items-center">
+        <div class="col-lg-3">
+            <h5>Task List</h5>
+        </div>
+        <div class="col-lg-9 col-md-9">
+            <input type="text" placeholder="Search by task name" id="searchByEmployeeName" class="form-control">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th>Sr</th>
+                                <th>title</th>
+                                <th>Description</th>
+                                <th>taskStatus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          @if(TaskList != null && TaskList.Count > 0)
+            {
+                foreach(var item in TaskList)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.title</td>
+                        <td>@item.description</td>
+                        <td>
+                            <span class="badge bg-@(item.completeStatus ? "success" : "primary")">@(item.completeStatus ? "completed" : "pending")</span>
+                        </td>
+                    </tr>
+                                  i++;
+                              }
+                          }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel"><span class="actionType">Create</span> Task</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="createTaskForm">
+                    <input type="hidden" id="employeeInpId" name="Id" />
+                    <div class="form-group">
+                        <label for="employeeName" class="form-label">Title</label>
+                        <input type="text" class="form-control" name="title" required id="employeeName" autocomplete="off" placeholder="Enter Employee Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="employeemobno" class="form-label">Description</label>
+                        <textarea class="form-control" name="description" required id="employeemobno" placeholder="Enter description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="employeeEmail" class="form-label">Assign Outsource</label>
+                        <select class="form-select" name="outSourceId" id="select" multiple>
+                            <option>---Select Option---</option>
+                            @if (outSourceList != null && outSourceList.Count > 0)
+                            {
+                                foreach(var item in outSourceList)
+                                {
+                    <option value="@item.Id">@item.EmpName</option>
+                }
+            }
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        if ($('#select').length) {
+            $('#addslider').on('shown.bs.modal', function () {
+                $('#select').select2({
+                    dropdownParent: $('#addslider')
+                });
+            });
+        }
+       
+        $("#searchByEmployeeName").on("input", function () {
+            var table = $("#dataTableExample").DataTable();
+            table.column(1).search($(this).val()).draw();
+        })
+    })
+</script>
+
+
+<script>
+    $("#createTaskForm").on("submit", function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        let data = new FormData(this);
+        $.ajax({
+            url: "/employee/CreateTaskJson",
+            type: "Post",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Successfuly !",
+                        text: res.message,
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: res.message,
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue",
+                    text: "Server is not respondig. Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
+    })
+</script>

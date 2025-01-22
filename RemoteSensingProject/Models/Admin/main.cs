@@ -52,6 +52,7 @@ namespace RemoteSensingProject.Models.Admin
             public string mode { get; set; }
             public string address { get; set; }
             public List<string> MeetingMemberList { get; set; }
+            public string summary { get; set; }
         }
 
         public class KeyPointResponse
@@ -71,6 +72,7 @@ namespace RemoteSensingProject.Models.Admin
         {        
             public int Id { get; set; }
             public decimal physicalcomplete { get; set; }
+            public decimal overallPercentage { get; set; }
             public string ProjectTitle { get; set; }
             public DateTime CurrentDate => DateTime.Now;
             public DateTime AssignDate { get; set; }
@@ -225,6 +227,8 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class DashboardCount
         {
+            public string Title { get; set; }
+            public string OverallCompletionPercentage { get; set; }
             public string TotalEmployee { get; set; }
             public string TotalProject { get; set; }
             public string TotalDelayproject { get; set; }

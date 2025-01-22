@@ -1,0 +1,82 @@
+﻿
+@{
+    ViewBag.Title = "SubOrdinateProblemList";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+
+
+<style>
+    .link-icon {
+        height: 16px;
+    }
+</style>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <form class="forms-sample">
+        <div class="row align-items-center">
+            <div class="col-lg-3">
+                <h5>Assigned Project Lists</h5>
+            </div>
+            <div class="col-lg-8 col-md-6">
+                <input type="text" id="searchByProjectName" name="searchByProjectName" placeholder="Search by project name" class="form-control">
+            </div>
+
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="projectTable" class="dataTableExample" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Project Name</th>
+                                <th>Problem Date</th>
+                                <th>Problem Title</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ int index = 1;}
+                            @if (ViewBag.ProjectProblemList != null)
+                            {
+                                foreach (var problem in ViewBag.ProjectProblemList)
+                                {
+                                    <tr>
+                                        <td>@index</td>
+                                        <td>@problem.ProjectName</td>
+                                        <td>@problem.CreatedDate</td>
+                                        <td>@problem.Title</td>
+                                        <td>@problem.Description</td>
+
+
+                                    </tr>
+                                    index++;
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#projectTable").DataTable();
+
+        $('#searchByProjectName').on('keyup', function () {
+            let table = $("#projectTable").DataTable();
+
+            table.columns(1).search($(this).val()).draw();
+        });
+    })
+</script>
+
+

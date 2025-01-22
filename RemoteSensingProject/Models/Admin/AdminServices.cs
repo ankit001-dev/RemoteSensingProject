@@ -537,6 +537,7 @@ namespace RemoteSensingProject.Models.Admin
                             projectDocumentUrl = rd["ProjectDocument"].ToString(),
                             ProjectType = rd["projectType"].ToString(),
                             physicalcomplete = Convert.ToDecimal(rd["completionPercentage"]),
+                            overallPercentage = Convert.ToDecimal(rd["overallPercentage"]),
                             ProjectStage = Convert.ToBoolean(rd["stage"]),
                             CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
@@ -903,6 +904,41 @@ namespace RemoteSensingProject.Models.Admin
 
             }
         }
+        public List<DashboardCount> getAllProjectCompletion()
+        {
+            try
+            {
+                List<DashboardCount> list = new List<DashboardCount>();
+                DashboardCount obj = null;
+                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getOverallProjectCompletion");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    while (sdr.Read())
+                    {
+                        obj = new DashboardCount();
+                        obj.Title = sdr["title"].ToString();
+                        obj.OverallCompletionPercentage = sdr["overallCompletion"].ToString();
+                        list.Add(obj);
+                    }
+                }
+
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
         #endregion /* End */
 
         #region Meeting 
@@ -978,20 +1014,19 @@ namespace RemoteSensingProject.Models.Admin
 
                     if (obj.meetingMemberList != null)
                     {
-                            foreach (var individualMember in obj.meetingMemberList)
+                        foreach (var individualMember in obj.meetingMemberList)
+                        {
+                            if (individualMember != 0)
                             {
-                                 
-                                if (individualMember != 0)
-                                {
-                                    cmd.Parameters.Clear();
-                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                                    cmd.Parameters.AddWithValue("@action", "addMeetingMember");
-                                    cmd.Parameters.AddWithValue("@employee", individualMember);
-                                    cmd.Parameters.AddWithValue("@meeting", meetingId);
-                                     i = cmd.ExecuteNonQuery();
-                                }
-                              
+                                cmd.Parameters.Clear();
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@action", "addMeetingMember");
+                                cmd.Parameters.AddWithValue("@employee", individualMember);
+                                cmd.Parameters.AddWithValue("@meeting", meetingId);
+                                    i = cmd.ExecuteNonQuery();
                             }
+                              
+                        }
 
                         if (i <= 0)
                         {
@@ -1313,6 +1348,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@conclusion", mc.Conclusion);
                 cmd.Parameters.AddWithValue("@nextFollow", mc.NextFollowUpDate);
                 cmd.Parameters.AddWithValue("@followUpStatus", mc.FollowUpStatus);
+                cmd.Parameters.AddWithValue("@summary", mc.summary);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 SqlParameter outputParam = new SqlParameter("@conclusionId", SqlDbType.Int)

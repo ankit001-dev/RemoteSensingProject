@@ -54,10 +54,9 @@
                         <thead>
                             <tr>
                                 <th class="text-center">Sr</th>
-                                <th>Date</th>
-                                <th>Image</th>
-                                <th>Project Manager</th>
                                 <th>Project Name</th>
+                                <th>Project Manager</th>
+                                <th>Date</th>
                                 <th>Attachment</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -70,12 +69,12 @@
                                 {
                                     <tr>
                                         <td class="text-start">@count</td>
-                                        <td>@item.noticeDate</td>
-                                        <td>
-                                            <img src="@item.ProjectManagerImage" class="w-75 text-center" height="80" alt="image">
-                                        </td>
-                                        <td> <a href="#" data-bs-toggle="modal" class="showEmployeeProfile" data-id="@item.ProjectManagerId" data-bs-target="#viewslider">@item.ProjectManager</a></td>
                                         <td><a href="#" data-bs-toggle="modal" class="showProjectDetail" data-id="@item.ProjectId" data-bs-target="#addslider">@item.ProjectName</a></td>
+                                        <td> <a href="#" data-bs-toggle="modal" class="showEmployeeProfile" data-id="@item.ProjectManagerId" data-bs-target="#viewslider">@item.ProjectManager</a></td>
+                                        <td>@item.noticeDate</td>
+                                     
+
+
                                         <td> <a href="@item.Attachment_Url" target="_blank"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a></td>
                                         <td class="text-center">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
@@ -567,7 +566,7 @@
 
     $('#searchbyProjecManager').on('keyup', function () {
         let table = $("#dataTableExample").DataTable();
-        table.columns(3).search(this.value).draw();
+        table.columns(2).search(this.value).draw();
     });
 
     function shownotice(data) {
