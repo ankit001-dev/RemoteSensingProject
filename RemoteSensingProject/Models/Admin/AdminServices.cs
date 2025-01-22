@@ -1037,7 +1037,7 @@ namespace RemoteSensingProject.Models.Admin
 
                     if (obj.keyPointList != null && obj.keyPointList.Count>0)
                     {
-                        foreach (var key in obj.keyPointList[0].Split(','))
+                        foreach (var key in obj.keyPointList)
                         {
                             if (!string.IsNullOrEmpty(key))
                             {

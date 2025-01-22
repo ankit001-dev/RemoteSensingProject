@@ -575,16 +575,46 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+        [HttpGet]
+        [Route("api/getConclusionForManagerMeeting")]
+        public IHttpActionResult getConclusionForMeeting(int meetingId, int userId)
+        {
+            var res = _managerService.getConclusionForMeeting(meetingId, userId);
+            return Ok(new { status = true, message = "data retrieved", data = res });
+        }
+        [HttpGet]
+        [Route("api/getAllmeeting")]
+        public IHttpActionResult getAllmeeting( int managerId)
+        {
+            var res = _managerService.getAllmeeting(managerId);
+            return Ok(new { status = true, message = "data retrieved", data = res });
+        }
+        [HttpPost]
+        [Route("api/GetResponseFromMember")]
+        public IHttpActionResult GetResponseFromMember()
+        {
+            var httpRequest = HttpContext.Current.Request;
+            getMemberResponse mr = new getMemberResponse
+            {
+                ApprovedStatus = Convert.ToInt32(httpRequest.Form.Get("approveStatus")),
+                reason = httpRequest.Form.Get("reason"),
+                MeetingId = Convert.ToInt32(httpRequest.Form.Get("meetingId")),
+                MemberId = Convert.ToInt32(httpRequest.Form.Get("memberId"))
+            };
+            var res = _managerService.GetResponseFromMember(mr);
+            if (res)
+            {
+                return Ok(new { status = true, message = "Response Send Successfully", statusCode = 200 });
 
-        //[HttpPost]
-        //[Route("api/updateMemberStatus")]
-        //public IHttpActionResult updateManagerStatus()
-        //{
-        //    try
-        //    {
-        //        var request = HttpContext.Current.Request;
-        //    }
-        //}
+            }
+            else
+            {
+
+                return Ok(new { status = true, message = "something went wrong", statusCode = 500 });
+            }
+        }
+
+     
         #endregion
 
 
