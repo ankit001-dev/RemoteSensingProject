@@ -1,5 +1,6 @@
 ﻿using Antlr.Runtime.Tree;
 using Microsoft.AspNetCore.Routing;
+using RemoteSensingProject.Models.MailService;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -854,7 +855,15 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@emp_gender", os.gender);
                 cmd.Parameters.AddWithValue("@password", userpassword);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                int j = cmd.ExecuteNonQuery();
+                if(j > 0)
+                {
+                    mail _mail = new mail();
+                    string subject = "Login Credential";
+                    string message = $"<p>Your user id : <b>{userName}</b></p><br><p>Password : <b>{userpassword}</b></p>";
+                    _mail.SendMail(os.EmpName, os.email, subject, message);
+                }
+                return j > 0;
             }catch(Exception ex)
             {
                 throw ex;
@@ -884,6 +893,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         list.Add(new OuterSource
                         {
+                            Id = Convert.ToInt32(rd["id"]),
                             EmpName = rd["emp_name"].ToString(),
                             mobileNo= Convert.ToInt64(rd["emp_mobile"]),
                             email = rd["emp_email"].ToString(),
@@ -1049,6 +1059,93 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
+        #endregion
+
+
+        #region create task
+        public bool createTask(OutSourceTask ost)
+        {
+            con.Open();
+            SqlTransaction tran = con.BeginTransaction();
+            try
+            {
+                cmd = new SqlCommand("sp_manageOutSourceTask", con, tran);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "createTask");
+                cmd.Parameters.AddWithValue("@empId", ost.empId);
+                cmd.Parameters.AddWithValue("@title", ost.title);
+                cmd.Parameters.AddWithValue("@description", ost.description);
+                cmd.Parameters.Add("@taskId", SqlDbType.Int);
+                cmd.Parameters["@taskId"].Direction = ParameterDirection.Output;
+                int i = cmd.ExecuteNonQuery();
+                int taskId = Convert.ToInt32(cmd.Parameters["@taskId"].Value != DBNull.Value ? cmd.Parameters["@taskId"].Value : 0);
+                if (i > 0 && taskId > 0 && ost.outSourceId.Length > 0)
+                {
+                    foreach (var item in ost.outSourceId)
+                    {
+                        cmd.Dispose();
+                        cmd = new SqlCommand("sp_manageOutSourceTask", con, tran);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@action", "assignTask");
+                        cmd.Parameters.AddWithValue("@empId", item);
+                        cmd.Parameters.AddWithValue("@id", taskId);
+                        i += cmd.ExecuteNonQuery();
+                    }
+                }
+
+                tran.Commit();
+                return i > 0;
+            }
+            catch (Exception ex)
+            {
+                tran.Rollback();
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        } 
+
+        public List<OutSourceTask> taskList(int empId)
+        {
+            try
+            {
+                List<OutSourceTask> list = new List<OutSourceTask>();
+                cmd = new SqlCommand("sp_manageOutSourceTask", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectAllTask");
+                cmd.Parameters.AddWithValue("@empId", empId);
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new OutSourceTask
+                        {
+                            Id = Convert.ToInt32(rd["id"]),
+                            title = rd["title"].ToString(),
+                            description = rd["description"].ToString(),
+                            completeStatus = Convert.ToBoolean(rd["completeStatus"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
         #endregion
     }
 }

@@ -976,20 +976,19 @@ namespace RemoteSensingProject.Models.Admin
 
                     if (obj.meetingMemberList != null)
                     {
-                            foreach (var individualMember in obj.meetingMemberList)
+                        foreach (var individualMember in obj.meetingMemberList)
+                        {
+                            if (individualMember != 0)
                             {
-                                 
-                                if (individualMember != 0)
-                                {
-                                    cmd.Parameters.Clear();
-                                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                                    cmd.Parameters.AddWithValue("@action", "addMeetingMember");
-                                    cmd.Parameters.AddWithValue("@employee", individualMember);
-                                    cmd.Parameters.AddWithValue("@meeting", meetingId);
-                                     i = cmd.ExecuteNonQuery();
-                                }
-                              
+                                cmd.Parameters.Clear();
+                                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@action", "addMeetingMember");
+                                cmd.Parameters.AddWithValue("@employee", individualMember);
+                                cmd.Parameters.AddWithValue("@meeting", meetingId);
+                                    i = cmd.ExecuteNonQuery();
                             }
+                              
+                        }
 
                         if (i <= 0)
                         {
@@ -1311,6 +1310,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@conclusion", mc.Conclusion);
                 cmd.Parameters.AddWithValue("@nextFollow", mc.NextFollowUpDate);
                 cmd.Parameters.AddWithValue("@followUpStatus", mc.FollowUpStatus);
+                cmd.Parameters.AddWithValue("@summary", mc.summary);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 SqlParameter outputParam = new SqlParameter("@conclusionId", SqlDbType.Int)

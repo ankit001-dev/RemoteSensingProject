@@ -52,6 +52,7 @@ namespace RemoteSensingProject.Models.Admin
             public string mode { get; set; }
             public string address { get; set; }
             public List<string> MeetingMemberList { get; set; }
+            public string summary { get; set; }
         }
 
         public class KeyPointResponse

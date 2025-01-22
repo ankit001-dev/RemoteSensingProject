@@ -154,4 +154,13 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string gender { get; set; }
         public string email { get; set; }
     }
+
+    public class OutSourceTask { 
+        public int Id { get; set; }
+        public int empId { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public int[] outSourceId { get; set; }
+        public bool completeStatus { get; set; }
+    }
 }

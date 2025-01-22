@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.Http.Results;
 using System.Web.Mvc;
@@ -30,7 +31,6 @@ namespace RemoteSensingProject.Controllers
             var managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
-
             var TotalCount = _managerServices.DashboardCount(userObj.userId);
             ViewBag.TotalAssignProject = TotalCount.TotalAssignProject;
             ViewBag.TotaCompleteProject = TotalCount.TotaCompleteProject;
@@ -59,6 +59,27 @@ namespace RemoteSensingProject.Controllers
             {
                 status = res,
                 message = res ? "Outsource created succesfully !" : "Some issue occured !"
+            });
+        }
+        #endregion
+
+        #region  Task Assign
+        public ActionResult CreateTask()
+        {
+            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["OutSourceList"] = _managerServices.selectAllOutSOurceList(userObj);
+            ViewData["TaskList"] = _managerServices.taskList(userObj);
+            return View();
+        }
+        [HttpPost]
+        public ActionResult CreateTaskJson(OutSourceTask ost)
+        {
+            ost.empId= Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            bool res = _managerServices.createTask(ost);
+            return Json(new
+            {
+                status = res,
+                message = res ? "Task created successfully !" : "Some issue occured !"
             });
         }
         #endregion
