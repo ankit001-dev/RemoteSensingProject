@@ -804,6 +804,8 @@ namespace RemoteSensingProject.Models.Admin
                             Id = Convert.ToInt32(rd["id"]),
                             Project_Id = Convert.ToInt32(rd["project_id"]),
                             ProjectHeads = rd["heads"].ToString(),
+                            TotalAskAmount = rd["totalAskAmount"].ToString(),
+                            ApproveAmount = rd["approveAmount"].ToString(),
                             ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0)
                         });
                     }

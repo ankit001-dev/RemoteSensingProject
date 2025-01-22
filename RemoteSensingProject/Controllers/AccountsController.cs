@@ -44,7 +44,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Expenses(int Id)
         {
-            ViewData["ProjectStages"] = _adminServices.ProjectBudgetList(Id);
+            ViewData["ProjectStages"] = _accountSerivce.ProjectBudgetList(Id);
 
             return View();
         
@@ -58,7 +58,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult RequestHistory()
         {
-            ViewBag.ProjectList = _accountSerivce.Project_List().ToList();
+            ViewBag.ProjectList = _accountSerivce.Project_List().Where(e => e.ApproveStatus == true).ToList();
             return View();
         }
         public ActionResult Meeting_List()
