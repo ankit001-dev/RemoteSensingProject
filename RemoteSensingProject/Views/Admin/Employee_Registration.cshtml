@@ -35,7 +35,7 @@
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="filterDivision">
-                    <option selected value=null>--Select Dicision--</option>
+                    <option selected value=null>--Select Division--</option>
                     @if (ViewBag.division != null)
                     {
                         if (ViewBag.division.Count > 0)
@@ -66,7 +66,6 @@
                                 <th>Name</th>
                                 <th>Division</th>
                                 <th>Designation</th>
-                                <th>Image</th>
                                 <th>Date</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-center">Action</th>
@@ -85,9 +84,6 @@
                                         <td>@item.EmployeeName</td>
                                         <td>@item.DevisionName</td>
                                         <td>@item.DesignationName</td>
-                                        <td class="w-25">
-                                            <img src="@item.Image_url" class="w-100" height="50" alt="image">
-                                        </td>
                                         <td>@item.CreationDate</td>
                                         <td class="text-center">
                                             <span class="form-check form-switch"><input type="checkbox" class="form-check-input activeSwitch"  data-id="@item.Id" checked="@item.ActiveStatus"></span>
