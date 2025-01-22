@@ -11,7 +11,6 @@ namespace RemoteSensingProject.Models.Accounts
 {
     public class AccountService:DataFactory
     {
-
         public List<Project_model> Project_List()
         {
             try
@@ -93,5 +92,45 @@ namespace RemoteSensingProject.Models.Accounts
             }
         }
 
+        public List<Project_Budget> ProjectBudgetList(int Id)
+        {
+            try
+            {
+                List<Project_Budget> list = new List<Project_Budget>();
+                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "GetBudgetByProjectId");
+                cmd.Parameters.AddWithValue("@id", Id);
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new Project_Budget
+                        {
+                            Id = Convert.ToInt32(rd["id"]),
+                            Project_Id = Convert.ToInt32(rd["project_id"]),
+                            ProjectHeads = rd["heads"].ToString(),
+                            TotalAskAmount = rd["totalAskAmount"].ToString(),
+                            ApproveAmount = rd["approveAmount"].ToString(),
+                            ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0)
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
     }
 }

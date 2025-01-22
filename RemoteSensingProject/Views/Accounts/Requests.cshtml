@@ -20,9 +20,11 @@
                 <thead>
                     <tr>
                         <th class="pt-0">#</th>
-                        <th class="pt-0">Assign Date</th>
                         <th class="pt-0">Project Name</th>
+                        <th class="pt-0">Project Manager</th>
+                        <th class="pt-0">Assign Date</th>
                         <th class="pt-0">Start Date</th>
+                        <th class="pt-0">Complete Date</th>
                         <th class="pt-0">Action</th>
                     </tr>
                 </thead>
@@ -34,9 +36,11 @@ if (ViewBag.ProjectList != null) {
                                     {
                         <tr>
                             <td>@i</td>
-                            <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
                             <td>@item.ProjectTitle</td>
-                            <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
+                            <td>@item.ProjectManager</td>
+                            <td>@Convert.ToDateTime(item.AssignDate).ToString("dd-MMM-yyyy")</td>
+                            <td>@Convert.ToDateTime(item.StartDate).ToString("dd-MMM-yyyy")</td>
+                            <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd-MMM-yyyy")</td>
                             <td class="text-center">
                                 <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                     <li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>
