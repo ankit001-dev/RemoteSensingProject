@@ -115,7 +115,7 @@
                                 <th>Receipt</th>
                             </tr>
                         </thead>
-                        <tbody id="">
+                        <tbody >
                             <!----Dynamic Data---->
                         </tbody>
                     </table>
@@ -169,6 +169,14 @@
                             $tbody.append('<tr><td colspan="6" class="text-center">No expenses available</td></tr>');
                         }
                     }
+                    $('#dataTableExamples').DataTable().destroy()
+                        $('#dataTableExamples').DataTable({
+                            layout: {
+                                topStart: {
+                                    buttons: ['excel', 'pdf']
+                                }
+                            }
+                        });
             }
             },
             error: function (xhr) {
@@ -211,15 +219,7 @@
                 }
             });
         });
-        setTimeout(() => {
-            $('#dataTableExamples').DataTable({
-                layout: {
-                    topStart: {
-                        buttons: ['excel', 'pdf']
-                    }
-                }
-            });
-        },1000)
+       
     });
 
 </script>
