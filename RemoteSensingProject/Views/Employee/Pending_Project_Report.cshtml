@@ -36,7 +36,7 @@
             <div class="col-lg-2">
                 <h5>All Project Lists</h5>
             </div>
-            <div class="col-lg-4 col-md-6">
+            <div class="col-lg-6 col-md-6">
                 <input type="text" placeholder="Search by project name" id="searchByProjectName" class="form-control">
             </div>
             @*<div class="col-lg-3 col-md-6">
@@ -47,14 +47,14 @@
                         <option value="3">Manager3</option>
                     </select>
                 </div>*@
-        <div class="col-lg-3 col-md-3">
-            <select id="statusFilter" class="form-select form-select-lg">
-                <option selected>Project Status</option>
-                <option value="Processing">Work in Progress</option>
-                <option value="Not Started">Not Started</option>
-                <option value="Completed">Completed</option>
-            </select>
-        </div>
+            <div class="col-lg-4 col-md-3">
+                <select id="statusFilter" class="form-select form-select-lg">
+                    <option selected>Project Status</option>
+                    <option value="Processing">Work in Progress</option>
+                    <option value="Not Started">Not Started</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
         </div>
     </form>
 </div>
@@ -72,7 +72,7 @@
                                 <th>Start Date</th>
                                 <th>Completion Date</th>
                                 <th>Project Status</th>
-                                <th>Image</th>
+                                <th>Receipt</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -305,5 +305,3 @@
         });
     });
 </script>
-
-

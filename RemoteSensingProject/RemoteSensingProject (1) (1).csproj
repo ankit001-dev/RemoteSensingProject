@@ -259,6 +259,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiServices\AccountController.cs" />
     <Compile Include="ApiServices\AdminController.cs" />
     <Compile Include="ApiServices\ProjectManagerController.cs" />
     <Compile Include="ApiServices\SubOrdinateController.cs" />
@@ -991,8 +992,6 @@
     <Content Include="Views\Shared\_AccountLayout.cshtml" />
     <Content Include="Views\Accounts\Dashboard.cshtml" />
     <Content Include="Views\Accounts\Requests.cshtml" />
-    <Content Include="Views\Accounts\ApprovedList.cshtml" />
-    <Content Include="Views\Accounts\RejectList.cshtml" />
     <Content Include="Views\Accounts\FundReport.cshtml" />
     <Content Include="Views\SubOrdinate\Dashboard.cshtml" />
     <Content Include="Views\SubOrdinate\Assigned_Project.cshtml" />
@@ -1002,6 +1001,7 @@
     <Content Include="Views\Employee\All_Project_List.cshtml" />
     <Content Include="Views\Employee\Expense_Report.cshtml" />
     <Content Include="Views\Employee\CreateTask.cshtml" />
+    <Content Include="Views\Admin\SubOrdinateProblemList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1010,6 +1010,7 @@
     <Folder Include="ProjectContent\Admin\ProjectDocs\" />
     <Folder Include="ProjectContent\ProjectManager\HeadsSlip\" />
     <Folder Include="ProjectContent\ProjectManager\ProjectDocs\" />
+    <Folder Include="Views\Account\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

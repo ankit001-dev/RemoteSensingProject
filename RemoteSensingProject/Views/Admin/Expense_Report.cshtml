@@ -39,21 +39,20 @@
         transition: all 0.3s ease-in-out !important;
     }
 
-        /* Excel button (Green) */
-        .dt-button.buttons-excel {
-            background-color: #3b9f42 !important; /* Excel-like green */
-            color: white !important;
-        }
+    .dt-button.buttons-excel {
+        background-color: #3b9f42 !important; /* Excel-like green */
+        color: white !important;
+    }
 
-            .dt-button.buttons-excel:hover {
-                background-color: #2a7c2f !important; /* Darker green on hover */
-            }
+    .dt-button.buttons-excel:hover {
+        background-color: #2a7c2f !important; /* Darker green on hover */
+    }
 
         /* PDF button (Red) */
-        .dt-button.buttons-pdf {
-            background-color: #e74c3c !important; /* PDF-like red */
-            color: white !important;
-        }
+     .dt-button.buttons-pdf {
+         background-color: #e74c3c !important; /* PDF-like red */
+         color: white !important;
+     }
 
             .dt-button.buttons-pdf:hover {
                 background-color: #c0392b !important; /* Darker red on hover */
@@ -115,7 +114,7 @@
                                 <th>Receipt</th>
                             </tr>
                         </thead>
-                        <tbody id="">
+                        <tbody >
                             <!----Dynamic Data---->
                         </tbody>
                     </table>
@@ -128,48 +127,57 @@
 
 
 <script>
-    document.getElementById('expenseDropdown').onchange = function () {
-        var selectedValue = this.value;
-        var expenseDetailsDiv = document.getElementById('expenseDetails');
-        const projectId = $("#projectName").val();
-        debugger
-        if (selectedValue) {
-            expenseDetailsDiv.removeAttribute('hidden');
-            getExpenses(selectedValue, projectId)
-        } else {
-            expenseDetailsDiv.setAttribute('hidden', true);
-        }
-  
-    };
+    $(document).ready(function () {
 
-    function getExpenses(pId, hId) {
+        $('#expenseDropdown').change(function () {
+            var selectedValue = $(this).val();
+            var expenseDetailsDiv = $('#expenseDetails');
+            const projectId = $('#projectName').val();
+            debugger;
+            if (selectedValue) {
+                expenseDetailsDiv.removeAttr('hidden');
+                getExpenses(selectedValue, projectId);
+            } else {
+                expenseDetailsDiv.attr('hidden', true);
+            }
+        });
+
+    })
+ 
+    let isApplyDataTable = false;
+    function getExpenses(hId, pId) {
         $.ajax({
             url: "/Admin/GetExpenses",
-            type: "get",
-            data: { pId: pId, hId: hId },
+            type: "GET",
+            data: { hId: hId, pId: pId },
             success: function (res) {
                 const $tbody = $("#dataTableExamples tbody");
+                console.log(res)
+                    let elem = $('#dataTableExamples');
+                elem.DataTable().destroy()
                 $tbody.empty();
-                if (res != null) { 
-                    if (res._list.length > 0) {
-                        if (Array.isArray(res._list) && res._list.length > 0) {
-                            $.each(res._list, function (index, item) {
-                                const row = `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${item.DateString}</td>
-                        <td>${item.title}</td>
-                        <td>${item.description}</td>
-                        <td>${item.amount}</td>
-                        <td><a href="${item.attachment_url}" target="_blank" title="View Attachment">View</a></td>
-                    </tr>`;
-                                $tbody.append(row);
-                            });
-                        } else {
-                            $tbody.append('<tr><td colspan="6" class="text-center">No expenses available</td></tr>');
-                        }
-                    }
-            }
+              
+                if (res.list && res.list.length > 0) {
+
+                    $.each(res.list, function (index, item) {
+                        const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.DateString}</td>
+                            <td>${item.title}</td>
+                            <td>${item.description}</td>
+                            <td>${item.amount}</td>
+                            <td><a href="${item.attachment_url}" target="_blank" title="View Attachment">View</a></td>
+                        </tr>`;
+                        $tbody.append(row);
+                    });
+                } else {
+                    $tbody.append('<tr><td  class="text-center">No expenses available</td></tr>');
+                }
+                 elem.DataTable({
+                    buttons: ['excel', 'pdf'],
+                    dom: 'Bfrtip',
+                })
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);
@@ -181,9 +189,7 @@
             }
         });
     }
-
-
-
+  
 </script>
 
 <script>
@@ -211,15 +217,7 @@
                 }
             });
         });
-        setTimeout(() => {
-            $('#dataTableExamples').DataTable({
-                layout: {
-                    topStart: {
-                        buttons: ['excel', 'pdf']
-                    }
-                }
-            });
-        },1000)
+       
     });
 
 </script>

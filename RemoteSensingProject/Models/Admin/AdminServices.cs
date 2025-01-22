@@ -537,6 +537,7 @@ namespace RemoteSensingProject.Models.Admin
                             projectDocumentUrl = rd["ProjectDocument"].ToString(),
                             ProjectType = rd["projectType"].ToString(),
                             physicalcomplete = Convert.ToDecimal(rd["completionPercentage"]),
+                            overallPercentage = Convert.ToDecimal(rd["overallPercentage"]),
                             ProjectStage = Convert.ToBoolean(rd["stage"]),
                             CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
@@ -803,6 +804,8 @@ namespace RemoteSensingProject.Models.Admin
                             Id = Convert.ToInt32(rd["id"]),
                             Project_Id = Convert.ToInt32(rd["project_id"]),
                             ProjectHeads = rd["heads"].ToString(),
+                            TotalAskAmount = rd["totalAskAmount"].ToString(),
+                            ApproveAmount = rd["approveAmount"].ToString(),
                             ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0)
                         });
                     }
@@ -899,6 +902,41 @@ namespace RemoteSensingProject.Models.Admin
             {
                 con.Close();
 
+            }
+        }
+        public List<DashboardCount> getAllProjectCompletion()
+        {
+            try
+            {
+                List<DashboardCount> list = new List<DashboardCount>();
+                DashboardCount obj = null;
+                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getOverallProjectCompletion");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    while (sdr.Read())
+                    {
+                        obj = new DashboardCount();
+                        obj.Title = sdr["title"].ToString();
+                        obj.OverallCompletionPercentage = sdr["overallCompletion"].ToString();
+                        list.Add(obj);
+                    }
+                }
+
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
             }
         }
         #endregion /* End */

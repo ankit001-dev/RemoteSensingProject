@@ -48,5 +48,19 @@ namespace RemoteSensingProject.Models.Accounts
             public float Amount { get; set; }
 
         }
+
+        public class Project_Budget
+        {
+            public int Id { get; set; }
+            public int Project_Id { get; set; }
+            public int HeadId { get; set; }
+            public string ProjectHeads { get; set; }
+            public decimal ProjectAmount { get; set; }
+            public string HeadsDescription { get; set; }
+            public string CompletionDatestring { get; set; }
+            public string TotalAskAmount { get; set; }
+            public string ApproveAmount { get; set; }
+
+        }
     }
 }

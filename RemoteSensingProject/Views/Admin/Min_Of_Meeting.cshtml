@@ -88,13 +88,13 @@
                         <div class="col-lg-4 mb-3 col-12" id="meetingLinkContainer">
                             <div class="form-group">
                                 <label>Meeting Link</label>
-                                <input type="url" class="form-control meetinglink"  id="meetinglink" name="MeetingLink" placeholder="Enter meeting link">
+                                <input type="url" class="form-control meetinglink" id="meetinglink" name="MeetingLink" placeholder="Enter meeting link">
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3 col-12" id="venueEle" style="display: none;">
                             <div class="form-group">
                                 <label>Meeting Address</label>
-                                <input type="text" class="form-control meetinglink"  id="meetingaddress" name="MeetingAddress" placeholder="Enter meeting address">
+                                <input type="text" class="form-control meetinglink" id="meetingaddress" name="MeetingAddress" placeholder="Enter meeting address">
                             </div>
                         </div>
                     </div>
@@ -132,7 +132,7 @@
                             <div class="col-lg-4 mb-3 col-12">
                                 <label style="display: block;font-weight:bold; margin-bottom: 5px;"></label>
                                 <div class="form-group m-0">
-                                    <a href="#" id="add-btn" title="Add Another Key"><i class="fa-solid fa-circle-plus"></i> Add Another Key</a>
+                                    <a href="#" id="add-btn" title="Add Another Key"><i class="fa-solid fa-circle-plus"></i> Add Another Key Point</a>
                                 </div>
                             </div>
                         </div>
@@ -350,7 +350,6 @@
                                 </tr>
                             </thead>
                             <tbody id="conclusionContainer">
-                               
                             </tbody>
                         </table>
                     </div>
@@ -389,9 +388,28 @@
     </div>
 </div>
 
+<!---Only Conclusion-->
+<div class="modal fade" id="conclucionModal" tabindex="-1" aria-labelledby="conclucionModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">Conclusion</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="onlyConclusionModal">
+                @*<p>
+                    There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum,
+                    you need to be sure there isn't anything embarrassing hidden in the middle of text. All t There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All t
+                </p>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
 <script>
-   
+
 
     function showLoading(action) {
         Swal.fire({
@@ -415,17 +433,17 @@
         });
 
 
-            $('#tbl_Member').DataTable();
-            $('#basicExample').DataTable();
-                $(".select2").select2({
-                    placeholder: "--Select Member--"
-                })
-            $("#updateMeetingMember").select2({
-                placeholder: "--Select Member--",
-                width: '100%'
-            })
-       
-            
+        $('#tbl_Member').DataTable();
+        $('#basicExample').DataTable();
+        $(".select2").select2({
+            placeholder: "--Select Member--"
+        })
+        $("#updateMeetingMember").select2({
+            placeholder: "--Select Member--",
+            width: '100%'
+        })
+
+
 
         $('#select_all').on('click', function () {
             const isChecked = $(this).prop("checked");
@@ -505,12 +523,12 @@
             if (selectedValue == "offline") {
                 $("#updatemeetinglink").attr("required", false);
                 $("#updatemeetingaddress").attr("required", true);
-             
+
 
             } else {
                 $("#updatemeetinglink").attr("required", true);
                 $("#updatemeetingaddress").attr("required", false);
-                
+
 
             }
         });
@@ -546,9 +564,9 @@
                     keyPointList.push(para.value);
 
                 }
-               else {
+                else {
                     formData.append(para.name, para.value);
-            }
+                }
             });
 
             if ($("#Attachment").get(0).files.length > 0) {
@@ -604,12 +622,12 @@
             event.preventDefault();
             showLoading(true);
 
-            let formData = new FormData(this); 
+            let formData = new FormData(this);
 
-            
+
             $(".updatekeypointDetails").each(function (i, d) {
-                formData.append(`keyPointList[${i}]`, d.value); 
-                formData.append(`KeyPointId[${i}]`, d.getAttribute("data-id") || 0); 
+                formData.append(`keyPointList[${i}]`, d.value);
+                formData.append(`KeyPointId[${i}]`, d.getAttribute("data-id") || 0);
             });
 
             let attachment = $("#Attachment").get(0).files[0];
@@ -624,11 +642,11 @@
             $.ajax({
                 url: '/Admin/UpdateMeeting',
                 type: 'POST',
-                processData: false, 
-                contentType: false, 
+                processData: false,
+                contentType: false,
                 data: formData,
                 success: function (response) {
-                    showLoading(false); 
+                    showLoading(false);
 
                     if (response.success) {
                         Swal.fire({
@@ -649,7 +667,7 @@
                     }
                 },
                 error: function (xhr, status, error) {
-                    showLoading(false); 
+                    showLoading(false);
 
                     console.error("AJAX Error:", {
                         status: status,
@@ -706,7 +724,7 @@
                             </li >
                         <li><a onclick='updateMeeting(${item.Id})' role="button"><i class="fa-solid text-primary fa-pencil"></i></a></li>` : `<i onclick="showAllConclusion(${item.Id})" role="button" class="fa-solid text-primary fa-eye"></i></li>
                        `
-                    
+
                         }
                         <li><i class="fa-solid fa-users" onclick='ShowJoiningMember(${item.Id})'></i></li>
                         </ul>
@@ -744,7 +762,11 @@
                     ${d.mode}
                  </td>
                  <td>
-                     ${d.Conclusion}
+                     ${d.Conclusion.slice(0,20)}
+                     <a href="#" onclick="showOnlyConclusion(${d.Id},${id})" class="ShowPresentMember" data-bs-toggle="modal" data-bs-target="#conclucionModal">
+                       ...more
+                     </a>
+
                  </td>
                  <td>
                      ${d.NextFollow}
@@ -796,23 +818,23 @@
                     $(".updatemeetType").each(function (i, d) {
                         if (res.MeetingType.toLowerCase() == d.value) {
 
-                           d.setAttribute("checked", true)
+                            d.setAttribute("checked", true)
                         }
                     })
-                   
+
                     $("#updatevenueEle").toggle(res.MeetingType.toLowerCase() == "offline");
                     $("#updatemeetingLinkContainer").toggle(res.MeetingType.toLowerCase() == "online");
                     if (res.MeetingType.toLowerCase() == "offline") {
 
                         $("#updatemeetingaddress").val(res.MeetingLink)
-                        $("#updatemeetingaddress").attr("required",true)
-                        $("#updatemeetinglink").attr("required",false)
-                       
+                        $("#updatemeetingaddress").attr("required", true)
+                        $("#updatemeetinglink").attr("required", false)
+
                     } else {
                         $("#updatemeetinglink").val(res.MeetingLink)
                         $("#updatemeetinglink").attr("required", true)
                         $("#updatemeetingaddress").attr("required", false)
-                       
+
                     }
                     $("#updatemeetingtitle").val(res.MeetingTitle)
                     $("#updatemeetingdatetime").val(res.MeetingTimeString)
@@ -883,7 +905,7 @@
         })
     }
 
-   function showKeyResponse(id) {
+    function showKeyResponse(id) {
         $.ajax({
             url: "/admin/getKeypointResponse",
             type: "get",
@@ -923,11 +945,11 @@
                 if (res != null) {
                     $("#joiningMemberContainer").empty();
                     if (res.length > 0) {
-                        res.forEach(function (d,i) {
+                        res.forEach(function (d, i) {
                             $("#joiningMemberContainer").append(` <tr>
-<td>${i+1}</td>
+<td>${i + 1}</td>
     <td><img src="${d.Image_url}" alt="sliderimages" style="height: 20px;width: 20px;"> ${d.EmployeeName}	<span class="text-secondary">(${d.EmployeeRole})</span></td>
-    <td>${d.AppStatus == 0 ? "Pending" : d.AppStatus == 1? "Accepted":"Rejected"}</td>
+    <td>${d.AppStatus == 0 ? "Pending" : d.AppStatus == 1 ? "Accepted" : "Rejected"}</td>
     <td>${d.Reason}</td>
 </tr>`)
                         })
@@ -938,6 +960,53 @@
                     title: "error",
                     text: "something went wrong",
                     icon: "error"
+                })
+            }
+        })
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        document.getElementById('AllMemmberDetails').addEventListener('hide.bs.modal', function () {
+            $('#AllConclusionModal').modal('show');
+        }); document.getElementById('conclucionModal').addEventListener('hide.bs.modal', function () {
+            $('#AllConclusionModal').modal('show');
+        });
+
+
+
+    })
+
+
+    function showOnlyConclusion(Id,meetingId) {
+        showLoading(true);
+
+        $.ajax({
+            url: '/Admin/GetConclusionOnly',
+            type: 'get',
+            data: {
+                id: Id,
+                meetingId: meetingId
+            },
+            success: function (res) {
+                $("#onlyConclusionModal").empty();
+
+                if (res !=null) {
+         
+                     $("#onlyConclusionModal").append(`<p>${res}</p>`)
+                   
+                }
+                showLoading(false);
+
+            }, error: function (xhr) {
+                console.log(xhr)
+                Swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: 'An error occurred.',
+                    confirmButtonText: 'ok'
                 })
             }
         })
