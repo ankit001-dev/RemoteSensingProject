@@ -29,6 +29,8 @@
                                 <th class="text-center">S.No.</th>
                                 <th>Head</th>
                                 <th class="text-center">Amount</th>
+                                <th class="text-center">Expended Amount</th>
+                                <th class="text-center">Approved Amount</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
@@ -36,7 +38,7 @@
                             @if (ViewData["projectStages"] != null)
                             {
                                 int i = 1;
-                                foreach (var item in ViewData["ProjectStages"] as List<RemoteSensingProject.Models.Admin.main.Project_Budget>)
+                                foreach (var item in ViewData["ProjectStages"] as List<RemoteSensingProject.Models.Accounts.main.Project_Budget>)
                                 {
                                     <tr>
                                         <td class="text-start">@i</td>
@@ -44,6 +46,8 @@
                                         <td class="text-center">
                                             @item.ProjectAmount
                                         </td>
+                                        <td>@item.TotalAskAmount</td>
+                                        <td>@item.ApproveAmount</td>
                                         <td class="text-center"><a href="#" class="headExpense" data-Id="@item.Id"><i class="fa-solid fa-eye"></i></a></td>
                                     </tr>
                                     i++;
@@ -113,16 +117,26 @@
                 </div>
 
                 <div id="amountDiv" class="my-2" style="display: none;">
-                    <label for="amount" class="form-label">Enter Amount:</label>
-                    <input type="number" id="givenamount" class="form-control" placeholder="Amount">
+                    <div class="readOnlyInput w-100">
+                        Amount :
+                        <input type="number" class="form-control mb-2" id="readonlyamount" readonly />
+                    </div>
+                    <div class="my-3 d-flex gap-5 w-100 align-items-center">
+                        <div>Other <input type="checkbox" value="other" id="otherCheckbox" /></div>
+                        <div id="totalAmountSpan"></div>
+                    </div>
+                    <div class="d-none w-100 mb-2" id="manualInputBox">
+                        <label for="amount" class="form-label">Enter Amount :</label>
+                        <input type="number" id="givenamount" class="form-control" placeholder="Amount">
+                    </div>
                 </div>
-                <div id="descriptionDiv" style="display: none;">
+                <div id="descriptionDiv" class="mt-3" style="display: none;">
                     <label for="description" class="form-label">Enter Description:</label>
                     <textarea id="description" class="form-control" placeholder="Description"></textarea>
                 </div>
 
                 <div id="pendingRejectDiv" class="my-2" style="display: none;">
-                    <label class="form-label">Select Status:</label> Left :- <span class="bg-secondary rounded-1 border text-light" id="leftAmount"></span><br>
+                    <label class="form-label">Select Status:</label> Left :- <span class="bg-secondary rounded-1 border text-light" id="leftAmount"></span><br><br />
                     <div class="form-check">
                         <input type="radio" class="form-check-input leftAmountStatus" checked name="status" id="pending" value="0">
                         <label class="form-check-label" for="pending">Pending</label>
@@ -131,6 +145,7 @@
                         <input type="radio" class="form-check-input leftAmountStatus" name="status" id="rejectStatus" value="2">
                         <label class="form-check-label" for="rejectStatus">Reject</label>
                     </div>
+                    <textarea id="Acceptdescription" class="form-control" placeholder="Description"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -209,71 +224,6 @@
         return dateObj.toLocaleDateString();
     }
 
-    $(".addExpences").click(function () {
-        let dataId = $(this).attr("data-Id");
-        $("#addMore").attr("data-projectHeadId", dataId)
-        $("#projectHeadId").val(dataId);
-        $("#addExpencesModal").modal("show");
-    })
-
-
-    $("#expenseForm").on("submit", function (e) {
-        e.preventDefault();
-        let formData = new FormData(this);
-        $.each($(".headsSlip"), function (i, d) {
-            let file = d.files[0];
-            if (file) {
-                formData.append(`list[${i}].Attatchment_file`, file);
-            }
-        });
-
-        Swal.fire({
-            title: "Please wait ...",
-            text: "Processing your request ....",
-            timer: 100000,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        })
-        $.ajax({
-            url: "/employee/InsertExpenses",
-            type: "post",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (res) {
-                if (res.status) {
-                    Swal.fire({
-                        title: "Successfully !",
-                        text: "Expences added successfully !",
-                        icon: "success",
-                        didClose: () => {
-                            location.reload(true);
-                        }
-                    })
-                }
-                else {
-                    Swal.fire({
-                        title: "Sorry !",
-                        text: "Some issue occured",
-                        icon: "warning"
-                    })
-                }
-            },
-            error: function () {
-                Swal.fire({
-                    title: "Server busy !",
-                    text: "Server is busy ! Please try after sometime.",
-                    icon: "error",
-                    didClose: () => {
-                        location.reload(true)
-                    }
-                })
-            }
-        })
-    })
 
     $(document).ready(function () {
         $("#exampleModal").on("hide.bs.modal", function () {
@@ -302,6 +252,9 @@
                     $('#amountDiv').show();
                     $('#descriptionDiv').hide();
                     $('#pendingRejectDiv').hide();
+                    $("#readonlyamount").val(actualamount)
+                    $("#givenamount").val("")
+                    $("#totalAmountSpan").hide()
                 });
 
                 $('#reject').on('change', function () {
@@ -310,6 +263,20 @@
                     $('#pendingRejectDiv').hide();
                 });
 
+        $("#otherCheckbox").on("change", function () {
+            if ($(this).prop("checked")) {
+                $("#manualInputBox").removeClass("d-none");
+                $(".readOnlyInput").hide()
+                $("#totalAmountSpan").show()
+                $("#totalAmountSpan").text("Total Ask : "+actualamount)
+
+            } else {
+                $("#manualInputBox").addClass("d-none");
+                $(".readOnlyInput").show()
+                $("#totalAmountSpan").hide()
+
+            }
+        })
                 // Amount input event to show pending/reject options if amount is less than the actual amount
         $('#givenamount').on('input', function () {
                     const amount = parseFloat($(this).val());
@@ -345,7 +312,13 @@
 
                     let result = { option: option };
                     if (option === 'accept') {
-                        const amount = $('#givenamount').val();
+                        let amount = 0;
+                        if ($("#otherCheckboxs").prop("checked")) {
+                           amount = $('#givenamount').val();
+                        } else {
+                            amount = $("#readonlyamount").val()
+                        }
+
                         if (!amount) {
                             Swal.fire({
                                 icon: 'warning',
@@ -370,7 +343,14 @@
                             result.status = status;
                         }
                     } else if (option === 'reject') {
-                        const description = $('#description').val();
+                        let description;
+                        if ($("#otherCheckboxs").prop("checked")) {
+                            description = $('#Acceptdescription').val();
+
+                        } else {
+                            description = $('#description').val();
+
+                        }
                         if (!description) {
                             Swal.fire({
                                 icon: 'warning',
@@ -388,19 +368,18 @@
 
                         let leftAmountStatus = $(".leftAmountStatus:checked").val();
                         let appStatus = parseFloat(result.amount) < actualamount ? leftAmountStatus:1;
-
-                            formData.append("ProjectId",@Request.QueryString["Id"])
-                            formData.append("HeadId",headId)
-                            formData.append("id",id)
-                        formData.append("AppStatus", appStatus)
-                            formData.append("Reason", null)
-                        formData.append("Amount", parseFloat(result.amount))
-
+                       
+                             formData.append("ProjectId",@Request.QueryString["Id"])
+                             formData.append("HeadId", headId)
+                             formData.append("id", id)
+                             formData.append("Reason", $("#Acceptdescription").val())
+                             formData.append("AppStatus", appStatus)
+                             formData.append("Amount", parseFloat(result.amount))
                     } else {
                          formData.append("ProjectId",@Request.QueryString["Id"])
                          formData.append("HeadId",headId)
                          formData.append("AppStatus", 2)
-                         formData.append("id", id)  
+                         formData.append("id", id)
                          formData.append("Reason", result.description)
                          formData.append("Amount",0)
                     }

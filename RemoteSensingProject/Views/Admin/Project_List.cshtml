@@ -40,11 +40,11 @@
                 <thead>
                     <tr>
                         <th class="pt-0">#</th>
-                        <th class="pt-0">Assign Date</th>
                         <th class="pt-0">Project Name</th>
+                        <th class="pt-0">Project Manager</th>
+                        <th class="pt-0">Assign Date</th>
                         <th class="pt-0">Start Date</th>
                         <th class="pt-0">Completion Date</th>
-                        <th class="pt-0">Project Manager</th>
                         <th class="pt-0">Status</th>
                         <th class="pt-0">Action</th>
                     </tr>
@@ -54,32 +54,34 @@
                     {
                         <tr>
                             <td>@i</td>
-                            <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
                             <td>@item.ProjectTitle</td>
-                            <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
-                            <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
                             <td>@item.ProjectManager</td>
+                            <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
+
+                            <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
+                            <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
+
                             <td>
                                 @if (item.ProjectStatus)
-                                    {
-                                        <span class="badge bg-success">Completed</span>
-                                    }
-                                     else if(item.CompletionDate < DateTime.Now)
-                                    {
-                                        <span class="badge bg-danger">Delay</span>
-                                    }
-                                    else if(item.StartDate < DateTime.Now)
-                                    {
+                                {
+                                    <span class="badge bg-success">Completed</span>
+                                }
+                                else if (item.CompletionDate < DateTime.Now)
+                                {
+                                    <span class="badge bg-danger">Delay</span>
+                                }
+                                else if (item.StartDate < DateTime.Now)
+                                {
 
 
-<span class="badge bg-warning">Work in Progress</span>
-}
-else
-                {
-                            <span class="badge bg-primary">Pending</span>
-                }
-                                
-                                
+                                    <span class="badge bg-warning">Work in Progress</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary">Pending</span>
+                                }
+
+
                             </td>
                             <td class="text-center">
                                 <ul class="d-flex list-unstyled mb-0 justify-content-center">

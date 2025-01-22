@@ -5,8 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using RemoteSensingProject.Models.Admin;
-using RemoteSensingProject.Models.ProjectManager;
 using static RemoteSensingProject.Models.Admin.main;
+using  RemoteSensingProject.Models.ProjectManager;
+
 
 namespace RemoteSensingProject.Controllers
 {
@@ -32,10 +33,16 @@ namespace RemoteSensingProject.Controllers
             ViewBag.totalCompleteProject = TotalCount.TotalCompleteProject;
             ViewBag.totalOngoingProject = TotalCount.TotalOngoingProject;
             ViewBag.totalMeetings = TotalCount.TotalMeetings;
-
+            ViewBag.OverallprojectCompletion = _adminServices.getAllProjectCompletion() ;
             return View();
         }
+        public ActionResult BindOverallCompletionPercentage()
+        {
+            List<main.DashboardCount> list = new List<main.DashboardCount>();
+            list = _adminServices.getAllProjectCompletion();
+            return Json(new { list = list},JsonRequestBehavior.AllowGet);
 
+        }
         #region Employee Category
         public ActionResult Emp_Category()
         {
@@ -255,6 +262,10 @@ namespace RemoteSensingProject.Controllers
         public ActionResult GetConclusions(int id)
         {
             var res = _adminServices.getConclusion(id);
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }   public ActionResult GetConclusionOnly(int id,int meetingId)
+        {
+            var res = _adminServices.getConclusion(meetingId).Where(e=>e.Id==id).Select(e=>e.Conclusion).FirstOrDefault();
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
@@ -490,10 +501,17 @@ namespace RemoteSensingProject.Controllers
             _headList = _adminServices.getHeadByProject(id);
             return Json(new { _headList = _headList },JsonRequestBehavior.AllowGet);
         }
-        public ActionResult GetExpenses(int pId, int hId)
+        public ActionResult GetExpenses(int hId,int pId )
         {
-            var _list = _managerServices.ExpencesList(pId, hId);
-            return Json(new { _list = _list }, JsonRequestBehavior.AllowGet);
+            List<ProjectExpenses> list = new List<ProjectExpenses>();
+             list = _managerServices.ExpencesList(hId,pId );
+            return Json(new { list = list }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SubOrdinateProblemList()
+        {
+            ViewBag.ProjectProblemList = _managerServices.getSubOrdinateProblemforAdmin();
+            return View();
         }
     }
 }

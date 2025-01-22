@@ -511,6 +511,45 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
        
+        }     
+        public List<Raise_Problem> getSubOrdinateProblemforAdmin()
+        {
+            try
+            {
+                List<Raise_Problem> problemList = new List<Raise_Problem>();
+                Raise_Problem obj = null;
+                SqlCommand cmd = new SqlCommand("sp_ManageSubordinateProjectProblem", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getAllSubOrdinateProblem");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    while (sdr.Read())
+                    {
+                        obj = new Raise_Problem();
+                        obj.ProjectName = sdr["ProjectName"].ToString();
+                        obj.Title = sdr["Title"].ToString();
+                        obj.Description = sdr["Description"].ToString();
+                        obj.Attchment_Url = sdr["Attachment"].ToString();
+                        obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                        problemList.Add(obj);
+                    }
+                }
+                return problemList;
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+       
         }
         #endregion
 
@@ -613,7 +652,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<ProjectExpenses> ExpencesList(int projectId, int headId)
+        public List<ProjectExpenses> ExpencesList(int headId,int projectId)
         {
             try
             {
