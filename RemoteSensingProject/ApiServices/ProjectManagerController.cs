@@ -647,6 +647,68 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
+        [HttpPost]
+        [Route("api/createTask")]
+        public IHttpActionResult createTask()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formData = new OutSourceTask
+                {
+                    title = request.Form.Get("title"),
+                    description = request.Form.Get("description"),
+                    empId = Convert.ToInt32(request.Form.Get("empId"))
+                };
+                var outSourceList = request.Form["outSourceId"];
+                if(outSourceList != null)
+                {
+                    formData.outSourceId = outSourceList.Split(',').Select(value => int.Parse(value.ToString())).ToArray();
+                }
+                bool res = _managerService.createTask(formData);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res ? "Task created successfully !" : "Some issue occured !"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/getTaskList")]
+        public IHttpActionResult getTaskList(int empId)
+        {
+            try
+            {
+                var data = _managerService.taskList(empId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
 
