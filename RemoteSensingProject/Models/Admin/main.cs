@@ -115,6 +115,8 @@ namespace RemoteSensingProject.Models.Admin
             public decimal ProjectAmount { get; set; }
             public string HeadsDescription { get; set; }
             public string CompletionDatestring { get; set; }
+            public string TotalAskAmount { get; set; }
+            public string ApproveAmount { get; set; }
 
         }
         public class Project_Subordination
