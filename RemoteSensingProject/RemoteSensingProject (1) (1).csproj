@@ -275,6 +275,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Accounts\AccountService.cs" />
+    <Compile Include="Models\Accounts\main.cs" />
     <Compile Include="Models\Admin\AdminServices.cs" />
     <Compile Include="Models\Admin\main.cs" />
     <Compile Include="Models\DataFactory.cs" />
