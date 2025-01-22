@@ -312,7 +312,7 @@ namespace RemoteSensingProject.Controllers
             var userId = _managerServices.getManagerDetails(User.Identity.Name);
             formData.CreaterId = int.Parse(userId.userId);
             bool status = _adminServices.insertMeeting(formData);
-            if (status)
+            if (status && formData.Attachment != null)
             {
                 formData.Attachment.SaveAs(Server.MapPath(path));
             }
@@ -386,7 +386,6 @@ namespace RemoteSensingProject.Controllers
             return View(res);
         }
 
-
         public ActionResult GetMemberResponse(getMemberResponse mr)
         {
             var userId = _managerServices.getManagerDetails(User.Identity.Name);
@@ -395,7 +394,13 @@ namespace RemoteSensingProject.Controllers
             return Json(res);
         }
 
-       
+        [HttpGet]
+        public ActionResult GetMemberJoiningStatusByMeeting(int meetingId)
+        {
+
+            var res = _managerServices.getMemberJoiningStatus(meetingId);
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult MyProfile()
         {

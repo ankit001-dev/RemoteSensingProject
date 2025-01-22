@@ -639,7 +639,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                             DateString = Convert.ToDateTime(rd["insertDate"]).ToString("dd-MM-yyyy"),
                             amount = Convert.ToDecimal(rd["amount"]),
                             attatchment_url = rd["attatchment"].ToString(),
-                            description = rd["description"].ToString()
+                            description = rd["description"].ToString(),
+                            reason = rd["reason"]!=DBNull.Value?rd["reason"].ToString():"N/A"
                         });
                     }
                 }
@@ -980,7 +981,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             try
             {
                 List<GetConclusion> _list = new List<GetConclusion>();
-                GetConclusion obj = null;
+             
                 SqlCommand cmd = new SqlCommand("sp_meetingConslusion", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectConclusionForProjectManager");
@@ -989,15 +990,23 @@ namespace RemoteSensingProject.Models.ProjectManager
                 con.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
 
-                while (sdr.Read())
+                if (sdr.HasRows)
                 {
-                    obj.Id = (int)sdr["id"];
-                        obj.Conclusion = sdr["conclusion"].ToString();
-                    obj.FollowDate = sdr["nextFollow"]!=DBNull.Value? Convert.ToDateTime(sdr["nextFollow"]).ToString("dd-MM-yyyy"):"N/A";
-                }
+                    while (sdr.Read())
+                    {
+                        _list.Add(new GetConclusion
+                        {
+                          Id = Convert.ToInt32(sdr["id"]),
+                          Conclusion = sdr["conclusion"].ToString(),
+                          FollowDate = sdr["nextFollow"] != DBNull.Value ? Convert.ToDateTime(sdr["nextFollow"]).ToString("dd-MM-yyyy") : "N/A"
+                        });
 
-                sdr.Close();
-                return _list;
+                      
+                    }
+
+                    sdr.Close();
+                }
+                    return _list;
             }
             catch (Exception ex)
             {
