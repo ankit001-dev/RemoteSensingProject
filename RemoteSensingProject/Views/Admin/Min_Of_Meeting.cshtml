@@ -704,11 +704,12 @@
                             <ul class="d-flex list-unstyled justify-content-evenly">
                             ${item.CompleteStatus == 0 ? `<li>        <a href="/admin/MeetingConclusion?meeting=${item.Id}"><i class="fa-solid fa-circle-plus" style="color:orange" title="Add Conclusion"></i></a>
                             </li >
-                        <li><a onclick='updateMeeting(${item.Id})' role="button"><i class="fa-solid text-primary fa-pencil"></i></a></li>` : `<i onclick="showAllConclusion(${item.Id})" role="button" class="fa-solid text-primary fa-eye"></i></li>
+                        <li><a onclick='updateMeeting(${item.Id})' role="button"><i class="fa-solid text-primary fa-pencil"></i></a></li>
+                         <li><i class="fa-solid fa-users" onclick='ShowJoiningMember(${item.Id})'></i></li>` : `<i onclick="showAllConclusion(${item.Id})" role="button" class="fa-solid text-primary fa-eye"></i></li>
                        `
                     
                         }
-                        <li><i class="fa-solid fa-users" onclick='ShowJoiningMember(${item.Id})'></i></li>
+                       
                         </ul>
                     </td>
                     </tr>`;

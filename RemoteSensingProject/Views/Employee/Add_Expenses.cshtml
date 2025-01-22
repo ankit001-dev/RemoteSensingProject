@@ -39,7 +39,13 @@
     </td>
     <td class="text-center">@item.TotalAskAmount</td>
     <td class="text-center">@item.ApproveAmount</td>
-    <td class="text-center"><a href="#" class="addExpences" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a> <a href="#" class="headExpense" data-Id="@item.Id"><i class="fa-solid fa-eye"></i></a></td>
+    <td class="text-center">
+    @if (item.ProjectAmount >= Convert.ToDecimal(item.TotalAskAmount))
+            {
+                decimal acceptableAmount = item.ProjectAmount - Convert.ToDecimal(item.TotalAskAmount);
+    <a href="#" class="addExpences" data-acceptableAmount="@acceptableAmount" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a>
+                    }
+    <a href="#" class="headExpense" data-Id="@item.Id"><i class="fa-solid fa-eye"></i></a></td>
 </tr>        i++;
                 }
             }
@@ -61,6 +67,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div>Total Amount <span id="totalAcceptableAmountLeft"></span></div>
                 <h5 class="modal-title" id="exampleModalLabel">Add Project Expenses</h5>
             </div>
             <div class="modal-body">
@@ -79,7 +86,7 @@
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="amount" class="form-label">Amount</label>
-                                <input type="number" class="form-control" name="list[0].amount" autocomplete="off" placeholder="Enter Amount">
+                                <input type="number" class="form-control requestAmountValue" name="list[0].amount" autocomplete="off" placeholder="Enter Amount">
                             </div>
                             <div class="mb-3 col-md-6">
                                 <label for="upload" class="form-label">Upload Attachment</label>
@@ -127,6 +134,7 @@
                                 <th>Amount</th>
                                 <th>Reciept</th>
                                 <th>Approve Amount</th>
+                                <th>Reason</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -158,7 +166,7 @@
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="amount" class="form-label">Amount</label>
-                    <input type="number" class="form-control" name="list[${count}].amount" autocomplete="off" placeholder="Enter Amount">
+                    <input type="number" class="form-control requestAmountValue" name="list[${count}].amount" autocomplete="off" placeholder="Enter Amount">
                 </div>
                 <div class="mb-3 col-md-6">
                     <label for="upload" class="form-label">Upload Attachment</label>
@@ -221,6 +229,7 @@
  <td>${d.amount}</td>
  <td><a href="${d.attatchment_url}">Reciept</a></td>
  <td>${d.AppAmount}</td>
+ <td>${d.reason || d.reason=="null"?"N/A":d.reason}</td>
  <td>${d.AppStatus == 0 ? "<span class='text-light bg-warning px-2 rounded-1 border'>Pending</span>" : d.AppStatus == 1 ? "<span class='text-light px-2 bg-success rounded-1 border'>Accepted</span>" : "<span class='text-light px-2 bg-danger rounded-1 border'>Rejected</span>"}</td>
  
                           </tr>`
@@ -250,14 +259,54 @@
         let dateObj = new Date(date);
         return dateObj.toLocaleDateString();
     }
+    let acceptableAmount = 0
+        $(".addExpences").click(function () {
+            let dataId = $(this).attr("data-Id");
+            acceptableAmount = $(this).attr("data-acceptableAmount");
+            $("#addMore").attr("data-projectHeadId", dataId)
+            $("#projectHeadId").val(dataId);
+            $("#addExpencesModal").modal("show");
+            $("#totalAcceptableAmountLeft").text(acceptableAmount)
 
-    $(".addExpences").click(function () {
-        let dataId = $(this).attr("data-Id");
-        $("#addMore").attr("data-projectHeadId", dataId)
-        $("#projectHeadId").val(dataId);
-        $("#addExpencesModal").modal("show");
+        })
+
+    function getTotalAcceptableAmount() {
+        let totalAmount = $(".requestAmountValue").toArray().reduce(function (a, input) {
+            return a + parseFloat($(input).val()) || 0
+        }, 0)
+        return Number(totalAmount);
+    }
+
+
+    $(document).on("input", ".requestAmountValue", function () {
+        let finalAmount = Number(acceptableAmount)-getTotalAcceptableAmount()
+
+        if (Number($(this).val()) > Number(acceptableAmount)) {
+            Swal.fire({
+                title: "warning",
+                text: "Please input valid amount",
+                icon: "warning",
+                didClose: () => {
+                    $(this).val(0)
+                    finalAmount = Number(acceptableAmount) - getTotalAcceptableAmount()
+                    $("#totalAcceptableAmountLeft").text(Number(finalAmount))
+
+                }
+            })
+        } else if (getTotalAcceptableAmount() > Number(acceptableAmount)) {
+            Swal.fire({
+                title: "warning",
+                text: "Please input valid amount",
+                icon: "warning",
+                didClose: () => {
+                    $(this).val(0)
+                    finalAmount = Number(acceptableAmount) - getTotalAcceptableAmount()
+                    $("#totalAcceptableAmountLeft").text(finalAmount)
+                }
+            })
+        }
+        $("#totalAcceptableAmountLeft").text(finalAmount)
     })
-
 
     $("#expenseForm").on("submit", function (e) {
         e.preventDefault();

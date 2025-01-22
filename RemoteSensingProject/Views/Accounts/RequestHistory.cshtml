@@ -18,13 +18,6 @@
         <div class="col-lg-6 col-md-6">
             <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
         </div>
-        <div class="col-lg-3 col-md-6">
-            <select class="form-select form-select-lg" id="filterProjectStatus">
-                <option value="" selected>Project Status</option>
-                <option value="Pending">Pending</option>
-                <option value="Approved">Approved</option>
-            </select>
-        </div>
     </div>
 </div>
 <div class="card">
@@ -258,10 +251,7 @@
             var table = $("#dataTableExample").DataTable();
             table.column(2).search(this.value).draw()
         });
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(4).search(this.value).draw();
-        })
+       
     });
 </script>
 

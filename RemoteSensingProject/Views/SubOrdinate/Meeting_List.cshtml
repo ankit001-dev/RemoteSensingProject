@@ -11,13 +11,13 @@
                 <div class="t-header"><h4 class="mb-2 text-primary"><a href="#">Meeting Lists</a></h4></div>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="search" placeholder="Search by meeting name" class="form-control">
+                <input type="search" id="searchByMeetingName" placeholder="Search by meeting name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
-                <select class="form-select form-select-lg">
-                    <option selected>Meeting Status</option>
-                    <option value="1">Pending</option>
-                    <option value="2">Concluded</option>
+                <select class="form-select form-select-lg" id="meetingStatus">
+                    <option selected value="">Meeting Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="complete">Complete</option>
                 </select>
             </div>
         </div>
@@ -41,96 +41,51 @@
                                 <th>Title</th>
                                 <th>Meet Mode</th>
                                 <th>Meet Address</th>
-                                <th>Meet Status</th>
+                                <th>Meeting Status</th>
                                 <th>Action</th>
-                                <th>Status</th>
+                                <th>Joining Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>
-                                    10/07/2024
-                                </td>
-                                <td>
-                                    Testing meeting
-                                </td>
-                                <td>
-                                    Online
-                                </td>
-                                <td>
-                                    Google Meet
-                                </td>
-                                <td><span class="badge bg-warning">Pending</span></td>
-                                <td>
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" title="Accept"><i class="fa-regular fa-circle-check text-success"> </i></a></li>
-                                        <li class="me-2"><a href="#" title="Reject"><i class="fa-regular fa-circle-xmark text-danger"> </i></a></li>
-                                        <li class="me-2"><a href="#" title="View User" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-regular fa-circle-user text-primary"> </i></a></li>
-                                        <li class="me-2"><a href="#" title="meeting key points" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list text-warning"></i></a></li>
+                            @if (Model != null)
+                            {
+                                int count = 1;
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@count</td>
+                                        <td>
+                                            @item.MeetingDate
+                                        </td>
+                                        <td>
+                                            @item.MeetingTitle
+                                        </td>
+                                        <td>
+                                            @item.MeetingType
+                                        </td>
+                                        <td>
+                                            @item.MeetingLink
+                                        </td>
+                                        <td><span class="badge @(item.CompleteStatus==0?"bg-warning":"bg-success")">@(item.CompleteStatus==0?"Pending":"Complete")</span></td>
+                                        <td>
+                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                                @if (item.AppStatus == 0)
+                                                {
+                                                    <li class="me-2"><a href="#" title="Accept" data-id="@item.Id" class="acceptMeetingBtn"><i class="fa-regular fa-circle-check text-success"> </i></a></li>
+                                                    <li class="me-2"><a href="#" data-id="@item.Id" class="rejectMeetingBtn" title="Reject"><i class="fa-regular fa-circle-xmark text-danger"> </i></a></li>
+                                                }
+                                                <li class="me-2"><i onclick="showAllConclusion(@item.Id)" role="button" class="fa-solid text-primary fa-eye"></i></li>
 
-                                    </ul>
 
-                                </td>
-                                <td><span class="badge bg-warning">Pending</span></td>
+                                            </ul>
 
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>
-                                    10/07/2023
-                                </td>
-                                <td>
-                                    Testing meeting 2
-                                </td>
-                                <td>
-                                    Offline
-                                </td>
-                                <td>
-                                    Noida Sector 63A
-                                </td>
-                                <td><span class="badge bg-success">Concluded</span></td>
-                                <td>
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" title="Accept"><i class="fa-regular fa-circle-check text-success"> </i></a></li>
-                                        <li class="me-2"><a href="#" title="Reject"><i class="fa-regular fa-circle-xmark text-danger"> </i></a></li>
-                                        <li class="me-2"><a href="#" title="View User" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-regular fa-circle-user text-primary"> </i></a></li>
-                                        <li class="me-2"><a href="#" title="meeting key points" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list text-warning"></i></a></li>
+                                        </td>
+                                        <td><span class="badge @(item.AppStatus==0?"bg-warning":item.AppStatus==1?"bg-success":"bg-danger")">@(item.AppStatus==0?"Pending":item.AppStatus==1?"Accept":"Rejected")</span></td>
 
-                                    </ul>
-
-                                </td>
-                                <td><span class="badge bg-danger">Rejected</span></td>
-
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>
-                                    21/04/2024
-                                </td>
-                                <td>
-                                    Testing meeting
-                                </td>
-                                <td>
-                                    Online
-                                </td>
-                                <td>
-                                    Zoom
-                                </td>
-                                <td><span class="badge bg-success">Concluded</span></td>
-                                <td>
-                                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                        <li class="me-2"><a href="#" title="Accept"><i class="fa-regular fa-circle-check text-success"> </i></a></li>
-                                        <li class="me-2"><a href="#" title="Reject"><i class="fa-regular fa-circle-xmark text-danger"> </i></a></li>
-                                        <li class="me-2"><a href="#" title="View User" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-regular fa-circle-user text-primary"> </i></a></li>
-                                        <li class="me-2"><a href="#" title="meeting key points" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list text-warning"></i></a></li>
-
-                                    </ul>
-
-                                </td>
-                                <td><span class="badge bg-success">Accepted</span></td>
-
-                            </tr>
+                                    </tr>
+                                    count++;
+                                }
+                            }
 
 
                         </tbody>
@@ -244,4 +199,281 @@
     </div>
 </div>
 
+<!-- Modal show all conclusion-->
+<div class="modal fade" id="AllConclusionModal" tabindex="-1" aria-labelledby="AllConclusionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="AllConclusionModalLabel">Conclusions</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-container">
+
+                    <div class="table-responsive">
+                        <table id="dataTableExamples" class="table table-striped">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>Conclusion</th>
+                                    <th>Next FolloUp Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="conclusionContainer">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function showLoading(action) {
+        Swal.fire({
+            title: "Please Wait..!",
+            text: "Request are under process.",
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        if (!action) {
+            Swal.close();
+        }
+    }
+
+    $(".acceptMeetingBtn").click(function () {
+        Swal.fire({
+            icon: "question",
+            title: "Confirm your action",
+            text: "do you really want to accept?",
+            showCancelButton: true,
+            confirmButtonText: "Accept",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let id = $(this).attr("data-id");
+                let formData = new FormData();
+                formData.append("meetingId", id)
+                formData.append("ApprovedStatus", 1)
+                $.ajax({
+                    url: "/subOrdinate/GetMemberResponse",
+                    type: "post",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (res) {
+                        if (res) {
+                            Swal.fire({
+                                title: "Success",
+                                text: "Response Update Successfully",
+                                icon: "success",
+                                didClose: () => {
+                                    location.reload()
+
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                title: "error",
+                                text: "some error occured",
+                                icon: "error"
+                            })
+                        }
+                    }, error: function (xhr) {
+                        console.log(xhr)
+                        Swal.fire({
+                            title: "error",
+                            text: "some error occured",
+                            icon: "error"
+                        })
+                    }
+                })
+            }
+        })
+    })
+    $(".rejectMeetingBtn").click(function () {
+        Swal.fire({
+            icon: "question",
+            title: "Confirm your action",
+            text: "do you really want to Reject?",
+            showCancelButton: true,
+            confirmButtonText: "Reject",
+            input: 'text',
+            inputPlaceholder: 'Enter your reason',
+            preConfirm: (data) => {
+                if (!data) {
+                    Swal.showValidationMessage('Please enter your reason');
+                    return false;
+                }
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let id = $(this).attr("data-id");
+                let formData = new FormData();
+                formData.append("meetingId", id)
+                formData.append("ApprovedStatus", 2)
+                formData.append("reason", result.value)
+                $.ajax({
+                    url: "/subOrdinate/GetMemberResponse",
+                    type: "post",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (res) {
+                        if (res) {
+                            Swal.fire({
+                                title: "Success",
+                                text: "Response Update Successfully",
+                                icon: "success",
+                                didClose: () => {
+                                    location.reload()
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                title: "error",
+                                text: "some error occured",
+                                icon: "error"
+                            })
+                        }
+                    }, error: function (xhr) {
+                        console.log(xhr)
+                        Swal.fire({
+                            title: "error",
+                            text: "some error occured",
+                            icon: "error"
+                        })
+                    }
+                })
+            }
+        })
+    })
+
+    function showAllConclusion(id) {
+        $("#AllConclusionModal").modal("show")
+        showLoading(true);
+
+        $.ajax({
+            url: '/subOrdinate/GetConclusions',
+            type: 'get',
+            data: { id: id },
+            success: function (res) {
+                $("#conclusionContainer").empty();
+                if (res != null) {
+                    if (res.length > 0) {
+                        res.forEach(function (d) {
+                            $("#conclusionContainer").append(`
+            <tr>
+                <td>
+                    ${d.Conclusion}
+                </td>
+                <td>
+                    ${d.NextFollow || "N/A"}
+                </td>
+
+                <td>
+                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                        <li class="me-2"><a href="#" onclick="ShowPresentMember(${d.Id})" class="ShowPresentMember" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-solid fa-circle-user" style="font-size:18px; color:green" title="View Meeting Members"> </i></a></li>
+                        <li class="me-2"><a href="#" onclick="showKeyResponse(${d.Id})" class="showKeyResponse" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list" style="font-size:18px; color:red" title="View Key Points"> </i></a></li>
+
+                    </ul>
+
+                </td>
+            </tr>
+        }
+    }
+}`)
+                        })
+                    } else {
+                        $("#conclusionContainer").html("<p>no result found</p>")
+                    }
+                }
+                showLoading(false);
+
+            }, error: function (xhr) {
+                console.log(xhr)
+                Swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: 'An error occurred.',
+                    confirmButtonText: 'ok'
+                })
+            }
+        })
+    }
+
+
+    function ShowPresentMember(id) {
+        $.ajax({
+            url: "/subOrdinate/getPresentMember",
+            type: "get",
+            data: { id: id },
+            success: function (res) {
+                console.log(res)
+                if (res != null) {
+                    $("#presentMemberContainer").empty();
+                    if (res.length > 0) {
+                        res.forEach(function (d) {
+                            $("#presentMemberContainer").append(` <tr>
+
+    <td><img src="${d.Image_url}" alt="sliderimages" style="height: 20px;width: 20px;"> ${d.EmployeeName}	<span class="text-secondary">(${d.EmployeeRole})</span></td>
+    <td>${d.PresentStatus ? "Joined" : "Not Joined"}</td>
+</tr>`)
+                        })
+                    }
+                }
+            }, error: function (xhr) {
+                swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    }
+    function showKeyResponse(id) {
+        $.ajax({
+            url: "/subOrdinate/getKeypointResponse",
+            type: "get",
+            data: { id: id },
+            success: function (res) {
+                console.log(res)
+                if (res != null) {
+                    $("#responseContainer").empty();
+                    if (res.length > 0) {
+                        res.forEach(function (d) {
+                            $("#responseContainer").append(` <tr>
+
+     <td>${d.KeyPoint}</td>
+<td>${d.Response}</td>
+</tr>`)
+                        })
+                    }
+                }
+            }, error: function (xhr) {
+                swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    }
+
+    $("#meetingStatus").on("change", function () {
+        let table = $("#dataTableExample").DataTable();
+        table.columns(5).search(this.value).draw();
+    })
+    $('#searchByMeetingName').on('keyup', function () {
+        let table = $("#dataTableExample").DataTable();
+        table.columns(2).search(this.value).draw();
+    });
+</script>
 

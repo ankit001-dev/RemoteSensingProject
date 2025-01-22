@@ -143,6 +143,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public HttpPostedFileBase Attatchment_file { get; set; }
         public string attatchment_url { get; set; }
         public string DateString { get; set; }
+        public string reason { get; set; }
     }
 
     public class OuterSource

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.IO;
+using RemoteSensingProject.Models.ProjectManager;
+using Microsoft.Ajax.Utilities;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -15,11 +17,12 @@ namespace RemoteSensingProject.Controllers
     {
         private readonly SubOrinateService _subOrdinate;
         private readonly AdminServices _adminServices;
+        private readonly ManagerService _managerServices;
         public SubOrdinateController()
         {
             _subOrdinate =new  SubOrinateService();
             _adminServices = new AdminServices();
-            
+            _managerServices = new ManagerService();
 
         }
         // GET: SubOrdinate
@@ -31,10 +34,10 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Assigned_Project()
         {
             var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
+            Models.SubOrdinate.main.UserCredential userObj = new Models.SubOrdinate.main.UserCredential();
             userObj = _subOrdinate.getManagerDetails(managerName);
 
-            List<ProjectList> _list = new List<ProjectList>();
+            List<Models.SubOrdinate.main.ProjectList> _list = new List<Models.SubOrdinate.main.ProjectList>();
             ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId);
 
             return View();
@@ -71,12 +74,38 @@ namespace RemoteSensingProject.Controllers
            
             return Json(new { status=status},JsonRequestBehavior.AllowGet);
         }
-       
+
         #endregion End Problem
         public ActionResult Meeting_List()
         {
-            return View();
+            var userId = _managerServices.getManagerDetails(User.Identity.Name);
+            var res = _managerServices.getAllmeeting(int.Parse(userId.userId));
+            return View(res);
         }
+        public ActionResult GetConclusions(int id)
+        {
+            var userId = _managerServices.getManagerDetails(User.Identity.Name);
+            var res = _managerServices.getConclusionForMeeting(id, int.Parse(userId.userId));
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult getPresentMember(int id)
+        {
+            var res = _adminServices.getPresentMember(id);
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult getKeypointResponse(int id)
+        {
+            var res = _adminServices.getKeypointResponse(id);
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetMemberResponse(getMemberResponse mr)
+        {
+            var userId = _managerServices.getManagerDetails(User.Identity.Name);
+            mr.MemberId = int.Parse(userId.userId);
+            var res = _managerServices.GetResponseFromMember(mr);
+            return Json(res);
+        }
+
         public ActionResult RejectList()
         {
             return View();

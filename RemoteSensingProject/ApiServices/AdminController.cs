@@ -11,6 +11,7 @@ using Microsoft.Ajax.Utilities;
 using RemoteSensingProject.Controllers;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
+using RemoteSensingProject.Models.ProjectManager;
 using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.LoginManager.main;
 
@@ -19,11 +20,13 @@ namespace RemoteSensingProject.ApiServices
     public class AdminController : ApiController
     {
         private readonly AdminServices _adminServices;
+        private readonly ManagerService _managerservice;
         private readonly LoginServices _loginService;
         public AdminController()
         {
             _adminServices = new AdminServices();
-            _loginService = new LoginServices();    
+            _loginService = new LoginServices();
+            _managerservice = new ManagerService();
         }
         [HttpPost]
         [Route("api/login")]
@@ -1347,6 +1350,15 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+
+        [HttpGet]
+        [Route("api/getMemberJoiningStatus")]
+        public IHttpActionResult GetMemberJoiningStatus(int meetingId)
+        {
+            var res = _managerservice.getMemberJoiningStatus(meetingId);
+            return Ok(new { status = true, message = "data retrieved", data = res });
+        }
+      
 
         #endregion
 

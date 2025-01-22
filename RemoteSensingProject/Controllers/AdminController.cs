@@ -272,7 +272,7 @@ namespace RemoteSensingProject.Controllers
                 formData.Attachment_Url = path;
             }
             bool status = _adminServices.insertMeeting(formData);
-            if (status)
+            if (status && formData.Attachment != null)
             {
                 formData.Attachment.SaveAs(Server.MapPath(path));
             }
