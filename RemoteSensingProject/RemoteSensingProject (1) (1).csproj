@@ -1000,6 +1000,7 @@
     <Content Include="Views\Employee\OutSource.cshtml" />
     <Content Include="Views\Employee\All_Project_List.cshtml" />
     <Content Include="Views\Employee\Expense_Report.cshtml" />
+    <Content Include="Views\Employee\CreateTask.cshtml" />
     <Content Include="Views\Admin\SubOrdinateProblemList.cshtml" />
   </ItemGroup>
   <ItemGroup>
