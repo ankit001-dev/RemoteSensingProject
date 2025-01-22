@@ -3,7 +3,12 @@
     ViewBag.Title = "MeetingConclusion";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
 }
-
+<style>
+    .table > :not(caption) > * > *, .datepicker table > :not(caption) > * > * {
+        padding:6px;
+    }
+  
+</style>
 
 <div class="row gutters mt-2">
     <div class="card">
@@ -37,7 +42,7 @@
                             <h6 class="text-danger"> Please Check  CheckBox for Present</h6>
                         </div>
                         <div class="table-responsive">
-                            <table id="basicExample" class="table custom-table" width="100%" border="1" style="font-size: 12px; text-align: center">
+                            <table id="basicExample" class="table custom-table" width="100%" border="1" style="font-size: 13px; text-align: center">
                                 <thead>
                                     <tr>
                                         <th>  <input type="checkbox" name="select_all" value="1" id="select_all" onclick="toggle(this);"> All Present</th>
@@ -86,7 +91,7 @@
 
                 <hr />
 
-                <a href="#" class="fw-bolder fs-4">Key Points</a>
+                <a href="#" class="fw-bolder ">Key Points</a>
                 <table id="keypointtbl" class="table">
                     <thead>
                         <tr>
@@ -125,6 +130,13 @@
                         <div class="form-group">
                             <label> Conclusion</label>
                             <textarea class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion" rows="1"></textarea>
+                            @*<input type="text" class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion ">*@
+                        </div>
+                    </div>  
+                    <div class="col-sm-6 col-12" id="summaryField">
+                        <div class="form-group" >
+                            <label> Summary</label>
+                            <textarea class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Summary" rows="1"></textarea>
                             @*<input type="text" class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion ">*@
                         </div>
                     </div>
@@ -325,11 +337,12 @@
     $(".followUpdate").on("change", function () {
         if ($(this).val() == "1") {
             $(".nexFollowUpDateContainer").removeClass("d-none")
-            $(".nexFollowUpDateContainer").attr("required",true)
+            $(".nexFollowUpDateContainer").attr("required", true)
+            $("#summaryField").attr("hidden",true)
         } else {
             $(".nexFollowUpDateContainer").addClass("d-none")
             $(".nexFollowUpDateContainer").attr("required", false)
-
+            $("#summaryField").attr("hidden", false)
         }
     })
 </script>
