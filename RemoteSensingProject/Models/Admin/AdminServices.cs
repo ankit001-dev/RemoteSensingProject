@@ -1177,13 +1177,14 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     obj = new Meeting_Model();
                     obj.Id = Convert.ToInt32(sdr["id"]);
-                    obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
+                    obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);    
                     obj.MeetingType = sdr["meetingType"].ToString();
                     obj.MeetingLink = sdr["meetingLink"].ToString();
                     obj.MeetingTitle = sdr["MeetingTitle"].ToString();
                     obj.memberId = sdr["memberId"]!=DBNull.Value?sdr["memberId"].ToString().Split(',').ToList():new List<string>();
                     obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]):0;
                     obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
+                    obj.summary = sdr["meetSummary"].ToString();
                     _list.Add(obj);
                 }
 

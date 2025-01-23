@@ -75,7 +75,7 @@
                         <div class="row">
                             <div class="col-lg-4 mb-3">
                                 <div class="d-flex justify-content-between">
-                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
+                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="0"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
                                    </div>
                                 <input type="text" class="form-control form-control-sm" name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
                             </div>
@@ -121,7 +121,7 @@
                                     </div>
                                     <div class="col-lg-5 mb-3">
                                         <label for="title" class="form-label">Amount</label>
-                                        <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter Contact Person Name">
+                                        <input type="number" class="form-control form-control-sm" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter amount...">
                                     </div>
                                 </div>
                                 <div class="row" id="miscList">
@@ -133,7 +133,7 @@
                                     </div>
                                     <div class="col-lg-5 mb-3">
                                         <label for="misAmount" class="form-label">Amount</label>
-                                        <input type="text" class="form-control form-control-sm" id="misAmount" name="pm.budgets[1].ProjectAmount" placeholder="Enter amount">
+                                        <input type="number" class="form-control form-control-sm" id="misAmount" name="pm.budgets[1].ProjectAmount" placeholder="Enter amount">
                                     </div>
                                 </div>
                             </fieldset>
@@ -259,16 +259,19 @@
         //managing budget section
 
         $("#addBudgetItem").click(function () {
-            let count = $(this).attr("data-count");
-            $("#budgetContainerBox").show();
-            let ele = `<div class="row budgetList">
+            let budgetAmt = parseInt($("#budgetAmount").val())
+            if (budgetAmt != null && budgetAmt > 0) {
+                let count = parseInt($(this).attr("data-count"));
+                $("#budgetContainerBox").show();
+                if (count > 0) {
+                    let ele = `<div class="row budgetList">
     <div class="col-lg-5 mb-3">
         <label for="title" class="form-label">Heads</label>
-        <input type="text" class="form-control form-control-sm" name="pm.budgets[${count+1}].ProjectHeads" id="venue" placeholder="Enter Key Point">
+        <input type="text" class="form-control form-control-sm" name="pm.budgets[${count + 1}].ProjectHeads" id="venue" placeholder="Enter Key Point">
     </div>
     <div class="col-lg-5 mb-3">
         <label for="title" class="form-label">Amount</label>
-        <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[${count+1}].ProjectAmount" placeholder="Enter Contact Person Name">
+        <input type="number" class="form-control form-control-sm" id="person" name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
     </div>
     <div class="col-lg-2 text-center mb-3" style="line-height:6;">
         <a href="#" class="deleteCurrntRow">
@@ -277,7 +280,14 @@
     </div>
 
 </div>`;
-            $("#miscList").before(ele);
+                    $("#miscList").before(ele);
+                }
+                count++;
+                $(this).attr("data-count", count)
+            }
+            else {
+                Swal.fire("Sorry !", "Budget amount is invalid", "warning")
+            }
         })
         $("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
             e.preventDefault();
