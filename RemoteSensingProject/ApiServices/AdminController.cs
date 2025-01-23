@@ -461,6 +461,29 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+        [HttpGet]
+        [Route("api/adminProjectGraph")]
+        public IHttpActionResult adminProjectGraph()
+        {
+            try
+            {
+                var data = _adminServices.getAllProjectCompletion();
+                return Ok(new
+                {
+                    status = true,
+                    data = data
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpGet]
         [Route("api/adminDelayProject")]
@@ -468,7 +491,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _adminServices.Project_List().Where(d => d.CompletionDate < DateTime.Now).ToList();
+                var data = _adminServices.Project_List().Where(d => d.CompletionDate < DateTime.Now && !d.ProjectStatus).ToList();
                 return Ok(new
                 {
                     status = true,
@@ -493,7 +516,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _adminServices.Project_List().Where(d => d.CompletionDate > DateTime.Now).ToList();
+                var data = _adminServices.Project_List().Where(d => d.CompletionDate > DateTime.Now && d.StartDate<DateTime.Now).ToList();
                 return Ok(new
                 {
                     status = true,
@@ -515,7 +538,6 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/adminCompleteProject")]
-
         public IHttpActionResult completeProject()
         {
             try
@@ -1288,7 +1310,8 @@ namespace RemoteSensingProject.ApiServices
                     FollowUpStatus = Convert.ToBoolean(request.Form.Get("FollowUpStatus")),
                     NextFollowUpDate = string.IsNullOrWhiteSpace(request.Form["NextFollowUpDate"])
     ? (DateTime?)null
-    : DateTime.Parse(request.Form["NextFollowUpDate"])
+    : DateTime.Parse(request.Form["NextFollowUpDate"]),
+                    summary = request.Form.Get("summary") 
                 };
                 if (request.Form["MeetingMemberList"] != null)
                 {
