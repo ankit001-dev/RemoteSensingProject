@@ -168,6 +168,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
             cmd.Parameters.AddWithValue("@action", "insertOutsource");
             cmd.Parameters.AddWithValue("@response", task.Reason);
             cmd.Parameters.AddWithValue("@id", task.id);
+            cmd.Parameters.AddWithValue("@empId", task.EmpId);
             con.Open();
             int i=cmd.ExecuteNonQuery();
             if (i > 0)

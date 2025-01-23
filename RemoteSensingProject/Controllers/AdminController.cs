@@ -492,7 +492,6 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Expense_Report()
         {
             ViewBag.ProjectList = _adminServices.Project_List();
-
             return View();
         }
         public ActionResult getHeadsByProject(int id)

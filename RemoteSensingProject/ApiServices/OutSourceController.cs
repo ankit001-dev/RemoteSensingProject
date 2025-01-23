@@ -75,6 +75,7 @@ namespace RemoteSensingProject.ApiServices
                 OutSource_Task task = new OutSource_Task
                 {
                     Reason = httpRequest.Form.Get("reason"),
+                    EmpId = Convert.ToInt32(httpRequest.Form.Get("EmpId")),
                     id = Convert.ToInt32(httpRequest.Form.Get("id"))
                 };
                 bool status = _subordinate.AddOutSourceTask(task);
