@@ -287,12 +287,15 @@ $("#otherCheckbox").on("change", function () {
         $("#manualInputBox").removeClass("d-none");
         $(".readOnlyInput").hide()
         $("#totalAmountSpan").show()
-        $("#totalAmountSpan").text("Total Ask : ₹"+actualamount)
+        $("#totalAmountSpan").text("Total Ask : ₹" + actualamount)
+        $('#pendingRejectDiv').show();
+        $("#leftAmount").text("₹" + actualamount)
 
     } else {
         $("#manualInputBox").addClass("d-none");
         $(".readOnlyInput").show()
         $("#totalAmountSpan").hide()
+        $('#pendingRejectDiv').hide();
 
     }
 })
