@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.Web.Razor.Generator;
 using Microsoft.Ajax.Utilities;
 using RemoteSensingProject.Controllers;
 using RemoteSensingProject.Models.Admin;
@@ -1493,6 +1494,16 @@ namespace RemoteSensingProject.ApiServices
                     data = ex
                 });
             }
+        }
+
+        [HttpGet]
+        [Route("api/getAllProblemList")]
+        public IHttpActionResult getAllProblemList()
+        {
+            var res =_managerservice.getSubOrdinateProblemforAdmin();
+
+
+            return Ok(new { status = true, message = "data retrieved", data = res });
         }
 
         [HttpGet]
