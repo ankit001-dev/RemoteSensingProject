@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\remotesensingproject\\apiservices\\subordinatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\apiservices\\subordinatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\1\\source\\repos\\remote sensing\\remotesensingproject\\remotesensingproject\\views\\accounts\\fundreport.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\accounts\\fundreport.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -25,10 +33,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\remotesensingproject\\controllers\\accountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\accountscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\1\\source\\repos\\remote sensing\\remotesensingproject\\remotesensingproject\\apiservices\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -183,10 +187,6 @@
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\subordinate\\main.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\remotesensingproject\\apiservices\\subordinatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\apiservices\\subordinatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\remotesensingproject\\apiservices\\projectmanagercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\apiservices\\projectmanagercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -286,11 +286,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 13,
+          "SelectedChildIndex": 12,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 13,
               "Title": "EmployeeController.cs",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\EmployeeController.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\EmployeeController.cs",
@@ -304,7 +304,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 12,
               "Title": "Project_List.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Project_List.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Project_List.cshtml",
@@ -318,7 +318,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 40,
               "Title": "Notice.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Notice.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Notice.cshtml",
@@ -331,7 +331,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "Dashboard.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Dashboard.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Dashboard.cshtml",
@@ -345,7 +345,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 17,
               "Title": "main.cs",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Models\\Admin\\main.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\Admin\\main.cs",
@@ -359,7 +359,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 15,
               "Title": "Update_Project_Stage.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Update_Project_Stage.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Update_Project_Stage.cshtml",
@@ -373,7 +373,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 19,
               "Title": "SubOrdinateController.cs",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\SubOrdinateController.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\SubOrdinateController.cs",
@@ -387,7 +387,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 22,
               "Title": "Assigned_Project.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\SubOrdinate\\Assigned_Project.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\SubOrdinate\\Assigned_Project.cshtml",
@@ -404,8 +404,51 @@
               "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\Dashboard.cshtml",
+              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Dashboard.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\Dashboard.cshtml",
+              "ViewState": "AQIAAC0AAAAAAAAAAAAAAEQAAABGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-20T06:15:34.821Z",
+              "EditorCaption": ""
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "FundReport.cshtml",
+              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
+              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
+              "ViewState": "AQIAABIAAAAAAAAAAAAgwB4AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-23T07:10:51.495Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "RemoteSensingProject\\Controllers\\AdminController.cs",
+              "ViewState": "AQIAABYAAAAAAAAAAAAgwBsAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-13T04:54:55.572Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "Meeting_Report.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Meeting_Report.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Meeting_Report.cshtml",
@@ -419,6 +462,32 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "SubOrdinateController.cs",
+              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\ApiServices\\SubOrdinateController.cs",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\ApiServices\\SubOrdinateController.cs",
+              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\ApiServices\\SubOrdinateController.cs",
+              "RelativeToolTip": "RemoteSensingProject\\ApiServices\\SubOrdinateController.cs",
+              "ViewState": "AQIAABgAAAAAAAAAAAAlwCQAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-21T10:24:30.51Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AccountsController.cs",
+              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AccountsController.cs",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\AccountsController.cs",
+              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AccountsController.cs",
+              "RelativeToolTip": "RemoteSensingProject\\Controllers\\AccountsController.cs",
+              "ViewState": "AQIAABEAAAAAAAAAAAAQwBoAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-20T06:13:24.823Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "Project_Report.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Project_Report.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Project_Report.cshtml",
@@ -432,58 +501,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "AccountsController.cs",
-              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AccountsController.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\AccountsController.cs",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AccountsController.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Controllers\\AccountsController.cs",
-              "ViewState": "AQIAABEAAAAAAAAAAAAQwBoAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-20T06:13:24.823Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Dashboard.cshtml",
-              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Dashboard.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\Dashboard.cshtml",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Dashboard.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\Dashboard.cshtml",
-              "ViewState": "AQIAAC0AAAAAAAAAAAAAAEQAAABGAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-20T06:15:34.821Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "FundReport.cshtml",
-              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
-              "ViewState": "AQIAABIAAAAAAAAAAAAgwB4AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-01-23T07:10:51.495Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\AdminController.cs",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Controllers\\AdminController.cs",
-              "ViewState": "AQIAABMAAAAAAAAAAAA1wBoAAAAnAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T04:54:55.572Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "RequestHistory.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\RequestHistory.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\RequestHistory.cshtml",
@@ -496,7 +513,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "AdminServices.cs",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
@@ -509,7 +526,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "AccountController.cs",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\ApiServices\\AccountController.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\ApiServices\\AccountController.cs",
@@ -522,7 +539,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "AdminController.cs",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\ApiServices\\AdminController.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\ApiServices\\AdminController.cs",
@@ -535,7 +552,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 14,
               "Title": "View_Project_Stage.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\View_Project_Stage.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\View_Project_Stage.cshtml",
@@ -548,7 +565,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 16,
               "Title": "Dashboard.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Dashboard.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Dashboard.cshtml",
@@ -561,7 +578,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 18,
               "Title": "Dashboard.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\SubOrdinate\\Dashboard.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\SubOrdinate\\Dashboard.cshtml",
@@ -574,7 +591,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 20,
               "Title": "ManagerService.cs",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Models\\ProjectManager\\ManagerService.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\ProjectManager\\ManagerService.cs",
@@ -587,7 +604,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 21,
               "Title": "Meeting_List.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\SubOrdinate\\Meeting_List.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\SubOrdinate\\Meeting_List.cshtml",
@@ -600,7 +617,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 23,
               "Title": "Expense_Report.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Expense_Report.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Expense_Report.cshtml",
@@ -613,7 +630,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 24,
               "Title": "All_Projects.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\All_Projects.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\All_Projects.cshtml",
@@ -626,7 +643,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 25,
               "Title": "SubOrinateService.cs",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Models\\SubOrdinate\\SubOrinateService.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\SubOrdinate\\SubOrinateService.cs",
@@ -639,7 +656,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 26,
               "Title": "_subOrdinateLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_subOrdinateLayout.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Shared\\_subOrdinateLayout.cshtml",
@@ -652,7 +669,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 28,
               "Title": "_adminLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
@@ -664,7 +681,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 30,
               "Title": "MeetingConclusion.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\MeetingConclusion.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\MeetingConclusion.cshtml",
@@ -676,7 +693,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 27,
               "Title": "SubOrdinateProblemList.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\SubOrdinateProblemList.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\SubOrdinateProblemList.cshtml",
@@ -688,7 +705,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 29,
               "Title": "Notice_List.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Notice_List.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Notice_List.cshtml",
@@ -700,7 +717,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 33,
               "Title": "Employee_Registration.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Employee_Registration.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Employee_Registration.cshtml",
@@ -712,7 +729,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 31,
               "Title": "Min_Of_Meeting.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Min_Of_Meeting.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Min_Of_Meeting.cshtml",
@@ -724,7 +741,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 32,
               "Title": "Project_List.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Project_List.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Project_List.cshtml",
@@ -736,7 +753,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 41,
               "Title": "Pending_Project_Report.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Pending_Project_Report.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Pending_Project_Report.cshtml",
@@ -748,7 +765,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 34,
               "Title": "All_Project_Report.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\All_Project_Report.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\All_Project_Report.cshtml",
@@ -760,7 +777,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 42,
               "Title": "Add_Project.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Add_Project.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Add_Project.cshtml",
@@ -772,7 +789,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 43,
               "Title": "Complete_Project_Report.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Complete_Project_Report.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Complete_Project_Report.cshtml",
@@ -784,7 +801,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 44,
               "Title": "_employeeLayout.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_employeeLayout.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Shared\\_employeeLayout.cshtml",
@@ -796,7 +813,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 45,
               "Title": "main.cs",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Models\\SubOrdinate\\main.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\SubOrdinate\\main.cs",
@@ -805,19 +822,6 @@
               "ViewState": "AQIAADcAAAAAAAAAAAAvwD8AAAAhAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-20T06:32:11.779Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 45,
-              "Title": "SubOrdinateController.cs",
-              "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\ApiServices\\SubOrdinateController.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\ApiServices\\SubOrdinateController.cs",
-              "ToolTip": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\ApiServices\\SubOrdinateController.cs",
-              "RelativeToolTip": "RemoteSensingProject\\ApiServices\\SubOrdinateController.cs",
-              "ViewState": "AQIAAF4AAAAAAAAAAAD4v3QAAAAgAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-21T10:24:30.51Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -1099,7 +1103,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 39,
               "Title": "Expense_Report.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Expense_Report.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Expense_Report.cshtml",
@@ -1111,7 +1115,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 37,
               "Title": "SubOrdinateProblemList.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\SubOrdinateProblemList.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\SubOrdinateProblemList.cshtml",
@@ -1123,7 +1127,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 38,
               "Title": "Meeting_List.cshtml",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Meeting_List.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\Meeting_List.cshtml",
@@ -1135,7 +1139,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 36,
               "Title": "csc.exe.config",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\bin\\roslyn\\csc.exe.config",
               "RelativeDocumentMoniker": "RemoteSensingProject\\bin\\roslyn\\csc.exe.config",
@@ -1147,7 +1151,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 35,
               "Title": "csi.exe.config",
               "DocumentMoniker": "C:\\Users\\1\\source\\repos\\Remote Sensing\\RemoteSensingProject\\RemoteSensingProject\\bin\\roslyn\\csi.exe.config",
               "RelativeDocumentMoniker": "RemoteSensingProject\\bin\\roslyn\\csi.exe.config",
