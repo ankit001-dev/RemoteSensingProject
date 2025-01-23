@@ -83,6 +83,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.ApproveStatus = Convert.ToInt32(sdr["ApproveStatus"]);
                     obj.budget = (float)Convert.ToDecimal(sdr["budget"]);
                     obj.stage = Convert.ToBoolean(sdr["stage"].ToString());
+                    obj.physicalPercent = Convert.ToDecimal(sdr["completionPercentage"]);
+                    obj.overAllPercent = Convert.ToDecimal(sdr["overallPercentage"]);
+                    obj.Percentage = (float)sdr["financialStatusPercentage"];
                     _list.Add(obj);
                 }
                 sdr.Close();
@@ -285,7 +288,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 List<Project_model> list = new List<Project_model>();
                 cmd = new SqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getAllManagerProject");
+                cmd.Parameters.AddWithValue("@action", "getProjectManagerTotalProject");
                 cmd.Parameters.AddWithValue("@projectManager", userId);
                 con.Open();
                 SqlDataReader rd = cmd.ExecuteReader();
@@ -310,7 +313,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
                             AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
                             StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
-                            createdBy = rd["createdBy"].ToString()
+                            createdBy = rd["createdBy"].ToString(),
+                            Percentage = rd["financialStatusPercentage"].ToString(),
+                            physicalcomplete = Convert.ToDecimal(rd["completionPercentage"]),
+                            overallPercentage = Convert.ToDecimal(rd["overallPercentage"])
                         });
                     }
                 }
