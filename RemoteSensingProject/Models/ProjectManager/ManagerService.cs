@@ -85,7 +85,15 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.stage = Convert.ToBoolean(sdr["stage"].ToString());
                     obj.physicalPercent = Convert.ToDecimal(sdr["completionPercentage"]);
                     obj.overAllPercent = Convert.ToDecimal(sdr["overallPercentage"]);
-                    obj.Percentage = (float)sdr["financialStatusPercentage"];
+                    if (float.TryParse(sdr["financialStatusPercentage"]?.ToString(), out float percentage))
+                    {
+                        obj.Percentage = percentage;
+                    }
+                    else
+                    {
+                        obj.Percentage = 0;
+                    }
+
                     _list.Add(obj);
                 }
                 sdr.Close();

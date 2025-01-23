@@ -53,6 +53,7 @@
                     <option>Work in Progress</option>
                     <option>Not Started</option>
                     <option>Completed</option>
+                    <option>Delay</option>
                 </select>
             </div>
         </div>
@@ -110,13 +111,18 @@
                                             {
                                                 <span class="badge bg-success">Completed</span>
                                             }
-                                            else if (!item.ProjectStatus && item.CompletionDate > currentDate)
-                                            {
-                                                <span class="badge bg-warning text-dark">Processing</span>
-                                            }
-                                            else
+                                            else if (item.StartDate > currentDate && item.CompletionDate > currentDate)
                                             {
                                                 <span class="badge bg-secondary">Not Started</span>
+                                            }
+                                            else if (!item.ProjectStatus && item.CompletionDate > currentDate)
+                                            {
+                                                <span class="badge bg-warning text-dark">Work in Progress</span>
+                                            }
+
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Delay</span>
                                             }
                                         </td>
                                         <td class="text-center">
@@ -174,89 +180,16 @@
     $(document).ready(function () {
         var table = $("#projectTable").DataTable();
         $("#statusFilter").on("change", function () {
+            debugger
             var projectStatus = $(this).val();
-            table.column(5).search(projectStatus).draw();
+            table.column(8).search(projectStatus).draw();
         })
 
         $('#searchByProjectName').on('keyup', function () {
-            let table = $("#projectTable").DataTable();
-
             table.columns(1).search($(this).val()).draw();
         });
-        setTimeout(() => {
-
-            $('#searchByProjectName').trigger('keyup')
-        }, 1000)
-
-        $.ajax({
-            url: "/Employee/GetAllProjectByManager",
-            type: "GET",
-            success: function (res) {
-                $("#projectTable tbody").empty();
-
-                $.each(res._list, function (index, item) {
-                    var todayDate = new Date();
-                    var currentDate = ("0" + todayDate.getDate()).slice(-2) + "-" +
-                        ("0" + (todayDate.getMonth() + 1)).slice(-2) + "-" +
-                        todayDate.getFullYear();
-                    debugger
-                    var statusLabel = item.CompleteionStatus === 0 && item.StartDateString <= currentDate
-                        ? "Work in Progress"
-                        : item.CompleteionStatus === 1 && item.CompletionDatestring < currentDate
-                            ? "Completed"
-                            : "Pending";
-
-                    var badgeColor =
-                        item.CompleteionStatus === 0 && item.StartDateString <= currentDate
-                            ? " fw-bold text-secondary"
-                            : item.CompleteionStatus === 0 && item.StartDateString < currentDate
-                                ? " fw-bold "
-                                : " fw-bold text-warning font-italic";
-
-                    var row = `<tr>
-                <td>${index + 1}</td>
-                <td>${item.Title}</td>
-                <td>${item.AssignDateString}</td>
-                <td>${item.StartDateString}</td>
-                <td>${item.CompletionDatestring}</td>
-                <td><span class="${badgeColor}">${statusLabel}</span></td>
-                <td class="text-center">
-                    <ul class="d-flex list-unstyled mb-0 justify-content-center">
-
-                         <li class="me-2">
-                         <a href="#" class="viewProject" data-Id="${item.Id}"><i class="link-icon" data-feather="eye"></i></a>
-                         </li>
-
-                        <li class="me-2">
-                            <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
-                                <i class="link-icon" data-feather="calendar" style="color:orangered"></i>
-                            </a>
-                        </li>
-                        <li class="me-2">
-                            <a href="/Employee/Update_Project_Stage?Id=${item.Id}" title="Update Stages">
-                                <i class="link-icon text-info" data-feather="plus-circle"></i>
-                            </a>
-                        </li>
-                        <li class="me-2">
-                            <a href="/Employee/Add_Expenses/" title="Add Expenses">
-                                <i class="link-icon text-danger" data-feather="file-plus"></i>
-                            </a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>`;
-                    $("#projectTable tbody").append(row);
-                });
-
-                // Reinitialize feather icons
-                feather.replace();
-            },
-            error: function (xhr, error) {
-                console.log("An error occurred", error);
-            }
-        });
-
-
+  
+      
     })
 
     $(document).ready(function () {

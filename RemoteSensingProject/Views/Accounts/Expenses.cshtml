@@ -194,7 +194,7 @@
                       <td><a href="${d.attatchment_url}">Reciept</a></td>
                       <td>${d.AppAmount}</td>
                       <td>${d.AppStatus == 0 ? "<span class='text-light bg-warning px-2 rounded-1 border'>Pending</span>" : d.AppStatus == 1 ? "<span class='text-light px-2 bg-success rounded-1 border'>Accepted</span>" : "<span class='text-light px-2 bg-danger rounded-1 border'>Rejected</span>"}</td>
-                      <td>${d.reason || d.reason == "null" ? "N/A" : d.reason}</td>
+                      <td>${d.reason == "null" ? "N/A" : d.reason}</td>
                       <td>${d.AppStatus == 0 ? `<i role="button" onclick="getResponse(${d.amount - d.AppAmount},${d.Id},${d.projectHeadId})" class="fa-solid text-success fa-pen-to-square"></i>` : ""}</td>
                   </tr>`
                     });
