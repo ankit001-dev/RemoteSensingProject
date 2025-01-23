@@ -4,5 +4,267 @@
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
-<h2>FundReport</h2>
+
+
+<style>
+    body {
+        padding: 0 !important;
+    }
+</style>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <div class="row align-items-center">
+        <div class="col-lg-3">
+            <h5>Project Lists</h5>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <select class="form-select form-select-lg" id="filterProjectStatus">
+                <option value="" selected>Project Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-baseline mb-2">
+            <h6 class="card-title mb-0">Projects</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="dataTableExample">
+                <thead>
+                    <tr>
+                        <th class="pt-0">#</th>
+                        <th class="pt-0">Project Name</th>
+                        <th class="pt-0">Assign Date</th>
+                        <th class="pt-0">Start Date</th>
+                        <th class="pt-0">Approve Status</th>
+                        <th class="pt-0">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (ViewBag.ProjectList != null)
+                        {
+                            int i = 1;
+                            foreach (var item in ViewBag.ProjectList as List<RemoteSensingProject.Models.Accounts.main.Project_model>)
+                            {
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@item.ProjectTitle</td>
+                                            <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
+                                            <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
+                                            <td><span class='text-light px-2 border-0 rounded-1 @(item.ApproveStatus?"bg-success":"bg-warning")'>@(item.ApproveStatus?"Completed":"Pending")</span></td>
+                                            <td class="text-center">
+                                                <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                                    <li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>
+                                                    <li class="me-2">
+                                                        <a href="/accounts/Expenses?Id=@item.Id" title="Add Expenses">
+                                                            <i class="link-icon text-danger" data-feather="file-plus"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                i++;
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewProjectModal" tabindex="-1" aria-labelledby="viewProjectModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewProjectModalBody">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(".viewProject").click(function () {
+        let id = $(this).attr("data-Id");
+        Swal.fire({
+            title: "Please wait...",
+            text: "Processing your request ...",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            timer: 100000,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+        $.ajax({
+            url: "/Accounts/GetProjecDatatById",
+            type: "get",
+            data: { Id: id },
+            success: function (res) {
+                console.log(res);
+                if (res.status) {
+
+                    let stages = `<div class="stageSection">`;
+                    if (res.data.pm.ProjectStage) {
+                        if (res.data.stages.length > 0) {
+                            $.each(res.data.stages, function (i, d) {
+                                stages += `<label class="form-label"><a href="stage2">Stage ${i + 1}</a></label>
+<div class="row">
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Key</label>
+        <br />
+        <span>${d.KeyPoint}</span>
+    </div>
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Pdf Document</label>
+        <br />
+       <a href="${d.Document_Url}"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
+    </div>
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Completion Date</label>
+        <br />
+        <span>${d.CompletionDatestring}</span>
+    </div>
+    <hr />
+</div>`;
+                            });
+                            stages += "</div>";
+                        }
+                    }
+                    let ExternalProject = ""
+                    if (res.data.pm.ProjectType === "External") {
+                        ExternalProject = `<div class="row">
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Department Name</label>
+        <br />
+        <span>${res.data.pm.ProjectDepartment}</span>
+    </div>
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Contact Person</label>
+        <br />
+        <span>${res.data.pm.ContactPerson}</span>
+    </div>
+    <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Address</label>
+        <br />
+        <span>${res.data.pm.Address}</span>
+    </div>
+    <hr />
+</div>`;
+                    }
+
+                    let subOrdinates = "";
+                    if (res.data.SubOrdinate.length > 0) {
+                        $.each(res.data.SubOrdinate, function (i, d) {
+                            subOrdinates += ` <li>${d.Name}(${d.EmpCode})</li>`;
+                        })
+                    }
+                    let all_element = `<div class="row">
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Title</label>
+         <br />
+         <span>${res.data.pm.ProjectTitle}</span>
+     </div>
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Project Manager</label>
+         <br />
+         <span>${res.data.pm.ProjectManager}</span>
+     </div>
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Assign Date</label>
+         <br />
+         <span>${convertToDate(res.data.pm.AssignDate)}</span>
+     </div>
+
+     <hr />
+ </div>
+ <div class="row">
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Start Date</label>
+         <br />
+         <span>${convertToDate(res.data.pm.StartDate)}</span>
+     </div>
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Completion Date</label>
+         <br />
+         <span>${convertToDate(res.data.pm.CompletionDatestring)}</span>
+     </div>
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Project Type</label>
+         <br />
+         <span>${res.data.pm.ProjectType}</span>
+     </div>
+
+     <hr />
+ </div>
+ ${res.data.pm.ProjectType === "External" ? ExternalProject : ""}
+ <div class="row">
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Budget</label>
+         <br />
+         <span>${res.data.pm.ProjectBudget}</span>
+     </div>
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Sub-Ordinate</label>
+         <ul class="d-flex list-unstyled justify-content-between m-0">
+             ${subOrdinates}
+         </ul>
+     </div>
+     <div class="col-sm-4 mb-2">
+         <label class="form-label fw-bolder">Stage</label>
+         <br />
+         <span>${res.data.pm.ProjectStage ? "Yes" : "No"}</span>
+     </div>
+     <hr />
+ </div>
+ ${res.data.pm.ProjectStage ? stages : ""}
+
+     <div class="row">
+         <label class="form-label fw-bolder">Description</label>
+         <p>${res.data.pm.ProjectDescription}</p>
+     </div>` ;
+
+                    function convertToDate(timestamp) {
+                        const parsedTimestamp = parseInt(timestamp.match(/\d+/)[0], 10);
+                        const date = new Date(parsedTimestamp);
+                        return date.toLocaleDateString();
+                    }
+
+                    $("#viewProjectModalBody").html(all_element);
+                    $("#viewProjectModal").modal("show");
+                    Swal.close();
+                }
+            },
+            error: function (res) {
+
+            },
+            complete: function (res) {
+
+            }
+        })
+    })
+
+    $(document).ready(function () {
+        $("#searchProjectBy").on("keyup", function () {
+            var table = $("#dataTableExample").DataTable();
+            table.column(1).search(this.value).draw()
+        });
+
+        $("#filterProjectStatus").on("change", function () {
+            var table = $("#dataTableExample").DataTable();
+            table.column(4).search(this.value).draw();
+        })
+
+    });
+</script>
 

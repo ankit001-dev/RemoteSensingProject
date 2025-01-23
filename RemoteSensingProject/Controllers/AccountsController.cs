@@ -25,6 +25,9 @@ namespace RemoteSensingProject.Controllers
         // GET: Accounts
         public ActionResult Dashboard()
         {
+            ViewBag.CompleteRequest = _accountSerivce.Project_List().Count(e => e.ApproveStatus);
+            ViewBag.PendingStatus = _accountSerivce.Project_List().Count(e => !e.ApproveStatus);
+            ViewBag.TotalFunRequest = _accountSerivce.Project_List().Count();
             return View();
         }
 
@@ -67,6 +70,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult FundReport()
         {
+            ViewBag.ProjectList = _accountSerivce.Project_List();
             return View();
         }    
        
