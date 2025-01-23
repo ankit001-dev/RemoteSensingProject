@@ -10,6 +10,43 @@
     body {
         padding: 0 !important;
     }
+    /* Custom button styling */
+    .dt-button {
+        font-size: 14px !important;
+        padding: 10px 20px !important;
+        border-radius: 4px !important;
+        border: none !important;
+        cursor: pointer !important;
+        margin-right: 5px !important;
+        display: inline-block !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+        /* Excel button (Green) */
+        .dt-button.buttons-excel {
+            background-color: #3b9f42 !important; /* Excel-like green */
+            color: white !important;
+        }
+
+            .dt-button.buttons-excel:hover {
+                background-color: #2a7c2f !important; /* Darker green on hover */
+            }
+
+        /* PDF button (Red) */
+        .dt-button.buttons-pdf {
+            background-color: #e74c3c !important; /* PDF-like red */
+            color: white !important;
+        }
+
+            .dt-button.buttons-pdf:hover {
+                background-color: #c0392b !important; /* Darker red on hover */
+            }
+
+    /* Additional styling for the buttons wrapper */
+    .dataTables_wrapper .dt-buttons {
+        margin-bottom: 10px !important;
+    }
 </style>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <div class="row align-items-center">
@@ -34,7 +71,7 @@
             <h6 class="card-title mb-0">Projects</h6>
         </div>
         <div class="table-responsive">
-            <table class="table table-hover mb-0" id="dataTableExample">
+            <table class="table table-hover mb-0" id="dataTableExamples">
                 <thead>
                     <tr>
                         <th class="pt-0">#</th>
@@ -256,15 +293,21 @@
 
     $(document).ready(function () {
         $("#searchProjectBy").on("keyup", function () {
-            var table = $("#dataTableExample").DataTable();
+            var table = $("#dataTableExamples").DataTable();
             table.column(1).search(this.value).draw()
         });
 
         $("#filterProjectStatus").on("change", function () {
-            var table = $("#dataTableExample").DataTable();
+            var table = $("#dataTableExamples").DataTable();
             table.column(4).search(this.value).draw();
         })
-
+        $('#dataTableExamples').DataTable({
+            layout: {
+                topStart: {
+                    buttons: ['excel', 'pdf']
+                }
+            }
+        });
     });
 </script>
 
