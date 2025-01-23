@@ -360,6 +360,30 @@
     </div>
 </div>
 
+<div class="modal fade" id="AllMemmberJoiningDetails" tabindex="-1" aria-labelledby="AllMemmberJoiningDetails" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <h1 class="modal-title fs-5 text-light" id="AllMemmberJoiningDetails">All Meeting Members</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Sr</th>
+                            <th>Meeting Member Name</th>
+                            <th>Status</th>
+                            <th>Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody id="joiningMemberContainer">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
 <script>
 
@@ -504,29 +528,17 @@
             event.preventDefault();
             showLoading(true);
             let formData = new FormData();
-            let meetingMemberList = [];
-            let keyPointList = [];
 
             var arrData = $(this).serializeArray();
 
             arrData.forEach(function (para) {
-                if (para.name == "MeetingMember") {
-                    meetingMemberList.push(para.value);
-                }
-                else if (para.name == "keyPointList") {
-                    keyPointList.push(para.value);
-
-                }
-                else {
                     formData.append(para.name, para.value);
-                }
             });
 
             if ($("#Attachment").get(0).files.length > 0) {
                 formData.append("Attachment", $("#Attachment").get(0).files[0]);
             }
-            formData.append("meetingMemberList", meetingMemberList)
-            formData.append("KeyPointList", keyPointList)
+     
             debugger
 
             $.ajax({
@@ -593,14 +605,12 @@
             }
 
             $.ajax({
-                url: '/Admin/UpdateMeeting',
+                url: '/employee/UpdateMeeting',
                 type: 'POST',
                 processData: false,
                 contentType: false,
                 data: formData,
                 success: function (response) {
-                    showLoading(false);
-
                     if (response.success) {
                         Swal.fire({
                             title: 'Success',
@@ -672,7 +682,8 @@
                             <ul class="d-flex list-unstyled justify-content-evenly">
                             ${item.CompleteStatus == 0 ? `<li>        <a href="/employee/Meeting_Conclusion?meeting=${item.Id}"><i class="fa-solid fa-circle-plus" style="color:orange" title="Add Conclusion"></i></a>
                             </li >
-                        <li><a onclick='updateMeeting(${item.Id})' role="button"><i class="fa-solid text-primary fa-pencil"></i></a></li>` : `<i onclick="showAllConclusion(${item.Id})" role="button" class="fa-solid text-primary fa-eye"></i>`
+                        <li><a onclick='updateMeeting(${item.Id})' role="button"><i class="fa-solid text-primary fa-pencil"></i></a></li>
+                         <li><i class="fa-solid fa-users" onclick='ShowJoiningMember(${item.Id})'></i></li>` : `<i onclick="showAllConclusion(${item.Id})" role="button" class="fa-solid text-primary fa-eye"></i>`
                         }
                         </ul>
                     </td>
@@ -685,6 +696,37 @@
             }
         })
     })
+
+    function ShowJoiningMember(id) {
+        $("#AllMemmberJoiningDetails").modal("show")
+        $.ajax({
+            url: "/employee/GetMemberJoiningStatusByMeeting",
+            type: "get",
+            data: { meetingId: id },
+            success: function (res) {
+                console.log(res)
+                if (res != null) {
+                    $("#joiningMemberContainer").empty();
+                    if (res.length > 0) {
+                        res.forEach(function (d, i) {
+                            $("#joiningMemberContainer").append(` <tr>
+<td>${i + 1}</td>
+    <td><img src="${d.Image_url}" alt="sliderimages" style="height: 20px;width: 20px;"> ${d.EmployeeName}	<span class="text-secondary">(${d.EmployeeRole})</span></td>
+    <td>${d.AppStatus == 0 ? "Pending" : d.AppStatus == 1 ? "Accepted" : "Rejected"}</td>
+    <td>${d.Reason}</td>
+</tr>`)
+                        })
+                    }
+                }
+            }, error: function (xhr) {
+                swal.fire({
+                    title: "error",
+                    text: "something went wrong",
+                    icon: "error"
+                })
+            }
+        })
+    }
 
     function showAllConclusion(id) {
         $("#AllConclusionModal").modal("show")
@@ -706,7 +748,7 @@
                      ${d.Conclusion}
                  </td>
                  <td>
-                     ${d.NextFollow}
+                     ${d.NextFollow || "N/A"}
                  </td>
 
                  <td>

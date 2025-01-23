@@ -397,10 +397,6 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="onlyConclusionModal">
-                @*<p>
-                    There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum,
-                    you need to be sure there isn't anything embarrassing hidden in the middle of text. All t There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All t
-                </p>*@
             </div>
         </div>
     </div>
@@ -722,11 +718,12 @@
                             <ul class="d-flex list-unstyled justify-content-evenly">
                             ${item.CompleteStatus == 0 ? `<li>        <a href="/admin/MeetingConclusion?meeting=${item.Id}"><i class="fa-solid fa-circle-plus" style="color:orange" title="Add Conclusion"></i></a>
                             </li >
-                        <li><a onclick='updateMeeting(${item.Id})' role="button"><i class="fa-solid text-primary fa-pencil"></i></a></li>` : `<i onclick="showAllConclusion(${item.Id})" role="button" class="fa-solid text-primary fa-eye"></i></li>
+                        <li><a onclick='updateMeeting(${item.Id})' role="button"><i class="fa-solid text-primary fa-pencil"></i></a></li>
+                         <li><i class="fa-solid fa-users" onclick='ShowJoiningMember(${item.Id})'></i></li>` : `<i onclick="showAllConclusion(${item.Id})" role="button" class="fa-solid text-primary fa-eye"></i></li>
                        `
 
                         }
-                        <li><i class="fa-solid fa-users" onclick='ShowJoiningMember(${item.Id})'></i></li>
+                       
                         </ul>
                     </td>
                     </tr>`;

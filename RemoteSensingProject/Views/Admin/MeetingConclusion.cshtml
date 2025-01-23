@@ -5,181 +5,180 @@
 }
 <style>
     .table > :not(caption) > * > *, .datepicker table > :not(caption) > * > * {
-        padding:6px;
+        padding: 6px;
     }
-  
 </style>
 
 <div class="row gutters mt-2">
     <div class="card">
-            <div class="card-body">
-                <h4>Meeting Conclusion</h4>
-                <hr />
-                <div class="row gutters">
+        <div class="card-body">
+            <h4>Meeting Conclusion</h4>
+            <hr />
+            <div class="row gutters">
+                <div class="table-responsive">
+                    <table id="tblheaderdetails" class="meeting-table table">
+                        <tr>
+                            <th>Meeting Title : </th>
+                            <td>@Model.MeetingTitle</td>
+                            <th></th>
+                            <th>Time :</th>
+                            <td>@Model.MeetingTimeString</td>
+                            <th></th>
+                            <th>Type :</th>
+                            <td>@Model.MeetingType</td>
+                            @if (@Model.MeetingType.ToLower() == "offline")
+                            {
+                                <th>Venue :</th>
+                                <td>@Model.MeetingLink</td>
+                            }
+
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-body">
+                    <div class="card-title d-flex justify-content-between">
+                        <h5 style="color: #029e9d;"><i class="fa-solid fa-list"></i>&nbsp;Invited Members List</h5>
+                        <h6 class="text-danger"> Please Check  CheckBox for Present</h6>
+                    </div>
                     <div class="table-responsive">
-                        <table id="tblheaderdetails" class="meeting-table table">
-                            <tr>
-                                <th>Meeting Title : </th>
-                                <td>@Model.MeetingTitle</td>
-                                <th></th>
-                                <th>Time :</th>
-                                <td>@Model.MeetingTimeString</td>
-                                <th></th>
-                                <th>Type :</th>
-                                <td>@Model.MeetingType</td>
-                                @if (@Model.MeetingType.ToLower() == "offline")
-                                {
-                                    <th>Venue :</th>
-                                    <td>@Model.MeetingLink</td>
+                        <table id="basicExample" class="table custom-table" width="100%" border="1" style="font-size: 13px; text-align: center">
+                            <thead>
+                                <tr>
+                                    <th>  <input type="checkbox" name="select_all" value="1" id="select_all" onclick="toggle(this);"> All Present</th>
+                                    <th>Sr</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Contact No</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    Stack<int> memberRecord = new Stack<int>();
+                                    if (ViewBag.getMember != null)
+                                    {
+                                        int count = 1;
+                                        foreach (var item in ViewBag.getMember)
+                                        {
+                                            memberRecord.Push(item.Id);
+                                            <tr>
+                                                <th><input type="checkbox" class="employeeCheckBox" value="@item.Id" name="emp_id[]"></th>
+                                                <td>@count</td>
+                                                <td>@item.EmployeeCode</td>
+                                                <td>@item.EmployeeName</td>
+                                                <td>@item.EmployeeRole</td>
+                                                <td>@item.MobileNo</td>
+                                                <td>@item.Email</td>
+                                            </tr>
+                                            count++;
+                                        }
+
+                                    }
                                 }
 
-                            </tr>
+                            </tbody>
+
+                            <tfoot>
+
+                            </tfoot>
                         </table>
                     </div>
-                    <div class="card-body">
-                        <div class="card-title d-flex justify-content-between">
-                            <h5 style="color: #029e9d;"><i class="fa-solid fa-list"></i>&nbsp;Invited Members List</h5>
-                            <h6 class="text-danger"> Please Check  CheckBox for Present</h6>
-                        </div>
-                        <div class="table-responsive">
-                            <table id="basicExample" class="table custom-table" width="100%" border="1" style="font-size: 13px; text-align: center">
-                                <thead>
-                                    <tr>
-                                        <th>  <input type="checkbox" name="select_all" value="1" id="select_all" onclick="toggle(this);"> All Present</th>
-                                        <th>Sr</th>
-                                        <th>Code</th>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Contact No</th>
-                                        <th>Email</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @{
-                                        Stack<int> memberRecord = new Stack<int>();
-                                        if (ViewBag.getMember != null)
-                                        {
-                                            int count = 1;
-                                            foreach (var item in ViewBag.getMember)
-                                            {
-                                                memberRecord.Push(item.Id);
-                                                <tr>
-                                                    <th><input type="checkbox" class="employeeCheckBox" value="@item.Id" name="emp_id[]"></th>
-                                                    <td>@count</td>
-                                                    <td>@item.EmployeeCode</td>
-                                                    <td>@item.EmployeeName</td>
-                                                    <td>@item.EmployeeRole</td>
-                                                    <td>@item.MobileNo</td>
-                                                    <td>@item.Email</td>
-                                                </tr>
-                                                count++;
-                                            }
-
-                                        }
-                                    }
-
-                                </tbody>
-
-                                <tfoot>
-
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-
                 </div>
 
-                <hr />
+            </div>
 
-                <a href="#" class="fw-bolder ">Key Points</a>
-                <table id="keypointtbl" class="table">
-                    <thead>
-                        <tr>
-                            <th>Index</th>
-                            <th> Key Points</th>
-                            <th>Response</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null)
+            <hr />
+
+            <a href="#" class="fw-bolder ">Key Points</a>
+            <table id="keypointtbl" class="table">
+                <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th> Key Points</th>
+                        <th>Response</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null)
+                    {
+                        int i = 1;
+                        foreach (var item in Model.MeetingKeyPointDict)
                         {
-                            int i = 1;
-                            foreach (var item in Model.MeetingKeyPointDict)
-                            {
-                                <tr>
-                                    <td>Key Point @i</td>
-                                    <td>
-                                        @item.keyPoint
-                                    </td>
-                                    <td> <input type="text" data-id="@item.Id" placeholder="Please Write Response" name="response" class="keyResponse form-control" /> </td>
-                                </tr>
-                                i++;
-                            }
+                            <tr>
+                                <td>Key Point @i</td>
+                                <td>
+                                    @item.keyPoint
+                                </td>
+                                <td> <input type="text" data-id="@item.Id" placeholder="Please Write Response" name="response" class="keyResponse form-control" /> </td>
+                            </tr>
+                            i++;
                         }
-                        <!-- Add more rows as needed -->
-                    </tbody>
-                </table>
-                <br />
-                <div class="row gutters mt-1">
-                    <div class="col-sm-12 col-12 mb-2">
-                        Next Follow Up? :
-                        <input type="radio" name="FollowUpStatus" value="1" class="followUpdate" /> Yes&nbsp;
-                        <input type="radio" name="FollowUpStatus" checked value="0" class="followUpdate" /> No
+                    }
+                    <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+            <br />
+            <div class="row gutters mt-1">
+                <div class="col-sm-12 col-12 mb-2">
+                    Next Follow Up? :
+                    <input type="radio" name="FollowUpStatus" value="1" class="followUpdate" /> Yes&nbsp;
+                    <input type="radio" name="FollowUpStatus" checked value="0" class="followUpdate" /> No
+                </div>
+                <div class="col-sm-6 col-12">
+                    <div class="form-group">
+                        <label> Conclusion</label>
+                        <textarea class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion" rows="1"></textarea>
+                        @*<input type="text" class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion ">*@
                     </div>
-                    <div class="col-sm-6 col-12">
-                        <div class="form-group">
-                            <label> Conclusion</label>
-                            <textarea class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion" rows="1"></textarea>
-                            @*<input type="text" class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion ">*@
-                        </div>
-                    </div>  
-                    <div class="col-sm-6 col-12" id="summaryField">
-                        <div class="form-group" >
-                            <label> Summary</label>
-                            <textarea class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Summary" rows="1"></textarea>
-                            @*<input type="text" class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion ">*@
-                        </div>
+                </div>
+                <div class="col-sm-6 col-12" id="summaryField">
+                    <div class="form-group">
+                        <label> Summary</label>
+                        <textarea class="form-control" id="meetingSummary" name="summary" placeholder="Please Write Meeting Summary" rows="1"></textarea>
+                        @*<input type="text" class="form-control" id="meetingconclusion" name="meetingconclusion" placeholder="Please Write Meeting Conclusion ">*@
                     </div>
-                    <div class="col-sm-6 col-12 d-none nexFollowUpDateContainer">
-                        <div class="form-group">
-                            <label> Next Follow Up</label>
-                            <input type="date" id="nextfolloupdate" name="nextfolloupdate" class="form-control" />
-                        </div>
-                    </div> <div class="col-sm-6 col-12 mt-2 d-none nexFollowUpDateContainer">
-                        <div class="form-group">
-                            <label>Meeting Member:</label><br />
-                            <select class="form-control select2" id="MeetingMember" name="meetingMemberList" multiple>
-                                @if (ViewBag.empList != null)
+                </div>
+                <div class="col-sm-6 col-12 d-none nexFollowUpDateContainer">
+                    <div class="form-group">
+                        <label> Next Follow Up</label>
+                        <input type="date" id="nextfolloupdate" name="nextfolloupdate" class="form-control" />
+                    </div>
+                </div> <div class="col-sm-6 col-12 mt-2 d-none nexFollowUpDateContainer">
+                    <div class="form-group">
+                        <label>Meeting Member:</label><br />
+                        <select class="form-control select2" id="MeetingMember" name="meetingMemberList" multiple>
+                            @if (ViewBag.empList != null)
+                            {
+                                foreach (var item in ViewBag.empList)
                                 {
-                                    foreach (var item in ViewBag.empList)
+                                    if (item != null)
                                     {
-                                        if (item != null)
-                                        {
-                                            <option value="@item.Id" @(memberRecord.Contains(item.Id) ? "selected" : "")>@item.EmployeeName - @item.EmployeeRole</option>
-                                        }
+                                        <option value="@item.Id" @(memberRecord.Contains(item.Id) ? "selected" : "")>@item.EmployeeName - @item.EmployeeRole</option>
                                     }
                                 }
-                            </select>
-                        </div>
+                            }
+                        </select>
                     </div>
-                </div>
-
-
-
-                <div class="row gutters mt-2">
-                    <div class="col-sm-4 col-12">
-
-                    </div>
-                    <div class="col-sm-4 col-12">
-                        <div class="form-group">
-                            <a href="javascript:void()" class="btn btn-primary" id="subMeetingConBtn" style="width:80%">Submit Meeting Conclusion</a>
-                        </div>
-                    </div>
-                    <div class="col-sm-4 col-12">
-                    </div>
-
                 </div>
             </div>
+
+
+
+            <div class="row gutters mt-2">
+                <div class="col-sm-4 col-12">
+
+                </div>
+                <div class="col-sm-4 col-12">
+                    <div class="form-group">
+                        <a href="javascript:void()" class="btn btn-primary" id="subMeetingConBtn" style="width:80%">Submit Meeting Conclusion</a>
+                    </div>
+                </div>
+                <div class="col-sm-4 col-12">
+                </div>
+
+            </div>
+        </div>
     </div>
 
 </div>
@@ -210,28 +209,32 @@
                                 {
                                     foreach (var item in ViewBag.MeetingConclusion)
                                     {
-                                    <tr>
-                                        <td>
-                                           @item.MeetingDate @(item.MeetingDate.ToLower()=="offline"?item.address:"")
-                                        </td><td>
-                                           @item.mode
-                                        </td>
-                                        <td>
-                                           @item.Conclusion
-                                        </td>
-                                        <td>
-                                          @item.NextFollow
-                                        </td>
+                                        <tr>
+                                            <td>
+                                                @item.MeetingDate @(item.MeetingDate.ToLower()=="offline"?item.address:"")
+                                            </td>
+                                            <td>
+                                                @item.mode
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick="showOnlyConclusion(@item.Id, @item.Meeting)">
+                                                    @item.Conclusion.Substring(0, Math.Min(20, item.Conclusion.Length))
+                                                                                            </a>
+                                                
+                                            </td>
+                                            <td>
+                                                @item.NextFollow
+                                            </td>
 
-                                        <td>
-                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                <li class="me-2"><a href="#" data-id="@item.Id" class="ShowPresentMember" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-solid fa-circle-user" style="font-size:18px; color:green" title="View Meeting Members"> </i></a></li>
-                                                <li class="me-2"><a href="#" data-id="@item.Id" class="showKeyResponse" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list" style="font-size:18px; color:red" title="View Key Points"> </i></a></li>
+                                            <td>
+                                                <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                                    <li class="me-2"><a href="#" data-id="@item.Id" class="ShowPresentMember" data-bs-toggle="modal" data-bs-target="#AllMemmberDetails"><i class="fa-solid fa-circle-user" style="font-size:18px; color:green" title="View Meeting Members"> </i></a></li>
+                                                    <li class="me-2"><a href="#" data-id="@item.Id" class="showKeyResponse" data-bs-toggle="modal" data-bs-target="#customModalTwo"><i class="fa-solid fa-list" style="font-size:18px; color:red" title="View Key Points"> </i></a></li>
 
-                                            </ul>
+                                                </ul>
 
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     }
                                 }
                             }
@@ -259,7 +262,6 @@
                         </tr>
                     </thead>
                     <tbody id="presentMemberContainer">
-                       
                     </tbody>
                 </table>
             </div>
@@ -283,7 +285,6 @@
                         </tr>
                     </thead>
                     <tbody id="responseContainer">
-                       
                     </tbody>
                 </table>
             </div>
@@ -291,6 +292,20 @@
     </div>
 </div>
 
+
+<!---Only Conclusion-->
+<div class="modal fade" id="conclucionModal" tabindex="-1" aria-labelledby="conclucionModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">Conclusion</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="onlyConclusionModal">
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="~/Scripts/jquery-3.7.1.min.js"></script>
 <script>
@@ -302,7 +317,7 @@
             })
         }, 1000)
     })
-       
+
     function showLoading(action) {
         Swal.fire({
             title: "Please Wait..!",
@@ -316,7 +331,37 @@
             Swal.close();
         }
     }
+    function showOnlyConclusion(Id, meetingId) {
+        showLoading(true);
 
+        $.ajax({
+            url: '/Admin/GetConclusionOnly',
+            type: 'get',
+            data: {
+                id: Id,
+                meetingId: meetingId
+            },
+            success: function (res) {
+                $("#onlyConclusionModal").empty();
+
+                if (res != null) {
+
+                    $("#onlyConclusionModal").append(`<p>${res}</p>`)
+                    $("#conclucionModal").modal("show")
+                }
+                showLoading(false);
+
+            }, error: function (xhr) {
+                console.log(xhr)
+                Swal.fire({
+                    title: 'Error',
+                    icon: 'error',
+                    text: 'An error occurred.',
+                    confirmButtonText: 'ok'
+                })
+            }
+        })
+    }
     $(document).ready(function () {
         initializeDataTable();
     })
@@ -338,7 +383,7 @@
         if ($(this).val() == "1") {
             $(".nexFollowUpDateContainer").removeClass("d-none")
             $(".nexFollowUpDateContainer").attr("required", true)
-            $("#summaryField").attr("hidden",true)
+            $("#summaryField").attr("hidden", true)
         } else {
             $(".nexFollowUpDateContainer").addClass("d-none")
             $(".nexFollowUpDateContainer").attr("required", false)
@@ -368,6 +413,9 @@
             }
         });
     });
+
+
+   
 </script>
 
 <script>
@@ -389,6 +437,7 @@
         let keyPointCount = 0;
         let meetingId = "@Request.QueryString["meeting"]";
         formData.append("mc.Meeting", meetingId);
+        formData.append("mc.summary", $("#meetingSummary").val());
         formData.append("mc.Conclusion", conclusion.trim());
         formData.append("mc.FollowUpStatus", followUpStatus === "1");
         formData.append("mc.NextFollowUpDate", nextFollowUpDate.trim());

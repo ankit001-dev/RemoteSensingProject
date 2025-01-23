@@ -1037,7 +1037,7 @@ namespace RemoteSensingProject.Models.Admin
 
                     if (obj.keyPointList != null && obj.keyPointList.Count>0)
                     {
-                        foreach (var key in obj.keyPointList[0].Split(','))
+                        foreach (var key in obj.keyPointList)
                         {
                             if (!string.IsNullOrEmpty(key))
                             {
@@ -1468,6 +1468,7 @@ namespace RemoteSensingProject.Models.Admin
                         meetingc.Add(new MeetingConclusion
                         {
                             Id = Convert.ToInt32(rdr["id"]),
+                            Meeting = id,
                             MeetingDate = rdr["meetingTime"]!=DBNull.Value?Convert.ToDateTime(rdr["meetingTime"]).ToString("dd-MM-yyyy hh:mm tt"):"N/A",
                             Conclusion = rdr["conclusion"].ToString(),
                             NextFollow = rdr["nextFollow"]!=DBNull.Value?Convert.ToDateTime(rdr["nextFollow"]).ToString("dd-MM-yyyy"):"N/A",
