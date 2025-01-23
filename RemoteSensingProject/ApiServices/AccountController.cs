@@ -29,13 +29,12 @@ namespace RemoteSensingProject.ApiServices
         }
         [Route("api/getProjectHistoryList")]
         [HttpGet]
-
         public IHttpActionResult GetProjectHistoryList()
         {
             var res = _accountSerivce.Project_List().Where(e => e.ApproveStatus == true).ToList();
             return Ok(new { status = true, data = res, message = "data retrieved" });
         }
-          [Route("api/ProjectBudgetList")]
+        [Route("api/ProjectBudgetList")]
         [HttpGet]
         public IHttpActionResult ProjectBudgetList(int projectId)
         {
@@ -69,6 +68,23 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+        [Route("api/getFundReport")]
+        [HttpGet]
+        public IHttpActionResult getFundReport()
+        {
+           var res = _accountSerivce.Project_List();
+            return Ok(new { status = true, data = res, message = "data retrieved" });
+        }
+        
+        [Route("api/getAccountDashboards")]
+        [HttpGet]
+        public IHttpActionResult getAccountDashboards()
+        {
+           int completeCount = _accountSerivce.Project_List().Count(e => e.ApproveStatus);
+            int pendingCount = _accountSerivce.Project_List().Count(e => !e.ApproveStatus);
+            int totalcount = _accountSerivce.Project_List().Count();
+            return Ok(new { status = true, data = new {CompleteRequist= completeCount ,PendingRequest= pendingCount ,TotalRequest= totalcount }, message = "data retrieved" });
+        }
 
     }
 }
