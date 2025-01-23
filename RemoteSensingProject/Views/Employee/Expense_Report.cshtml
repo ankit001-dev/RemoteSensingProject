@@ -4,5 +4,221 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
 }
 
-<h2>Expense_Report</h2>
+<style>
+    .link-icon {
+        height: 16px;
+    }
+</style>
+<style>
+    .progress-bar {
+        width: 100% !important;
+        background-color: #f3f3f3 !important;
+        border-radius: 5px !important;
+        height: 20px !important;
+    }
 
+    .progress {
+        height: 100% !important;
+        width: 70%;
+        background-color: #4caf50 !important;
+        border-radius: 5px !important;
+        text-align: center !important;
+        line-height: 20px !important; /* Aligns text in the middle */
+        color: white !important;
+        justify-content: center;
+    }
+
+    .dt-button {
+        font-size: 14px !important;
+        padding: 10px 20px !important;
+        border-radius: 4px !important;
+        border: none !important;
+        cursor: pointer !important;
+        margin-right: 5px !important;
+        display: inline-block !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+        .dt-button.buttons-excel {
+            background-color: #3b9f42 !important; /* Excel-like green */
+            color: white !important;
+        }
+
+            .dt-button.buttons-excel:hover {
+                background-color: #2a7c2f !important; /* Darker green on hover */
+            }
+
+        /* PDF button (Red) */
+        .dt-button.buttons-pdf {
+            background-color: #e74c3c !important; /* PDF-like red */
+            color: white !important;
+        }
+
+            .dt-button.buttons-pdf:hover {
+                background-color: #c0392b !important; /* Darker red on hover */
+            }
+
+    /* Additional styling for the buttons wrapper */
+    .dataTables_wrapper .dt-buttons {
+        margin-bottom: 10px !important;
+    }
+</style>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <form class="forms-sample">
+        <div class="row align-items-center">
+            <div class="col-lg-2">
+                <h5>Expense Report</h5>
+            </div>
+            @*<div class="col-lg-4 col-md-6">
+                    <input type="text" placeholder="Search by project name" class="form-control">
+                </div>*@
+            <div class="col-lg-6 col-md-6">
+                <select id="projectName" class="form-select form-select-lg">
+                    <option>--Select Project--</option>
+                    @if (ViewBag.ProjectList != null)
+                    {
+                        if (ViewBag.ProjectList.Count > 0)
+                        {
+                            foreach (var item in ViewBag.ProjectList)
+                            {
+                                <option value="@item.Id">@item.ProjectTitle</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-lg-4 col-md-6 ">
+                <select class="form-select form-select-lg expenses" id="expenseDropdown">
+                    <option selected>--Select head--</option>
+                    @*<option value="1">Project Expenses</option>
+                        <option value="2">Equipment Expenses</option>
+                        <option value="3">Miscellaneous Expenses</option>*@
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row" id="expenseDetails" hidden>
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="dataTableExamples">
+                        <thead>
+                            <tr>
+                                <th>S.No.</th>
+                                <th>Date</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Receipt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!----Dynamic Data---->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $('#expenseDropdown').change(function () {
+            var selectedValue = $(this).val();
+            var expenseDetailsDiv = $('#expenseDetails');
+            const projectId = $('#projectName').val();
+            debugger;
+            if (selectedValue) {
+                expenseDetailsDiv.removeAttr('hidden');
+                getExpenses(selectedValue, projectId);
+            } else {
+                expenseDetailsDiv.attr('hidden', true);
+            }
+        });
+
+    })
+
+    let isApplyDataTable = false;
+    function getExpenses(hId, pId) {
+        $.ajax({
+            url: "/api/getProjectExpencesList",
+            type: "GET",
+            data: { headId: hId, projectId: pId },
+            success: function (res) {
+                const $tbody = $("#dataTableExamples tbody");
+                    let elem = $('#dataTableExamples');
+                elem.DataTable().destroy()
+                $tbody.empty();
+
+                if (res.data && res.data.length > 0) {
+
+                    $.each(res.data, function (index, item) {
+                        const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.DateString}</td>
+                            <td>${item.title}</td>
+                            <td>${item.description}</td>
+                            <td>${item.amount}</td>
+                            <td><a href="${item.attachment_url}" target="_blank" title="View Attachment">View</a></td>
+                        </tr>`;
+                        $tbody.append(row);
+                    });
+                } else {
+                    $tbody.append('<tr><td  class="text-center">No expenses available</td></tr>');
+                }
+                 elem.DataTable({
+                     layout: {
+                         topStart: {
+                             buttons: ['excel', 'pdf']
+                         }
+                     }
+                })
+            },
+            error: function (xhr) {
+                console.error("Error:", xhr.responseText);
+                Swal.fire({
+                    title: "Error",
+                    text: "An error occurred while fetching the expenses.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#projectName").on("change", function () {
+            const projectId = $(this).val();
+
+            $.ajax({
+                url: "/api/GetProjectBudgets",
+                type: "GET",
+                data: { projectId: projectId },
+                success: function (res) {
+                    $(".expenses").empty();
+                    $(".expenses").append('<option selected>--Select head--</option>');
+
+                    $.each(res.data, function (index, item) {
+                        var row = `<option value="${item.Id}">${item.ProjectHeads}</option>`;
+                        $(".expenses").append(row);
+                    });
+
+                },
+                error: function (xhr, error) {
+                    console.log("An error occurred:", error);
+                }
+            });
+        });
+
+    });
+
+</script>
