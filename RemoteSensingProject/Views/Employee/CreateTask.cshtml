@@ -68,7 +68,8 @@
                             <span class="badge bg-@(item.completeStatus ? "success" : "primary")">@(item.completeStatus ? "completed" : "pending")</span>
                         </td>
                         <td>
-                            <a href="#"><i class="fa-solid fa-eye"></i></a>
+                            <a href="#" class="viewAssignedSource" data-taskId="@item.Id"><i class="fa-solid fa-eye"></i></a> &nbsp;
+                            <a href="#" class="updateTaskStatus" data-taskId="@item.Id"><i class="fa-solid fa-check"></i></a>
                         </td>
                     </tr>
                                   i++;
@@ -124,6 +125,21 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="viewProjectModal" tabindex="-1" aria-labelledby="viewProjectModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewProjectModalBody">
+
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
     $(document).ready(function () {
@@ -186,6 +202,119 @@
                 Swal.fire({
                     title: "Server issue",
                     text: "Server is not respondig. Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
+    })
+
+
+    $(".viewAssignedSource").click(function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request.....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+        let taskId = $(this).attr("data-taskId")
+        $.ajax({
+            url: "/api/ViewTaskId",
+            type: "get",
+            data: { taskId: taskId },
+            success: function (res) {
+                if (res.status) {
+                    $("#viewProjectModalBody").empty();
+                    let element = '';
+                    $.each(res.data, function (i, d) {
+                        element += `<div class="row">
+                        <div class="col-sm-4 mb-2">
+                            <label class="form-label fw-bolder">Name</label>
+                            <br />
+                            <span>${d.EmpName}</span>
+                        </div>
+                        <div class="col-sm-4 mb-2">
+                            <label class="form-label fw-bolder">Status</label>
+                            <ul class="d-flex list-unstyled justify-content-between m-0">
+                            <span class="badge bg-${d.completeStatus ? "success" : "primary"}">${d.completeStatus ? "Completed" : "Pending"}</span>
+                            </ul>
+                        </div>
+                        <div class="col-sm-4 mb-2">
+                            <label class="form-label fw-bolder">Summary</label>
+                            <br />
+                            <span>${d.message}</span>
+                        </div>
+                        <hr />
+                    </div>` ;
+                    })
+                    $("#viewProjectModalBody").html(element)
+                }
+                else {
+                    $("#viewProjectModalBody").html(`<p class="text-center">Not Found !</p>`);
+                }
+                Swal.close();
+                $("#viewProjectModal").modal("show")
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue !",
+                    text: "Server is busy ! Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
+    })
+
+    $(".updateTaskStatus").click(function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request.....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+        let taskId = $(this).attr("data-taskId")
+        $.ajax({
+            url: "/api/UpdateTaskStatus",
+            type: "update",
+            data: { taskId: taskId },
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        tilte: "Successfully !",
+                        text: "Task Updated successfully !",
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true);
+                        }
+                    })
+                }
+                else {
+                    Swal.fire({
+                        tilte: "Successfully !",
+                        text: "Some issue occured while processing your request!",
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue !",
+                    text: "Server is busy ! Please try after sometime.",
                     icon: "error",
                     didClose: () => {
                         location.reload(true)

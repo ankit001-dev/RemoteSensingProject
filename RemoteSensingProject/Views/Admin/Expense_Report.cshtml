@@ -132,6 +132,7 @@
 
 <script>
     $(document).ready(function () {
+        $("#ExpenceTable").DataTable();
 
         $('#expenseDropdown').change(function () {
             var selectedValue = $(this).val();
@@ -158,7 +159,7 @@
                 const $table = $("#ExpenceTable");
                 const $tbody = $table.find("tbody");
 
-                // Destroy existing DataTable if initialized
+
                 if ($.fn.DataTable.isDataTable($table)) {
                     $table.DataTable().destroy();
                 }
@@ -183,7 +184,7 @@
                 } else {
                     $tbody.append('<tr><td colspan="6" class="text-center">No expenses available</td></tr>');
                 }
-                 elem.DataTable({
+                $table.DataTable({
                      layout: {
                          topStart: {
                              buttons: ['excel', 'pdf']
