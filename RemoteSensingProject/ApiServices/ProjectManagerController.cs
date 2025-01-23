@@ -547,7 +547,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _adminServices.getAllmeeting().Where(d => d.CreaterId == managerId).ToString();
+                var data = _adminServices.getAllmeeting().Where(d => d.CreaterId == managerId).ToList();
                 if (data.Any())
                 {
                     return Ok(new
@@ -613,8 +613,25 @@ namespace RemoteSensingProject.ApiServices
                 return Ok(new { status = true, message = "something went wrong", statusCode = 500 });
             }
         }
+        [HttpGet]
+        [Route("api/getProjectStatusForDashboard")]
+        public IHttpActionResult getProjectstatus(string userId)
+        {
+            var res = _adminServices.getAllProjectCompletion().Where(e => e.ProjectManager == userId).ToList();
 
-     
+            return Ok(new { status = true, message = "data retrieved", data = res });
+        }
+        [HttpGet]
+        [Route("api/getProblemListByManager")]
+        public IHttpActionResult getProblemListByManager(string userId)
+        {
+            var res = _managerService.getAllSubOrdinateProblem(userId);
+
+
+            return Ok(new { status = true, message = "data retrieved", data = res });
+        } 
+       
+
         #endregion
 
 
