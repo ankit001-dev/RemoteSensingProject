@@ -503,6 +503,8 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Expense_Report()
         {
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+            ViewBag.ProjectList = _managerServices.All_Project_List(userObj);
             return View();
         }
 

@@ -124,7 +124,6 @@
         </div>
     </div>
 </div>
-<script src="~/Scripts/jquery-3.7.1.min.js"></script>
 
 
 <script>
@@ -180,11 +179,13 @@
                 } else {
                     $tbody.append('<tr><td colspan="6" class="text-center">No expenses available</td></tr>');
                 }
-
-                $table.DataTable({
-                    buttons: ['excel', 'pdf'],
-                    dom: 'Bfrtip',
-                });
+                 elem.DataTable({
+                     layout: {
+                         topStart: {
+                             buttons: ['excel', 'pdf']
+                         }
+                     }
+                })
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);
