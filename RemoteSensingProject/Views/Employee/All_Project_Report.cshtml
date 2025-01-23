@@ -29,6 +29,41 @@
         color: white !important;
         justify-content: center;
     }
+    .dt-button {
+        font-size: 14px !important;
+        padding: 10px 20px !important;
+        border-radius: 4px !important;
+        border: none !important;
+        cursor: pointer !important;
+        margin-right: 5px !important;
+        display: inline-block !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease-in-out !important;
+    }
+
+        .dt-button.buttons-excel {
+            background-color: #3b9f42 !important; /* Excel-like green */
+            color: white !important;
+        }
+
+            .dt-button.buttons-excel:hover {
+                background-color: #2a7c2f !important; /* Darker green on hover */
+            }
+
+        /* PDF button (Red) */
+        .dt-button.buttons-pdf {
+            background-color: #e74c3c !important; /* PDF-like red */
+            color: white !important;
+        }
+
+            .dt-button.buttons-pdf:hover {
+                background-color: #c0392b !important; /* Darker red on hover */
+            }
+
+    /* Additional styling for the buttons wrapper */
+    .dataTables_wrapper .dt-buttons {
+        margin-bottom: 10px !important;
+    }
 </style>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <form class="forms-sample">
@@ -50,9 +85,10 @@
             <div class="col-lg-4 col-md-3">
                 <select id="statusFilter" class="form-select form-select-lg">
                     <option selected>Project Status</option>
-                    <option value="Processing">Work in Progress</option>
+                    <option value="Work in Progress">Work in Progress</option>
                     <option value="Not Started">Not Started</option>
                     <option value="Completed">Completed</option>
+                    <option value="Delay">Delay</option>
                 </select>
             </div>
         </div>
@@ -63,7 +99,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table" id="dataTableExample">
+                    <table class="table" id="AlProjectReport">
                         <thead>
                             <tr>
                                 <th>Sr No.</th>
@@ -92,13 +128,18 @@
                                             {
                                                 <span class="badge bg-success">Completed</span>
                                             }
-                                            else if (!item.ProjectStatus && item.CompletionDate > currentDate)
-                                            {
-                                                <span class="badge bg-warning text-dark">Processing</span>
-                                            }
-                                            else
+                                            else if (item.StartDate > currentDate && item.CompletionDate > currentDate)
                                             {
                                                 <span class="badge bg-secondary">Not Started</span>
+                                            }
+                                            else if (!item.ProjectStatus && item.CompletionDate > currentDate)
+                                            {
+                                                <span class="badge bg-warning text-dark">Work in Progress</span>
+                                            }
+
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Delay</span>
                                             }
                                         </td>
                                         <td><a href="@item.projectDocumentUrl" target="_blank" title="View Attachment">View</a></td>
@@ -135,15 +176,22 @@
 
 
         $("#statusFilter").on("change", function () {
-            var table = $("#dataTableExample").DataTable();
+            var table = $("#AlProjectReport").DataTable();
             var projectStatus = $(this).val();
 
             table.column(5).search(projectStatus).draw(); 
         });
 
         $('#searchByProjectName').on('keyup', function () {
-            var table = $("#dataTableExample").DataTable();
+            var table = $("#AlProjectReport").DataTable();
             table.column(1).search($(this).val()).draw();
+        });
+        $("#AlProjectReport").DataTable({
+            layout: {
+                topStart: {
+                    buttons: ['excel', 'pdf']
+                }
+            }
         });
     });
 </script>
