@@ -35,7 +35,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.ExpencesList(projectId, headId);
+                var data = _managerService.ExpencesList(headId, projectId);
                 if (!data.Any())
                 {
                     return Ok(new

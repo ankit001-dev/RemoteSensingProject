@@ -10,6 +10,22 @@
     .link-icon {
         height: 16px;
     }
+    .progress-bar {
+        width: 100% !important;
+        background-color: #f3f3f3 !important;
+        border-radius: 5px !important;
+        height: 20px !important;
+    }
+
+    .progress {
+        height: 100% !important;
+        background-color: #4caf50 !important;
+        border-radius: 5px !important;
+        text-align: center !important;
+        line-height: 20px !important; /* Aligns text in the middle */
+        color: white !important;
+        justify-content: center;
+    }
 </style>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <form class="forms-sample">
@@ -45,7 +61,9 @@
                                 <th>Start Date</th>
                                 <th>Completion Date</th>
                                 <th>Project Status</th>
+                                <th>Physical Status</th>
                                 <th>Financial Status</th>
+                                <th>Overall Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -78,9 +96,20 @@
                         </td>
                         <td>
                             <div class="progress-bar">
-                                <div class="progress" style="width:@item.Percentage%; color:black;">@item.Percentage%</div>
+                                <div class="progress" style="width:@item.physicalPercent%;">@item.physicalPercent%</div>
                             </div>
                         </td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress" style="width:@item.Percentage%;">@item.Percentage%</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress" style="width:@item.overAllPercent%;">@item.overAllPercent%</div>
+                            </div>
+                        </td>
+
                         <td class="text-center">
                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                 <li class="me-2">
