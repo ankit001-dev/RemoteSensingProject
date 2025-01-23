@@ -119,7 +119,68 @@ namespace RemoteSensingProject.Models.SubOrdinate
             }
 
         }
- 
+
         #endregion Problem End 
+
+        #region Out Source Start
+        public List<OutSource_Task> getOutSourceTask(int id)
+        {
+            try
+            {
+                List<OutSource_Task> taskList = new List<OutSource_Task>();
+                OutSource_Task task = null;
+                SqlCommand cmd = new SqlCommand("sp_manageOutSourceTask", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getTaskByOutSource");
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    while (sdr.Read())
+                    {
+                        task = new OutSource_Task();
+                        task.Title = sdr["title"].ToString();
+                        task.Description = sdr["description"].ToString();
+                        task.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
+                        task.Status = sdr["Status"].ToString();
+                        taskList.Add(task);
+                    }
+                }
+                return taskList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accure", ex);
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public bool AddOutSourceTask(OutSource_Task task)
+        {
+            SqlCommand cmd = new SqlCommand("sp_manageOutSourceTask",con);
+            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@action", "insertOutsource");
+            cmd.Parameters.AddWithValue("@response", task.Reason);
+            cmd.Parameters.AddWithValue("@id", task.id);
+            con.Open();
+            int i=cmd.ExecuteNonQuery();
+            if (i > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        #endregion Out Source End
     }
 }
