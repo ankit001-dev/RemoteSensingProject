@@ -25,19 +25,19 @@
                         <div class="row">
                             <div class="col-lg-4 mb-3">
                                 <label for="upload" class="form-label">Title</label>
-                                <input type="text" name="pm.pm.ProjectTitle" class="form-control form-control-sm" id="daynight" placeholder="Enter Project Title">
+                                <input type="text" name="pm.pm.ProjectTitle" required class="form-control form-control-sm" id="daynight" placeholder="Enter Project Title">
                             </div>
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Assign Date</label>
                                 <div class="input-group date datepicker datePickerExample">
-                                    <input type="text" class="form-control form-control-sm" name="pm.pm.AssignDate">
+                                    <input type="text" required class="form-control form-control-sm" name="pm.pm.AssignDate">
                                     <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                                 </div>
                             </div>
                             <div class="col-lg-4 mb-3">
                                 <label for="subtitle" class="form-label">Start Date</label>
                                 <div class="input-group date datepicker datePickerExample">
-                                    <input type="text" class="form-control form-control-sm" name="pm.pm.StartDate">
+                                    <input type="text" required class="form-control form-control-sm" name="pm.pm.StartDate">
                                     <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                                 </div>
                             </div>
@@ -46,14 +46,14 @@
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Completion Date</label>
                                 <div class="input-group date datepicker datePickerExample">
-                                    <input type="text" class="form-control form-control-sm" name="pm.pm.CompletionDate">
+                                    <input type="text" required class="form-control form-control-sm" name="pm.pm.CompletionDate">
                                     <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                                 </div>
                             </div>
 
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Project Manager</label>
-                                <select class="form-control form-control-sm" name="pm.pm.ProjectManager">
+                                <select class="form-control form-control-sm" required name="pm.pm.ProjectManager">
                                     <option value="">Select an Option</option>
                                     @foreach(var item in ViewBag.projectManager as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
                                      {
@@ -63,7 +63,7 @@
                             </div>
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Sub-Ordinate</label>
-                                <select class="form-control form-control-sm" name="pm.pm.SubOrdinate" multiple>
+                                <select class="form-control form-control-sm" required name="pm.pm.SubOrdinate" multiple>
                                     <option value="">Select an Option</option>
                                     @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
                                     {
@@ -77,11 +77,11 @@
                                 <div class="d-flex justify-content-between">
                                 <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
                                    </div>
-                                <input type="text" class="form-control form-control-sm" name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
+                                <input type="text" class="form-control form-control-sm" required name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
                             </div>
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Project Document</label>
-                                <input type="file" class="form-control form-control-sm" name="" id="projectDocumentFile">
+                                <input type="file" class="form-control form-control-sm" required name="" id="projectDocumentFile">
                             </div>
                             
 
@@ -89,10 +89,10 @@
                                 <label for="title" class="form-label">Project Type</label>
                                 <br />
                                 <label for="projectType" class="form-label">
-                                    <input type="radio" name="pm.pm.ProjectType" class="form-check-input" value="Internal" checked /><span>Internal</span>
+                                    <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="Internal" checked /><span>Internal</span>
                                 </label>
                                 <label for="stage" class="form-label ms-2">
-                                    <input type="radio" name="pm.pm.ProjectType" class="form-check-input" value="External" /> <span>External</span>
+                                    <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="External" /> <span>External</span>
                                 </label>
                             </div>
 
@@ -100,10 +100,10 @@
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label w-100">Stage</label>
                                 <label for="stage" class="form-label">
-                                    <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="true" /> <span>Yes</span>
+                                    <input type="radio" name="pm.pm.ProjectStage" required class="form-check-input" value="true" /> <span>Yes</span>
                                 </label>
                                 <label for="stage" class="form-label ms-2">
-                                    <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="false" checked /><span>No</span>
+                                    <input type="radio" name="pm.pm.ProjectStage" required class="form-check-input" value="false" checked /><span>No</span>
                                 </label>
 
 
@@ -117,11 +117,11 @@
                                 <div class="row budgetList">
                                     <div class="col-lg-5 mb-3">
                                         <label for="title" class="form-label">Heads</label>
-                                        <input type="text" class="form-control form-control-sm" name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point">
+                                        <input type="text"  class="form-control form-control-sm"  name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point">
                                     </div>
                                     <div class="col-lg-5 mb-3">
                                         <label for="title" class="form-label">Amount</label>
-                                        <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter Contact Person Name">
+                                        <input type="text"  class="form-control form-control-sm" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter Contact Person Name">
                                     </div>
                                 </div>
                                 <div class="row" id="miscList">
@@ -306,7 +306,11 @@
             }
         });
 
-        let formData = new FormData(this);
+        let formData = new FormData();
+        let arrData = $(this).serializeArray();
+        arrData.forEach(function (d) {
+            formData.append(d.name,d.value)
+        })
         let file = $("#projectDocumentFile")[0].files[0];
         if (file) {
             formData.append("pm.pm.projectDocument", file);
@@ -322,9 +326,9 @@
         $.ajax({
             url: "/admin/InsertProject",
             type: "post",
-            data: formData,
             processData: false,
             contentType: false,
+            data: formData,
             success: function (res) {
                 if (res.status) {
                     Swal.fire({

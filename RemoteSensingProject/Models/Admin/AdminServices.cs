@@ -1403,7 +1403,7 @@ namespace RemoteSensingProject.Models.Admin
                         foreach (var individualMember in mc.MeetingMemberList)
                         {
 
-                            if (!string.IsNullOrEmpty(individualMember))
+                            if (individualMember!=0)
                             {
                                 cmd.Parameters.Clear();
                                 cmd = new SqlCommand("sp_ManageMeeting", con, transaction);

@@ -525,7 +525,6 @@
                 $("#updatemeetinglink").attr("required", true);
                 $("#updatemeetingaddress").attr("required", false);
 
-
             }
         });
 
@@ -642,8 +641,7 @@
                 contentType: false,
                 data: formData,
                 success: function (response) {
-                    showLoading(false);
-
+                  
                     if (response.success) {
                         Swal.fire({
                             title: 'Success',

@@ -35,17 +35,18 @@
     <td class="text-start">@i</td>
     <td>@item.ProjectHeads</td>
     <td class="text-center">
-        @item.ProjectAmount
+        ₹@item.ProjectAmount
     </td>
-    <td class="text-center">@item.TotalAskAmount</td>
-    <td class="text-center">@item.ApproveAmount</td>
+    <td class="text-center">₹@item.TotalAskAmount</td>
+    <td class="text-center">₹@item.ApproveAmount</td>
     <td class="text-center">
-    @if (item.ProjectAmount >= Convert.ToDecimal(item.TotalAskAmount))
-            {
-                decimal acceptableAmount = item.ProjectAmount - Convert.ToDecimal(item.TotalAskAmount);
-    <a href="#" class="addExpences" data-acceptableAmount="@acceptableAmount" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a>
-                    }
-    <a href="#" class="headExpense" data-Id="@item.Id"><i class="fa-solid fa-eye"></i></a></td>
+        @if (item.ProjectAmount >= Convert.ToDecimal(item.TotalAskAmount))
+        {
+            decimal acceptableAmount = item.ProjectAmount - Convert.ToDecimal(item.TotalAskAmount);
+            <a href="#" class="addExpences" data-acceptableAmount="@acceptableAmount" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a>
+        }
+        <a href="#" class="headExpense" data-Id="@item.Id"><i class="fa-solid fa-eye"></i></a>
+    </td>
 </tr>        i++;
                 }
             }
@@ -128,12 +129,12 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Date</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Amount</th>
                                 <th>Reciept</th>
                                 <th>Approve Amount</th>
+                                <th>Date</th>
                                 <th>Reason</th>
                                 <th>Status</th>
                             </tr>
@@ -223,14 +224,14 @@
                     $.each(res.data, function (i, d) {
                         element += `  <tr>
                               <td>${i + 1}</td>
- <td>${convertToDate(d.date)}</td>
  <td>${d.title}</td>
  <td>${d.description}</td>
- <td>${d.amount}</td>
+ <td>₹${d.amount}</td>
  <td><a href="${d.attatchment_url}">Reciept</a></td>
- <td>${d.AppAmount}</td>
- <td>${d.reason || d.reason=="null"?"N/A":d.reason}</td>
- <td>${d.AppStatus == 0 ? "<span class='text-light bg-warning px-2 rounded-1 border'>Pending</span>" : d.AppStatus == 1 ? "<span class='text-light px-2 bg-success rounded-1 border'>Accepted</span>" : "<span class='text-light px-2 bg-danger rounded-1 border'>Rejected</span>"}</td>
+ <td>₹${d.AppAmount}</td>
+ <td>${convertToDate(d.date)}</td>
+ <td>${d.reason && d.reason=="null"?"N/A":d.reason}</td>
+ <td>${d.AppStatus == 0 ? "<span class='text-light bg-warning px-2 rounded-1 border'>Pending</span>" : d.AppStatus == 1 ? "<span class='text-light px-2 bg-success rounded-1 border'>Accepted</span>" : `<span class='text-light px-2 bg-danger rounded-1 border'>Rejected</span> (₹${d.amount - d.AppAmount})`}</td>
  
                           </tr>`
                     });

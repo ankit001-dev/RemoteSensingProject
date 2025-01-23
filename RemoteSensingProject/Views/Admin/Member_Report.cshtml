@@ -91,7 +91,6 @@
                             <tr>
                                 <th class="text-center">ID</th>
                                 <th>Employee Code</th>
-                                <th>Image</th>
                                 <th>Name</th>
                                 <th>Divison</th>
                                 <th class="text-center">Status</th>
@@ -106,13 +105,11 @@
                                 <tr>
                                     <td class="text-start">@count</td>
                                     <td>@item.EmployeeCode</td>
-                                    <td class="w-25">
-                                        <img src="@item.Image_url" alt="image">
-                                    </td>
+                                  
                                     <td>@item.EmployeeName</td>
                                     <td>@item.DevisionName</td>
                                     <td class="text-center">
-                                        <span class="form-check form-switch"><input type="checkbox" class="form-check-input activeSwitch" data-id="@item.Id" checked="@item.ActiveStatus"></span>
+                                        <span class="text-light px-2 py-1 rounded @(item.ActiveStatus?"bg-success":"bg-danger")">@(item.ActiveStatus?"Active":"Deactive")</span>
                                     </td>
                                     <td class="text-center">
                                         <ul class="d-flex list-unstyled mb-0 justify-content-center">
