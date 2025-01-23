@@ -261,6 +261,7 @@
   <ItemGroup>
     <Compile Include="ApiServices\AccountController.cs" />
     <Compile Include="ApiServices\AdminController.cs" />
+    <Compile Include="ApiServices\OutSourceController.cs" />
     <Compile Include="ApiServices\ProjectManagerController.cs" />
     <Compile Include="ApiServices\SubOrdinateController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
