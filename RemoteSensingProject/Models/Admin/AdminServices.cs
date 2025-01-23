@@ -1121,11 +1121,6 @@ namespace RemoteSensingProject.Models.Admin
                         }
                     }
 
-                    foreach(var item in obj.KeypointId)
-                    {
-
-                    }
-
                     for (var j = 0; j < obj.KeypointId.Count; j++)
                     {
                         if (!string.IsNullOrEmpty(obj.KeypointId[j].ToString()) && !string.IsNullOrEmpty(obj.keyPointList[j].ToString()))

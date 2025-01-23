@@ -69,7 +69,7 @@
                                         <td><span class="badge @(item.CompleteStatus==0?"bg-warning":"bg-success")">@(item.CompleteStatus==0?"Pending":"Complete")</span></td>
                                         <td>
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                @if (item.AppStatus == 0)
+                                                @if (item.AppStatus == 0 && item.CompleteStatus == 0)
                                                 {
                                                     <li class="me-2"><a href="#" title="Accept" data-id="@item.Id" class="acceptMeetingBtn"><i class="fa-regular fa-circle-check text-success"> </i></a></li>
                                                     <li class="me-2"><a href="#" data-id="@item.Id" class="rejectMeetingBtn" title="Reject"><i class="fa-regular fa-circle-xmark text-danger"> </i></a></li>
