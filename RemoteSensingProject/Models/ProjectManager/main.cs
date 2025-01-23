@@ -156,6 +156,8 @@ namespace RemoteSensingProject.Models.ProjectManager
         public long mobileNo { get; set; } 
         public string gender { get; set; }
         public string email { get; set; }
+        public bool completeStatus { get; set; }
+        public string message { get; set; }
     }
 
     public class OutSourceTask { 

@@ -85,11 +85,11 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.stage = Convert.ToBoolean(sdr["stage"].ToString());
                     obj.physicalPercent = Convert.ToDecimal(sdr["completionPercentage"]);
                     obj.overAllPercent = Convert.ToDecimal(sdr["overallPercentage"]);
-                    obj.Percentage = sdr["financialStatusPercentage"]!=DBNull.Value?Convert.ToDecimal(sdr["financialStatusPercentage"]):(decimal)0.00;
+                    obj.Percentage = (sdr["financialStatusPercentage"] != DBNull.Value ? Convert.ToDecimal(sdr["financialStatusPercentage"]) : (decimal)0.00);
                     _list.Add(obj);
                 }
                 sdr.Close();
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
             }
@@ -99,7 +99,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
             return _list;
         }
-       
+
         public UserCredential getManagerDetails(string managerName)
         {
             UserCredential _details = new UserCredential();
@@ -120,7 +120,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 
                 }
                 sdr.Close();
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
 
@@ -382,7 +382,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     con.Close();
                 cmd.Dispose();
             }
-        }  
+        }
         public List<Project_model> GetCompleteProject_List(string userId)
         {
             try
@@ -506,7 +506,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 return problemList;
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
             }
@@ -516,8 +516,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                     con.Close();
                 cmd.Dispose();
             }
-       
-        }     
+
+        }
         public List<Raise_Problem> getSubOrdinateProblemforAdmin()
         {
             try
@@ -545,7 +545,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 return problemList;
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
             }
@@ -555,7 +555,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     con.Close();
                 cmd.Dispose();
             }
-       
+
         }
         #endregion
 
@@ -574,7 +574,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
 
@@ -615,7 +615,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 }
                 return list;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -640,13 +640,13 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@project_id", exp.projectId);
                 cmd.Parameters.AddWithValue("@id", exp.projectHeadId);
                 cmd.Parameters.AddWithValue("@title", exp.title);
-                cmd.Parameters.AddWithValue("@w_date",exp.date);
+                cmd.Parameters.AddWithValue("@w_date", exp.date);
                 cmd.Parameters.AddWithValue("@amount", exp.amount);
                 cmd.Parameters.AddWithValue("@attatchment", exp.attatchment_url);
                 cmd.Parameters.AddWithValue("@comment", exp.description);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
                 throw ex;
             }
@@ -658,7 +658,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<ProjectExpenses> ExpencesList(int headId,int projectId)
+        public List<ProjectExpenses> ExpencesList(int headId, int projectId)
         {
             try
             {
@@ -678,20 +678,20 @@ namespace RemoteSensingProject.Models.ProjectManager
                         {
                             Id = Convert.ToInt32(rd["id"]),
                             projectHeadId = Convert.ToInt32(rd["budgetHeadId"]),
-                            AppStatus = rd["AppStatus"] != DBNull.Value? Convert.ToInt32(rd["AppStatus"]):0,
-                            AppAmount = rd["AppAmount"]!=DBNull.Value? float.Parse(rd["AppAmount"].ToString()):0,
+                            AppStatus = rd["AppStatus"] != DBNull.Value ? Convert.ToInt32(rd["AppStatus"]) : 0,
+                            AppAmount = rd["AppAmount"] != DBNull.Value ? float.Parse(rd["AppAmount"].ToString()) : 0,
                             title = rd["title"].ToString(),
                             date = Convert.ToDateTime(rd["insertDate"]),
                             DateString = Convert.ToDateTime(rd["insertDate"]).ToString("dd-MM-yyyy"),
                             amount = Convert.ToDecimal(rd["amount"]),
                             attatchment_url = rd["attatchment"].ToString(),
                             description = rd["description"].ToString(),
-                            reason = rd["reason"]!=DBNull.Value?rd["reason"].ToString():"N/A"
+                            reason = rd["reason"] != DBNull.Value ? rd["reason"].ToString() : "N/A"
                         });
                     }
                 }
                 return list;
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
                 throw ex;
             }
@@ -740,6 +740,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
+
+        #endregion
+
 
         #region Satges
         public List<Project_Statge> ProjectStagesList(int Id)
@@ -875,6 +878,9 @@ namespace RemoteSensingProject.Models.ProjectManager
 
         }
         #endregion Create OutSource
+
+
+        #region OutSource
         public bool insertOutSource(OuterSource os)
         {
             try
@@ -902,7 +908,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@password", userpassword);
                 con.Open();
                 int j = cmd.ExecuteNonQuery();
-                if(j > 0)
+                if (j > 0)
                 {
                     mail _mail = new mail();
                     string subject = "Login Credential";
@@ -910,7 +916,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     _mail.SendMail(os.EmpName, os.email, subject, message);
                 }
                 return j > 0;
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
                 throw ex;
             }
@@ -941,14 +947,14 @@ namespace RemoteSensingProject.Models.ProjectManager
                         {
                             Id = Convert.ToInt32(rd["id"]),
                             EmpName = rd["emp_name"].ToString(),
-                            mobileNo= Convert.ToInt64(rd["emp_mobile"]),
+                            mobileNo = Convert.ToInt64(rd["emp_mobile"]),
                             email = rd["emp_email"].ToString(),
                             gender = rd["emp_gender"].ToString()
                         });
                     }
                 }
                 return list;
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
                 throw ex;
             }
@@ -976,7 +982,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@meeting", mr.MeetingId);
                 cmd.Parameters.AddWithValue("@employee", mr.MemberId);
                 con.Open();
-                int res=cmd.ExecuteNonQuery();
+                int res = cmd.ExecuteNonQuery();
                 return res > 0;
             }
             catch (Exception ex)
@@ -1031,12 +1037,12 @@ namespace RemoteSensingProject.Models.ProjectManager
                 con.Close();
             }
         }
-        public List<GetConclusion> getConclusionForMeeting(int meetingId,int userId)
+        public List<GetConclusion> getConclusionForMeeting(int meetingId, int userId)
         {
             try
             {
                 List<GetConclusion> _list = new List<GetConclusion>();
-             
+
                 SqlCommand cmd = new SqlCommand("sp_meetingConslusion", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectConclusionForProjectManager");
@@ -1051,17 +1057,17 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         _list.Add(new GetConclusion
                         {
-                          Id = Convert.ToInt32(sdr["id"]),
-                          Conclusion = sdr["conclusion"].ToString(),
-                          FollowDate = sdr["nextFollow"] != DBNull.Value ? Convert.ToDateTime(sdr["nextFollow"]).ToString("dd-MM-yyyy") : "N/A"
+                            Id = Convert.ToInt32(sdr["id"]),
+                            Conclusion = sdr["conclusion"].ToString(),
+                            FollowDate = sdr["nextFollow"] != DBNull.Value ? Convert.ToDateTime(sdr["nextFollow"]).ToString("dd-MM-yyyy") : "N/A"
                         });
 
-                      
+
                     }
 
                     sdr.Close();
                 }
-                    return _list;
+                return _list;
             }
             catch (Exception ex)
             {
@@ -1073,7 +1079,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Employee_model> getMemberJoiningStatus(int meetingId) { 
+        public List<Employee_model> getMemberJoiningStatus(int meetingId) {
             try
             {
 
@@ -1096,7 +1102,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             Image_url = rdr["profile"].ToString(),
                             EmployeeRole = rdr["role"].ToString(),
                             AppStatus = rdr["appstatus"] != DBNull.Value ? (int)rdr["appstatus"] : 0,
-                            Reason=rdr["reason"]!=DBNull.Value?rdr["reason"].ToString():"N/A",
+                            Reason = rdr["reason"] != DBNull.Value ? rdr["reason"].ToString() : "N/A",
                         });
                     }
                 }
@@ -1161,7 +1167,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     con.Close();
                 cmd.Dispose();
             }
-        } 
+        }
 
         public List<OutSourceTask> taskList(int empId)
         {
@@ -1190,6 +1196,68 @@ namespace RemoteSensingProject.Models.ProjectManager
                 return list;
             }
             catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public List<OuterSource> ViewOutSourceList(int taskId)
+        {
+            try
+            {
+                List<OuterSource> list = new List<OuterSource>();
+                cmd = new SqlCommand("sp_manageOutSourceTask", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "ViewTaskEmpStatus");
+                cmd.Parameters.AddWithValue("@id", taskId);
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new OuterSource
+                        {
+                            Id = Convert.ToInt32(rd["id"]),
+                            EmpName = rd["emp_name"].ToString(),
+                            mobileNo = Convert.ToInt64(rd["emp_mobile"]),
+                            email = rd["emp_email"].ToString(),
+                            gender = rd["emp_gender"].ToString(),
+                            completeStatus = Convert.ToBoolean(rd["completeStatus"]),
+                            message = rd["response"].ToString()
+                        });
+                    }
+                }
+                return list;
+            } catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public bool updateTaskStatus(int taskId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_manageOutSourceTask", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "updateTaskStatus");
+                cmd.Parameters.AddWithValue("@id", taskId);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }catch(Exception ex)
             {
                 throw ex;
             }

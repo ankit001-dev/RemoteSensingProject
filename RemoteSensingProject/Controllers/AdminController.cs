@@ -33,6 +33,7 @@ namespace RemoteSensingProject.Controllers
             ViewBag.totalCompleteProject = TotalCount.TotalCompleteProject;
             ViewBag.totalOngoingProject = TotalCount.TotalOngoingProject;
             ViewBag.totalMeetings = TotalCount.TotalMeetings;
+
             return View();
         }
         public ActionResult BindOverallCompletionPercentage()
@@ -512,5 +513,6 @@ namespace RemoteSensingProject.Controllers
             ViewBag.ProjectProblemList = _managerServices.getSubOrdinateProblemforAdmin();
             return View();
         }
+
     }
 }
