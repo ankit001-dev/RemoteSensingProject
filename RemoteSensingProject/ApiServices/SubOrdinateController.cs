@@ -72,7 +72,7 @@ namespace RemoteSensingProject.ApiServices
                     Project_Id = Convert.ToInt32(request.Form.Get("Project_Id")),
                     Title = request.Form.Get("title"),
                     Description = request.Form.Get("Description"),
-                    Attchment_Url = request.Form.Get("Attachment")
+                    Attchment_Url = request.Form.Get("Attchment_Url")
                 };
                 var file = request.Files["Attachment"];
                 if (file != null && file.FileName != "")
@@ -127,6 +127,8 @@ namespace RemoteSensingProject.ApiServices
       
          }
         #endregion 
+
+
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);

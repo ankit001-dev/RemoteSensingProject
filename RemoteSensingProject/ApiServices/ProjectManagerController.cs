@@ -547,12 +547,12 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _adminServices.getAllmeeting().Where(d => d.CreaterId == managerId).ToString();
+                var data = _adminServices.getAllmeeting().Where(d => d.CreaterId == managerId).ToList();
                 if (data.Any())
                 {
                     return Ok(new
                     {
-                        status = true,
+                        status = data.Any(),
                         StatusCode = 200,
                         message = "Data found",
                         data = data
@@ -730,6 +730,53 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
             catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/ViewTaskId")]
+        public IHttpActionResult ViewTaskList(int taskId)
+        {
+            try
+            {
+                var data = _managerService.ViewOutSourceList(taskId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new { 
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpPut]
+        [Route("api/UpdateTaskStatus")]
+        public IHttpActionResult UpdateTAskStatus(int taskId)
+        {
+            try
+            {
+                bool res = _managerService.updateTaskStatus(taskId);
+                return Ok(new
+                {
+                    status = res,
+                    message = res ?"Task updated successfully !" : "Some issue occured !"
+                });
+            }catch(Exception ex)
             {
                 return BadRequest(new
                 {
