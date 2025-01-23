@@ -846,7 +846,7 @@ namespace RemoteSensingProject.Models.Admin
                             KeyPoint = rd["keyPoint"].ToString(),
                             CompletionDate = Convert.ToDateTime(rd["completeDate"]),
                             CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
-                           Status = rd["StagesStatus"].ToString(),
+                            Status = rd["StagesStatus"].ToString(),
                             Document_Url = rd["stageDocument"].ToString()
                         });
                     }
@@ -922,6 +922,7 @@ namespace RemoteSensingProject.Models.Admin
                         obj = new DashboardCount();
                         obj.Title = sdr["title"].ToString();
                         obj.OverallCompletionPercentage = sdr["overallCompletion"].ToString();
+                        obj.ProjectManager = sdr["ProjectManager"].ToString();
                         list.Add(obj);
                     }
                 }
@@ -1404,7 +1405,7 @@ namespace RemoteSensingProject.Models.Admin
                         foreach (var individualMember in mc.MeetingMemberList)
                         {
 
-                            if (!string.IsNullOrEmpty(individualMember))
+                            if (individualMember!=0)
                             {
                                 cmd.Parameters.Clear();
                                 cmd = new SqlCommand("sp_ManageMeeting", con, transaction);

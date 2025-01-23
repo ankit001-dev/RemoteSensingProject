@@ -376,7 +376,10 @@
      formData.append("mc.Conclusion", conclusion.trim());
      formData.append("mc.FollowUpStatus", followUpStatus === "1");
      formData.append("mc.NextFollowUpDate", nextFollowUpDate.trim());
-     formData.append("mc.MeetingMemberList", meetingMember);
+     meetingMember.forEach(function (d) {
+
+     formData.append("mc.MeetingMemberList", d);
+     })
 
      $(".keyResponse").each(function (i, d) {
          if (d.value.trim() !== "") {
@@ -424,13 +427,12 @@
      showLoading(true);
 
      $.ajax({
-         url: "/admin/AddMeetingConclusion",
+         url: "/employee/AddMeetingConclusion",
          type: "POST",
          processData: false,
          contentType: false,
          data: formData,
          success: function (res) {
-             showLoading(false);
 
              if (res) {
                  Swal.fire({
@@ -438,7 +440,7 @@
                      title: "Success",
                      icon: "success",
                  }).then(() => {
-                     location.href = "/Admin/Min_Of_Meeting";
+                     location.href = "/employee/Min_Of_Meeting";
                  });
              } else {
                  Swal.fire({
@@ -449,8 +451,6 @@
              }
          },
          error: function (xhr) {
-             showLoading(false);
-
              console.error("Error occurred:", xhr.responseText);
 
              Swal.fire({

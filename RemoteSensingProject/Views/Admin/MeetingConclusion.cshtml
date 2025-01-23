@@ -147,7 +147,7 @@
                 </div> <div class="col-sm-6 col-12 mt-2 d-none nexFollowUpDateContainer">
                     <div class="form-group">
                         <label>Meeting Member:</label><br />
-                        <select class="form-control select2" id="MeetingMember" name="meetingMemberList" multiple>
+                        <select class="form-control select2" id="MeetingMember" name="mc.MeetingMemberList" multiple>
                             @if (ViewBag.empList != null)
                             {
                                 foreach (var item in ViewBag.empList)
@@ -441,7 +441,10 @@
         formData.append("mc.Conclusion", conclusion.trim());
         formData.append("mc.FollowUpStatus", followUpStatus === "1");
         formData.append("mc.NextFollowUpDate", nextFollowUpDate.trim());
-        formData.append("mc.MeetingMemberList", meetingMember);
+        meetingMember.forEach(function (d) {
+
+        formData.append("mc.MeetingMemberList", d);
+        })
 
         $(".keyResponse").each(function (i, d) {
             if (d.value.trim() !== "") {
@@ -495,7 +498,6 @@
             contentType: false,
             data: formData,
             success: function (res) {
-                showLoading(false);
 
                 if (res) {
                     Swal.fire({
@@ -514,7 +516,6 @@
                 }
             },
             error: function (xhr) {
-                showLoading(false);
 
                 console.error("Error occurred:", xhr.responseText);
 
