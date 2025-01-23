@@ -70,5 +70,16 @@ namespace RemoteSensingProject.Models.SubOrdinate
             public string CreatedDate { get; set; }
           
         }
+        public class OutSource_Task
+        {
+            public int id { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public int CompleteStatus { get; set; }
+            public string Status { get; set; }
+            public int EmpId { get; set; }
+            public string Reason { get; set; }
+
+        }
     }
 }
