@@ -38,9 +38,20 @@ namespace RemoteSensingProject.Controllers
             ViewBag.TotalOngoingProject = TotalCount.TotalOngoingProject;
             ViewBag.TotalNotice = TotalCount.TotalNotice;
             ViewBag.TotalMeeting = TotalCount.TotalMeeting;
+   
+
             return View();
         }
+        public ActionResult BindOverallCompletionPercentage()
+        {
+               var managerName = User.Identity.Name;
+            UserCredential userObj = new UserCredential();
+            userObj = _managerServices.getManagerDetails(managerName);
+            List<main.DashboardCount> list = new List<main.DashboardCount>();
+            list = _adminServices.getAllProjectCompletion().Where(e => e.ProjectManager == userObj.userId).ToList();
+            return Json(new { list = list }, JsonRequestBehavior.AllowGet);
 
+        }
         #region OutSource
         public ActionResult OutSource()
         {
@@ -492,6 +503,8 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Expense_Report()
         {
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+            ViewBag.ProjectList = _managerServices.All_Project_List(userObj);
             return View();
         }
 

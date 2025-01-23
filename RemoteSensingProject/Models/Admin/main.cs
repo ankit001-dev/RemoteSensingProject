@@ -237,6 +237,7 @@ namespace RemoteSensingProject.Models.Admin
             public string TotalCompleteProject { get; set; }
             public string TotalOngoingProject { get; set; }
             public string TotalMeetings { get; set; }
+            public string ProjectManager { get; set; }
 
         }
 
