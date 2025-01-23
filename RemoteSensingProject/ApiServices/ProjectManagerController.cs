@@ -459,7 +459,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.CompletionDate < DateTime.Now).ToList();
+                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.CompletionDate < DateTime.Now && !d.ProjectStatus).ToList();
                 return Ok(new
                 {
                     status = data.Any(),

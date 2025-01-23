@@ -176,6 +176,7 @@ namespace RemoteSensingProject.Models.Admin
             public List<string> meetingKeyPoint { get; set; }
             public List<string> memberId { get; set; }
             public List<KeyPoint> MeetingKeyPointDict { get; set; }
+            public string summary { get; set; }
 
         }
         public class KeyPoint

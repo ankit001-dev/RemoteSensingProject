@@ -28,7 +28,7 @@
         <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
         <li class="breadcrumb-item active" aria-current="page">/Out Source</li>
     </ol>
-    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Create task</button>
+    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#createTaskModal"><i class="link-icon" data-feather="plus"></i> Create task</button>
 </nav>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <div class="row align-items-center">
@@ -51,7 +51,8 @@
                                 <th>Sr</th>
                                 <th>title</th>
                                 <th>Description</th>
-                                <th>taskStatus</th>
+                                <th>Task Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,6 +67,9 @@
                         <td>
                             <span class="badge bg-@(item.completeStatus ? "success" : "primary")">@(item.completeStatus ? "completed" : "pending")</span>
                         </td>
+                        <td>
+                            <a href="#"><i class="fa-solid fa-eye"></i></a>
+                        </td>
                     </tr>
                                   i++;
                               }
@@ -78,7 +82,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+<div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
 
@@ -124,9 +128,10 @@
 <script>
     $(document).ready(function () {
         if ($('#select').length) {
-            $('#addslider').on('shown.bs.modal', function () {
+            $('#createTaskModal').on('shown.bs.modal', function () {
                 $('#select').select2({
-                    dropdownParent: $('#addslider')
+                    placeholder: "Please select outsource",
+                    dropdownParent: $('#createTaskModal')
                 });
             });
         }
