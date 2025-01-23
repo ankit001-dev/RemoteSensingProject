@@ -71,6 +71,9 @@
                                 <th>Assign Date</th>
                                 <th>Start Date</th>
                                 <th>Completion Date</th>
+                                <th>Physical Status</th>
+                                <th>Financial Status</th>
+                                <th>Overall Status</th>
                                 <th>Project Status</th>
                                 <th>Action</th>
                             </tr>
@@ -87,6 +90,21 @@
                                         <td>@item.AssignDateString</td>
                                         <td>@item.StartDateString</td>
                                         <td>@item.CompletionDatestring</td>
+                                        <td>
+                                            <div class="progress-bar">
+                                                <div class="progress" style="width:@item.physicalcomplete%;">@item.physicalcomplete%</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress-bar">
+                                                <div class="progress" style="width:@item.Percentage%;">@item.Percentage%</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress-bar">
+                                                <div class="progress" style="width:@item.overallPercentage%;">@item.overallPercentage%</div>
+                                            </div>
+                                        </td>
                                         <td>
                                             @if (item.ProjectStatus && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
                                             {
