@@ -68,7 +68,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string CompletionDatestring { get; set; }
         public string AssignDateString { get; set; }
         public string StartDateString { get; set; }
-        public float Percentage { get; set; }
+        public decimal Percentage { get; set; }
         public decimal physicalPercent { get; set; }
         public decimal overAllPercent { get; set; }
 

@@ -85,7 +85,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.stage = Convert.ToBoolean(sdr["stage"].ToString());
                     obj.physicalPercent = Convert.ToDecimal(sdr["completionPercentage"]);
                     obj.overAllPercent = Convert.ToDecimal(sdr["overallPercentage"]);
-                    obj.Percentage = (float)sdr["financialStatusPercentage"];
+                    obj.Percentage = sdr["financialStatusPercentage"]!=DBNull.Value?Convert.ToDecimal(sdr["financialStatusPercentage"]):(decimal)0.00;
                     _list.Add(obj);
                 }
                 sdr.Close();
@@ -1015,7 +1015,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.AppStatus = sdr["appStatus"] != DBNull.Value ? (int)sdr["appStatus"] : 0;
                     obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
                     obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
-                    obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
+                    obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy hh:mm tt");
                     _list.Add(obj);
                 }
 

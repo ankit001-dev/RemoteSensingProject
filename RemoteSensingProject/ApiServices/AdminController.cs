@@ -1292,7 +1292,7 @@ namespace RemoteSensingProject.ApiServices
                 };
                 if (request.Form["MeetingMemberList"] != null)
                 {
-                    formData.MeetingMemberList = request.Form["MeetingMemberList"].Split(',').ToList();
+                    formData.MeetingMemberList = request.Form["MeetingMemberList"].Split(',').Select(e=>int.Parse(e)).ToList();
                 }
                 else
                 {
