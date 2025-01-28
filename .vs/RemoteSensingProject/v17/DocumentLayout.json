@@ -3,6 +3,46 @@
   "WorkspaceRootPath": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\controllers\\employeecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\employeecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\views\\shared\\_employeelayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\shared\\_employeelayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\views\\shared\\_subordinatelayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\shared\\_subordinatelayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\views\\shared\\_accountlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\shared\\_accountlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\views\\employee\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\views\\admin\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\admin\\dashboard.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\views\\employee\\add_expenses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\add_expenses.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\views\\admin\\project_list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\admin\\project_list.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\2\\source\\repos\\remotesensingproject\\remotesensingproject\\views\\admin\\view_project_stage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\admin\\view_project_stage.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
@@ -22,23 +62,141 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
-            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "EmployeeController.cs",
+              "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\EmployeeController.cs",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\EmployeeController.cs",
+              "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\EmployeeController.cs",
+              "RelativeToolTip": "RemoteSensingProject\\Controllers\\EmployeeController.cs",
+              "ViewState": "AgIAACQBAAAAAAAAAAAYwCcBAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-28T06:19:30.067Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Dashboard.cshtml",
+              "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Dashboard.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Dashboard.cshtml",
+              "ViewState": "AgIAAP4AAAAAAAAAAAAAAB4BAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-28T06:46:03.047Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Dashboard.cshtml",
+              "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Dashboard.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Dashboard.cshtml",
+              "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Dashboard.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Dashboard.cshtml",
+              "ViewState": "AgIAAPEAAAAAAAAAAAAAAAIBAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-28T06:44:30.872Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Add_Expenses.cshtml",
+              "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Add_Expenses.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Add_Expenses.cshtml",
+              "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Add_Expenses.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Add_Expenses.cshtml",
+              "ViewState": "AgIAANkAAAAAAAAAAAAAAOUAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-28T06:40:38.118Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "_AccountLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_AccountLayout.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Shared\\_AccountLayout.cshtml",
+              "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_AccountLayout.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Shared\\_AccountLayout.cshtml",
+              "ViewState": "AgIAAM8AAAAAAAAAAAAIwOkAAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-28T06:35:43.398Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "_subOrdinateLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_subOrdinateLayout.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Shared\\_subOrdinateLayout.cshtml",
+              "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_subOrdinateLayout.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Shared\\_subOrdinateLayout.cshtml",
+              "ViewState": "AgIAAMgAAAAAAAAAAAAIwNoAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-28T06:35:32.275Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAACMBAAAAAAAAAAAIwDgBAAApAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-28T06:35:09.988Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "_employeeLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_employeeLayout.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Shared\\_employeeLayout.cshtml",
+              "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_employeeLayout.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Shared\\_employeeLayout.cshtml",
+              "ViewState": "AgIAABsBAAAAAAAAAAAkwCwBAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-28T06:34:50.076Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Project_List.cshtml",
+              "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Project_List.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Project_List.cshtml",
+              "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Project_List.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Project_List.cshtml",
+              "ViewState": "AgIAAOkAAAAAAAAAAAAAAJsAAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-28T06:32:48.324Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "_adminLayout.cshtml",
+              "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
+              "ToolTip": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
+              "ViewState": "AgIAAHIBAAAAAAAAAAArwIgBAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-01-28T06:28:36.286Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "View_Project_Stage.cshtml",
               "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\View_Project_Stage.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\View_Project_Stage.cshtml",
@@ -51,7 +209,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 11,
               "Title": "All_Projects.cshtml",
               "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\All_Projects.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\All_Projects.cshtml",
@@ -64,7 +222,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 12,
               "Title": "Web.config",
               "DocumentMoniker": "C:\\Users\\2\\source\\repos\\RemoteSensingProject\\RemoteSensingProject\\Web.config",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Web.config",
