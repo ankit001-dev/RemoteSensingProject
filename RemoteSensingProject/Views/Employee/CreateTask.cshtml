@@ -69,7 +69,10 @@
                         </td>
                         <td>
                             <a href="#" class="viewAssignedSource" data-taskId="@item.Id"><i class="fa-solid fa-eye"></i></a> &nbsp;
+                            @if (!item.completeStatus)
+                            {
                             <a href="#" class="updateTaskStatus" data-taskId="@item.Id"><i class="fa-solid fa-check"></i></a>
+                            }
                         </td>
                     </tr>
                                   i++;
@@ -290,7 +293,7 @@
         let taskId = $(this).attr("data-taskId")
         $.ajax({
             url: "/api/UpdateTaskStatus",
-            type: "update",
+            type: "PUT",
             data: { taskId: taskId },
             success: function (res) {
                 if (res.status) {

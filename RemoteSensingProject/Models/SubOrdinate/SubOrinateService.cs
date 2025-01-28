@@ -140,6 +140,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
                     while (sdr.Read())
                     {
                         task = new OutSource_Task();
+                        task.id = Convert.ToInt32(sdr["id"]);
                         task.Title = sdr["title"].ToString();
                         task.Description = sdr["description"].ToString();
                         task.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
@@ -168,6 +169,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
             cmd.Parameters.AddWithValue("@action", "insertOutsource");
             cmd.Parameters.AddWithValue("@response", task.Reason);
             cmd.Parameters.AddWithValue("@id", task.id);
+            cmd.Parameters.AddWithValue("@empId", task.EmpId);
             con.Open();
             int i=cmd.ExecuteNonQuery();
             if (i > 0)

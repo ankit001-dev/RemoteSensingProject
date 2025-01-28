@@ -75,6 +75,7 @@ namespace RemoteSensingProject.ApiServices
                 OutSource_Task task = new OutSource_Task
                 {
                     Reason = httpRequest.Form.Get("reason"),
+                    EmpId = Convert.ToInt32(httpRequest.Form.Get("EmpId")),
                     id = Convert.ToInt32(httpRequest.Form.Get("id"))
                 };
                 bool status = _subordinate.AddOutSourceTask(task);
@@ -91,7 +92,7 @@ namespace RemoteSensingProject.ApiServices
                     return Ok(new
                     {
                         status = false,
-                        message = "Failed to added successfully !"
+                        message = "Some issue found while processing request. Please try after sometime."
                     });
                 }
             }catch(Exception ex)
