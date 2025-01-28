@@ -780,7 +780,6 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-
         [HttpPut]
         [Route("api/UpdateTaskStatus")]
         public IHttpActionResult UpdateTAskStatus(int taskId)
@@ -791,7 +790,7 @@ namespace RemoteSensingProject.ApiServices
                 return Ok(new
                 {
                     status = res,
-                    message = res ?"Task updated successfully !" : "Some issue occured !"
+                    message = res ? "Task updated successfully !" : "Some issue occured !"
                 });
             }catch(Exception ex)
             {
