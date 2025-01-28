@@ -812,6 +812,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             updateCmd.Parameters.AddWithValue("@action", "updateStageCompetionStatus");
                             updateCmd.Parameters.AddWithValue("@completionStatus", 1);
                             updateCmd.Parameters.AddWithValue("@project_Id", obj.Project_Id);
+                            updateCmd.Parameters.AddWithValue("@stageId", obj.Stage_Id);
 
                             updateCmd.ExecuteNonQuery();
                         }

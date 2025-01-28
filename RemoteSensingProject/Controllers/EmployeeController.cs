@@ -137,7 +137,7 @@ namespace RemoteSensingProject.Controllers
                     pm.pm.projectDocument.SaveAs(Server.MapPath(pm.pm.projectDocumentUrl));
                 }
 
-                if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage.Equals("Yes"))
+                if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
                 {
                     foreach (var item in pm.stages)
                     {
