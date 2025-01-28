@@ -375,7 +375,12 @@ namespace RemoteSensingProject.Controllers
             ViewBag.ProjectStages = _adminServices.ProjectStagesList(Id);
             return View();
         }
-
+        public ActionResult viewStagesReason(string stageId)
+        {
+            List<Project_Statge> stageList = new List<Project_Statge>();
+            stageList = _managerServices.ViewStagesComments(stageId);
+            return Json(new { stageList = stageList }, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult View_Expenses(int Id)
         {
             ViewBag.ProjectExpenses = _adminServices.ProjectBudgetList(Id);

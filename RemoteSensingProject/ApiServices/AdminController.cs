@@ -86,8 +86,6 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-
-
                 var request = HttpContext.Current.Request;
                 var empData = new Employee_model
                 {
