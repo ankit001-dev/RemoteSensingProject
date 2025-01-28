@@ -332,6 +332,7 @@
     <Content Include="assets\js\tags-input.js" />
     <Content Include="assets\js\template.js" />
     <Content Include="assets\js\tinymce.js" />
+    <Content Include="assets\no-pictures.png" />
     <Content Include="assets\Summernotes\summernote.min.css" />
     <Content Include="assets\Summernotes\summernote.min.js" />
     <Content Include="assets\vendors\apexcharts\apexcharts.min.js" />
