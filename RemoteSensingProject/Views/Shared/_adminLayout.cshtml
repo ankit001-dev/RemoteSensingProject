@@ -379,7 +379,7 @@ src : url('/assets/Summernotes/summernote.eot'),
                                     </div>
                                 </div>
                                 <ul class="list-unstyled p-1">
-                                    <li class="dropdown-item py-2">
+                                    @*<li class="dropdown-item py-2">
                                         <a href="/Employee/MyProfile" class="text-body ms-0">
                                             <i class="me-2 icon-md" data-feather="user"></i>
                                             <span>Profile</span>
@@ -390,7 +390,7 @@ src : url('/assets/Summernotes/summernote.eot'),
                                             <i class="me-2 icon-md" data-feather="edit"></i>
                                             <span>Edit Profile</span>
                                         </a>
-                                    </li>
+                                    </li>*@
                                     @*<li class="dropdown-item py-2">
                                             <a class="text-body ms-0">
                                                 <i class="me-2 icon-md" data-feather="repeat"></i>
@@ -486,6 +486,12 @@ src : url('/assets/Summernotes/summernote.eot'),
                     ['view', ['fullscreen', 'codeview', 'help']]
                 ]
             });
+        })
+
+        $(document).ready(function () {
+            $("img").on("error", function () {
+                $(this).attr("src","/assets/no-pictures.png")
+            })
         })
     </script>
 </body>
