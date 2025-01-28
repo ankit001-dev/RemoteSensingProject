@@ -140,6 +140,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
                     while (sdr.Read())
                     {
                         task = new OutSource_Task();
+                        task.id = Convert.ToInt32(sdr["id"]);
                         task.Title = sdr["title"].ToString();
                         task.Description = sdr["description"].ToString();
                         task.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
