@@ -141,14 +141,16 @@
             var dataId = $(this).data('id');
             debugger
             $.ajax({
-                url: '/Employee/viewStagesReason',
+                url: '/Admin/viewStagesReason',
                 type: 'GET',
                 data: { stageId: dataId },
                 success: function (res) {
                     var completedFields = $('#viewCompletedFields');
                     completedFields.empty();
-                    $.each(res.stageList, function (index, item) {
-                        completedFields.append(`
+                    if (res.stageList.length > 0) {
+
+                        $.each(res.stageList, function (index, item) {
+                            completedFields.append(`
                         <div class="delay-reason-item">
                             <h6>Status:</h6>
                             <p>${item.Status}</p> 
@@ -169,7 +171,12 @@
                             <hr />
                         </div>
                     `);
-                    });
+
+                        });
+                    }
+                    else {
+                        completedFields.html("<p class='text-center'>no result found</p>")
+                    }
                     $("#viewStatusModal").modal("show");
                 },
                 error: function (xhr, status, error) {
