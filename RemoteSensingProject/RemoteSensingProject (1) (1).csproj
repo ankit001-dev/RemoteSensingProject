@@ -303,16 +303,21 @@
     <Content Include="assets\fonts\feather-font\css\iconfont.css" />
     <Content Include="assets\fonts\feather-font\fonts\feathere8ab.svg" />
     <Content Include="assets\gif\add %282%29.gif" />
+    <Content Include="assets\gif\budgeting.gif" />
     <Content Include="assets\gif\checklist.gif" />
     <Content Include="assets\gif\discussion.gif" />
     <Content Include="assets\gif\edit %281%29.png" />
     <Content Include="assets\gif\edit %282%29.png" />
+    <Content Include="assets\gif\externproject.gif" />
     <Content Include="assets\gif\file.gif" />
+    <Content Include="assets\gif\internproject.gif" />
     <Content Include="assets\gif\notification.gif" />
     <Content Include="assets\gif\office365.png" />
+    <Content Include="assets\gif\Pbudget.gif" />
     <Content Include="assets\gif\pdf %281%29.png" />
     <Content Include="assets\gif\project.gif" />
     <Content Include="assets\gif\success.gif" />
+    <Content Include="assets\gif\Tbudget.gif" />
     <Content Include="assets\images\author.html" />
     <Content Include="assets\images\bg.html" />
     <Content Include="assets\images\edit.png" />
@@ -1006,6 +1011,9 @@
     <Content Include="Views\Admin\SubOrdinateProblemList.cshtml" />
     <Content Include="Views\Accounts\Expenses.cshtml" />
     <Content Include="Views\Accounts\RequestHistory.cshtml" />
+    <Content Include="Views\Employee\Reimbursement_From.cshtml" />
+    <Content Include="Views\Employee\Hiring_Vehicle.cshtml" />
+    <Content Include="Views\Admin\AddBudget.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
