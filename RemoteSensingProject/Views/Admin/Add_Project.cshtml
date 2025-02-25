@@ -10,6 +10,16 @@
         color: #444;
         line-height: 13px;
     }
+    .select2-selection {
+        height: 34px !important;
+        border-radius: 10px !important;
+    }
+    .select2-selection__rendered{
+        line-height:17px !important;
+    }
+    .select2-selection__arrow{
+        height:32px !important;
+    }
 </style>
     <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
         <ol class="breadcrumb mb-0">
@@ -17,7 +27,7 @@
         </ol>
         <a href="/admin/Project_List" class="btn btn-primary"><i class="link-icon" data-feather="arrow-left"></i> Back To List</a>
     </nav>
-    <div class="row">
+    <div class="row mx-0">
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
@@ -52,18 +62,18 @@
                             </div>
 
                             <div class="col-lg-4 mb-3">
-                                <label for="title" class="form-label">Project Manager</label>
-                                <select class="form-control form-control-sm" required name="pm.pm.ProjectManager">
+                                <label for="title" class="form-label mb-1">Project Manager</label>
+                                <select class="form-select form-select-sm" required name="pm.pm.ProjectManager">
                                     <option value="">Select an Option</option>
-                                    @foreach(var item in ViewBag.projectManager as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
-                                     {
-                                         <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
-                                     }
+                                    @foreach (var item in ViewBag.projectManager as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                    {
+                                        <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
+                                    }
                                 </select>
                             </div>
                             <div class="col-lg-4 mb-3">
-                                <label for="title" class="form-label">Sub-Ordinate</label>
-                                <select class="form-control form-control-sm" required name="pm.pm.SubOrdinate" multiple>
+                                <label for="title" class="form-label mb-1">Sub-Ordinate</label>
+                                <select class="form-select form-select-sm" required name="pm.pm.SubOrdinate" multiple>
                                     <option value="">Select an Option</option>
                                     @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
                                     {
@@ -71,20 +81,28 @@
                                     }
                                 </select>
                             </div>
-                        </div>
-                        <div class="row">
+
+                            <div class="col-lg-4 mb-3">
+                                <label for="letterNumber" class="form-label">Letter Number</label>
+                                <div class="input-group">
+                                    <input type="number" required class="form-control form-control-sm" name="letterNumber" id="letterNumber" placeholder="Enter Letter Number">
+                                </div>
+                            </div>
+
                             <div class="col-lg-4 mb-3">
                                 <div class="d-flex justify-content-between">
-                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="0"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
-                                   </div>
+                                    <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="0"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
+                                </div>
                                 <input type="text" class="form-control form-control-sm" required name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
                             </div>
+
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Project Document</label>
                                 <input type="file" class="form-control form-control-sm" required name="" id="projectDocumentFile">
                             </div>
+                        </div>
+                        <div class="row">
                             
-
                             <div class="col-lg-4 mb-3">
                                 <label for="title" class="form-label">Project Type</label>
                                 <br />

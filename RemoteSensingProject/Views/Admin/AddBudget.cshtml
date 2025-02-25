@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewBag.Title = "AddBudget";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+
+<style>
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        color: #444;
+        line-height: 13px;
+    }
+</style>
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Add Project</li>
+    </ol>
+    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Budget</button>
+</nav>
+
+<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-md modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel"><span class="actionType">Add</span> Employee</h5>
+
+            </div>
+            <div class="modal-body">
+                <form class="addEmployeeform">
+                    <input type="hidden" id="employeeInpId" name="Id" />
+                    <div class="row">
+                        <div class="mb-3 col-md-8 mx-auto">
+                            <label for="budget" class="form-label"> Budget</label>
+                            <input type="number" class="form-control" name="budget" required id="budget" autocomplete="off" placeholder="Enter Budget">
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Budget</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
