@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "Reimbursement_From";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+}
+
+<style>
+    #reimbursementForm {
+        display: none;
+    }
+</style>
+
+<nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Reimburserment</li>
+    </ol>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Reimbursement</button>
+</nav>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Reimbursement Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="createProjectForm">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="vr_no" class="form-label">Vr. No. & Date</label>
+                            <input type="text" name="vr_no" class="form-control form-control-sm" id="vr_no" placeholder="Enter Vr. No.">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="particular" class="form-label">Particular</label>
+                            <input type="text" name="vr_no" class="form-control form-control-sm" id="particular" placeholder="Enter Particular">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="items" class="form-label">Items</label>
+                            <input type="text" name="items" class="form-control form-control-sm" id="items" placeholder="Enter Items">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="purpose" class="form-label">Purpose</label>
+                            <input type="text" name="purpose" class="form-control form-control-sm" id="purpose" placeholder="Enter Purpose">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" name="amount" class="form-control form-control-sm" id="amount" placeholder="Enter Amount">
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Project</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mx-0">
+    <div class="col-sm-12">
+        <table class="table-bordered table-striped" id="dataTableExample">
+            <thead>
+                <tr>
+                    <th>S.N.</th>
+                    <th>Vr.No. & Date</th>
+                    <th>Particulars</th>
+                    <th>Items</th>
+                    <th>Purpose</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

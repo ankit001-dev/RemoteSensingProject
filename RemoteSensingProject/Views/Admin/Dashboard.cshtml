@@ -29,16 +29,16 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                padding: 10px;
+                padding: 15px;
             }
 
             .uniform-card .card-title {
-                font-size: 12px;
+                font-size: 15px;
                 font-weight: bold;
             }
 
             .uniform-card p.text-success {
-                font-size: 14px;
+                font-size: 18px;
             }
 
             .uniform-card img {
@@ -46,14 +46,14 @@
             }
 </style>
 
-    <div class="row">
+    <div class="row mx-0">
         <div class="col-12 col-xl-12 stretch-card">
             <div class="row flex-grow-1">
 
                 <!-- Employee's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                    <a href="/Admin/Employee_Registration" style="text-decoration: none; color: inherit;">
-                        <div class="card uniform-card">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/Employee_Registration" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100 w-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-baseline">
                                     <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
@@ -66,7 +66,79 @@
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
-                                        <img src="~/assets/gif/success.gif" height="60" />
+                                        <img src="~/assets/gif/success.gif" height="70" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Total Budget Card -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0 text-nowrap">Total Budget</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h6 class="mb-2 text-success"></h6>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span>@ViewBag.totalDelayProject</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <img src="~/assets/gif/Tbudget.gif" height="70" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Expenditure Budget Card -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0 text-nowrap">Expenditure Budget</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h6 class="mb-2 text-success"></h6>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span>@ViewBag.totalDelayProject</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <img src="~/assets/gif/Pbudget.gif" height="70" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Pending Budget Card -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0 text-nowrap">Pending Budget</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h6 class="mb-2 text-success"></h6>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span>@ViewBag.totalDelayProject</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <img src="~/assets/gif/budgeting.gif" height="70" />
                                     </div>
                                 </div>
                             </div>
@@ -75,12 +147,12 @@
                 </div>
 
                 <!-- Project's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                    <a href="/Admin/All_Projects" style="text-decoration: none; color: inherit;">
-                        <div class="card uniform-card">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-baseline">
-                                    <h6 class="card-title mb-0">Project's</h6>
+                                    <h6 class="card-title mb-0">Total Project's</h6>
                                 </div>
                                 <div class="row">
                                     <div class="col-6 col-md-12 col-xl-5">
@@ -90,7 +162,7 @@
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
-                                        <img src="~/assets/gif/project.gif" height="60" />
+                                        <img src="~/assets/gif/project.gif" height="70" />
                                     </div>
                                 </div>
                             </div>
@@ -99,9 +171,9 @@
                 </div>
 
                 <!-- Pending Project's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                    <a href="/Admin/All_Projects" style="text-decoration: none; color: inherit;">
-                        <div class="card uniform-card">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-baseline">
                                     <h6 class="card-title mb-0 text-nowrap">Delay Project's</h6>
@@ -114,17 +186,66 @@
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
-                                        <img src="~/assets/gif/file.gif" height="60" />
+                                        <img src="~/assets/gif/file.gif" height="70" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </a>
                 </div>
+
+                <!-- Internal Project's Card -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0 text-nowrap">Internal Project's</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h6 class="mb-2 text-success"></h6>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span>@ViewBag.totalDelayProject</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <img src="~/assets/gif/internproject.gif" height="70" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- External Project's Card -->
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0 text-nowrap">External Project's</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h6 class="mb-2 text-success"></h6>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span>@ViewBag.totalDelayProject</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <img src="~/assets/gif/externproject.gif" height="70" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
                 <!-- Another Meeting's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                    <a href="/Admin/All_Projects" style="text-decoration: none; color: inherit;">
-                        <div class="card uniform-card">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-baseline">
                                     <h6 class="card-title mb-0 text-nowrap">Ongoing Project</h6>
@@ -137,7 +258,7 @@
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
-                                        <img src="~/assets/gif/notification.gif" height="60" />
+                                        <img src="~/assets/gif/notification.gif" height="70" />
                                     </div>
                                 </div>
                             </div>
@@ -145,9 +266,9 @@
                     </a>
                 </div>
                 <!-- Completed Project's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                    <a href="/Admin/All_Projects" style="text-decoration: none; color: inherit;">
-                        <div class="card uniform-card">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-baseline">
                                     <h6 class="card-title mb-0 text-nowrap">Completed Project's</h6>
@@ -160,7 +281,7 @@
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
-                                        <img src="~/assets/gif/checklist.gif" height="60" />
+                                        <img src="~/assets/gif/checklist.gif" height="70" />
                                     </div>
                                 </div>
                             </div>
@@ -169,9 +290,9 @@
                 </div>
 
                 <!-- Meeting's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                    <a href="/Admin/Meeting_Report" style="text-decoration: none; color: inherit;">
-                        <div class="card uniform-card">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                    <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-baseline">
                                     <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
@@ -184,7 +305,7 @@
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
-                                        <img src="~/assets/gif/discussion.gif" height="60" />
+                                        <img src="~/assets/gif/discussion.gif" height="70" />
                                     </div>
                                 </div>
                             </div>
@@ -197,6 +318,7 @@
             </div>
         </div>
     </div>
+
 @*<div class="row">
         <div class="col-12 col-xl-12 grid-margin stretch-card">
             <div class="card overflow-hidden">
@@ -235,7 +357,7 @@
         </div>
     </div>*@
 
-<div class="row">
+<div class="row mx-0">
     <div class="col-lg-7 col-xl-8 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
@@ -300,7 +422,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row mx-0">
     <div class="col-lg-5 col-xl-4 grid-margin grid-margin-xl-0 stretch-card">
         <div class="card">
             <div class="card-body">
