@@ -508,7 +508,13 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-
-
+        public ActionResult Reimbursement_From()
+        {
+            return View();
+        }
+        public ActionResult Hiring_Vehicle()
+        {
+            return View();
+        }
     }
 }
