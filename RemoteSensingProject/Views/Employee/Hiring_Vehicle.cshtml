@@ -1,0 +1,237 @@
+﻿
+@{
+    ViewBag.Title = "Hiring_Vehicle";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+}
+
+<style>
+    #reimbursementForm {
+        display: none;
+    }
+    .row label{
+        font-size:12px !important;
+    }
+    input::placeholder{
+        font-size:12px !important;
+    }
+</style>
+
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Indent For Hiring Vehicle For Field Work</li>
+    </ol>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Hiring</button>
+</nav>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Indent For Hiring Vehicle for Field Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="createProjectForm">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="projectName" class="form-label">Name of the Project</label>
+                            <input type="text" name="projectName" class="form-control form-control-sm" id="projectName" placeholder="Enter Project Name">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="particular" class="form-label">Date of Field Program:</label>
+                            <label for="dateFrom" class="form-label">From</label>
+                            <input type="date" name="dateFrom" class="form-control form-control-sm" id="dateFrom">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="items" class="form-label">To</label>
+                            <input type="date" name="dateTo" class="form-control form-control-sm" id="dateTo">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="purposeOfVisit" class="form-label">Purpose of Visit</label>
+                            <input type="text" name="purposeOfVisit" class="form-control form-control-sm" id="purposeOfVisit" placeholder="Enter Purpose of Visit">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="totalDaysNight" class="form-label">Total Number of Days & Night Halt</label>
+                            <input type="text" name="totalDaysNight" class="form-control form-control-sm" id="totalDaysNight" placeholder="Total Number of Days & Night Halt">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="totalPlainHills" class="form-label">Total Area Travel in Plain & Hills</label>
+                            <input type="text" name="totalPlainHills" class="form-control form-control-sm" id="totalPlainHills" placeholder="Enter Total Area Travel in Plain & Hills">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="taxi" class="form-label">Taxi (Ambassdor/Maruti/Gypsy/Jeep/Other)</label>
+                            <input type="text" name="taxi" class="form-control form-control-sm" id="taxi" placeholder="Enter Taxi">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="BookAgainstCentre" class="form-label">Book against Centre/Project Account</label>
+                            <input type="text" name="BookAgainstCentre" class="form-control form-control-sm" id="BookAgainstCentre" placeholder="Book against Centre/Project Account">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="availbilityOfFund" class="form-label">Availability of fund in the Project</label>
+                            <input type="text" name="availbilityOfFund" class="form-control form-control-sm" id="availbilityOfFund" placeholder="Availability of fund in the Project">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="taxiReportTo" class="form-label">Taxi may report to Shri</label>
+                            <input type="text" name="taxiReportTo" class="form-control form-control-sm" id="taxiReportTo" placeholder="Enter Name">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="taxiReportAt" class="form-label">Time</label>
+                            <input type="time" name="taxiReportAt" class="form-control form-control-sm" id="taxiReportAt">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="taxiReportPlace" class="form-label">Destination</label>
+                            <input type="text" name="taxiReportPlace" class="form-control form-control-sm" id="taxiReportPlace" placeholder="Enter Place">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="taxiReportOn" class="form-label">Date</label>
+                            <input type="date" name="taxiReportOn" class="form-control form-control-sm" id="taxiReportOn">
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="proposedPlace" class="form-label">Proposed Place/Places of Field Programme</label>
+                            <textarea name="proposedPlace" class="form-control form-control-sm" placeholder="Write here..." id="proposedPlace"></textarea>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Hiring</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <table class="table-bordered table-striped" id="dataTableExample">
+            <thead>
+                <tr>
+                    <th>Project Name</th>
+                    <th>Date From</th>
+                    <th>Date To</th>
+                    <th>Purpose of Visit</th>
+                    <th>Total Area Travel</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td class="text-center"><i class="fa-solid fa-eye" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="viewHiringVehicle" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Indent For Hiring Vehicle for Field Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div style="width: 700px; margin: 0 auto; font-family: Arial, sans-serif;">
+                    <!-- Header Section -->
+                    <table style="width: 100%; border-collapse: collapse;" border="0">
+                        <tr>
+                            <td style="text-align: center;" colspan="2">
+                                <h3 style="margin: 0;">REMOTE SENSING APPLICATIONS CENTRE</h3>
+                                <h3 style="margin: 0;">UTTAR PRADESH</h3>
+                                <h4 style="margin: 0; margin-top: 10px;">INDENT FOR HIRING VEHICLE FOR FIELD WORK</h4>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <hr style="margin: 10px 0;" />
+
+                    <!-- Form Fields Section -->
+                    <table style="width: 100%; border-collapse: collapse;" border="0">
+                        <tr>
+                            <td style="width: 50%; padding: 5px;">1. Name of the Project :</td>
+                            <td style="padding: 5px;">_____________________________________________</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;">2. Date of Field Programme :</td>
+                            <td style="padding: 5px;">
+                                From ______________________ to ______________________
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;">3. Proposed Place/Places of Field Programme :</td>
+                            <td style="padding: 5px;">_____________________________________________</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;">4. Purpose of Visit :</td>
+                            <td style="padding: 5px;">_____________________________________________</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;">5. Total Number of Days and Night Stay :</td>
+                            <td style="padding: 5px;">_____________________________________________</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;">6. Road Area Travel in Plain &amp; Hills :</td>
+                            <td style="padding: 5px;">_____________________________________________</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;">7. Taxi (Ambassador/Maruti/Gypsy/Jeep/others) :</td>
+                            <td style="padding: 5px;">_____________________________________________</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;">8. Book against Centre Project/Loan :</td>
+                            <td style="padding: 5px;">_____________________________________________</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 5px;">9. Availability of funds to the Project in this Head :</td>
+                            <td style="padding: 5px;">_____________________________________________</td>
+                        </tr>
+                    </table>
+
+                    <br />
+
+                    <!-- Note Section -->
+                    <table style="width: 100%; border-collapse: collapse;" border="0">
+                        <tr>
+                            <td style="padding: 5px;">
+                                <strong>Note:</strong> The Taxi may report to Shri
+                                __________________________________
+                                at ____________ AM/PM
+                                at __________________________________ (Place)
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br />
+
+                    <!-- Signatures Section -->
+                    <table style="width: 100%; border-collapse: collapse;" border="0">
+                        <tr>
+                            <td style="width: 33%; vertical-align: top; padding: 5px;">
+                                <strong>Indented By</strong><br /><br />
+                                Signature: ___________________________<br />
+                                Name: _______________________________<br />
+                                Designation: _________________________
+                            </td>
+                            <td style="width: 33%; vertical-align: top; padding: 5px;">
+                                <strong>Forwarded By</strong><br /><br />
+                                Signature: ___________________________<br />
+                                Name: _______________________________<br />
+                                Head of Division/Project Manager
+                            </td>
+                            <td style="width: 33%; vertical-align: top; padding: 5px;">
+                                <strong>Approved By</strong><br /><br />
+                                _________________________________
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>

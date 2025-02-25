@@ -518,5 +518,9 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
+        public ActionResult AddBudget()
+        {
+            return View();
+        }
     }
 }
