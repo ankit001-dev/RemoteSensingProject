@@ -422,6 +422,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "insertProject");
                 cmd.Parameters.AddWithValue("@title", pm.pm.ProjectTitle);
+                cmd.Parameters.AddWithValue("@letterNo", pm.pm.letterNo);
                 cmd.Parameters.AddWithValue("@assignDate", pm.pm.AssignDate);
                 cmd.Parameters.AddWithValue("@startDate", pm.pm.StartDate);
                 cmd.Parameters.AddWithValue("@completionDate", pm.pm.CompletionDate);
@@ -887,6 +888,9 @@ namespace RemoteSensingProject.Models.Admin
                     obj.TotalCompleteProject = sdr["TotalCompleteProject"].ToString();
                     obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
                     obj.TotalMeetings = sdr["TotalMeetings"].ToString();
+                    obj.TotalBudget = Convert.ToDecimal(sdr["totalBudgets"]);
+                    obj.PendingBudget = Convert.ToDecimal(sdr["pendingBudget"]);
+                    obj.expenditure = Convert.ToDecimal(sdr["expenditure"]);
                 }
 
                 sdr.Close();
@@ -1637,7 +1641,68 @@ namespace RemoteSensingProject.Models.Admin
 
         #endregion
 
+        #region Budget
 
-        
+        public bool InsertBuget(BudgetForm data)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_manageBudgets", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@budget", data.budget);
+                cmd.Parameters.AddWithValue("@action", "insert");
+                con.Open();
+               return cmd.ExecuteNonQuery()> 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if(con.State == ConnectionState.Open)
+                con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public List<BudgetForm> getBudgetList()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_manageBudgets", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectAll");
+                con.Open();
+                List<BudgetForm> budgetList = new List<BudgetForm>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        budgetList.Add(new BudgetForm
+                        {
+                            sn = (int)res["id"],
+                            addedDate = Convert.ToString(res["createdAt"]),
+                            budget = (decimal)res["budget"]
+                        });
+                    }
+                }
+                return budgetList;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        #endregion
+
     }
 }

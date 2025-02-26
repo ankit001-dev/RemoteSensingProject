@@ -516,5 +516,9 @@ namespace RemoteSensingProject.Controllers
         {
             return View();
         }
+        public ActionResult Tour_Proposal()
+        {
+            return View();
+        }
     }
 }
