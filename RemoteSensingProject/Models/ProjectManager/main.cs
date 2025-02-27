@@ -171,6 +171,8 @@ namespace RemoteSensingProject.Models.ProjectManager
     public class Reimbursement
     {
         public int id { get; set; }
+        public int userId { get; set; }
+        public string EmpName { get; set; }
         public string type { get; set; }
         public string vrNo_date { get; set; }
         public string particulars { get; set; }

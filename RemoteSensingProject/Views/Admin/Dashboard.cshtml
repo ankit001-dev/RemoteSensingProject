@@ -64,15 +64,24 @@
                                     <div class="col-6 col-md-12 col-xl-8">
                                         <h6 class="mb-2 text-success"></h6>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success inst py-0"><span><span class="text-dark">Budget :  </span> @ViewBag.totalBudget</span></p>
+                                            <p class="text-success inst py-0"><span>
+    <span class="text-dark">Budget :  </span> ₹
+    @Convert.ToDecimal(ViewBag.totalBudget).ToString("N2")
+</span></p>
                                         </div>
 
 
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success py-0"><span><span class="text-dark">Expenditure : </span> @ViewBag.expenditure</span></p>
+                                            <p class="text-success py-0"><span>
+    <span class="text-dark">Expenditure : </span> ₹
+    @Convert.ToDecimal(ViewBag.expenditure).ToString("N2")
+</span></p>
                                         </div>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success py-0"><span><span class="text-dark">Pending : </span> @ViewBag.pendingBudget</span></p>
+                                            <p class="text-success py-0"><span>
+    <span class="text-dark">Pending : </span>₹
+    @Convert.ToDecimal(ViewBag.pendingBudget).ToString("N2")
+</span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-4">

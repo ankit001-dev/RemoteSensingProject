@@ -524,6 +524,18 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
+
+        public ActionResult ReimbursementRequest()
+        {
+            ViewData["ReimBurseData"] = _managerServices.GetReimbursements();
+            return View();
+        }
+
+        public ActionResult TravelRequest()
+        {
+            return View();
+        }
+
         //public ActionResult AddBudget()
         //{
         //    ViewData["budgetList"] = _adminServices.getBudgetList();

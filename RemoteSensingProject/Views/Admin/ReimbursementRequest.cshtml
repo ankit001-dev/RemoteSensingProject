@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "ReimbursementRequest";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var data = ViewData["ReimBurseData"] as List<RemoteSensingProject.Models.ProjectManager.Reimbursement>;
+    int i = 0;
+}
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr</th>
+                                <th>Project Manager</th>
+                                <th>Type</th>
+                                <th>Vr.No & Date</th>
+                                <th>Particulars</th>
+                                <th>Items</th>
+                                <th>Purpose</th>
+                                <th>Amount</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if(data != null && data.Count > 0)
+            {
+                foreach(var item in data)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.EmpName</td>
+                        <td>@item.type</td>
+                        <td>@item.vrNo_date</td>
+                        <td>@item.particulars</td>
+                        <td>@item.items</td>
+                        <td>@item.purpose</td>
+                        <td>@item.amount</td>
+                        <td>
+                            <a href="#">
+                                <i class="fa-solid fa-eye text-success"></i>
+                            </a>
+                            <a href="#">
+                                <i class="fa-solid fa-check text-success"></i>
+                            </a>
+                            <a href="#">
+                                <i class="fa-solid fa-xmark text-danger"></i>
+                            </a>
+
+                        </td>
+                    </tr>
+                }
+            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

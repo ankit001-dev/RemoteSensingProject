@@ -54,7 +54,7 @@
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="amount" class="form-label">Amount</label>
-                            <input type="number" name="amount" class="form-control form-control-sm" id="amount" placeholder="Enter Amount">
+                            <input type="number" name="amount" class="form-control form-control-sm" id="amount" placeholder="Enter Amount" step="any">
                             <span class="text-danger" id="amountMsg"></span>
                         </div>
                     </div>
@@ -91,7 +91,7 @@
                             <td>@items.particulars</td>
                             <td>@items.items</td>
                             <td>@items.purpose</td>
-                            <td>@items.amount</td>
+                            <td>₹ @Convert.ToDecimal(items.amount).ToString("N2")</td>
                         </tr>
                     }
                 }
@@ -126,9 +126,7 @@
                 }
             }
         });
-    });
 
-    $(document).ready(function () {
         $("#createProjectForm").submit(function (e) {
             e.preventDefault();
             Swal.fire({
@@ -151,7 +149,7 @@
                             title: 'Success',
                             text: res.message,
                             icon: 'success',
-                            didClose: () => { locatio.reload() }
+                            didClose: () => { location.reload() }
                         })
                     }
                     else {
