@@ -25,7 +25,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="forms-sample" id="createProjectForm">
+                <form class="forms-sample" id="tourForm">
                     <div class="row">
                         <div class="col-lg-4 mb-3">
                             <label for="name" class="form-label">Name</label>
@@ -49,11 +49,11 @@
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="periodFrom" class="form-label">Period: From</label>
-                            <input type="time" class="form-control form-control-sm" id="periodFrom" name="periodFrom" />
+                            <input type="date" class="form-control form-control-sm" id="periodFrom" name="periodFrom" />
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="periodTo" class="form-label">Period: To</label>
-                            <input type="time" class="form-control form-control-sm" id="periodTo" name="periodTo" />
+                            <input type="date" class="form-control form-control-sm" id="periodTo" name="periodTo" />
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="returnDate" class="form-label">Date of return</label>
@@ -102,3 +102,45 @@
     </div>
 </div>
 
+<script>
+    $(document).ready(function () {
+        $("#tourForm").submit(function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Please Wait',
+                text: 'Your request under process. Please wait!',
+                didOpen: () => { Swal.showLoading(); }
+            })
+            let formData = new FormData(this);
+            $.ajax({
+                url: '/employee/Tour_proposal',
+                type: 'post',
+                data: formData,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { locatio.reload() }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'warning',
+                            text: res.message,
+                            icon: 'warning'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'error',
+                        text: 'Server busy Please try after sometime.',
+                        icon: 'error'
+                    })
+                }
+            })
+        })
+    })
+</script>

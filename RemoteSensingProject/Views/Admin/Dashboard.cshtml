@@ -38,7 +38,7 @@
             }
 
             .uniform-card p.text-success {
-                font-size: 14px;
+                font-size: 15px;
             }
 
             .uniform-card img {
@@ -53,7 +53,7 @@
 
 
                 <!-- Total Budget Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
                     <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
                         <div class="card uniform-card w-100">
                             <div class="card-body">
@@ -64,16 +64,16 @@
                                     <div class="col-6 col-md-12 col-xl-8">
                                         <h6 class="mb-2 text-success"></h6>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success inst py-0"><span> @ViewBag.totalBudget</span></p>
+                                            <p class="text-success inst py-0"><span><span class="text-dark">Budget :  </span> @ViewBag.totalBudget</span></p>
                                         </div>
-                                        @*
-            <span class="text-dark">Budget </span>
-            <div class="d-flex align-items-baseline">
-            <p class="text-success py-0"><span><span class="text-dark">Expenditure </span> </span></p>
-        </div>
-        <div class="d-flex align-items-baseline">
-            <p class="text-success py-0"><span><span class="text-dark">Pending </span> @ViewBag.pendingBudget</span></p>
-        </div>*@
+
+
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success py-0"><span><span class="text-dark">Expenditure : </span> @ViewBag.expenditure</span></p>
+                                        </div>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success py-0"><span><span class="text-dark">Pending : </span> @ViewBag.pendingBudget</span></p>
+                                        </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-4">
                                         <img src="~/assets/gif/Tbudget.gif" height="70" />
@@ -85,31 +85,31 @@
                 </div>
 
                 <!-- Expenditure Budget Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
-                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                        <div class="card uniform-card w-100">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-baseline">
-                                    <h6 class="card-title mb-0 text-nowrap">Expenditure Budget</h6>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6 col-md-12 col-xl-5">
-                                        <h6 class="mb-2 text-success"></h6>
-                                        <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>@ViewBag.expenditure</span></p>
-                                        </div>
-                                    </div>
-                                    <div class="col-6 col-md-12 col-xl-7">
-                                        <img src="~/assets/gif/Pbudget.gif" height="70" />
-                                    </div>
+                @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+            <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                <div class="card uniform-card w-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-baseline">
+                            <h6 class="card-title mb-0 text-nowrap">Expenditure Budget</h6>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 col-md-12 col-xl-5">
+                                <h6 class="mb-2 text-success"></h6>
+                                <div class="d-flex align-items-baseline">
+                                    <p class="text-success"><span>@ViewBag.expenditure</span></p>
                                 </div>
                             </div>
+                            <div class="col-6 col-md-12 col-xl-7">
+                                <img src="~/assets/gif/Pbudget.gif" height="70" />
+                            </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
-
+            </a>
+        </div>*@
+                
                 <!-- Pending Budget Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
                     <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
                         <div class="card uniform-card w-100">
                             <div class="card-body">
@@ -130,24 +130,29 @@
                             </div>
                         </div>
                     </a>
-                </div>
+                </div>*@
 
                 <!-- Project's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
                     <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
                         <div class="card uniform-card w-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-baseline">
-                                    <h6 class="card-title mb-0">Total Project's</h6>
+                                    <h6 class="card-title mb-0">Project's</h6>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6 col-md-12 col-xl-5">
+                                    <div class="col-6 col-md-12 col-xl-8">
                                         <h3 class="mb-2 text-success"></h3>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>@ViewBag.totalProject</span></p>
+                                            <p class="text-success"><span><span class="text-dark">Total :  </span> @ViewBag.totalProject</span></p>
+                                        </div>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span><span class="text-dark">Internal :  </span> @ViewBag.totalDelayProject</span></p>
+                                        </div><div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span><span class="text-dark">External :  </span> @ViewBag.totalDelayProject</span></p>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-md-12 col-xl-7">
+                                    <div class="col-6 col-md-12 col-xl-4">
                                         <img src="~/assets/gif/project.gif" height="70" />
                                     </div>
                                 </div>
@@ -157,21 +162,26 @@
                 </div>
 
                 <!-- Pending Project's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
                     <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
                         <div class="card uniform-card w-100">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-baseline">
-                                    <h6 class="card-title mb-0 text-nowrap">Delay Project's</h6>
+                                    <h6 class="card-title mb-0 text-nowrap">Project's Status</h6>
                                 </div>
                                 <div class="row">
-                                    <div class="col-6 col-md-12 col-xl-5">
+                                    <div class="col-6 col-md-12 col-xl-8">
                                         <h6 class="mb-2 text-success"></h6>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>@ViewBag.totalDelayProject</span></p>
+                                            <p class="text-success"><span><span class="text-dark">Completed :  </span> @ViewBag.totalCompleteProject</span></p>
+                                        </div>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span><span class="text-dark">Pending :  </span> @ViewBag.totalDelayProject</span></p>
+                                        </div><div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span><span class="text-dark">Ongoing :  </span> @ViewBag.totalOngoingProject</span></p>
                                         </div>
                                     </div>
-                                    <div class="col-6 col-md-12 col-xl-7">
+                                    <div class="col-6 col-md-12 col-xl-4">
                                         <img src="~/assets/gif/file.gif" height="70" />
                                     </div>
                                 </div>
@@ -181,7 +191,7 @@
                 </div>
 
                 <!-- Internal Project's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
                     <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
                         <div class="card uniform-card w-100">
                             <div class="card-body">
@@ -202,10 +212,10 @@
                             </div>
                         </div>
                     </a>
-                </div>
+                </div>*@
 
                 <!-- External Project's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
                     <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
                         <div class="card uniform-card w-100">
                             <div class="card-body">
@@ -226,10 +236,10 @@
                             </div>
                         </div>
                     </a>
-                </div>
+                </div>*@
 
                 <!-- Another Meeting's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
                     <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
                         <div class="card uniform-card w-100">
                             <div class="card-body">
@@ -250,9 +260,9 @@
                             </div>
                         </div>
                     </a>
-                </div>
+                </div>*@
                 <!-- Completed Project's Card -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
+                @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">
                     <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
                         <div class="card uniform-card w-100">
                             <div class="card-body">
@@ -273,7 +283,7 @@
                             </div>
                         </div>
                     </a>
-                </div>
+                </div>*@
 
                 <!-- Employee's Card -->
                 <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card">

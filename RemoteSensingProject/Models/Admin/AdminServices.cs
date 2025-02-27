@@ -1641,68 +1641,68 @@ namespace RemoteSensingProject.Models.Admin
 
         #endregion
 
-        #region Budget
+        //#region Budget
 
-        public bool InsertBuget(BudgetForm data)
-        {
-            try
-            {
-                cmd = new SqlCommand("sp_manageBudgets", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@budget", data.budget);
-                cmd.Parameters.AddWithValue("@action", "insert");
-                con.Open();
-               return cmd.ExecuteNonQuery()> 0;
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                if(con.State == ConnectionState.Open)
-                con.Close();
-                cmd.Dispose();
-            }
-        }
+        //public bool InsertBuget(BudgetForm data)
+        //{
+        //    try
+        //    {
+        //        cmd = new SqlCommand("sp_manageBudgets", con);
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.Parameters.AddWithValue("@budget", data.budget);
+        //        cmd.Parameters.AddWithValue("@action", "insert");
+        //        con.Open();
+        //       return cmd.ExecuteNonQuery()> 0;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //    finally
+        //    {
+        //        if(con.State == ConnectionState.Open)
+        //        con.Close();
+        //        cmd.Dispose();
+        //    }
+        //}
 
-        public List<BudgetForm> getBudgetList()
-        {
-            try
-            {
-                cmd = new SqlCommand("sp_manageBudgets", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectAll");
-                con.Open();
-                List<BudgetForm> budgetList = new List<BudgetForm>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
-                {
-                    while (res.Read())
-                    {
-                        budgetList.Add(new BudgetForm
-                        {
-                            sn = (int)res["id"],
-                            addedDate = Convert.ToString(res["createdAt"]),
-                            budget = (decimal)res["budget"]
-                        });
-                    }
-                }
-                return budgetList;
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
+        //public List<BudgetForm> getBudgetList()
+        //{
+        //    try
+        //    {
+        //        cmd = new SqlCommand("sp_manageBudgets", con);
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.Parameters.AddWithValue("@action", "selectAll");
+        //        con.Open();
+        //        List<BudgetForm> budgetList = new List<BudgetForm>();
+        //        var res = cmd.ExecuteReader();
+        //        if (res.HasRows)
+        //        {
+        //            while (res.Read())
+        //            {
+        //                budgetList.Add(new BudgetForm
+        //                {
+        //                    sn = (int)res["id"],
+        //                    addedDate = Convert.ToString(res["createdAt"]),
+        //                    budget = (decimal)res["budget"]
+        //                });
+        //            }
+        //        }
+        //        return budgetList;
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    finally
+        //    {
+        //        if (con.State == ConnectionState.Open)
+        //            con.Close();
+        //        cmd.Dispose();
+        //    }
+        //}
 
-        #endregion
+        //#endregion
 
     }
 }

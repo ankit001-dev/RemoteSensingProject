@@ -508,9 +508,32 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Reimbursement_From()
+        public ActionResult Reimbursement_Form()
         {
+            var res = _managerServices.GetReimbursements();
             return View();
+        }
+        [HttpPost]
+        public ActionResult Reimbursement_Form(Reimbursement data)
+        {
+            bool res = _managerServices.insertReimbursement(data);
+            ViewData["reimlist"] = res;
+            if (res)
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Added Successfully"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Something went wrong"
+                });
+            }
         }
         public ActionResult Hiring_Vehicle()
         {
@@ -518,6 +541,13 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Tour_Proposal()
         {
+            var res = _managerServices.getTourList();
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Tour_Proposal(tourProposal data)
+        {
+            //bool res = _manager
             return View();
         }
     }

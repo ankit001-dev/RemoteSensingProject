@@ -1270,5 +1270,157 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
         #endregion
+
+        #region insertReimbursement
+
+        public bool insertReimbursement(Reimbursement data)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@vrNo_date", data.vrNo_date);
+                cmd.Parameters.AddWithValue("@particulars", data.particulars);
+                cmd.Parameters.AddWithValue("@items", data.items);
+                cmd.Parameters.AddWithValue("@amount", data.amount);
+                cmd.Parameters.AddWithValue("@purpose", data.purpose);
+                cmd.Parameters.AddWithValue("@action", "insert");
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        public List<Reimbursement> GetReimbursements()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectAll");
+                con.Open();
+                List<Reimbursement> getlist = new List<Reimbursement>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while(res.Read())
+                    {
+                        getlist.Add(new Reimbursement
+                        {
+                            id = (int)res["id"],
+                            vrNo_date = (string)res["vrNo_date"],
+                            particulars = (string)res["particulars"],
+                            items = (string)res["items"],
+                            amount = Convert.ToDecimal(res["amount"]),
+                            purpose = (string)res["purpose"]
+                        });
+                    }
+                }
+                return getlist;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        #endregion
+
+        #region tourproposal
+
+        public bool insertTour(tourProposal data)
+        {
+            try
+            {
+                cmd = new SqlCommand("", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("", data.name);
+                cmd.Parameters.AddWithValue("", data.designation);
+                cmd.Parameters.AddWithValue("", data.project);
+                cmd.Parameters.AddWithValue("", data.dateOfDept);
+                cmd.Parameters.AddWithValue("", data.place);
+                cmd.Parameters.AddWithValue("", data.periodFrom);
+                cmd.Parameters.AddWithValue("", data.periodTo);
+                cmd.Parameters.AddWithValue("", data.returnDate);
+                cmd.Parameters.AddWithValue("", data.purpose);
+                cmd.Parameters.AddWithValue("@action","insert");
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if(con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        public List<tourProposal> getTourList()
+        {
+            try
+            {
+                cmd = new SqlCommand("", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectAll");
+                con.Open();
+                List<tourProposal> getlist = new List<tourProposal>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while(res.Read())
+                    {
+                        getlist.Add(new tourProposal
+                        {
+                            id = (int)res["id"],
+                            name = (string)res[""],
+                            designation = (string)res[""],
+                            project = (string)res[""],
+                            dateOfDept = Convert.ToDateTime(res[""]),
+                            place = (string)res[""],
+                            periodFrom = Convert.ToDateTime(res[""]),
+                            periodTo = Convert.ToDateTime(res[""]),
+                            returnDate = Convert.ToDateTime(res[""]),
+                            purpose = (string)res[""],
+                        });
+                    }
+                }
+                return getlist;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        #endregion
     }
 }

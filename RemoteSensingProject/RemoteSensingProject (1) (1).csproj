@@ -1011,9 +1011,8 @@
     <Content Include="Views\Admin\SubOrdinateProblemList.cshtml" />
     <Content Include="Views\Accounts\Expenses.cshtml" />
     <Content Include="Views\Accounts\RequestHistory.cshtml" />
-    <Content Include="Views\Employee\Reimbursement_From.cshtml" />
+    <Content Include="Views\Employee\Reimbursement_Form.cshtml" />
     <Content Include="Views\Employee\Hiring_Vehicle.cshtml" />
-    <Content Include="Views\Admin\AddBudget.cshtml" />
     <Content Include="Views\Employee\Tour_Proposal.cshtml" />
   </ItemGroup>
   <ItemGroup>

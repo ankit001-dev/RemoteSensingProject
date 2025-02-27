@@ -524,31 +524,31 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult AddBudget()
-        {
-            ViewData["budgetList"] = _adminServices.getBudgetList();
-            return View();
-        }
-        [HttpPost]
-        public ActionResult AddBudget(BudgetForm data)
-        {
-            var res = _adminServices.InsertBuget(data);
-            if(res)
-            {
-                return Json(new
-                {
-                    status = res,
-                    message = "Added Successfully"
-                });
-            }
-            else
-            {
-                return Json(new
-                {
-                    status = res,
-                    message = "Some error occured"
-                });
-            }
-        }
+        //public ActionResult AddBudget()
+        //{
+        //    ViewData["budgetList"] = _adminServices.getBudgetList();
+        //    return View();
+        //}
+        //[HttpPost]
+        //public ActionResult AddBudget(BudgetForm data)
+        //{
+        //    var res = _adminServices.InsertBuget(data);
+        //    if (res)
+        //    {
+        //        return Json(new
+        //        {
+        //            status = res,
+        //            message = "Added Successfully"
+        //        });
+        //    }
+        //    else
+        //    {
+        //        return Json(new
+        //        {
+        //            status = res,
+        //            message = "Some error occured"
+        //        });
+        //    }
+        //}
     }
 }
