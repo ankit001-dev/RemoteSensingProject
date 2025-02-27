@@ -2,6 +2,9 @@
 @{
     ViewBag.Title = "Tour_Proposal";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["tourlist"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
+
+
 }
 
 <style>
@@ -27,18 +30,6 @@
             <div class="modal-body">
                 <form class="forms-sample" id="tourForm">
                     <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control form-control-sm" id="name" name="name" placeholder="Enter Your Name" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="designation" class="form-label">Designation</label>
-                            <input type="text" class="form-control form-control-sm" id="designation" name="designation" placeholder="Enter Your Designation" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="project" class="form-label">Project</label>
-                            <input type="text" class="form-control form-control-sm" id="project" name="project" placeholder="Enter Project Name" />
-                        </div>
                         <div class="col-lg-4 mb-3">
                             <label for="dateOfDept" class="form-label">Date of Departure</label>
                             <input type="date" class="form-control form-control-sm" id="dateOfDept" name="dateOfDept" />
@@ -88,15 +79,21 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>xyz</td>
-                    <td>xyz</td>
-                    <td>xyz</td>
-                    <td>xyz</td>
-                    <td>xyz</td>
-                    <td>xyz</td>
-                </tr>
+                @if (data != null)
+                {
+                    foreach (var item in data)
+                    {
+                        <tr>
+                            <td>@item.id</td>
+                            <td>@item.purpose</td>
+                            <td>@item.dateOfDept</td>
+                            <td>@item.place</td>
+                            <td>@item.periodFrom</td>
+                            <td>@item.periodTo</td>
+                            <td>@item.returnDate</td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
     </div>
@@ -116,13 +113,15 @@
                 url: '/employee/Tour_proposal',
                 type: 'post',
                 data: formData,
+                contentType: false,
+                processData: false,
                 success: function (res) {
                     if (res.status) {
                         Swal.fire({
                             title: 'Success',
                             text: res.message,
                             icon: 'success',
-                            didClose: () => { locatio.reload() }
+                            didClose: () => { location.reload() }
                         })
                     }
                     else {

@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Hiring_Vehicle";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
 }
 
 <style>
@@ -37,6 +38,13 @@
                             <label for="projectName" class="form-label">Name of the Project</label>
                            <select name="projectName" class="form-select form-control-sm" id="projectName">
                                <option selected value="">Select Project</option>
+                               @if (data != null)
+                               {
+                                   foreach(var item in data)
+                {
+                    <option value="@item.projectId">@item.projectName</option>
+                }
+                               }
                            </select>
                         </div>
                         <div class="col-lg-4 mb-3">
@@ -107,21 +115,27 @@
         <table class="table-bordered table-striped" id="dataTableExample">
             <thead>
                 <tr>
+                    <th>S.N.</th>
                     <th>Project Name</th>
                     <th>Date From</th>
                     <th>Date To</th>
+                    <th>Proposed Place</th>
                     <th>Purpose of Visit</th>
+                    <th>Total Days & Night</th>
                     <th>Total Area Travel</th>
+                    <th>Taxi</th>
+                    <th>Book Against Centre</th>
+                    <th>Avaiability of fund</th>
+                    <th>Taxi Report To</th>
+                    <th>Taxi Report At</th>
+                    <th>Taxi Report Place</th>
+                    <th>Taxi Report On</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>xyz</td>
-                    <td>xyz</td>
-                    <td>xyz</td>
-                    <td>xyz</td>
-                    <td>xyz</td>
+                   <td></td>
                     <td class="text-center"><i class="fa-solid fa-eye" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>
                 </tr>
             </tbody>
@@ -237,3 +251,48 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(documnet).ready(function () {
+        $("#").submit(function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Please Wait!',
+                text: 'Your request under process.',
+                didOpen: () => { Swal.showLoading(); }
+            })
+            let formData = new FormData(this);
+            $.ajax({
+                url: '/employee/hiring_vehicle',
+                type: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload() }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'warning',
+                            text: res.message,
+                            icon: 'warning'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        titel: 'Error',
+                        text: 'Server Busy.Try after sometime!',
+                        icon:'error'
+                    })
+                }
+            })
+        })
+    })
+</script>

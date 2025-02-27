@@ -182,15 +182,33 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class tourProposal
     {
+        public int userId { get; set; }
         public int id { get; set; }
-        public string name { get; set; }
-        public string designation { get; set; }
-        public string project { get; set; }
         public DateTime dateOfDept { get; set; }
         public string place { get; set; }
         public DateTime periodFrom { get; set; }
         public DateTime periodTo { get; set; }
         public DateTime returnDate { get; set; }
         public string purpose { get; set; }
+    }
+    public class HiringVehicle
+    {
+        public int projectId { get; set; }
+        public int id { get; set; }
+        public int userId { get; set; }
+        public string projectName { get; set; }
+        public DateTime dateFrom { get; set; }
+        public DateTime dateTo { get; set; }
+        public string purposeOfVisit { get; set; }
+        public string totalDaysNight { get; set; }
+        public string totalPlainHills { get; set; }
+        public string taxi { get; set; }
+        public string BookAgainstCentre { get; set; }
+        public string availbilityOfFund { get; set; }
+        public string taxiReportTo { get; set; }
+        public TimeSpan taxiReportAt { get; set; }
+        public string taxiReportPlace { get; set; }
+        public DateTime taxiReportOn { get; set; }
+        public string proposedPlace { get; set; }
     }
 }
