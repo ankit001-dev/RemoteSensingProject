@@ -168,4 +168,27 @@ namespace RemoteSensingProject.Models.ProjectManager
         public int[] outSourceId { get; set; }
         public bool completeStatus { get; set; }
     }
+    public class Reimbursement
+    {
+        public int id { get; set; }
+        public string type { get; set; }
+        public string vrNo_date { get; set; }
+        public string particulars { get; set; }
+        public string items { get; set; }
+        public string purpose { get; set; }
+        public decimal amount { get; set; }
+    }
+    public class tourProposal
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string designation { get; set; }
+        public string project { get; set; }
+        public DateTime dateOfDept { get; set; }
+        public string place { get; set; }
+        public DateTime periodFrom { get; set; }
+        public DateTime periodTo { get; set; }
+        public DateTime returnDate { get; set; }
+        public string purpose { get; set; }
+    }
 }

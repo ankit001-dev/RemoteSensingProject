@@ -85,7 +85,7 @@
                             <div class="col-lg-4 mb-3">
                                 <label for="letterNumber" class="form-label">Letter Number</label>
                                 <div class="input-group">
-                                    <input type="number" required class="form-control form-control-sm" name="letterNumber" id="letterNumber" placeholder="Enter Letter Number">
+                                    <input type="text" required class="form-control form-control-sm" name="letterNo" id="letterNumber" placeholder="Enter Letter Number">
                                 </div>
                             </div>
 
@@ -94,6 +94,7 @@
                                     <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="0"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
                                 </div>
                                 <input type="text" class="form-control form-control-sm" required name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
+                                <span id="budgetValidate" class="text-danger"></span>
                             </div>
 
                             <div class="col-lg-4 mb-3">
@@ -139,7 +140,8 @@
                                     </div>
                                     <div class="col-lg-5 mb-3">
                                         <label for="title" class="form-label">Amount</label>
-                                        <input type="number" class="form-control form-control-sm" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter amount...">
+                                        <input type="number" class="form-control form-control-s" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter amount...">
+                                        <span id="_person" class="ms-2 text-danger"></span>
                                     </div>
                                 </div>
                                 <div class="row" id="miscList">
@@ -151,7 +153,7 @@
                                     </div>
                                     <div class="col-lg-5 mb-3">
                                         <label for="misAmount" class="form-label">Amount</label>
-                                        <input type="number" class="form-control form-control-sm" id="misAmount" name="pm.budgets[1].ProjectAmount" placeholder="Enter amount">
+                                        <input type="number" readonly class="form-control form-control-sm" id="misAmount" name="pm.budgets[1].ProjectAmount" placeholder="Enter amount">
                                     </div>
                                 </div>
                             </fieldset>
@@ -195,7 +197,7 @@
 <textarea class="form-control form-control-sm" name="pm.pm.ProjectDescription" id="tinymceExample" rows="10" placeholder="Project Description"></textarea>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Project</button>
+                                <button type="submit" id="addbtn" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Project</button>
                             </div>
                         </div>
                     </form>
@@ -205,7 +207,38 @@
     </div>
 
     <script src="~/Scripts/jquery-3.7.1.js"></script>
-<script>
+    <script>
+
+        $(document).ready(function () {
+            $("#person").on("keyup", function () {
+                let am = parseInt($("#budgetAmount").val());
+
+                if ($(this).val() > am) {
+                    $("#_person").text("Amount is not more than project budget");
+                    $("#misAmount").val(0);
+                    $("#addbtn").prop("disabled", true);
+                }
+                else {
+                    $("#_person").text("");
+                    $("#addbtn").prop("disabled", false);
+                     $("#misAmount").val(am - parseInt($(this).val()))
+                }
+            });
+        });
+
+    $(document).ready(function () {
+        $("#budgetAmount").on("keyup", function () {
+            if (parseInt($(this).val()) >@ViewBag.pendingBudget) {
+                $("#budgetValidate").text("Buget is not more than pending budget");
+                $("#addbtn").prop("disabled", true);
+            }
+            else {
+                $("#budgetValidate").text("");
+                $("#addbtn").prop("disabled", false);
+            }
+        })
+    })
+
 
     $(document).ready(function(){
         $("select").select2({
@@ -213,20 +246,20 @@
         });
     })
     $(document).ready(function () {
-        
+
         $("input[name='pm.pm.ProjectStage']").click(function () {
             if ($(this).val() === "true") {
                 $("#stageItemContainer").show();
-                $("#addStageIcon").show().click(); 
+                $("#addStageIcon").show().click();
             } else {
                 $("#stageItemContainer").hide();
                 $("#addStageIcon").hide();
-                $("#stageItemContainer .stageListItem").remove(); 
-                $("#addStageIcon").attr("data-count", 1); 
+                $("#stageItemContainer .stageListItem").remove();
+                $("#addStageIcon").attr("data-count", 1);
             }
         });
 
-       
+
         $("#addStageIcon").click(function () {
             let count = parseInt($(this).attr("data-count"));
             if (count < 10) {
@@ -239,7 +272,7 @@
                     <div class="col-lg-4 mb-3">
                         <label for="person" class="form-label">Pdf Upload</label>
                         <input type="file" class="form-control form-control-sm stagesImages" name="pm.stages[${count}].Stage_Document"/>
-                    </div>  
+                    </div>
                     <div class="col-lg-3 mb-3">
                         <label for="date" class="form-label">Complete Date</label>
                         <input type="date" class="form-control form-control-sm" name="pm.stages[${count}].CompletionDate">
@@ -252,21 +285,21 @@
                 </div>`;
                 $("#stageItemContainer").append(newElement);
                 count++;
-                $(this).attr("data-count", count); 
+                $(this).attr("data-count", count);
             }
         });
 
-       
+
         $("#stageItemContainer").on("click", ".deleteCurrntRow", function (e) {
             e.preventDefault();
             let i = $("#stageItemContainer #addStageIcon").attr("data-count");
             if (i > 0)
                 i--;
             $("#stageItemContainer #addStageIcon").attr("data-count", i);
-            $(this).closest(".row.stageListItem").remove(); 
+            $(this).closest(".row.stageListItem").remove();
         });
 
-       
+
         $("input[name='pm.pm.ProjectType']").click(function () {
             if ($(this).val() === "External") {
                 $("#projectTypeDetailContainer").show();
@@ -278,6 +311,7 @@
 
         $("#addBudgetItem").click(function () {
             let budgetAmt = parseInt($("#budgetAmount").val())
+            $("#misAmount").val(budgetAmt)
             if (budgetAmt != null && budgetAmt > 0) {
                 let count = parseInt($(this).attr("data-count"));
                 $("#budgetContainerBox").show();
@@ -313,11 +347,11 @@
             if (i > 0)
                 i--;
             $("#budgetContainerBox #addBudgetItem").attr("data-count", i);
-            $(this).closest(".row.budgetList").remove(); 
+            $(this).closest(".row.budgetList").remove();
         })
     });
 
-</script>
+    </script>
 
 <script>
     $("#createProjectForm").on("submit", function (e) {

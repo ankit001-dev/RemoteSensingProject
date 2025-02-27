@@ -72,6 +72,7 @@ namespace RemoteSensingProject.Models.Admin
         public class Project_model
         {        
             public int Id { get; set; }
+            public string letterNo { get; set; }
             public decimal physicalcomplete { get; set; }
             public decimal overallPercentage { get; set; }
             public string ProjectTitle { get; set; }
@@ -230,6 +231,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class DashboardCount
         {
+            public decimal expenditure { get; set; }
             public string Title { get; set; }
             public string OverallCompletionPercentage { get; set; }
             public string TotalEmployee { get; set; }
@@ -239,8 +241,17 @@ namespace RemoteSensingProject.Models.Admin
             public string TotalOngoingProject { get; set; }
             public string TotalMeetings { get; set; }
             public string ProjectManager { get; set; }
+            public decimal TotalBudget { get; set; }
+            public decimal PendingBudget { get; set; }
+            public decimal ExpenditureBudget { get; set; }
 
         }
-
+        public class BudgetForm
+        {
+            public int sn { get; set; }
+            public string addedDate { get; set; }
+            public string financial { get; set; }
+            public decimal budget { get; set; }
+        }
     }
 }
