@@ -511,13 +511,13 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Reimbursement_Form()
         {
             var res = _managerServices.GetReimbursements();
+            ViewData["reimlist"] = res;
             return View();
         }
         [HttpPost]
         public ActionResult Reimbursement_Form(Reimbursement data)
         {
             bool res = _managerServices.insertReimbursement(data);
-            ViewData["reimlist"] = res;
             if (res)
             {
                 return Json(new
@@ -537,18 +537,63 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Hiring_Vehicle()
         {
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var res = _managerServices.getProjectList(userid);
+            ViewData["hiringList"] = res;
+            return View();
+        }
+        [HttpPost]
+        public ActionResult Hiring_Vehicle(HiringVehicle data)
+        {
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            data.userId = userid;
+            bool res = _managerServices.insertHiring(data);
+            if (res)
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Added Successfully"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Something went wrong"
+                });
+            }
             return View();
         }
         public ActionResult Tour_Proposal()
         {
-            var res = _managerServices.getTourList();
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var res = _managerServices.getTourList(userid);
+            ViewData["tourList"] = res; 
             return View();
         }
         [HttpPost]
         public ActionResult Tour_Proposal(tourProposal data)
         {
-            //bool res = _manager
-            return View();
+            data.userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            bool res = _managerServices.insertTour(data);
+                if (res)
+                {
+                    return Json(new
+                    {
+                        status = res,
+                        message = "Added Successfully"
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        status = res,
+                        message = "Something went wrong"
+                    });
+                }
         }
     }
 }
