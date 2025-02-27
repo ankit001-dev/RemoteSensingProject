@@ -1282,8 +1282,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@vrNo_date", data.vrNo_date);
                 cmd.Parameters.AddWithValue("@particulars", data.particulars);
                 cmd.Parameters.AddWithValue("@items", data.items);
+                cmd.Parameters.AddWithValue("@userId", data.userId);
                 cmd.Parameters.AddWithValue("@amount", data.amount);
                 cmd.Parameters.AddWithValue("@purpose", data.purpose);
+                cmd.Parameters.AddWithValue("@type", data.type);
                 cmd.Parameters.AddWithValue("@action", "insert");
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
@@ -1318,6 +1320,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                         getlist.Add(new Reimbursement
                         {
                             id = (int)res["id"],
+                            EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
                             vrNo_date = (string)res["vrNo_date"],
                             particulars = (string)res["particulars"],
                             items = (string)res["items"],
@@ -1341,6 +1344,49 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
+
+        public List<Reimbursement> GetSpecificUserReimbursements(int id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getSpecificUserData");
+                cmd.Parameters.AddWithValue("@userId", id);
+                con.Open();
+                List<Reimbursement> getlist = new List<Reimbursement>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while(res.Read())
+                    {
+                        getlist.Add(new Reimbursement
+                        {
+                            id = (int)res["id"],
+                            vrNo_date = (string)res["vrNo_date"],
+                            particulars = (string)res["particulars"],
+                            items = (string)res["items"],
+                            amount = Convert.ToDecimal(res["amount"]),
+                            purpose = (string)res["purpose"]
+                        });
+                    }
+                }
+                return getlist;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
 
         #endregion
 

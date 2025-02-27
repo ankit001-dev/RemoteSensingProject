@@ -510,14 +510,16 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Reimbursement_Form()
         {
-            var res = _managerServices.GetReimbursements();
+            int id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var res = _managerServices.GetSpecificUserReimbursements(id);
+            ViewData["reimlist"] = res;
             return View();
         }
         [HttpPost]
         public ActionResult Reimbursement_Form(Reimbursement data)
         {
+            data.userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             bool res = _managerServices.insertReimbursement(data);
-            ViewData["reimlist"] = res;
             if (res)
             {
                 return Json(new
