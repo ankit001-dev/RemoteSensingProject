@@ -28,6 +28,14 @@
                 <form class="forms-sample" id="createProjectForm">
                     <div class="row">
                         <div class="col-lg-4 mb-3">
+                            <label for="type" class="form-label">Type</label>
+                            <select class="form-select form-select-sm" id="type" name="type">
+                                <option value="" selected>Select Option</option>
+                                <option value="contigency">Contigency</option>
+                                <option value="adjustment">P.I adjustment</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3">
                             <label for="vr_no" class="form-label">Vr. No. & Date</label>
                             <input type="text" name="vr_no" class="form-control form-control-sm" id="vr_no" placeholder="Enter Vr. No.">
                         </div>
@@ -46,10 +54,11 @@
                         <div class="col-lg-4 mb-3">
                             <label for="amount" class="form-label">Amount</label>
                             <input type="number" name="amount" class="form-control form-control-sm" id="amount" placeholder="Enter Amount">
+                            <span class="text-danger" id="amountMsg"></span>
                         </div>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Project</button>
+                        <button type="submit" id="btnreim" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Reimbursement</button>
                     </div>
                 </form>
             </div>
@@ -83,3 +92,32 @@
         </table>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        let ty = ""; 
+
+        $("#type").on("change", function () {
+            ty = $(this).val();
+            $("#amount").trigger("keyup")
+        });
+
+        $("#amount").on("keyup", function () {
+            let amountValue = parseFloat($(this).val());
+
+            if (ty === "contigency") {
+                $("#btnreim").prop('disabled', false);
+                $("#amountMsg").text("")
+            } else if (ty === "adjustment") {
+                if (amountValue > 20000) {
+                    $("#amountMsg").text("Amount is not greater than 20k")
+                    $("#btnreim").prop('disabled', true);
+                }
+                else if (amountValue <= 20000) {
+                    $("#btnreim").prop('disabled', false);
+                    $("#amountMsg").text("")
+                }
+            }
+        });
+    });
+</script>

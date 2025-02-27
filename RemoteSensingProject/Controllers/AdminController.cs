@@ -33,6 +33,9 @@ namespace RemoteSensingProject.Controllers
             ViewBag.totalCompleteProject = TotalCount.TotalCompleteProject;
             ViewBag.totalOngoingProject = TotalCount.TotalOngoingProject;
             ViewBag.totalMeetings = TotalCount.TotalMeetings;
+            ViewBag.totalBudget = TotalCount.TotalBudget;
+            ViewBag.pendingBudget = TotalCount.PendingBudget;
+            ViewBag.expenditure = TotalCount.expenditure;
 
             return View();
         }
@@ -174,6 +177,9 @@ namespace RemoteSensingProject.Controllers
         #region add project
         public ActionResult Add_Project()
         {
+            var TotalCount = _adminServices.DashboardCount();
+            ViewBag.pendingBudget = TotalCount.PendingBudget;
+            decimal b = Convert.ToDecimal(ViewBag.pendingBudget);
             var data = _adminServices.SelectEmployeeRecord();
             ViewBag.projectManager = data.Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
@@ -518,9 +524,31 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult AddBudget()
-        {
-            return View();
-        }
+        //public ActionResult AddBudget()
+        //{
+        //    ViewData["budgetList"] = _adminServices.getBudgetList();
+        //    return View();
+        //}
+        //[HttpPost]
+        //public ActionResult AddBudget(BudgetForm data)
+        //{
+        //    var res = _adminServices.InsertBuget(data);
+        //    if (res)
+        //    {
+        //        return Json(new
+        //        {
+        //            status = res,
+        //            message = "Added Successfully"
+        //        });
+        //    }
+        //    else
+        //    {
+        //        return Json(new
+        //        {
+        //            status = res,
+        //            message = "Some error occured"
+        //        });
+        //    }
+        //}
     }
 }

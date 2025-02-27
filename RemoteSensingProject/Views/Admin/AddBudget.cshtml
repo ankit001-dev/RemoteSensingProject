@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "AddBudget";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var data = ViewData["budgetList"] as List<RemoteSensingProject.Models.Admin.main.BudgetForm>;
 }
 
 <style>
@@ -12,7 +13,7 @@
 </style>
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item active" aria-current="page">Add Project</li>
+        <li class="breadcrumb-item active" aria-current="page">Add Budget</li>
     </ol>
     <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Budget</button>
 </nav>
@@ -24,11 +25,11 @@
             <div class="modal-header">
                 <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
 
-                <h5 class="modal-title" id="exampleModalLabel"><span class="actionType">Add</span> Employee</h5>
+                <h5 class="modal-title" id="exampleModalLabel"><span class="actionType">Add</span> Budget</h5>
 
             </div>
             <div class="modal-body">
-                <form class="addEmployeeform">
+                <form class="addEmployeeform" id="budgetForm">
                     <input type="hidden" id="employeeInpId" name="Id" />
                     <div class="row">
                         <div class="mb-3 col-md-8 mx-auto">
@@ -45,3 +46,86 @@
     </div>
 </div>
 
+<div class="row mx-0">
+    <div class="col-sm-12">
+        <table class="table-bordered table-striped" id="dataTableExample">
+            <thead>
+                <tr>
+                    <th>S.N.</th>
+                    <th>Budget</th>
+                    <th>Added Date</th>
+                    <th>Financial</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (data != null) {
+                    foreach (var items in data) {
+                <tr>
+                    <td>@items.sn</td>
+                    <td id="id_@items.sn">₹ @Convert.ToDecimal(items.budget).ToString("N2")</td>
+                    <td>@items.addedDate</td>
+                    <td>Null</td>
+                    <td class="text-center"><i data-bs-toggle="modal" data-bs-target="#addslider" onclick="updateBudget()" class="fa-regular fa-pen-to-square"></i></td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        @*function updateBudget() {
+            $("#budget").val($("#id_@"))
+        }*@
+
+        $("#budgetForm").submit(function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: "Please wait !",
+                text: "Your request under process",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading() }
+            })
+            let budget = $("#budget").val();
+            $.ajax({
+                url: '/admin/addbudget',
+                type: 'post',
+                data: { budget: budget },
+                success: function (res) {
+                    debugger
+                    if (res.status) {
+                        Swal.fire({
+                            title: "Success",
+                            text: res.message,
+                            icon: "success",
+                            didClose: () => { location.reload(true) }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Warning",
+                            text: res.message,
+                            icon: "warning"
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: "Server error !",
+                        text: "Server busy. Try Again !",
+                        icon: "error"
+                    })
+                }
+            })
+        })
+    })
+</script>

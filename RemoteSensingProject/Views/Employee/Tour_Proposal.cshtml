@@ -1,0 +1,146 @@
+﻿
+@{
+    ViewBag.Title = "Tour_Proposal";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+}
+
+<style>
+    #reimbursementForm {
+        display: none;
+    }
+</style>
+
+<nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Tour Proposal</li>
+    </ol>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Tour Proposal</button>
+</nav>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Proposal Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="tourForm">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control form-control-sm" id="name" name="name" placeholder="Enter Your Name" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="designation" class="form-label">Designation</label>
+                            <input type="text" class="form-control form-control-sm" id="designation" name="designation" placeholder="Enter Your Designation" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="project" class="form-label">Project</label>
+                            <input type="text" class="form-control form-control-sm" id="project" name="project" placeholder="Enter Project Name" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="dateOfDept" class="form-label">Date of Departure</label>
+                            <input type="date" class="form-control form-control-sm" id="dateOfDept" name="dateOfDept" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="place" class="form-label">Place</label>
+                            <input type="text" class="form-control form-control-sm" id="place" name="place" placeholder="Enter Place" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="periodFrom" class="form-label">Period: From</label>
+                            <input type="date" class="form-control form-control-sm" id="periodFrom" name="periodFrom" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="periodTo" class="form-label">Period: To</label>
+                            <input type="date" class="form-control form-control-sm" id="periodTo" name="periodTo" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="returnDate" class="form-label">Date of return</label>
+                            <input type="date" class="form-control form-control-sm" id="returnDate" name="returnDate" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="purpose" class="form-label">Purpose</label>
+                            <textarea class="form-control form-control-sm" id="purpose" name="purpose" placeholder="Write Purpose"></textarea>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Tour Proposal</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mx-0">
+    <div class="col-sm-12">
+        <table class="table-bordered table-striped" id="dataTableExample">
+            <thead>
+                <tr>
+                    <th>S.N.</th>
+                    <th>Purpose</th>
+                    <th>Date of Depart</th>
+                    <th>Place Visit</th>
+                    <th>Period From</th>
+                    <th>Period To</th>
+                    <th>Date of return</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                    <td>xyz</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#tourForm").submit(function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Please Wait',
+                text: 'Your request under process. Please wait!',
+                didOpen: () => { Swal.showLoading(); }
+            })
+            let formData = new FormData(this);
+            $.ajax({
+                url: '/employee/Tour_proposal',
+                type: 'post',
+                data: formData,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { locatio.reload() }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'warning',
+                            text: res.message,
+                            icon: 'warning'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'error',
+                        text: 'Server busy Please try after sometime.',
+                        icon: 'error'
+                    })
+                }
+            })
+        })
+    })
+</script>
