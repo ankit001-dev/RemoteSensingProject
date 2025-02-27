@@ -1396,18 +1396,17 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new SqlCommand("", con);
+                cmd = new SqlCommand("sp_Tourproposal", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("", data.name);
-                cmd.Parameters.AddWithValue("", data.designation);
-                cmd.Parameters.AddWithValue("", data.project);
-                cmd.Parameters.AddWithValue("", data.dateOfDept);
-                cmd.Parameters.AddWithValue("", data.place);
-                cmd.Parameters.AddWithValue("", data.periodFrom);
-                cmd.Parameters.AddWithValue("", data.periodTo);
-                cmd.Parameters.AddWithValue("", data.returnDate);
-                cmd.Parameters.AddWithValue("", data.purpose);
+                cmd.Parameters.AddWithValue("@userId", data.userId);
+                cmd.Parameters.AddWithValue("@dateOfDept", data.dateOfDept);
+                cmd.Parameters.AddWithValue("@place", data.place);
+                cmd.Parameters.AddWithValue("@periodFrom", data.periodFrom);
+                cmd.Parameters.AddWithValue("@periodTo", data.periodTo);
+                cmd.Parameters.AddWithValue("@returnDate", data.returnDate);
+                cmd.Parameters.AddWithValue("@purpose", data.purpose);
                 cmd.Parameters.AddWithValue("@action","insert");
+                con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
             catch
@@ -1424,13 +1423,14 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<tourProposal> getTourList()
+        public List<tourProposal> getTourList(int userId)
         {
             try
             {
-                cmd = new SqlCommand("", con);
+                cmd = new SqlCommand("sp_Tourproposal", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectAll");
+                cmd.Parameters.AddWithValue("@userId", userId);
                 con.Open();
                 List<tourProposal> getlist = new List<tourProposal>();
                 var res = cmd.ExecuteReader();
@@ -1441,15 +1441,12 @@ namespace RemoteSensingProject.Models.ProjectManager
                         getlist.Add(new tourProposal
                         {
                             id = (int)res["id"],
-                            name = (string)res[""],
-                            designation = (string)res[""],
-                            project = (string)res[""],
-                            dateOfDept = Convert.ToDateTime(res[""]),
-                            place = (string)res[""],
-                            periodFrom = Convert.ToDateTime(res[""]),
-                            periodTo = Convert.ToDateTime(res[""]),
-                            returnDate = Convert.ToDateTime(res[""]),
-                            purpose = (string)res[""],
+                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+                            place = (string)res["place"],
+                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
+                            periodTo = Convert.ToDateTime(res["periodTo"]),
+                            returnDate = Convert.ToDateTime(res["returnDate"]),
+                            purpose = (string)res["purpose"],
                         });
                     }
                 }
@@ -1468,6 +1465,139 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
+        #endregion
+
+        #region Hiring vehicle
+
+        public List<HiringVehicle> getProjectList(int userId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectProject");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                con.Open();
+                List<HiringVehicle> projectList = new List<HiringVehicle>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while(res.Read())
+                    {
+                        projectList.Add(new HiringVehicle
+                        {
+                            projectId = (int)res["id"],
+                            projectName = (string)res["title"]
+                        });
+                    }
+                }
+                return projectList;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        public bool insertHiring(HiringVehicle data)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@userId", data.userId);
+                cmd.Parameters.AddWithValue("@projectId", data.projectId);
+                cmd.Parameters.AddWithValue("@projectName", data.projectName);
+                cmd.Parameters.AddWithValue("@dateFrom", data.dateFrom);
+                cmd.Parameters.AddWithValue("@dateTo", data.dateTo);
+                cmd.Parameters.AddWithValue("@proposedPlace", data.proposedPlace);
+                cmd.Parameters.AddWithValue("@purposeOfVisit", data.purposeOfVisit);
+                cmd.Parameters.AddWithValue("@totalDaysNight", data.totalDaysNight);
+                cmd.Parameters.AddWithValue("@totalPlainHills", data.totalPlainHills);
+                cmd.Parameters.AddWithValue("@taxi", data.taxi);
+                cmd.Parameters.AddWithValue("@BookAgainstCentre", data.BookAgainstCentre);
+                cmd.Parameters.AddWithValue("@availbilityOfFund", data.availbilityOfFund);
+                cmd.Parameters.AddWithValue("@taxiReportTo", data.taxiReportTo);
+                cmd.Parameters.AddWithValue("@taxiReportAt", data.taxiReportAt);
+                cmd.Parameters.AddWithValue("@taxiReportPlace", data.taxiReportPlace);
+                cmd.Parameters.AddWithValue("@taxiReportOn", data.taxiReportOn);
+                cmd.Parameters.AddWithValue("@action", "insert");
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        public List<HiringVehicle> GetHiringVehicles(int userId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectAll");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                con.Open();
+                List<HiringVehicle> hiringList = new List<HiringVehicle>();
+                var res = cmd.ExecuteReader();
+                if(res.HasRows)
+                {
+                    while(res.Read())
+                    {
+                        hiringList.Add(new HiringVehicle
+                        {
+                            id = (int)res["id"],
+                            projectName = (string)res[""],
+                            dateFrom = Convert.ToDateTime(res[""]),
+                            dateTo = Convert.ToDateTime(res[""]),
+                            proposedPlace = (string)res[""],
+                            purposeOfVisit = (string)res[""],
+                            totalDaysNight = (string)res[""],
+                            totalPlainHills = (string)res[""],
+                            taxi = (string)res[""],
+                            BookAgainstCentre = (string)res[""],
+                            availbilityOfFund = (string)res[""],
+                            taxiReportTo = (string)res[""],
+                            taxiReportAt = (TimeSpan)res[""],
+                            taxiReportPlace = (string)res[""],
+                            taxiReportOn = Convert.ToDateTime(res[""])
+                        });
+                    }
+                }
+                return hiringList;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if(con.State==ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
         #endregion
     }
 }
