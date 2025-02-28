@@ -513,8 +513,6 @@ namespace RemoteSensingProject.Controllers
             int id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             var res = _managerServices.GetSpecificUserReimbursements(id);
             ViewData["reimlist"] = res;
-            var res = _managerServices.GetReimbursements();
-            ViewData["reimlist"] = res;
             return View();
         }
         [HttpPost]
@@ -568,12 +566,13 @@ namespace RemoteSensingProject.Controllers
                     message = "Something went wrong"
                 });
             }
-            return View();
         }
         public ActionResult Tour_Proposal()
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             var res = _managerServices.getTourList(userid);
+            var res1 = _managerServices.getProjectList(userid);
+            ViewData["projectList"] = res1;
             ViewData["tourList"] = res; 
             return View();
         }

@@ -2,7 +2,107 @@
 @{
     ViewBag.Title = "TravelRequest";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.Admin.main.tourProposalAll>;
 }
 
-<h2>TravelRequest</h2>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">S.N.</th>
+                                <th>Project Manager</th>
+                                <th>Project</th>
+                                <th>Purpose</th>
+                                <th>Date of Depart</th>
+                                <th>Place Visit</th>
+                                <th>Period From</th>
+                                <th>Period To</th>
+                                <th>Date of return</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (data != null)
+                            {
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@item.id</td>
+                                        <td>@item.projectManager</td>
+                                        <td>@item.projectName</td>
+                                        <td>@item.purpose</td>
+                                        <td>@item.dateOfDept</td>
+                                        <td>@item.place</td>
+                                        <td>@item.periodFrom</td>
+                                        <td>@item.periodTo</td>
+                                        <td>@item.returnDate</td>
+                                        <td data-id="id_@item.id">
+                                            <a href="#">
+                                                <i class="fa-solid fa-eye text-success"></i>
+                                            </a>
+                                            <a href="#">
+                                                <i class="fa-solid fa-check text-success act" data-appr="true"></i>
+                                            </a>
+                                            <a href="#">
+                                                <i class="fa-solid fa-xmark text-danger act" data-appr="false"></i>
+                                            </a>
 
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".act").on("click", function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Please wait !',
+                text: 'Your request under process',
+                didOpen: () => { Swal.showLoading(); }
+            })
+            let status = $(".act").data("appr");
+            let id = $(this).parent().attr("data-id")
+            $.ajax({
+                url: '/admin/TravelRequest',
+                type: 'post',
+                data: { status: status,id:id },
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload() }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'success',
+                            text: res.message,
+                            icon: 'success'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'error',
+                        text: 'Server busy Please try after sometime.',
+                        icon: 'error'
+                    })
+                }
+            })
+        })
+    });
+</script>

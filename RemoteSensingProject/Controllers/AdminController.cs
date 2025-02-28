@@ -533,7 +533,31 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult TravelRequest()
         {
+            var res = _adminServices.getAllTourList();
+            ViewData["allTourList"] = res;
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult TravelRequest(bool status,int id)
+        {
+            bool res = _adminServices.approval(id, status);
+            if (res)
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Approved"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Rejected"
+                });
+            }
         }
 
         //public ActionResult AddBudget()
