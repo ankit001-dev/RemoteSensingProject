@@ -78,6 +78,7 @@
                     <th>Items</th>
                     <th>Purpose</th>
                     <th>Amount</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -92,6 +93,22 @@
                             <td>@items.items</td>
                             <td>@items.purpose</td>
                             <td>₹ @Convert.ToDecimal(items.amount).ToString("N2")</td>
+                            @{ 
+                                string status = "";
+                                if (items.newRequest)
+                                {
+                                    status = "Pending";
+                                }
+                                else if (items.adminappr)
+                                {
+                                    status = "Approved";
+                                }
+                                else
+                                {
+                                    status = "Rejected";
+                                }
+                            }
+                            <td>@status</td>
                         </tr>
                     }
                 }

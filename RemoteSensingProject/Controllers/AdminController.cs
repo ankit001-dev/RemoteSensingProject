@@ -530,7 +530,27 @@ namespace RemoteSensingProject.Controllers
             ViewData["ReimBurseData"] = _managerServices.GetReimbursements();
             return View();
         }
-
+        [HttpPost]
+        public ActionResult ReimbursementReque(bool status,int id)
+        {
+            bool res = _adminServices.ReimbursementApproval(id, status);
+            if (res)
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Approved"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Rejected"
+                });
+            }
+        }
         public ActionResult TravelRequest()
         {
             var res = _adminServices.getAllTourList();
@@ -541,7 +561,7 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult TravelRequest(bool status,int id)
         {
-            bool res = _adminServices.approval(id, status);
+            bool res = _adminServices.Tourapproval(id, status);
             if (res)
             {
                 return Json(new

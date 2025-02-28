@@ -216,15 +216,15 @@
                                         <td>@item.items</td>
                                         <td>@item.purpose</td>
                                         <td>@item.amount</td>
-                                        <td>
+                                        <td data-id="@item.id">
                                             <a href="#">
                                                 <i class="fa-solid fa-eye text-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i>
                                             </a>
                                             <a href="#">
-                                                <i class="fa-solid fa-check text-success"></i>
+                                                <i class="fa-solid fa-check text-success act" data-appr="true"></i>
                                             </a>
                                             <a href="#">
-                                                <i class="fa-solid fa-xmark text-danger"></i>
+                                                <i class="fa-solid fa-xmark text-danger act" data-appr="false"></i>
                                             </a>
 
                                         </td>
@@ -355,3 +355,47 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $(".act").on("click", function () {
+            Swal.fire({
+                title: 'Please wait !',
+                text: 'Your request under process',
+                didOpen: () => { Swal.showLoading(); }
+            })
+            debugger
+            let status = $(".act").data("appr");
+            let id = $(this).parent().parent().attr("data-id")
+            $.ajax({
+                url: '/admin/ReimbursementReque',
+                type: 'post',
+                data: { status: status, id: id },
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Approved',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload() }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'Rejected',
+                            text: res.message,
+                            icon: 'success'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'error',
+                        text: 'Server busy Please try after sometime.',
+                        icon: 'error'
+                    })
+                }
+            })
+        })
+    });
+</script>
