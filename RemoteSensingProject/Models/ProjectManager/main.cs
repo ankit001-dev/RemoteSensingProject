@@ -182,6 +182,9 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class tourProposal
     {
+        public string projectName { get; set; }
+        public int projectId { get; set; }
+        public string projectManager { get; set; }
         public int userId { get; set; }
         public int id { get; set; }
         public DateTime dateOfDept { get; set; }

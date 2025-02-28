@@ -3,7 +3,7 @@
     ViewBag.Title = "Tour_Proposal";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["tourlist"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
-
+    var dta = ViewData["projectList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
 
 }
 
@@ -30,6 +30,19 @@
             <div class="modal-body">
                 <form class="forms-sample" id="tourForm">
                     <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="project" class="form-label">Project</label>
+                            <select  class="form-select form-select-sm" id="project" name="projectId">
+                                <option value="">select project</option>
+                                @if(dta!=null)
+                                {
+                                    foreach(var item in dta)
+                {
+                    <option @item.projectId>@item.projectName</option>
+                }
+                                }
+                            </select>
+                        </div>
                         <div class="col-lg-4 mb-3">
                             <label for="dateOfDept" class="form-label">Date of Departure</label>
                             <input type="date" class="form-control form-control-sm" id="dateOfDept" name="dateOfDept" />
@@ -70,6 +83,7 @@
             <thead>
                 <tr>
                     <th>S.N.</th>
+                    <th>Project Name</th>
                     <th>Purpose</th>
                     <th>Date of Depart</th>
                     <th>Place Visit</th>
@@ -85,6 +99,7 @@
                     {
                         <tr>
                             <td>@item.id</td>
+                            <td>@item.projectName</td>
                             <td>@item.purpose</td>
                             <td>@item.dateOfDept</td>
                             <td>@item.place</td>
