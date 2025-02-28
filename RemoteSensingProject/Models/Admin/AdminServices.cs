@@ -1750,7 +1750,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public bool approval(int id,bool status)
+        public bool Tourapproval(int id,bool status)
         {
             try
             {
@@ -1777,5 +1777,32 @@ namespace RemoteSensingProject.Models.Admin
         }
         #endregion
 
+        #region /*Reimbursement request approval*/
+        public bool ReimbursementApproval(int id, bool status)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "approval");
+                cmd.Parameters.AddWithValue("@admin_appr", status);
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        #endregion
     }
 }

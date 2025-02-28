@@ -170,6 +170,9 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class Reimbursement
     {
+        public bool status { get; set; }
+        public bool adminappr { get; set; }
+        public bool newRequest { get; set; }
         public int id { get; set; }
         public int userId { get; set; }
         public string EmpName { get; set; }

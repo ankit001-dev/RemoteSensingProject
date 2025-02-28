@@ -1321,6 +1321,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                         {
                             id = (int)res["id"],
                             EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
+                            type = (string)res["type"],
                             vrNo_date = (string)res["vrNo_date"],
                             particulars = (string)res["particulars"],
                             items = (string)res["items"],
@@ -1367,7 +1368,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                             particulars = (string)res["particulars"],
                             items = (string)res["items"],
                             amount = Convert.ToDecimal(res["amount"]),
-                            purpose = (string)res["purpose"]
+                            purpose = (string)res["purpose"],
+                            status = Convert.ToBoolean(res["status"]),
+                            newRequest = (bool)res["newRequest"],
+                            adminappr = (bool)res["admin_appr"]
                         });
                     }
                 }
