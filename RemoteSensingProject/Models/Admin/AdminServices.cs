@@ -532,7 +532,7 @@ namespace RemoteSensingProject.Models.Admin
                             CompletionDate = Convert.ToDateTime(rd["completionDate"]),
                             StartDate = Convert.ToDateTime(rd["startDate"]),
                             ProjectManager = rd["name"].ToString(),
-                            Percentage = rd["financialStatusPercentage"] !=DBNull.Value?rd["financialStatusPercentage"].ToString():"",
+                            Percentage = rd["financialStatusPercentage"] != DBNull.Value ? rd["financialStatusPercentage"].ToString() : "",
                             ProjectBudget = Convert.ToDecimal(rd["budget"]),
                             ProjectDescription = rd["description"].ToString(),
                             projectDocumentUrl = rd["ProjectDocument"].ToString(),
@@ -584,7 +584,8 @@ namespace RemoteSensingProject.Models.Admin
                     }
                 }
                 return _headList;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
             }
@@ -651,7 +652,7 @@ namespace RemoteSensingProject.Models.Admin
                 cpm.pm = pm;
                 cpm.SubOrdinate = subList;
                 cpm.budgets = ProjectBudgetList(id);
-                cpm.stages = ProjectStagesList(id); 
+                cpm.stages = ProjectStagesList(id);
                 return cpm;
             }
             catch (Exception ex)
@@ -666,7 +667,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-    
+
 
         #endregion
 
@@ -1703,6 +1704,78 @@ namespace RemoteSensingProject.Models.Admin
         //}
 
         //#endregion
+
+        #region /*tour*/
+        public List<tourProposalAll> getAllTourList()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectAlltour");
+                con.Open();
+                List<tourProposalAll> getlist = new List<tourProposalAll>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        getlist.Add(new tourProposalAll
+                        {
+                            id = (int)res["id"],
+                            projectName = (string)res["title"],
+                            projectManager = (string)res["name"],
+                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+                            place = (string)res["place"],
+                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
+                            periodTo = Convert.ToDateTime(res["periodTo"]),
+                            returnDate = Convert.ToDateTime(res["returnDate"]),
+                            purpose = (string)res["purpose"],
+                        });
+                    }
+                }
+                return getlist;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        public bool approval(int id,bool status)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "approval");
+                    cmd.Parameters.AddWithValue("@adminappr", status);
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        #endregion
 
     }
 }

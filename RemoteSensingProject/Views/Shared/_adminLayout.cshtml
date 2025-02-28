@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="print-color-adjust" content="exact">
     <meta name="description" content="Travelin Responsive HTML Admin Dashboard Template based on Bootstrap 5">
     <meta name="author" content="Travelin">
     <title>Remote & Sensing</title>
@@ -27,7 +28,7 @@
     <link href="~/assets/datatable/datatables.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/assets/Summernotes/summernote.min.css">
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
-   
+
     <style>
         .form-control {
             padding: 5px 15px !important;
@@ -77,16 +78,17 @@
         }
 
         table.dataTable th.dt-type-numeric, table.dataTable th.dt-type-date, table.dataTable td.dt-type-numeric, table.dataTable td.dt-type-date {
-             text-align: left;
+            text-align: left;
         }
+
         @@font-face {
-font-family: summernote;
-src : url('/assets/Summernotes/summernote.ttf');
-src : url('/assets/Summernotes/summernote.eot'),
-      url('/assets/Summernotes/summernote.woff');
-}
-        #summernote{
-            z-index:10000;
+            font-family: summernote;
+            src: url('/assets/Summernotes/summernote.ttf');
+            src: url('/assets/Summernotes/summernote.eot'), url('/assets/Summernotes/summernote.woff');
+        }
+
+        #summernote {
+            z-index: 10000;
         }
     </style>
 </head>

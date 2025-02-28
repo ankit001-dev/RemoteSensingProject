@@ -246,12 +246,25 @@ namespace RemoteSensingProject.Models.Admin
             public decimal ExpenditureBudget { get; set; }
 
         }
-        public class BudgetForm
+        //public class BudgetForm
+        //{
+        //    public int sn { get; set; }
+        //    public string addedDate { get; set; }
+        //    public string financial { get; set; }
+        //    public decimal budget { get; set; }
+        //}
+        public class tourProposalAll
         {
-            public int sn { get; set; }
-            public string addedDate { get; set; }
-            public string financial { get; set; }
-            public decimal budget { get; set; }
+            public string projectName { get; set; }
+            public string projectManager { get; set; }
+            public int userId { get; set; }
+            public int id { get; set; }
+            public DateTime dateOfDept { get; set; }
+            public string place { get; set; }
+            public DateTime periodFrom { get; set; }
+            public DateTime periodTo { get; set; }
+            public DateTime returnDate { get; set; }
+            public string purpose { get; set; }
         }
     }
 }

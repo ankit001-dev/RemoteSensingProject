@@ -5,8 +5,185 @@
     var data = ViewData["ReimBurseData"] as List<RemoteSensingProject.Models.ProjectManager.Reimbursement>;
     int i = 0;
 }
+<style>
+    @@media print {
+        .container {
+            max-width: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
 
-<div class="row">
+        .form-container {
+            /* border: 1px solid #000; */
+            padding: 15px !important;
+            margin: 0 !important;
+            width: 210mm; /* A4 width */
+            min-height: 297mm; /* A4 height */
+            font-size: 11px !important;
+        }
+
+        h4 {
+            font-size: 16px !important;
+        }
+
+        h5 {
+            font-size: 14px !important;
+        }
+
+        td, th {
+            padding: 4px !important;
+            font-size: 11px !important;
+        }
+
+        .bottom-section {
+            padding: 10px !important;
+        }
+
+        .px-5 {
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+        }
+
+        .mx-5 {
+            margin-left: 10px !important;
+            margin-right: 10px !important;
+        }
+
+        [class*="dots"] {
+            min-width: 80px !important;
+        }
+        /* Ensure no page breaks within sections */
+        .bottom-section, .table-responsive {
+            page-break-inside: avoid;
+        }
+    }
+
+    /* Adjust the table row height for better fit */
+    td {
+        height: 25px; /* Reduced from 30px */
+    }
+
+    .form-container {
+        /* border: 2px solid #000; */
+        background-color: #fff;
+        max-width: 1000px;
+        margin: 0 auto;
+        font-size: 14px;
+        font-family: "Times New Roman", Times, serif;
+    }
+
+    h4 {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    h5 {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        font-size: 13px;
+        padding: 8px;
+        border: 1px solid #000;
+        background-color: #f8f9fa;
+    }
+
+    td {
+        height: 30px;
+        padding: 6px;
+        border: 1px solid #000;
+        font-size: 13px;
+    }
+
+    .table-bordered {
+        border: 1.5px solid #000;
+    }
+
+        .table-bordered > thead > tr > th,
+        .table-bordered > tbody > tr > td {
+            border: 1px solid #000;
+        }
+
+    /* Dotted line for form fields */
+    [class*="dots"] {
+        border-bottom: 1px dotted #000;
+        display: inline-block;
+        min-width: 100px;
+    }
+
+    @@media print {
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-size: 12px;
+        }
+    }
+    /* Add these new styles to your existing CSS */
+    .bottom-section {
+        border: 1px solid #000;
+        padding: 5px;
+        margin-top: 0; /* Changed from 20px to 0 */
+    }
+
+        .bottom-section p {
+            margin: 0px;
+            padding: 0px;
+        }
+
+    table td {
+        height: 25px;
+    }
+
+    .signature-section {
+        border-top: 1px solid #000;
+        margin-top: 20px;
+        padding-top: 15px;
+    }
+
+    .officers-section {
+        border-top: 1px solid #000;
+        /* margin-top: 20px; */
+        /* padding-top: 25px; Increased padding top */
+    }
+
+    .final-section {
+        border-top: 1px solid #000;
+        margin-top: 20px;
+        padding-top: 15px;
+        text-align: right; /* Align content to right */
+    }
+
+        .final-section p {
+            margin-bottom: 5px;
+        }
+
+    .approved-text {
+        position: relative;
+        top: -10px;
+        font-style: italic;
+        font-size: 12px;
+    }
+
+    .form-header-text {
+        width: 100%;
+        padding: 0 15px;
+    }
+
+        .form-header-text p {
+            margin-bottom: 8px;
+        }
+    .modal-dialog {
+        margin-top: 50vh; /* You can adjust this value */
+    }
+</style>
+<div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
@@ -26,34 +203,34 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if(data != null && data.Count > 0)
-            {
-                foreach(var item in data)
-                {
-                    <tr>
-                        <td>@i</td>
-                        <td>@item.EmpName</td>
-                        <td>@item.type</td>
-                        <td>@item.vrNo_date</td>
-                        <td>@item.particulars</td>
-                        <td>@item.items</td>
-                        <td>@item.purpose</td>
-                        <td>@item.amount</td>
-                        <td>
-                            <a href="#">
-                                <i class="fa-solid fa-eye text-success"></i>
-                            </a>
-                            <a href="#">
-                                <i class="fa-solid fa-check text-success"></i>
-                            </a>
-                            <a href="#">
-                                <i class="fa-solid fa-xmark text-danger"></i>
-                            </a>
+                            @if (data != null && data.Count > 0)
+                            {
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.EmpName</td>
+                                        <td>@item.type</td>
+                                        <td>@item.vrNo_date</td>
+                                        <td>@item.particulars</td>
+                                        <td>@item.items</td>
+                                        <td>@item.purpose</td>
+                                        <td>@item.amount</td>
+                                        <td>
+                                            <a href="#">
+                                                <i class="fa-solid fa-eye text-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i>
+                                            </a>
+                                            <a href="#">
+                                                <i class="fa-solid fa-check text-success"></i>
+                                            </a>
+                                            <a href="#">
+                                                <i class="fa-solid fa-xmark text-danger"></i>
+                                            </a>
 
-                        </td>
-                    </tr>
-                }
-            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -61,3 +238,120 @@
         </div>
     </div>
 </div>
+
+
+<!--Modal-->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Reimbursement Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="form-container py-3">
+                        <div class="text-center mb-3">
+                            <h4>REMOTE SENSING APPLICATIONS CENTRE</h4>
+                            <h5>UTTAR PRADESH</h5>
+                            <div class="px-4 mt-1 d-flex justify-content-between">
+                                <span><p>logo</p><b>S.F.A.O/Director</b></span>
+                                <span>Name of Project/Centre</span>
+                            </div>
+                        </div>
+
+                        <div class="form-header-text w-100 text-center">
+                            <p>
+                                The following expenditure of Rs. <span class="dots"></span> have been incurred against Contingent/Advance of
+                                Rs. <span class="dots"></span> taken as on <span class="dots"></span> kindly accord the sanction for adjustment/payment in accordance
+                                with the enclosed contingent advance approval.
+                            </p>
+                        </div>
+
+
+                        <div class="table-responsive mb-0 px-5">
+                            <table class="table table-bordered mb-0">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>S.N.</th>
+                                        <th>Vr. No. & Date</th>
+                                        <th>Particulars</th>
+                                        <th>Items</th>
+                                        <th>Purpose</th>
+                                        <th>Amount Rs. P.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (data != null && data.Count > 0)
+                                    {
+                                        int j = 1;
+                                        foreach (var item in data)
+                                        {
+                                            <tr>
+                                                <td>@j</td>
+                                                <td>@item.vrNo_date</td>
+                                                <td>@item.particulars</td>
+                                                <td>@item.items</td>
+                                                <td>@item.purpose</td>
+                                                <td>@item.amount</td>
+                                            </tr>
+                                            j++;
+                                        }
+                                    }
+
+                                    @for (int k = 0; k <= 17; k++)
+                                    {
+                                        <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                                    }
+                                    <tr>
+                                        <td colspan="5" class="text-end"><b>Total</b></td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bottom-section mt-0 mx-5">
+                            <div class="row mt-0">
+                                <div class="col-md-6">
+                                    <p>Balance Rs. <span class="dots"></span> (Rupees <span class="dots"></span>Only)</p>
+                                    <p>paid vide cheque No. <span class="dots"></span> Date<span class="dots"></span></p>
+
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <p>Signature <span class="dots"></span></p>
+                                    <p>Name : <span class="dots"></span></p>
+                                    <p>Designation : <span class="dots"></span></p>
+                                </div>
+                            </div>
+
+                            <div class="officers-section">
+                                <div class="row ps-3">
+                                    <p class="pt-2">Checked for Rs. <span class="dots"></span> Rs.<span class="dots"></span></p>
+                                    <div class="col-md-4 mt-3">
+                                        <p>Asstt. Actt./Acctt./O.S. (Acctts)</p>
+                                    </div>
+                                    <div class="col-md-4 text-center mt-3">
+                                        <p>A.O./S.F.A.O.</p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <span class="approved-text">Approved</span>
+                                        <p>Sanctioning Authority</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="final-section pt-1 mt-0">
+                                <p style="margin-right: 15px;">Passed for Rs. <span class="dots"></span> (RS. <span class="dots"></span>)</p>
+                                <p style="margin-right: 15px;">Drawing & Disbursing Officer</p>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

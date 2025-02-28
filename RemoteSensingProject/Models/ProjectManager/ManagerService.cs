@@ -1399,6 +1399,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd = new SqlCommand("sp_Tourproposal", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@userId", data.userId);
+                cmd.Parameters.AddWithValue("@projectId", data.projectId);
                 cmd.Parameters.AddWithValue("@dateOfDept", data.dateOfDept);
                 cmd.Parameters.AddWithValue("@place", data.place);
                 cmd.Parameters.AddWithValue("@periodFrom", data.periodFrom);
@@ -1441,6 +1442,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                         getlist.Add(new tourProposal
                         {
                             id = (int)res["id"],
+                            projectName = (string)res["title"],
                             dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
                             place = (string)res["place"],
                             periodFrom = Convert.ToDateTime(res["periodFrom"]),
