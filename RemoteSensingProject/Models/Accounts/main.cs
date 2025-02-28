@@ -62,5 +62,53 @@ namespace RemoteSensingProject.Models.Accounts
             public string ApproveAmount { get; set; }
 
         }
+
+
+        public class Reimbursement
+        {
+            public int id { get; set; }
+            public int userId { get; set; }
+            public string EmpName { get; set; }
+            public string type { get; set; }
+            public string vrNo_date { get; set; }
+            public string particulars { get; set; }
+            public string items { get; set; }
+            public string purpose { get; set; }
+            public decimal amount { get; set; }
+        }
+        public class tourProposal
+        {
+            public string projectName { get; set; }
+            public int projectId { get; set; }
+            public string projectManager { get; set; }
+            public int userId { get; set; }
+            public int id { get; set; }
+            public DateTime dateOfDept { get; set; }
+            public string place { get; set; }
+            public DateTime periodFrom { get; set; }
+            public DateTime periodTo { get; set; }
+            public DateTime returnDate { get; set; }
+            public string purpose { get; set; }
+        }
+        public class HiringVehicle
+        {
+            public int projectId { get; set; }
+            public int id { get; set; }
+            public int userId { get; set; }
+            public string projectName { get; set; }
+            public DateTime dateFrom { get; set; }
+            public DateTime dateTo { get; set; }
+            public string purposeOfVisit { get; set; }
+            public string totalDaysNight { get; set; }
+            public string totalPlainHills { get; set; }
+            public string taxi { get; set; }
+            public string BookAgainstCentre { get; set; }
+            public string availbilityOfFund { get; set; }
+            public string taxiReportTo { get; set; }
+            public TimeSpan taxiReportAt { get; set; }
+            public string taxiReportPlace { get; set; }
+            public DateTime taxiReportOn { get; set; }
+            public string proposedPlace { get; set; }
+        }
     }
 }

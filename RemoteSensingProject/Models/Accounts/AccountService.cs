@@ -132,5 +132,49 @@ namespace RemoteSensingProject.Models.Accounts
                 cmd.Dispose();
             }
         }
+
+
+        public List<Reimbursement> GetReimbursements()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectApprovedReinbursement");
+                con.Open();
+                List<Reimbursement> getlist = new List<Reimbursement>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        getlist.Add(new Reimbursement
+                        {
+                            id = (int)res["id"],
+                            type = res["type"].ToString(),
+                            EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
+                            vrNo_date = (string)res["vrNo_date"],
+                            particulars = (string)res["particulars"],
+                            items = (string)res["items"],
+                            amount = Convert.ToDecimal(res["amount"]),
+                            purpose = (string)res["purpose"]
+                        });
+                    }
+                }
+                return getlist;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
     }
 }
