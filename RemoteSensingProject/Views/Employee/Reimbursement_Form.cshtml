@@ -37,8 +37,12 @@
                             </select>
                         </div>
                         <div class="col-lg-4 mb-3">
-                            <label for="vr_no" class="form-label">Vr. No. & Date</label>
-                            <input type="text" name="vrNo_date" class="form-control form-control-sm" id="vr_no" placeholder="Enter Vr. No.">
+                            <label for="vr_no" class="form-label">Vr. No.</label>
+                            <input type="text" name="vrNo" class="form-control form-control-sm" id="vr_no" placeholder="Enter Voucher Number">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="vrdate" class="form-label">Date</label>
+                            <input type="date" name="date" class="form-control form-control-sm" id="vrdate" placeholder="Enter Date">
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="particular" class="form-label">Particulars</label>
@@ -73,7 +77,9 @@
             <thead>
                 <tr>
                     <th>S.N.</th>
-                    <th>Vr.No. & Date</th>
+                    <th>Type</th>
+                    <th>Vr.No</th>
+                    <th>Date</th>
                     <th>Particulars</th>
                     <th>Items</th>
                     <th>Purpose</th>
@@ -88,24 +94,30 @@
                     {
                         <tr>
                             <td>@items.id</td>
-                            <td>@items.vrNo_date</td>
+                            <td>@items.type</td>
+                            <td>@items.vrNo</td>
+                            <td>@Convert.ToDateTime(items.date).ToString("dd-MMM-yyyy")</td>
                             <td>@items.particulars</td>
                             <td>@items.items</td>
                             <td>@items.purpose</td>
                             <td>₹ @Convert.ToDecimal(items.amount).ToString("N2")</td>
                             @{ 
                                 string status = "";
+                                string badge = "";
                                 if (items.newRequest)
                                 {
                                     status = "Pending";
+                                    badge = "warning";
                                 }
                                 else if (items.adminappr)
                                 {
                                     status = "Approved";
+                                    badge = "success";
                                 }
                                 else
                                 {
                                     status = "Rejected";
+                                    badge = "danger";
                                 }
                             }
                             <td>@status</td>
