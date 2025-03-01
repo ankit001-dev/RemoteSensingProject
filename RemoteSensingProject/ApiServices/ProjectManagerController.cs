@@ -807,8 +807,8 @@ namespace RemoteSensingProject.ApiServices
 
 
         #region Reimbursement
-        [Route("api/reimbursementSubmit")]
         [HttpPost]
+        [Route("api/submitReinbursement")]
         public IHttpActionResult reimbursementSubmit()
         {
             try
@@ -844,8 +844,8 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        [Route("api/getReimbursement")]
         [HttpGet]
+        [Route("api/getReimbursementByUserId")]
         public IHttpActionResult getReimbursement(int userId)
         {
             try
@@ -870,8 +870,8 @@ namespace RemoteSensingProject.ApiServices
         #endregion
 
         #region tourPurposal
-        [Route("api/toursubmit")]
         [HttpPost]
+        [Route("api/submitTourProposal")]
         public IHttpActionResult toursubmit()
         {
             try
@@ -906,8 +906,8 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-        [Route("api/gettour")]
         [HttpGet]
+        [Route("api/GetTourForUserId")]
         public IHttpActionResult gettour(int userId)
         {
             try
