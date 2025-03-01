@@ -202,6 +202,7 @@
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Reimbursement Form </h1>
+                <p class="text-danger ps-4"><b>Note :</b> Contingency limit is 50,000, PI Adjustment limit is 5,000*.</p>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -371,6 +372,29 @@
                                 <p style="margin-right: 15px;">Drawing & Disbursing Officer</p>
                             </div>
                         </div>
+                            @{ 
+                                string status = "";
+                                if (items.newRequest)
+                                {
+                                    status = "Pending";
+                                }
+                                else if (items.adminappr)
+                                {
+                                    status = "Approved";
+                                }
+                                else
+                                {
+                                    status = "Rejected";
+                                }
+                            }
+                            <td>@status</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 
                     </div>
@@ -381,30 +405,6 @@
 </div>
 <script>
     $(document).ready(function () {
-        let ty = ""; 
-
-        $("#type").on("change", function () {
-            ty = $(this).val();
-            $("#amount").trigger("keyup")
-        });
-
-        $("#amount").on("keyup", function () {
-            let amountValue = parseFloat($(this).val());
-
-            if (ty === "contigency") {
-                $("#btnreim").prop('disabled', false);
-                $("#amountMsg").text("")
-            } else if (ty === "adjustment") {
-                if (amountValue > 20000) {
-                    $("#amountMsg").text("Amount is not greater than 20k")
-                    $("#btnreim").prop('disabled', true);
-                }
-                else if (amountValue <= 20000) {
-                    $("#btnreim").prop('disabled', false);
-                    $("#amountMsg").text("")
-                }
-            }
-        });
 
         $("#createProjectForm").submit(function (e) {
             e.preventDefault();

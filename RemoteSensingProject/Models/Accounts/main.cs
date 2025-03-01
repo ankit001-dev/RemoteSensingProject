@@ -66,11 +66,12 @@ namespace RemoteSensingProject.Models.Accounts
 
         public class Reimbursement
         {
+            public DateTime date { get; set; }
             public int id { get; set; }
             public int userId { get; set; }
             public string EmpName { get; set; }
             public string type { get; set; }
-            public string vrNo_date { get; set; }
+            public string vrNo { get; set; }
             public string particulars { get; set; }
             public string items { get; set; }
             public string purpose { get; set; }
@@ -89,6 +90,7 @@ namespace RemoteSensingProject.Models.Accounts
             public DateTime periodTo { get; set; }
             public DateTime returnDate { get; set; }
             public string purpose { get; set; }
+            public bool newRequest { get; set; }
         }
         public class HiringVehicle
         {

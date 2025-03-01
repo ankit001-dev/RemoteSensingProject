@@ -86,5 +86,28 @@ namespace RemoteSensingProject.ApiServices
             return Ok(new { status = true, data = new {CompleteRequist= completeCount ,PendingRequest= pendingCount ,TotalRequest= totalcount }, message = "data retrieved" });
         }
 
+        [Route("api/getTourById")]
+        [HttpGet]
+        public IHttpActionResult TourById(int id)
+        {
+            try
+            {
+                var data = _accountSerivce.getTourOne(id);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch
+            {
+                return Ok(new
+                {
+                    status=false,
+                    StatusCode = 500,
+                    message="Data not found"
+                });
+            }
+        }
     }
 }

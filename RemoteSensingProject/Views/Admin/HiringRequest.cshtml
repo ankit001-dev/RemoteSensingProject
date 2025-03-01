@@ -1,0 +1,242 @@
+﻿
+@{
+    ViewBag.Title = "HiringRequest";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+
+<style>
+        @@page {
+            size: A4;
+            margin: 15mm;
+        }
+        body {
+            font-size: 12px;
+            line-height: 1.3;
+        }
+        .logo {
+            width: 60px;
+            margin-right: 15px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .header-text {
+            text-align: center;
+        }
+        .header-text h4 {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .header-text h5 {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .form-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: baseline;
+        }
+        .form-label {
+            min-width: 250px;
+            padding-right: 10px;
+        }
+        .dotted-line {
+            flex: 1;
+            border-bottom: 1px dotted #000;
+            height: 1.2em;
+            margin: 0 5px;
+        }
+        .note-section {
+            margin-top: 20px;
+        }
+        .signature-section {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-block {
+            width: 30%;
+        }
+        .signature-block h6 {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .signature-line {
+            margin: 5px 0;
+        }
+        .approved-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 500px;  /* Control the header width */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .logo {
+        width: 50px;       /* Slightly smaller logo */
+        margin-right: 15px;
+        display: block;
+    }
+
+    .header-text {
+        text-align: center;
+        flex: 1;
+    }
+
+    .form-container {
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;  /* Center all content */
+    }
+
+    .form-content {
+        width: 100%;
+        max-width: 650px;  /* Control the form content width */
+    }
+</style>
+
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th>S.N.</th>
+                                <th>Project Name</th>
+                                <th>Date From</th>
+                                <th>Date To</th>
+                                <th>Proposed Place</th>
+                                <th>Purpose of Visit</th>
+                                <th>Total Days & Night</th>
+                                <th>Total Area Travel</th>
+                                <th>Taxi</th>
+                                <th>Book Against Centre</th>
+                                <th>Avaiability of fund</th>
+                                <th>Taxi Report To</th>
+                                <th>Taxi Report At</th>
+                                <th>Taxi Report Place</th>
+                                <th>Taxi Report On</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Modal-->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Reimbursement Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-container">
+                    <div class="header">
+                        <img src="logo.png" alt="Logo" class="logo">
+                        <div class="header-text">
+                            <h4>REMOTE SENSING APPLICATIONS CENTRE</h4>
+                            <h4>UTTAR PRADESH</h4>
+                            <h5>INDENT FOR HIRING VEHICLE FOR FIELD WORK</h5>
+                        </div>
+                    </div>
+
+                    <div class="form-content">
+                        <div class="form-row">
+                            <div class="form-label">1. Name of the Project</div>
+                            <span class="dotted-line"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label">2. Date of Field Programme : From</div>
+                            <span class="dotted-line"></span>
+                            <div class="ms-2">to</div>
+                            <span class="dotted-line"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label">3. Proposed Place/Places of Field Programme</div>
+                            <span class="dotted-line"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label">4. Purpose of Visit</div>
+                            <span class="dotted-line"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label">5. Total Number of Days & Night Halt</div>
+                            <span class="dotted-line"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label">6. Total Area Travel in Plain & Hills</div>
+                            <span class="dotted-line"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label">7. Taxi (Ambassdor/Maruti/Gypsy/Jeep/Other)</div>
+                            <span class="dotted-line"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label">8. Book against Centre/Project Account</div>
+                            <span class="dotted-line"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label">9. Availability of fund in the Project in this Head</div>
+                            <span class="dotted-line"></span>
+                        </div>
+
+                        <div class="note-section">
+                            <div>Note : The Taxi may report to Shri <span class="dotted-line"></span> at <span class="dotted-line"></span></div>
+                            <div class="ms-4">AM/PM at <span class="dotted-line"></span> on <span class="dotted-line"></span></div>
+                            <div class="ms-4">Date <span class="dotted-line"></span></div>
+                        </div>
+
+                        <div class="signature-section">
+                            <div class="signature-block">
+                                <h6>Indented By</h6>
+                                <div class="signature-line">Signature :</div>
+                                <div class="signature-line">Name :</div>
+                                <div class="signature-line">Designation :</div>
+                            </div>
+                            <div class="signature-block">
+                                <h6>Forwarded By</h6>
+                                <div class="signature-line">Signature :</div>
+                                <div class="signature-line">Name :</div>
+                                <div class="signature-line">Head of Division/Project Manager</div>
+                            </div>
+                        </div>
+
+                        <div class="approved-section">
+                            <h6>Approved By</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
