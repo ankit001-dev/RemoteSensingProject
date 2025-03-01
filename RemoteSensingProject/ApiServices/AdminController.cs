@@ -1456,7 +1456,7 @@ namespace RemoteSensingProject.ApiServices
         }
         #endregion
 
-
+        #region divisionlist
         [HttpGet]
         [Route("api/DivisonList")]
         public IHttpActionResult DivisonList()
@@ -1493,7 +1493,9 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        #endregion
 
+        #region All ProblemList
         [HttpGet]
         [Route("api/getAllProblemList")]
         public IHttpActionResult getAllProblemList()
@@ -1503,7 +1505,9 @@ namespace RemoteSensingProject.ApiServices
 
             return Ok(new { status = true, message = "data retrieved", data = res });
         }
+        #endregion
 
+        #region DesginationList
         [HttpGet]
         [Route("api/DesginationList")]
         public IHttpActionResult DesginationList()
@@ -1540,6 +1544,14 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        #endregion
+
+        #region Approve Reimursement
+        //[HttpPost]
+        //[Route("api/approveReimbursement")]
+        //public IHttpActionResult approveReimbursement
+        #endregion
+
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);
