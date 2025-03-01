@@ -511,7 +511,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Reimbursement_Form()
         {
             int id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.GetSpecificUserReimbursements(id);
+            var res = _managerServices.GetReinbursementDatabyType(id);
             ViewData["reimlist"] = res;
             return View();
         }
@@ -537,6 +537,32 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
+
+        public ActionResult ViewReinbursementListByType(string type)
+        {
+            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var data = _managerServices.GetSpecificUserReimbursements(userId, type);
+            return Json(new
+            {
+                status = data.Any(),
+                data = data,
+
+            }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SubmitReinbursementFormType(string type)
+        {
+            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+
+            bool res = _managerServices.submitReinbursementForm(type, userId);
+
+            return Json(new
+            {
+                status = res,
+                message = res ? "Submitted successfully !" : "Some issue occured !"
+            }, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult Hiring_Vehicle()
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);

@@ -3,7 +3,7 @@
     ViewBag.Title = "ReimbursementRequest";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
     var data = ViewData["ReimBurseData"] as List<RemoteSensingProject.Models.ProjectManager.Reimbursement>;
-    int i = 0;
+    int i = 1;
 }
 <style>
     @@media print {
@@ -194,10 +194,6 @@
                                 <th class="text-center">Sr</th>
                                 <th>Project Manager</th>
                                 <th>Type</th>
-                                <th>Vr.No & Date</th>
-                                <th>Particulars</th>
-                                <th>Items</th>
-                                <th>Purpose</th>
                                 <th>Amount</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -211,24 +207,21 @@
                                         <td>@i</td>
                                         <td>@item.EmpName</td>
                                         <td>@item.type</td>
-                                        <td>@item.vrNo_date</td>
-                                        <td>@item.particulars</td>
-                                        <td>@item.items</td>
-                                        <td>@item.purpose</td>
-                                        <td>@item.amount</td>
-                                        <td data-id="@item.id">
-                                            <a href="#">
-                                                <i class="fa-solid fa-eye text-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="fa-solid fa-check text-success act" data-appr="true"></i>
-                                            </a>
-                                            <a href="#">
-                                                <i class="fa-solid fa-xmark text-danger act" data-appr="false"></i>
+                                        <td>@Convert.ToDecimal(item.amount).ToString("N2")</td>
+                                        <td>
+                                            <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type">
+                                                <i class="fa-solid fa-eye text-success"></i>
+                                            </a> &nbsp; | &nbsp;
+                                            <a href="#" class="act" data-appr="true" data-userId="@item.userId" data-type="@item.type">
+                                                <i class="fa-solid fa-check text-success"></i>
+                                            </a> &nbsp; | &nbsp;
+                                            <a href="#" class="act" data-appr="true" data-userId="@item.userId" data-type="@item.type">
+                                                <i class="fa-solid fa-xmark text-danger"></i>
                                             </a>
 
                                         </td>
                                     </tr>
+                                    i++;
                                 }
                             }
                         </tbody>
@@ -241,11 +234,11 @@
 
 
 <!--Modal-->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="ViewReinburseMentReciept" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="ViewReinburseMentRecieptLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Reimbursement Form </h1>
+                <h1 class="modal-title fs-5" id="ViewReinburseMentRecieptLabel">Reimbursement Form </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -281,32 +274,8 @@
                                         <th>Amount Rs. P.</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @if (data != null && data.Count > 0)
-                                    {
-                                        int j = 1;
-                                        foreach (var item in data)
-                                        {
-                                            <tr>
-                                                <td>@j</td>
-                                                <td>@item.vrNo_date</td>
-                                                <td>@item.particulars</td>
-                                                <td>@item.items</td>
-                                                <td>@item.purpose</td>
-                                                <td>@item.amount</td>
-                                            </tr>
-                                            j++;
-                                        }
-                                    }
-
-                                    @for (int k = 0; k <= 17; k++)
-                                    {
-                                        <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                                    }
-                                    <tr>
-                                        <td colspan="5" class="text-end"><b>Total</b></td>
-                                        <td></td>
-                                    </tr>
+                                <tbody id="viewReinburseRecieptListBody">
+                                   
                                 </tbody>
                             </table>
                         </div>
@@ -359,18 +328,20 @@
 <script>
     $(document).ready(function () {
         $(".act").on("click", function () {
+            debugger
             Swal.fire({
                 title: 'Please wait !',
                 text: 'Your request under process',
                 didOpen: () => { Swal.showLoading(); }
             })
             debugger
-            let status = $(".act").data("appr");
-            let id = $(this).parent().parent().attr("data-id")
+            let status = $(this).data("appr");
+            let userId = $(this).data("userid");
+            let type = $(this).data("type");
             $.ajax({
                 url: '/admin/ReimbursementReque',
                 type: 'post',
-                data: { status: status, id: id },
+                data: { "status": status, "userId": userId, "type" : type },
                 success: function (res) {
                     if (res.status) {
                         Swal.fire({
@@ -397,5 +368,79 @@
                 }
             })
         })
+
+        $(".viewSanctionreciept").click(function () {
+            Swal.fire({
+                title: "Please wait !",
+                text: "Processing your request ....",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let type = $(this).attr("data-type");
+            let userId = $(this).attr("data-userId");
+            $.ajax({
+                url: "/api/ViewReinbursementAdminView",
+                type: "Get",
+                data: { "userId": userId, "type": type },
+                success: function (result) {
+                    if (result.status) {
+                        $("#viewReinburseRecieptListBody").empty();
+                        Swal.close();
+                        let totalAmout = 0;
+                        let element = "";
+                        $.each(result.data, function (i, d) {
+                            element += `
+                     <tr>
+                     <td>${i + 1}</td>
+                     <td>${d.vrNo} & ${convertToDate(d.date)}</td>
+                     <td>${d.particulars}</td>
+                     <td>${d.items}</td>
+                     <td>${d.purpose}</td>
+                     <td>${d.amount}</td>
+                     </tr>
+                     `
+                            totalAmout += d.amount;
+                        });
+
+                        element += ` <tr>
+                      <td colspan="5" class="text-end"><b>Total</b></td>
+                      <td>${totalAmout}</td>
+                  </tr>`;
+
+                        $("#viewReinburseRecieptListBody").append(element);
+                        $("#ViewReinburseMentReciept").modal("show");
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Sorry !",
+                            text: "Some issue occured !",
+                            icon: "warning"
+                        })
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Server issue !",
+                        text: "Server is busy ! Please try after sometime.",
+                        icon: "error",
+                        didClose: () => {
+                            location.reload(true);
+                        }
+                    })
+                }
+            })
+        })
+
+
+        function convertToDate(timestamp) {
+            const parsedTimestamp = parseInt(timestamp.match(/\d+/)[0], 10);
+            const date = new Date(parsedTimestamp);
+            return date.toLocaleDateString();
+        }
+
     });
 </script>

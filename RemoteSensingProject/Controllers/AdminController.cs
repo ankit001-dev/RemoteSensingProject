@@ -531,9 +531,9 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult ReimbursementReque(bool status,int id)
+        public ActionResult ReimbursementReque(bool status,int userId, string type)
         {
-            bool res = _adminServices.ReimbursementApproval(id, status);
+            bool res = _adminServices.ReimbursementApproval(status, userId, type);
             if (res)
             {
                 return Json(new

@@ -1304,6 +1304,32 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
+
+        public bool submitReinbursementForm(string type, int userId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "submitReinbursementForm");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                cmd.Parameters.AddWithValue("@type", type);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
         public List<Reimbursement> GetReimbursements()
         {
             try
@@ -1320,15 +1346,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         getlist.Add(new Reimbursement
                         {
-                            id = (int)res["id"],
                             EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
                             type = (string)res["type"],
-                            vrNo = (string)res["vrNo"],
-                            date = Convert.ToDateTime(res["date"]),
-                            particulars = (string)res["particulars"],
-                            items = (string)res["items"],
                             amount = Convert.ToDecimal(res["amount"]),
-                            purpose = (string)res["purpose"]
+                            userId = Convert.ToInt32(res["userId"])
                         });
                     }
                 }
@@ -1348,14 +1369,15 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Reimbursement> GetSpecificUserReimbursements(int id)
+        public List<Reimbursement> GetSpecificUserReimbursements(int id, string type)
         {
             try
             {
                 cmd = new SqlCommand("sp_Reimbursement", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getSpecificUserData");
+                cmd.Parameters.AddWithValue("@action", "GetSpecificTypeData");
                 cmd.Parameters.AddWithValue("@userId", id);
+                cmd.Parameters.AddWithValue("@type", type);
                 con.Open();
                 List<Reimbursement> getlist = new List<Reimbursement>();
                 var res = cmd.ExecuteReader();
@@ -1395,7 +1417,41 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-
+        public List<Reimbursement> GetReinbursementDatabyType(int userId)
+        {
+            try
+            {
+                List<Reimbursement> list = new List<Reimbursement>();
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getSpecificUserData");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new Reimbursement
+                        {
+                            type = rd["type"].ToString(),
+                            amount = Convert.ToDecimal(rd["amount"]),
+                            subStatus = Convert.ToBoolean(rd["SubmitStatus"])
+                        });
+                    }
+                }
+                return list;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
         #endregion
 
         #region tourproposal

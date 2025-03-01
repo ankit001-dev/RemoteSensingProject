@@ -266,5 +266,24 @@ namespace RemoteSensingProject.Models.Admin
             public DateTime returnDate { get; set; }
             public string purpose { get; set; }
         }
+
+
+        public class AdminReimbursement
+        {
+            public bool status { get; set; }
+            public bool adminappr { get; set; }
+            public bool newRequest { get; set; }
+            public int id { get; set; }
+            public int userId { get; set; }
+            public string EmpName { get; set; }
+            public string type { get; set; }
+            public string vrNo { get; set; }
+            public DateTime date { get; set; }
+            public string particulars { get; set; }
+            public string items { get; set; }
+            public string purpose { get; set; }
+            public decimal amount { get; set; }
+            public bool subStatus { get; set; }
+        }
     }
 }

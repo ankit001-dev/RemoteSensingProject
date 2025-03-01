@@ -1540,6 +1540,32 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
+        [HttpGet]
+        [Route("api/ViewReinbursementAdminView")]
+        public IHttpActionResult viewReinbursement(int userId, string type)
+        {
+            try
+            {
+                var data = _adminServices.GetSpecificUserReimbursements(userId, type);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);

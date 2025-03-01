@@ -850,7 +850,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.GetSpecificUserReimbursements(userId);
+                var data = _managerService.GetReinbursementDatabyType(userId);
                 return Ok(new
                 {
                     status=data.Any(),
@@ -858,6 +858,31 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
             catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpGet]
+        [Route("api/ViewReinbursementBytype")]
+        public IHttpActionResult viewReinbursement(int userId, string type)
+        {
+            try
+            {
+                var data = _managerService.GetSpecificUserReimbursements(userId, type);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }catch(Exception ex)
             {
                 return BadRequest(new
                 {

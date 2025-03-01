@@ -1778,7 +1778,7 @@ namespace RemoteSensingProject.Models.Admin
         #endregion
 
         #region /*Reimbursement request approval*/
-        public bool ReimbursementApproval(int id, bool status)
+        public bool ReimbursementApproval(bool status, int userId, string type)
         {
             try
             {
@@ -1786,7 +1786,8 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "approval");
                 cmd.Parameters.AddWithValue("@admin_appr", status);
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@userId", userId);
+                cmd.Parameters.AddWithValue("@type", type);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -1803,6 +1804,55 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+
+        public List<AdminReimbursement> GetSpecificUserReimbursements(int id, string type)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "GetAllSubmittedData");
+                cmd.Parameters.AddWithValue("@userId", id);
+                cmd.Parameters.AddWithValue("@type", type);
+                con.Open();
+                List<AdminReimbursement> getlist = new List<AdminReimbursement>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        getlist.Add(new AdminReimbursement
+                        {
+                            id = (int)res["id"],
+                            type = (string)res["type"],
+                            vrNo = (string)res["vrNo"],
+                            date = Convert.ToDateTime(res["date"]),
+                            particulars = (string)res["particulars"],
+                            items = (string)res["items"],
+                            amount = Convert.ToDecimal(res["amount"]),
+                            purpose = (string)res["purpose"],
+                            status = Convert.ToBoolean(res["status"]),
+                            newRequest = (bool)res["newRequest"],
+                            adminappr = (bool)res["admin_appr"]
+                        });
+                    }
+                }
+                return getlist;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
         #endregion
     }
 }
