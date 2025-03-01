@@ -580,6 +580,11 @@ namespace RemoteSensingProject.Controllers
             }
         }
 
+        public ActionResult HiringRequest()
+        {
+            return View();
+        }
+
         //public ActionResult AddBudget()
         //{
         //    ViewData["budgetList"] = _adminServices.getBudgetList();

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Web;
 using static RemoteSensingProject.Models.Accounts.main;
+using System.Net;
 
 namespace RemoteSensingProject.Models.Accounts
 {
@@ -153,7 +154,8 @@ namespace RemoteSensingProject.Models.Accounts
                             id = (int)res["id"],
                             type = res["type"].ToString(),
                             EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
-                            vrNo_date = (string)res["vrNo_date"],
+                            vrNo = (string)res["vrNo"],
+                            date = Convert.ToDateTime(res["date"]),
                             particulars = (string)res["particulars"],
                             items = (string)res["items"],
                             amount = Convert.ToDecimal(res["amount"]),
@@ -176,5 +178,96 @@ namespace RemoteSensingProject.Models.Accounts
                 cmd.Dispose();
             }
         }
+
+        public List<tourProposal> getTourList()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectAlltourforAcc");
+                con.Open();
+                List<tourProposal> getlist = new List<tourProposal>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        getlist.Add(new tourProposal
+                        {
+                            id = (int)res["id"],
+                            projectManager = (string)res["name"],
+                            projectName = (string)res["title"],
+                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+                            place = (string)res["place"],
+                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
+                            periodTo = Convert.ToDateTime(res["periodTo"]),
+                            returnDate = Convert.ToDateTime(res["returnDate"]),
+                            purpose = (string)res["purpose"],
+                            newRequest = Convert.ToBoolean(res["newRequest"])
+                        });
+                    }
+                }
+                return getlist;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        public List<tourProposal> getTourOne(int? id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selecttourOne");
+                cmd.Parameters.AddWithValue("id", id);
+                con.Open();
+                List<tourProposal> getlist = new List<tourProposal>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        getlist.Add(new tourProposal
+                        {
+                            id = (int)res["id"],
+                            projectManager = (string)res["name"],
+                            projectName = (string)res["title"],
+                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+                            place = (string)res["place"],
+                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
+                            periodTo = Convert.ToDateTime(res["periodTo"]),
+                            returnDate = Convert.ToDateTime(res["returnDate"]),
+                            purpose = (string)res["purpose"],
+                            newRequest = Convert.ToBoolean(res["newRequest"])
+                        });
+                    }
+                }
+                return getlist;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
     }
 }

@@ -71,10 +71,9 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult TourProposalRequest()
         {
-            ViewData["ReimBurseData"] = _accountSerivce.GetReimbursements();
+            ViewData["tourproposal"] = _accountSerivce.getTourList();
             return View();
         }
-
         public ActionResult ReinbursementRequest()
         {
             ViewData["ReimBurseData"] = _accountSerivce.GetReimbursements();
@@ -85,6 +84,5 @@ namespace RemoteSensingProject.Controllers
             ViewBag.ProjectList = _accountSerivce.Project_List();
             return View();
         }    
-       
     }
 }

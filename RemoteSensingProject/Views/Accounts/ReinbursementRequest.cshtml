@@ -196,10 +196,6 @@
                                 <th class="text-center">Sr</th>
                                 <th>Project Manager</th>
                                 <th>Type</th>
-                                <th>Vr.No & Date</th>
-                                <th>Particulars</th>
-                                <th>Items</th>
-                                <th>Purpose</th>
                                 <th>Amount</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -213,10 +209,6 @@
                                         <td>@i</td>
                                         <td>@item.EmpName</td>
                                         <td>@item.type</td>
-                                        <td>@item.vrNo_date</td>
-                                        <td>@item.particulars</td>
-                                        <td>@item.items</td>
-                                        <td>@item.purpose</td>
                                         <td>₹ @Convert.ToDecimal(item.amount).ToString("N2")</td>
                                         <td>
                                             <a href="#">
@@ -298,7 +290,7 @@
                                         {
                                             <tr>
                                                 <td>@j</td>
-                                                <td>@item.vrNo_date</td>
+                                                <td>@item.vrNo & @item.date</td>
                                                 <td>@item.particulars</td>
                                                 <td>@item.items</td>
                                                 <td>@item.purpose</td>
