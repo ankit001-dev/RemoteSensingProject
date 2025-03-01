@@ -1279,7 +1279,8 @@ namespace RemoteSensingProject.Models.ProjectManager
             {
                 cmd = new SqlCommand("sp_Reimbursement", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@vrNo_date", data.vrNo_date);
+                cmd.Parameters.AddWithValue("@vrNo", data.vrNo);
+                cmd.Parameters.AddWithValue("@date", data.date);
                 cmd.Parameters.AddWithValue("@particulars", data.particulars);
                 cmd.Parameters.AddWithValue("@items", data.items);
                 cmd.Parameters.AddWithValue("@userId", data.userId);
@@ -1322,7 +1323,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                             id = (int)res["id"],
                             EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
                             type = (string)res["type"],
-                            vrNo_date = (string)res["vrNo_date"],
+                            vrNo = (string)res["vrNo"],
+                            date = Convert.ToDateTime(res["date"]),
                             particulars = (string)res["particulars"],
                             items = (string)res["items"],
                             amount = Convert.ToDecimal(res["amount"]),
@@ -1364,7 +1366,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                         getlist.Add(new Reimbursement
                         {
                             id = (int)res["id"],
-                            vrNo_date = (string)res["vrNo_date"],
+                            type = (string)res["type"],
+                            vrNo = (string)res["vrNo"],
+                            date = Convert.ToDateTime(res["date"]),
                             particulars = (string)res["particulars"],
                             items = (string)res["items"],
                             amount = Convert.ToDecimal(res["amount"]),

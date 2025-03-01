@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Http;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Routing;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
@@ -805,6 +806,130 @@ namespace RemoteSensingProject.ApiServices
         #endregion
 
 
+        #region Reimbursement
+        [Route("api/reimbursementSubmit")]
+        [HttpPost]
+        public IHttpActionResult reimbursementSubmit()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formData = new Reimbursement
+                {
+                    userId = Convert.ToInt32(request.Form.Get("userId")),
+                    type = request.Form.Get("type"),
+                    vrNo = request.Form.Get("vrNo"),
+                    date = Convert.ToDateTime(request.Form.Get("date")),
+                    particulars = request.Form.Get("particulars"),
+                    items = request.Form.Get("items"),
+                    purpose = request.Form.Get("purpose"),
+                    amount = Convert.ToDecimal(request.Form.Get("amount"))
+                };
+                bool res = _managerService.insertReimbursement(formData);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res?"Added Successfully!":"Some error Occured"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode =  500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [Route("api/getReimbursement")]
+        [HttpGet]
+        public IHttpActionResult getReimbursement(int userId)
+        {
+            try
+            {
+                var data = _managerService.GetSpecificUserReimbursements(userId);
+                return Ok(new
+                {
+                    status=data.Any(),
+                    data=data,
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region tourPurposal
+        [Route("api/toursubmit")]
+        [HttpPost]
+        public IHttpActionResult toursubmit()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formdata = new tourProposal
+                {
+                    userId = Convert.ToInt32(request.Form.Get("userId")),
+                    projectId = Convert.ToInt32(request.Form.Get("projectId")),
+                    dateOfDept = Convert.ToDateTime(request.Form.Get("dateOfDept")),
+                    place = request.Form.Get("place"),
+                    periodFrom = Convert.ToDateTime(request.Form.Get("periodFrom")),
+                    periodTo = Convert.ToDateTime(request.Form.Get("periodTo")),
+                    returnDate = Convert.ToDateTime(request.Form.Get("returnDate")),
+                    purpose = request.Form.Get("purpose")
+                };
+                bool res = _managerService.insertTour(formdata);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message=res?"Added successfully!":"Error Occured"
+                });
+            }
+            catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message=ex.Message
+                });
+            }
+        }
+        [Route("api/gettour")]
+        [HttpGet]
+        public IHttpActionResult gettour(int userId)
+        {
+            try
+            {
+                var data = _managerService.getTourList(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);

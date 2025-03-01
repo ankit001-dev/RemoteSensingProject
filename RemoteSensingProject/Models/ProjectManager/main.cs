@@ -177,7 +177,8 @@ namespace RemoteSensingProject.Models.ProjectManager
         public int userId { get; set; }
         public string EmpName { get; set; }
         public string type { get; set; }
-        public string vrNo_date { get; set; }
+        public string vrNo { get; set; }
+        public DateTime date { get; set; }
         public string particulars { get; set; }
         public string items { get; set; }
         public string purpose { get; set; }
