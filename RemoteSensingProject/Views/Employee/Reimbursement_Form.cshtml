@@ -372,27 +372,7 @@
                                 <p style="margin-right: 15px;">Drawing & Disbursing Officer</p>
                             </div>
                         </div>
-                            @{ 
-                                string status = "";
-                                if (items.newRequest)
-                                {
-                                    status = "Pending";
-                                }
-                                else if (items.adminappr)
-                                {
-                                    status = "Approved";
-                                }
-                                else
-                                {
-                                    status = "Rejected";
-                                }
-                            }
-                            <td>@status</td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
+
     </div>
 </div>
 
