@@ -207,16 +207,8 @@
                                         <td>@i</td>
                                         <td>@item.EmpName</td>
                                         <td>@item.type</td>
-                                        <td>@item.vrNo & @item</td>
-                                        <td>@item.particulars</td>
-                                        <td>@item.items</td>
-                                        <td>@item.purpose</td>
-                                        <td>@item.amount</td>
-                                        <td data-id="@item.id">
-                                            <a href="#">
-                                                <i class="fa-solid fa-eye text-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i>
                                         <td>@Convert.ToDecimal(item.amount).ToString("N2")</td>
-                                        <td>
+                                        <td data-id="@item.id">
                                             <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type">
                                                 <i class="fa-solid fa-eye text-success"></i>
                                             </a> &nbsp; | &nbsp;
@@ -282,33 +274,6 @@
                                         <th>Amount Rs. P.</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @if (data != null && data.Count > 0)
-                                    {
-                                        int j = 1;
-                                        foreach (var item in data)
-                                        {
-                                            <tr>
-                                                <td>@j</td>
-                                                <td>@item.vrNo</td>
-                                                <td>@item.date</td>
-                                                <td>@item.particulars</td>
-                                                <td>@item.items</td>
-                                                <td>@item.purpose</td>
-                                                <td>@item.amount</td>
-                                            </tr>
-                                            j++;
-                                        }
-                                    }
-
-                                    @for (int k = 0; k <= 17; k++)
-                                    {
-                                        <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                                    }
-                                    <tr>
-                                        <td colspan="5" class="text-end"><b>Total</b></td>
-                                        <td></td>
-                                    </tr>
                                 <tbody id="viewReinburseRecieptListBody">
                                    
                                 </tbody>
