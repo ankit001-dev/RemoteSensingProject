@@ -3,6 +3,7 @@
     ViewBag.Title = "Hiring_Vehicle";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
+    var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
 }
 
 <style>
@@ -14,6 +15,9 @@
     }
     input::placeholder{
         font-size:12px !important;
+    }
+    .modal-dialog {
+        margin-top: 15vh; /* You can adjust this value */
     }
 </style>
 
@@ -38,9 +42,9 @@
                             <label for="projectName" class="form-label">Name of the Project</label>
                            <select name="projectName" class="form-select form-control-sm" id="projectName">
                                <option selected value="">Select Project</option>
-                               @if (data != null)
+                               @if (data1 != null)
                                {
-                                   foreach(var item in data)
+                                   foreach(var item in data1)
                 {
                     <option value="@item.projectId">@item.projectName</option>
                 }
@@ -78,8 +82,14 @@
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="availbilityOfFund" class="form-label">Availability of fund in the Project</label>
-                            <input type="text" name="availbilityOfFund" class="form-control form-control-sm" id="availbilityOfFund" placeholder="Availability of fund in the Project">
+                           <select name="availbilityOfFund" class="form-control form-control-sm" id="availbilityOfFund">
+                               <option value="">-Select Head-</option>
+                           </select>
                         </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="availablefund" class="form-label">Availability of fund</label>
+                            <input type="number" readonly name="availablefund" id="availablefund" class="form-control form-control-sm" placeholder="Amount"/>
+                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="taxiReportTo" class="form-label">Taxi may report to Shri</label>
                             <input type="text" name="taxiReportTo" class="form-control form-control-sm" id="taxiReportTo" placeholder="Enter Name">
@@ -117,32 +127,155 @@
                 <tr>
                     <th>S.N.</th>
                     <th>Project Name</th>
+                    <th>Head Name</th>
                     <th>Date From</th>
                     <th>Date To</th>
                     <th>Proposed Place</th>
                     <th>Purpose of Visit</th>
                     <th>Total Days & Night</th>
-                    <th>Total Area Travel</th>
-                    <th>Taxi</th>
-                    <th>Book Against Centre</th>
                     <th>Avaiability of fund</th>
-                    <th>Taxi Report To</th>
-                    <th>Taxi Report At</th>
-                    <th>Taxi Report Place</th>
-                    <th>Taxi Report On</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                @*<tr>
-                   <td></td>
-                    <td class="text-center"><i class="fa-solid fa-eye" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>
-                </tr>*@
+                @if (data != null)
+                {
+                    foreach (var item in data)
+                    {
+                        <tr>
+                            <td>@item.id</td>
+                            <td>@item.projectName</td>
+                            <td>@item.headName</td>
+                            <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
+                            <td>@Convert.ToDateTime(item.dateTo).ToString("dd-MMM-yyyy")</td>
+                            <td>@item.proposedPlace</td>
+                            <td>@item.purposeOfVisit</td>
+                            <td>@item.totalDaysNight</td>
+                            <td>@item.amount</td>
+                            <td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>
+                        </tr>
+                    }
+                }
             </tbody>
         </table>
     </div>
 </div>
 
+
+
+<style>
+        @@page {
+            size: A4;
+            margin: 15mm;
+        }
+        body {
+            font-size: 12px;
+            line-height: 1.3;
+        }
+        .logo {
+            width: 60px;
+            margin-right: 15px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .header-text {
+            text-align: center;
+        }
+        .header-text h4 {
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .header-text h5 {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .form-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: baseline;
+        }
+        .form-label {
+            min-width: 250px;
+            padding-right: 10px;
+        }
+        .dotted-line {
+            flex: 1;
+            border-bottom: 1px dotted #000;
+            height: 1.2em;
+            margin: 0 10px;
+            padding:2px 10px;
+        }
+        .note-section {
+            margin-top: 20px;
+        }
+        .signature-section {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-block {
+            width: 30%;
+        }
+        .signature-block h6 {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .signature-line {
+            margin: 5px 0;
+        }
+        .approved-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 500px;  /* Control the header width */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .logo {
+        width: 50px;       /* Slightly smaller logo */
+        margin-right: 15px;
+        display: block;
+    }
+
+    .header-text {
+        text-align: center;
+        flex: 1;
+    }
+
+    .form-container {
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;  /* Center all content */
+    }
+
+    .form-content {
+        width: 100%;
+        max-width: 650px;  /* Control the form content width */
+    }
+</style>
 <div class="modal fade" id="viewHiringVehicle" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -150,111 +283,307 @@
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Indent For Hiring Vehicle for Field Form </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div style="width: 700px; margin: 0 auto; font-family: Arial, sans-serif;">
-                    <!-- Header Section -->
-                    <table style="width: 100%; border-collapse: collapse;" border="0">
-                        <tr>
-                            <td style="text-align: center;" colspan="2">
-                                <h3 style="margin: 0;">REMOTE SENSING APPLICATIONS CENTRE</h3>
-                                <h3 style="margin: 0;">UTTAR PRADESH</h3>
-                                <h4 style="margin: 0; margin-top: 10px;">INDENT FOR HIRING VEHICLE FOR FIELD WORK</h4>
-                            </td>
-                        </tr>
-                    </table>
+            <div class="modal-body" id="formToPrint">
+                <div class="form-container">
+                    <div class="header">
+                        <img src="~/assets/images/remote_sensing_logo.jfif" alt="Logo" class="logo">
+                        <div class="header-text">
+                            <h4>REMOTE SENSING APPLICATIONS CENTRE</h4>
+                            <h4>UTTAR PRADESH</h4>
+                            <h5>INDENT FOR HIRING VEHICLE FOR FIELD WORK</h5>
+                        </div>
+                    </div>
+                    <div class="form-content mt-4">
+                        <div class="form-row">
+                            <div class="form-label w-30">1. Name of the Project</div>
+                            <span class="dotted-line w-70" id="nameProject"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label w-30">2. Date of Field Programme : From</div>
+                            <span class="dotted-line w-70" id="from"></span>
+                            <div class="ms-2">to</div>
+                            <span class="dotted-line w-70" id="to"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label w-30">3. Proposed Place/Places of Field Programme</div>
+                            <span class="dotted-line w-70" id="proposed"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label w-30">4. Purpose of Visit</div>
+                            <span class="dotted-line w-70" id="purpose"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label w-30">5. Total Number of Days & Night Halt</div>
+                            <span class="dotted-line w-70" id="totalNo"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label w-30">6. Total Area Travel in Plain & Hills</div>
+                            <span class="dotted-line w-70" id="totalArea"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label w-30">7. Taxi (Ambassdor/Maruti/Gypsy/Jeep/Other)</div>
+                            <span class="dotted-line w-70" id="taxi1"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label w-30">8. Book against Centre/Project Account</div>
+                            <span class="dotted-line w-70" id="book"></span>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-label w-30">9. Availability of fund in the Project in this Head</div>
+                            <span class="dotted-line w-70" id="availability"></span>
+                        </div>
 
-                    <hr style="margin: 10px 0;" />
+                        <div class="note-section w-100">
+                            <div>
+                                Note : The Taxi may report to Shri <span class="dotted-line w-70" id="repo_to">
+                                </span> at <span class="dotted-line w-70" id="repo_at"></span>
+                                AM/PM at <span class="dotted-line w-70" id="repo_on"></span> on Date<span class="dotted-line w-70" id="repo_date"></span>
+                            </div>
+                        </div>
 
-                    <!-- Form Fields Section -->
-                    <table style="width: 100%; border-collapse: collapse;" border="0">
-                        <tr>
-                            <td style="width: 50%; padding: 5px;">1. Name of the Project :</td>
-                            <td style="padding: 5px;">_____________________________________________</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px;">2. Date of Field Programme :</td>
-                            <td style="padding: 5px;">
-                                From ______________________ to ______________________
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px;">3. Proposed Place/Places of Field Programme :</td>
-                            <td style="padding: 5px;">_____________________________________________</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px;">4. Purpose of Visit :</td>
-                            <td style="padding: 5px;">_____________________________________________</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px;">5. Total Number of Days and Night Stay :</td>
-                            <td style="padding: 5px;">_____________________________________________</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px;">6. Road Area Travel in Plain &amp; Hills :</td>
-                            <td style="padding: 5px;">_____________________________________________</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px;">7. Taxi (Ambassador/Maruti/Gypsy/Jeep/others) :</td>
-                            <td style="padding: 5px;">_____________________________________________</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px;">8. Book against Centre Project/Loan :</td>
-                            <td style="padding: 5px;">_____________________________________________</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 5px;">9. Availability of funds to the Project in this Head :</td>
-                            <td style="padding: 5px;">_____________________________________________</td>
-                        </tr>
-                    </table>
+                        <div class="signature-section">
+                            <div class="signature-block">
+                                <h6>Indented By</h6>
+                                <div class="signature-line">Signature :</div>
+                                <div class="signature-line">Name :</div>
+                                <div class="signature-line">Designation :</div>
+                            </div>
+                            <div class="signature-block">
+                                <h6>Forwarded By</h6>
+                                <div class="signature-line">Signature :</div>
+                                <div class="signature-line">Name :</div>
+                                <div class="signature-line">Head of Division/Project Manager</div>
+                            </div>
+                        </div>
 
-                    <br />
-
-                    <!-- Note Section -->
-                    <table style="width: 100%; border-collapse: collapse;" border="0">
-                        <tr>
-                            <td style="padding: 5px;">
-                                <strong>Note:</strong> The Taxi may report to Shri
-                                __________________________________
-                                at ____________ AM/PM
-                                at __________________________________ (Place)
-                            </td>
-                        </tr>
-                    </table>
-
-                    <br />
-
-                    <!-- Signatures Section -->
-                    <table style="width: 100%; border-collapse: collapse;" border="0">
-                        <tr>
-                            <td style="width: 33%; vertical-align: top; padding: 5px;">
-                                <strong>Indented By</strong><br /><br />
-                                Signature: ___________________________<br />
-                                Name: _______________________________<br />
-                                Designation: _________________________
-                            </td>
-                            <td style="width: 33%; vertical-align: top; padding: 5px;">
-                                <strong>Forwarded By</strong><br /><br />
-                                Signature: ___________________________<br />
-                                Name: _______________________________<br />
-                                Head of Division/Project Manager
-                            </td>
-                            <td style="width: 33%; vertical-align: top; padding: 5px;">
-                                <strong>Approved By</strong><br /><br />
-                                _________________________________
-                            </td>
-                        </tr>
-                    </table>
+                        <div class="approved-section">
+                            <h6>Approved By</h6>
+                        </div>
+                    </div>
                 </div>
-
-
+            </div>
+            <div class="text-end m-5">
+                <button class="btn btn-secondary py-1 rounded-0" id="printBtn">Print</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    $(documnet).ready(function () {
-        $("#").submit(function (e) {
+
+    $(document).ready(function () {
+        document.getElementById("printBtn").onclick = function () {
+            // Get the content of the form to be printed
+            var formContent = document.getElementById("formToPrint").outerHTML;
+
+            // Save the original body content
+            var originalContent = document.body.innerHTML;
+            var style = `<style>
+            #formToPrint{
+                font-family:'Times New Roman';
+            }
+            .signature-line{
+                padding-top:5px;
+                padding-bottom:5px;
+            }
+            .form-row{
+                font-size:15px;
+                margin-top:5px;
+                margin-bottom:5px;
+            }
+        @@page {
+            size: A4;
+            margin: 15mm;
+        }
+        body {
+            font-size: 12px;
+            line-height: 1.3;
+        }
+        .logo {
+            width: 60px;
+            margin-right: 15px;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .header-text {
+            text-align: center;
+        }
+        .header-text h4 {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .header-text h5 {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .form-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-row {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: baseline;
+        }
+        .form-label {
+            min-width: 250px;
+            padding-right: 10px;
+        }
+        .dotted-line {
+            flex: 1;
+            border-bottom: 1px dotted #000;
+            height: 1.2em;
+            margin: 0 10px;
+            padding:2px 10px;
+        }
+        .note-section {
+            font-size:15px;
+            margin-top: 20px;
+        }
+        .signature-section {
+            font-size:15px;
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .signature-block {
+            width: 30%;
+        }
+        .signature-block h6 {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .signature-line {
+            margin: 5px 0;
+        }
+        .approved-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 500px;  /* Control the header width */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .logo {
+        width: 50px;       /* Slightly smaller logo */
+        margin-right: 15px;
+        display: block;
+    }
+
+    .header-text {
+        text-align: center;
+        flex: 1;
+    }
+
+    .form-container {
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;  /* Center all content */
+    }
+
+    .form-content {
+        width: 100%;
+        max-width: 650px;  /* Control the form content width */
+    }
+</style>`;
+            // Replace the body content with only the form content
+            document.body.innerHTML = style+'<div>' + formContent + '</div>';
+
+            // Trigger the print dialog
+            window.print();
+
+            // Restore the original body content after printing
+            document.body.innerHTML = originalContent;
+        };
+    });
+
+    $(document).ready(function () {
+        $(".action").on("click", function () {
+            let id = $(this).parent().attr("data-id")
+            $.ajax({
+                url: '/api/getHiringList',
+                type: 'get',
+                data: { id: id },
+                success: function (res) {
+                    console.log(res.data)
+                    $("#nameProject").text(res.data[0].projectName)
+                    $("#from").text(convertToDate(res.data[0].dateFrom))
+                    $("#to").text(convertToDate(res.data[0].dateTo))
+                    $("#proposed").text(res.data[0].proposedPlace)
+                    $("#purpose").text(res.data[0].purposeOfVisit)
+                    $("#totalNo").text(res.data[0].totalDaysNight)
+                    $("#totalArea").text(res.data[0].totalPlainHills)
+                    $("#taxi1").text(res.data[0].taxi)
+                    $("#book").text(res.data[0].BookAgainstCentre)
+                    $("#availability").text(res.data[0].availbilityOfFund)
+                    $("#repo_to").text(res.data[0].taxiReportTo)
+                    $("#repo_at").text(res.data[0].taxiReportAt)
+                    $("#repo_on").text(res.data[0].taxiReportPlace)
+                    $("#repo_date").text(convertToDate(res.data[0].taxiReportOn))
+                },
+                error: function (xhr) {
+
+                }
+            })
+        })
+    })
+
+
+    function convertToDate(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleDateString();
+    }
+
+</script>  
+
+<script>
+
+    $("#availbilityOfFund").change(function () {
+        let selectedElem = $(this).find("option:selected")
+        $("#availablefund").val(selectedElem.attr("data-availabelFund"))
+    })
+
+    $("#projectName").change(function () {
+        let prId = $(this).val();
+        $.ajax({
+            url: '/api/GetProjectBudgets',
+            type: 'get',
+            data: { projectId: prId },
+            success: function (res) {
+                for (let i in res.data) {
+                    let option = `<option value="${res.data[i].HeadId}" data-availabelFund="${res.data[i].ProjectAmount - res.data[i].ApproveAmount}">${res.data[i].ProjectHeads}</option>`;
+                    $("#availbilityOfFund").append(option);
+                }
+            },
+            error: function (xhr) {
+
+            }
+        });
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $("#createProjectForm").submit(function (e) {
             e.preventDefault();
             Swal.fire({
                 title: 'Please Wait!',
@@ -263,7 +592,7 @@
             })
             let formData = new FormData(this);
             $.ajax({
-                url: '/employee/hiring_vehicle',
+                url: '/employee/Hiring_Vehicle',
                 type: 'post',
                 data: formData,
                 contentType: false,
@@ -274,7 +603,7 @@
                             title: 'Success',
                             text: res.message,
                             icon: 'success',
-                            didClose: () => { location.reload() }
+                            didClose: () => { location.reload(true) }
                         })
                     }
                     else {

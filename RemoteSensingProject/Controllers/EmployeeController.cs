@@ -567,7 +567,9 @@ namespace RemoteSensingProject.Controllers
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             var res = _managerServices.getProjectList(userid);
-            ViewData["hiringList"] = res;
+            ViewData["projectlist"] = res;
+            var res1 = _managerServices.GetHiringVehicles(userid);
+            ViewData["hiringList"] = res1;
             return View();
         }
         [HttpPost]
