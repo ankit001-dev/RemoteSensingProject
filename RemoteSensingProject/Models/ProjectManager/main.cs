@@ -201,6 +201,9 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class HiringVehicle
     {
+        public decimal amount { get; set; }
+        public int headId { get; set; }
+        public string headName { get; set; }
         public int projectId { get; set; }
         public int id { get; set; }
         public int userId { get; set; }
