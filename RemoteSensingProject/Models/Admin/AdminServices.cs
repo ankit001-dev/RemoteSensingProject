@@ -1854,5 +1854,85 @@ namespace RemoteSensingProject.Models.Admin
         }
 
         #endregion
+
+        #region /* Hiring*/
+        public List<HiringVehicle1> HiringList()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectAllHiring");
+                con.Open();
+                List<HiringVehicle1> list = new List<HiringVehicle1>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new HiringVehicle1
+                        {
+                            id = (int)res["id"],
+                            projectName = Convert.ToString(res["title"]),
+                            headName = Convert.ToString(res["heads"]),
+                            amount = Convert.ToDecimal(res["amount"]),
+                            dateFrom = Convert.ToDateTime(res["dateFrom"]),
+                            dateTo = Convert.ToDateTime(res["dateTo"]),
+                            proposedPlace = (string)res["proposedPlace"],
+                            purposeOfVisit = (string)res["purposeOfVisit"],
+                            totalDaysNight = (string)res["totalDaysNight"],
+                            totalPlainHills = (string)res["totalPlainHills"],
+                            taxi = (string)res["taxi"],
+                            BookAgainstCentre = (string)res["BookAgainstCentre"],
+                            availbilityOfFund = (string)res["availbilityOfFund"],
+                            taxiReportTo = (string)res["taxiReportTo"],
+                            taxiReportAt = (TimeSpan)res["taxiReportAt"],
+                            taxiReportPlace = (string)res["taxiReportPlace"],
+                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        public bool HiringApproval(int id, bool status)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "approval");
+                cmd.Parameters.AddWithValue("@adminappr", status);
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        #endregion
     }
 }

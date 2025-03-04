@@ -582,7 +582,29 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult HiringRequest()
         {
+            ViewData["hiringList"] = _adminServices.HiringList();
             return View();
+        }
+        [HttpPost]
+        public ActionResult HiringRequest(bool status, int id)
+        {
+            bool res = _adminServices.HiringApproval(id, status);
+            if (res)
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = (res == true && status == true) ? "Approved Successfully" : "Rejected Successfully"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Some error Occured"
+                });
+            }
         }
 
         //public ActionResult AddBudget()
