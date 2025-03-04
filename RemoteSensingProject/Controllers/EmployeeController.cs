@@ -516,32 +516,38 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Reimbursement_Form(Reimbursement data)
+        public ActionResult Reimbursement_Form(List<Reimbursement> data)
         {
-            data.userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            bool res = _managerServices.insertReimbursement(data);
-            if (res)
+            try
             {
+                int i = 0; 
+                if (data.Any())
+                {
+                    foreach (var item in data)
+                    {
+                        item.userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+                        bool res = _managerServices.insertReimbursement(item);
+                        if (res)
+                            i++;
+                    }
+                }
                 return Json(new
                 {
-                    status = res,
-                    message = "Added Successfully"
+                    status = i == data.Count,
+                    message = i == data.Count ? "Added Successfully" : "Some issue occured while processing some data ."
                 });
             }
-            else
+            catch(Exception ex)
             {
-                return Json(new
-                {
-                    status = res,
-                    message = "Something went wrong"
-                });
+                return Json(new {status = false, message = ex.Message});
             }
+           
         }
 
-        public ActionResult ViewReinbursementListByType(string type)
+        public ActionResult ViewReinbursementListByType(string type, int id)
         {
             int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _managerServices.GetSpecificUserReimbursements(userId, type);
+            var data = _managerServices.GetSpecificUserReimbursements(userId, type, id);
             return Json(new
             {
                 status = data.Any(),
