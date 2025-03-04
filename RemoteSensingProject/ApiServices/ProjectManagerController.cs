@@ -871,11 +871,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/ViewReinbursementBytype")]
-        public IHttpActionResult viewReinbursement(int userId, string type)
+        public IHttpActionResult viewReinbursement(int userId, string type, int id)
         {
             try
             {
-                var data = _managerService.GetSpecificUserReimbursements(userId, type);
+                var data = _managerService.GetSpecificUserReimbursements(userId, type, id);
                 return Ok(new
                 {
                     status = data.Any(),
