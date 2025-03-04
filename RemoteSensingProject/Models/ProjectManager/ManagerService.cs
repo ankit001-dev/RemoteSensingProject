@@ -1582,7 +1582,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@hid", data.headId);
                 cmd.Parameters.AddWithValue("@amount", data.amount);
                 cmd.Parameters.AddWithValue("@userId", data.userId);
-                cmd.Parameters.AddWithValue("@projectId", data.projectId);
+                cmd.Parameters.AddWithValue("@projectId", data.projectName);
                 cmd.Parameters.AddWithValue("@dateFrom", data.dateFrom);
                 cmd.Parameters.AddWithValue("@dateTo", data.dateTo);
                 cmd.Parameters.AddWithValue("@proposedPlace", data.proposedPlace);
@@ -1695,7 +1695,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                             totalPlainHills = (string)res["totalPlainHills"],
                             taxi = (string)res["taxi"],
                             BookAgainstCentre = (string)res["BookAgainstCentre"],
-                            availbilityOfFund = (string)res["availbilityOfFund"],
                             taxiReportTo = (string)res["taxiReportTo"],
                             taxiReportAt = (TimeSpan)res["taxiReportAt"],
                             taxiReportPlace = (string)res["taxiReportPlace"],

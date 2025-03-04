@@ -79,6 +79,10 @@ namespace RemoteSensingProject.Controllers
             ViewData["ReimBurseData"] = _accountSerivce.GetReimbursements();
             return View();
         }
+        public ActionResult HiringRequest()
+        {
+            return View();
+        }
         public ActionResult FundReport()
         {
             ViewBag.ProjectList = _accountSerivce.Project_List();
