@@ -1546,13 +1546,7 @@ namespace RemoteSensingProject.ApiServices
         }
         #endregion
 
-        #region Approve Reimursement
-        //[HttpPost]
-        //[Route("api/approveReimbursement")]
-        //public IHttpActionResult approveReimbursement
-        #endregion
-
-
+        #region Reimbursement
         [HttpGet]
         [Route("api/ViewReinbursementAdminView")]
         public IHttpActionResult viewReinbursement(int userId, string type)
@@ -1577,6 +1571,138 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
+        [HttpGet]
+        [Route("api/ApproveReimbursement")]
+        public IHttpActionResult ApproveReimbursement(int id, bool status,string type)
+        {
+            try
+            {
+                bool res = _adminServices.ReimbursementApproval(status,id,type);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = (res == true && status == true) ? "Approved Successfully" : res ? "Rejected  Successfully" : "Something went wrong"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+         }
+        #endregion
+
+        #region Hiring
+        [HttpGet]
+        [Route("api/ApprovalHiring")]
+        public IHttpActionResult ApproveHiring(int id,bool status)
+        {
+            try
+            { 
+                bool res = _adminServices.HiringApproval(id,status);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = (res && status) ? "Approved Successfully" : res ? "Rejected  Successfully" : "Something went wrong"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/ViewHiringAdminView")]
+        public IHttpActionResult AllHiring()
+        {
+            try
+            {
+                var data = _adminServices.HiringList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Tour Proposal
+
+        [HttpGet]
+        [Route("api/ViewAlltourAdminView")]
+        public IHttpActionResult AllTour()
+        {
+            try
+            {
+                var data = _adminServices.getAllTourList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/ApproveTourProposal")]
+        public IHttpActionResult ApproveTourProposal(int id, bool status)
+        {
+            try
+            {
+                bool res = _adminServices.Tourapproval(id, status);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = (res == true && status == true) ? "Approved Successfully" : res ? "Rejected  Successfully" : "Something went wrong"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
 
         private IHttpActionResult BadRequest(object value)
         {

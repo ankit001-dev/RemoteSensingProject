@@ -287,6 +287,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class HiringVehicle1
         {
+            public bool status { get; set; }
             public decimal amount { get; set; }
             public int headId { get; set; }
             public string headName { get; set; }

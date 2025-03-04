@@ -583,8 +583,8 @@ namespace RemoteSensingProject.Controllers
         public ActionResult HiringRequest()
         {
             ViewData["hiringList"] = _adminServices.HiringList();
-            var res1 = _managerServices.getProjectList(userid);
-            ViewData["projectList"] = res1;
+            //var res1 = _managerServices.getProjectList(userid);
+            //ViewData["projectList"] = res1;
             return View();
         }
         [HttpPost]
