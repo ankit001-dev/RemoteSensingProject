@@ -571,8 +571,10 @@
             type: 'get',
             data: { projectId: prId },
             success: function (res) {
+                console.log(res)
+                $("#availbilityOfFund").empty();
                 for (let i in res.data) {
-                    let option = `<option value="${res.data[i].HeadId}" data-availabelFund="${res.data[i].ProjectAmount - res.data[i].ApproveAmount}">${res.data[i].ProjectHeads}</option>`;
+                    let option = `<option value="${res.data[i].Id}" data-availabelFund="${res.data[i].ProjectAmount - res.data[i].ApproveAmount}">${res.data[i].ProjectHeads}</option>`;
                     $("#availbilityOfFund").append(option);
                 }
             },
