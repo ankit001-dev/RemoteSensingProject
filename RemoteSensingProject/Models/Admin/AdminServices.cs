@@ -1722,15 +1722,15 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         getlist.Add(new tourProposalAll
                         {
-                            id = (int)res["id"],
-                            projectName = (string)res["title"],
-                            projectManager = (string)res["name"],
+                            id = Convert.ToInt32(res["id"]),
+                            projectName = res["title"].ToString(),
+                            projectManager = res["name"].ToString(),
                             dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
-                            place = (string)res["place"],
+                            place = res["place"].ToString(),
                             periodFrom = Convert.ToDateTime(res["periodFrom"]),
                             periodTo = Convert.ToDateTime(res["periodTo"]),
                             returnDate = Convert.ToDateTime(res["returnDate"]),
-                            purpose = (string)res["purpose"],
+                            purpose = res["purpose"].ToString(),
                         });
                     }
                 }

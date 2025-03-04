@@ -1369,15 +1369,16 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Reimbursement> GetSpecificUserReimbursements(int id, string type)
+        public List<Reimbursement> GetSpecificUserReimbursements(int userid, string type, int id)
         {
             try
             {
                 cmd = new SqlCommand("sp_Reimbursement", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetSpecificTypeData");
-                cmd.Parameters.AddWithValue("@userId", id);
+                cmd.Parameters.AddWithValue("@userId", userid);
                 cmd.Parameters.AddWithValue("@type", type);
+                cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
                 List<Reimbursement> getlist = new List<Reimbursement>();
                 var res = cmd.ExecuteReader();
@@ -1434,9 +1435,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         list.Add(new Reimbursement
                         {
+                            id = Convert.ToInt32(rd["id"]),
                             type = rd["type"].ToString(),
                             amount = Convert.ToDecimal(rd["amount"]),
-                            subStatus = Convert.ToBoolean(rd["SubmitStatus"])
+                            subStatus = Convert.ToBoolean(rd["SaveStatus"])
                         });
                     }
                 }

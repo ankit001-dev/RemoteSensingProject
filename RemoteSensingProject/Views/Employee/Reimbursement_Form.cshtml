@@ -186,6 +186,8 @@
             margin-bottom: 8px;
         }
 
+    .ViewReinbursementFormModalDialog {
+        margin-top: 50vh; /* You can adjust this value */
     .modal-dialog {
         margin-top: 23vh; /* You can adjust this value */
     }
@@ -198,7 +200,7 @@
 </nav>
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Reimbursement Form </h1>
@@ -210,7 +212,7 @@
                     <div class="row">
                         <div class="col-lg-4 mb-3">
                             <label for="type" class="form-label">Type</label>
-                            <select class="form-select form-select-sm" id="type" name="type">
+                            <select class="form-select form-select-sm" id="type" name="data[0].type" required>
                                 <option value="" selected>Select Option</option>
                                 <option value="contigency">Contigency</option>
                                 <option value="pi_adjustment">P.I adjustment</option>
@@ -218,32 +220,34 @@
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="vr_no" class="form-label">Vr. No.</label>
-                            <input type="text" name="vrNo" class="form-control form-control-sm" id="vr_no" placeholder="Enter Voucher Number">
+                            <input type="text" name="data[0].vrNo" class="form-control form-control-sm" id="vr_no" placeholder="Enter Voucher Number" required>
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="vrdate" class="form-label">Date</label>
-                            <input type="date" name="date" class="form-control form-control-sm" id="vrdate" placeholder="Enter Date">
+                            <input type="date" name="data[0].date" class="form-control form-control-sm" id="vrdate" placeholder="Enter Date" required>
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="particular" class="form-label">Particulars</label>
-                            <input type="text" name="particulars" class="form-control form-control-sm" id="particulars" placeholder="Enter Particular">
+                            <input type="text" name="data[0].particulars" class="form-control form-control-sm" id="particulars" placeholder="Enter Particular" required>
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="items" class="form-label">Items</label>
-                            <input type="text" name="items" class="form-control form-control-sm" id="items" placeholder="Enter Items">
+                            <input type="text" name="data[0].items" class="form-control form-control-sm" id="items" placeholder="Enter Items" required>
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="purpose" class="form-label">Purpose</label>
-                            <input type="text" name="purpose" class="form-control form-control-sm" id="purpose" placeholder="Enter Purpose">
+                            <input type="text" name="data[0].purpose" class="form-control form-control-sm" id="purpose" placeholder="Enter Purpose" required>
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="amount" class="form-label">Amount</label>
-                            <input type="number" name="amount" class="form-control form-control-sm" id="amount" placeholder="Enter Amount" step="any">
+                            <input type="number" name="data[0].amount" class="form-control form-control-sm" id="amount" placeholder="Enter Amount" step="any" required>
                             <span class="text-danger" id="amountMsg"></span>
                         </div>
                     </div>
+                    <div id="anotherFormData"></div>
                     <div class="text-center">
-                        <button type="submit" id="btnreim" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Reimbursement</button>
+                        <button type="submit" id="btnreim" class="btn btn-primary">Save</button>
+                        <button type="button" id="addAnotherRow" data-count="1" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Reimbursement</button>
                     </div>
                 </form>
             </div>
@@ -273,13 +277,24 @@
                             <td>₹ @Convert.ToDecimal(items.amount).ToString("N2")</td>
                         
                             <td>
-                                <a href="#" class="viewSanctionreciept" data-type="@items.type">
+                                <a href="#" class="viewSanctionreciept" data-type="@items.type" data-id="@items.id">
                                     <i class="fa-solid fa-eye"></i>
                                 </a> &nbsp; | &nbsp;
-                                <a href="#" class="saveSanctionReciept" data-type="@items.type">
-                                    <i class="fa-solid fa-floppy-disk"></i>
-                                </a>
+                                @{
 
+                                    if (items.type.Equals("pi_adjustment") && items.amount >= 5000)
+                                    {
+                                        <a href="#" class="saveSanctionReciept" data-type="@items.type">
+                                            <i class="fa-solid fa-floppy-disk"></i>
+                                        </a>
+                                    }
+                                    else if (items.type.Equals("contigency"))
+                                    {
+                                        <a href="#" class="saveSanctionReciept" data-type="@items.type">
+                                            <i class="fa-solid fa-floppy-disk"></i>
+                                        </a>
+                                    }
+                                }
                             </td>
                         </tr>
                         i++;
@@ -291,7 +306,7 @@
 </div>
 
 <div class="modal fade" id="ViewReinburseMentReciept" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="ViewReinburseMentRecieptLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered ViewReinbursementFormModalDialog">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="ViewReinburseMentRecieptLabel">Reimbursement Form </h1>
@@ -304,7 +319,7 @@
                             <h4>REMOTE SENSING APPLICATIONS CENTRE</h4>
                             <h5>UTTAR PRADESH</h5>
                             <div class="px-4 mt-1 d-flex justify-content-between">
-                                <span><p>logo</p><b>S.F.A.O/Director</b></span>
+                                <span><p><img src="/assets/images/remote_sensing_logo.jfif" width="50px"/></p><b>S.F.A.O/Director</b></span>
                                 <span>Name of Project/Centre</span>
                             </div>
                         </div>
@@ -381,10 +396,70 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+
 <script>
     $(document).ready(function () {
+
+        $("#addAnotherRow").on("click", function () {
+            let count = $(this).attr("data-count");
+            let element =` 
+           
+            <div class="row">
+            <div class="col-sm-12">
+             <hr />
+            </div>
+            <div class="col-sm-12">
+            <div class="d-flex justify-content-end">
+                <div><a href="#" class="removeCurrentRowElement"><i class="fa-solid fa-trash text-danger"></i></a></div>
+            </div>
+            </div>
+      <div class="col-lg-4 mb-3">
+          <label for="type" class="form-label">Type</label>
+          <select class="form-select form-select-sm" id="type" name="[${count}].type" required>
+              <option value="" selected>Select Option</option>
+              <option value="contigency">Contigency</option>
+              <option value="pi_adjustment">P.I adjustment</option>
+          </select>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="vr_no" class="form-label">Vr. No.</label>
+          <input type="text" name="data[${count}].vrNo" class="form-control form-control-sm" id="vr_no" placeholder="Enter Voucher Number" required>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="vrdate" class="form-label">Date</label>
+          <input type="date" name="data[${count}].date" class="form-control form-control-sm" id="vrdate" placeholder="Enter Date" required>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="particular" class="form-label">Particulars</label>
+          <input type="text" name="data[${count}].particulars" class="form-control form-control-sm" id="particulars" placeholder="Enter Particular" required>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="items" class="form-label">Items</label>
+          <input type="text" name="data[${count}].items" class="form-control form-control-sm" id="items" placeholder="Enter Items" required>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="purpose" class="form-label">Purpose</label>
+          <input type="text" name="data[${count}].purpose" class="form-control form-control-sm" id="purpose" placeholder="Enter Purpose" required>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="amount" class="form-label">Amount</label>
+          <input type="number" name="data[${count}].amount" class="form-control form-control-sm" id="amount" placeholder="Enter Amount" step="any" required>
+          <span class="text-danger" id="amountMsg"></span>
+      </div>
+  </div>`
+            $("#anotherFormData").append(element)
+            count++;
+            $(this).attr("data-count", count);
+        })
+
+        $("#anotherFormData").on("click", ".removeCurrentRowElement", function () {
+            let count = $("#addAnotherRow").attr("data-count");
+            if (count > 1) {
+                count--;
+            }
+            $("#addAnotherRow").attr("data-count", count);
+            $(this).closest(".row").remove();
+        })
 
         $("#createProjectForm").submit(function (e) {
             e.preventDefault();
@@ -442,11 +517,11 @@
             });
 
             let type = $(this).attr("data-type");
-
+            let id = $(this).attr("data-id");
             $.ajax({
                 url: "/employee/ViewReinbursementListByType",
                 type: "Get",
-                data: { "type": type },
+                data: { "type": type, id: id },
                 success: function (result) {
                     if (result.status) {
                         $("#viewReinburseRecieptListBody").empty();

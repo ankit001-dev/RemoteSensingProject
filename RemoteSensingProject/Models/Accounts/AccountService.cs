@@ -151,15 +151,11 @@ namespace RemoteSensingProject.Models.Accounts
                     {
                         getlist.Add(new Reimbursement
                         {
-                            id = (int)res["id"],
                             type = res["type"].ToString(),
                             EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
-                            vrNo = (string)res["vrNo"],
-                            date = Convert.ToDateTime(res["date"]),
-                            particulars = (string)res["particulars"],
-                            items = (string)res["items"],
                             amount = Convert.ToDecimal(res["amount"]),
-                            purpose = (string)res["purpose"]
+                            userId = Convert.ToInt32(res["userId"]),
+                            appr_status = Convert.ToBoolean(res["admin_appr"])
                         });
                     }
                 }
