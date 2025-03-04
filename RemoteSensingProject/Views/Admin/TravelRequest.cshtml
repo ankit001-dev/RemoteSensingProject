@@ -47,10 +47,10 @@
                                             <a href="#" class="changeStatus" data-value="false" data-id="@item.id">
                                                 <i class="fa-solid fa-xmark text-danger"></i>
 
-                                               
-                                            </a> &nbsp; | &nbsp; 
+
+                                            </a> &nbsp; | &nbsp;
                                             <a href="#">
-                                                <i class="fa-solid fa-eye text-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i>
+                                                <i class="fa-solid fa-eye action text-success" data-id="@item.id" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i>
                                             </a>
 
                                         </td>
@@ -76,6 +76,445 @@
         background-color: #f8f9fa;
         /* border-bottom: 2px solid #000; */
         padding: 15px;
+    }
+
+        .card-header h4, .card-header h5 {
+            margin: 0;
+            font-weight: bold;
+        }
+
+    .copy-types {
+        text-align: right;
+        font-size: 0.9em;
+        padding: 10px;
+    }
+
+        .copy-types p {
+            margin-bottom: 0.3rem;
+        }
+    #i4{
+        width:100px;
+    }
+    .dotted-field {
+        display: inline-block;
+        min-width: 200px;
+        min-height: 25px;
+        border-bottom: 1px dotted #000;
+        margin: 2px 0;
+    }
+
+    .tabel {
+        margin-top: 1rem;
+        border: 1px solid #000;
+    }
+
+        .tabel th, .tabel td {
+            border: 1px solid #000;
+            padding: 8px;
+            vertical-align: middle;
+        }
+
+        .tabel .dotted-field {
+            width: 100%;
+            display: block;
+            min-height: 30px;
+        }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        margin-right: 10px;
+    }
+
+    .authority-section {
+        text-align: right;
+        margin-top: 30px;
+        border-top: 1px solid #ddd;
+        padding-top: 20px;
+    }
+
+        .authority-section p {
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+    .tabel-responsive {
+        margin: 0 -5px; /* compensate for reduced padding */
+    }
+
+    .tabel {
+        margin-top: 0.5rem;
+        border: 1px solid #000;
+        font-size: 11px; /* reduced font size */
+        width: 100%;
+        table-layout: fixed; /* fixed tabel layout */
+    }
+
+        .tabel th, .tabel td {
+            border: 1px solid #000;
+            padding: 2px; /* reduced padding */
+            vertical-align: middle;
+            word-wrap: break-word;
+            overflow: hidden;
+        }
+
+            /* Column widths */
+            .tabel th:nth-child(1) {
+                width: 15%;
+            }
+            /* Purpose */
+            .tabel th:nth-child(2) {
+                width: 15%;
+            }
+            /* Date of Departure */
+            .tabel th:nth-child(3) {
+                width: 25%;
+            }
+            /* Place/s */
+            .tabel th:nth-child(4) {
+                width: 18%;
+            }
+            /* From */
+            .tabel th:nth-child(5) {
+                width: 18%;
+            }
+            /* To */
+            .tabel th:nth-child(6) {
+                width: 15%;
+            }
+        /* Date of return */
+
+        .tabel .dotted-field {
+            width: 100%;
+            min-height: 18px; /* reduced height */
+            margin: 0;
+        }
+
+    .cards {
+        /* border: 1px solid #000; */
+        /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
+        margin: 10px auto;
+        max-width: 800px; /* reduced from 1000px */
+        font-size: 13px; /* added smaller base font size */
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        /* border-bottom: 1px solid #000; */
+        padding: 8px; /* reduced from 15px */
+    }
+
+        .card-header h4 {
+            margin: 0;
+            font-weight: bold;
+            font-size: 16px; /* reduced from default */
+        }
+
+        .card-header h5 {
+            margin: 0;
+            font-weight: bold;
+            font-size: 14px; /* reduced from default */
+        }
+
+    .card-body {
+        padding: 10px; /* reduced padding */
+    }
+
+    .copy-types {
+        text-align: right;
+        font-size: 0.85em;
+        padding: 5px; /* reduced from 10px */
+    }
+
+        .copy-types p {
+            margin-bottom: 0.2rem; /* reduced from 0.3rem */
+        }
+
+    .dotted-field {
+        display: inline-block;
+        min-width: 150px; /* reduced from 200px */
+        min-height: 20px; /* reduced from 25px */
+        border-bottom: 1px dotted #000;
+        margin: 1px 0; /* reduced from 2px */
+    }
+
+    .tabel {
+        margin-top: 0.5rem; /* reduced from 1rem */
+        border: 1px solid #000;
+        font-size: 12px; /* smaller tabel font */
+    }
+
+        .tabel th, .tabel td {
+            border: 1px solid #000;
+            padding: 4px; /* reduced from 8px */
+            vertical-align: middle;
+        }
+
+        .tabel .dotted-field {
+            width: 100%;
+            display: block;
+            min-height: 20px; /* reduced from 30px */
+        }
+
+    .form-group {
+        margin-bottom: 0.5rem; /* reduced from 1rem */
+    }
+
+    .mb-3 {
+        margin-bottom: 0.5rem !important; /* reduced bootstrap margin */
+    }
+
+    .authority-section {
+        text-align: right;
+        margin-top: 15px; /* reduced from 30px */
+        border-top: 1px solid #ddd;
+        padding-top: 10px; /* reduced from 20px */
+    }
+
+        .authority-section p {
+            margin-bottom: 8px; /* reduced from 15px */
+            font-weight: 500;
+        }
+
+    .container {
+        padding: 0 10px; /* reduced container padding */
+    }
+
+    .modal-dialog {
+        margin-top: 10vh;
+    }
+</style>
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Proposal Request </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container mt-4" id="formToPrint">
+                    <div class="cards">
+                        <div class="card-header text-center">
+                            <h4>REMOTE SENSING APPLICATIONS CENTRE, UTTAR PRADESH</h4>
+                            <h5>TOUR PROPOSAL</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <div class="mb-3 row">
+                                        <label class="col-sm-3">NAME</label>
+                                        <div class="col-sm-9">
+                                            <span class="dotted-field" id="projectMan"></span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label class="col-sm-3">DESIGNATION</label>
+                                        <div class="col-sm-9">
+                                            <span class="dotted-field"></span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label class="col-sm-3">DIVISION/PROJECT</label>
+                                        <div class="col-sm-9">
+                                            <span class="dotted-field" id="project"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="copy-types">
+                                        <p>Accounts Copy (White)</p>
+                                        <p>Admn. Copy (Pink)</p>
+                                        <p>T.A. Bill Copy (Yellow)</p>
+                                        <p>Employee Copy (Green)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tabel-responsive">
+                                <table class="tabel">
+                                    <thead>
+                                        <tr>
+                                            <th>Purpose</th>
+                                            <th>Date of Departure</th>
+                                            <th>Place/s to be visited</th>
+                                            <th colspan="2" class="text-center">Period</th>
+                                            <th>Date of return</th>
+                                        </tr>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td id="i1"></td>
+                                            <td id="i2"></td>
+                                            <td id="i3"></td>
+                                            <td id="i4"></td>
+                                            <td id="i5"></td>
+                                            <td id="i6"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="row mt-4 d-flex justify-content-between mb-0">
+                                <div class="col-md-8">
+                                    <div class="form-group d-inline">
+                                        <span>Book against : Centre Account/Project</span>
+                                        <span class="dotted-field"></span>
+                                        <span>Account</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Code :</label>
+                                        <span class="dotted-field"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Date :</label>
+                                        <span class="dotted-field"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <div class="form-group">
+                                        <label>Signature :</label>
+                                        <span class="dotted-field"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Name :</label>
+                                        <span class="dotted-field"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="authority-section m-0">
+                                <p>Forwarding Authority</p>
+                                <hr class="mb-0 mt-2 p-0" />
+                                <p></p>
+                                <p>Sanctioning Authority</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-end m-5">
+                    <button class="btn btn-secondary py-1 rounded-0" id="printBtn">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        debugger
+        $(".action").on("click", function () {
+            let id = $(this).attr("data-id")
+            $.ajax({
+                url: '/api/getTourById',
+                type: 'get',
+                data: { id: id },
+                success: function (res) {
+                    $("#projectMan").text(res.data[0].projectManager)
+                    $("#project").text(res.data[0].projectName)
+                    $("#i1").text(res.data[0].purpose)
+                    $("#i2").text(convertToDate(res.data[0].dateOfDept))
+                    $("#i3").text(res.data[0].place)
+                    $("#i4").text(convertToDate(res.data[0].periodFrom))
+                    $("#i5").text(convertToDate(res.data[0].periodTo))
+                    $("#i6").text(convertToDate(res.data[0].returnDate))
+                },
+                error: function (xhr) {
+
+                }
+            })
+        })
+    })
+
+    function convertToDate(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleDateString();
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $(".changeStatus").on("click", function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Please wait !',
+                text: 'Your request under process',
+                didOpen: () => { Swal.showLoading(); }
+            })
+            let status = $(this).data("value");
+            let id = $(this).data("id")
+            $.ajax({
+                url: '/admin/TravelRequest',
+                type: 'post',
+                data: { status: status, id: id },
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload() }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'success',
+                            text: res.message,
+                            icon: 'success'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'error',
+                        text: 'Server busy Please try after sometime.',
+                        icon: 'error'
+                    })
+                }
+            })
+        })
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        document.getElementById("printBtn").onclick = function () {
+            // Get the content of the form to be printed
+            var formContent = document.getElementById("formToPrint").innerHTML;
+
+            // Save the original body content
+            var originalContent = document.body.innerHTML;
+            var style = `<style>
+            @@page {
+        size: A4;
+        margin: 10mm;
+    }
+     .container{
+         width:100%;
+     }
+    .cards {
+        width:100%;
+        margin:0px;
+        padding:0px;
+        /* border: 2px solid #000; */
+        /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
+        margin: 0px auto;;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        /* border-bottom: 2px solid #000; */
     }
 
         .card-header h4, .card-header h5 {
@@ -280,158 +719,15 @@
     .container {
         padding: 0 10px; /* reduced container padding */
     }
-</style>
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header d-flex justify-content-between">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Reimbursement Form </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="container mt-4">
-                    <div class="cards">
-                        <div class="card-header text-center">
-                            <h4>REMOTE SENSING APPLICATIONS CENTRE, UTTAR PRADESH</h4>
-                            <h5>TOUR PROPOSAL</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-3">
-                                <div class="col-md-8">
-                                    <div class="mb-3 row">
-                                        <label class="col-sm-3">NAME</label>
-                                        <div class="col-sm-9">
-                                            <span class="dotted-field"></span>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <label class="col-sm-3">DESIGNATION</label>
-                                        <div class="col-sm-9">
-                                            <span class="dotted-field"></span>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3 row">
-                                        <label class="col-sm-3">DIVISION/PROJECT</label>
-                                        <div class="col-sm-9">
-                                            <span class="dotted-field"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="copy-types">
-                                        <p>Accounts Copy (White)</p>
-                                        <p>Admn. Copy (Pink)</p>
-                                        <p>T.A. Bill Copy (Yellow)</p>
-                                        <p>Employee Copy (Green)</p>
-                                    </div>
-                                </div>
-                            </div>
+</style>`;
+            // Replace the body content with only the form content
+            document.body.innerHTML = style + '<div class="w-100 m-0 p-0">' + formContent + '</div>';
 
-                            <div class="tabel-responsive">
-                                <table class="tabel">
-                                    <thead>
-                                        <tr>
-                                            <th>Purpose</th>
-                                            <th>Date of Departure</th>
-                                            <th>Place/s to be visited</th>
-                                            <th colspan="2">Period</th>
-                                            <th>Date of return</th>
-                                        </tr>
-                                        <tr>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th>From</th>
-                                            <th>To</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+            // Trigger the print dialog
+            window.print();
 
-                            <div class="row mt-4">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Book against : Centre Account/Project</label>
-                                        <span class="dotted-field"></span>
-                                        <label>Account</label>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Code :</label>
-                                        <span class="dotted-field"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Date :</label>
-                                        <span class="dotted-field"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Signature :</label>
-                                        <span class="dotted-field"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Name :</label>
-                                        <span class="dotted-field"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="authority-section">
-                                <p>Forwarding Authority</p>
-                                <p>Approved</p>
-                                <p>Sanctioning Authority</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    $(document).ready(function () {
-        $(".changeStatus").on("click", function (e) {
-            e.preventDefault();
-            Swal.fire({
-                title: 'Please wait !',
-                text: 'Your request under process',
-                didOpen: () => { Swal.showLoading(); }
-            })
-            let status = $(this).data("value");
-            let id = $(this).data("id")
-            $.ajax({
-                url: '/admin/TravelRequest',
-                type: 'post',
-                data: { status: status, id: id },
-                success: function (res) {
-                    if (res.status) {
-                        Swal.fire({
-                            title: 'Success',
-                            text: res.message,
-                            icon: 'success',
-                            didClose: () => { location.reload() }
-                        })
-                    }
-                    else {
-                        Swal.fire({
-                            title: 'success',
-                            text: res.message,
-                            icon: 'success'
-                        })
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        title: 'error',
-                        text: 'Server busy Please try after sometime.',
-                        icon: 'error'
-                    })
-                }
-            })
-        })
+            // Restore the original body content after printing
+            document.body.innerHTML = originalContent;
+        };
     });
 </script>
