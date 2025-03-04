@@ -235,11 +235,18 @@ namespace RemoteSensingProject.Models.Admin
             public string Title { get; set; }
             public string OverallCompletionPercentage { get; set; }
             public string TotalEmployee { get; set; }
+            public string TotalProjectManager { get; set; }
+            public string TotalAccounts { get; set; }
+            public string TotalSubOrdinate { get; set; }
             public string TotalProject { get; set; }
+            public string TotalInternalProject { get; set; }
+            public string TotalExternalProject { get; set; }
             public string TotalDelayproject { get; set; }
             public string TotalCompleteProject { get; set; }
             public string TotalOngoingProject { get; set; }
             public string TotalMeetings { get; set; }
+            public string TotalAdminMeetings { get; set; }
+            public string TotalProjectManagerMeetings { get; set; }
             public string ProjectManager { get; set; }
             public decimal TotalBudget { get; set; }
             public decimal PendingBudget { get; set; }

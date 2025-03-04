@@ -884,11 +884,18 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     obj = new DashboardCount();
                     obj.TotalEmployee = sdr["TotalEmployee"].ToString();
+                    obj.TotalProjectManager = sdr["TotalProjectManager"].ToString();
+                    obj.TotalSubOrdinate = sdr["TotalSubOrdinate"].ToString();
+                    obj.TotalAccounts = sdr["TotalAccounts"].ToString();
                     obj.TotalProject = sdr["TotalProject"].ToString();
+                    obj.TotalInternalProject = sdr["TotalInternalProject"].ToString();
+                    obj.TotalExternalProject = sdr["TotalExternalProject"].ToString();
                     obj.TotalDelayproject = sdr["TotalDelayproject"].ToString();
                     obj.TotalCompleteProject = sdr["TotalCompleteProject"].ToString();
                     obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
                     obj.TotalMeetings = sdr["TotalMeetings"].ToString();
+                    obj.TotalAdminMeetings = sdr["TotalAdminMeetings"].ToString();
+                    obj.TotalProjectManagerMeetings = sdr["TotalProjectManagerMeetings"].ToString();
                     obj.TotalBudget = Convert.ToDecimal(sdr["totalBudgets"]);
                     obj.PendingBudget = Convert.ToDecimal(sdr["pendingBudget"]);
                     obj.expenditure = Convert.ToDecimal(sdr["expenditure"]);
