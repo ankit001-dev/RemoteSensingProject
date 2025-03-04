@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.Remoting.Messaging;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Http;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -945,6 +947,102 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
             catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region /*Get Hiring Vehicle*/
+        [Route("api/addHiringRequest")]
+        [HttpPost]
+        public IHttpActionResult addHiringRequest()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formdata = new HiringVehicle
+                {
+                      headId=Convert.ToInt32(request.Form.Get("headId")),
+   amount=Convert.ToDecimal(request.Form.Get("amount")),
+   userId=Convert.ToInt32(request.Form.Get("userId")),
+   projectId=Convert.ToInt32(request.Form.Get("projectId")),
+   dateFrom=Convert.ToDateTime(request.Form.Get("dateFrom")),
+   dateTo= Convert.ToDateTime(request.Form.Get("dateTo")),
+                    proposedPlace=(string)request.Form.Get("proposedPlace"),
+   purposeOfVisit=(string)request.Form.Get("purposeOfVisit"),
+   totalDaysNight=Convert.ToString(request.Form.Get("totalDaysNight")),
+   totalPlainHills = Convert.ToString(request.Form.Get("totalPlanHills")),
+   taxi=(string)request.Form.Get("taxi"),
+   BookAgainstCentre=(string)request.Form.Get("BookAgainstCentre"),
+   availbilityOfFund=(string)request.Form.Get("availabilityOfFund"),
+   taxiReportTo=(string)request.Form.Get("taxiReportTo"),
+   taxiReportAt= TimeSpan.Parse(request.Form.Get("taxiReportAt")),
+   taxiReportPlace=(string)request.Form.Get("taxiReportPlace"),
+   taxiReportOn=Convert.ToDateTime(request.Form.Get("taxiReportOn"))
+                };
+                bool res = _managerService.insertHiring(formdata);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res ? "Added successfully!" : "Error Occured"
+                });
+            }
+            catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getHiringList")]
+        public IHttpActionResult getHiringList(int id)
+        
+        
+        {
+            try
+            {
+                var data = _managerService.GetHiringList(id);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getAllHiringList")]
+        public IHttpActionResult getAllHiringList(int userId)
+        {
+            try
+            {
+                var data = _managerService.GetHiringVehicles(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
             {
                 return Ok(new
                 {

@@ -1581,9 +1581,10 @@ namespace RemoteSensingProject.Models.ProjectManager
             {
                 cmd = new SqlCommand("sp_HiringVehicle", con);
                 cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@hid", data.headId);
+                cmd.Parameters.AddWithValue("@amount", data.amount);
                 cmd.Parameters.AddWithValue("@userId", data.userId);
-                cmd.Parameters.AddWithValue("@projectId", data.projectId);
-                cmd.Parameters.AddWithValue("@projectName", data.projectName);
+                cmd.Parameters.AddWithValue("@projectId", data.projectName);
                 cmd.Parameters.AddWithValue("@dateFrom", data.dateFrom);
                 cmd.Parameters.AddWithValue("@dateTo", data.dateTo);
                 cmd.Parameters.AddWithValue("@proposedPlace", data.proposedPlace);
@@ -1633,20 +1634,73 @@ namespace RemoteSensingProject.Models.ProjectManager
                         hiringList.Add(new HiringVehicle
                         {
                             id = (int)res["id"],
-                            projectName = (string)res[""],
-                            dateFrom = Convert.ToDateTime(res[""]),
-                            dateTo = Convert.ToDateTime(res[""]),
-                            proposedPlace = (string)res[""],
-                            purposeOfVisit = (string)res[""],
-                            totalDaysNight = (string)res[""],
-                            totalPlainHills = (string)res[""],
-                            taxi = (string)res[""],
-                            BookAgainstCentre = (string)res[""],
-                            availbilityOfFund = (string)res[""],
-                            taxiReportTo = (string)res[""],
-                            taxiReportAt = (TimeSpan)res[""],
-                            taxiReportPlace = (string)res[""],
-                            taxiReportOn = Convert.ToDateTime(res[""])
+                            projectName = Convert.ToString(res["title"]),
+                            headName = Convert.ToString(res["heads"]),
+                            amount = Convert.ToDecimal(res["amount"]),
+                            dateFrom = Convert.ToDateTime(res["dateFrom"]),
+                            dateTo = Convert.ToDateTime(res["dateTo"]),
+                            proposedPlace = (string)res["proposedPlace"],
+                            purposeOfVisit = (string)res["purposeOfVisit"],
+                            totalDaysNight = (string)res["totalDaysNight"],
+                            totalPlainHills = (string)res["totalPlainHills"],
+                            taxi = (string)res["taxi"],
+                            BookAgainstCentre = (string)res["BookAgainstCentre"],
+                            availbilityOfFund = (string)res["availbilityOfFund"],
+                            taxiReportTo = (string)res["taxiReportTo"],
+                            taxiReportAt = (TimeSpan)res["taxiReportAt"],
+                            taxiReportPlace = (string)res["taxiReportPlace"],
+                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"])
+                        });
+                    }
+                }
+                return hiringList;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if(con.State==ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        public List<HiringVehicle> GetHiringList(int id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectOne");
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                List<HiringVehicle> hiringList = new List<HiringVehicle>();
+                var res = cmd.ExecuteReader();
+                if(res.HasRows)
+                {
+                    while(res.Read())
+                    {
+                        hiringList.Add(new HiringVehicle
+                        {
+                            id = (int)res["id"],
+                            projectName = Convert.ToString(res["title"]),
+                            headName = Convert.ToString(res["heads"]),
+                            amount = Convert.ToDecimal(res["amount"]),
+                            dateFrom = Convert.ToDateTime(res["dateFrom"]),
+                            dateTo = Convert.ToDateTime(res["dateTo"]),
+                            proposedPlace = (string)res["proposedPlace"],
+                            purposeOfVisit = (string)res["purposeOfVisit"],
+                            totalDaysNight = (string)res["totalDaysNight"],
+                            totalPlainHills = (string)res["totalPlainHills"],
+                            taxi = (string)res["taxi"],
+                            BookAgainstCentre = (string)res["BookAgainstCentre"],
+                            taxiReportTo = (string)res["taxiReportTo"],
+                            taxiReportAt = (TimeSpan)res["taxiReportAt"],
+                            taxiReportPlace = (string)res["taxiReportPlace"],
+                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"])
                         });
                     }
                 }
@@ -1666,6 +1720,46 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
+        #endregion
+
+        #region /* Get Heads */
+        public List<HiringVehicle> getHead(int id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectHead");
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                List<HiringVehicle> getList = new List<HiringVehicle>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        getList.Add(new HiringVehicle
+                        {
+                            headId = (int)res["hid"],
+                            headName = (string)res["headName"]
+                        });
+                    }
+                }
+                return getList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
         #endregion
     }
 }

@@ -1,126 +1,31 @@
-﻿
+﻿o
 @{
-    ViewBag.Title = "Hiring_Vehicle";
-    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    ViewBag.Title = "HiringRequest";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
     var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
 }
+
+
 
 <style>
     #reimbursementForm {
         display: none;
     }
-    .row label{
-        font-size:12px !important;
+
+    .row label {
+        font-size: 12px !important;
     }
-    input::placeholder{
-        font-size:12px !important;
+
+    input::placeholder {
+        font-size: 12px !important;
     }
+
     .modal-dialog {
         margin-top: 15vh; /* You can adjust this value */
     }
-    #modal-di{
-        margin-top:0vh;
-    }
 </style>
 
-<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
-    <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item active" aria-current="page">Indent For Hiring Vehicle For Field Work</li>
-    </ol>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Hiring</button>
-</nav>
-
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" id="modal-di">
-        <div class="modal-content">
-            <div class="modal-header d-flex justify-content-between">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Indent For Hiring Vehicle for Field Form </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form class="forms-sample" id="createProjectForm">
-                    <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <label for="projectName" class="form-label">Name of the Project</label>
-                           <select name="projectName" class="form-select form-control-sm" id="projectName">
-                               <option selected value="">Select Project</option>
-                               @if (data1 != null)
-                               {
-                                   foreach(var item in data1)
-                {
-                    <option value="@item.projectId">@item.projectName</option>
-                }
-                               }
-                           </select>
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="particular" class="form-label">Date of Field Program: From</label>
-                            <input type="date" name="dateFrom" class="form-control form-control-sm" id="dateFrom">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="items" class="form-label">To</label>
-                            <input type="date" name="dateTo" class="form-control form-control-sm" id="dateTo">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="purposeOfVisit" class="form-label">Purpose of Visit</label>
-                            <input type="text" name="purposeOfVisit" class="form-control form-control-sm" id="purposeOfVisit" placeholder="Enter Purpose of Visit">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="totalDaysNight" class="form-label">Total Number of Days & Night Halt</label>
-                            <input type="text" name="totalDaysNight" class="form-control form-control-sm" id="totalDaysNight" placeholder="Total Number of Days & Night Halt">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="totalPlainHills" class="form-label">Total Area Travel in Plain & Hills</label>
-                            <input type="text" name="totalPlainHills" class="form-control form-control-sm" id="totalPlainHills" placeholder="Enter Total Area Travel in Plain & Hills">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="taxi" class="form-label">Taxi (Ambassdor/Maruti/Gypsy/Jeep/Other)</label>
-                            <input type="text" name="taxi" class="form-control form-control-sm" id="taxi" placeholder="Enter Taxi">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="BookAgainstCentre" class="form-label">Book against Centre/Project Account</label>
-                            <input type="text" name="BookAgainstCentre" class="form-control form-control-sm" id="BookAgainstCentre" placeholder="Book against Centre/Project Account">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="availbilityOfFund" class="form-label">Availability of fund in the Project</label>
-                           <select name="availbilityOfFund" class="form-control form-control-sm" id="availbilityOfFund">
-                               <option value="">-Select Head-</option>
-                           </select>
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="availablefund" class="form-label">Availability of fund</label>
-                            <input type="number" readonly name="availablefund" id="availablefund" class="form-control form-control-sm" placeholder="Amount"/>
-                         </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="taxiReportTo" class="form-label">Taxi may report to Shri</label>
-                            <input type="text" name="taxiReportTo" class="form-control form-control-sm" id="taxiReportTo" placeholder="Enter Name">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="taxiReportAt" class="form-label">Time</label>
-                            <input type="time" name="taxiReportAt" class="form-control form-control-sm" id="taxiReportAt">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="taxiReportPlace" class="form-label">Destination</label>
-                            <input type="text" name="taxiReportPlace" class="form-control form-control-sm" id="taxiReportPlace" placeholder="Enter Place">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="taxiReportOn" class="form-label">Date</label>
-                            <input type="date" name="taxiReportOn" class="form-control form-control-sm" id="taxiReportOn">
-                        </div>
-                        <div class="col-lg-8 mb-3">
-                            <label for="proposedPlace" class="form-label">Proposed Place/Places of Field Programme</label>
-                            <textarea name="proposedPlace" class="form-control form-control-sm" placeholder="Write here..." id="proposedPlace"></textarea>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Hiring</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="row mx-0">
     <div class="col-sm-12">
@@ -166,95 +71,111 @@
 
 
 <style>
-        @@page {
-            size: A4;
-            margin: 15mm;
-        }
-        body {
-            font-size: 12px;
-            line-height: 1.3;
-        }
-        .logo {
-            width: 60px;
-            margin-right: 15px;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .header-text {
-            text-align: center;
-        }
+    @@page {
+        size: A4;
+        margin: 15mm;
+    }
+
+    body {
+        font-size: 12px;
+        line-height: 1.3;
+    }
+
+    .logo {
+        width: 60px;
+        margin-right: 15px;
+    }
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .header-text {
+        text-align: center;
+    }
+
         .header-text h4 {
             font-size: 14px;
             font-weight: bold;
             margin: 0;
         }
+
         .header-text h5 {
             font-size: 13px;
             font-weight: bold;
             margin: 5px 0;
         }
-        .form-container {
-            max-width: 210mm;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .form-row {
-            display: flex;
-            margin-bottom: 10px;
-            align-items: baseline;
-        }
-        .form-label {
-            min-width: 250px;
-            padding-right: 10px;
-        }
-        .dotted-line {
-            flex: 1;
-            border-bottom: 1px dotted #000;
-            height: 1.2em;
-            margin: 0 10px;
-            padding:2px 10px;
-        }
-        .note-section {
-            margin-top: 20px;
-        }
-        .signature-section {
-            margin-top: 30px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .signature-block {
-            width: 30%;
-        }
+
+    .form-container {
+        max-width: 210mm;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .form-row {
+        display: flex;
+        margin-bottom: 10px;
+        align-items: baseline;
+    }
+
+    .form-label {
+        min-width: 250px;
+        padding-right: 10px;
+    }
+
+    .dotted-line {
+        flex: 1;
+        border-bottom: 1px dotted #000;
+        height: 1.2em;
+        margin: 0 10px;
+        padding: 2px 10px;
+    }
+
+    .note-section {
+        margin-top: 20px;
+    }
+
+    .signature-section {
+        margin-top: 30px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .signature-block {
+        width: 30%;
+    }
+
         .signature-block h6 {
             font-size: 12px;
             font-weight: bold;
             margin-bottom: 15px;
         }
-        .signature-line {
-            margin: 5px 0;
-        }
-        .approved-section {
-            text-align: center;
-            margin-top: 30px;
-        }
 
-        .header {
+    .signature-line {
+        margin: 5px 0;
+    }
+
+    .approved-section {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .header {
         display: flex;
         align-items: center;
         justify-content: center;
         margin-bottom: 20px;
         width: 100%;
-        max-width: 500px;  /* Control the header width */
+        max-width: 500px; /* Control the header width */
         margin-left: auto;
         margin-right: auto;
     }
 
     .logo {
-        width: 50px;       /* Slightly smaller logo */
+        width: 50px; /* Slightly smaller logo */
         margin-right: 15px;
         display: block;
     }
@@ -270,12 +191,12 @@
         padding: 20px;
         display: flex;
         flex-direction: column;
-        align-items: center;  /* Center all content */
+        align-items: center; /* Center all content */
     }
 
     .form-content {
         width: 100%;
-        max-width: 650px;  /* Control the form content width */
+        max-width: 650px; /* Control the form content width */
     }
 </style>
 <div class="modal fade" id="viewHiringVehicle" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -555,75 +476,4 @@
         return date.toLocaleDateString();
     }
 
-</script>  
-
-<script>
-
-    $("#availbilityOfFund").change(function () {
-        let selectedElem = $(this).find("option:selected")
-        $("#availablefund").val(selectedElem.attr("data-availabelFund"))
-    })
-
-    $("#projectName").change(function () {
-        let prId = $(this).val();
-        $.ajax({
-            url: '/api/GetProjectBudgets',
-            type: 'get',
-            data: { projectId: prId },
-            success: function (res) {
-                for (let i in res.data) {
-                    let option = `<option value="${res.data[i].HeadId}" data-availabelFund="${res.data[i].ProjectAmount - res.data[i].ApproveAmount}">${res.data[i].ProjectHeads}</option>`;
-                    $("#availbilityOfFund").append(option);
-                }
-            },
-            error: function (xhr) {
-
-            }
-        });
-    });
-
-</script>
-<script>
-    $(document).ready(function () {
-        $("#createProjectForm").submit(function (e) {
-            e.preventDefault();
-            Swal.fire({
-                title: 'Please Wait!',
-                text: 'Your request under process.',
-                didOpen: () => { Swal.showLoading(); }
-            })
-            let formData = new FormData(this);
-            $.ajax({
-                url: '/employee/Hiring_Vehicle',
-                type: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (res) {
-                    if (res.status) {
-                        Swal.fire({
-                            title: 'Success',
-                            text: res.message,
-                            icon: 'success',
-                            didClose: () => { location.reload(true) }
-                        })
-                    }
-                    else {
-                        Swal.fire({
-                            title: 'warning',
-                            text: res.message,
-                            icon: 'warning'
-                        })
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        titel: 'Error',
-                        text: 'Server Busy.Try after sometime!',
-                        icon:'error'
-                    })
-                }
-            })
-        })
-    })
 </script>

@@ -3,6 +3,7 @@
     ViewBag.Title = "TourProposalRequest";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
     var data = ViewData["tourproposal"] as List<RemoteSensingProject.Models.Accounts.main.tourProposal>;
+    string status = "";
 }
 <style>
     .cards {
@@ -257,7 +258,7 @@
                                         <td>@item.periodFrom</td>
                                         <td>@item.periodTo</td>
                                         <td>@item.returnDate</td>
-                                        @{string status = "";
+                                        @{
                                             if (item.newRequest)
                                             {
                                                 status = "Pending";
@@ -336,7 +337,7 @@
                                             <th>Purpose</th>
                                             <th>Date of Departure</th>
                                             <th>Place/s to be visited</th>
-                                            <th colspan="2">Period</th>
+                                            <th colspan="2" class="text-center">Period</th>
                                             <th>Date of return</th>
                                         </tr>
                                         <tr>
@@ -349,17 +350,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @*<tr>
-                                            <td>abc</td>
-                                            <td>abc</td>
-                                            <td>abc</td>
-                                            <td>abc</td>
-                                            <td>abc</td>
-                                        </tr>
                                         <tr>
-                                            <td>afdsa</td>
-                                            <td>afds</td>
-                                        </tr>*@
+                                            <td id="i1"></td>
+                                            <td id="i2"></td>
+                                            <td id="i3"></td>
+                                            <td id="i4"></td>
+                                            <td id="i5"></td>
+                                            <td id="i6"></td>
+                                        </tr> 
                                     </tbody>
                                 </table>
                             </div>
@@ -395,7 +393,7 @@
                             <div class="authority-section m-0">
                                 <p>Forwarding Authority</p>
                                 <hr class="mb-0 mt-2 p-0" />
-                                <p>Approved</p>
+                                <p>@status</p>
                                 <p>Sanctioning Authority</p>
                             </div>
                         </div>
@@ -418,6 +416,12 @@
                 success: function (res) {
                     $("#projectMan").text(res.data[0].projectManager)
                     $("#project").text(res.data[0].projectName)
+                    $("#i1").text(res.data[0].purpose)
+                    $("#i2").text(res.data[0].dateOfDept)
+                    $("#i3").text(res.data[0].place)
+                    $("#i4").text(res.data[0].periodFrom)
+                    $("#i5").text(res.data[0].periodTo)
+                    $("#i6").text(res.data[0].returnDate)
                 },
                 error: function (xhr) {
 

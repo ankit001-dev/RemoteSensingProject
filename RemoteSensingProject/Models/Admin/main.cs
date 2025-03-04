@@ -285,5 +285,28 @@ namespace RemoteSensingProject.Models.Admin
             public decimal amount { get; set; }
             public bool subStatus { get; set; }
         }
+        public class HiringVehicle1
+        {
+            public decimal amount { get; set; }
+            public int headId { get; set; }
+            public string headName { get; set; }
+            public int projectId { get; set; }
+            public int id { get; set; }
+            public int userId { get; set; }
+            public string projectName { get; set; }
+            public DateTime dateFrom { get; set; }
+            public DateTime dateTo { get; set; }
+            public string purposeOfVisit { get; set; }
+            public string totalDaysNight { get; set; }
+            public string totalPlainHills { get; set; }
+            public string taxi { get; set; }
+            public string BookAgainstCentre { get; set; }
+            public string availbilityOfFund { get; set; }
+            public string taxiReportTo { get; set; }
+            public TimeSpan taxiReportAt { get; set; }
+            public string taxiReportPlace { get; set; }
+            public DateTime taxiReportOn { get; set; }
+            public string proposedPlace { get; set; }
+        }
     }
 }
