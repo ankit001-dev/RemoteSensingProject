@@ -182,7 +182,7 @@
         }
 
     .modal-dialog {
-        margin-top: 50vh; /* You can adjust this value */
+        margin-top: 10vh; /* You can adjust this value */
     }
 </style>
 <div class="row mx-0">
@@ -209,17 +209,20 @@
                                         <td>@i</td>
                                         <td>@item.EmpName</td>
                                         <td>@item.type</td>
-                                        <td>₹ @Convert.ToDecimal(item.amount).ToString("N2")</td>
+                                        <td>₹@Convert.ToDecimal(item.amount).ToString("N2")</td>
                                         <td>
-                                            <a href="#">
+                                            <a href="#" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId">
                                                 <i class="fa-solid fa-eye text-success"></i>
-                                            </a> &nbsp; | &nbsp;
-                                            <a href="#">
+                                            </a> 
+                                            @if (item.appr_status)
+                    {
+
+                                            <span>&nbsp; | &nbsp; </span>
+
+                                            <a href="#" data-type="@item.type" data-userId="@item.userId" data-totalAmount="@item.amount" class="submitamoutSanction">
                                                 <i class="fa-solid fa-check text-success"></i>
-                                            </a> &nbsp; | &nbsp;
-                                            <a href="#">
-                                                <i class="fa-solid fa-xmark text-danger"></i>
                                             </a>
+                    }
 
                                         </td>
                                     </tr>
@@ -236,11 +239,11 @@
 
 
 <!--Modal-->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="ViewReinburseMentReciept" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="ViewReinburseMentRecieptLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Reimbursement Form </h1>
+                <h1 class="modal-title fs-5" id="ViewReinburseMentRecieptLabel">Reimbursement Form </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -282,32 +285,7 @@
                                         <th>Amount Rs. P.</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @if (data != null && data.Count > 0)
-                                    {
-                                        int j = 1;
-                                        foreach (var item in data)
-                                        {
-                                            <tr>
-                                                <td>@j</td>
-                                                <td>@item.vrNo & @item.date</td>
-                                                <td>@item.particulars</td>
-                                                <td>@item.items</td>
-                                                <td>@item.purpose</td>
-                                                <td>@item.amount</td>
-                                            </tr>
-                                            j++;
-                                        }
-                                    }
-
-                                    @for (int k = 0; k <= 17; k++)
-                                    {
-                                        <tr><td></td><td></td><td></td><td></td><td></td><td></td></tr>
-                                    }
-                                    <tr>
-                                        <td colspan="5" class="text-end"><b>Total</b></td>
-                                        <td></td>
-                                    </tr>
+                                <tbody id="viewReinburseRecieptListBody">
                                 </tbody>
                             </table>
                         </div>
@@ -355,4 +333,133 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="submitAmoutSanction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="submitAmoutSanctionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="submitAmoutSanctionLabel">Reimbursement Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+               <form method="post">
+                   <div class="row">
+                       <div class="col-sm-6">
+                           <label>Sanction Amount :</label>
+                           <input type="number" class="form-control" name="sanctionAmount" readonly/>
+                       </div>
+                       <div class="col-sm-6">
+                           <label>Aprroved Amount :</label>
+                           <input type="number" class="form-control" name="apprAmount" />
+                       </div>
+
+                   </div>
+                   <div class="row">
+                       <div class="col-sm-6">
+                           <label>Check Number :</label>
+                           <input type="text" class="form-control" name="chck_number" />
+                       </div>
+                       <div class="col-sm-6">
+                           <label>Check Date:</label>
+                           <input type="date" class="form-control" name="checkDate" />
+                       </div>
+
+                   </div>
+                   <input type="submit" class="btn btn-primary"/>
+               </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $(".viewSanctionreciept").click(function () {
+            Swal.fire({
+                title: "Please wait !",
+                text: "Processing your request ....",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let type = $(this).attr("data-type");
+            let userId = $(this).attr("data-userId");
+            $.ajax({
+                url: "/api/ViewReinbursementAdminView",
+                type: "Get",
+                data: { "userId": userId, "type": type },
+                success: function (result) {
+                    if (result.status) {
+                        $("#viewReinburseRecieptListBody").empty();
+                        Swal.close();
+                        let totalAmout = 0;
+                        let element = "";
+                        $.each(result.data, function (i, d) {
+                            element += `
+              <tr>
+              <td>${i + 1}</td>
+              <td>${d.vrNo} & ${convertToDate(d.date)}</td>
+              <td>${d.particulars}</td>
+              <td>${d.items}</td>
+              <td>${d.purpose}</td>
+              <td>${d.amount}</td>
+              </tr>
+              `
+                            totalAmout += d.amount;
+                        });
+
+                        element += ` <tr>
+               <td colspan="5" class="text-end"><b>Total</b></td>
+               <td>${totalAmout}</td>
+           </tr>`;
+
+                        $("#viewReinburseRecieptListBody").append(element);
+                        $("#ViewReinburseMentReciept").modal("show");
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Sorry !",
+                            text: "Some issue occured !",
+                            icon: "warning"
+                        })
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Server issue !",
+                        text: "Server is busy ! Please try after sometime.",
+                        icon: "error",
+                        didClose: () => {
+                            location.reload(true);
+                        }
+                    })
+                }
+            })
+        })
+
+
+        function convertToDate(timestamp) {
+            const parsedTimestamp = parseInt(timestamp.match(/\d+/)[0], 10);
+            const date = new Date(parsedTimestamp);
+            return date.toLocaleDateString();
+        }
+
+
+        $(".submitamoutSanction").click(function () {
+            let type = $(this).attr("data-type")
+            let userId = $(this).attr("data-userId")
+            let amount = $(this).attr("data-totalAmount")
+
+            $("#submitAmoutSanction").modal("show")
+        })
+    })
+</script>

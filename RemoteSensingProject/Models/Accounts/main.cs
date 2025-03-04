@@ -76,6 +76,7 @@ namespace RemoteSensingProject.Models.Accounts
             public string items { get; set; }
             public string purpose { get; set; }
             public decimal amount { get; set; }
+            public bool appr_status { get; set; }
         }
         public class tourProposal
         {
