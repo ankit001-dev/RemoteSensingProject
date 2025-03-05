@@ -80,6 +80,7 @@ namespace RemoteSensingProject.Models.Accounts
         }
         public class tourProposal
         {
+            public bool adminappr { get; set; }
             public string projectName { get; set; }
             public int projectId { get; set; }
             public string projectManager { get; set; }

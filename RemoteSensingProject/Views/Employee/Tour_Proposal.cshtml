@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["tourlist"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
     var dta = ViewData["projectList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
-
+    string status = "";
 }
 
 <style>
@@ -21,7 +21,7 @@
 </nav>
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Proposal Form </h1>
@@ -91,6 +91,7 @@
                     <th>Period To</th>
                     <th>Date of return</th>
                     <th>Action</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -108,6 +109,16 @@
                             <td>@item.periodTo</td>
                             <td>@item.returnDate</td>
                             <td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action" data-bs-target="#staticBackdrop1" data-bs-toggle="modal"></i></td>
+                            <td class="text-center">
+                                @{
+                                    if (item.newRequest == true && item.adminappr == false)
+                                    { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                    else if (item.newRequest == false && item.adminappr == true)
+                                    { <span id="status" class="badge bg-success">Approved</span> }
+                                    else if (item.newRequest == false && item.adminappr == false)
+                                    { <span id="status" class="badge bg-danger">Rejected</span> }
+                                }
+                            </td>
                         </tr>
                     }
                 }
@@ -332,13 +343,9 @@
     .container {
         padding: 0 10px; /* reduced container padding */
     }
-
-    .modal-dialog {
-        margin-top: 15vh;
-    }
 </style>
 <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Proposal Request </h1>
@@ -446,7 +453,7 @@
                             <div class="authority-section m-0">
                                 <p>Forwarding Authority</p>
                                 <hr class="mb-0 mt-2 p-0" />
-                                <p></p>
+                                <p id="statuss"></p>
                                 <p>Sanctioning Authority</p>
                             </div>
                         </div>
@@ -462,6 +469,7 @@
 
 <script>
     $(document).ready(function () {
+        
         document.getElementById("printBtn").onclick = function () {
             // Get the content of the form to be printed
             var formContent = document.getElementById("formToPrint").innerHTML;
@@ -708,6 +716,13 @@
 <script>
     $(document).ready(function () {
         $(".action").on("click", function () {
+            Swal.fire({
+                title: "Please Wait!",
+                text: "Processing Your Request.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
             let id = $(this).parent().attr("data-id")
             $.ajax({
                 url: '/api/getTourById',
@@ -722,6 +737,13 @@
                     $("#i4").text(res.data[0].periodFrom)
                     $("#i5").text(res.data[0].periodTo)
                     $("#i6").text(res.data[0].returnDate)
+                    let status="";
+                    if (res.data[0].newRequest == true && res.data[0].adminappr == false) { status = "Pending" }
+                    else if (res.data[0].newRequest == false && res.data[0].adminappr == false) { status = "Rejected" }
+                    else if (res.data[0].newRequest == false && res.data[0].adminappr == true) { status = "Approved" }
+                    $("#statuss").text(status);
+                    $("#staticBackdrop1").modal("show")
+                    Swal.close();
                 },
                 error: function (xhr) {
 
