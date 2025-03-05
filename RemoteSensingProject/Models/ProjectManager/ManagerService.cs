@@ -1586,7 +1586,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@hid", data.headId);
                 cmd.Parameters.AddWithValue("@amount", data.amount);
                 cmd.Parameters.AddWithValue("@userId", data.userId);
-                cmd.Parameters.AddWithValue("@projectId", data.projectName);
+                cmd.Parameters.AddWithValue("@projectId", data.projectId);
                 cmd.Parameters.AddWithValue("@dateFrom", data.dateFrom);
                 cmd.Parameters.AddWithValue("@dateTo", data.dateTo);
                 cmd.Parameters.AddWithValue("@proposedPlace", data.proposedPlace);
