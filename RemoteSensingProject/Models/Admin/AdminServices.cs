@@ -1893,6 +1893,7 @@ namespace RemoteSensingProject.Models.Admin
                         {
                             id = (int)res["id"],
                             projectName = Convert.ToString(res["title"]),
+                            projectManager = Convert.ToString(res["name"]),
                             headName = Convert.ToString(res["heads"]),
                             amount = Convert.ToDecimal(res["amount"]),
                             dateFrom = Convert.ToDateTime(res["dateFrom"]),

@@ -40,7 +40,7 @@
                                 {
                                     if (proman.EmployeeRole == "projectManager")
                                     {
-                                        <option value="@proman.EmployeeRole">@proman.EmployeeName</option>
+                                        <option value="@proman.EmployeeName">@proman.EmployeeName</option>
                                     }
                                 }
                             }
@@ -351,6 +351,7 @@
     //Filter
     $("#Filter1").on("change", function () {
         let filter = $(this).val();
+        console.log(filter)
         let table = $("#dataTableExample").DataTable()
         table.column(1).search(filter).draw()
     })
