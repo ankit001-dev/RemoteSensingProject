@@ -274,16 +274,17 @@
                             <td>
                                 <a href="#" class="viewSanctionreciept" data-type="@items.type" data-id="@items.id">
                                     <i class="fa-solid fa-eye"></i>
-                                </a> &nbsp; | &nbsp;
+                                </a> 
                                 @{
 
-                                    if (items.type.Equals("pi_adjustment") && items.amount >= 5000)
+                                    if (!items.subStatus && items.type.Equals("pi_adjustment") && items.amount >= 5000)
                                     {
+                                                                <span>&nbsp; | &nbsp;</span>
                                         <a href="#" class="saveSanctionReciept" data-type="@items.type">
                                             <i class="fa-solid fa-floppy-disk"></i>
                                         </a>
                                     }
-                                    else if (items.type.Equals("contigency"))
+                                    else if (!items.subStatus && items.type.Equals("contigency"))
                                     {
                                         <a href="#" class="saveSanctionReciept" data-type="@items.type">
                                             <i class="fa-solid fa-floppy-disk"></i>

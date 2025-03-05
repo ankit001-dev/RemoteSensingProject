@@ -969,22 +969,22 @@ namespace RemoteSensingProject.ApiServices
                 var formdata = new HiringVehicle
                 {
                       headId=Convert.ToInt32(request.Form.Get("headId")),
-   amount=Convert.ToDecimal(request.Form.Get("amount")),
-   userId=Convert.ToInt32(request.Form.Get("userId")),
-   projectId=Convert.ToInt32(request.Form.Get("projectId")),
-   dateFrom=Convert.ToDateTime(request.Form.Get("dateFrom")),
-   dateTo= Convert.ToDateTime(request.Form.Get("dateTo")),
-                    proposedPlace=(string)request.Form.Get("proposedPlace"),
-   purposeOfVisit=(string)request.Form.Get("purposeOfVisit"),
-   totalDaysNight=Convert.ToString(request.Form.Get("totalDaysNight")),
-   totalPlainHills = Convert.ToString(request.Form.Get("totalPlanHills")),
-   taxi=(string)request.Form.Get("taxi"),
-   BookAgainstCentre=(string)request.Form.Get("BookAgainstCentre"),
-   availbilityOfFund=(string)request.Form.Get("availabilityOfFund"),
-   taxiReportTo=(string)request.Form.Get("taxiReportTo"),
-   taxiReportAt= TimeSpan.Parse(request.Form.Get("taxiReportAt")),
-   taxiReportPlace=(string)request.Form.Get("taxiReportPlace"),
-   taxiReportOn=Convert.ToDateTime(request.Form.Get("taxiReportOn"))
+                       amount=Convert.ToDecimal(request.Form.Get("amount")),
+                       userId=Convert.ToInt32(request.Form.Get("userId")),
+                       projectId=Convert.ToInt32(request.Form.Get("projectId")),
+                       dateFrom=Convert.ToDateTime(request.Form.Get("dateFrom")),
+                       dateTo= Convert.ToDateTime(request.Form.Get("dateTo")),
+                                        proposedPlace=(string)request.Form.Get("proposedPlace"),
+                       purposeOfVisit=(string)request.Form.Get("purposeOfVisit"),
+                       totalDaysNight=Convert.ToString(request.Form.Get("totalDaysNight")),
+                       totalPlainHills = Convert.ToString(request.Form.Get("totalPlanHills")),
+                       taxi=(string)request.Form.Get("taxi"),
+                       BookAgainstCentre=(string)request.Form.Get("BookAgainstCentre"),
+                       availbilityOfFund=(string)request.Form.Get("availabilityOfFund"),
+                       taxiReportTo=(string)request.Form.Get("taxiReportTo"),
+                       taxiReportAt= TimeSpan.Parse(request.Form.Get("taxiReportAt")),
+                       taxiReportPlace=(string)request.Form.Get("taxiReportPlace"),
+                       taxiReportOn=Convert.ToDateTime(request.Form.Get("taxiReportOn"))
                 };
                 bool res = _managerService.insertHiring(formdata);
                 return Ok(new
