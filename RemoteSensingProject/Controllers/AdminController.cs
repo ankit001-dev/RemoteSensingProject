@@ -27,17 +27,8 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Dashboard()
         {
             var TotalCount = _adminServices.DashboardCount();
-            ViewBag.totalEmployee = TotalCount.TotalEmployee;
-            ViewBag.totalProject = TotalCount.TotalProject;
-            ViewBag.totalDelayProject = TotalCount.TotalDelayproject;
-            ViewBag.totalCompleteProject = TotalCount.TotalCompleteProject;
-            ViewBag.totalOngoingProject = TotalCount.TotalOngoingProject;
-            ViewBag.totalMeetings = TotalCount.TotalMeetings;
-            ViewBag.totalBudget = TotalCount.TotalBudget;
-            ViewBag.pendingBudget = TotalCount.PendingBudget;
-            ViewBag.expenditure = TotalCount.expenditure;
-
-            return View();
+            
+            return View(TotalCount);
         }
         public ActionResult BindOverallCompletionPercentage()
         {

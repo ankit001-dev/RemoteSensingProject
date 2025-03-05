@@ -247,6 +247,18 @@ namespace RemoteSensingProject.Models.Admin
             public string TotalMeetings { get; set; }
             public string TotalAdminMeetings { get; set; }
             public string TotalProjectManagerMeetings { get; set; }
+            public string TotalReinbursementReq { get; set; }
+            public string TotalTourProposalReq { get; set; }
+            public string totalVehicleHiringRequest { get; set; }
+            public string totalReinbursementPendingRequest { get; set; }
+            public string totalReinbursementapprovedRequest { get; set; }
+            public string totalReinbursementRejectRequest { get; set; }
+            public string totalTourProposalApprReque { get; set; }
+            public string totalTourProposalRejectReque { get; set; }
+            public string totaTourProposalPendingReque { get; set; }
+            public string totalPendingHiringVehicle { get; set; }
+            public string totalApproveHiringVehicle { get; set; }
+            public string totalRejectHiringVehicle { get; set; }
             public string ProjectManager { get; set; }
             public decimal TotalBudget { get; set; }
             public decimal PendingBudget { get; set; }
