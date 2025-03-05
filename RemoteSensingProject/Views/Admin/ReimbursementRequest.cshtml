@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_adminLayout.cshtml";
     var data = ViewData["ReimBurseData"] as List<RemoteSensingProject.Models.ProjectManager.Reimbursement>;
     int i = 1;
+    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
 <style>
     @@media print {
@@ -184,6 +185,38 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <select id="Filter1" class="form-select form-select-sm">
+                            <option selected>Filter By Project Manager</option>
+                            @if (projManager != null)
+                            {
+                                foreach (var proman in projManager)
+                                {
+                                    if (proman.EmployeeRole == "projectManager")
+                                    {
+                                        <option value="@proman.EmployeeRole">@proman.EmployeeName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select id="typeFilter" class="form-select form-select-sm">
+                            <option selected>Filter By Type</option>
+                            <option value="contigency">Contigency</option>
+                            <option value="pi_adjustment">P.I.Adjustment</option>
+                        </select>
+                    </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
                 <div class="table-responsive">
                     <table id="dataTableExample" class="table">
                         <thead>
@@ -327,6 +360,21 @@
 <script>
 
     $(document).ready(function () {
+
+        //Filter
+        $("#typeFilter").on("change", function () {
+            let tp = $(this).val();
+            let table = $("#dataTableExample").DataTable();
+            table.column(2).search(tp).draw();
+        });
+        $
+            ("#Filter1").on("change", function () {
+            let tp = $(this).val();
+            let table = $("#dataTableExample").DataTable();
+            table.column(1).search(tp).draw();
+        });
+
+
         document.getElementById("printBtn").onclick = function () {
             // Get the content of the form to be printed
             var formContent = document.getElementById("formToPrint").outerHTML;

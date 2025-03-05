@@ -27,7 +27,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Dashboard()
         {
             var TotalCount = _adminServices.DashboardCount();
-            
+            ViewData["physical"]= _adminServices.Project_List();
             return View(TotalCount);
         }
         public ActionResult BindOverallCompletionPercentage()
@@ -519,6 +519,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult ReimbursementRequest()
         {
             ViewData["ReimBurseData"] = _managerServices.GetReimbursements();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
         [HttpPost]
@@ -546,6 +547,8 @@ namespace RemoteSensingProject.Controllers
         {
             var res = _adminServices.getAllTourList();
             ViewData["allTourList"] = res;
+            ViewData["projects"] = _adminServices.Project_List();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
 
@@ -576,6 +579,8 @@ namespace RemoteSensingProject.Controllers
             ViewData["hiringList"] = _adminServices.HiringList();
             //var res1 = _managerServices.getProjectList(userid);
             //ViewData["projectList"] = res1;
+            ViewData["projects"] = _adminServices.Project_List();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
         [HttpPost]

@@ -272,6 +272,11 @@ namespace RemoteSensingProject.Models.Admin
         //    public string financial { get; set; }
         //    public decimal budget { get; set; }
         //}
+        public class BudgetForGraph
+        {
+            public decimal budget { get; set; }
+            public string month { get; set; }
+        }
         public class tourProposalAll
         {
             public string projectName { get; set; }
@@ -306,6 +311,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class HiringVehicle1
         {
+            public string projectManager { get; set; }
             public bool status { get; set; }
             public decimal amount { get; set; }
             public int headId { get; set; }

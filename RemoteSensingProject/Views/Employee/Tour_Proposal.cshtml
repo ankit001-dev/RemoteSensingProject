@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["tourlist"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
     var dta = ViewData["projectList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
-    string status = "";
 }
 
 <style>
@@ -96,11 +95,11 @@
             </thead>
             <tbody>
                 @if (data != null)
-                {
-                    foreach (var item in data)
-                    {
+                            { int i = 1;
+                                foreach (var item in data)
+                                {
                         <tr>
-                            <td>@item.id</td>
+                            <td>@i</td>
                             <td>@item.projectName</td>
                             <td>@item.purpose</td>
                             <td>@item.dateOfDept</td>
@@ -116,12 +115,13 @@
                                     else if (item.newRequest == false && item.adminappr == true)
                                     { <span id="status" class="badge bg-success">Approved</span> }
                                     else if (item.newRequest == false && item.adminappr == false)
-                                    { <span id="status" class="badge bg-danger">Rejected</span> }
+                { <span id="status" class="badge bg-danger">Rejected</span> }
                                 }
                             </td>
                         </tr>
-                    }
-                }
+                                            i++;
+                                        }
+                                    }
             </tbody>
         </table>
     </div>
