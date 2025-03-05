@@ -1,7 +1,8 @@
 ﻿
 @{
-    ViewBag.Title = "Dashboard";
+    Model.Title = "Dashboard";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var data = Model as RemoteSensingProject.Models.Admin.main.DashboardCount;
 }
 
 @*<div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
@@ -79,7 +80,7 @@
                                         <p class="text-success inst py-0">
                                             <span>
                                                 <span class="text-dark">Total Budget :  </span> ₹
-                                                @Convert.ToDecimal(ViewBag.totalBudget).ToString("N2")
+                                                @Convert.ToDecimal(data.TotalBudget).ToString("N2")
                                             </span>
                                         </p>
                                     </div>
@@ -89,7 +90,7 @@
                                         <p class="text-success py-0">
                                             <span>
                                                 <span class="text-dark">Expenditure : </span> ₹
-                                                @Convert.ToDecimal(ViewBag.expenditure).ToString("N2")
+                                                @Convert.ToDecimal(data.expenditure).ToString("N2")
                                             </span>
                                         </p>
                                     </div>
@@ -97,7 +98,7 @@
                                         <p class="text-success py-0">
                                             <span>
                                                 <span class="text-dark">Pending : </span>₹
-                                                @Convert.ToDecimal(ViewBag.pendingBudget).ToString("N2")
+                                                @Convert.ToDecimal(data.PendingBudget).ToString("N2")
                                             </span>
                                         </p>
                                     </div>
@@ -123,7 +124,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h6 class="mb-2 text-success"></h6>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>@ViewBag.expenditure</span></p>
+                                            <p class="text-success"><span>@data.expenditure</span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -147,7 +148,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h6 class="mb-2 text-success"></h6>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>@ViewBag.pendingBudget</span></p>
+                                            <p class="text-success"><span>@data.pendingBudget</span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -171,12 +172,12 @@
                                 <div class="col-6 col-md-12 col-xl-6">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Total Project's :  </span> @ViewBag.totalProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Total Project's :  </span> @data.TotalProject</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Internal Project's :  </span> @ViewBag.totalDelayProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Internal Project's :  </span> @data.TotalInternalProject</span></p>
                                     </div><div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">External Project's :  </span> @ViewBag.totalDelayProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">External Project's :  </span> @data.TotalExternalProject</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-6">
@@ -200,13 +201,13 @@
                                 <div class="col-6 col-md-12 col-xl-6">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Completed Project's :  </span> @ViewBag.totalCompleteProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Completed Project's :  </span> @data.TotalCompleteProject</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Pending Project's :  </span> @ViewBag.totalDelayProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Pending Project's :  </span> @data.TotalDelayproject</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Ongoing Project's :  </span> @ViewBag.totalOngoingProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Ongoing Project's :  </span> @data.TotalOngoingProject</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-6">
@@ -230,7 +231,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h6 class="mb-2 text-success"></h6>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>@ViewBag.totalDelayProject</span></p>
+                                            <p class="text-success"><span>@data.TotalDelayProject</span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -254,7 +255,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h6 class="mb-2 text-success"></h6>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>@ViewBag.totalDelayProject</span></p>
+                                            <p class="text-success"><span>@data.TotalDelayProject</span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -278,7 +279,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h3 class="mb-2 text-success"></h3>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>@ViewBag.totalOngoingProject</span></p>
+                                            <p class="text-success"><span>@data.TotalOngoingProject</span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -301,7 +302,7 @@
                                     <div class="col-6 col-md-12 col-xl-5">
                                         <h3 class="mb-2 text-success"></h3>
                                         <div class="d-flex align-items-baseline">
-                                            <p class="text-success"><span>@ViewBag.totalCompleteProject</span></p>
+                                            <p class="text-success"><span>@data.TotalCompleteProject</span></p>
                                         </div>
                                     </div>
                                     <div class="col-6 col-md-12 col-xl-7">
@@ -325,16 +326,16 @@
                                 <div class="col-6 col-md-12 col-xl-5">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span><span class="text-dark">Total Employees :  </span> @ViewBag.totalCompleteProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Total Employees :  </span> @data.TotalEmployee</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <p class="text-success"><span><span class="text-dark">Project Manager :  </span> @ViewBag.totalDelayProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Project Manager :  </span> @data.TotalProjectManager</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span><span class="text-dark">Accounts : </span> @ViewBag.totalOngoingProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Accounts : </span> @data.TotalAccounts</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span><span class="text-dark">Subordinates : </span> @ViewBag.totalOngoingProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Subordinates : </span> @data.TotalSubOrdinate</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-7">
@@ -358,13 +359,13 @@
                                 <div class="col-6 col-md-12 col-xl-5">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Total :  </span> @ViewBag.totalCompleteProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Total :  </span> @data.TotalMeetings</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Admin :  </span> @ViewBag.totalDelayProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Admin :  </span> @data.TotalAdminMeetings</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Project Manager :  </span> @ViewBag.totalOngoingProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Project Manager :  </span> @data.TotalProjectManagerMeetings</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-7">
@@ -388,16 +389,13 @@
                                 <div class="col-6 col-md-12 col-xl-5">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span><span class="text-dark">Total Request :  </span> @ViewBag.totalCompleteProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Reimbursement :  </span> @data.TotalReinbursementReq</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span><span class="text-dark">Reimbursement :  </span> @ViewBag.totalDelayProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Tour Proposal :  </span> @data.TotalTourProposalReq</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span><span class="text-dark">Tour Proposal :  </span> @ViewBag.totalOngoingProject</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span><span class="text-dark">Hiring Vehicle :  </span> @ViewBag.totalOngoingProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Hiring Vehicle :  </span> @data.totalVehicleHiringRequest</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-7">
@@ -420,13 +418,13 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Pending :  </span> @ViewBag.totalCompleteProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Pending :  </span> @data.totalReinbursementPendingRequest</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Approved  :  </span> @ViewBag.totalDelayProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Approved  :  </span> @data.totalReinbursementapprovedRequest</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Rejected  :  </span> @ViewBag.totalOngoingProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Rejected  :  </span> @data.totalReinbursementRejectRequest</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-5">
@@ -449,13 +447,13 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Pending :  </span> @ViewBag.totalCompleteProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Pending :  </span> @data.TotalTourProposalReq</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Approved  :  </span> @ViewBag.totalDelayProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Approved  :  </span> @data.totalTourProposalApprReque</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Rejected  :  </span> @ViewBag.totalOngoingProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Rejected  :  </span> @data.totalTourProposalRejectReque</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-5">
@@ -478,13 +476,13 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Pending :  </span> @ViewBag.totalCompleteProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Pending :  </span> @data.totalPendingHiringVehicle</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Approved  :  </span> @ViewBag.totalDelayProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Approved  :  </span> @data.totalApproveHiringVehicle</span></p>
                                     </div>
                                     <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Rejected  :  </span> @ViewBag.totalOngoingProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Rejected  :  </span> @data.totalRejectHiringVehicle</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-5">
@@ -587,13 +585,13 @@
                     <div class="col-6 d-flex justify-content-end">
                         <div>
                             <label class="d-flex align-items-center justify-content-end tx-10 text-uppercase fw-bolder">Total Projects <span class="p-1 ms-1 rounded-circle bg-secondary"></span></label>
-                            <h5 class="fw-bolder mb-0 text-end">@ViewBag.totalProject</h5>
+                            <h5 class="fw-bolder mb-0 text-end">@data.TotalProject</h5>
                         </div>
                     </div>
                     <div class="col-6">
                         <div>
                             <label class="d-flex align-items-center tx-10 text-uppercase fw-bolder"><span class="p-1 me-1 rounded-circle bg-primary"></span> Completed Projects</label>
-                            <h5 class="fw-bolder mb-0">@ViewBag.totalCompleteProject</h5>
+                            <h5 class="fw-bolder mb-0">@data.TotalCompleteProject</h5>
                         </div>
                     </div>
                 </div>
@@ -964,7 +962,7 @@
                     height: 260,
                     type: "radialBar"
                 },
-                series: [@ViewBag.totalCompleteProject],
+                series: [@data.TotalCompleteProject],
                 colors: [colors.primary],
                 plotOptions: {
                     radialBar: {
