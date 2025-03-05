@@ -1704,6 +1704,31 @@ namespace RemoteSensingProject.ApiServices
 
         #endregion
 
+        #region BudgetFor Graph
+        [Route("api/budgetforgraph")]
+        [HttpGet]
+        public IHttpActionResult GetBudgetForGraph()
+        {
+            try
+            {
+                var data = _adminServices.BudgetForGraph();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    Message = ex.Message
+                });
+            }
+        }
+        #endregion
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);
