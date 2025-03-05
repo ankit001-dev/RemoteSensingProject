@@ -1,10 +1,46 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "TravelRequest";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
     var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.Admin.main.tourProposalAll>;
+    var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
-
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <select id="Filter1" class="form-select form-select-sm">
+                            <option selected>Filter By Project Manager</option>
+                            @if (projManager != null)
+                            {
+                                foreach (var proman in projManager)
+                                {
+                                    if (proman.EmployeeRole == "projectManager")
+                                    {
+                                        <option value="@proman.EmployeeRole">@proman.EmployeeName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select id="Filter2" class="form-select form-select-sm">
+                            <option selected>Filter By Project</option>
+                            @if (projects != null) { 
+                                foreach(var proj in projects)
+                {
+                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -27,11 +63,12 @@
                         </thead>
                         <tbody>
                             @if (data != null)
-                            {
-                                foreach (var item in data)
-                                {
+                                        {
+                                            int i = 1;
+                                            foreach (var item in data)
+                                            {
                                     <tr>
-                                        <td>@item.id</td>
+                                        <td>@i</td>
                                         <td>@item.projectManager</td>
                                         <td>@item.projectName</td>
                                         <td>@item.purpose</td>
@@ -55,6 +92,7 @@
 
                                         </td>
                                     </tr>
+                                    i++;
                                 }
                             }
                         </tbody>
@@ -408,6 +446,19 @@
 
 <script>
     $(document).ready(function () {
+
+        //Filter
+        $("#Filter1").on("change", function () {
+            let filter = $(this).val();
+            let table = $("#dataTableExample").DataTable()
+            table.column(1).search(filter).draw()
+        })
+        $("#Filter2").on("change", function () {
+            let filter = $(this).val();
+            let table = $("#dataTableExample").DataTable()
+            table.column(2).search(filter).draw()
+        })
+
         debugger
         $(".action").on("click", function () {
             Swal.fire({

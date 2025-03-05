@@ -1953,5 +1953,81 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
         #endregion
+
+        #region Graph Data
+        public List<BudgetForGraph> BudgetForGraph()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "BudgetGraph");
+                List<BudgetForGraph> list = new List<BudgetForGraph>();
+                con.Open();
+                var res = cmd.ExecuteReader();
+                if(res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new BudgetForGraph
+                        {
+                            budget = Convert.ToDecimal(res["budget"]),
+                            month = Convert.ToString(res["months"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch(Exception ex) 
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        //public List<BudgetForGraph> PhysicalForGraph()
+        //{
+        //    try
+        //    {
+        //        cmd = new SqlCommand("sp_ManageDashboard", con);
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.Parameters.AddWithValue("@action", "BudgetGraph");
+        //        List<BudgetForGraph> list = new List<BudgetForGraph>();
+        //        con.Open();
+        //        var res = cmd.ExecuteReader();
+        //        if (res.HasRows)
+        //        {
+        //            while (res.Read())
+        //            {
+        //                list.Add(new BudgetForGraph
+        //                {
+        //                    budget = Convert.ToDecimal(res["budget"]),
+        //                    month = Convert.ToString(res["months"])
+        //                });
+        //            }
+        //        }
+        //        return list;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    finally
+        //    {
+        //        if (con.State == ConnectionState.Open)
+        //        {
+        //            con.Close();
+        //        }
+        //        cmd.Dispose();
+        //    }
+        //}
+        #endregion
     }
 }
