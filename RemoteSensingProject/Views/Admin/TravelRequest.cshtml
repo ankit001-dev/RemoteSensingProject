@@ -50,7 +50,7 @@
 
                                             </a> &nbsp; | &nbsp;
                                             <a href="#">
-                                                <i class="fa-solid fa-eye action text-success" data-id="@item.id" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i>
+                                                <i class="fa-solid fa-eye action text-success" data-id="@item.id"></i>
                                             </a>
 
                                         </td>
@@ -282,13 +282,9 @@
     .container {
         padding: 0 10px; /* reduced container padding */
     }
-
-    .modal-dialog {
-        margin-top: 10vh;
-    }
 </style>
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Proposal Request </h1>
@@ -414,6 +410,13 @@
     $(document).ready(function () {
         debugger
         $(".action").on("click", function () {
+            Swal.fire({
+                title: "Please Wait!",
+                text: "Processing Your Request.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: ()=>{ Swal.showLoading(); }
+            });
             let id = $(this).attr("data-id")
             $.ajax({
                 url: '/api/getTourById',
@@ -428,6 +431,8 @@
                     $("#i4").text(convertToDate(res.data[0].periodFrom))
                     $("#i5").text(convertToDate(res.data[0].periodTo))
                     $("#i6").text(convertToDate(res.data[0].returnDate))
+                    $("#staticBackdrop").modal("show")
+                    Swal.close();
                 },
                 error: function (xhr) {
 

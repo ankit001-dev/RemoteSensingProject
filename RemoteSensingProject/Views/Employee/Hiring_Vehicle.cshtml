@@ -16,12 +16,6 @@
     input::placeholder{
         font-size:12px !important;
     }
-    .modal-dialog {
-        margin-top: 15vh; /* You can adjust this value */
-    }
-    #modal-di{
-        margin-top:0vh;
-    }
 </style>
 
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
@@ -32,7 +26,7 @@
 </nav>
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" id="modal-di">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Indent For Hiring Vehicle for Field Form </h1>
@@ -137,6 +131,7 @@
                     <th>Total Days & Night</th>
                     <th>Avaiability of fund</th>
                     <th>Action</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -154,7 +149,17 @@
                             <td>@item.purposeOfVisit</td>
                             <td>@item.totalDaysNight</td>
                             <td>@item.amount</td>
-                            <td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>
+                            <td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action"></i></td>
+                            <td>
+                                @{
+                                    if (item.newRequest == true && item.adminappr == false)
+                                    { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                    else if (item.newRequest == false && item.adminappr == true)
+                                    { <span id="status" class="badge bg-success">Approved</span> }
+                                    else if (item.newRequest == false && item.adminappr == false)
+                                    { <span id="status" class="badge bg-danger">Rejected</span> }
+                                }
+                            </td>
                         </tr>
                     }
                 }
@@ -279,7 +284,7 @@
     }
 </style>
 <div class="modal fade" id="viewHiringVehicle" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Indent For Hiring Vehicle for Field Form </h1>
@@ -520,6 +525,13 @@
 
     $(document).ready(function () {
         $(".action").on("click", function () {
+            Swal.fire({
+                title: "Please Wait!",
+                text: "Processing Your Request.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
             let id = $(this).parent().attr("data-id")
             $.ajax({
                 url: '/api/getHiringList',
@@ -541,6 +553,8 @@
                     $("#repo_at").text(res.data[0].taxiReportAt)
                     $("#repo_on").text(res.data[0].taxiReportPlace)
                     $("#repo_date").text(convertToDate(res.data[0].taxiReportOn))
+                    $("#viewHiringVehicle").modal("show")
+                    Swal.close();
                 },
                 error: function (xhr) {
 

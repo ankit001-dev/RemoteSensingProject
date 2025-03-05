@@ -187,6 +187,8 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class tourProposal
     {
+        public bool newRequest { get; set; }
+        public bool adminappr { get; set; }
         public string projectName { get; set; }
         public int projectId { get; set; }
         public string projectManager { get; set; }
@@ -201,6 +203,8 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class HiringVehicle
     {
+        public bool adminappr { get; set; }
+        public bool newRequest { get; set; }
         public decimal amount { get; set; }
         public int headId { get; set; }
         public string headName { get; set; }

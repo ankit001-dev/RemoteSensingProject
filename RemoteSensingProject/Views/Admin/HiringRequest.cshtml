@@ -67,7 +67,7 @@
                                                 <i class="fa-solid fa-xmark text-danger"></i>
                                             </a>  |
                                             <a href="#">
-                                                <i class="fa-solid fa-eye action" data-id="@item.id" data-bs-target="#staticBackdrop" data-bs-toggle="modal"></i>
+                                                <i class="fa-solid fa-eye action" data-id="@item.id"></i>
                                             </a>
 
                                         </td>
@@ -455,6 +455,13 @@
 
     $(document).ready(function () {
         $(".action").on("click", function () {
+            Swal.fire({
+                title: "Please Wait!",
+                text: "Processing Your Request.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
             let id = $(this).attr("data-id")
             $.ajax({
                 url: '/api/getHiringList',
@@ -476,6 +483,8 @@
                     $("#repo_at").text(res.data[0].taxiReportAt)
                     $("#repo_on").text(res.data[0].taxiReportPlace)
                     $("#repo_date").text(convertToDate(res.data[0].taxiReportOn))
+                    $("#staticBackdrop").modal("show")
+                    Swal.close();
                 },
                 error: function (xhr) {
 
