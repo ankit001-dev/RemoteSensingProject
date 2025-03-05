@@ -1507,14 +1507,16 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         getlist.Add(new tourProposal
                         {
-                            id = (int)res["id"],
-                            projectName = (string)res["title"],
+                            id = Convert.ToInt32(res["id"]),
+                            projectName = Convert.ToString(res["title"]),
                             dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
                             place = (string)res["place"],
                             periodFrom = Convert.ToDateTime(res["periodFrom"]),
                             periodTo = Convert.ToDateTime(res["periodTo"]),
                             returnDate = Convert.ToDateTime(res["returnDate"]),
                             purpose = (string)res["purpose"],
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            adminappr = Convert.ToBoolean(res["adminappr"])
                         });
                     }
                 }
@@ -1649,7 +1651,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                             taxiReportTo = res["taxiReportTo"].ToString(),
                             taxiReportAt = (TimeSpan)res["taxiReportAt"],
                             taxiReportPlace = res["taxiReportPlace"].ToString(),
-                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"])
+                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"]),
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            adminappr = Convert.ToBoolean(res["adminappr"])
                         });
                     }
                 }
@@ -1685,7 +1689,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         hiringList.Add(new HiringVehicle
                         {
-                            id = (int)res["id"],
+                            id = Convert.ToInt32(res["id"]),
                             projectName = Convert.ToString(res["title"]),
                             headName = Convert.ToString(res["heads"]),
                             amount = Convert.ToDecimal(res["amount"]),
@@ -1694,7 +1698,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             proposedPlace = (string)res["proposedPlace"],
                             purposeOfVisit = (string)res["purposeOfVisit"],
                             totalDaysNight = (string)res["totalDaysNight"],
-                            totalPlainHills = (string)res["totalPlainHills"],
+                            totalPlainHills = Convert.ToString(res["totalPlainHills"]),
                             taxi = (string)res["taxi"],
                             BookAgainstCentre = (string)res["BookAgainstCentre"],
                             taxiReportTo = (string)res["taxiReportTo"],

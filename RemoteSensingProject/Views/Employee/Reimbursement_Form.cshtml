@@ -186,12 +186,6 @@
             margin-bottom: 8px;
         }
 
-    .ViewReinbursementFormModalDialog {
-        margin-top: 50vh; /* You can adjust this value */
-    }
-    .modal-dialog {
-        margin-top: 15vh; /* You can adjust this value */
-    }
 </style>
 <nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
@@ -307,7 +301,7 @@
 </div>
 
 <div class="modal fade" id="ViewReinburseMentReciept" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="ViewReinburseMentRecieptLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered ViewReinbursementFormModalDialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="ViewReinburseMentRecieptLabel">Reimbursement Form </h1>
@@ -320,7 +314,7 @@
                             <h4>REMOTE SENSING APPLICATIONS CENTRE</h4>
                             <h5>UTTAR PRADESH</h5>
                             <div class="px-4 mt-1 d-flex justify-content-between">
-                                <span><p><img src="/assets/images/remote_sensing_logo.jfif" width="50px" /></p><b>S.F.A.O/Director</b></span>
+                                <span><p><img src="/assets/images/remote_sensing_logo.jfif" width="50" /></p><b>S.F.A.O/Director</b></span>
                                 <span>Name of Project/Centre</span>
                             </div>
                         </div>
@@ -375,7 +369,7 @@
                                         <p>A.O./S.F.A.O.</p>
                                     </div>
                                     <div class="col-md-4 text-end">
-                                        <span class="approved-text">Approved</span>
+                                        <span class="approved-text">Pending</span>
                                         <p>Sanctioning Authority</p>
                                     </div>
                                 </div>
@@ -580,13 +574,6 @@
         .form-header-text p {
             margin-bottom: 8px;
         }
-
-    .ViewReinbursementFormModalDialog {
-        margin-top: 50vh; /* You can adjust this value */
-    }
-    .modal-dialog {
-        margin-top: 15vh; /* You can adjust this value */
-    }
 </style>`;
             // Replace the body content with only the form content
             document.body.innerHTML = style + '<div>' + formContent + '</div>';
