@@ -1024,6 +1024,15 @@
     <Content Include="Views\Admin\HiringRequest.cshtml" />
     <Content Include="Views\Accounts\HiringRequest.cshtml" />
     <Content Include="Views\Accounts\ReinbursementRequest.cshtml" />
+    <Content Include="Views\Admin\TourProposal_Report.cshtml" />
+    <Content Include="Views\Admin\Reimbursement_Report.cshtml" />
+    <Content Include="Views\Admin\Hiring_Report.cshtml" />
+    <Content Include="Views\Employee\Reimbursement_Report.cshtml" />
+    <Content Include="Views\Employee\TourProposal_Report.cshtml" />
+    <Content Include="Views\Employee\Hiring_Report.cshtml" />
+    <Content Include="Views\Accounts\Reimbursement_Report.cshtml" />
+    <Content Include="Views\Accounts\TourProposal_Report.cshtml" />
+    <Content Include="Views\Accounts\Hiring_Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

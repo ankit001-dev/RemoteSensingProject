@@ -1,4 +1,5 @@
-﻿using RemoteSensingProject.Models.Admin;
+﻿using RemoteSensingProject.Models.Accounts;
+using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
@@ -47,8 +48,7 @@ namespace RemoteSensingProject.Controllers
                var managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
-            List<main.DashboardCount> list = new List<main.DashboardCount>();
-            list = _adminServices.getAllProjectCompletion().Where(e => e.ProjectManager == userObj.userId).ToList();
+           var list = _adminServices.getAllProjectCompletion().Where(e => e.ProjectManager == userObj.userId).ToList();
             return Json(new { list = list }, JsonRequestBehavior.AllowGet);
 
         }
@@ -633,6 +633,29 @@ namespace RemoteSensingProject.Controllers
                         message = "Something went wrong"
                     });
                 }
+        }
+
+        public ActionResult Reimbursement_Report()
+        {
+            return View();
+        }
+        public ActionResult TourProposal_Report()
+        {
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["tourList"] = _managerServices.getTourList(userid);
+            ViewData["projects"] = _adminServices.Project_List();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
+            return View();
+        }
+        public ActionResult Hiring_Report()
+        {
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var res = _managerServices.getProjectList(userid);
+            ViewData["projectlist"] = res;
+            var res1 = _managerServices.GetHiringVehicles(userid);
+            ViewData["hiringList"] = res1;
+            ViewData["projects"] = _adminServices.Project_List();
+            return View();
         }
     }
 }

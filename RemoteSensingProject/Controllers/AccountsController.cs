@@ -93,6 +93,25 @@ namespace RemoteSensingProject.Controllers
         {
             ViewBag.ProjectList = _accountSerivce.Project_List();
             return View();
-        }    
+        }
+
+        public ActionResult Reimbursement_Report()
+        {
+            return View();
+        }
+        public ActionResult TourProposal_Report()
+        {
+            ViewData["allTourList"] = _accountSerivce.getTourList();
+            ViewData["projects"] = _adminServices.Project_List();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
+            return View();
+        }
+        public ActionResult Hiring_Report()
+        {
+            ViewData["hiringList"] = _adminServices.HiringReort();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
+            ViewData["projects"] = _adminServices.Project_List();
+            return View();
+        }
     }
 }
