@@ -1510,11 +1510,11 @@ namespace RemoteSensingProject.Models.ProjectManager
                             id = Convert.ToInt32(res["id"]),
                             projectName = Convert.ToString(res["title"]),
                             dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
-                            place = (string)res["place"],
+                            place = Convert.ToString(res["place"]),
                             periodFrom = Convert.ToDateTime(res["periodFrom"]),
                             periodTo = Convert.ToDateTime(res["periodTo"]),
                             returnDate = Convert.ToDateTime(res["returnDate"]),
-                            purpose = (string)res["purpose"],
+                            purpose = Convert.ToString(res["purpose"]),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
                             adminappr = Convert.ToBoolean(res["adminappr"])
                         });

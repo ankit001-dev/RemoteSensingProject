@@ -1,11 +1,10 @@
-﻿o
-@{
+﻿@{
     ViewBag.Title = "HiringRequest";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
-    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
+    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.Admin.main.HiringVehicle1>;
+    var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
-
-
 
 <style>
     #reimbursementForm {
@@ -25,45 +24,89 @@
     }
 </style>
 
-
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <select id="Filter1" class="form-select form-select-sm">
+                            <option selected value="">Filter By Project Manager</option>
+                            @if (projManager != null)
+                            {
+                                foreach (var proman in projManager)
+                                {
+                                    if (proman.EmployeeRole == "projectManager")
+                                    {
+                                        <option value="@proman.EmployeeName">@proman.EmployeeName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select id="Filter2" class="form-select form-select-sm">
+                            <option selected value="">Filter By Project</option>
+                            @if (projects != null)
+                            {
+                                foreach (var proj in projects)
+                                {
+                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row mx-0">
     <div class="col-sm-12">
-        <table class="table-bordered table-striped" id="dataTableExample">
-            <thead>
-                <tr>
-                    <th>S.N.</th>
-                    <th>Project Name</th>
-                    <th>Head Name</th>
-                    <th>Date From</th>
-                    <th>Date To</th>
-                    <th>Proposed Place</th>
-                    <th>Purpose of Visit</th>
-                    <th>Total Days & Night</th>
-                    <th>Avaiability of fund</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (data != null)
-                {
-                    foreach (var item in data)
-                    {
+        <div class="card">
+            <div class="card-body">
+                <table class="table" id="dataTableExample">
+                    <thead>
                         <tr>
-                            <td>@item.id</td>
-                            <td>@item.projectName</td>
-                            <td>@item.headName</td>
-                            <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
-                            <td>@Convert.ToDateTime(item.dateTo).ToString("dd-MMM-yyyy")</td>
-                            <td>@item.proposedPlace</td>
-                            <td>@item.purposeOfVisit</td>
-                            <td>@item.totalDaysNight</td>
-                            <td>@item.amount</td>
-                            <td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>
+                            <th>S.N.</th>
+                            <th>Project Manager</th>
+                            <th>Project Name</th>
+                            <th>Head Name</th>
+                            <th>Date From</th>
+                            <th>Date To</th>
+                            <th>Proposed Place</th>
+                            <th>Purpose of Visit</th>
+                            <th>Total Days & Night</th>
+                            <th>Avaiability of fund</th>
+                            <th>Action</th>
                         </tr>
-                    }
-                }
-            </tbody>
-        </table>
+                    </thead>
+                    <tbody>
+                        @if (data != null)
+                                    {
+                                        int i = 1;
+                                        foreach (var item in data)
+                                        {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.projectManager</td>
+                                    <td>@item.projectName</td>
+                                    <td>@item.headName</td>
+                                    <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
+                                    <td>@Convert.ToDateTime(item.dateTo).ToString("dd-MMM-yyyy")</td>
+                                    <td>@item.proposedPlace</td>
+                                    <td>@item.purposeOfVisit</td>
+                                    <td>@item.totalDaysNight</td>
+                                    <td>@item.amount</td>
+                                    <td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -294,6 +337,21 @@
 <script>
 
     $(document).ready(function () {
+
+        //Filter
+        $("#Filter1").on("change", function () {
+            let filter = $(this).val();
+            console.log(filter)
+            let table = $("#dataTableExample").DataTable()
+            table.column(1).search(filter).draw()
+        })
+        $("#Filter2").on("change", function () {
+            let filter = $(this).val();
+            let table = $("#dataTableExample").DataTable()
+            table.column(2).search(filter).draw()
+        })
+
+
         document.getElementById("printBtn").onclick = function () {
             // Get the content of the form to be printed
             var formContent = document.getElementById("formToPrint").outerHTML;
