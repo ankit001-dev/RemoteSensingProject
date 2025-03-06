@@ -2,5 +2,23 @@
 @{
     ViewBag.Title = "Reimbursement_Report";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var empData = ViewData["totalProjectManager"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
 
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-4">
+                <select class="form-select form-select-sm">
+                    <option value="" selected>Filter by Project Manager</option>
+                    @if (empData.Any()) { 
+                    foreach(var item in empData)
+                {
+                    <option>@item.EmployeeName (@item.EmployeeCode)</option>
+                }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
