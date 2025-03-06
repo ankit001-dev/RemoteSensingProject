@@ -191,15 +191,15 @@ namespace RemoteSensingProject.Models.Accounts
                     {
                         getlist.Add(new tourProposal
                         {
-                            id = (int)res["id"],
-                            projectManager = (string)res["name"],
-                            projectName = (string)res["title"],
+                            id = Convert.ToInt32(res["id"]),
+                            projectManager = Convert.ToString(res["name"]),
+                            projectName = Convert.ToString(res["title"]),
                             dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
-                            place = (string)res["place"],
+                            place = Convert.ToString(res["place"]),
                             periodFrom = Convert.ToDateTime(res["periodFrom"]),
                             periodTo = Convert.ToDateTime(res["periodTo"]),
                             returnDate = Convert.ToDateTime(res["returnDate"]),
-                            purpose = (string)res["purpose"],
+                            purpose = Convert.ToString(res["purpose"]),
                             newRequest = Convert.ToBoolean(res["newRequest"])
                         });
                     }

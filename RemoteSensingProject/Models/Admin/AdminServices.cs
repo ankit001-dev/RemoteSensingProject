@@ -1893,6 +1893,7 @@ namespace RemoteSensingProject.Models.Admin
                         {
                             id = (int)res["id"],
                             projectName = Convert.ToString(res["title"]),
+                            projectManager = Convert.ToString(res["name"]),
                             headName = Convert.ToString(res["heads"]),
                             amount = Convert.ToDecimal(res["amount"]),
                             dateFrom = Convert.ToDateTime(res["dateFrom"]),
@@ -2028,6 +2029,53 @@ namespace RemoteSensingProject.Models.Admin
         //        cmd.Dispose();
         //    }
         //}
+        #endregion
+
+        #region All Reports
+        public List<tourProposalAll> getReportOfTour()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "");
+                List<tourProposalAll> list = new List<tourProposalAll>();
+                con.Open();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while(res.Read())
+                    {
+                        list.Add(new tourProposalAll
+                        {
+                            id = Convert.ToInt32(res["id"]),
+                            projectName = Convert.ToString(res["title"]),
+                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+                            place = (string)res["place"],
+                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
+                            periodTo = Convert.ToDateTime(res["periodTo"]),
+                            returnDate = Convert.ToDateTime(res["returnDate"]),
+                            purpose = (string)res["purpose"],
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            adminappr = Convert.ToBoolean(res["adminappr"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
         #endregion
     }
 }

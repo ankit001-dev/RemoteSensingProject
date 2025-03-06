@@ -576,6 +576,7 @@ namespace RemoteSensingProject.Controllers
             ViewData["projectlist"] = res;
             var res1 = _managerServices.GetHiringVehicles(userid);
             ViewData["hiringList"] = res1;
+            ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
         [HttpPost]
@@ -607,7 +608,8 @@ namespace RemoteSensingProject.Controllers
             var res = _managerServices.getTourList(userid);
             var res1 = _managerServices.getProjectList(userid);
             ViewData["projectList"] = res1;
-            ViewData["tourList"] = res; 
+            ViewData["tourList"] = res;
+            ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
         [HttpPost]

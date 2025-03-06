@@ -3,8 +3,10 @@
     ViewBag.Title = "TourProposalRequest";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
     var data = ViewData["tourproposal"] as List<RemoteSensingProject.Models.Accounts.main.tourProposal>;
-    string status = "";
+    var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
+
 <style>
     .cards {
         /* border: 2px solid #000; */
@@ -226,6 +228,43 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <select id="Filter1" class="form-select form-select-sm">
+                            <option selected value="">Filter By Project Manager</option>
+                            @if (projManager != null)
+                            {
+                                foreach (var proman in projManager)
+                                {
+                                    if (proman.EmployeeRole == "projectManager")
+                                    {
+                                        <option value="@proman.EmployeeName">@proman.EmployeeName</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select id="Filter2" class="form-select form-select-sm">
+                            <option selected value="">Filter By Project</option>
+                            @if (projects != null)
+                            {
+                                foreach (var proj in projects)
+                                {
+                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
                 <div class="table-responsive">
                     <table id="dataTableExample" class="table">
                         <thead>
@@ -245,11 +284,12 @@
                         </thead>
                         <tbody>
                             @if (data != null)
-                            {
-                                foreach (var item in data)
-                                {
+                                        {
+                                            int i = 1;
+                                            foreach (var item in data)
+                                            {
                                     <tr>
-                                        <td>@item.id</td>
+                                        <td>@i</td>
                                         <td>@item.projectManager</td>
                                         <td>@item.projectName</td>
                                         <td>@item.purpose</td>
@@ -258,21 +298,21 @@
                                         <td>@item.periodFrom</td>
                                         <td>@item.periodTo</td>
                                         <td>@item.returnDate</td>
-                                        @{
-                                            if (item.newRequest)
-                                            {
-                                                status = "Pending";
+                                        <td>
+                                                        @{
+                                                    if (item.newRequest == true && item.adminappr == false)
+                                                    { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                                else if (item.newRequest == false && item.adminappr == true)
+                                                { <span id="status" class="badge bg-success">Approved</span> }
+                                                else if (item.newRequest == false && item.adminappr == false)
+                            { <span id="status" class="badge bg-danger">Rejected</span> }
                                             }
-                                            else
-                                            {
-                                                status = "Approved";
-                                            }
-                                        }
-                                        <td>@status</td>
-                                        <td  data-id="@item.id" class="text-center"><i class="fa-solid fa-eye action" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i> </td>
+                                        </td>
+                                        <td data-id="@item.id" class="text-center"><i class="fa-solid fa-eye action" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i> </td>
                                     </tr>
-                                }
-                            }
+                                                                    i++;
+                                                                }
+                                                            }
                         </tbody>
                     </table>
                 </div>
@@ -357,7 +397,7 @@
                                             <td id="i4"></td>
                                             <td id="i5"></td>
                                             <td id="i6"></td>
-                                        </tr> 
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -393,7 +433,7 @@
                             <div class="authority-section m-0">
                                 <p>Forwarding Authority</p>
                                 <hr class="mb-0 mt-2 p-0" />
-                                <p>@status</p>
+                                <p id="statuss"></p>
                                 <p>Sanctioning Authority</p>
                             </div>
                         </div>
@@ -407,12 +447,32 @@
 
 <script>
     $(document).ready(function () {
+
+        //Filter
+        $("#Filter2").on("change", function () {
+            let filter = $(this).val();
+            let table = $("#dataTableExample").DataTable()
+            table.column(2).search(filter).draw()
+        })
+        $("#Filter1").on("change", function () {
+            let filter = $(this).val();
+            let table = $("#dataTableExample").DataTable()
+            table.column(1).search(filter).draw()
+        })
+
         $(".action").on("click", function () {
+            Swal.fire({
+                title: "Please Wait!",
+                text: "Processing Your Request.",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
             let id = $(this).parent().attr("data-id")
             $.ajax({
                 url: '/api/getTourById',
                 type: 'get',
-                data: {id:id} ,
+                data: { id: id },
                 success: function (res) {
                     $("#projectMan").text(res.data[0].projectManager)
                     $("#project").text(res.data[0].projectName)
@@ -422,6 +482,13 @@
                     $("#i4").text(res.data[0].periodFrom)
                     $("#i5").text(res.data[0].periodTo)
                     $("#i6").text(res.data[0].returnDate)
+                    let status = "";
+                    if (res.data[0].newRequest == true && res.data[0].adminappr == false) { status = "Pending" }
+                    else if (res.data[0].newRequest == false && res.data[0].adminappr == false) { status = "Rejected" }
+                    else if (res.data[0].newRequest == false && res.data[0].adminappr == true) { status = "Approved" }
+                    $("#statuss").text(status);
+                    $("#staticBackdrop").modal("show")
+                    Swal.close();
                 },
                 error: function (xhr) {
 
