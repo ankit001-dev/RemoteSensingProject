@@ -71,11 +71,13 @@ namespace RemoteSensingProject.Models.Accounts
             public int userId { get; set; }
             public string EmpName { get; set; }
             public string type { get; set; }
+            public string chequeNumber { get; set; }
             public string vrNo { get; set; }
             public string particulars { get; set; }
             public string items { get; set; }
             public string purpose { get; set; }
             public decimal amount { get; set; }
+            public decimal apprAmt { get; set; }
             public bool appr_status { get; set; }
         }
         public class tourProposal

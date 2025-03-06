@@ -146,8 +146,8 @@ namespace RemoteSensingProject.Models.Accounts
                 List<Reimbursement> getlist = new List<Reimbursement>();
                 var res = cmd.ExecuteReader();
                 if (res.HasRows)
-                {
-                    while (res.Read())
+                    {
+                        while (res.Read())
                     {
                         getlist.Add(new Reimbursement
                         {
@@ -155,7 +155,8 @@ namespace RemoteSensingProject.Models.Accounts
                             EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
                             amount = Convert.ToDecimal(res["amount"]),
                             userId = Convert.ToInt32(res["userId"]),
-                            appr_status = Convert.ToBoolean(res["admin_appr"])
+                            id = Convert.ToInt32(res["id"]),
+                            appr_status = Convert.ToBoolean(res["Apprstatus"])
                         });
                     }
                 }
@@ -266,5 +267,27 @@ namespace RemoteSensingProject.Models.Accounts
             }
         }
 
+
+        public bool reinbursementRequestAmt(Reimbursement rs)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "approveReinburseAmt");
+                cmd.Parameters.AddWithValue("@chequeNum", rs.chequeNumber);
+                cmd.Parameters.AddWithValue("@chequeDate", rs.date);
+                cmd.Parameters.AddWithValue("@sanctionAmt", rs.amount);
+                cmd.Parameters.AddWithValue("@apprAmt", rs.apprAmt);
+                cmd.Parameters.AddWithValue("@rejectAmt", rs.amount-rs.apprAmt);
+                cmd.Parameters.AddWithValue("@id", rs.id);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

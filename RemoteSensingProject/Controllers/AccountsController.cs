@@ -48,7 +48,6 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Expenses(int Id)
         {
             ViewData["ProjectStages"] = _accountSerivce.ProjectBudgetList(Id);
-
             return View();
         
         }

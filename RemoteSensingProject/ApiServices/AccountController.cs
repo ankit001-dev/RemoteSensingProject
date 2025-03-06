@@ -3,6 +3,7 @@ using RemoteSensingProject.Models.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Http;
 using static RemoteSensingProject.Models.Accounts.main;
@@ -108,6 +109,47 @@ namespace RemoteSensingProject.ApiServices
                     message="Data not found"
                 });
             }
+        }
+
+        [HttpPost]
+        [Route("api/approveReinbursementAmtRequest")]
+        public IHttpActionResult InsertReinbursementForm()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formData = new Reimbursement
+                {
+                  chequeNumber = request.Form.Get("chequeNum"),
+                 date = Convert.ToDateTime(request.Form.Get("chequeDate")),
+                 amount = Convert.ToDecimal(request.Form.Get("sanctionAmt")),
+                apprAmt= Convert.ToDecimal(request.Form.Get("apprAmount")),
+                id = Convert.ToInt32(request.Form.Get("id"))
+                };
+
+                bool res = _accountSerivce.reinbursementRequestAmt(formData);
+
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res ? "Amount approved successfully !" : "Some issue occured while processing reuqest.."
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+
+        private IHttpActionResult BadRequest(object value)
+        {
+            return Content(HttpStatusCode.BadRequest, value);
         }
     }
 }

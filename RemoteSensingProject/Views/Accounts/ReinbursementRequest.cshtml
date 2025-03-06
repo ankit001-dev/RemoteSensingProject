@@ -190,7 +190,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="dataTableExample" class="table">
+                    <table id="dataTableExample" class="table table-hover mb-0">
                         <thead>
                             <tr>
                                 <th class="text-center">Sr</th>
@@ -219,7 +219,7 @@
 
                                                 <span>&nbsp; | &nbsp; </span>
 
-                                                <a href="#" data-type="@item.type" data-userId="@item.userId" data-totalAmount="@item.amount" class="submitamoutSanction">
+                                                <a href="#" data-type="@item.type" data-userId="@item.userId" data-totalAmount="@item.amount" data-Id="@item.id" class="submitamoutSanction">
                                                     <i class="fa-solid fa-check text-success"></i>
                                                 </a>
                                             }
@@ -240,7 +240,7 @@
 
 <!--Modal-->
 <div class="modal fade" id="ViewReinburseMentReciept" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="ViewReinburseMentRecieptLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="ViewReinburseMentRecieptLabel">Reimbursement Form </h1>
@@ -253,7 +253,9 @@
                             <h4>REMOTE SENSING APPLICATIONS CENTRE</h4>
                             <h5>UTTAR PRADESH</h5>
                             <div class="px-4 mt-1 d-flex justify-content-between">
-                                <span><p>logo</p><b>S.F.A.O/Director</b></span>
+                                <span><p>
+                                    <img src="~/assets/images/remote_sensing_logo.jfif" width="50px"/>
+                                    </p><b>S.F.A.O/Director</b></span>
                                 <span>
                                     <p>
                                         <b>
@@ -336,37 +338,38 @@
 
 
 <div class="modal fade" id="submitAmoutSanction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="submitAmoutSanctionLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="submitAmoutSanctionLabel">Reimbursement Form </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post">
+                <form method="post" id="reinbursementAmountApprForm">
                     <div class="row">
                         <div class="col-sm-6">
                             <label>Sanction Amount :</label>
-                            <input type="number" class="form-control" name="sanctionAmount" readonly />
+                            <input type="number" class="form-control" name="sanctionAmt" id="sanctionAmount" readonly />
                         </div>
                         <div class="col-sm-6">
                             <label>Aprroved Amount :</label>
-                            <input type="number" class="form-control" name="apprAmount" />
+                            <input type="number" class="form-control" name="apprAmount" id="apprAmountChanges" placeholder="Enter amount...."/>
+                            <span class="text-danger" id="showalertMessage" style="display:none;">Amount is invalid !</span>
                         </div>
 
                     </div>
                     <div class="row">
                         <div class="col-sm-6">
-                            <label>Check Number :</label>
-                            <input type="text" class="form-control" name="chck_number" />
+                            <label>Cheque Number :</label>
+                            <input type="text" class="form-control" name="chequeNum" placeholder="Enter cheque number"/>
                         </div>
                         <div class="col-sm-6">
-                            <label>Check Date:</label>
-                            <input type="date" class="form-control" name="checkDate" />
+                            <label>Cheque Date:</label>
+                            <input type="date" class="form-control" name="chequeDate" />
                         </div>
-
+                        <input type="hidden" name="id" id="sanctionId"/>
                     </div>
-                    <input type="submit" class="btn btn-primary" />
+                    <input type="submit" id="submitAmtBtn" class="btn btn-primary" />
                 </form>
             </div>
         </div>
@@ -457,9 +460,74 @@
         $(".submitamoutSanction").click(function () {
             let type = $(this).attr("data-type")
             let userId = $(this).attr("data-userId")
+            let id = $(this).attr("data-Id");
             let amount = $(this).attr("data-totalAmount")
-
+            $("#sanctionAmount").val(amount);
+            $("#sanctionId").val(id);
             $("#submitAmoutSanction").modal("show")
+        })
+
+        $("#apprAmountChanges").on("input", function () {
+            let inputamt = parseFloat($(this).val());
+            let sanctionAmount = parseFloat($("#sanctionAmount").val());
+            if (inputamt > sanctionAmount) {
+                $("#showalertMessage").show();
+                $("#submitAmtBtn").attr("disabled", true)
+            }
+            else {
+                $("#showalertMessage").hide();
+
+                $("#submitAmtBtn").removeAttr("disabled");
+            }
+        });
+
+        $("#reinbursementAmountApprForm").on("submit", function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: "Please wait!",
+                text: "Processing your request....",
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            let formData = new FormData(this);
+            $.ajax({
+                url: "/api/approveReinbursementAmtRequest",
+                type: "post",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: "Successfully !",
+                            text: res.message,
+                            icon: "success",
+                            didClose: () => {
+                                location.reload(true);
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Sorry !",
+                            text: res.message,
+                            icon: "warning"
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Server busy !",
+                        text: "Server is busy. Please try after sometime !",
+                        icon: "error",
+                        didClose: () => {
+                            location.reload(true);
+                        }
+                    })
+                }
+            })
         })
     })
 </script>
