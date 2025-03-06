@@ -1,11 +1,12 @@
 ﻿
 @{
     ViewBag.Title = "Hiring_Report";
-    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
     var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.Admin.main.HiringVehicle1>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
+
 <style>
     #reimbursementForm {
         display: none;
@@ -160,7 +161,7 @@
                                             else if (item.newRequest == false && item.adminappr == false)
                                             { <span id="status" class="badge bg-danger">Rejected</span> }
                                         }
-                                    </td> 
+                                    </td>
                                 </tr>
                                 i++;
                             }
@@ -571,7 +572,7 @@
             document.body.innerHTML = originalContent;
         };
     });
-    
+
 
     $(document).ready(function () {
         $(".action").on("click", function () {

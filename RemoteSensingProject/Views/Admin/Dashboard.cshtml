@@ -730,7 +730,7 @@
 
 <script>
     $(document).ready(function () {
-
+        let data = @Html.Raw(Json.Encode(graphdata))
         $.ajax({
             url: "/Admin/BindOverallCompletionPercentage",
             type: "GET",
@@ -738,14 +738,14 @@
                 // Clear existing chart content
                 $("#monthlySalesChart").empty();
 
-                var categories = [];
-                var data = [];
 
                 $.each(res.list, function (index, item) {
                     categories.push(item.Title );
                     data.push(item.OverallCompletionPercentage);
                 });
 
+                var categories = [];
+                var data = [];
                 var options = {
                     chart: {
                         type: 'bar',

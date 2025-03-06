@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using RemoteSensingProject.Models.Admin;
 using static RemoteSensingProject.Models.Admin.main;
 using  RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.Accounts;
 
 
 namespace RemoteSensingProject.Controllers
@@ -16,12 +17,13 @@ namespace RemoteSensingProject.Controllers
     {
         private readonly AdminServices _adminServices;
         private readonly ManagerService _managerServices;
+        private readonly AccountService _accountService;
 
         public AdminController()
         {
             _adminServices = new AdminServices();  
             _managerServices = new ManagerService();
-
+            _accountService = new AccountService();
         }
         // GET: Admin
         public ActionResult Dashboard()
@@ -32,8 +34,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult BindOverallCompletionPercentage()
         {
-            List<main.DashboardCount> list = new List<main.DashboardCount>();
-            list = _adminServices.getAllProjectCompletion();
+            var  list = _adminServices.getAllProjectCompletion();
             return Json(new { list = list},JsonRequestBehavior.AllowGet);
 
         }
@@ -610,11 +611,16 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult TourProposal_Report()
         {
-            ViewData["allTourList"] = _adminServices.getReportOfTour();
+            ViewData["allTourList"] = _accountService.getTourList();
+            ViewData["projects"] = _adminServices.Project_List();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
         public ActionResult Hiring_Report()
         {
+            ViewData["hiringList"] = _adminServices.HiringReort();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
+            ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
 

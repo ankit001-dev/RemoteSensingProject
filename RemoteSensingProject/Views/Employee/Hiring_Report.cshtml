@@ -1,11 +1,13 @@
 ﻿
 @{
     ViewBag.Title = "Hiring_Report";
-    Layout = "~/Views/Shared/_adminLayout.cshtml";
-    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.Admin.main.HiringVehicle1>;
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
+    var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
+
 <style>
     #reimbursementForm {
         display: none;
@@ -160,7 +162,7 @@
                                             else if (item.newRequest == false && item.adminappr == false)
                                             { <span id="status" class="badge bg-danger">Rejected</span> }
                                         }
-                                    </td> 
+                                    </td>
                                 </tr>
                                 i++;
                             }
@@ -571,10 +573,11 @@
             document.body.innerHTML = originalContent;
         };
     });
-    
+
 
     $(document).ready(function () {
         $(".action").on("click", function () {
+            debugger
             Swal.fire({
                 title: "Please Wait!",
                 text: "Your Request under process.",
@@ -620,5 +623,4 @@
     }
 
 </script>
-
 

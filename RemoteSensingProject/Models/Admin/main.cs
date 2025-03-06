@@ -313,6 +313,8 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class HiringVehicle1
         {
+            public bool newRequest { get; set; }
+            public bool adminappr { get; set; }
             public string projectManager { get; set; }
             public bool status { get; set; }
             public decimal amount { get; set; }

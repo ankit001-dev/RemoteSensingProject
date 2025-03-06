@@ -34,53 +34,73 @@
         .uniform-card img {
             margin: 0 auto;
         }
+    .uniform-card {
+        /*        height: 200px;
+  */ width: 160px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+    }
+
+        .uniform-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+        }
+
+        .uniform-card .card-title {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .uniform-card p.text-success {
+            font-size: 13px;
+        }
+
+        .uniform-card img {
+            margin: 0 auto;
+        }
+
+    .grid-margin .w-100 .card {
+        background: #029e9d6b;
+    }
+
+    .align-items-baseline .text-success {
+        color: white !important;
+    }
+
+    .grid-margin {
+        margin: 3px 0px !important;
+    }
 </style>
 
-<div class="row">
-    <div class="col-12 col-xl-12 stretch-card">
+<div class="row mx-0">
+    <div class="col-12 col-xl-12">
         <div class="row flex-grow-1">
-
-            <!-- Employee's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Employee/Assigned_Project" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0" style="text-decoration: none;">Assigned Project</h6>
-                            </div>
-                            <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
-                                    <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span>@ViewBag.TotalAssignProject</span></p>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/success.gif" height="60" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-
             <!-- Project's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Employee/Approved_Project" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+                <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0">Complete Project</h6>
+                                <h6 class="card-title mb-0">Project's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-6">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span>@ViewBag.TotaCompleteProject</span></p>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Total Project's :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Internal Project's :  </span> 0</span></p>
+                                    </div><div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">External Project's :  </span> 0</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/project.gif" height="60" />
+                                <div class="col-6 col-md-12 col-xl-6">
+                                    <img src="~/assets/gif/project.gif" height="80" />
                                 </div>
                             </div>
                         </div>
@@ -89,22 +109,28 @@
             </div>
 
             <!-- Pending Project's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Employee/Project_List" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+                <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0 text-nowrap">Pending Project's</h6>
+                                <h6 class="card-title mb-0 text-nowrap">Project's Status</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-6">
                                     <h6 class="mb-2 text-success"></h6>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span>@ViewBag.TotalDelayProject</span></p>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Completed Project's :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Pending Project's :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Ongoing Project's :  </span> 0</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/file.gif" height="60" />
+                                <div class="col-6 col-md-12 col-xl-6">
+                                    <img src="~/assets/gif/file.gif" height="80" />
                                 </div>
                             </div>
                         </div>
@@ -112,34 +138,43 @@
                 </a>
             </div>
 
-            <!-- Completed Project's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Employee/Project_List" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
+            <!-- Employee's Card -->
+            <!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+                <a href="/Admin/Employee_Registration" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 w-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0 text-nowrap">Ongoing Project</h6>
+                                <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
                             </div>
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-5">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span>@ViewBag.TotalOngoingProject</span></p>
+                                        <p class="text-success"><span><span class="text-dark">Total Employees :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success"><span><span class="text-dark">Project Manager :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span><span class="text-dark">Accounts : </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span><span class="text-dark">Subordinates : </span> 0</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/checklist.gif" height="60" />
+                                    <img src="~/assets/gif/success.gif" height="70" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </a>
-            </div>
+            </div>-->
 
             <!-- Meeting's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Employee/Meetings" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
@@ -147,12 +182,18 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-5">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span>@ViewBag.TotalMeeting</span></p>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Total :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Admin :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Project Manager :  </span> 0</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/discussion.gif" height="60" />
+                                    <img src="~/assets/gif/discussion.gif" height="70" />
                                 </div>
                             </div>
                         </div>
@@ -160,29 +201,153 @@
                 </a>
             </div>
 
-            <!-- Another Meeting's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Employee/Notice" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
+            <!-- Request's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0 text-nowrap">Notice</h6>
+                                <h6 class="card-title mb-0 text-nowrap">Request's</h6>
                             </div>
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-5">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span>@ViewBag.TotalNotice</span></p>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Reimbursement :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Tour Proposal :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Hiring Vehicle :  </span> 0</span></p>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/notification.gif" height="60" />
+                                    <img src="~/assets/gif/rfp.gif" height="70" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </a>
             </div>
+            <!-- Request's status Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Reimbursement's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Pending :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Approved  :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Rejected  :  </span> 0</span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <img src="~/assets/gif/employee-benefit.gif" height="70" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Request's status Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Tour Proposal's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Pending :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Approved  :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Rejected  :  </span> 0</span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <img src="~/assets/gif/map.gif" height="70" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Request's status Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Hiring Vehicle's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Pending :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Approved  :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Rejected  :  </span> 0</span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <img src="~/assets/gif/rent-car.gif" height="70" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Other's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+                <a href="/Admin/Employee_Registration" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 w-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0" style="text-decoration: none;">Other's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Project Manager :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Accounts : </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline py-1">
+                                        <p class="text-success"><span><span class="text-dark">Subordinates : </span> 0</span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <img src="~/assets/gif/success.gif" height="70" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
 
         </div>
     </div>
