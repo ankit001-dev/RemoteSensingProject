@@ -604,6 +604,19 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
+        public ActionResult Reimbursement_Report()
+        {
+            return View();
+        }
+        public ActionResult TourProposal_Report()
+        {
+            ViewData["allTourList"] = _adminServices.getReportOfTour();
+            return View();
+        }
+        public ActionResult Hiring_Report()
+        {
+            return View();
+        }
 
         //public ActionResult AddBudget()
         //{

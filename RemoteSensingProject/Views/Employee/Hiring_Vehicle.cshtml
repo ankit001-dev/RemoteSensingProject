@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
+    var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
 }
 
 <style>
@@ -24,6 +25,28 @@
     </ol>
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Hiring</button>
 </nav>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <select id="Filter2" class="form-select form-select-sm">
+                            <option selected value="">Filter By Project</option>
+                            @if (projects != null)
+                            {
+                                foreach (var proj in projects)
+                                {
+                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -136,11 +159,12 @@
             </thead>
             <tbody>
                 @if (data != null)
-                {
-                    foreach (var item in data)
-                    {
+                            {
+                                int i = 1;
+                                foreach (var item in data)
+                                {
                         <tr>
-                            <td>@item.id</td>
+                            <td>@i</td>
                             <td>@item.projectName</td>
                             <td>@item.headName</td>
                             <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
@@ -157,12 +181,13 @@
                                     else if (item.newRequest == false && item.adminappr == true)
                                     { <span id="status" class="badge bg-success">Approved</span> }
                                     else if (item.newRequest == false && item.adminappr == false)
-                                    { <span id="status" class="badge bg-danger">Rejected</span> }
+                { <span id="status" class="badge bg-danger">Rejected</span> }
                                 }
                             </td>
                         </tr>
-                    }
-                }
+                                            i++;
+                                        }
+                                    }
             </tbody>
         </table>
     </div>
@@ -379,6 +404,14 @@
 <script>
 
     $(document).ready(function () {
+
+        //Filter
+        $("#Filter2").on("change", function () {
+            let filter = $(this).val();
+            let table = $("#dataTableExample").DataTable()
+            table.column(1).search(filter).draw()
+        })
+
         document.getElementById("printBtn").onclick = function () {
             // Get the content of the form to be printed
             var formContent = document.getElementById("formToPrint").outerHTML;

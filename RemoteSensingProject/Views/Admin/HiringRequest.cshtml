@@ -33,7 +33,7 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <select id="Filter1" class="form-select form-select-sm">
-                            <option selected>Filter By Project Manager</option>
+                            <option selected value="">Filter By Project Manager</option>
                             @if (projManager != null)
                             {
                                 foreach (var proman in projManager)
@@ -48,7 +48,7 @@
                     </div>
                     <div class="col-sm-4">
                         <select id="Filter2" class="form-select form-select-sm">
-                            <option selected>Filter By Project</option>
+                            <option selected value="">Filter By Project</option>
                             @if (projects != null)
                             {
                                 foreach (var proj in projects)

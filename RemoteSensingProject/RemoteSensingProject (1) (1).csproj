@@ -1024,6 +1024,9 @@
     <Content Include="Views\Accounts\ReinbursementRequest.cshtml" />
     <Content Include="Views\Admin\HiringRequest.cshtml" />
     <Content Include="Views\Accounts\HiringRequest.cshtml" />
+    <Content Include="Views\Admin\Reimbursement_Report.cshtml" />
+    <Content Include="Views\Admin\TourProposal_Report.cshtml" />
+    <Content Include="Views\Admin\Hiring_Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
