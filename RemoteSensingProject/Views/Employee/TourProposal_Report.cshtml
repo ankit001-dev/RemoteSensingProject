@@ -1,10 +1,10 @@
 ﻿
 @{
     ViewBag.Title = "TourProposal_Report";
-    Layout = "~/Views/Shared/_adminLayout.cshtml";
-    var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.Accounts.main.tourProposal>;
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["tourlist"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
+    var dta = ViewData["projectList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
 
 <!--Style button DataTable-->
@@ -57,34 +57,20 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-4">
-                        <select id="Filter1" class="form-select form-select-sm">
-                            <option selected value="">Filter By Project Manager</option>
-                            @if (projManager != null)
+                        <select id="Filter2" class="form-select form-select-sm">
+                            <option selected value="">Filter By Project</option>
+                            @if (projects != null)
                             {
-                                foreach (var proman in projManager)
+                                foreach (var proj in projects)
                                 {
-                                    if (proman.EmployeeRole == "projectManager")
-                                    {
-                            <option value="@proman.EmployeeName">@proman.EmployeeName</option>
-                                    }
+                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
                                 }
                             }
                         </select>
                     </div>
                     <div class="col-sm-4">
-                        <select id="Filter2" class="form-select form-select-sm">
-                            <option selected value="">Filter By Project</option>
-                            @if (projects != null) {
-                                foreach(var proj in projects)
-                {
-                            <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
-                }
-                            }
-                        </select>
-                    </div>
-                    <div class="col-sm-4">
                         <select id="Filter3" class="form-select form-select-sm">
-                            <option selected value="">Filter By Status</option>
+                            <option selected value="">Filter By Project</option>
                             <option value="approved">Approved</option>
                             <option value="pending">Pending</option>
                             <option value="rejected">Rejected</option>
@@ -118,36 +104,37 @@
                         </thead>
                         <tbody>
                             @if (data != null)
-                { int i = 1;
-                    foreach (var item in data)
-                    {
-                            <tr>
-                                <td>@i</td>
-                                <td>@item.projectManager</td>
-                                <td>@item.projectName</td>
-                                <td>@item.purpose</td>
-                                <td>@item.dateOfDept</td>
-                                <td>@item.place</td>
-                                <td>@item.periodFrom</td>
-                                <td>@item.periodTo</td>
-                                <td>@item.returnDate</td>
-                                <td class="text-center" data-id="@item.id">
-                                    <i class="fa-solid fa-eye action"></i>
-                                </td>
-                                <td class="text-center">
-                                    @{
-                        if (item.newRequest == true && item.adminappr == false)
-                        { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                        else if (item.newRequest == false && item.adminappr == true)
-                        { <span id="status" class="badge bg-success">Approved</span> }
-                        else if (item.newRequest == false && item.adminappr == false)
-    { <span id="status" class="badge bg-danger">Rejected</span> }
-                                    }
-                                </td>
-                            </tr>
-                                i++;
+                            {
+                                int i = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.projectManager</td>
+                                        <td>@item.projectName</td>
+                                        <td>@item.purpose</td>
+                                        <td>@item.dateOfDept</td>
+                                        <td>@item.place</td>
+                                        <td>@item.periodFrom</td>
+                                        <td>@item.periodTo</td>
+                                        <td>@item.returnDate</td>
+                                        <td class="text-center" data-id="@item.id">
+                                            <i class="fa-solid fa-eye action"></i>
+                                        </td>
+                                        <td class="text-center">
+                                            @{
+                                                if (item.newRequest == true && item.adminappr == false)
+                                                { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                                else if (item.newRequest == false && item.adminappr == true)
+                                                { <span id="status" class="badge bg-success">Approved</span> }
+                                                else if (item.newRequest == false && item.adminappr == false)
+                                                { <span id="status" class="badge bg-danger">Rejected</span> }
+                                            }
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
                             }
-                        }
                         </tbody>
                     </table>
                 </div>
@@ -614,3 +601,4 @@
         })
     });
 </script>
+

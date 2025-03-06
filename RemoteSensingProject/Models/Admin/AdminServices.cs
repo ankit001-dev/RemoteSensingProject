@@ -1908,7 +1908,9 @@ namespace RemoteSensingProject.Models.Admin
                             taxiReportTo = res["taxiReportTo"].ToString(),
                             taxiReportAt = (TimeSpan)res["taxiReportAt"],
                             taxiReportPlace = res["taxiReportPlace"].ToString(),
-                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"])
+                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"]),
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            adminappr = Convert.ToBoolean(res["adminappr"]),
                         });
                     }
                 }
@@ -2032,38 +2034,93 @@ namespace RemoteSensingProject.Models.Admin
         #endregion
 
         #region All Reports
-        public List<tourProposalAll> getReportOfTour()
+        //public List<tourProposalAll> getReportOfTour()
+        //{
+        //    try
+        //    {
+        //        cmd = new SqlCommand("sp_Tourproposal", con);
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.Parameters.AddWithValue("@action", "selectAlltourforAcc");
+        //        List<tourProposalAll> list = new List<tourProposalAll>();
+        //        con.Open();
+        //        var res = cmd.ExecuteReader();
+        //        if (res.HasRows)
+        //        {
+        //            while(res.Read())
+        //            {
+        //                list.Add(new tourProposalAll
+        //                {
+        //                    id = Convert.ToInt32(res["id"]),
+        //                    projectName = Convert.ToString(res["title"]),
+        //                    dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+        //                    place = (string)res["place"],
+        //                    periodFrom = Convert.ToDateTime(res["periodFrom"]),
+        //                    periodTo = Convert.ToDateTime(res["periodTo"]),
+        //                    returnDate = Convert.ToDateTime(res["returnDate"]),
+        //                    purpose = (string)res["purpose"],
+        //                    newRequest = Convert.ToBoolean(res["newRequest"]),
+        //                    adminappr = Convert.ToBoolean(res["adminappr"])
+        //                });
+        //            }
+        //        }
+        //        return list;
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //    finally
+        //    {
+        //        if (con.State == ConnectionState.Open)
+        //        {
+        //            con.Close();
+        //        }
+        //        cmd.Dispose();
+        //    }
+        //}
+
+        public List<HiringVehicle1> HiringReort()
         {
             try
             {
-                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd = new SqlCommand("sp_HiringVehicle", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "");
-                List<tourProposalAll> list = new List<tourProposalAll>();
+                cmd.Parameters.AddWithValue("@action", "selectAllHiringReport");
                 con.Open();
+                List<HiringVehicle1> list = new List<HiringVehicle1>();
                 var res = cmd.ExecuteReader();
                 if (res.HasRows)
                 {
-                    while(res.Read())
+                    while (res.Read())
                     {
-                        list.Add(new tourProposalAll
+                        list.Add(new HiringVehicle1
                         {
-                            id = Convert.ToInt32(res["id"]),
+                            id = (int)res["id"],
                             projectName = Convert.ToString(res["title"]),
-                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
-                            place = (string)res["place"],
-                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
-                            periodTo = Convert.ToDateTime(res["periodTo"]),
-                            returnDate = Convert.ToDateTime(res["returnDate"]),
-                            purpose = (string)res["purpose"],
+                            projectManager = Convert.ToString(res["name"]),
+                            headName = Convert.ToString(res["heads"]),
+                            amount = Convert.ToDecimal(res["amount"]),
+                            dateFrom = Convert.ToDateTime(res["dateFrom"]),
+                            dateTo = Convert.ToDateTime(res["dateTo"]),
+                            proposedPlace = res["proposedPlace"].ToString(),
+                            purposeOfVisit = res["purposeOfVisit"].ToString(),
+                            totalDaysNight = res["totalDaysNight"].ToString(),
+                            totalPlainHills = res["totalPlainHills"].ToString(),
+                            taxi = res["taxi"].ToString(),
+                            BookAgainstCentre = res["BookAgainstCentre"].ToString(),
+                            availbilityOfFund = res["availbilityOfFund"].ToString(),
+                            taxiReportTo = res["taxiReportTo"].ToString(),
+                            taxiReportAt = (TimeSpan)res["taxiReportAt"],
+                            taxiReportPlace = res["taxiReportPlace"].ToString(),
+                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"]),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
-                            adminappr = Convert.ToBoolean(res["adminappr"])
+                            adminappr = Convert.ToBoolean(res["adminappr"]),
                         });
                     }
                 }
                 return list;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
