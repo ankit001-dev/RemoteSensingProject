@@ -71,16 +71,22 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult TourProposalRequest()
         {
+            ViewData["projects"] = _adminServices.Project_List();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             ViewData["tourproposal"] = _accountSerivce.getTourList();
             return View();
         }
         public ActionResult ReinbursementRequest()
         {
             ViewData["ReimBurseData"] = _accountSerivce.GetReimbursements();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
         public ActionResult HiringRequest()
         {
+            ViewData["hiringList"] = _adminServices.HiringList();
+            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
+            ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
         public ActionResult FundReport()

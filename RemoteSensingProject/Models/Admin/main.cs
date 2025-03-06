@@ -279,6 +279,8 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class tourProposalAll
         {
+            public bool newRequest { get; set; }
+            public bool adminappr { get; set; }
             public string projectName { get; set; }
             public string projectManager { get; set; }
             public int userId { get; set; }

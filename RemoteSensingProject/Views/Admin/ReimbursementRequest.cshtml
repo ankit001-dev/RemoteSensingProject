@@ -188,7 +188,7 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <select id="Filter1" class="form-select form-select-sm">
-                            <option selected>Filter By Project Manager</option>
+                            <option selected value="">Filter By Project Manager</option>
                             @if (projManager != null)
                             {
                                 foreach (var proman in projManager)
@@ -203,7 +203,7 @@
                     </div>
                     <div class="col-sm-4">
                         <select id="typeFilter" class="form-select form-select-sm">
-                            <option selected>Filter By Type</option>
+                            <option selected value="">Filter By Type</option>
                             <option value="contigency">Contigency</option>
                             <option value="pi_adjustment">P.I.Adjustment</option>
                         </select>
@@ -367,8 +367,7 @@
             let table = $("#dataTableExample").DataTable();
             table.column(2).search(tp).draw();
         });
-        $
-            ("#Filter1").on("change", function () {
+        $("#Filter1").on("change", function () {
             let tp = $(this).val();
             let table = $("#dataTableExample").DataTable();
             table.column(1).search(tp).draw();
