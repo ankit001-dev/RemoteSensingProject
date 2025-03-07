@@ -1305,7 +1305,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public bool submitReinbursementForm(string type, int userId)
+        public bool submitReinbursementForm(string type, int userId, int Id)
         {
             try
             {
@@ -1314,6 +1314,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@action", "submitReinbursementForm");
                 cmd.Parameters.AddWithValue("@userId", userId);
                 cmd.Parameters.AddWithValue("@type", type);
+                cmd.Parameters.AddWithValue("@id", Id);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }

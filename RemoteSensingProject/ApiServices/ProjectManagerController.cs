@@ -846,6 +846,32 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+
+        [HttpPost]
+        [Route("api/finalSubmitReinbursement")]
+        public IHttpActionResult finalSubmitReinbursement()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+
+                return Ok(new
+                {
+                    status = true,
+                    StatusCode = 200,
+
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpGet]
         [Route("api/getReimbursementByUserId")]
         public IHttpActionResult getReimbursement(int userId)

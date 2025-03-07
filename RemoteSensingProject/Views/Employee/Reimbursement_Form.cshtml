@@ -296,13 +296,13 @@
                                     if (!items.subStatus && items.type.Equals("pi_adjustment") && items.amount >= 5000)
                                     {
                                                                 <span>&nbsp; | &nbsp;</span>
-                                        <a href="#" class="saveSanctionReciept" data-type="@items.type">
+                                        <a href="#" class="saveSanctionReciept" data-type="@items.type" data-id="@items.id">
                                             <i class="fa-solid fa-floppy-disk"></i>
                                         </a>
                                     }
                                     else if (!items.subStatus && items.type.Equals("contigency"))
                                     {
-                                        <a href="#" class="saveSanctionReciept" data-type="@items.type">
+                                        <a href="#" class="saveSanctionReciept" data-type="@items.type" data-id="@items.id">
                                             <i class="fa-solid fa-floppy-disk"></i>
                                         </a>
                                     }
@@ -793,6 +793,7 @@
 
         $(".saveSanctionReciept").click(function () {
             let type = $(this).attr("data-type");
+            let id = $(this).attr("data-id");
             const swalWithBootstrapButtons = Swal.mixin({
                 customClass: {
                     confirmButton: "btn btn-success",
@@ -823,7 +824,7 @@
                     $.ajax({
                         url: "/employee/submitReinbursementFormType",
                         type: "post",
-                        data: { type: type },
+                        data: { type: type, Id: id },
                         success: function (res) {
                             if (res.status) {
                                 Swal.fire({
