@@ -556,11 +556,11 @@ namespace RemoteSensingProject.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult SubmitReinbursementFormType(string type)
+        public ActionResult SubmitReinbursementFormType(string type, int Id)
         {
             int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
 
-            bool res = _managerServices.submitReinbursementForm(type, userId);
+            bool res = _managerServices.submitReinbursementForm(type, userId, Id);
 
             return Json(new
             {
