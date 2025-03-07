@@ -1765,5 +1765,44 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
         #endregion
+
+
+        public List<Reimbursement> reinbursementReport(int userId)
+        {
+            try
+            {
+                List<Reimbursement> list = new List<Reimbursement>();
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectReinbursementforUSerReport");
+                cmd.Parameters.AddWithValue("@userid", userId);
+                con.Open();
+                SqlDataReader res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new Reimbursement
+                        {
+                            type = res["type"].ToString(),
+                            amount = Convert.ToDecimal(res["amount"]),
+                            id = Convert.ToInt32(res["id"]),
+                            adminappr = Convert.ToBoolean(res["Apprstatus"]),
+                            newRequest = Convert.ToBoolean(res["newStatus"])
+                        });
+                    }
+                }
+                return list;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
     }
 }

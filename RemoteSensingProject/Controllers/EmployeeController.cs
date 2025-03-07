@@ -637,6 +637,8 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Reimbursement_Report()
         {
+            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["totalReinursementReport"] = _managerServices.reinbursementReport(userId);
             return View();
         }
         public ActionResult TourProposal_Report()

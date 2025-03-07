@@ -265,13 +265,7 @@ namespace RemoteSensingProject.Models.Admin
             public decimal ExpenditureBudget { get; set; }
 
         }
-        //public class BudgetForm
-        //{
-        //    public int sn { get; set; }
-        //    public string addedDate { get; set; }
-        //    public string financial { get; set; }
-        //    public decimal budget { get; set; }
-        //}
+     
         public class BudgetForGraph
         {
             public decimal budget { get; set; }
@@ -309,7 +303,9 @@ namespace RemoteSensingProject.Models.Admin
             public string items { get; set; }
             public string purpose { get; set; }
             public decimal amount { get; set; }
+            public decimal approveAmount { get; set; }
             public bool subStatus { get; set; }
+            public bool appr_status { get; set; }
         }
         public class HiringVehicle1
         {

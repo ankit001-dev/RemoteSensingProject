@@ -96,6 +96,8 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Reimbursement_Report()
         {
+            ViewData["totalProjectManager"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
+            ViewData["totalReinursementReport"] = _adminServices.ReinbursementReport();
             return View();
         }
         public ActionResult TourProposal_Report()

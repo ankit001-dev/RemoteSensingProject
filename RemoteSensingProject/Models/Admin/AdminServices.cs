@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using System.Data;
 using RemoteSensingProject.Models.MailService;
 using System.Linq;
+using System.Web.UI.WebControls;
+using System.Net;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
@@ -2034,51 +2036,6 @@ namespace RemoteSensingProject.Models.Admin
         #endregion
 
         #region All Reports
-        //public List<tourProposalAll> getReportOfTour()
-        //{
-        //    try
-        //    {
-        //        cmd = new SqlCommand("sp_Tourproposal", con);
-        //        cmd.CommandType = CommandType.StoredProcedure;
-        //        cmd.Parameters.AddWithValue("@action", "selectAlltourforAcc");
-        //        List<tourProposalAll> list = new List<tourProposalAll>();
-        //        con.Open();
-        //        var res = cmd.ExecuteReader();
-        //        if (res.HasRows)
-        //        {
-        //            while(res.Read())
-        //            {
-        //                list.Add(new tourProposalAll
-        //                {
-        //                    id = Convert.ToInt32(res["id"]),
-        //                    projectName = Convert.ToString(res["title"]),
-        //                    dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
-        //                    place = (string)res["place"],
-        //                    periodFrom = Convert.ToDateTime(res["periodFrom"]),
-        //                    periodTo = Convert.ToDateTime(res["periodTo"]),
-        //                    returnDate = Convert.ToDateTime(res["returnDate"]),
-        //                    purpose = (string)res["purpose"],
-        //                    newRequest = Convert.ToBoolean(res["newRequest"]),
-        //                    adminappr = Convert.ToBoolean(res["adminappr"])
-        //                });
-        //            }
-        //        }
-        //        return list;
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //    finally
-        //    {
-        //        if (con.State == ConnectionState.Open)
-        //        {
-        //            con.Close();
-        //        }
-        //        cmd.Dispose();
-        //    }
-        //}
-
         public List<HiringVehicle1> HiringReort()
         {
             try
@@ -2130,6 +2087,50 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     con.Close();
                 }
+                cmd.Dispose();
+            }
+        }
+
+
+        public List<AdminReimbursement> ReinbursementReport()
+        {
+            try
+            {
+                List<AdminReimbursement> list = new List<AdminReimbursement>();
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectReinbursementReport");
+                con.Open();
+                SqlDataReader res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new AdminReimbursement
+                        {
+                            type = res["type"].ToString(),
+                            EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
+                            amount = Convert.ToDecimal(res["amount"]),
+                            approveAmount = Convert.ToDecimal(res["apprAmt"] != DBNull.Value ? res["apprAmt"] : 0),
+                            userId = Convert.ToInt32(res["userId"]),
+                            id = Convert.ToInt32(res["id"]),
+                            appr_status = Convert.ToBoolean(res["Apprstatus"]),
+
+                            newRequest = Convert.ToBoolean(res["newStatus"])
+
+                        });
+                    }
+                }
+                return list;
+
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
                 cmd.Dispose();
             }
         }
