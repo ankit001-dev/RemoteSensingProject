@@ -51,6 +51,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.HiringPendingRequest = sdr["HiringPendingRequest"].ToString();
                     obj.HiringApprovedRequest = sdr["HiringApprovedRequest"].ToString();
                     obj.HiringRejectedRequest = sdr["HiringRejectedRequest"].ToString();
+                    obj.TotalTask = sdr["TotalTask"].ToString();
+                    obj.CompletedTask = sdr["CompletedTask"].ToString();
+                    obj.OutSource = sdr["OutSource"].ToString();
+                    obj.ProjectProblem = sdr["ProjectProblem"].ToString();
                 }
 
                 sdr.Close();
