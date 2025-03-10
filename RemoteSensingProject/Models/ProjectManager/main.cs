@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
+using System.Security.Policy;
 using System.Web;
 
 namespace RemoteSensingProject.Models.ProjectManager
@@ -186,6 +187,8 @@ namespace RemoteSensingProject.Models.ProjectManager
     public class Reimbursement
     {
         public bool status { get; set; }
+        public string chequeNum { get; set; }
+        public string chequeDate { get; set; }
         public bool adminappr { get; set; }
         public bool newRequest { get; set; }
         public int id { get; set; }

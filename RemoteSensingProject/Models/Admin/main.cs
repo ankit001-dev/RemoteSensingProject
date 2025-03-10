@@ -306,6 +306,8 @@ namespace RemoteSensingProject.Models.Admin
             public decimal approveAmount { get; set; }
             public bool subStatus { get; set; }
             public bool appr_status { get; set; }
+            public string chequeNum { get; set; }
+            public string chequeDate { get; set; }
         }
         public class HiringVehicle1
         {

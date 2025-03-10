@@ -1366,7 +1366,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                             type = res["type"].ToString(),
                             id = Convert.ToInt32(res["id"]),
                             amount = Convert.ToDecimal(res["amount"]),
-                            userId = Convert.ToInt32(res["userId"])
+                            userId = Convert.ToInt32(res["userId"]),
+                            chequeNum = res["chequeNum"].ToString(),
+                            chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : ""
                         });
                     }
                 }
@@ -1405,17 +1407,17 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         getlist.Add(new Reimbursement
                         {
-                            id = (int)res["id"],
-                            type = (string)res["type"],
-                            vrNo = (string)res["vrNo"],
+                            id = Convert.ToInt32(res["id"]),
+                            type = res["type"].ToString(),
+                            vrNo = res["vrNo"].ToString(),
                             date = Convert.ToDateTime(res["date"]),
-                            particulars = (string)res["particulars"],
-                            items = (string)res["items"],
+                            particulars = res["particulars"].ToString(),
+                            items = res["items"].ToString(),
                             amount = Convert.ToDecimal(res["amount"]),
-                            purpose = (string)res["purpose"],
+                            purpose = res["purpose"].ToString(),
                             status = Convert.ToBoolean(res["status"]),
-                            newRequest = (bool)res["newRequest"],
-                            adminappr = (bool)res["admin_appr"]
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            adminappr = Convert.ToBoolean(res["admin_appr"])
                         });
                     }
                 }
