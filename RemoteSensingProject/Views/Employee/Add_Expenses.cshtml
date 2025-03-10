@@ -6,12 +6,11 @@
     int i = 1;
 }
 
-<div class="row">
+<div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <span class="card-title">Add Project Expenses </span>
-                <span class="card-title text-center mx-auto text-info" style="text-transform:none">Total Budget: 3,00,000</span>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -32,7 +31,7 @@
                 foreach(var item in projectStages)
                 {
 <tr>
-    <td class="text-start">@i</td>
+    <td >@i</td>
     <td>@item.ProjectHeads</td>
     <td class="text-center">
         ₹@item.ProjectAmount
