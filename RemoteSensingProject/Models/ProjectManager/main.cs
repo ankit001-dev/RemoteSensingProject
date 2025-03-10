@@ -11,6 +11,10 @@ namespace RemoteSensingProject.Models.ProjectManager
    
     public class DashboardCount
     {
+        public string ProjectProblem { get; set; }
+        public string OutSource { get; set; }
+        public string CompletedTask { get; set; }
+        public string TotalTask { get; set; }
         public string ReimbursementPendingRequest { get; set; }
         public string ReimbursementApprovedRequest { get; set; }
         public string ReimbursementRejectedRequest { get; set; }
