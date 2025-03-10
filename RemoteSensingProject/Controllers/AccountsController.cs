@@ -83,7 +83,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult HiringRequest()
         {
-            ViewData["hiringList"] = _adminServices.HiringList();
+            ViewData["hiringList"] = _adminServices.HiringReort();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             ViewData["projects"] = _adminServices.Project_List();
             return View();

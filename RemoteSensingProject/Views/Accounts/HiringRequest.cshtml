@@ -56,6 +56,14 @@
                             }
                         </select>
                     </div>
+                    <div class="col-sm-4">
+                        <select id="filter3" class="form-select form-select-sm">
+                            <option selected value="">Filter By Status</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Rejected">Rejected</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
@@ -79,6 +87,7 @@
                             <th>Total Days & Night</th>
                             <th>Avaiability of fund</th>
                             <th>Action</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,6 +108,16 @@
                                     <td>@item.totalDaysNight</td>
                                     <td>@item.amount</td>
                                     <td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>
+                                    <td>
+                                        @{
+                                            if (item.newRequest == true && item.adminappr == false)
+                                            { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                            else if (item.newRequest == false && item.adminappr == true)
+                                            { <span id="status" class="badge bg-success">Approved</span> }
+                                            else if (item.newRequest == false && item.adminappr == false)
+                                            { <span id="status" class="badge bg-danger">Rejected</span> }
+                                        }
+                                    </td>
                                 </tr>
                                 i++;
                             }
@@ -348,6 +367,12 @@
             let filter = $(this).val();
             let table = $("#dataTableExample").DataTable()
             table.column(2).search(filter).draw()
+        })
+
+        $("#filter3").on("change", function () {
+            let filter = $(this).val();
+            let table = $("#dataTableExample").DataTable()
+            table.column(11).search(filter).draw()
         })
 
 

@@ -308,7 +308,7 @@
                             { <span id="status" class="badge bg-danger">Rejected</span> }
                                             }
                                         </td>
-                                        <td data-id="@item.id" class="text-center"><i class="fa-solid fa-eye action" data-bs-toggle="modal" data-bs-target="#staticBackdrop"></i> </td>
+                                        <td data-id="@item.id" class="text-center"><i class="fa-solid fa-eye action" ></i> </td>
                                     </tr>
                                                                     i++;
                                                                 }
@@ -474,6 +474,7 @@
                 type: 'get',
                 data: { id: id },
                 success: function (res) {
+                    console.log(res.data)
                     $("#projectMan").text(res.data[0].projectManager)
                     $("#project").text(res.data[0].projectName)
                     $("#i1").text(res.data[0].purpose)
