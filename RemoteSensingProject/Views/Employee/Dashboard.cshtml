@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
 }
@@ -63,12 +62,12 @@
             margin: 0 auto;
         }
 
-    .grid-margin .w-100 .card {
-        background: #029e9d6b;
+    .dashboard .grid-margin .uniform-card {
+        background: #0a6d9d6b !important;
     }
 
     .align-items-baseline .text-success {
-        color: white !important;
+        color: black !important;
     }
 
     .grid-margin {
@@ -78,12 +77,12 @@
 
 <div class="row mx-0">
     <div class="col-12 col-xl-12">
-        <div class="row flex-grow-1">
+        <div class="row flex-grow-1 dashboard">
 
             <!-- Project's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                <a href="#" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded-0">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Project's</h6>
@@ -91,14 +90,21 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-6">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Total Project's :  </span> @(Convert.ToInt32(Model.SelfCreatedProject) + Convert.ToInt32(Model.TotalAssignProject)) </span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Assigned Project's :  </span> @Model.TotalAssignProject</span></p>
-                                    </div><div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Self Created Project's :  </span> @Model.SelfCreatedProject</span></p>
-                                    </div>
+                                    <a href="/Employee/All_Project_List" class="text-decoration-none">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Total Project's :  </span> @(Convert.ToInt32(Model.SelfCreatedProject) + Convert.ToInt32(Model.TotalAssignProject)) </span></p>
+                                        </div>
+                                    </a>
+                                    <a href="/Employee/Project_List">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Assigned Project's :  </span> @Model.TotalAssignProject</span></p>
+                                        </div>
+                                    </a>
+                                    <a href="/Employee/Assigned_Project">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">My Project's :  </span> @Model.SelfCreatedProject</span></p>
+                                        </div>
+                                    </a>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-6">
                                     <img src="~/assets/gif/project.gif" height="80" />
@@ -111,8 +117,8 @@
 
             <!-- Pending Project's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                <a href="" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded-0">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Project's Status</h6>
@@ -120,15 +126,21 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-6">
                                     <h6 class="mb-2 text-success"></h6>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Completed Project's :  </span> @Model.TotaCompleteProject</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Delay Project's :  </span> @Model.TotalDelayProject</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Ongoing Project's :  </span> @Model.TotalOngoingProject</span></p>
-                                    </div>
+                                    <a href="/Employee/Complete_Project_Report">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Completed Project's :  </span> @Model.TotaCompleteProject</span></p>
+                                        </div>
+                                    </a>
+                                    <a href="/Employee/Pending_Project_Report">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Delay Project's :  </span> @Model.TotalDelayProject</span></p>
+                                        </div>
+                                    </a>
+                                    <a href="/Employee/Project_List">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Ongoing Project's :  </span> @Model.TotalOngoingProject</span></p>
+                                        </div>
+                                    </a>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-6">
                                     <img src="~/assets/gif/file.gif" height="80" />
@@ -142,7 +154,7 @@
             <!-- Employee's Card -->
             <!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
         <a href="/Admin/Employee_Registration" class="w-100" style="text-decoration: none; color: inherit;">
-            <div class="card uniform-card w-100 w-100">
+            <div class="card uniform-card w-100 rounded-0 w-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-baseline">
                         <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
@@ -173,8 +185,8 @@
     </div>-->
             <!-- Meeting's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                <a href="/Employee/Meetings" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded-0">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
@@ -203,8 +215,8 @@
 
             <!-- Request's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                <a href="#" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded-0">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Request's</h6>
@@ -212,15 +224,21 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-5">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Reimbursement :  </span> @Model.TotalReimbursement</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Tour Proposal :  </span> @Model.TotalTourProposal</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Hiring Vehicle :  </span> @Model.TotalHiring</span></p>
-                                    </div>
+                                    <a href="/Employee/Reimbursement_Form">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Reimbursement :  </span> @Model.TotalReimbursement</span></p>
+                                        </div>
+                                    </a>
+                                    <a href="/Employee/Tour_Proposal">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Tour Proposal :  </span> @Model.TotalTourProposal</span></p>
+                                        </div>
+                                    </a>
+                                    <a href="/Employee/Hiring_Vehicle">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Hiring Vehicle :  </span> @Model.TotalHiring</span></p>
+                                        </div>
+                                    </a>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <img src="~/assets/gif/rfp.gif" height="70" />
@@ -232,8 +250,8 @@
             </div>
             <!-- Request's status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                <a href="/Employee/Reimbursement_Report" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded-0">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Reimbursement's</h6>
@@ -261,8 +279,8 @@
             </div>
             <!-- Request's status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                <a href="/Employee/TourProposal_Report" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded-0">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Tour Proposal's</h6>
@@ -290,8 +308,8 @@
             </div>
             <!-- Request's status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                <a href="/Employee/Hiring_Report" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded-0">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Hiring Vehicle's</h6>
@@ -320,8 +338,8 @@
 
             <!-- Task's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/Employee_Registration" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 w-100">
+                <a href="/employee/CreateTask" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded-0 w-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0" style="text-decoration: none;">Task's</h6>
@@ -350,8 +368,8 @@
 
             <!-- Other's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/Employee_Registration" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 w-100">
+                <a href="#" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded-0 w-100">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0" style="text-decoration: none;">Other's</h6>
@@ -359,15 +377,21 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-5">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Out Source :  </span> 0</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Notice : </span> @Model.TotalNotice</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Project Problem : </span> 0</span></p>
-                                    </div>
+                                    <a href="/employee/OutSource">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Out Source :  </span> 0</span></p>
+                                        </div>
+                                    </a>
+                                    <a href="/Employee/Notice">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Notice : </span> @Model.TotalNotice</span></p>
+                                        </div>
+                                    </a>
+                                    <a href="/Employee/SubOrdinateProblemList">
+                                        <div class="d-flex align-items-baseline py-1">
+                                            <p class="text-success"><span><span class="text-dark">Project Problem : </span> 0</span></p>
+                                        </div>
+                                    </a>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <img src="~/assets/gif/success.gif" height="70" />

@@ -6,6 +6,7 @@
     var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
+    int i = 1;
 }
 
 <style>
@@ -90,7 +91,7 @@
                                 foreach (var item in data)
                                 {
                                     <tr>
-                                        <td>@item.id</td>
+                                        <td>@i</td>
                                         <td>@item.projectManager</td>
                                         <td>@item.projectName</td>
                                         <td>@item.headName</td>
@@ -113,6 +114,7 @@
 
                                         </td>
                                     </tr>
+                                    i++;
                                 }
                             }
                         </tbody>
@@ -516,7 +518,7 @@
             });
             let id = $(this).attr("data-id")
             $.ajax({
-                url: '/api/getHiringList',
+                url: '/api/getHiringList',  //In Project Manager Controller
                 type: 'get',
                 data: { id: id },
                 success: function (res) {

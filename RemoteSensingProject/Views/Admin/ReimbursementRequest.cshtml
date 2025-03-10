@@ -239,7 +239,7 @@
                                         <td>@item.type</td>
                                         <td>@Convert.ToDecimal(item.amount).ToString("N2")</td>
                                         <td data-id="@item.id">
-                                            <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type">
+                                            <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id">
                                                 <i class="fa-solid fa-eye text-success"></i>
                                             </a> &nbsp; | &nbsp;
                                             <a href="#" class="act" data-appr="true" data-userId="@item.userId" data-type="@item.type">
@@ -627,10 +627,11 @@
 
             let type = $(this).attr("data-type");
             let userId = $(this).attr("data-userId");
+            let id = $(this).attr("data-id");
             $.ajax({
-                url: "/api/ViewReinbursementAdminView",
+                url: "/api/ViewReinbursementBytype",
                 type: "Get",
-                data: { "userId": userId, "type": type },
+                data: { "userId": userId, "type": type ,id:id},
                 success: function (result) {
                     if (result.status) {
                         $("#viewReinburseRecieptListBody").empty();

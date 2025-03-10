@@ -11,7 +11,6 @@ using System.Web.Http;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.SqlServer.Server;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
@@ -812,25 +811,28 @@ namespace RemoteSensingProject.ApiServices
         #region Reimbursement
         [HttpPost]
         [Route("api/submitReinbursement")]
-        public IHttpActionResult reimbursementSubmit(List<Reimbursement> allData)
+        public IHttpActionResult reimbursementSubmit()
         {
             try
             {
-                int i = 0;
-               foreach(var item in allData)
+                var request = HttpContext.Current.Request;
+                var formData = new Reimbursement
                 {
-                    bool res = _managerService.insertReimbursement(item);
-                    if (res)
-                    {
-                        i++;
-                    }
-                }
-               
+                    userId = Convert.ToInt32(request.Form.Get("userId")),
+                    type = request.Form.Get("type"),
+                    vrNo = request.Form.Get("vrNo"),
+                    date = Convert.ToDateTime(request.Form.Get("date")),
+                    particulars = request.Form.Get("particulars"),
+                    items = request.Form.Get("items"),
+                    purpose = request.Form.Get("purpose"),
+                    amount = Convert.ToDecimal(request.Form.Get("amount"))
+                };
+                bool res = _managerService.insertReimbursement(formData);
                 return Ok(new
                 {
-                    status = i==allData.Count,
-                    StatusCode = i == allData.Count ? 200 : 500,
-                    message = i == allData.Count ? "Added Successfully!":"Some error Occured"
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res?"Added Successfully!":"Some error Occured"
                 });
             }
             catch (Exception ex)
@@ -845,7 +847,6 @@ namespace RemoteSensingProject.ApiServices
         }
 
 
-
         [HttpPost]
         [Route("api/finalSubmitReinbursement")]
         public IHttpActionResult finalSubmitReinbursement()
@@ -853,18 +854,14 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var request = HttpContext.Current.Request;
-                string type = request.Form.Get("type");
-                int userId = Convert.ToInt32(request.Form.Get("UserId"));
-                int id = Convert.ToInt32(request.Form.Get("id"));
-                bool res = _managerService.submitReinbursementForm(type, userId, id);
+
                 return Ok(new
                 {
-                    status = res,
-                    StatusCode = res ? 200 : 500,
-                    message = res ? "Submitted successfully !" : "Some issue occured !"
+                    status = true,
+                    StatusCode = 200,
+
                 });
-            }
-            catch (Exception ex)
+            }catch(Exception ex)
             {
                 return BadRequest(new
                 {

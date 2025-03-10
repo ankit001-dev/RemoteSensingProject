@@ -10,6 +10,7 @@ using System.Web.Http;
 using System.Web.Razor.Generator;
 using Microsoft.Ajax.Utilities;
 using RemoteSensingProject.Controllers;
+using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
@@ -23,6 +24,7 @@ namespace RemoteSensingProject.ApiServices
         private readonly AdminServices _adminServices;
         private readonly ManagerService _managerservice;
         private readonly LoginServices _loginService;
+        private readonly AccountService _accountService;
         public AdminController()
         {
             _adminServices = new AdminServices();
@@ -1548,12 +1550,12 @@ namespace RemoteSensingProject.ApiServices
 
         #region Reimbursement
         [HttpGet]
-        [Route("api/ViewReinbursementAdminView")]
-        public IHttpActionResult viewReinbursement(int userId, string type)
+        [Route("api/GetReimbursementList")]
+        public IHttpActionResult GetReimbursementList()
         {
             try
             {
-                var data = _adminServices.GetSpecificUserReimbursements(userId, type);
+                var data = _managerservice.GetReimbursements();
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1625,7 +1627,7 @@ namespace RemoteSensingProject.ApiServices
         }
 
         [HttpGet]
-        [Route("api/ViewHiringAdminView")]
+        [Route("api/GetAllHiring")]
         public IHttpActionResult AllHiring()
         {
             try
@@ -1733,5 +1735,80 @@ namespace RemoteSensingProject.ApiServices
         {
             return Content(HttpStatusCode.BadRequest, value);
         }
+
+        #region Report
+        [HttpGet]
+        [Route("api/ReimbursementReport")]
+        public IHttpActionResult ReimbursementReport()
+        {
+            try
+            {
+                var data = _adminServices.ReinbursementReport();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/HiringReport")]
+        public IHttpActionResult HiringReport()
+        {
+            try
+            {
+                var data = _adminServices.HiringReort();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/TourProposalReport")]
+        public IHttpActionResult TourProposalReport()
+        {
+            try
+            {
+                var data = _accountService.getTourList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }
