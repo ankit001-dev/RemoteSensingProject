@@ -493,23 +493,23 @@
                             apprStatus = d.adminappr;
                             newStatus = d.newRequest
                             element += `
-        <tr>
-        <td>${i + 1}</td>
-        <td>${d.vrNo} & ${convertToDate(d.date)}</td>
-        <td>${d.particulars}</td>
-        <td>${d.items}</td>
-        <td>${d.purpose}</td>
-        <td>${d.amount}</td>
-        </tr>
-        `
+   <tr>
+   <td>${i + 1}</td>
+   <td>${d.vrNo} & ${convertToDate(d.date)}</td>
+   <td>${d.particulars}</td>
+   <td>${d.items}</td>
+   <td>${d.purpose}</td>
+   <td>${d.amount}</td>
+   </tr>
+   `
                             totalAmout += d.amount;
                         });
 
                         $(".approved-text").text(apprStatus && !newStatus ? "Approved" : !apprStatus && !newStatus ? "Rejected" : "Pending");
                         element += ` <tr>
-         <td colspan="5" class="text-end"><b>Total</b></td>
-         <td>${totalAmout}</td>
-     </tr>`;
+    <td colspan="5" class="text-end"><b>Total</b></td>
+    <td>${totalAmout}</td>
+</tr>`;
 
 
 

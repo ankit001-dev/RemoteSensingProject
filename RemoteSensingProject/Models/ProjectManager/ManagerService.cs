@@ -1461,7 +1461,12 @@ namespace RemoteSensingProject.Models.ProjectManager
                             id = Convert.ToInt32(rd["id"]),
                             type = rd["type"].ToString(),
                             amount = Convert.ToDecimal(rd["amount"]),
-                            subStatus = Convert.ToBoolean(rd["SaveStatus"])
+                            subStatus = Convert.ToBoolean(rd["SaveStatus"]),
+                            userId = Convert.ToInt32(rd["userId"]),
+                            chequeNum = rd["chequeNum"].ToString(),
+                            chequeDate = rd["chequeDate"] != DBNull.Value ? Convert.ToDateTime(rd["chequeDate"]).ToString("dd/MM/yyyy") : "",
+                            newRequest = Convert.ToBoolean(rd["newStatus"]),
+                            approveAmount = Convert.ToDecimal(rd["apprAmt"] != DBNull.Value ? rd["apprAmt"] : 0)
                         });
                     }
                 }
@@ -1807,12 +1812,16 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         list.Add(new Reimbursement
                         {
-                            type = res["type"].ToString(),
-                            userId = Convert.ToInt32(res["userId"]),
-                            amount = Convert.ToDecimal(res["amount"]),
                             id = Convert.ToInt32(res["id"]),
+                            type = res["type"].ToString(),
+                            amount = Convert.ToDecimal(res["amount"]),
+                            subStatus = Convert.ToBoolean(res["SaveStatus"]),
                             adminappr = Convert.ToBoolean(res["Apprstatus"]),
-                            newRequest = Convert.ToBoolean(res["newStatus"])
+                            userId = Convert.ToInt32(res["userId"]),
+                            chequeNum = res["chequeNum"].ToString(),
+                            chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : "",
+                            newRequest = Convert.ToBoolean(res["newStatus"]),
+                            approveAmount = Convert.ToDecimal(res["apprAmt"] != DBNull.Value ? res["apprAmt"] : 0)
                         });
                     }
                 }

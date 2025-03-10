@@ -293,7 +293,7 @@
 
                                 </td>
                                 <td data-id="@item.id" class="text-center">
-                                    <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id">
+                                    <a href="#" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId" data-id="@item.id" data-chequeNum="@item.chequeNum" data-chequeDate="@item.chequeDate" data-apprAmt="@item.approveAmount">
                                         <i class="fa-solid fa-eye text-success"></i>
                                     </a>
                                 </td>
@@ -323,8 +323,18 @@
                             <h4>REMOTE SENSING APPLICATIONS CENTRE</h4>
                             <h5>UTTAR PRADESH</h5>
                             <div class="px-4 mt-1 d-flex justify-content-between">
-                                <span><p>logo</p><b>S.F.A.O/Director</b></span>
-                                <span>Name of Project/Centre</span>
+                                <span>
+                                    <p>
+                                        <img src="~/assets/images/remote_sensing_logo.jfif" width="50px" />
+                                    </p><b>S.F.A.O/Director</b>
+                                </span>
+                                <span>
+                                    <p>
+                                        <b>
+                                            Name of Project/Centre
+                                        </b>
+                                    </p>
+                                </span>
                             </div>
                         </div>
 
@@ -357,8 +367,8 @@
                         <div class="bottom-section mt-0 mx-5">
                             <div class="row mt-0">
                                 <div class="col-md-6">
-                                    <p>Balance Rs. <span class="dots"></span> (Rupees <span class="dots"></span>Only)</p>
-                                    <p>paid vide cheque No. <span class="dots"></span> Date<span class="dots"></span></p>
+                                    <p>Balance Rs. <span class="dots" id="apprAmttext"></span> (Rupees <span class="dots"></span>Only)</p>
+                                    <p>paid vide cheque No. <span class="dots" id="chequeNumberText"></span> Date<span class="dots" id="chequeDatetext"></span></p>
 
                                 </div>
                                 <div class="col-md-6 text-end">
@@ -378,7 +388,7 @@
                                         <p>A.O./S.F.A.O.</p>
                                     </div>
                                     <div class="col-md-4 text-end">
-                                        <span class="approved-text">Approved</span>
+                                        <span class="approved-text">pending</span>
                                         <p>Sanctioning Authority</p>
                                     </div>
                                 </div>
@@ -393,9 +403,9 @@
 
                     </div>
                 </div>
-                <div class="text-end m-5">
-                    <button class="btn btn-secondary py-1 rounded-0" id="printBtn">Print</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="printBtn" value="Print"/>
             </div>
         </div>
     </div>
@@ -426,10 +436,8 @@
         })
 
         document.getElementById("printBtn").onclick = function () {
-            // Get the content of the form to be printed
             var formContent = document.getElementById("formToPrint").outerHTML;
 
-            // Save the original body content
             var originalContent = document.body.innerHTML;
             var style = `<style>
             #formToPrint{
@@ -609,18 +617,14 @@
      margin-top: 10vh; /* You can adjust this value */
  }
 </style>`;
-            // Replace the body content with only the form content
             document.body.innerHTML = style + '<div>' + formContent + '</div>';
 
-            // Trigger the print dialog
             window.print();
 
-            // Restore the original body content after printing
             document.body.innerHTML = originalContent;
         };
 
         $(".viewSanctionreciept").click(function () {
-            debugger
             Swal.fire({
                 title: "Please wait !",
                 text: "Processing your request ....",
@@ -633,35 +637,48 @@
 
             let type = $(this).attr("data-type");
             let userId = $(this).attr("data-userId");
-            let id = $(this).attr("data-id");
+            let Id = $(this).attr("data-id");
+            let chequeNum = $(this).attr("data-chequeNum")
+            let chequeDate = $(this).attr("data-chequeDate")
+            let apprvAmt = $(this).attr("data-apprAmt")
             $.ajax({
-                url: "/api/ ",
+                url: "/api/ViewReinbursementBytype",
                 type: "Get",
-                data: { "userId": userId, "type": type, id: id },
+                data: { "userId": userId, "type": type, id: Id },
                 success: function (result) {
                     if (result.status) {
+                        $("#apprAmttext").text(apprvAmt);
+                        $("#chequeNumberText").text(chequeNum);
+                        $("#chequeDatetext").text(chequeDate);
                         $("#viewReinburseRecieptListBody").empty();
                         Swal.close();
                         let totalAmout = 0;
+                        let apprStatus = false;
+                        let newStatus = false;
                         let element = "";
                         $.each(result.data, function (i, d) {
+                            apprStatus = d.adminappr;
+                            newStatus = d.newRequest
                             element += `
-              <tr>
-              <td>${i + 1}</td>
-              <td>${d.vrNo} & ${convertToDate(d.date)}</td>
-              <td>${d.particulars}</td>
-              <td>${d.items}</td>
-              <td>${d.purpose}</td>
-              <td>${d.amount}</td>
-              </tr>
-              `
+   <tr>
+   <td>${i + 1}</td>
+   <td>${d.vrNo} & ${convertToDate(d.date)}</td>
+   <td>${d.particulars}</td>
+   <td>${d.items}</td>
+   <td>${d.purpose}</td>
+   <td>${d.amount}</td>
+   </tr>
+   `
                             totalAmout += d.amount;
                         });
 
+                        $(".approved-text").text(apprStatus && !newStatus ? "Approved" : !apprStatus && !newStatus ? "Rejected" : "Pending");
                         element += ` <tr>
-               <td colspan="5" class="text-end"><b>Total</b></td>
-               <td>${totalAmout}</td>
-           </tr>`;
+    <td colspan="5" class="text-end"><b>Total</b></td>
+    <td>${totalAmout}</td>
+</tr>`;
+
+
 
                         $("#viewReinburseRecieptListBody").append(element);
                         $("#ViewReinburseMentReciept").modal("show");

@@ -206,6 +206,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string purpose { get; set; }
         public decimal amount { get; set; }
         public bool subStatus { get; set; }
+        public decimal approveAmount { get; set; }
     }
     public class tourProposal
     {
