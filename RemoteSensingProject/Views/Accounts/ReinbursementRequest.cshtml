@@ -222,6 +222,11 @@
                                                 <a href="#" data-type="@item.type" data-userId="@item.userId" data-totalAmount="@item.amount" data-Id="@item.id" class="submitamoutSanction">
                                                     <i class="fa-solid fa-check text-success"></i>
                                                 </a>
+
+                                                <span>&nbsp; | &nbsp;</span>
+                                                <a href="#" data-type="@item.type" data-userId="@item.userId" data-totalAmount="@item.amount" data-Id="@item.id" class="rejectAmountSanction">
+                                                    <i class="fa-solid fa-xmark text-danger"></i>
+                                                </a>
                                             }
 
                                         </td>
@@ -253,9 +258,11 @@
                             <h4>REMOTE SENSING APPLICATIONS CENTRE</h4>
                             <h5>UTTAR PRADESH</h5>
                             <div class="px-4 mt-1 d-flex justify-content-between">
-                                <span><p>
-                                    <img src="~/assets/images/remote_sensing_logo.jfif" width="50px"/>
-                                    </p><b>S.F.A.O/Director</b></span>
+                                <span>
+                                    <p>
+                                        <img src="~/assets/images/remote_sensing_logo.jfif" width="50px" />
+                                    </p><b>S.F.A.O/Director</b>
+                                </span>
                                 <span>
                                     <p>
                                         <b>
@@ -353,7 +360,7 @@
                         </div>
                         <div class="col-sm-6">
                             <label>Aprroved Amount :</label>
-                            <input type="number" class="form-control" name="apprAmount" id="apprAmountChanges" placeholder="Enter amount...."/>
+                            <input type="number" class="form-control" name="apprAmount" id="apprAmountChanges" placeholder="Enter amount...." />
                             <span class="text-danger" id="showalertMessage" style="display:none;">Amount is invalid !</span>
                         </div>
 
@@ -361,15 +368,37 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <label>Cheque Number :</label>
-                            <input type="text" class="form-control" name="chequeNum" placeholder="Enter cheque number"/>
+                            <input type="text" class="form-control" name="chequeNum" placeholder="Enter cheque number" />
                         </div>
                         <div class="col-sm-6">
                             <label>Cheque Date:</label>
                             <input type="date" class="form-control" name="chequeDate" />
                         </div>
-                        <input type="hidden" name="id" id="sanctionId"/>
+                        <input type="hidden" name="id" id="sanctionId" />
                     </div>
                     <input type="submit" id="submitAmtBtn" class="btn btn-primary" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="rejectSanctionModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="rejectSanctionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="rejectSanctionModalLabel">Reject Reimbursement Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="reinbursementRejectForm">
+                   <label>Reason :</label>
+                    <textarea class="form-control form-control-sm" name="reason" placeholder="Enter message ..."></textarea>
+                    <input type="hidden" name="sanctionId" id="rejectSanctionId"/>
+                    <p class="text-center py-1">
+                        <input type="submit" id="submitAmtBtn" class="btn btn-primary" />
+                    </p>
                 </form>
             </div>
         </div>
@@ -400,7 +429,7 @@
             $.ajax({
                 url: "/api/ViewReinbursementBytype",
                 type: "Get",
-                data: { "userId": userId, "type": type, id : Id },
+                data: { "userId": userId, "type": type, id: Id },
                 success: function (result) {
                     if (result.status) {
                         $("#viewReinburseRecieptListBody").empty();
@@ -525,6 +554,62 @@
                         icon: "error",
                         didClose: () => {
                             location.reload(true);
+                        }
+                    })
+                }
+            })
+        })
+
+        $(".rejectAmountSanction").click(function () {
+            let id = $(this).attr("data-Id");
+            $("#rejectSanctionId").val(id);
+            $("#rejectSanctionModal").modal("show")
+        })
+
+        $("#reinbursementRejectForm").on("submit", function () {
+            Swal.fire({
+                title: "Please wait ....",
+                text: "Processing your request",
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+            let data = new FormData(this);
+            $.ajax({
+                url: "/api/rejectReinbursementAmountRequest",
+                type: "post",
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: "Successfully !",
+                            text: res.message,
+                            icon: "success",
+                            didClose: () => {
+                                location.reload(true)
+                            }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Sorry !",
+                            text: res.message,
+                            icon: "warning",
+
+                        })
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Server issue !",
+                        text: "Server is busy ! Please try after sometime!",
+                        icon: "error",
+                        didClose: () => {
+                            location.reload(true)
                         }
                     })
                 }

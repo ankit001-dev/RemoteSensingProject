@@ -290,5 +290,28 @@ namespace RemoteSensingProject.Models.Accounts
                 throw ex;
             }
         }
+
+        public bool rejectReinbursementRequestAmt(int id, string reason)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "rejectReinbursementAmtRequest");
+                cmd.Parameters.AddWithValue("@rejectReason", reason);
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
     }
 }
