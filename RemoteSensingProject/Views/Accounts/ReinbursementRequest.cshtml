@@ -211,7 +211,7 @@
                                         <td>@item.type</td>
                                         <td>₹@Convert.ToDecimal(item.amount).ToString("N2")</td>
                                         <td>
-                                            <a href="#" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId">
+                                            <a href="#" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId" data-id="@item.id">
                                                 <i class="fa-solid fa-eye text-success"></i>
                                             </a>
                                             @if (item.appr_status)
@@ -425,10 +425,11 @@
 
             let type = $(this).attr("data-type");
             let userId = $(this).attr("data-userId");
+            let Id = $(this).attr("data-id");
             $.ajax({
-                url: "/api/ViewReinbursementAdminView",
+                url: "/api/ViewReinbursementBytype",
                 type: "Get",
-                data: { "userId": userId, "type": type },
+                data: { "userId": userId, "type": type, id : Id },
                 success: function (result) {
                     if (result.status) {
                         $("#viewReinburseRecieptListBody").empty();
