@@ -147,6 +147,33 @@ namespace RemoteSensingProject.ApiServices
         }
 
 
+        [HttpPost]
+        [Route("api/rejectReinbursementAmountRequest")]
+        public IHttpActionResult RejectReinbursementForm()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                string reason = request.Form.Get("reason");
+                int sanctionId = Convert.ToInt32(request.Form.Get("sanctionId"));
+                bool res = _accountSerivce.rejectReinbursementRequestAmt(sanctionId, reason);
+                return Json(new
+                {
+                    status = res,
+                    message = res ? "Reinbursement rejected successfully !" : "Some issue occured while processing your request."
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);

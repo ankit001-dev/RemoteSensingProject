@@ -297,11 +297,11 @@
                                 <td>@item.amount</td>
                                 <td>@item.approveAmount</td>
                                 <td>
-                                    @if (item.appr_status && !item.newRequest)
+                                    @if (item.appr_status && !item.newRequest && item.status)
                                     {
                                         <span class="badge bg-success">Approved</span>
                                     }
-                                    else if (!item.newRequest && !item.appr_status)
+                                    else if (!item.newRequest && (!item.appr_status || !item.status) )
                                     {
                                         <span class="badge bg-danger">Rejected</span>
                                     }

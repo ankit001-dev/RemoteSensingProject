@@ -2110,6 +2110,7 @@ namespace RemoteSensingProject.Models.Admin
                             id = Convert.ToInt32(res["id"]),
                             appr_status = Convert.ToBoolean(res["Apprstatus"]),
                             newRequest = Convert.ToBoolean(res["newStatus"]),
+                            status = Convert.ToBoolean(res["apprAmountStatus"] != DBNull.Value ? res["apprAmountStatus"] : false),
                             chequeNum = res["chequeNum"].ToString(),
                             chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : ""
                         });
