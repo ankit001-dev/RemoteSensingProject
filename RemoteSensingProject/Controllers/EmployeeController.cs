@@ -33,15 +33,11 @@ namespace RemoteSensingProject.Controllers
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
             var TotalCount = _managerServices.DashboardCount(userObj.userId);
-            ViewBag.TotalAssignProject = TotalCount.TotalAssignProject;
-            ViewBag.TotaCompleteProject = TotalCount.TotaCompleteProject;
-            ViewBag.TotalDelayProject = TotalCount.TotalDelayProject;
-            ViewBag.TotalOngoingProject = TotalCount.TotalOngoingProject;
-            ViewBag.TotalNotice = TotalCount.TotalNotice;
-            ViewBag.TotalMeeting = TotalCount.TotalMeeting;
-   
+           
 
-            return View();
+
+
+            return View(TotalCount);
         }
         public ActionResult BindOverallCompletionPercentage()
         {

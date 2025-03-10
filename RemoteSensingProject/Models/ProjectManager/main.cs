@@ -10,6 +10,21 @@ namespace RemoteSensingProject.Models.ProjectManager
    
     public class DashboardCount
     {
+        public string ReimbursementPendingRequest { get; set; }
+        public string ReimbursementApprovedRequest { get; set; }
+        public string ReimbursementRejectedRequest { get; set; }
+        public string HiringPendingRequest { get; set; }
+        public string HiringApprovedRequest { get; set; }
+        public string HiringRejectedRequest { get; set; }
+        public string TourPendingRequest { get; set; }
+        public string TourApprovedRequest { get; set; }
+        public string TourRejectedRequest { get; set; }
+        public string EmpMeeting { get; set; }
+        public string TotalReimbursement { get; set; }
+        public string TotalTourProposal { get; set; }
+        public string TotalHiring { get; set; }
+        public string AdminMeeting { get; set; }
+        public string SelfCreatedProject { get; set; }
         public string TotalAssignProject { get; set; }
         public string TotaCompleteProject { get; set; }
         public string TotalDelayProject { get; set; }

@@ -36,6 +36,21 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.TotalNotice = sdr["TotalNotice"].ToString();
                     obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
                     obj.TotalMeeting = sdr["totalMeetings"].ToString();
+                    obj.SelfCreatedProject = sdr["SelfCreatedProject"].ToString();
+                    obj.EmpMeeting = sdr["EmpMeeting"].ToString();
+                    obj.AdminMeeting = sdr["AdminMeeting"].ToString();
+                    obj.TotalReimbursement = sdr["TotalReimbursement"].ToString();
+                    obj.TotalTourProposal = sdr["TotalTourProposal"].ToString();
+                    obj.TotalHiring = sdr["TotalHiring"].ToString();
+                    obj.ReimbursementPendingRequest = sdr["ReimbursementPendingRequest"].ToString();
+                    obj.ReimbursementApprovedRequest = sdr["ReimbursementApprovedRequest"].ToString();
+                    obj.ReimbursementRejectedRequest = sdr["ReimbursementRejectedRequest"].ToString();
+                    obj.TourPendingRequest = sdr["TourPendingRequest"].ToString();
+                    obj.TourApprovedRequest = sdr["TourApprovedRequest"].ToString();
+                    obj.TourRejectedRequest = sdr["TourRejectedRequest"].ToString();
+                    obj.HiringPendingRequest = sdr["HiringPendingRequest"].ToString();
+                    obj.HiringApprovedRequest = sdr["HiringApprovedRequest"].ToString();
+                    obj.HiringRejectedRequest = sdr["HiringRejectedRequest"].ToString();
                 }
 
                 sdr.Close();
