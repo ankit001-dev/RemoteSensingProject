@@ -1907,10 +1907,7 @@ namespace RemoteSensingProject.Models.Admin
                             taxi = res["taxi"].ToString(),
                             BookAgainstCentre = res["BookAgainstCentre"].ToString(),
                             availbilityOfFund = res["availbilityOfFund"].ToString(),
-                            taxiReportTo = res["taxiReportTo"].ToString(),
-                            taxiReportAt = (TimeSpan)res["taxiReportAt"],
-                            taxiReportPlace = res["taxiReportPlace"].ToString(),
-                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"]),
+                            note = res["note"].ToString(),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
                             adminappr = Convert.ToBoolean(res["adminappr"]),
                         });
@@ -2066,10 +2063,7 @@ namespace RemoteSensingProject.Models.Admin
                             taxi = res["taxi"].ToString(),
                             BookAgainstCentre = res["BookAgainstCentre"].ToString(),
                             availbilityOfFund = res["availbilityOfFund"].ToString(),
-                            taxiReportTo = res["taxiReportTo"].ToString(),
-                            taxiReportAt = (TimeSpan)res["taxiReportAt"],
-                            taxiReportPlace = res["taxiReportPlace"].ToString(),
-                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"]),
+                            note = res["note"].ToString(),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
                             adminappr = Convert.ToBoolean(res["adminappr"]),
                         });

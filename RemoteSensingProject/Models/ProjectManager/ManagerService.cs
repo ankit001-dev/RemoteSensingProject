@@ -1619,10 +1619,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@taxi", data.taxi);
                 cmd.Parameters.AddWithValue("@BookAgainstCentre", data.BookAgainstCentre);
                 cmd.Parameters.AddWithValue("@availbilityOfFund", data.availbilityOfFund);
-                cmd.Parameters.AddWithValue("@taxiReportTo", data.taxiReportTo);
-                cmd.Parameters.AddWithValue("@taxiReportAt", data.taxiReportAt);
-                cmd.Parameters.AddWithValue("@taxiReportPlace", data.taxiReportPlace);
-                cmd.Parameters.AddWithValue("@taxiReportOn", data.taxiReportOn);
+                cmd.Parameters.AddWithValue("@note", data.note);
                 cmd.Parameters.AddWithValue("@action", "insert");
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
@@ -1671,10 +1668,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             taxi = res["taxi"].ToString(),
                             BookAgainstCentre = res["BookAgainstCentre"].ToString(),
                             availbilityOfFund = res["availbilityOfFund"].ToString(),
-                            taxiReportTo = res["taxiReportTo"].ToString(),
-                            taxiReportAt = (TimeSpan)res["taxiReportAt"],
-                            taxiReportPlace = res["taxiReportPlace"].ToString(),
-                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"]),
+                            note = res["note"].ToString(),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
                             adminappr = Convert.ToBoolean(res["adminappr"])
                         });
@@ -1724,10 +1718,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             totalPlainHills = Convert.ToString(res["totalPlainHills"]),
                             taxi = (string)res["taxi"],
                             BookAgainstCentre = (string)res["BookAgainstCentre"],
-                            taxiReportTo = (string)res["taxiReportTo"],
-                            taxiReportAt = (TimeSpan)res["taxiReportAt"],
-                            taxiReportPlace = (string)res["taxiReportPlace"],
-                            taxiReportOn = Convert.ToDateTime(res["taxiReportOn"])
+                            note = res["note"].ToString()
                         });
                     }
                 }
