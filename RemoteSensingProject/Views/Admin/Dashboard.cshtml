@@ -58,8 +58,9 @@
     .grid-margin {
         margin: 3px 0px !important;
     }
-    .card .card-body .justify-content-between{
-        padding-bottom:3px !important;
+
+    .card .card-body .justify-content-between {
+        padding-bottom: 3px !important;
     }
 
 
@@ -80,7 +81,42 @@
         }
     /*Trae*/
 </style>
+<!--Trae-->
+<!--trae-->
 
+<style>
+    .text-success span span.text-dark {
+        display: inline-block;
+        width: 80px;
+    }
+
+    .text-success span {
+        display: flex;
+        align-items: center;
+    }
+
+    .text-success span {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+    }
+
+        .text-success span span.text-dark {
+            min-width: 110px;
+            text-align: left;
+        }
+
+    .card-body {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+        /* Hide scrollbar but keep functionality */
+        .card-body::-webkit-scrollbar {
+            display: none;
+        }
+</style>
 <div class="row mx-0">
     <div class="col-12 col-xl-12">
         <div class="row flex-grow-1">
@@ -700,35 +736,35 @@
                         </thead>
                         <tbody>
                             @if (graphdata != null)
-                                        {
-                                            int i = 1;
-                                            foreach (var item in graphdata)
+                            {
+                                int i = 1;
+                                foreach (var item in graphdata)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.ProjectTitle</td>
+                                        <td>@item.StartDateString</td>
+                                        <td>@item.CompletionDatestring</td>
+                                        <td>@item.AssignDateString</td>
+                                        <td>
+                                            @if (item.ProjectStatus || item.physicalcomplete == 100)
                                             {
-                                        <tr>
-                                            <td>@i</td>
-                                            <td>@item.ProjectTitle</td>
-                                            <td>@item.StartDateString</td>
-                                            <td>@item.CompletionDatestring</td>
-                                            <td>@item.AssignDateString</td>
-                                            <td>
-                                                @if (item.ProjectStatus || item.physicalcomplete == 100)
-                                                {
-                                                    <span class="badge bg-success">Completed</span>
-                                                }
-                                                else if (item.CompletionDate < DateTime.Now)
-                                                {
-                                                    <span class="badge bg-danger">Delay</span>
-                                                }
-                                                else if (item.StartDate < DateTime.Now)
-                                                {
-                                                    <span class="badge bg-warning">Work in Progress</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-primary">Not Started</span>
-                                                }
-                                            </td>
-                                        </tr>
+                                                <span class="badge bg-success">Completed</span>
+                                            }
+                                            else if (item.CompletionDate < DateTime.Now)
+                                            {
+                                                <span class="badge bg-danger">Delay</span>
+                                            }
+                                            else if (item.StartDate < DateTime.Now)
+                                            {
+                                                <span class="badge bg-warning">Work in Progress</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-primary">Not Started</span>
+                                            }
+                                        </td>
+                                    </tr>
                                     if (i == 5)
                                     {
                                         break;
@@ -979,13 +1015,13 @@
 
             }
         });
-        
+
     });
 </script>
 <!--Physical Chart-->
 <script>
-    let data = @Html.Raw(Json.Encode(graphdata))  
-        
+    let data = @Html.Raw(Json.Encode(graphdata))
+
     window.onload = function () {
 
         if (data != null) {
