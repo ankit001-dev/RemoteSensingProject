@@ -197,7 +197,7 @@
 <textarea class="form-control form-control-sm" name="pm.pm.ProjectDescription" id="tinymceExample" rows="10" placeholder="Project Description"></textarea>
                             </div>
                             <div class="text-center">
-                                <button type="submit" id="addbtn" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Project</button>
+                                <button type="submit" id="addbtn" class="btn btn-primary">Submit</button>
                             </div>
                         </div>
                     </form>
@@ -225,19 +225,6 @@
                 }
             });
         });
-
-    $(document).ready(function () {
-        $("#budgetAmount").on("keyup", function () {
-            if (parseInt($(this).val()) >@ViewBag.pendingBudget) {
-                $("#budgetValidate").text("Buget is not more than pending budget");
-                $("#addbtn").prop("disabled", true);
-            }
-            else {
-                $("#budgetValidate").text("");
-                $("#addbtn").prop("disabled", false);
-            }
-        })
-    })
 
 
     $(document).ready(function(){

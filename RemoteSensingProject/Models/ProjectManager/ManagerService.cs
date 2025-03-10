@@ -1363,7 +1363,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                         getlist.Add(new Reimbursement
                         {
                             EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
-                            type = (string)res["type"],
+                            type = res["type"].ToString(),
+                            id = Convert.ToInt32(res["id"]),
                             amount = Convert.ToDecimal(res["amount"]),
                             userId = Convert.ToInt32(res["userId"])
                         });

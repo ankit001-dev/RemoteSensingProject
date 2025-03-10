@@ -50,8 +50,8 @@
     <a href="/Admin/Meeting_Report" class="btn btn-primary"><i class="link-icon" data-feather="arrow-left"></i> Back To List</a>
 </nav>
 
-<div class="row">
-    <div class="col-md-12 grid-margin stretch-card">
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin p-0 stretch-card">
 
         <div class="card">
             <div class="card-body">
@@ -146,7 +146,7 @@
 
         </div>
     </div>
-    <div class="col-md-12 grid-margin stretch-card">
+    <div class="col-md-12 grid-margin p-0 stretch-card">
 
         <div class="card my-4 p-3">
             <div class="card-body">
@@ -682,7 +682,7 @@
                             <ul class="d-flex list-unstyled justify-content-evenly">
                             ${item.CompleteStatus == 0 ? `<li>        <a href="/employee/Meeting_Conclusion?meeting=${item.Id}"><i class="fa-solid fa-circle-plus" style="color:orange" title="Add Conclusion"></i></a>
                             </li >
-                        <li><a onclick='updateMeeting(${item.Id})' role="button"><i class="fa-solid text-primary fa-pencil"></i></a></li>
+                        <li><a onclick='updateMeeting(${item.Id})' title="Update Meeting" role="button"><i class="fa-solid text-primary fa-pencil"></i></a></li>
                          <li><i class="fa-solid fa-users" onclick='ShowJoiningMember(${item.Id})'></i></li>` : `<i onclick="showAllConclusion(${item.Id})" role="button" class="fa-solid text-primary fa-eye"></i>`
                         }
                         </ul>

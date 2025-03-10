@@ -62,8 +62,10 @@
                             <div class="form-group">
                                 <label>Meeting Type</label>
                                 <br />
-                                <input type="radio" id="meetingTypeOnline" name="MeetingType" class="meetType" value="online" checked><span>Online</span>
-                                <input type="radio" required id="meetingTypeOffline" name="MeetingType" class="meetType" value="offline"><span>Offline</span>
+                                <select name="MeetingType" id="meetType" class="form-select form-select-sm" >
+                                    <option value="online">Online</option>
+                                    <option value="offline">Offline</option>
+                                </select>
                             </div>
                         </div>
 
@@ -499,7 +501,7 @@
             i--;
         });
 
-        $(".meetType").change(function () {
+        $("#meetType").on("change",function () {
             debugger;
             const selectedValue = $(this).val().trim().toLowerCase();
             $("#venueEle").toggle(selectedValue === "offline");
