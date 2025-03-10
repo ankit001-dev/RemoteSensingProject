@@ -30,6 +30,7 @@ namespace RemoteSensingProject.ApiServices
             _adminServices = new AdminServices();
             _loginService = new LoginServices();
             _managerservice = new ManagerService();
+            _accountService = new AccountService();
         }
         [HttpPost]
         [Route("api/login")]
