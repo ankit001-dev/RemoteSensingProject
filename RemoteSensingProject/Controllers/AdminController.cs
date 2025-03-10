@@ -562,7 +562,7 @@ namespace RemoteSensingProject.Controllers
                 return Json(new
                 {
                     status = res,
-                    message = "Approved"
+                    message = (res == true && status == true) ? "Approved Successfully" : "Rejected Successfully"
                 });
             }
             else
@@ -570,7 +570,7 @@ namespace RemoteSensingProject.Controllers
                 return Json(new
                 {
                     status = res,
-                    message = "Rejected"
+                    message = "Some error Occured"
                 });
             }
         }
