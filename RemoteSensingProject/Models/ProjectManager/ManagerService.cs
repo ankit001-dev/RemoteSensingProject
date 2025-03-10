@@ -1808,6 +1808,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                         list.Add(new Reimbursement
                         {
                             type = res["type"].ToString(),
+                            userId = Convert.ToInt32(res["userId"]),
                             amount = Convert.ToDecimal(res["amount"]),
                             id = Convert.ToInt32(res["id"]),
                             adminappr = Convert.ToBoolean(res["Apprstatus"]),
