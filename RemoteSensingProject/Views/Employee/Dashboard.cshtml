@@ -8,7 +8,7 @@
 <style>
     .uniform-card {
         /*        height: 200px;
-    */ width: 160px;
+      */ width: 160px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -34,9 +34,10 @@
         .uniform-card img {
             margin: 0 auto;
         }
+
     .uniform-card {
         /*        height: 200px;
-  */ width: 160px;
+    */ width: 160px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -75,6 +76,39 @@
         margin: 3px 0px !important;
     }
 </style>
+<!--trae-->
+
+<style>
+    .text-success span span.text-dark {
+        display: inline-block;
+        width: 130px;
+    }
+
+    .text-success span {
+        display: flex;
+        align-items: center;
+    }
+    .text-success span {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+    }
+
+        .text-success span span.text-dark {
+            min-width: 140px;
+            text-align: left;
+        }
+    .card-body {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+        /* Hide scrollbar but keep functionality */
+        .card-body::-webkit-scrollbar {
+            display: none;
+        }
+</style>
 
 <div class="row mx-0">
     <div class="col-12 col-xl-12">
@@ -89,7 +123,7 @@
                                 <h6 class="card-title mb-0">Project's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-6">
+                                <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <a href="/Employee/All_Project_List" class="text-decoration-none">
                                         <div class="d-flex align-items-baseline py-1">
@@ -107,7 +141,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-6">
+                                <div class="col-6 col-md-12 col-xl-5">
                                     <img src="~/assets/gif/project.gif" height="80" />
                                 </div>
                             </div>
@@ -125,7 +159,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Project's Status</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-6">
+                                <div class="col-6 col-md-12 col-xl-7">
                                     <h6 class="mb-2 text-success"></h6>
                                     <a href="/Employee/Complete_Project_Report">
                                         <div class="d-flex align-items-baseline py-1">
@@ -143,7 +177,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-6">
+                                <div class="col-6 col-md-12 col-xl-5">
                                     <img src="~/assets/gif/file.gif" height="80" />
                                 </div>
                             </div>
@@ -154,36 +188,36 @@
 
             <!-- Employee's Card -->
             <!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-        <a href="/Admin/Employee_Registration" class="w-100" style="text-decoration: none; color: inherit;">
-            <div class="card uniform-card w-100 rounded-0 w-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-baseline">
-                        <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 col-md-12 col-xl-5">
-                            <h3 class="mb-2 text-success"></h3>
-                            <div class="d-flex align-items-baseline">
-                                <p class="text-success"><span><span class="text-dark">Total Employees :  </span> 0</span></p>
+                <a href="/Admin/Employee_Registration" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded-0 w-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
                             </div>
-                            <div class="d-flex align-items-baseline ">
-                                <p class="text-success"><span><span class="text-dark">Project Manager :  </span> 0</span></p>
-                            </div>
-                            <div class="d-flex align-items-baseline">
-                                <p class="text-success"><span><span class="text-dark">Accounts : </span> 0</span></p>
-                            </div>
-                            <div class="d-flex align-items-baseline">
-                                <p class="text-success"><span><span class="text-dark">Subordinates : </span> 0</span></p>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span><span class="text-dark">Total Employees :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success"><span><span class="text-dark">Project Manager :  </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span><span class="text-dark">Accounts : </span> 0</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline">
+                                        <p class="text-success"><span><span class="text-dark">Subordinates : </span> 0</span></p>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <img src="~/assets/gif/success.gif" height="70" />
+                                </div>
                             </div>
                         </div>
-                        <div class="col-6 col-md-12 col-xl-7">
-                            <img src="~/assets/gif/success.gif" height="70" />
-                        </div>
                     </div>
-                </div>
-            </div>
-        </a>
-    </div>-->
+                </a>
+            </div>-->
             <!-- Meeting's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
                 <a href="/Employee/Meetings" class="w-100" style="text-decoration: none; color: inherit;">
@@ -193,7 +227,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Total :  </span> @Model.TotalMeeting</span></p>
@@ -205,7 +239,7 @@
                                         <p class="text-success"><span><span class="text-dark">Project Manager :  </span> @Model.AdminMeeting</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-5">
                                     <img src="~/assets/gif/discussion.gif" height="70" />
                                 </div>
                             </div>
@@ -223,7 +257,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Request's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <a href="/Employee/Reimbursement_Form">
                                         <div class="d-flex align-items-baseline py-1">
@@ -241,7 +275,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-5">
                                     <img src="~/assets/gif/rfp.gif" height="70" />
                                 </div>
                             </div>
@@ -346,7 +380,7 @@
                                 <h6 class="card-title mb-0" style="text-decoration: none;">Task's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Total Task :  </span> @Model.TotalTask</span></p>
@@ -358,7 +392,7 @@
                                         <p class="text-success"><span><span class="text-dark">Pending : </span> @(Convert.ToInt32(Model.TotalTask)-Convert.ToInt32(Model.CompletedTask)) </span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-5">
                                     <img src="~/assets/gif/success.gif" height="70" />
                                 </div>
                             </div>
@@ -376,7 +410,7 @@
                                 <h6 class="card-title mb-0" style="text-decoration: none;">Other's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <a href="/employee/OutSource">
                                         <div class="d-flex align-items-baseline py-1">
@@ -394,7 +428,7 @@
                                         </div>
                                     </a>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-5">
                                     <img src="~/assets/gif/success.gif" height="70" />
                                 </div>
                             </div>
@@ -456,12 +490,12 @@
                             <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                         </button>
                         @*<div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span class>View</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span class>Edit</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span class>Delete</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>Print</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
-                        </div>*@
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span class>View</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span class>Edit</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span class>Delete</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>Print</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
+                            </div>*@
                     </div>
                 </div>
                 <p class="text-muted">Check the current project status on the dashboard for detailed updates.</p>
@@ -479,12 +513,12 @@
                             <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                         </button>
                         @*<div class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span class>View</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span class>Edit</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span class>Delete</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>Print</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
-                        </div>*@
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span class>View</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span class>Edit</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span class>Delete</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>Print</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
+                            </div>*@
                     </div>
                 </div>
                 <div id="storageChart"></div>
@@ -503,8 +537,8 @@
                     </div>
                 </div>
                 @*<div class="d-grid">
-                    <button class="btn btn-primary">View More</button>
-                </div>*@
+                        <button class="btn btn-primary">View More</button>
+                    </div>*@
             </div>
         </div>
     </div>
@@ -564,7 +598,7 @@
                         </div>
                     </a>
 
-                      <a class="dropdown-item d-flex align-items-center py-2">
+                    <a class="dropdown-item d-flex align-items-center py-2">
                         <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
                             <i class="icon-sm text-white" data-feather="camera"></i>
                         </div>
@@ -581,7 +615,7 @@
                         </div>
                     </a>
 
-                      <a class="dropdown-item d-flex align-items-center py-2">
+                    <a class="dropdown-item d-flex align-items-center py-2">
                         <div class="wd-30 ht-30 d-flex align-items-center justify-content-center bg-primary rounded-circle me-3">
                             <i class="icon-sm text-white" data-feather="camera"></i>
                         </div>
