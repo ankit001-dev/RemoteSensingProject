@@ -33,10 +33,7 @@ namespace RemoteSensingProject.Controllers
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
             var TotalCount = _managerServices.DashboardCount(userObj.userId);
-           
-
-
-
+            ViewData["emplist"] = _managerServices.All_Project_List(userObj.userId);
             return View(TotalCount);
         }
         public ActionResult BindOverallCompletionPercentage()
