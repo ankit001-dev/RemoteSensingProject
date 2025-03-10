@@ -48,16 +48,37 @@
         }
 
     .grid-margin .w-100 .card {
-        background: #029e9d6b;
+        background: #0a6d9d6b;
     }
 
     .align-items-baseline .text-success {
-        color: white !important;
+        color: #000 !important;
     }
 
     .grid-margin {
         margin: 3px 0px !important;
     }
+    .card .card-body .justify-content-between{
+        padding-bottom:3px !important;
+    }
+
+
+    /*Trae*/
+    .uniform-card {
+        height: 150px !important; /* Fixed height for all cards */
+        overflow: hidden;
+    }
+
+    .card-body {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+        /* Hide scrollbar but keep functionality */
+        .card-body::-webkit-scrollbar {
+            display: none;
+        }
+    /*Trae*/
 </style>
 
 <div class="row mx-0">
@@ -75,7 +96,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Budget's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-8">
+                                <div class="col-6 col-md-12 col-xl-9">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex py-1 align-items-baseline">
                                         <p class="text-success inst py-0">
@@ -104,8 +125,8 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-4">
-                                    <img src="~/assets/gif/Tbudget.gif" height="80" />
+                                <div class="col-6 col-md-12 col-xl-3 pt-2">
+                                    <img src="~/assets/gif/Tbudget.gif" height="60" />
                                 </div>
                             </div>
                         </div>
@@ -170,7 +191,7 @@
                                 <h6 class="card-title mb-0">Project's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-6">
+                                <div class="col-6 col-md-12 col-xl-9">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Total Project's :  </span> @data.TotalProject</span></p>
@@ -181,8 +202,8 @@
                                         <p class="text-success"><span><span class="text-dark">External Project's :  </span> @data.TotalExternalProject</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-6">
-                                    <img src="~/assets/gif/project.gif" height="80" />
+                                <div class="col-6 col-md-12 col-xl-3">
+                                    <img src="~/assets/gif/project.gif" height="60" />
                                 </div>
                             </div>
                         </div>
@@ -190,7 +211,7 @@
                 </a>
             </div>
 
-            <!-- Pending Project's Card -->
+            <!-- Project's Status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
                 <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
                     <div class="card uniform-card w-100">
@@ -199,7 +220,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Project's Status</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-6">
+                                <div class="col-6 col-md-12 col-xl-9">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Completed Project's :  </span> @data.TotalCompleteProject</span></p>
@@ -211,8 +232,8 @@
                                         <p class="text-success"><span><span class="text-dark">Ongoing Project's :  </span> @data.TotalOngoingProject</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-6">
-                                    <img src="~/assets/gif/file.gif" height="80" />
+                                <div class="col-6 col-md-12 col-xl-3">
+                                    <img src="~/assets/gif/file.gif" height="60" />
                                 </div>
                             </div>
                         </div>
@@ -324,7 +345,7 @@
                                 <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-9">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline">
                                         <p class="text-success"><span><span class="text-dark">Total Employees :  </span> @data.TotalEmployee</span></p>
@@ -339,8 +360,8 @@
                                         <p class="text-success"><span><span class="text-dark">Subordinates : </span> @data.TotalSubOrdinate</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/success.gif" height="70" />
+                                <div class="col-6 col-md-12 col-xl-3">
+                                    <img src="~/assets/gif/success.gif" height="60" />
                                 </div>
                             </div>
                         </div>
@@ -357,7 +378,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-9">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Total :  </span> @data.TotalMeetings</span></p>
@@ -369,8 +390,8 @@
                                         <p class="text-success"><span><span class="text-dark">Project Manager :  </span> @data.TotalProjectManagerMeetings</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/discussion.gif" height="70" />
+                                <div class="col-6 col-md-12 col-xl-3">
+                                    <img src="~/assets/gif/discussion.gif" height="60" />
                                 </div>
                             </div>
                         </div>
@@ -387,20 +408,20 @@
                                 <h6 class="card-title mb-0 text-nowrap">Request's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-9">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
+                                    <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Reimbursement :  </span> @data.TotalReinbursementReq</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline">
+                                    <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Tour Proposal :  </span> @data.TotalTourProposalReq</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline">
+                                    <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Hiring Vehicle :  </span> @data.totalVehicleHiringRequest</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/rfp.gif" height="70" />
+                                <div class="col-6 col-md-12 col-xl-3">
+                                    <img src="~/assets/gif/rfp.gif" height="60" />
                                 </div>
                             </div>
                         </div>
@@ -416,7 +437,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Reimbursement's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-9">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Pending :  </span> @data.totalReinbursementPendingRequest</span></p>
@@ -428,8 +449,8 @@
                                         <p class="text-success"><span><span class="text-dark">Rejected  :  </span> @data.totalReinbursementRejectRequest</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-5">
-                                    <img src="~/assets/gif/employee-benefit.gif" height="70" />
+                                <div class="col-6 col-md-12 col-xl-3">
+                                    <img src="~/assets/gif/employee-benefit.gif" height="60" />
                                 </div>
                             </div>
                         </div>
@@ -445,7 +466,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Tour Proposal's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-9">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Pending :  </span> @data.TotalTourProposalReq</span></p>
@@ -457,8 +478,8 @@
                                         <p class="text-success"><span><span class="text-dark">Rejected  :  </span> @data.totalTourProposalRejectReque</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-5">
-                                    <img src="~/assets/gif/map.gif" height="70" />
+                                <div class="col-6 col-md-12 col-xl-3">
+                                    <img src="~/assets/gif/map.gif" height="60" />
                                 </div>
                             </div>
                         </div>
@@ -474,7 +495,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Hiring Vehicle's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-9">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline py-1">
                                         <p class="text-success"><span><span class="text-dark">Pending :  </span> @data.totalPendingHiringVehicle</span></p>
@@ -486,8 +507,8 @@
                                         <p class="text-success"><span><span class="text-dark">Rejected  :  </span> @data.totalRejectHiringVehicle</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-5">
-                                    <img src="~/assets/gif/rent-car.gif" height="70" />
+                                <div class="col-6 col-md-12 col-xl-3">
+                                    <img src="~/assets/gif/rent-car.gif" height="60" />
                                 </div>
                             </div>
                         </div>

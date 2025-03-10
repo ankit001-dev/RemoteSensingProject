@@ -147,33 +147,6 @@ namespace RemoteSensingProject.ApiServices
         }
 
 
-        [HttpPost]
-        [Route("api/rejectReinbursementAmtRequest")]
-        public IHttpActionResult RejectRreibursementRequest()
-        {
-            try
-            {
-                var request = HttpContext.Current.Request;
-                string reason = request.Form.Get("reason");
-                int Id = Convert.ToInt32(request.Form.Get("id"));
-                 bool res = _accountSerivce.rejectReinbursementAmt(Id, reason);
-                return Ok(new
-                {
-                    status = res ,
-                    message = res ? "Rejected successfully !" : "Some issue occured while processing request..."
-                });
-            }catch(Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
-            }
-        }
-
-
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);
