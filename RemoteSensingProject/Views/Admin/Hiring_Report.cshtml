@@ -362,9 +362,8 @@
 
                         <div class="note-section w-100">
                             <div>
-                                Note : The Taxi may report to Shri <span class="dotted-line w-70" id="repo_to">
-                                </span> at <span class="dotted-line w-70" id="repo_at"></span>
-                                AM/PM at <span class="dotted-line w-70" id="repo_on"></span> on Date<span class="dotted-line w-70" id="repo_date"></span>
+                                Note : <span class="dotted-line w-100" id="note1">
+                                </span>
                             </div>
                         </div>
 
@@ -599,10 +598,7 @@
                     $("#taxi1").text(res.data[0].taxi)
                     $("#book").text(res.data[0].BookAgainstCentre)
                     $("#availability").text(res.data[0].amount)
-                    $("#repo_to").text(res.data[0].taxiReportTo)
-                    $("#repo_at").text(res.data[0].taxiReportAt)
-                    $("#repo_on").text(res.data[0].taxiReportPlace)
-                    $("#repo_date").text(convertToDate(res.data[0].taxiReportOn))
+                    $("#note1").text(res.data[0].note)
                     Swal.close();
                     $("#viewHiringVehicle").modal("show");
                 },

@@ -5,7 +5,6 @@
     var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
 
 <style>
@@ -75,21 +74,6 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-4">
-                        <select id="Filter1" class="form-select form-select-sm">
-                            <option selected value="">Filter By Project Manager</option>
-                            @if (projManager != null)
-                            {
-                                foreach (var proman in projManager)
-                                {
-                                    if (proman.EmployeeRole == "projectManager")
-                                    {
-                                        <option value="@proman.EmployeeName">@proman.EmployeeName</option>
-                                    }
-                                }
-                            }
-                        </select>
-                    </div>
-                    <div class="col-sm-4">
                         <select id="Filter2" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
                             @if (projects != null)
@@ -122,7 +106,6 @@
                     <thead>
                         <tr>
                             <th>S.N.</th>
-                            <th>Project Manager</th>
                             <th>Project Name</th>
                             <th>Head Name</th>
                             <th>Date From</th>
@@ -143,7 +126,6 @@
                             {
                                 <tr>
                                     <td>@i</td>
-                                    <td>@item.projectManager</td>
                                     <td>@item.projectName</td>
                                     <td>@item.headName</td>
                                     <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
@@ -364,9 +346,8 @@
 
                         <div class="note-section w-100">
                             <div>
-                                Note : The Taxi may report to Shri <span class="dotted-line w-70" id="repo_to">
-                                </span> at <span class="dotted-line w-70" id="repo_at"></span>
-                                AM/PM at <span class="dotted-line w-70" id="repo_on"></span> on Date<span class="dotted-line w-70" id="repo_date"></span>
+                                Note : <span class="dotted-line w-70" id="note1">
+                                </span>
                             </div>
                         </div>
 
@@ -409,21 +390,15 @@
             }
         })
         //Filter
-        $("#Filter1").on("change", function () {
-            let filter = $(this).val();
-            console.log(filter)
-            let table = $("#tableHiring").DataTable()
-            table.column(1).search(filter).draw()
-        })
         $("#Filter2").on("change", function () {
             let filter = $(this).val();
             let table = $("#tableHiring").DataTable()
-            table.column(2).search(filter).draw()
+            table.column(1).search(filter).draw()
         })
         $("#Filter3").on("change", function () {
             let filter = $(this).val();
             let table = $("#tableHiring").DataTable()
-            table.column(11).search(filter).draw()
+            table.column(10).search(filter).draw()
         })
         document.getElementById("printBtn").onclick = function () {
             // Get the content of the form to be printed
@@ -602,10 +577,7 @@
                     $("#taxi1").text(res.data[0].taxi)
                     $("#book").text(res.data[0].BookAgainstCentre)
                     $("#availability").text(res.data[0].amount)
-                    $("#repo_to").text(res.data[0].taxiReportTo)
-                    $("#repo_at").text(res.data[0].taxiReportAt)
-                    $("#repo_on").text(res.data[0].taxiReportPlace)
-                    $("#repo_date").text(convertToDate(res.data[0].taxiReportOn))
+                    $("#note1").text(res.data[0].note)
                     Swal.close();
                     $("#viewHiringVehicle").modal("show");
                 },

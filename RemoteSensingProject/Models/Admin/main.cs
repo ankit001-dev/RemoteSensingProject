@@ -330,10 +330,7 @@ namespace RemoteSensingProject.Models.Admin
             public string taxi { get; set; }
             public string BookAgainstCentre { get; set; }
             public string availbilityOfFund { get; set; }
-            public string taxiReportTo { get; set; }
-            public TimeSpan taxiReportAt { get; set; }
-            public string taxiReportPlace { get; set; }
-            public DateTime taxiReportOn { get; set; }
+            public string note { get; set; }
             public string proposedPlace { get; set; }
         }
     }

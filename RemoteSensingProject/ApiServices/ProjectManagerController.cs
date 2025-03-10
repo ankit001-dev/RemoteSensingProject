@@ -59,7 +59,7 @@ namespace RemoteSensingProject.ApiServices
                     });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -90,10 +90,10 @@ namespace RemoteSensingProject.ApiServices
 
                 if (string.IsNullOrWhiteSpace(request.Form.Get("date")))
                     validationErrors.Add("date is required.");
-                
+
                 if (string.IsNullOrWhiteSpace(request.Form.Get("amount")))
                     validationErrors.Add("Amount is required.");
-                
+
                 if (string.IsNullOrWhiteSpace(request.Form.Get("description")))
                     validationErrors.Add("Description is required.");
 
@@ -138,12 +138,13 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = res ? 200 : 500,
                     message = res ? "Expenses added successfully !" : "Some issue occured !"
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
                     status = false,
-                    StatusCode= 500,
+                    StatusCode = 500,
                     message = ex.Message
                 });
             }
@@ -259,7 +260,7 @@ namespace RemoteSensingProject.ApiServices
                 };
 
                 var file = request.Files["StageDocument"];
-                if(file != null && file.FileName != "")
+                if (file != null && file.FileName != "")
                 {
                     formData.StageDocument_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     formData.StageDocument_Url = Path.Combine("/ProjectContent/ProjectManager/ProjectDocs/", formData.StageDocument_Url);
@@ -272,7 +273,7 @@ namespace RemoteSensingProject.ApiServices
                     {
                         file.SaveAs(HttpContext.Current.Server.MapPath(formData.StageDocument_Url));
                     }
-                    }
+                }
                 return Ok(new
                 {
                     status = res,
@@ -306,7 +307,8 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = data.Any() ? 200 : 500,
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -337,11 +339,12 @@ namespace RemoteSensingProject.ApiServices
                 var data = _managerService.DashboardCount(userId);
                 return Ok(new
                 {
-                    status =true,
+                    status = true,
                     message = "Data found !",
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -380,7 +383,8 @@ namespace RemoteSensingProject.ApiServices
                         message = "Data not found !"
                     });
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -445,7 +449,8 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = data.Any() ? 200 : 500,
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -469,7 +474,8 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = data.Any() ? 200 : 500,
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -492,7 +498,8 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = data.Any() ? 200 : 500,
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -567,7 +574,8 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = 500,
                     message = "Data Not found!"
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -587,7 +595,7 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getAllmeeting")]
-        public IHttpActionResult getAllmeeting( int managerId)
+        public IHttpActionResult getAllmeeting(int managerId)
         {
             var res = _managerService.getAllmeeting(managerId);
             return Ok(new { status = true, message = "data retrieved", data = res });
@@ -632,8 +640,8 @@ namespace RemoteSensingProject.ApiServices
 
 
             return Ok(new { status = true, message = "data retrieved", data = res });
-        } 
-       
+        }
+
 
         #endregion
 
@@ -662,7 +670,7 @@ namespace RemoteSensingProject.ApiServices
                     message = res ? "Outsource created successfully !" : "Some issue occured"
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -687,7 +695,8 @@ namespace RemoteSensingProject.ApiServices
                     message = data.Any() ? "Data found !" : "Some issue occured !",
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -712,7 +721,7 @@ namespace RemoteSensingProject.ApiServices
                     empId = Convert.ToInt32(request.Form.Get("empId"))
                 };
                 var outSourceList = request.Form["outSourceId"];
-                if(outSourceList != null)
+                if (outSourceList != null)
                 {
                     formData.outSourceId = outSourceList.Split(',').Select(value => int.Parse(value.ToString())).ToArray();
                 }
@@ -773,9 +782,11 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = data.Any() ? 200 : 500,
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                return BadRequest(new { 
+                return BadRequest(new
+                {
                     status = false,
                     StatusCode = 500,
                     message = ex.Message
@@ -795,7 +806,8 @@ namespace RemoteSensingProject.ApiServices
                     status = res,
                     message = res ? "Task updated successfully !" : "Some issue occured !"
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -832,7 +844,7 @@ namespace RemoteSensingProject.ApiServices
                 {
                     status = res,
                     StatusCode = res ? 200 : 500,
-                    message = res?"Added Successfully!":"Some error Occured"
+                    message = res ? "Added Successfully!" : "Some error Occured"
                 });
             }
             catch (Exception ex)
@@ -840,7 +852,7 @@ namespace RemoteSensingProject.ApiServices
                 return BadRequest(new
                 {
                     status = false,
-                    StatusCode =  500,
+                    StatusCode = 500,
                     message = ex.Message
                 });
             }
@@ -861,7 +873,8 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = 200,
 
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -881,11 +894,11 @@ namespace RemoteSensingProject.ApiServices
                 var data = _managerService.GetReinbursementDatabyType(userId);
                 return Ok(new
                 {
-                    status=data.Any(),
-                    data=data,
+                    status = data.Any(),
+                    data = data,
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -910,7 +923,8 @@ namespace RemoteSensingProject.ApiServices
                     StatuCode = data.Any() ? 200 : 500,
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -946,16 +960,16 @@ namespace RemoteSensingProject.ApiServices
                 {
                     status = res,
                     StatusCode = res ? 200 : 500,
-                    message=res?"Added successfully!":"Error Occured"
+                    message = res ? "Added successfully!" : "Error Occured"
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new
                 {
                     status = false,
                     StatusCode = 500,
-                    message=ex.Message
+                    message = ex.Message
                 });
             }
         }
@@ -972,7 +986,7 @@ namespace RemoteSensingProject.ApiServices
                     data = data
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new
                 {
@@ -994,23 +1008,20 @@ namespace RemoteSensingProject.ApiServices
                 var request = HttpContext.Current.Request;
                 var formdata = new HiringVehicle
                 {
-                      headId=Convert.ToInt32(request.Form.Get("headId")),
-                       amount=Convert.ToDecimal(request.Form.Get("amount")),
-                       userId=Convert.ToInt32(request.Form.Get("userId")),
-                       projectId=Convert.ToInt32(request.Form.Get("projectId")),
-                       dateFrom=Convert.ToDateTime(request.Form.Get("dateFrom")),
-                       dateTo= Convert.ToDateTime(request.Form.Get("dateTo")),
-                                        proposedPlace=(string)request.Form.Get("proposedPlace"),
-                       purposeOfVisit=(string)request.Form.Get("purposeOfVisit"),
-                       totalDaysNight=Convert.ToString(request.Form.Get("totalDaysNight")),
-                       totalPlainHills = Convert.ToString(request.Form.Get("totalPlanHills")),
-                       taxi=(string)request.Form.Get("taxi"),
-                       BookAgainstCentre=(string)request.Form.Get("BookAgainstCentre"),
-                       availbilityOfFund=(string)request.Form.Get("availabilityOfFund"),
-                       taxiReportTo=(string)request.Form.Get("taxiReportTo"),
-                       taxiReportAt= TimeSpan.Parse(request.Form.Get("taxiReportAt")),
-                       taxiReportPlace=(string)request.Form.Get("taxiReportPlace"),
-                       taxiReportOn=Convert.ToDateTime(request.Form.Get("taxiReportOn"))
+                    headId = Convert.ToInt32(request.Form.Get("headId")),
+                    amount = Convert.ToDecimal(request.Form.Get("amount")),
+                    userId = Convert.ToInt32(request.Form.Get("userId")),
+                    projectId = Convert.ToInt32(request.Form.Get("projectId")),
+                    dateFrom = Convert.ToDateTime(request.Form.Get("dateFrom")),
+                    dateTo = Convert.ToDateTime(request.Form.Get("dateTo")),
+                    proposedPlace = (string)request.Form.Get("proposedPlace"),
+                    purposeOfVisit = (string)request.Form.Get("purposeOfVisit"),
+                    totalDaysNight = Convert.ToString(request.Form.Get("totalDaysNight")),
+                    totalPlainHills = Convert.ToString(request.Form.Get("totalPlanHills")),
+                    taxi = (string)request.Form.Get("taxi"),
+                    BookAgainstCentre = (string)request.Form.Get("BookAgainstCentre"),
+                    availbilityOfFund = (string)request.Form.Get("availabilityOfFund"),
+                    note = (string)request.Form.Get("note")
                 };
                 bool res = _managerService.insertHiring(formdata);
                 return Ok(new
@@ -1020,7 +1031,7 @@ namespace RemoteSensingProject.ApiServices
                     message = res ? "Added successfully!" : "Error Occured"
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new
                 {
@@ -1033,8 +1044,8 @@ namespace RemoteSensingProject.ApiServices
         [HttpGet]
         [Route("api/getHiringList")]
         public IHttpActionResult getHiringList(int id)
-        
-        
+
+
         {
             try
             {
@@ -1045,7 +1056,7 @@ namespace RemoteSensingProject.ApiServices
                     data = data
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new
                 {
@@ -1083,5 +1094,80 @@ namespace RemoteSensingProject.ApiServices
         {
             return Content(HttpStatusCode.BadRequest, value);
         }
-    }
+
+        #region Report
+        [HttpGet]
+        [Route("api/ProjectManagerReimbursementReport")]
+        public IHttpActionResult ProjectManagerReimbursementReport(int userId)
+        {
+            try
+            {
+                var data = _managerService.reinbursementReport(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/ProjectManagerHiringReport")]
+        public IHttpActionResult ProjectManagerHiringReport(int userId)
+        {
+            try
+            {
+                var data = _managerService.GetHiringVehicles(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+            }
+           [HttpGet]
+        [Route("api/ProjectManagerTourProposalReport")]
+        public IHttpActionResult ProjectManagerTourProposalReport(int userId)
+            {
+                try
+                {
+                    var data = _managerService.getTourList(userId);
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        StatuCode = data.Any() ? 200 : 500,
+                        data = data
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new
+                    {
+                        status = false,
+                        StatusCode = 500,
+                        message = ex.Message
+                    });
+                } }
+            #endregion
+        }
 }
