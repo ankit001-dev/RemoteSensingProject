@@ -35,6 +35,7 @@
                                 <th>Problem Date</th>
                                 <th>Problem Title</th>
                                 <th>Description</th>
+                                @*<th>Action</th>*@
                             </tr>
                         </thead>
                         <tbody>
@@ -49,8 +50,16 @@
                                         <td>@problem.CreatedDate</td>
                                         <td>@problem.Title</td>
                                         <td>@problem.Description</td>
+                                        @*<td>
+                                            <a href="#" class="completeTaskAction" data-probId="@problem.ProblemId">
+                                                <i class="fa-solid fa-check text-success"></i>
+                                            </a>
 
-
+                                            &nbsp; | &nbsp;
+                                            <a href="#" class="rejectTaskAction" data-probId="@problem.ProblemId">
+                                                <i class="fa-solid fa-xmark text-danger"></i>
+                                            </a>
+                                        </td>*@
                                     </tr>
                                     index++;
                                 }
@@ -66,6 +75,27 @@
     </div>
 </div>
 
+<div class="modal fade" id="rejectProblemIssue" tabindex="-1" aria-labelledby="rejectProblemIssueModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <h1 class="modal-title fs-5 text-success" id="rejectProblemIssueLabel">Incomplete Problem Solution</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="rejectProblemForm">
+                    <label>Message :</label>
+                    <textarea class="form-control form-control-sm" name="message" placeholder="Enter message..."></textarea>
+                    <input type="hidden" name="probId" id="problemIdForForm"/>
+                    <p class="text-center py-2">
+                        <input type="submit" value="Submit" class="btn btn-primary"/>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
         $("#projectTable").DataTable();
@@ -75,5 +105,115 @@
 
             table.columns(1).search($(this).val()).draw();
         });
+    })
+
+    $(".completeTaskAction").click(function () {
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request....",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+
+        let problemId = $(this).attr("data-probId");
+        $.ajax({
+            url: "/employee/updateProjectProblemStatus",
+            type: "post",
+            data: { problemId: problemId },
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: res.message,
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                }
+                else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: res.message,
+                        icon: "warning"
+
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server busy !",
+                    text: "Server is busy please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+
+                })
+            }
+        })
+    })
+
+
+    $(".rejectTaskAction").click(function () {
+        let problemId = $(this).attr("data-probId");
+        $("#problemIdForForm").val(problemId);
+        $("#rejectProblemIssue").modal("show")
+    })
+
+
+    $("#rejectProblemForm").on("submit", function (e) {
+        e.preventDefault()
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request....",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+        let formData = new FormData(this);
+        $.ajax({
+            url: "/employee/rejectProjectProblem",
+            type: "post",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: res.message,
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                }
+                else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: res.message,
+                        icon: "warning"
+
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server busy !",
+                    text: "Server is busy please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+
+                })
+            }
+        })
     })
 </script>

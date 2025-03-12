@@ -292,8 +292,8 @@
         })
         let taskId = $(this).attr("data-taskId")
         $.ajax({
-            url: "/api/UpdateTaskStatus",
-            type: "PUT",
+            url: "/employee/UpdateTaskStatus",
+            type: "post",
             data: { taskId: taskId },
             success: function (res) {
                 if (res.status) {
