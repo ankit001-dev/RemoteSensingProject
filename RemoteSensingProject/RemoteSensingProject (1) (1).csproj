@@ -1039,6 +1039,7 @@
     <Content Include="Views\Accounts\Meeting_List.cshtml" />
     <Content Include="Views\Employee\Reimbursement_From.cshtml" />
     <Content Include="Views\Employee\SubOrdinateProblemList.cshtml" />
+    <Content Include="Views\Admin\ViewExpenditureAmount.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

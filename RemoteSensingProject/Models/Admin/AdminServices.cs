@@ -7,6 +7,7 @@ using RemoteSensingProject.Models.MailService;
 using System.Linq;
 using System.Web.UI.WebControls;
 using System.Net;
+using System.Web.Http.ValueProviders.Providers;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
@@ -928,6 +929,44 @@ namespace RemoteSensingProject.Models.Admin
             {
                 con.Close();
 
+            }
+        }
+
+
+        public List<ProjectExpenditure> ViewProjectExpenditure()
+        {
+            try
+            {
+                List<ProjectExpenditure> list = new List<ProjectExpenditure>();
+                cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "viewProjectExpenditure");
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new ProjectExpenditure
+                        {
+                            id = Convert.ToInt32(rd["id"]),
+                            ProjectName = rd["title"].ToString(),
+                            ProjectBudget = Convert.ToDecimal(rd["budget"]),
+                            expenditure = Convert.ToDecimal(rd["ExpendedAmt"]),
+                            remaining = Convert.ToDecimal(rd["remainingAmt"])
+                        });
+                    }
+                }
+                    return list;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
             }
         }
         public List<DashboardCount> getAllProjectCompletion()

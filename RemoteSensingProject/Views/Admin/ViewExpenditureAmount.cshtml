@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewBag.Title = "ViewExpenditureAmount";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var data = ViewData["ExpendedData"] as List<RemoteSensingProject.Models.Admin.main.ProjectExpenditure>;
+}
+
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr</th>
+                                <th>Project</th>
+                                <th>Project Budget</th>
+                                <th>Expenditure</th>
+                                <th>Remaining</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          @if(data != null && data.Any())
+            {
+                              int i = 1;
+                foreach(var item in data)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.ProjectName</td>
+                        <td>@Convert.ToDecimal(item.ProjectBudget).ToString("N2")</td>
+                        <td>@Convert.ToDecimal(item.expenditure).ToString("N2")</td>
+                        <td>@Convert.ToDecimal(item.remaining).ToString("N2")</td>
+                        <td><a href="/Admin/View_Expenses?Id=@item.id">
+                            <i class="fa-solid fa-eye text-success"></i>
+                            </a></td>
+                    </tr>
+                                  i++;
+                              }
+                          }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
