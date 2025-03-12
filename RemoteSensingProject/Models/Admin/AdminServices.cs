@@ -911,9 +911,9 @@ namespace RemoteSensingProject.Models.Admin
                     obj.totalPendingHiringVehicle = sdr["totalPendingHiringVehicle"].ToString();
                     obj.totalApproveHiringVehicle = sdr["totalApproveHiringVehicle"].ToString();
                     obj.totalRejectHiringVehicle = sdr["totalRejectHiringVehicle"].ToString();
-                    obj.TotalBudget = Convert.ToDecimal(sdr["totalBudgets"]);
-                    obj.PendingBudget = Convert.ToDecimal(sdr["pendingBudget"]);
-                    obj.expenditure = Convert.ToDecimal(sdr["expenditure"]);
+                    obj.TotalBudget = Convert.ToDecimal(sdr["totalBudgets"] != DBNull.Value ? sdr["totalBudgets"] : 0);
+                    obj.PendingBudget = Convert.ToDecimal(sdr["pendingBudget"] != DBNull.Value ? sdr["pendingBudget"] : 0);
+                    obj.expenditure = Convert.ToDecimal(sdr["expenditure"] != DBNull.Value ? sdr["expenditure"] : 0);
                 }
 
                 sdr.Close();

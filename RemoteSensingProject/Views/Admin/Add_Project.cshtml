@@ -210,7 +210,7 @@
     <script>
 
         $(document).ready(function () {
-            $("#person").on("keyup", function () {
+            $(".person").on("keyup", function () {
                 let am = parseInt($("#budgetAmount").val());
 
                 if ($(this).val() > am) {
@@ -295,7 +295,6 @@
             }
         });
         //managing budget section
-
         $("#addBudgetItem").click(function () {
             let budgetAmt = parseInt($("#budgetAmount").val())
             $("#misAmount").val(budgetAmt)
