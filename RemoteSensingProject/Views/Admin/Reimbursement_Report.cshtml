@@ -313,8 +313,8 @@
                         <div class="bottom-section mt-0 mx-5">
                             <div class="row mt-0">
                                 <div class="col-md-6">
-                                    <p>Balance Rs. <span class="dots"></span> (Rupees <span class="dots"></span>Only)</p>
-                                    <p>paid vide cheque No. <span class="dots"></span> Date<span class="dots"></span></p>
+                                    <p>Balance Rs. <span class="dots" id="approveAmmtText"></span> (Rupees <span class="dots"></span>Only)</p>
+                                    <p>paid vide cheque No. <span class="dots" id="chequeNumText"></span> Date<span class="dots" id="chequeDateText"></span></p>
 
                                 </div>
                                 <div class="col-md-6 text-end">
@@ -367,6 +367,7 @@
                         <th>Project Manager</th>
                         <th>Type</th>
                         <th>Amount</th>
+                        <th>Approved Amt.</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -382,6 +383,7 @@
                                 <td>@item.EmpName</td>
                                 <td>@item.type</td>
                                 <td>@item.amount</td>
+                                <td>@item.approveAmount</td>
                                 <td>
                                     @if (item.appr_status && !item.newRequest)
                                     {
@@ -399,7 +401,7 @@
 
                                 </td>
                                 <td data-id="@item.id" class="text-center">
-                                    <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id">
+                                    <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id" data-chequeNum="@item.chequeNum" data-chequeDate="@item.chequeDate" data-apprAmt="@item.approveAmount">
                                         <i class="fa-solid fa-eye text-success"></i>
                                     </a>
                                 </td>
@@ -648,6 +650,9 @@
             let type = $(this).attr("data-type");
             let userId = $(this).attr("data-userId");
             let id = $(this).attr("data-id");
+            let chequedate = $(this).attr("data-chequeDate");
+            let chequNum = $(this).attr("data-chequeNum");
+            let apprAmt = $(this).attr("data-apprAmt");
             $.ajax({
                 url: "/api/ViewReinbursementBytype",
                 type: "Get",
@@ -655,27 +660,39 @@
                 success: function (result) {
                     if (result.status) {
                         $("#viewReinburseRecieptListBody").empty();
+
                         Swal.close();
+                        $("#chequeDateText").text(chequedate);
+                        $("#chequeNumText").text(chequNum);
+                        $("#approveAmmtText").text(apprAmt);
                         let totalAmout = 0;
                         let element = "";
+                        let adminApprStatus = false;
+                        let newRequest = false;
+
                         $.each(result.data, function (i, d) {
                             element += `
-              <tr>
-              <td>${i + 1}</td>
-              <td>${d.vrNo} & ${convertToDate(d.date)}</td>
-              <td>${d.particulars}</td>
-              <td>${d.items}</td>
-              <td>${d.purpose}</td>
-              <td>${d.amount}</td>
-              </tr>
-              `
+   <tr>
+   <td>${i + 1}</td>
+   <td>${d.vrNo} & ${convertToDate(d.date)}</td>
+   <td>${d.particulars}</td>
+   <td>${d.items}</td>
+   <td>${d.purpose}</td>
+   <td>${d.amount}</td>
+   </tr>
+   `
+                            adminApprStatus = d.adminappr;
+                            newRequest = d.newRequest;
                             totalAmout += d.amount;
                         });
 
                         element += ` <tr>
-               <td colspan="5" class="text-end"><b>Total</b></td>
-               <td>${totalAmout}</td>
-           </tr>`;
+    <td colspan="5" class="text-end"><b>Total</b></td>
+    <td>${totalAmout}</td>
+</tr>`;
+
+                        $(".approved-text").text(newRequest ? "Pending" : !newRequest && !adminApprStatus ? "Rejected" : "Approved")
+                
 
                         $("#viewReinburseRecieptListBody").append(element);
                         $("#ViewReinburseMentReciept").modal("show");

@@ -323,7 +323,7 @@
                                         <p>A.O./S.F.A.O.</p>
                                     </div>
                                     <div class="col-md-4 text-end">
-                                        <span class="approved-text">Approved</span>
+                                        <span class="approved-text">Pending</span>
                                         <p>Sanctioning Authority</p>
                                     </div>
                                 </div>
@@ -436,24 +436,31 @@
                         Swal.close();
                         let totalAmout = 0;
                         let element = "";
+                        let adminApprStatus = false;
+                        let newRequest = false;
+
                         $.each(result.data, function (i, d) {
                             element += `
-              <tr>
-              <td>${i + 1}</td>
-              <td>${d.vrNo} & ${convertToDate(d.date)}</td>
-              <td>${d.particulars}</td>
-              <td>${d.items}</td>
-              <td>${d.purpose}</td>
-              <td>${d.amount}</td>
-              </tr>
-              `
+   <tr>
+   <td>${i + 1}</td>
+   <td>${d.vrNo} & ${convertToDate(d.date)}</td>
+   <td>${d.particulars}</td>
+   <td>${d.items}</td>
+   <td>${d.purpose}</td>
+   <td>${d.amount}</td>
+   </tr>
+   `
+                            adminApprStatus = d.adminappr;
+                            newRequest = d.newRequest;
                             totalAmout += d.amount;
                         });
 
                         element += ` <tr>
-               <td colspan="5" class="text-end"><b>Total</b></td>
-               <td>${totalAmout}</td>
-           </tr>`;
+    <td colspan="5" class="text-end"><b>Total</b></td>
+    <td>${totalAmout}</td>
+</tr>`;
+
+                        $(".approved-text").text(newRequest ? "Pending" : !newRequest && !adminApprStatus ? "Rejected" : "Approved")
 
                         $("#viewReinburseRecieptListBody").append(element);
                         $("#ViewReinburseMentReciept").modal("show");
