@@ -265,6 +265,14 @@ namespace RemoteSensingProject.Models.Admin
             public decimal ExpenditureBudget { get; set; }
 
         }
+        public class ProjectExpenditure
+        {
+            public int id { get; set; }
+            public string ProjectName  { get; set; }
+            public decimal ProjectBudget  { get; set; }
+            public decimal expenditure  { get; set; }
+            public decimal remaining  { get; set; }
+        }
      
         public class BudgetForGraph
         {

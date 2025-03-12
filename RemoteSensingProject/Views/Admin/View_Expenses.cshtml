@@ -56,7 +56,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <span class="card-title">View Project Expenses </span>
-                <span class="card-title text-center mx-auto text-info" style="text-transform:none">Total Budget: 3,00,000</span>
+                <span class="card-title text-center mx-auto text-info" style="text-transform:none"></span>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -65,8 +65,8 @@
                             <tr>
                                 <th class="text-center">S.No.</th>
                                 <th>Head</th>
-                                <th class="text-center">Amount</th>
-                                <th class="text-center">Enter Expended Amount</th>
+                                <th class="text-center">Budget</th>
+                                <th class="text-center">Expended Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,14 +79,14 @@
                                         @item.ProjectAmount
                                     </td>
                                     <td class="text-center">
-                                        0
+                                        @item.ApproveAmount
                                     </td>
                                 </tr>
                                 i++;
                             }
                         </tbody>
                     </table>
-                  
+
                 </div>
             </div>
         </div>
@@ -104,7 +104,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex">
-                <h1 class="modal-title fs-5 text-light" id="exampleModalLabel">Equipment Expenses</h1>
+                <h1 class="modal-title fs-5 text-light" id="ViewBudgetExpensesModal">Equipment Expenses</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -113,15 +113,17 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Date</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Amount</th>
                                 <th>Reciept</th>
+                                <th>Approve Amount</th>
+                                <th>Date</th>
+                                <th>Reason</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            
+                        <tbody id="viewBudgetExpensesBody">
                         </tbody>
                     </table>
                 </div>
@@ -132,7 +134,7 @@
 
 
 <script>
-    
+
     $(".headExpense").click(function () {
         let headId = $(this).attr("data-Id");
         let projectId = @Request.QueryString["Id"];
@@ -159,13 +161,17 @@
                     let element = "";
                     $.each(res.data, function (i, d) {
                         element += `  <tr>
-                              <td>${i + 1}</td>
-                              <td>${convertToDate(d.date)}</td>
-                              <td>${d.title}</td>
-                              <td>${d.description}</td>
-                              <td>${d.amount}</td>
-                              <td><a href="${d.attatchment_url}">Reciept</a></td>
-                          </tr>`
+                             <td>${i + 1}</td>
+<td>${d.title}</td>
+<td>${d.description}</td>
+<td>₹${d.amount}</td>
+<td><a target='_blank' href="${d.attatchment_url}">Reciept</a></td>
+<td>₹${d.AppAmount}</td>
+<td>${convertToDate(d.date)}</td>
+<td>${d.reason && d.reason == "null" ? "N/A" : d.reason}</td>
+<td>${d.AppStatus == 0 ? "<span class='text-light bg-warning px-2 rounded-1 border'>Pending</span>" : d.AppStatus == 1 ? "<span class='text-light px-2 bg-success rounded-1 border'>Accepted</span>" : `<span class='text-light px-2 bg-danger rounded-1 border'>Rejected</span> (₹${d.amount - d.AppAmount})`}</td>
+
+                         </tr>`
                     });
                     $("#viewBudgetExpensesBody").append(element);
                     $("#ViewBudgetExpenses").modal("show");

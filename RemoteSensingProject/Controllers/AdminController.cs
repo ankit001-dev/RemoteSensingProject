@@ -32,6 +32,13 @@ namespace RemoteSensingProject.Controllers
             ViewData["physical"]= _adminServices.Project_List();
             return View(TotalCount);
         }
+
+
+        public ActionResult ViewExpenditureAmount()
+        {
+            ViewData["ExpendedData"] = _adminServices.ViewProjectExpenditure();
+            return View();
+        }
         public ActionResult BindOverallCompletionPercentage()
         {
             var  list = _adminServices.getAllProjectCompletion();
