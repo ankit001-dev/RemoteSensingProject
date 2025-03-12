@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Permissions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http.Results;
 using System.Web.Mvc;
@@ -93,6 +95,17 @@ namespace RemoteSensingProject.Controllers
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
 
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult UpdateTaskStatus(int taskId)
+        {
+            bool res = _managerServices.updateTaskStatus(taskId);
+            return Json(new
+            {
+                status = res,
+                message = res ? "Task updated successfully !" : "Some issue occured !"
+            });
         }
         public ActionResult InsertProject(createProjectModel pm)
         {
@@ -472,6 +485,17 @@ namespace RemoteSensingProject.Controllers
             userObj = _managerServices.getManagerDetails(managerName);
             ViewBag.ProjectProblemList = _managerServices.getAllSubOrdinateProblem(userObj.userId);
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult updateProjectProblemStatus(int problemId)
+        {
+            bool res = _managerServices.CompleteSelectedProblem(problemId);
+            return Json(new
+            {
+                status = res,
+                message = res ? "Problem solved successfully !" : "Some issue occured.  Try after sometime."
+            });
         }
         public ActionResult All_Project_Report()
         {

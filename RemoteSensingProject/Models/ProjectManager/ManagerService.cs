@@ -514,6 +514,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     while (sdr.Read())
                     {
                         obj = new Raise_Problem();
+                        obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
                         obj.ProjectName = sdr["ProjectName"].ToString();
                         obj.Title = sdr["Title"].ToString();
                         obj.Description = sdr["Description"].ToString();
@@ -536,6 +537,29 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
 
+        }
+
+        public bool CompleteSelectedProblem(int probId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageSubordinateProjectProblem", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "completeproblem");
+                cmd.Parameters.AddWithValue("@id", probId);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
         }
         public List<Raise_Problem> getSubOrdinateProblemforAdmin()
         {
