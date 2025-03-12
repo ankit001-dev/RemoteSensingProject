@@ -82,6 +82,33 @@ namespace RemoteSensingProject.ApiServices
 
         }
 
+        #region ExpenditureAmt
+        [HttpGet]
+        [Route("api/ViewExpenditureAmtData")]
+        public IHttpActionResult ViewExpendedAmt()
+        {
+            try
+            {
+                var data = _adminServices.ViewProjectExpenditure();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message,
+                });
+            }
+        }
+        #endregion
+
         #region Employee Registration
         [HttpPost]
         [Route("api/EmployeeRegistration")]
