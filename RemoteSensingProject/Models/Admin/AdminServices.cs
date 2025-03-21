@@ -1856,7 +1856,7 @@ namespace RemoteSensingProject.Models.Admin
                 return false;
             }
             finally
-            {
+             {
                 if (con.State == ConnectionState.Open)
                 {
                     con.Close();
@@ -2124,6 +2124,98 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
+        #region /* Hiring Report for App */
+        public List<HiringVehicle1> hiringreportprojects()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selecthiringreportprojects");
+                con.Open();
+                List<HiringVehicle1> list = new List<HiringVehicle1>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new HiringVehicle1
+                        {
+                            id = (int)res["projectId"],
+                            projectName = Convert.ToString(res["title"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        public List<HiringVehicle1> hiringreportbyproject(int projectid)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selecthiringreportbyproject");
+                cmd.Parameters.AddWithValue("@projectId", projectid);
+                con.Open();
+                List<HiringVehicle1> list = new List<HiringVehicle1>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new HiringVehicle1
+                        {
+                            id = (int)res["id"],
+                            projectName = Convert.ToString(res["title"]),
+                            projectManager = Convert.ToString(res["name"]),
+                            headName = Convert.ToString(res["heads"]),
+                            amount = Convert.ToDecimal(res["amount"]),
+                            dateFrom = Convert.ToDateTime(res["dateFrom"]),
+                            dateTo = Convert.ToDateTime(res["dateTo"]),
+                            proposedPlace = res["proposedPlace"].ToString(),
+                            purposeOfVisit = res["purposeOfVisit"].ToString(),
+                            totalDaysNight = res["totalDaysNight"].ToString(),
+                            totalPlainHills = res["totalPlainHills"].ToString(),
+                            taxi = res["taxi"].ToString(),
+                            BookAgainstCentre = res["BookAgainstCentre"].ToString(),
+                            availbilityOfFund = res["availbilityOfFund"].ToString(),
+                            note = res["note"].ToString(),
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            adminappr = Convert.ToBoolean(res["adminappr"]),
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        #endregion
+
 
         public List<AdminReimbursement> ReinbursementReport()
         {
@@ -2151,7 +2243,8 @@ namespace RemoteSensingProject.Models.Admin
                             newRequest = Convert.ToBoolean(res["newStatus"]),
                             status = Convert.ToBoolean(res["apprAmountStatus"] != DBNull.Value ? res["apprAmountStatus"] : false),
                             chequeNum = res["chequeNum"].ToString(),
-                            chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : ""
+                            chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : "",
+                            remark = res["remark"].ToString()
                         });
                     }
                 }

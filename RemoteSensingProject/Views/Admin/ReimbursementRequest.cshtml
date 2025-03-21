@@ -274,20 +274,15 @@
     });
 
     $(document).ready(function () {
-        $(".act").on("click", function () {
-            
-            Swal.fire({
-                title: 'Please wait !',
-                text: 'Your request under process',
-                didOpen: () => { Swal.showLoading(); }
-            })
-            
-
-            
+        $(".act").on("click", async function () {
+         
             let status = $(this).data("appr");
+            let id = $(this).data("id");
+            let type = $(this).data("type");
             let remark = "";
 
             if (!status) {
+                Swal.close();
                 const { value: userRemark, isConfirmed } = await Swal.fire({
                     title: "Enter Remark",
                     input: "text", 
@@ -295,16 +290,18 @@
                     inputPlaceholder: "Type here...",
                     showCancelButton: true,
                     confirmButtonText: 'Submit',
-                    cancelButtonText: 'Cancel',
-                    reverseButtons: true,  
                 });
 
                 if (isConfirmed && userRemark && userRemark != "") {
                     remark = userRemark;
+                    Swal.fire({
+                        title: 'Please wait !',
+                        text: 'Your request under process',
+                        didOpen: () => { Swal.showLoading(); }
+                    })
                 }
             }
-            let id = $(this).data("id");
-            let type = $(this).data("type");
+          
             $.ajax({
                 url: '/admin/ReimbursementReque',
                 type: 'post',
@@ -326,12 +323,16 @@
                         })
                     }
                 },
-                error: function (xhr) {
+                error: function (xhr, status, error) {
                     Swal.fire({
                         title: 'error',
                         text: 'Server busy Please try after sometime.',
                         icon: 'error'
                     })
+
+                    console.log(xhr)
+                    console.log(status)
+                    console.log(error)
                 }
             })
         })

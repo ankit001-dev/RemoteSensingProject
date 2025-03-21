@@ -305,6 +305,7 @@ namespace RemoteSensingProject.Models.Admin
 
         public class AdminReimbursement
         {
+            public string remark { get; set; }
             public bool status { get; set; }
             public bool adminappr { get; set; }
             public bool newRequest { get; set; }

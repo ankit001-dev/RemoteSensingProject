@@ -198,6 +198,7 @@
                         <th>Type</th>
                         <th>Amount</th>
                         <th>Approved Amt.</th>
+                        <th>Remark</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -214,6 +215,7 @@
                                 <td>@item.type</td>
                                 <td>@item.amount</td>
                                 <td>@item.approveAmount</td>
+                                <td>@item.remark</td>
                                 <td>
                                     @if (item.appr_status && !item.newRequest)
                                     {
