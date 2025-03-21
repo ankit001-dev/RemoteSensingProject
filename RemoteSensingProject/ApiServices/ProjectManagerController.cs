@@ -151,12 +151,36 @@ namespace RemoteSensingProject.ApiServices
         }
 
         [HttpGet]
+        [Route("api/getFinancialReport")]
+        public IHttpActionResult getFinancialReport(int projectId)
+        {
+            try
+            {
+                var data = _managerService.GetExtrnlFinancialReport(projectId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Any() ? 200 : 500,
+                    message = data.Any() ? "Data Found !" : "Data not found !",
+                    data = data
+                });
+            }catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
         [Route("api/getWeeklyUpdate")]
         public IHttpActionResult getWeeklyUpdate(int projectId)
         {
             try
             {
-                var data = _managerService.WeeklyUpdateList(projectId);
+                var data = _managerService.MonthlyProjectUpdate(projectId);
                 if (!data.Any())
                 {
                     return BadRequest(new
@@ -206,7 +230,7 @@ namespace RemoteSensingProject.ApiServices
 
                 if (string.IsNullOrWhiteSpace(request.Form.Get("date")))
                     validationErrors.Add("date is required.");
-                var formData = new Project_WeeklyUpdate
+                var formData = new Project_MonthlyUpdate
                 {
                     ProjectId = Convert.ToInt32(request.Form.Get("ProjectId")),
                     completionPerc = Convert.ToInt32(request.Form.Get("completionPerc")),
@@ -222,7 +246,7 @@ namespace RemoteSensingProject.ApiServices
                         message = string.Join("\n", validationErrors)
                     });
                 }
-                bool res = _managerService.updateWeeklyStatus(formData);
+                bool res = _managerService.UpdateMonthlyStatus(formData);
                 return Ok(new
                 {
                     status = res,
@@ -866,12 +890,15 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var request = HttpContext.Current.Request;
-
+                string type = request.Form.Get("type");
+                int id = Convert.ToInt32(request.Form.Get("id"));
+                int userId = Convert.ToInt32(request.Form.Get("UserId"));
+                bool res = _managerService.submitReinbursementForm(type, userId, id);
                 return Ok(new
                 {
-                    status = true,
-                    StatusCode = 200,
-
+                    status = res,
+                    StatusCode = res? 200 : 500,
+                    message = res ? "Reinbursement submitted successfully !" : "Some issue found while processing your request !"
                 });
             }
             catch (Exception ex)

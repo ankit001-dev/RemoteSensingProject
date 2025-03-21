@@ -94,6 +94,22 @@ namespace RemoteSensingProject.Models.ProjectManager
 
     }
 
+
+    public class FinancialMonthlyReport
+    {
+        public int id { get; set;}
+        public int projectId { get; set; }
+        public string aim { get; set; }
+        public string date { get; set; }
+        public string month_aim { get; set; }
+        public string completeInMonth { get; set; }
+        public string departBeneficiaries { get; set; }
+        public string projectName { get; set; }
+        public string totalBudget { get; set; }
+        public string department { get; set; }
+        public string description { get; set; }
+    }
+
     public class ApprovedProject
     {
         public int Id { get; set; } // Unique identifier

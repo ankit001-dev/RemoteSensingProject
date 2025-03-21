@@ -6,7 +6,7 @@
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
-
+<link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
 <!--Style button DataTable-->
 <style>
     .dt-button {
@@ -132,7 +132,7 @@
                                 <td>@item.periodTo</td>
                                 <td>@item.returnDate</td>
                                 <td class="text-center" data-id="@item.id">
-                                    <i class="fa-solid fa-eye action"></i>
+                                    <a href="#" class="action"><i class="fa-solid fa-eye text-success"></i></a>
                                 </td>
                                 <td class="text-center">
                                     @{
@@ -156,227 +156,6 @@
     </div>
 </div>
 
-<style>
-    .cards {
-        /* border: 2px solid #000; */
-        /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
-        margin: 20px auto;
-        max-width: 1000px;
-    }
-
-    .card-header {
-        background-color: #f8f9fa;
-        /* border-bottom: 2px solid #000; */
-        padding: 15px;
-    }
-
-        .card-header h4, .card-header h5 {
-            margin: 0;
-            font-weight: bold;
-        }
-
-    .copy-types {
-        text-align: right;
-        font-size: 0.9em;
-        padding: 10px;
-    }
-
-        .copy-types p {
-            margin-bottom: 0.3rem;
-        }
-
-    #i4 {
-        width: 100px;
-    }
-
-    .dotted-field {
-        display: inline-block;
-        min-width: 200px;
-        min-height: 25px;
-        border-bottom: 1px dotted #000;
-        margin: 2px 0;
-    }
-
-    .tabel {
-        margin-top: 1rem;
-        border: 1px solid #000;
-    }
-
-        .tabel th, .tabel td {
-            border: 1px solid #000;
-            padding: 8px;
-            vertical-align: middle;
-        }
-
-        .tabel .dotted-field {
-            width: 100%;
-            display: block;
-            min-height: 30px;
-        }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    .form-label {
-        font-weight: 500;
-        margin-right: 10px;
-    }
-
-    .authority-section {
-        text-align: right;
-        margin-top: 30px;
-        border-top: 1px solid #ddd;
-        padding-top: 20px;
-    }
-
-        .authority-section p {
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-
-    .tabel-responsive {
-        margin: 0 -5px; /* compensate for reduced padding */
-    }
-
-    .tabel {
-        margin-top: 0.5rem;
-        border: 1px solid #000;
-        font-size: 11px; /* reduced font size */
-        width: 100%;
-        table-layout: fixed; /* fixed tabel layout */
-    }
-
-        .tabel th, .tabel td {
-            border: 1px solid #000;
-            padding: 2px; /* reduced padding */
-            vertical-align: middle;
-            word-wrap: break-word;
-            overflow: hidden;
-        }
-
-            /* Column widths */
-            .tabel th:nth-child(1) {
-                width: 15%;
-            }
-            /* Purpose */
-            .tabel th:nth-child(2) {
-                width: 15%;
-            }
-            /* Date of Departure */
-            .tabel th:nth-child(3) {
-                width: 25%;
-            }
-            /* Place/s */
-            .tabel th:nth-child(4) {
-                width: 18%;
-            }
-            /* From */
-            .tabel th:nth-child(5) {
-                width: 18%;
-            }
-            /* To */
-            .tabel th:nth-child(6) {
-                width: 15%;
-            }
-        /* Date of return */
-
-        .tabel .dotted-field {
-            width: 100%;
-            min-height: 18px; /* reduced height */
-            margin: 0;
-        }
-
-    .cards {
-        /* border: 1px solid #000; */
-        /* box-shadow: 0 0 10px rgba(0,0,0,0.1); */
-        margin: 10px auto;
-        max-width: 800px; /* reduced from 1000px */
-        font-size: 13px; /* added smaller base font size */
-    }
-
-    .card-header {
-        background-color: #f8f9fa;
-        /* border-bottom: 1px solid #000; */
-        padding: 8px; /* reduced from 15px */
-    }
-
-        .card-header h4 {
-            margin: 0;
-            font-weight: bold;
-            font-size: 16px; /* reduced from default */
-        }
-
-        .card-header h5 {
-            margin: 0;
-            font-weight: bold;
-            font-size: 14px; /* reduced from default */
-        }
-
-    .card-body {
-        padding: 10px; /* reduced padding */
-    }
-
-    .copy-types {
-        text-align: right;
-        font-size: 0.85em;
-        padding: 5px; /* reduced from 10px */
-    }
-
-        .copy-types p {
-            margin-bottom: 0.2rem; /* reduced from 0.3rem */
-        }
-
-    .dotted-field {
-        display: inline-block;
-        min-width: 150px; /* reduced from 200px */
-        min-height: 20px; /* reduced from 25px */
-        border-bottom: 1px dotted #000;
-        margin: 1px 0; /* reduced from 2px */
-    }
-
-    .tabel {
-        margin-top: 0.5rem; /* reduced from 1rem */
-        border: 1px solid #000;
-        font-size: 12px; /* smaller tabel font */
-    }
-
-        .tabel th, .tabel td {
-            border: 1px solid #000;
-            padding: 4px; /* reduced from 8px */
-            vertical-align: middle;
-        }
-
-        .tabel .dotted-field {
-            width: 100%;
-            display: block;
-            min-height: 20px; /* reduced from 30px */
-        }
-
-    .form-group {
-        margin-bottom: 0.5rem; /* reduced from 1rem */
-    }
-
-    .mb-3 {
-        margin-bottom: 0.5rem !important; /* reduced bootstrap margin */
-    }
-
-    .authority-section {
-        text-align: right;
-        margin-top: 15px; /* reduced from 30px */
-        border-top: 1px solid #ddd;
-        padding-top: 10px; /* reduced from 20px */
-    }
-
-        .authority-section p {
-            margin-bottom: 8px; /* reduced from 15px */
-            font-weight: 500;
-        }
-
-    .container {
-        padding: 0 10px; /* reduced container padding */
-    }
-</style>
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
@@ -492,9 +271,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-end m-5">
-                    <button class="btn btn-secondary py-1 rounded-0" id="printBtn">Print</button>
-                </div>
+               
+            </div>
+            <div class="modal-footer">
+                    <button class="btn btn-secondary py-1 rounded-0" id="printBtn">Download</button>
+           
             </div>
         </div>
     </div>
@@ -611,6 +392,74 @@
                     })
                 }
             })
+        })
+
+        $("#printBtn").click(function () {
+
+            Swal.fire({
+                title: "Please wait !",
+                text: "Processing your request....",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            })
+            var formContent = document.getElementById("formToPrint").outerHTML;
+
+            var style = `<link href="${window.location.origin}/assets/css/TourProposalStyle.css" rel="stylesheet" type="text/css"/>
+<link href="${window.location.origin}/assets/css/style.css" rel="stylesheet" type="text/css"/>
+`;
+            let htmlContentToPdf = `<html><head>${style}</head><body><div>${formContent}</div></body></html>`;
+
+            fetch("/login/ExportHtmlToPdf", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ HtmlText: htmlContentToPdf })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to generate PDF");
+                    }
+
+                    const contentDisposition = response.headers.get("Content-Disposition");
+                    let fileName = "Generated.pdf";
+
+                    if (contentDisposition) {
+                        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                        if (match && match[1]) {
+                            fileName = match[1];
+                        }
+                    }
+
+                    return response.blob().then(blob => ({ blob, fileName }));
+                })
+                .then(({ blob, fileName }) => {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: "Reinbursement pdf generated successfully.",
+                        icon: "success"
+                    })
+                    const link = document.createElement("a");
+                    const url = URL.createObjectURL(blob);
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: "Some issue occured while processing your request.",
+                        icon: "error"
+                    })
+                    console.error("Error:", error)
+                });
+
         })
     });
 </script>

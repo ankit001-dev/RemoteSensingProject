@@ -371,7 +371,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult View_Weekly_Update(int Id)
         {
             ManagerService ms = new ManagerService();
-            ViewData["weeklyUpdate"] = ms.WeeklyUpdateList(Id);
+            ViewData["weeklyUpdate"] = ms.MonthlyProjectUpdate(Id);
             return View();
         }
 

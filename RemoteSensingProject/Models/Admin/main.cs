@@ -102,12 +102,19 @@ namespace RemoteSensingProject.Models.Admin
            
         }
 
-        public class Project_WeeklyUpdate
+        public class Project_MonthlyUpdate
         {
             public int Id { get; set; }
+            public string projectName { get; set; }
             public string comments { get; set; }
             public int ProjectId { get; set; }
             public int completionPerc { get; set; }
+            public string unit { get; set; }
+            public string annual { get; set; }
+            public string monthEnd { get; set; }
+            public string reviewMonth { get; set; }
+            public string MonthEndSequentially { get; set; }
+            public string StateBeneficiaries { get; set; }
             public DateTime date { get; set; } 
         }
         public class Project_Budget

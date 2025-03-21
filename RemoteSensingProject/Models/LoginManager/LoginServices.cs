@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using static RemoteSensingProject.Models.LoginManager.main;
 using System.Web.Security;
+using System.Web.Mvc;
 
 namespace RemoteSensingProject.Models.LoginManager
 {
@@ -82,5 +83,9 @@ namespace RemoteSensingProject.Models.LoginManager
                 cmd.Dispose();
             }
         }
+
+
+
+       
     }
 }

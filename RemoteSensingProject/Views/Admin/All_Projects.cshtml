@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_adminLayout.cshtml";
     int i = 1;
 }
-
+<link href="~/assets/css/ExternalPrjStyle.css" rel="stylesheet" />
 <style>
     .link-icon {
         height: 16px;
@@ -77,10 +77,10 @@
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="searchByProjectManager">
                     <option selected value="">Serch by Project Manager</option>
-                   @foreach(var item in ViewBag.ManagerList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
-                     {
-                          <option value="@item.EmployeeName">@item.EmployeeName</option>
-                     }
+                    @foreach (var item in ViewBag.ManagerList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                    {
+                        <option value="@item.EmployeeName">@item.EmployeeName</option>
+                    }
                 </select>
             </div>
             <div class="col-lg-3 col-md-6">
@@ -121,7 +121,11 @@
                             {
                                 <tr>
                                     <td class="text-center">@i</td>
-                                    <td>@item.ProjectTitle</td>
+                                    <td>
+                                        <a href="#" class="viewProject" data-title="View" data-Id="@item.Id">
+                                            @item.ProjectTitle
+                                        </a>
+                                    </td>
                                     <td>@item.ProjectManager</td>
                                     <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
                                     <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
@@ -162,20 +166,23 @@
 
                                     <td class="text-center">
                                         <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                            <li class="me-2"><a href="#" class="viewProject" title="View" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>
+                                            <li class="me-2"><a href="#" class="viewProject" data-title="View Detail" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>
                                             <li class="me-2">
-                                                <a href="/Admin/View_Weekly_Update?Id=@item.Id" title="View Weekly Update">
+                                                @*<a href="/Admin/View_Weekly_Update?Id=@item.Id" data-title="View Weekly Update">
+                                                        <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
+                                                    </a>*@
+                                                <a href="#" data-title="Report" class="monthlyReport" data-prjType="@item.ProjectType" data-prjId="@item.Id">
                                                     <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
                                                 </a>
                                             </li>
 
                                             <li class="me-2">
-                                                <a href="/Admin/View_Project_Stage?Id=@item.Id" title="Update Stages">
+                                                <a href="/Admin/View_Project_Stage?Id=@item.Id" data-title="View Stages">
                                                     <i class="link-icon text-info" data-feather="plus-circle"> </i>
                                                 </a>
                                             </li>
                                             <li class="me-2">
-                                                <a href="/Admin/View_Expenses?Id=@item.Id" title="Add Expenses">
+                                                <a href="/Admin/View_Expenses?Id=@item.Id" data-title="View Expenses">
                                                     <i class="link-icon text-danger" data-feather="file-plus"></i>
                                                 </a>
                                             </li>
@@ -203,6 +210,139 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="modal fade" id="viewMonthlyReportExternalPrj" tabindex="-1" aria-labelledby="viewMonthlyReportExternalPrjLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header d-flex">
+                        <h1 class="modal-title fs-5 text-success" id="viewMonthlyReportExternalPrjLabel">Monthly Report</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="formToPrintFinancialRprt">
+                        <div class="form-container">
+                            <div class="row">
+                                <div class="col-sm-6 mx-auto text-center">
+                                    <span>रूप पत्र-2</span>
+                                    <p class="fw-bold" style="font-size: 32px;">रिमोट सेंसिंग एप्लीकेशन सेण्टर , उत्तर प्रदेश बाह्य  सहायतित परियोजनाओं की भौतिक प्रगति</p>
+                                </div>
+                            </div>
+                            <div class="form-title">
+                                माह: नवम्बर, 2024
+                            </div>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" style="width: 5%">क्र.सं.</th>
+                                        <th rowspan="2" style="width: 10%">परियोजना का नाम</th>
+                                        <th rowspan="2" style="width: 10%">कुल लागत</th>
+                                        <th rowspan="2" style="width: 10%">वित्त पोषण संस्था</th>
+                                        <th rowspan="2" style="width: 10%">कुल लक्ष्य</th>
+                                        <th rowspan="2" style="width: 10%">31.03.2024 तक की उपलब्धि</th>
+                                        <th style="width: 25%" colspan="4">वर्ष 2024-25</th>
+                                        <th rowspan="2" style="width: 10%">लाभाविंत होने वाले विभाग</th>
+                                        <th rowspan="2" style="width: 10%">परियोजना प्रक्षेपण / परियोजना का निष्कर्ष</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:5%">लक्ष्य</th>
+                                        <th style="width:10%">01.04.2024 से क्रमिक उपलब्धि</th>
+                                        <th style="width:5%">माह का लक्ष्य</th>
+                                        <th style="width:5%">माह की उपलब्धि</th>
+                                    </tr>
+                                    <tr>
+                                        <th>1</th>
+                                        <th>2</th>
+                                        <th>3</th>
+                                        <th>4</th>
+                                        <th>5</th>
+                                        <th>6</th>
+                                        <th>7</th>
+                                        <th>8</th>
+                                        <th>9</th>
+                                        <th>10</th>
+                                        <th>11</th>
+                                        <th>12</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="externalPrjTbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-primary" value="Download" id="printFinancialRprt" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="viewMonthlyReportInternalPrj" tabindex="-1" aria-labelledby="viewMonthlyReportInternalPrjLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered">
+                <div class="modal-content" id="formToPrintMonthlyRprt">
+                    <div class="modal-header d-flex">
+                        <h1 class="modal-title fs-5 text-success" id="viewMonthlyReportInternalPrjLabel">Monthly Report</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-container">
+                            <div class="row">
+                                <div class="col-sm-6 mx-auto text-center">
+                                    <span>मासिक समीक्षा: रूप पत्र-2</span>
+                                    <p class="fw-bold" style="font-size: 15px;">शासन से गैर वेतन मद में प्राप्त धनराशि से संचालित योजना / कार्यक्रम की भौतिक उपलब्धियो का विवरण </p>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div class="form-title">
+                                    भू-संसाधन प्रभाग
+                                </div>
+                                <div class="form-title">
+                                    माह: @DateTime.Now.ToString("MMMM"), @DateTime.Now.Year
+                                </div>
+
+                            </div>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" style="width: 5%">क्र.सं.</th>
+                                        <th rowspan="2" style="width: 10%">मद / परियोजन का नाम</th>
+                                        <th rowspan="2" style="width: 10%">इकाई</th>
+                                        <th colspan="2" style="width: 30%">लक्ष्य</th>
+                                        <th colspan="2" style="width: 30%">उपलब्धि</th>
+                                        <th rowspan="2" style="width: 10%">प्रदेश सरकार के लाभाविंत होने वाले विभाग</th>
+                                        <th rowspan="2" style="width: 10%">अभ्युक्ति</th>
+                                    </tr>
+                                    <tr>
+                                        <th style="width:15%">वार्षिक</th>
+                                        <th style="width:15%">आलोच्य मासांत तक</th>
+                                        <th style="width:15%">आलोच्य माह में</th>
+                                        <th style="width:15%">आलोच्य मासांत तक क्रमिक</th>
+                                    </tr>
+                                    <tr>
+                                        <th>1</th>
+                                        <th>2</th>
+                                        <th>3</th>
+                                        <th>4</th>
+                                        <th>5</th>
+                                        <th>6</th>
+                                        <th>7</th>
+                                        <th>8</th>
+                                        <th>9</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="internalProjectTbody">
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" class="btn btn-primary" value="Download" id="printMonthlyRprt" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 <script>
@@ -396,6 +536,255 @@
         });
         feather.replace();
     });
+
+
+    $(".monthlyReport").click(function () {
+        let prjType = $(this).attr("data-prjType");
+        let prjId = $(this).attr("data-prjId");
+        if (prjType === "External") {
+            loadExternalProjectDetail(prjId)
+
+        } else if (prjType === "Internal") {
+            loadInternalProjectDetail(prjId);
+
+        }
+    });
+
+    function loadInternalProjectDetail(prjId) {
+        if (prjId != null && prjId > 0) {
+
+            $.ajax({
+                url: "/api/getWeeklyUpdate",
+                type: "get",
+                data: { projectId: prjId },
+                success: function (res) {
+                    if (res.status) {
+                        $("#internalProjectTbody").empty();
+                        let index = 1;
+                        $.each(res.data, function (i, d) {
+                            $("#internalProjectTbody").append(
+                                `
+                                <tr>
+                                    <td>${index++}</td>
+                                    <td>${d.projectName}</td>
+                                    <td>${d.unit}</td>
+                                    <td>${d.annual}</td>
+                                    <td>${d.monthEnd}</td>
+                                    <td>${d.reviewMonth}</td>
+                                    <td>${d.MonthEndSequentially}</td>
+                                    <td>${d.StateBeneficiaries}</td>
+                                    <td>${d.comments}</td>
+                                </tr>
+                                `
+                            )
+                        })
+
+                        $("#viewMonthlyReportInternalPrj").modal("show")
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Server issue !",
+                        text: "Some issue occured. Please try after sometime !",
+                        icon: "error",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                }
+            });
+        }
+    }
+
+
+    function loadExternalProjectDetail(prjId) {
+        $.ajax({
+            url: "/api/getFinancialReport",
+            type: "get",
+            data: { projectId: prjId },
+            success: function (res) {
+                console.log(res)
+                if (res.status) {
+                    $("#externalPrjTbody").empty();
+                    let index = 1;
+                    $.each(res.data, function (i, d) {
+                        $("#externalPrjTbody").append(
+                            `
+                      <tr>
+                          <td>${index++}</td>
+                          <td>${d.projectName}</td>
+                          <td>${d.totalBudget}</td>
+                          <td>${d.department}</td>
+                          <td></td>
+                          <td></td>
+                          <td>${d.aim}</td>
+                          <td></td>
+                          <td>${d.month_aim}</td>
+                          <td>${d.completeInMonth}</td>
+                          <td>${d.departBeneficiaries}</td>
+                          <td>${d.description}</td>
+                      </tr>
+                      `
+                        )
+                    })
+
+                    $("#viewMonthlyReportExternalPrj").modal("show")
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue !",
+                    text: "Some issue occured. Please try after sometime !",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        });
+    }
+
+    $("#printMonthlyRprt").click(function () {
+
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request....",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+        var formContent = document.getElementById("formToPrintMonthlyRprt").outerHTML;
+
+        var style = `
+       <link href="${window.location.origin}/assets/css/ExternalPrjStyle.css" rel="stylesheet" type="text/css"/>
+       <link href="${window.location.origin}/assets/css/style.css" rel="stylesheet" type="text/css"/>
+       `;
+        let htmlContentToPdf = `<html><head>${style}</head><body><div>${formContent}</div></body></html>`;
+
+        fetch("/login/ExportHtmlToPdf", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ HtmlText: htmlContentToPdf }) // Ensure case matches C# model
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to generate PDF");
+                }
+
+                // Extract filename from Content-Disposition header
+                const contentDisposition = response.headers.get("Content-Disposition");
+                let fileName = "Generated.pdf"; // Default fallback filename
+
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                    if (match && match[1]) {
+                        fileName = match[1];
+                    }
+                }
+
+                return response.blob().then(blob => ({ blob, fileName }));
+            })
+            .then(({ blob, fileName }) => {
+                Swal.fire({
+                    title: "Successfully !",
+                    text: "Reinbursement pdf generated successfully.",
+                    icon: "success"
+                })
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(url); // Free up memory
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: "Sorry !",
+                    text: "Some issue occured while processing your request.",
+                    icon: "error"
+                })
+                console.error("Error:", error)
+            });
+
+    })
+
+
+    $("#printFinancialRprt").click(function () {
+
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request....",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+        var formContent = document.getElementById("formToPrintFinancialRprt").outerHTML;
+        var style = `
+       <link href="${window.location.origin}/assets/css/ExternalPrjStyle.css" rel="stylesheet" type="text/css"/>
+       <link href="${window.location.origin}/assets/css/style.css" rel="stylesheet" type="text/css"/>
+       `;
+        let htmlContentToPdf = `<html><head>${style}</head><body><div>${formContent}</div></body></html>`;
+
+        fetch("/login/ExportHtmlToPdf", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ HtmlText: htmlContentToPdf }) // Ensure case matches C# model
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to generate PDF");
+                }
+
+                // Extract filename from Content-Disposition header
+                const contentDisposition = response.headers.get("Content-Disposition");
+                let fileName = "Generated.pdf"; // Default fallback filename
+
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                    if (match && match[1]) {
+                        fileName = match[1];
+                    }
+                }
+
+                return response.blob().then(blob => ({ blob, fileName }));
+            })
+            .then(({ blob, fileName }) => {
+                Swal.fire({
+                    title: "Successfully !",
+                    text: "Reinbursement pdf generated successfully.",
+                    icon: "success"
+                })
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(url); // Free up memory
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: "Sorry !",
+                    text: "Some issue occured while processing your request.",
+                    icon: "error"
+                })
+                console.error("Error:", error)
+            });
+
+    })
+
+
 </script>
 
 
