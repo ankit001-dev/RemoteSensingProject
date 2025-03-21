@@ -103,6 +103,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.budget = (float)Convert.ToDecimal(sdr["budget"]);
                     obj.stage = Convert.ToBoolean(sdr["stage"].ToString());
                     obj.physicalPercent = Convert.ToDecimal(sdr["completionPercentage"]);
+                    obj.projectType = sdr["projectType"].ToString();
                     obj.overAllPercent = Convert.ToDecimal(sdr["overallPercentage"]);
                     obj.Percentage = (sdr["financialStatusPercentage"] != DBNull.Value ? Convert.ToDecimal(sdr["financialStatusPercentage"]) : (decimal)0.00);
                     _list.Add(obj);
@@ -602,8 +603,8 @@ namespace RemoteSensingProject.Models.ProjectManager
         }
         #endregion
 
-        #region update weekly update
-        public bool updateWeeklyStatus(Project_WeeklyUpdate pwu)
+        #region update monthly update
+        public bool UpdateMonthlyStatus(Project_MonthlyUpdate pwu)
         {
             try
             {
@@ -614,6 +615,12 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@w_date", pwu.date);
                 cmd.Parameters.AddWithValue("@comment", pwu.comments);
                 cmd.Parameters.AddWithValue("@completion", pwu.completionPerc);
+                cmd.Parameters.AddWithValue("@unit", pwu.unit);
+                cmd.Parameters.AddWithValue("@annual", pwu.annual);
+                cmd.Parameters.AddWithValue("@monthEnd", pwu.monthEnd);
+                cmd.Parameters.AddWithValue("@reviewMonth", pwu.reviewMonth);
+                cmd.Parameters.AddWithValue("@MonthEndSequentially", pwu.MonthEndSequentially);
+                cmd.Parameters.AddWithValue("@StateBeneficiaries", pwu.StateBeneficiaries);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -630,11 +637,11 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Project_WeeklyUpdate> WeeklyUpdateList(int projectId)
+        public List<Project_MonthlyUpdate> MonthlyProjectUpdate(int projectId)
         {
             try
             {
-                List<Project_WeeklyUpdate> list = new List<Project_WeeklyUpdate>();
+                List<Project_MonthlyUpdate> list = new List<Project_MonthlyUpdate>();
                 cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectAllByProject");
@@ -647,12 +654,95 @@ namespace RemoteSensingProject.Models.ProjectManager
                 {
                     while (rd.Read())
                     {
-                        list.Add(new Project_WeeklyUpdate
+                        list.Add(new Project_MonthlyUpdate
                         {
                             Id = Convert.ToInt32(rd["id"]),
                             date = Convert.ToDateTime(rd["w_date"]),
                             comments = rd["comment"].ToString(),
-                            completionPerc = Convert.ToInt32(rd["completion"])
+                            completionPerc = Convert.ToInt32(rd["completion"]),
+                            unit = rd["unit"].ToString(),
+                            annual = rd["annual"].ToString(),
+                            monthEnd = rd["monthEnd"].ToString(),
+                            reviewMonth = rd["reviewMonth"].ToString(),
+                            MonthEndSequentially = rd["MonthEndSequentially"].ToString(),
+                            StateBeneficiaries = rd["StateBeneficiaries"].ToString(),
+                            projectName = rd["title"].ToString()
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        #endregion
+
+
+        #region update monthly ExternalProject
+        public bool updateFinancialReportMonthly(FinancialMonthlyReport fr)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertfinanceUpdate");
+                cmd.Parameters.AddWithValue("@project_Id", fr.projectId);
+                cmd.Parameters.AddWithValue("@aim", fr.aim);
+                cmd.Parameters.AddWithValue("@w_date", fr.date);
+                cmd.Parameters.AddWithValue("@month_aim", fr.month_aim);
+                cmd.Parameters.AddWithValue("@completeInMonth", fr.completeInMonth);
+                cmd.Parameters.AddWithValue("@departBeneficiaries", fr.departBeneficiaries);
+                con.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public List<FinancialMonthlyReport> GetExtrnlFinancialReport(int projectId)
+        {
+            try
+            {
+                List<FinancialMonthlyReport> list = new List<FinancialMonthlyReport>();
+                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectFinancilaReportByProjectId");
+                cmd.Parameters.AddWithValue("@project_Id", projectId);
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new FinancialMonthlyReport
+                        {
+                            id = Convert.ToInt32(rd["id"]),
+                            projectId = Convert.ToInt32(rd["project_Id"]),
+                            aim = rd["aim"].ToString(),
+                            date = Convert.ToDateTime(rd["f_date"]).ToString("dd/MM/yyyy"),
+                            month_aim = rd["month_aim"].ToString(),
+                            completeInMonth = rd["completeInMonth"].ToString(),
+                            departBeneficiaries = rd["departBeneficiaries"].ToString(),
+                            projectName = rd["title"].ToString(),
+                            totalBudget = rd["budget"].ToString(),
+                            description = rd["description"].ToString(),
+                            department = rd["DepartmentName"].ToString()
                         });
                     }
                 }
@@ -670,7 +760,6 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
         #endregion
-
 
         #region Project Expences
         public bool insertExpences(ProjectExpenses exp)

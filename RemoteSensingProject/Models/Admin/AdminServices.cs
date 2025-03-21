@@ -671,7 +671,6 @@ namespace RemoteSensingProject.Models.Admin
         }
 
 
-
         #endregion
 
         #region Api Create Project

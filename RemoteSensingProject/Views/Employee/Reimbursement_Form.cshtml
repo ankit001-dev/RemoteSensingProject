@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["reimlist"] as List<RemoteSensingProject.Models.ProjectManager.Reimbursement>;
     int i = 1;
+    string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
+
 }
 
 <style>
@@ -11,182 +13,7 @@
         display: none;
     }
 </style>
-<style>
-    @@media print {
-        .container {
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        .form-container {
-            /* border: 1px solid #000; */
-            padding: 15px !important;
-            margin: 0 !important;
-            width: 210mm; /* A4 width */
-            min-height: 297mm; /* A4 height */
-            font-size: 11px !important;
-        }
-
-        h4 {
-            font-size: 16px !important;
-        }
-
-        h5 {
-            font-size: 14px !important;
-        }
-
-        td, th {
-            padding: 4px !important;
-            font-size: 11px !important;
-        }
-
-        .bottom-section {
-            padding: 10px !important;
-        }
-
-        .px-5 {
-            padding-left: 10px !important;
-            padding-right: 10px !important;
-        }
-
-        .mx-5 {
-            margin-left: 10px !important;
-            margin-right: 10px !important;
-        }
-
-        [class*="dots"] {
-            min-width: 80px !important;
-        }
-        /* Ensure no page breaks within sections */
-        .bottom-section, .table-responsive {
-            page-break-inside: avoid;
-        }
-    }
-
-    /* Adjust the table row height for better fit */
-    td {
-        height: 25px; /* Reduced from 30px */
-    }
-
-    .form-container {
-        /* border: 2px solid #000; */
-        background-color: #fff;
-        max-width: 1000px;
-        margin: 0 auto;
-        font-size: 14px;
-        font-family: "Times New Roman", Times, serif;
-    }
-
-    h4 {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    h5 {
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th {
-        font-size: 13px;
-        padding: 8px;
-        border: 1px solid #000;
-        background-color: #f8f9fa;
-    }
-
-    td {
-        height: 30px;
-        padding: 6px;
-        border: 1px solid #000;
-        font-size: 13px;
-    }
-
-    .table-bordered {
-        border: 1.5px solid #000;
-    }
-
-        .table-bordered > thead > tr > th,
-        .table-bordered > tbody > tr > td {
-            border: 1px solid #000;
-        }
-
-    /* Dotted line for form fields */
-    [class*="dots"] {
-        border-bottom: 1px dotted #000;
-        display: inline-block;
-        min-width: 100px;
-    }
-
-    @@media print {
-
-        body {
-            margin: 0;
-            padding: 20px;
-            font-size: 12px;
-        }
-    }
-    /* Add these new styles to your existing CSS */
-    .bottom-section {
-        border: 1px solid #000;
-        padding: 5px;
-        margin-top: 0; /* Changed from 20px to 0 */
-    }
-
-        .bottom-section p {
-            margin: 0px;
-            padding: 0px;
-        }
-
-    table td {
-        height: 25px;
-    }
-
-    .signature-section {
-        border-top: 1px solid #000;
-        margin-top: 20px;
-        padding-top: 15px;
-    }
-
-    .officers-section {
-        border-top: 1px solid #000;
-        /* margin-top: 20px; */
-        /* padding-top: 25px; Increased padding top */
-    }
-
-    .final-section {
-        border-top: 1px solid #000;
-        margin-top: 20px;
-        padding-top: 15px;
-        text-align: right; /* Align content to right */
-    }
-
-        .final-section p {
-            margin-bottom: 5px;
-        }
-
-    .approved-text {
-        position: relative;
-        top: -10px;
-        font-style: italic;
-        font-size: 12px;
-    }
-
-    .form-header-text {
-        width: 100%;
-        padding: 0 15px;
-    }
-
-        .form-header-text p {
-            margin-bottom: 8px;
-        }
-
-</style>
+<link href="~/assets/css/reinbursementCssDesign.css" rel="stylesheet" />
 <nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item active" aria-current="page">Reimburserment</li>
@@ -290,7 +117,7 @@
                                     <td>₹ @Convert.ToDecimal(items.amount).ToString("N2")</td>
 
                                     <td class="text-center">
-                                        <a href="#" class="viewSanctionreciept"data-type="@items.type" data-userId="@items.userId" data-id="@items.id" data-chequeNum="@items.chequeNum" data-chequeDate="@items.chequeDate" data-apprAmt="@items.approveAmount">
+                                        <a href="#" class="viewSanctionreciept" data-type="@items.type" data-userId="@items.userId" data-id="@items.id" data-chequeNum="@items.chequeNum" data-chequeDate="@items.chequeDate" data-apprAmt="@items.approveAmount">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
                                         @{
@@ -337,7 +164,7 @@
                             <div class="px-4 mt-1 d-flex justify-content-between">
                                 <span>
                                     <p>
-                                        <img src="~/assets/images/remote_sensing_logo.jfif" width="50px" />
+                                        <img src="@baseUrl/assets/images/remote_sensing_logo.jfif" width="50" />
                                     </p><b>S.F.A.O/Director</b>
                                 </span>
                                 <span>
@@ -417,8 +244,8 @@
                 </div>
             </div>
         </div>
-            </div>
-        </div>
+    </div>
+</div>
 
 <script>
     $(document).ready(function () {
@@ -429,204 +256,81 @@
             table.column(1).search(tp).draw();
         });
 
-        document.getElementById("printBtn").onclick = function () {
-            // Get the content of the form to be printed
+        $("#printBtn").click(function () {
+
+            Swal.fire({
+                title: "Please wait !",
+                text: "Processing your request....",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            })
             var formContent = document.getElementById("formToPrint").outerHTML;
 
-            // Save the original body content
-            var originalContent = document.body.innerHTML;
-            var style = `<style>
-    @@media print {
-        .container {
-            max-width: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
+            var style = `<link href="${window.location.origin}/assets/css/reinbursementCssDesign.css" rel="stylesheet" type="text/css"/>
+<link href="${window.location.origin}/assets/css/style.css" rel="stylesheet" type="text/css"/>`;
+            let htmlContentToPdf = `<html><head>${style}</head><body><div>${formContent}</div></body></html>`;
 
-        .form-container {
-            /* border: 1px solid #000; */
-            padding: 15px !important;
-            margin: 0 !important;
-            width: 210mm; /* A4 width */
-            min-height: 297mm; /* A4 height */
-            font-size: 11px !important;
-        }
+            fetch("/login/ExportHtmlToPdf", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ HtmlText: htmlContentToPdf }) // Ensure case matches C# model
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to generate PDF");
+                    }
 
-        h4 {
-            font-size: 16px !important;
-        }
+                    // Extract filename from Content-Disposition header
+                    const contentDisposition = response.headers.get("Content-Disposition");
+                    let fileName = "Generated.pdf"; // Default fallback filename
 
-        h5 {
-            font-size: 14px !important;
-        }
+                    if (contentDisposition) {
+                        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                        if (match && match[1]) {
+                            fileName = match[1];
+                        }
+                    }
 
-        td, th {
-            padding: 4px !important;
-            font-size: 11px !important;
-        }
+                    return response.blob().then(blob => ({ blob, fileName }));
+                })
+                .then(({ blob, fileName }) => {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: "Reinbursement pdf generated successfully.",
+                        icon: "success"
+                    })
+                    const link = document.createElement("a");
+                    const url = URL.createObjectURL(blob);
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    URL.revokeObjectURL(url); // Free up memory
+                })
+                .catch(error => {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: "Some issue occured while processing your request.",
+                        icon: "error"
+                    })
+                    console.error("Error:", error)
+                });
 
-        .bottom-section {
-            padding: 10px !important;
-        }
-
-        .px-5 {
-            padding-left: 10px !important;
-            padding-right: 10px !important;
-        }
-
-        .mx-5 {
-            margin-left: 10px !important;
-            margin-right: 10px !important;
-        }
-
-        [class*="dots"] {
-            min-width: 80px !important;
-        }
-        /* Ensure no page breaks within sections */
-        .bottom-section, .table-responsive {
-            page-break-inside: avoid;
-        }
-    }
-
-    /* Adjust the table row height for better fit */
-    td {
-        height: 25px; /* Reduced from 30px */
-    }
-
-    .form-container {
-        /* border: 2px solid #000; */
-        background-color: #fff;
-        max-width: 1000px;
-        margin: 0 auto;
-        font-size: 14px;
-        font-family: "Times New Roman", Times, serif;
-    }
-
-    h4 {
-        font-size: 18px;
-        font-weight: bold;
-    }
-
-    h5 {
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    th {
-        font-size: 13px;
-        padding: 8px;
-        border: 1px solid #000;
-        background-color: #f8f9fa;
-    }
-
-    td {
-        height: 30px;
-        padding: 6px;
-        border: 1px solid #000;
-        font-size: 13px;
-    }
-
-    .table-bordered {
-        border: 1.5px solid #000;
-    }
-
-        .table-bordered > thead > tr > th,
-        .table-bordered > tbody > tr > td {
-            border: 1px solid #000;
-        }
-
-    /* Dotted line for form fields */
-    [class*="dots"] {
-        border-bottom: 1px dotted #000;
-        display: inline-block;
-        min-width: 100px;
-    }
-
-    @@media print {
-
-        body {
-            margin: 0;
-            padding: 20px;
-            font-size: 12px;
-        }
-    }
-    /* Add these new styles to your existing CSS */
-    .bottom-section {
-        border: 1px solid #000;
-        padding: 5px;
-        margin-top: 0; /* Changed from 20px to 0 */
-    }
-
-        .bottom-section p {
-            margin: 0px;
-            padding: 0px;
-        }
-
-    table td {
-        height: 25px;
-    }
-
-    .signature-section {
-        border-top: 1px solid #000;
-        margin-top: 20px;
-        padding-top: 15px;
-    }
-
-    .officers-section {
-        border-top: 1px solid #000;
-        /* margin-top: 20px; */
-        /* padding-top: 25px; Increased padding top */
-    }
-
-    .final-section {
-        border-top: 1px solid #000;
-        margin-top: 20px;
-        padding-top: 15px;
-        text-align: right; /* Align content to right */
-    }
-
-        .final-section p {
-            margin-bottom: 5px;
-        }
-
-    .approved-text {
-        position: relative;
-        top: -10px;
-        font-style: italic;
-        font-size: 12px;
-    }
-
-    .form-header-text {
-        width: 100%;
-        padding: 0 15px;
-    }
-
-        .form-header-text p {
-            margin-bottom: 8px;
-        }
-</style>`;
-            // Replace the body content with only the form content
-            document.body.innerHTML = style + '<div>' + formContent + '</div>';
-
-            // Trigger the print dialog
-            window.print();
-
-            // Restore the original body content after printing
-            document.body.innerHTML = originalContent;
-        };
+        })
     });
 
     $(document).ready(function () {
 
         $("#addAnotherRow").on("click", function () {
             let count = $(this).attr("data-count");
-            let element =` 
-           
+            let element = `
+
             <div class="row">
             <div class="col-sm-12">
              <hr />
@@ -638,7 +342,7 @@
             </div>
       <div class="col-lg-4 mb-3">
           <label for="type" class="form-label">Type</label>
-          <select class="form-select form-select-sm" id="type" name="[${count}].type" required>
+          <select class="form-select form-select-sm" id="type" name="data[${count}].type" required>
               <option value="" selected>Select Option</option>
               <option value="contigency">Contigency</option>
               <option value="pi_adjustment">P.I adjustment</option>
@@ -699,7 +403,7 @@
                 type: 'post',
                 data: formData,
                 contentType: false,
-                processData:false,
+                processData: false,
                 success: function (res) {
                     if (res.status) {
                         Swal.fire({

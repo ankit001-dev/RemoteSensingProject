@@ -37,8 +37,8 @@
                 <thead>
                     <tr>
                         <th class="pt-0">Sr</th>
-                        <th class="pt-0">Assign Date</th>
                         <th class="pt-0">Project Name</th>
+                        <th class="pt-0">Assign Date</th>
                         <th class="pt-0">Start Date</th>
                         <th class="pt-0">Completion Date</th>
                         <th class="pt-0">Status</th>
@@ -50,8 +50,8 @@
                     {
                         <tr>
                             <td>@i</td>
+                            <td><a href="#" class="viewProject" data-Id="@item.Id">@item.ProjectTitle</a></td>
                             <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
-                            <td>@item.ProjectTitle</td>
                             <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
                             <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
                             <td>
@@ -271,7 +271,7 @@
     $(document).ready(function () {
         $("#searchProjectBy").on("input", function () {
             var table = $("#dataTableExample").DataTable();
-            table.column(2).search(this.value).draw()
+            table.column(1).search(this.value).draw()
         });
         $("#filterProjectStatus").on("change", function () {
             var table = $("#dataTableExample").DataTable();

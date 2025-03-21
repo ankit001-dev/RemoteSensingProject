@@ -1,0 +1,177 @@
+﻿
+@media print {
+    .container
+
+{
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.form-container {
+    /* border: 1px solid #000; */
+    padding: 15px !important;
+    margin: 0 !important;
+    width: 210mm; /* A4 width */
+    min-height: 297mm; /* A4 height */
+    font-size: 11px !important;
+}
+
+h4 {
+    font-size: 16px !important;
+}
+
+h5 {
+    font-size: 14px !important;
+}
+
+td, th {
+    padding: 4px !important;
+    font-size: 11px !important;
+}
+
+.bottom-section {
+    padding: 10px !important;
+}
+
+.px-5 {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.mx-5 {
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
+[class*="dots"] {
+    min-width: 80px !important;
+}
+/* Ensure no page breaks within sections */
+.bottom-section, .table-responsive {
+    page-break-inside: avoid;
+}
+
+}
+
+/* Adjust the table row height for better fit */
+td {
+    height: 25px; /* Reduced from 30px */
+}
+
+.form-container {
+    /* border: 2px solid #000; */
+    background-color: #fff;
+    max-width: 1000px;
+    margin: 0 auto;
+    font-size: 14px;
+    font-family: "Times New Roman", Times, serif;
+}
+
+h4 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+h5 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    font-size: 13px;
+    padding: 8px;
+    border: 1px solid #000;
+    background-color: #f8f9fa;
+}
+
+td {
+    height: 30px;
+    padding: 6px;
+    border: 1px solid #000;
+    font-size: 13px;
+}
+
+.table-bordered {
+    border: 1.5px solid #000;
+}
+
+    .table-bordered > thead > tr > th,
+    .table-bordered > tbody > tr > td {
+        border: 1px solid #000;
+    }
+
+/* Dotted line for form fields */
+[class*="dots"] {
+    border-bottom: 1px dotted #000;
+    display: inline-block;
+    min-width: 100px;
+}
+
+@media print {
+
+    body {
+        margin: 0;
+        padding: 20px;
+        font-size: 12px;
+    }
+}
+/* Add these new styles to your existing CSS */
+.bottom-section {
+    border: 1px solid #000;
+    padding: 5px;
+    margin-top: 0; /* Changed from 20px to 0 */
+}
+
+    .bottom-section p {
+        margin: 0px;
+        padding: 0px;
+    }
+
+table td {
+    height: 25px;
+}
+
+.signature-section {
+    border-top: 1px solid #000;
+    margin-top: 20px;
+    padding-top: 15px;
+}
+
+.officers-section {
+    border-top: 1px solid #000;
+    /* margin-top: 20px; */
+    /* padding-top: 25px; Increased padding top */
+}
+
+.final-section {
+    border-top: 1px solid #000;
+    margin-top: 20px;
+    padding-top: 15px;
+    text-align: right; /* Align content to right */
+}
+
+    .final-section p {
+        margin-bottom: 5px;
+    }
+
+.approved-text {
+    position: relative;
+    top: -10px;
+    font-style: italic;
+    font-size: 12px;
+}
+
+.form-header-text {
+    width: 100%;
+    padding: 0 15px;
+}
+
+    .form-header-text p {
+        margin-bottom: 8px;
+    }
