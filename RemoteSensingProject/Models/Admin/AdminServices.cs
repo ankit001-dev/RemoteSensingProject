@@ -1838,7 +1838,7 @@ namespace RemoteSensingProject.Models.Admin
         #endregion
 
         #region /*Reimbursement request approval*/
-        public bool ReimbursementApproval(bool status, int userId, string type)
+        public bool ReimbursementApproval(bool status, int id, string type,string remark)
         {
             try
             {
@@ -1846,8 +1846,9 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "approval");
                 cmd.Parameters.AddWithValue("@admin_appr", status);
-                cmd.Parameters.AddWithValue("@userId", userId);
+                cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@type", type);
+                cmd.Parameters.AddWithValue("@remark", remark);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }

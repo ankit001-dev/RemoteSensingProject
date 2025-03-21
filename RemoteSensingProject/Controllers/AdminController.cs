@@ -531,15 +531,15 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult ReimbursementReque(bool status,int userId, string type)
+        public ActionResult ReimbursementReque(bool status,int id, string type ,string remark )
         {
-            bool res = _adminServices.ReimbursementApproval(status, userId, type);
+            bool res = _adminServices.ReimbursementApproval(status, id, type,remark);
             if (res)
             {
                 return Json(new
                 {
                     status = res,
-                    message = "Approved"
+                    message = (res == true && status == true) ? "Approved Successfully" : "Rejected Successfully"
                 });
             }
             else
@@ -547,7 +547,7 @@ namespace RemoteSensingProject.Controllers
                 return Json(new
                 {
                     status = res,
-                    message = "Rejected"
+                    message = "Some error Occured"
                 });
             }
         }
