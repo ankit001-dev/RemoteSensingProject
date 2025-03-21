@@ -595,6 +595,26 @@ namespace RemoteSensingProject.ApiServices
         #endregion
 
         #region Create Project
+
+        [HttpGet]
+        [Route("api/ViewProjectDetailById")]
+        public IHttpActionResult ViewProjectDetailById(int projectId)
+        {
+            try
+            {
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
         [HttpGet]
         [Route("api/adminProjectList")]
         public IHttpActionResult getProjectList()

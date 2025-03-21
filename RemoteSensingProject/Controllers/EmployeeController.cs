@@ -205,8 +205,11 @@ namespace RemoteSensingProject.Controllers
                 data = data
             }, JsonRequestBehavior.AllowGet);
         }
-    
+
         #endregion /* End */
+
+
+  
         public ActionResult Approved_Project()
         {
             return View();
@@ -214,13 +217,29 @@ namespace RemoteSensingProject.Controllers
         #region weekly update
         public ActionResult Weekly_Update_Project(int Id)
         {
-            ViewBag.WeeklyUpdateList = _managerServices.WeeklyUpdateList(Id);
+            ViewBag.WeeklyUpdateList = _managerServices.MonthlyProjectUpdate(Id);
             return View();
         }
 
-        public JsonResult UpdateWeekly(Project_WeeklyUpdate pwu)
+        public ActionResult monthly_extr_ProjectStatue(int Id)
         {
-            bool res = _managerServices.updateWeeklyStatus(pwu);
+            ViewData["totalData"] = _managerServices.GetExtrnlFinancialReport(Id);
+            return View();
+        }
+
+        public JsonResult insertMonthlyExtrPrj(FinancialMonthlyReport fr)
+        {
+            bool res = _managerServices.updateFinancialReportMonthly(fr);
+            return Json(new
+            {
+                status = res,
+                message = res ? "Updated successfully !" : "Some issue occured while processing..."
+            });
+        }
+
+        public JsonResult UpdateWeekly(Project_MonthlyUpdate pwu)
+        {
+            bool res = _managerServices.UpdateMonthlyStatus(pwu);
             return Json(new
             {
                 status = res,
