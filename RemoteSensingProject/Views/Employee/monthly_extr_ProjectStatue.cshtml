@@ -1,0 +1,147 @@
+﻿
+@{
+    ViewBag.Title = "monthly_extr_ProjectStatue";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var TotalData = ViewData["totalData"] as List<RemoteSensingProject.Models.ProjectManager.FinancialMonthlyReport>;
+}
+
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Monthly Status Update</li>
+    </ol>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Weekly Status</button>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">S.No.</th>
+                                <th>Date</th>
+                                <th>Aim</th>
+                                <th>Monthly Aim</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                          @if(TotalData != null && TotalData.Any())
+            {
+                              int i = 1;
+                foreach(var item in TotalData)
+                {
+<tr>
+    <td>@i</td>
+    <td>@item.date</td>
+    <td>@item.aim</td>
+    <td>@item.month_aim</td>
+</tr>
+                }
+            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title" id="exampleModalLabel">Add Monthly Status</h5>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="weeklyUpdateForm">
+                    <div class="row">
+                        <div class="mb-3 col-md-12">
+                            <label for="subtitle" class="form-label">Date</label>
+                            <input type="date" class="form-control form-control-sm" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label">aim</label>
+                            <input type="text" class="form-control form-control-sm" name="aim" placeholder="Enter unit..." />
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label">Month Aim</label>
+                            <input type="text" name="month_aim" class="form-control form-control-sm" placeholder="Month aim..." />
+                           
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label">
+                                completeInMonth
+                            </label>
+                            <input type="text" name="completeInMonth" class="form-control form-control-sm" placeholder="Completed in month ..." />
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label for="subtitle" class="form-label">Department Beneficiaries</label>
+                            <input class="form-control form-control-sm" name="departBeneficiaries" id="tinymceExample" rows="10" placeholder="Enter State Beneficiaries" />
+                        </div>
+                        <input type="hidden" name="projectId" value="@Request.QueryString["Id"]" />
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Update Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#weeklyUpdateForm").on("submit", function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Please wait ...",
+            text: "Processing your request...",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+
+        let formData = $(this).serialize();
+        $.ajax({
+            url: "/employee/insertMonthlyExtrPrj",
+            type : "post",
+            data: formData,
+            success: function (res) {
+                if (res) {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: res.message,
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                }
+                else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: res.message,
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server busy !",
+                    text: "Server is busy ! Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
+    })
+</script>

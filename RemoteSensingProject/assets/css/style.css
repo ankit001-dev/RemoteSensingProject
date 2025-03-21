@@ -4671,7 +4671,6 @@ div.tox .btn-group-vertical > .btn-group:not(:first-child) > .tox-button,
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid #f2f4f9;
-  border-radius: 10px;
 }
 .card > hr {
   margin-right: 0;
@@ -26100,4 +26099,32 @@ div.tox .tox-dialog__body {
   transition: all ease 0.3s;
 }
 
+
+
+a {
+    position: relative;
+    display: inline-block;
+}
+
+    a::after {
+        content: attr(data-title);
+        position: absolute;
+        background: #333;
+        color: #fff;
+        padding: 5px;
+        border-radius: 5px;
+        white-space: nowrap;
+        font-size: 12px;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.1s ease-in-out, visibility 0.1s ease-in-out;
+    }
+
+    a:hover::after {
+        opacity: 1;
+        visibility: visible;
+    }
 

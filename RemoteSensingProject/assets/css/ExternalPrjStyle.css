@@ -1,0 +1,54 @@
+﻿@page {
+    size: landscape;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+.form-container {
+    width: 100%;
+}
+
+.form-container > table {
+    width: 100%;
+    border-collapse: collapse;
+    page-break-inside: avoid;
+}
+
+    .form-container > table > thead > tr > th, .form-container > table > tbody > tr > td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: left;
+        height: 35px;
+        font-size: 14px;
+    }
+
+    .form-container > table > thead > tr > th {
+        background-color: #fff;
+        text-align: center;
+        font-weight: bold;
+    }
+
+.form-title {
+    text-align: right;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+@media print {
+    body {
+        width: 100%;
+        margin: 0;
+        padding: 15px;
+    }
+
+    .form-container {
+        margin: 0;
+        padding: 10px;
+    }
+
+    table {
+        page-break-inside: avoid;
+    }
+}

@@ -18,9 +18,9 @@
 
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item active" aria-current="page">Weekly Status Update</li>
+        <li class="breadcrumb-item active" aria-current="page">Monthly Status Update</li>
     </ol>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Weekly Status</button>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
 </nav>
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -37,7 +37,7 @@
                               </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in ViewBag.WeeklyUpdateList as List<RemoteSensingProject.Models.Admin.main.Project_WeeklyUpdate>)
+                            @foreach (var item in ViewBag.WeeklyUpdateList as List<RemoteSensingProject.Models.Admin.main.Project_MonthlyUpdate>)
                             {
                                 <tr>
                                     <td class="text-start">1</td>
@@ -59,10 +59,10 @@
 </div>
 
 <div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h5 class="modal-title" id="exampleModalLabel">Add Weekly Status</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add Monthly Status</h5>
             </div>
             <div class="modal-body">
                 <form class="forms-sample" id="weeklyUpdateForm">
@@ -73,12 +73,48 @@
 
                         </div>
                         <div class="mb-3 col-md-12">
-                            <label for="subtitle" class="form-label">Comment</label>
-                            <textarea class="form-control form-control-sm" name="comments" id="tinymceExample" rows="10" placeholder="Enter Comment"></textarea>
+                            <label class="form-label">Unit</label>
+                            <input type="text" class="form-control form-control-sm" name="unit" placeholder="Enter unit..."/>
                         </div>
                         <div class="mb-3 col-md-12">
-                            <label for="title" class="form-label">Completion in %</label>
-                            <input type="number" class="form-control" id="title" name="completionPerc" placeholder="Enter Completion in %">
+                            <label class="form-label fw-bold">Target</label>
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Annual</label>
+                                    <input type="text" name="annual" class="form-control form-control-sm" placeholder="Annual"/>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Month-end</label>
+                                    <input type="text" name="monthEnd" class="form-control form-control-sm" placeholder="Month end"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <label class="form-label fw-bold">Achievement</label>
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">
+                                        Review-month
+                                    </label>
+                                    <input type="text" name="reviewMonth" class="form-control form-control-sm" placeholder="Review Month"/>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">Month-end-sequentially</label>
+                                    <input type="text" name="MonthEndSequentially" class="form-control form-control-sm" placeholder="Month end sequentially"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label for="subtitle" class="form-label">State-beneficiaries</label>
+                            <input class="form-control form-control-sm" name="StateBeneficiaries" id="tinymceExample" rows="10" placeholder="Enter State Beneficiaries" />
+                        </div>
+                        
+                        <div class="mb-3 col-md-12">
+                            <label for="subtitle" class="form-label">Comment</label>
+                            <textarea class="form-control form-control-sm" name="comments" id="tinymceExample" rows="10" placeholder="Enter Comment"></textarea>
                         </div>
                         <input type="hidden" name="ProjectId" value="@Request.QueryString["Id"]"/>
                     </div>

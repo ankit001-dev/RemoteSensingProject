@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using static RemoteSensingProject.Models.LoginManager.main;
 using RemoteSensingProject.Models.LoginManager;
 using System.Web.Security;
+using RemoteSensingProject.Models;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -68,5 +69,29 @@ namespace RemoteSensingProject.Controllers
             FormsAuthentication.SignOut();
             return RedirectToAction("login");
         }
+
+
+
+        #region exportHtmlToPdf
+
+        [HttpPost]
+        public ActionResult ExportHtmlToPdf([System.Web.Http.FromBody] PdfRequest request)
+        {
+            DataFactory df = new DataFactory();
+            byte[] pdfFile = df.ExportPdfData(request.HtmlText);
+
+            string fileName = $"{DateTime.Now:ddMMyyyy}{Guid.NewGuid()}.pdf";
+
+            Response.Headers["Content-Disposition"] = $"attachment; filename={fileName}";
+
+            return File(pdfFile, "application/pdf", fileName);
+        }
+
+
+        public class PdfRequest
+        {
+            public string HtmlText { get; set; }
+        }
+        #endregion
     }
 }

@@ -54,7 +54,11 @@
                     {
                         <tr>
                             <td>@i</td>
-                            <td>@item.ProjectTitle</td>
+                            <td>
+                                <a href="#" class="viewProject" title="View" data-title="View Detail" data-Id="@item.Id">
+                                    @item.ProjectTitle
+                                </a>
+                            </td>
                             <td>@item.ProjectManager</td>
                             <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
 
@@ -85,7 +89,7 @@
                             </td>
                             <td class="text-center">
                                 <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                    <li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>
+                                    <li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id" data-title="View Detail"><i class="link-icon" data-feather="eye"></i></a></li>
                                 </ul>
                             </td>
                         </tr>
@@ -138,7 +142,7 @@
                     if (res.data.pm.ProjectStage) {
                         if (res.data.stages.length > 0) {
                             $.each(res.data.stages, function (i, d) {
-                                stages += `<label class="form-label"><a href="stage2">Stage ${i+1}</a></label>
+                                stages += `<label class="form-label"><a href="stage2" data-title="Stage">Stage ${i+1}</a></label>
 <div class="row">
     <div class="col-sm-4 mb-2">
         <label class="form-label fw-bolder">Key</label>
