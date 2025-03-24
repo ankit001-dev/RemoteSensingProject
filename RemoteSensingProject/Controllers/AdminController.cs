@@ -561,9 +561,9 @@ namespace RemoteSensingProject.Controllers
         }
 
         [HttpPost]
-        public ActionResult TravelRequest(bool status,int id)
+        public ActionResult TravelRequest(bool status,int id,string remark)
         {
-            bool res = _adminServices.Tourapproval(id, status);
+            bool res = _adminServices.Tourapproval(id, status,remark);
             if (res)
             {
                 return Json(new
@@ -592,9 +592,9 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult HiringRequest(bool status, int id)
+        public ActionResult HiringRequest(bool status, int id,string remark)
         {
-            bool res = _adminServices.HiringApproval(id, status);
+            bool res = _adminServices.HiringApproval(id, status,remark);
             if (res)
             {
                 return Json(new

@@ -206,6 +206,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class Reimbursement
     {
+        public string remark { get; set; }
         public bool status { get; set; }
         public string chequeNum { get; set; }
         public string chequeDate { get; set; }
@@ -226,6 +227,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class tourProposal
     {
+        public string remark { get; set; }
         public bool newRequest { get; set; }
         public bool adminappr { get; set; }
         public string projectName { get; set; }
@@ -242,6 +244,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class HiringVehicle
     {
+        public string remark { get; set; }
         public string projectManager { get; set; }
         public bool adminappr { get; set; }
         public bool newRequest { get; set; }

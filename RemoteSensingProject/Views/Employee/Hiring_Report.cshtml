@@ -112,8 +112,9 @@
                             <th>Purpose of Visit</th>
                             <th>Total Days & Night</th>
                             <th>Avaiability of fund</th>
+                            <th>View</th>
+                            <th>Remark</th>
                             <th>Status</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -134,15 +135,24 @@
                                     <td>@item.amount</td>
                                     <td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action"></i></td>
                                     <td>
-                                        @{
-                                            if (item.newRequest == true && item.adminappr == false)
-                                            { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                            else if (item.newRequest == false && item.adminappr == true)
-                                            { <span id="status" class="badge bg-success">Approved</span> }
-                                            else if (item.newRequest == false && item.adminappr == false)
-                                            { <span id="status" class="badge bg-danger">Rejected</span> }
-                                        }
-                                    </td>
+                                        @if (item.adminappr && !item.newRequest && item.remark == null)
+                                        {<span>Approved</span> }
+                                        else if (item.newRequest && !item.adminappr)
+                                        { <span>Pending</span>}
+                                        else
+                                        { <span>@item.remark</span>}
+                                </td>
+                               
+                                <td>
+                                    @{
+                                        if (item.newRequest == true && item.adminappr == false)
+                                        { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                        else if (item.newRequest == false && item.adminappr == true)
+                                        { <span id="status" class="badge bg-success">Approved</span> }
+                                        else if (item.newRequest == false && item.adminappr == false)
+                                        { <span id="status" class="badge bg-danger">Rejected</span> }
+                                    }
+                                </td>
                                 </tr>
                                 i++;
                             }

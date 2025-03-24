@@ -1149,12 +1149,12 @@ namespace RemoteSensingProject.ApiServices
         }
 
         [HttpGet]
-        [Route("api/ProjectManagerHiringReport")]
-        public IHttpActionResult ProjectManagerHiringReport(int userId)
+        [Route("api/ProjectManagerHiringReportProjects")]
+        public IHttpActionResult ProjectManagerHiringReportProjects(int userId)
         {
             try
             {
-                var data = _managerService.GetHiringVehicles(userId);
+                var data = _managerService.ProjectManagerHiringReportProjects(userId);
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1171,14 +1171,40 @@ namespace RemoteSensingProject.ApiServices
                     message = ex.Message
                 });
             }
+        }
+
+        [HttpGet]
+        [Route("api/ProjectManagerHiringReportbyProjects")]
+        public IHttpActionResult ProjectManagerHiringReportbyProjects(int userId, int projectId)
+        {
+            try
+            {
+                var data = _managerService.ProjectManagerHiringReportbyProjects(userId, projectId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
             }
-           [HttpGet]
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
         [Route("api/ProjectManagerTourProposalReport")]
         public IHttpActionResult ProjectManagerTourProposalReport(int userId)
             {
                 try
                 {
-                    var data = _managerService.getTourList(userId);
+                    var data = _managerService.ProjectManagertourreportProjects(userId);
                     return Ok(new
                     {
                         status = data.Any(),
@@ -1194,7 +1220,32 @@ namespace RemoteSensingProject.ApiServices
                         StatusCode = 500,
                         message = ex.Message
                     });
-                } }
-            #endregion
+                } 
         }
+        [HttpGet]
+        [Route("api/ProjectManagertourreportByProjects")]
+        public IHttpActionResult ProjectManagertourreportByProjects(int userId,int projectId)
+        {
+            try
+            {
+                var data = _managerService.ProjectManagertourreportByProjects(userId,projectId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+    }
 }
