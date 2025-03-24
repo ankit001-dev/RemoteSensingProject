@@ -1809,7 +1809,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public bool Tourapproval(int id,bool status)
+        public bool Tourapproval(int id,bool status,string remark)
         {
             try
             {
@@ -1818,6 +1818,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@action", "approval");
                     cmd.Parameters.AddWithValue("@adminappr", status);
                 cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@remark", remark);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -1837,7 +1838,7 @@ namespace RemoteSensingProject.Models.Admin
         #endregion
 
         #region /*Reimbursement request approval*/
-        public bool ReimbursementApproval(bool status, int userId, string type)
+        public bool ReimbursementApproval(bool status, int id, string type,string remark)
         {
             try
             {
@@ -1845,8 +1846,9 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "approval");
                 cmd.Parameters.AddWithValue("@admin_appr", status);
-                cmd.Parameters.AddWithValue("@userId", userId);
+                cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@type", type);
+                cmd.Parameters.AddWithValue("@remark", remark);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -1855,7 +1857,7 @@ namespace RemoteSensingProject.Models.Admin
                 return false;
             }
             finally
-            {
+             {
                 if (con.State == ConnectionState.Open)
                 {
                     con.Close();
@@ -1967,7 +1969,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public bool HiringApproval(int id, bool status)
+        public bool HiringApproval(int id, bool status,string remark)
         {
             try
             {
@@ -1976,6 +1978,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@action", "approval");
                 cmd.Parameters.AddWithValue("@adminappr", status);
                 cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@remark", remark);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -2104,6 +2107,7 @@ namespace RemoteSensingProject.Models.Admin
                             note = res["note"].ToString(),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
                             adminappr = Convert.ToBoolean(res["adminappr"]),
+                            remark = res["remark"].ToString()
                         });
                     }
                 }
@@ -2123,6 +2127,183 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
+        #region /* Hiring Report for App */
+        public List<HiringVehicle1> hiringreportprojects()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selecthiringreportprojects");
+                con.Open();
+                List<HiringVehicle1> list = new List<HiringVehicle1>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new HiringVehicle1
+                        {
+                            id = (int)res["projectId"],
+                            projectName = Convert.ToString(res["title"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        public List<HiringVehicle1> hiringreportbyproject(int projectid)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selecthiringreportbyproject");
+                cmd.Parameters.AddWithValue("@projectId", projectid);
+                con.Open();
+                List<HiringVehicle1> list = new List<HiringVehicle1>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new HiringVehicle1
+                        {
+                            id = (int)res["id"],
+                            projectName = Convert.ToString(res["title"]),
+                            projectManager = Convert.ToString(res["name"]),
+                            headName = Convert.ToString(res["heads"]),
+                            amount = Convert.ToDecimal(res["amount"]),
+                            dateFrom = Convert.ToDateTime(res["dateFrom"]),
+                            dateTo = Convert.ToDateTime(res["dateTo"]),
+                            proposedPlace = res["proposedPlace"].ToString(),
+                            purposeOfVisit = res["purposeOfVisit"].ToString(),
+                            totalDaysNight = res["totalDaysNight"].ToString(),
+                            totalPlainHills = res["totalPlainHills"].ToString(),
+                            taxi = res["taxi"].ToString(),
+                            BookAgainstCentre = res["BookAgainstCentre"].ToString(),
+                            availbilityOfFund = res["availbilityOfFund"].ToString(),
+                            note = res["note"].ToString(),
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            adminappr = Convert.ToBoolean(res["adminappr"]),
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        #endregion
+
+        #region /*Tour Report for App */
+        public List<tourProposalrepo> TourReportProject()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selecttourproject");
+                con.Open();
+                List<tourProposalrepo> getlist = new List<tourProposalrepo>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        getlist.Add(new tourProposalrepo
+                        {
+                            id = Convert.ToInt32(res["projectId"]),
+                            projectManager = Convert.ToString(res["title"])
+                        });
+                    }
+                }
+                return getlist;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        public List<tourProposalrepo> tourproposalbyproject(int projectid)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selecttourproposalbyproject");
+                cmd.Parameters.AddWithValue("@projectId", projectid);
+                con.Open();
+                List<tourProposalrepo> list = new List<tourProposalrepo>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new tourProposalrepo
+                        {
+                            id = Convert.ToInt32(res["projectId"]),
+                            projectManager = Convert.ToString(res["name"]),
+                            projectName = Convert.ToString(res["title"]),
+                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+                            place = Convert.ToString(res["place"]),
+                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
+                            periodTo = Convert.ToDateTime(res["periodTo"]),
+                            returnDate = Convert.ToDateTime(res["returnDate"]),
+                            purpose = Convert.ToString(res["purpose"]),
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            adminappr = Convert.ToBoolean(res["adminappr"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        #endregion
 
         public List<AdminReimbursement> ReinbursementReport()
         {
@@ -2150,7 +2331,8 @@ namespace RemoteSensingProject.Models.Admin
                             newRequest = Convert.ToBoolean(res["newStatus"]),
                             status = Convert.ToBoolean(res["apprAmountStatus"] != DBNull.Value ? res["apprAmountStatus"] : false),
                             chequeNum = res["chequeNum"].ToString(),
-                            chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : ""
+                            chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : "",
+                            remark = res["remark"].ToString()
                         });
                     }
                 }

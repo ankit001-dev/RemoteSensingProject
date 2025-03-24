@@ -62,6 +62,7 @@
                                 <th>Period From</th>
                                 <th>Period To</th>
                                 <th>Date of return</th>
+                                <th>Remark</th>
                                 <th>Status</th>
                                 <th>View</th>
                             </tr>
@@ -83,16 +84,24 @@
                                         <td>@item.periodTo</td>
                                         <td>@item.returnDate</td>
                                         <td>
-                                                        @{
-                                                    if (item.newRequest == true && item.adminappr == false)
-                                                    { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                            @if (item.adminappr && !item.newRequest && string.IsNullOrEmpty(item.remark))
+                                            {<span>Approved</span> }
+                                            else if (item.newRequest && !item.adminappr)
+                                            { <span>Pending</span>}
+                                            else
+                                            { <span>@item.remark</span>}
+                                        </td>
+                                        <td>
+                                            @{
+                                                if (item.newRequest == true && item.adminappr == false)
+                                                { <span id="status" class="badge bg-primary pt-1">Pending</span> }
                                                 else if (item.newRequest == false && item.adminappr == true)
                                                 { <span id="status" class="badge bg-success">Approved</span> }
                                                 else if (item.newRequest == false && item.adminappr == false)
-                            { <span id="status" class="badge bg-danger">Rejected</span> }
+                                                { <span id="status" class="badge bg-danger">Rejected</span> }
                                             }
                                         </td>
-                                        <td data-id="@item.id" class="text-center"><i class="fa-solid fa-eye action" ></i> </td>
+                                        <td data-id="@item.id" class="text-center"><i class="fa-solid fa-eye action"></i> </td>
                                     </tr>
                                                                     i++;
                                                                 }

@@ -1941,5 +1941,181 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
+
+        #region Report for App
+        public List<HiringVehicle> ProjectManagerHiringReportProjects(int userId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectProjectManagerHiringReportProjects");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                con.Open();
+                List<HiringVehicle> projectList = new List<HiringVehicle>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        projectList.Add(new HiringVehicle
+                        {
+                            projectId = (int)res["projectId"],
+                            projectName = (string)res["title"]
+                        });
+                    }
+                }
+                return projectList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        public List<HiringVehicle> ProjectManagerHiringReportbyProjects(int userId,int projectId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectProjectManagerHiringReportbyProjects");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                cmd.Parameters.AddWithValue("@projectId", projectId);
+                con.Open();
+                List<HiringVehicle> projectList = new List<HiringVehicle>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        projectList.Add(new HiringVehicle
+                        {
+                            id = (int)res["id"],
+                            projectName = Convert.ToString(res["title"]),
+                            headName = Convert.ToString(res["heads"]),
+                            amount = Convert.ToDecimal(res["amount"]),
+                            dateFrom = Convert.ToDateTime(res["dateFrom"]),
+                            dateTo = Convert.ToDateTime(res["dateTo"]),
+                            proposedPlace = res["proposedPlace"].ToString(),
+                            purposeOfVisit = res["purposeOfVisit"].ToString(),
+                            totalDaysNight = res["totalDaysNight"].ToString(),
+                            totalPlainHills = res["totalPlainHills"].ToString(),
+                            taxi = res["taxi"].ToString(),
+                            BookAgainstCentre = res["BookAgainstCentre"].ToString(),
+                            availbilityOfFund = res["availbilityOfFund"].ToString(),
+                            note = res["note"].ToString(),
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            adminappr = Convert.ToBoolean(res["adminappr"])
+                        });
+                    }
+                }
+                return projectList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+
+        public List<tourProposal> ProjectManagertourreportProjects(int userId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "ProjectManagertourreportProjects");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                con.Open();
+                List<tourProposal> projectList = new List<tourProposal>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        projectList.Add(new tourProposal
+                        {
+                            projectId = (int)res["projectId"],
+                            projectName = (string)res["title"]
+                        });
+                    }
+                }
+                return projectList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        public List<tourProposal> ProjectManagertourreportByProjects(int userId,int projectId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectProjectManagertourreportByProjects");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                cmd.Parameters.AddWithValue("@projectId", projectId);
+                con.Open();
+                List<tourProposal> getlist = new List<tourProposal>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        getlist.Add(new tourProposal
+                        {
+                            id = Convert.ToInt32(res["id"]),
+                            projectName = Convert.ToString(res["title"]),
+                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+                            place = Convert.ToString(res["place"]),
+                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
+                            periodTo = Convert.ToDateTime(res["periodTo"]),
+                            returnDate = Convert.ToDateTime(res["returnDate"]),
+                            purpose = Convert.ToString(res["purpose"]),
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            adminappr = Convert.ToBoolean(res["adminappr"])
+                        });
+                    }
+                }
+                return getlist;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        }
+        #endregion
     }
 }

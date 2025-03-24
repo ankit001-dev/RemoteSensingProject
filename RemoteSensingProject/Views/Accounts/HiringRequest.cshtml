@@ -88,6 +88,7 @@
                             <th>Purpose of Visit</th>
                             <th>Total Days & Night</th>
                             <th>Avaiability of fund</th>
+                            <th>Remark</th>
                             <th>Action</th>
                             <th>Status</th>
                         </tr>
@@ -109,6 +110,14 @@
                                     <td>@item.purposeOfVisit</td>
                                     <td>@item.totalDaysNight</td>
                                     <td>@item.amount</td>
+                                    <td>
+                                        @if (item.adminappr && !item.newRequest && string.IsNullOrEmpty(item.remark))
+                                        {<span>Approved</span> }
+                                        else if (item.newRequest && !item.adminappr)
+                                        { <span>Pending</span>}
+                                        else
+                                        { <span>@item.remark</span>}
+                                    </td>
                                     <td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>
                                     <td>
                                         @{

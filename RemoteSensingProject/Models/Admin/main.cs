@@ -236,6 +236,23 @@ namespace RemoteSensingProject.Models.Admin
             public string noticeDate { get; set; }
 
         }
+        public class tourProposalrepo
+        {
+            public string remark { get; set; }
+            public bool newRequest { get; set; }
+            public bool adminappr { get; set; }
+            public string projectName { get; set; }
+            public int projectId { get; set; }
+            public string projectManager { get; set; }
+            public int userId { get; set; }
+            public int id { get; set; }
+            public DateTime dateOfDept { get; set; }
+            public string place { get; set; }
+            public DateTime periodFrom { get; set; }
+            public DateTime periodTo { get; set; }
+            public DateTime returnDate { get; set; }
+            public string purpose { get; set; }
+        }
         public class DashboardCount
         {
             public decimal expenditure { get; set; }
@@ -288,6 +305,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class tourProposalAll
         {
+            public string remark { get; set; }
             public bool newRequest { get; set; }
             public bool adminappr { get; set; }
             public string projectName { get; set; }
@@ -305,6 +323,7 @@ namespace RemoteSensingProject.Models.Admin
 
         public class AdminReimbursement
         {
+            public string remark { get; set; }
             public bool status { get; set; }
             public bool adminappr { get; set; }
             public bool newRequest { get; set; }
@@ -326,6 +345,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class HiringVehicle1
         {
+            public string remark { get; set; }
             public bool newRequest { get; set; }
             public bool adminappr { get; set; }
             public string projectManager { get; set; }
