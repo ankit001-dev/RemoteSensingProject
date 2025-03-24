@@ -1624,11 +1624,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/ApproveReimbursement")]
-        public IHttpActionResult ApproveReimbursement(int id, bool status,string type)
+        public IHttpActionResult ApproveReimbursement(int id, bool status,string type, string remark)
         {
             try
             {
-                bool res = _adminServices.ReimbursementApproval(status,id,type);
+                bool res = _adminServices.ReimbursementApproval(status,id,type, remark);
                 return Ok(new
                 {
                     status = res,
@@ -1651,11 +1651,11 @@ namespace RemoteSensingProject.ApiServices
         #region Hiring
         [HttpGet]
         [Route("api/ApprovalHiring")]
-        public IHttpActionResult ApproveHiring(int id,bool status)
+        public IHttpActionResult ApproveHiring(int id,bool status,string remark)
         {
             try
             { 
-                bool res = _adminServices.HiringApproval(id,status);
+                bool res = _adminServices.HiringApproval(id,status, remark);
                 return Ok(new
                 {
                     status = res,
@@ -1729,11 +1729,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/ApproveTourProposal")]
-        public IHttpActionResult ApproveTourProposal(int id, bool status)
+        public IHttpActionResult ApproveTourProposal(int id, bool status , string remark)
         {
             try
             {
-                bool res = _adminServices.Tourapproval(id, status);
+                bool res = _adminServices.Tourapproval(id, status, remark);
                 return Ok(new
                 {
                     status = res,
@@ -1810,12 +1810,12 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         [HttpGet]
-        [Route("api/HiringReport")]
-        public IHttpActionResult HiringReport()
+        [Route("api/HiringReportProjects")]
+        public IHttpActionResult HiringReportProjects()
         {
             try
             {
-                var data = _adminServices.HiringReort();
+                var data = _adminServices.hiringreportprojects();
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1833,13 +1833,64 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
         [HttpGet]
-        [Route("api/TourProposalReport")]
-        public IHttpActionResult TourProposalReport()
+        [Route("api/HiringReportByProject")]
+        public IHttpActionResult HiringReportByProject(int projectId)
         {
             try
             {
-                var data = _accountService.getTourList();
+                var data = _adminServices.hiringreportbyproject(projectId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/tourproposalproject")]
+        public IHttpActionResult tourproposalproject()
+        {
+            try
+            {
+                var data = _adminServices.TourReportProject();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/tourproposalbyproject")]
+        public IHttpActionResult tourproposalbyproject(int projectId)
+        {
+            try
+            {
+                var data = _adminServices.tourproposalbyproject(projectId);
                 return Ok(new
                 {
                     status = data.Any(),

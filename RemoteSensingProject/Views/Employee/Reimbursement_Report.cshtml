@@ -90,6 +90,7 @@
                         <th>Sr. No</th>
                         <th>Type</th>
                         <th>Amount</th>
+                        <th>Remark</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -104,6 +105,14 @@
                                 <td>@i</td>
                                 <td>@item.type</td>
                                 <td>@item.amount</td>
+                                <td>
+                                    @if (item.adminappr && !item.newRequest && item.remark == null)
+                                    {<span>Approved</span> }
+                                    else if (item.newRequest && !item.adminappr)
+                                    { <span>Pending</span>}
+                                    else
+                                    { <span>@item.remark</span>}
+                                </td>
                                 <td>
                                     @if (item.adminappr && !item.newRequest)
                                     {

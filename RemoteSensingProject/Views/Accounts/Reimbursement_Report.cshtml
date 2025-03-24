@@ -107,6 +107,7 @@
                         <th>Type</th>
                         <th>Amount</th>
                         <th>Approve Amount</th>
+                        <th>Remark</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
@@ -124,11 +125,19 @@
                                 <td>@item.amount</td>
                                 <td>@item.approveAmount</td>
                                 <td>
+                                    @if (item.adminappr && !item.newRequest && string.IsNullOrEmpty(item.remark))
+                                    {<span>Approved</span> }
+                                    else if (item.newRequest && !item.adminappr)
+                                    { <span>Pending</span>}
+                                    else
+                                    { <span>@item.remark</span>}
+                                </td>
+                                <td>
                                     @if (item.appr_status && !item.newRequest && item.status)
                                     {
                                         <span class="badge bg-success">Approved</span>
                                     }
-                                    else if (!item.newRequest && (!item.appr_status || !item.status) )
+                                    else if (!item.newRequest && (!item.appr_status || !item.status))
                                     {
                                         <span class="badge bg-danger">Rejected</span>
                                     }

@@ -202,7 +202,8 @@ namespace RemoteSensingProject.Models.Accounts
                             returnDate = Convert.ToDateTime(res["returnDate"]),
                             purpose = Convert.ToString(res["purpose"]),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
-                            adminappr = Convert.ToBoolean(res["adminappr"])
+                            adminappr = Convert.ToBoolean(res["adminappr"]),
+                            remark = res["remark"].ToString()
                         });
                     }
                 }

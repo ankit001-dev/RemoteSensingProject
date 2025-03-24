@@ -531,15 +531,15 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult ReimbursementReque(bool status,int userId, string type)
+        public ActionResult ReimbursementReque(bool status,int id, string type ,string remark )
         {
-            bool res = _adminServices.ReimbursementApproval(status, userId, type);
+            bool res = _adminServices.ReimbursementApproval(status, id, type,remark);
             if (res)
             {
                 return Json(new
                 {
                     status = res,
-                    message = "Approved"
+                    message = (res == true && status == true) ? "Approved Successfully" : "Rejected Successfully"
                 });
             }
             else
@@ -547,7 +547,7 @@ namespace RemoteSensingProject.Controllers
                 return Json(new
                 {
                     status = res,
-                    message = "Rejected"
+                    message = "Some error Occured"
                 });
             }
         }
@@ -561,9 +561,9 @@ namespace RemoteSensingProject.Controllers
         }
 
         [HttpPost]
-        public ActionResult TravelRequest(bool status,int id)
+        public ActionResult TravelRequest(bool status,int id,string remark)
         {
-            bool res = _adminServices.Tourapproval(id, status);
+            bool res = _adminServices.Tourapproval(id, status,remark);
             if (res)
             {
                 return Json(new
@@ -592,9 +592,9 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult HiringRequest(bool status, int id)
+        public ActionResult HiringRequest(bool status, int id,string remark)
         {
-            bool res = _adminServices.HiringApproval(id, status);
+            bool res = _adminServices.HiringApproval(id, status,remark);
             if (res)
             {
                 return Json(new

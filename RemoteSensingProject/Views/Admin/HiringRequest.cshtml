@@ -350,19 +350,38 @@
 
 <script>
     $(document).ready(function () {
-        $(".changeStatus").on("click", function (e) {
+        $(".changeStatus").on("click", async function (e) {
             e.preventDefault();
-            Swal.fire({
-                title: 'Please wait !',
-                text: 'Your request under process',
-                didOpen: () => { Swal.showLoading(); }
-            })
             let status = $(this).data("value");
             let id = $(this).data("id")
+            let remark = "";
+
+            if (!status) {
+                Swal.close();
+                const { value: userRemark, isConfirmed } = await Swal.fire({
+                    title: "Enter Remark",
+                    input: "text",
+                    inputLabel: "Remark",
+                    inputPlaceholder: "Type here...",
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                });
+
+                if (isConfirmed && userRemark && userRemark != "") {
+                    remark = userRemark;
+                    Swal.fire({
+                        title: 'Please wait !',
+                        allowOutsideClick: false,
+                        allowEscapeKey:false,
+                        text: 'Your request under process',
+                        didOpen: () => { Swal.showLoading(); }
+                    })
+                }
+            }
             $.ajax({
                 url: '/admin/HiringRequest',
                 type: 'post',
-                data: { status: status, id: id },
+                data: { status: status, id: id,remark:remark },
                 success: function (res) {
                     if (res.status) {
                         Swal.fire({

@@ -69,10 +69,10 @@
                                             <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id">
                                                 <i class="fa-solid fa-eye text-success"></i>
                                             </a> &nbsp; | &nbsp;
-                                            <a href="#" class="act" data-appr="true" data-userId="@item.userId" data-type="@item.type">
+                                            <a href="#" class="act" data-appr="true" data-id="@item.id" data-type="@item.type">
                                                 <i class="fa-solid fa-check text-success"></i>
                                             </a> &nbsp; | &nbsp;
-                                            <a href="#" class="act" data-appr="true" data-userId="@item.userId" data-type="@item.type">
+                                            <a href="#" class="act" data-appr="false" data-id="@item.id" data-type="@item.type">
                                                 <i class="fa-solid fa-xmark text-danger"></i>
                                             </a>
 
@@ -274,25 +274,42 @@
     });
 
     $(document).ready(function () {
-        $(".act").on("click", function () {
-            debugger
-            Swal.fire({
-                title: 'Please wait !',
-                text: 'Your request under process',
-                didOpen: () => { Swal.showLoading(); }
-            })
-            debugger
+        $(".act").on("click", async function () {
+         
             let status = $(this).data("appr");
-            let userId = $(this).data("userid");
+            let id = $(this).data("id");
             let type = $(this).data("type");
+            let remark = "";
+
+            if (!status) {
+                Swal.close();
+                const { value: userRemark, isConfirmed } = await Swal.fire({
+                    title: "Enter Remark",
+                    input: "text", 
+                    inputLabel: "Remark",
+                    inputPlaceholder: "Type here...",
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                });
+
+                if (isConfirmed && userRemark && userRemark != "") {
+                    remark = userRemark;
+                    Swal.fire({
+                        title: 'Please wait !',
+                        text: 'Your request under process',
+                        didOpen: () => { Swal.showLoading(); }
+                    })
+                }
+            }
+          
             $.ajax({
                 url: '/admin/ReimbursementReque',
                 type: 'post',
-                data: { "status": status, "userId": userId, "type" : type },
+                data: { "status": status, "id": id, "type": type, "remark": remark },
                 success: function (res) {
                     if (res.status) {
                         Swal.fire({
-                            title: 'Approved',
+                            title: 'Success',
                             text: res.message,
                             icon: 'success',
                             didClose: () => { location.reload() }
@@ -300,18 +317,22 @@
                     }
                     else {
                         Swal.fire({
-                            title: 'Rejected',
+                            title: 'Success',
                             text: res.message,
                             icon: 'success'
                         })
                     }
                 },
-                error: function (xhr) {
+                error: function (xhr, status, error) {
                     Swal.fire({
                         title: 'error',
                         text: 'Server busy Please try after sometime.',
                         icon: 'error'
                     })
+
+                    console.log(xhr)
+                    console.log(status)
+                    console.log(error)
                 }
             })
         })
