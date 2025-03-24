@@ -1651,11 +1651,11 @@ namespace RemoteSensingProject.ApiServices
         #region Hiring
         [HttpGet]
         [Route("api/ApprovalHiring")]
-        public IHttpActionResult ApproveHiring(int id,bool status)
+        public IHttpActionResult ApproveHiring(int id,bool status,string remark)
         {
             try
             { 
-                bool res = _adminServices.HiringApproval(id,status);
+                bool res = _adminServices.HiringApproval(id,status, remark);
                 return Ok(new
                 {
                     status = res,
@@ -1729,11 +1729,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/ApproveTourProposal")]
-        public IHttpActionResult ApproveTourProposal(int id, bool status)
+        public IHttpActionResult ApproveTourProposal(int id, bool status , string remark)
         {
             try
             {
-                bool res = _adminServices.Tourapproval(id, status);
+                bool res = _adminServices.Tourapproval(id, status, remark);
                 return Ok(new
                 {
                     status = res,
@@ -1860,12 +1860,37 @@ namespace RemoteSensingProject.ApiServices
         }
 
         [HttpGet]
-        [Route("api/TourProposalReport")]
-        public IHttpActionResult TourProposalReport()
+        [Route("api/tourproposalproject")]
+        public IHttpActionResult tourproposalproject()
         {
             try
             {
-                var data = _accountService.getTourList();
+                var data = _adminServices.TourReportProject();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/tourproposalbyproject")]
+        public IHttpActionResult tourproposalbyproject(int projectId)
+        {
+            try
+            {
+                var data = _adminServices.tourproposalbyproject(projectId);
                 return Ok(new
                 {
                     status = data.Any(),

@@ -66,6 +66,7 @@ namespace RemoteSensingProject.Models.Accounts
 
         public class Reimbursement
         {
+            public string remark { get; set; }
             public DateTime date { get; set; }
             public int id { get; set; }
             public int userId { get; set; }
@@ -82,6 +83,7 @@ namespace RemoteSensingProject.Models.Accounts
         }
         public class tourProposal
         {
+            public string remark { get; set; }
             public bool adminappr { get; set; }
             public string projectName { get; set; }
             public int projectId { get; set; }
