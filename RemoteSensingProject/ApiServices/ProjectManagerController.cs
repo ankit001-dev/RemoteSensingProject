@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
 using System.Xml.Linq;
+using Grpc.Core;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Routing;
 using RemoteSensingProject.Models.Admin;
@@ -1234,6 +1235,98 @@ namespace RemoteSensingProject.ApiServices
                     status = data.Any(),
                     StatuCode = data.Any() ? 200 : 500,
                     data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Raise Problem
+        [HttpPost]
+        [Route("api/raiseproblem")]
+        public IHttpActionResult RaiseProblem()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formdata = new RaiseProblem
+                {
+                    title = request.Form.Get("title").ToString(),
+                    projectId = Convert.ToInt32(request.Form.Get("projectId")),
+                    description = request.Form.Get("description").ToString(),
+                    id = Convert.ToInt32(request.Form.Get("userId"))
+                };
+                var file = request.Files["document"];
+                if (file.ContentLength>0)
+                {
+                    formdata.documentname = $"/ProjectContent/ProjectManager/raisedproblem{Guid.NewGuid()}{file.FileName}";
+                }
+                bool res = _managerService.insertRaisedProblem(formdata);
+                if (res)
+                {
+                    if (file.ContentLength > 0)
+                        file.SaveAs(HttpContext.Current.Server.MapPath(formdata.documentname));
+                }
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res ? "Added successfully!" : "Error Occured"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getraisedproblem")]
+        public IHttpActionResult getRaisedProblem(int userId)
+        {
+            try
+            {
+                var data = _managerService.getProblems(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/deleteraisedproblem")]
+        public IHttpActionResult deleteraisedproblem(int id,int userId)
+        {
+            try
+            {
+                bool res = _managerService.deleteRaisedProblem(id, userId);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res?"Deleted Successfully":"Some issue occured"
                 });
             }
             catch (Exception ex)
