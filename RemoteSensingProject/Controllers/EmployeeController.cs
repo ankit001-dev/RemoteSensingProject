@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Http.Results;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+using System.Xml.Linq;
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Controllers
@@ -694,6 +695,62 @@ namespace RemoteSensingProject.Controllers
             ViewData["hiringList"] = res1;
             ViewData["projects"] = _adminServices.Project_List();
             return View();
+        }
+        public ActionResult RaiseProblem()
+        {
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["projectList"] = _managerServices.All_Project_List(userid.ToString()); 
+            ViewData["ProblemList"] = _managerServices.getProblems(userid);
+            return View();
+        }
+        [HttpPost]
+        public  ActionResult RaiseProblem(RaiseProblem dt)
+        {
+            dt.id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            if (dt.document.ContentLength > 0)
+            {
+                dt.documentname = $"/ProjectContent/ProjectManager/raisedproblem{Guid.NewGuid()}{dt.document.FileName}";
+            }
+            bool res = _managerServices.insertRaisedProblem(dt);
+            if (res)
+            {
+                    if(dt.document.ContentLength>0)
+                    dt.document.SaveAs(Server.MapPath(dt.documentname));
+                return Json(new
+                {
+                    status = res,
+                    message = "Problem raised successfully !"
+                });
+            }
+            return Json(new
+            {
+                status = res,
+                message = "Some issue occured !"
+            });
+        }
+        [HttpGet]
+        public ActionResult DeleteRaiseProblem(int id)
+        {
+            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            bool res = _managerServices.deleteRaisedProblem(id,userId);
+            if (res)
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Deleted Successfully"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Something wend wrong.",
+                },
+                    JsonRequestBehavior.AllowGet
+                );
+            }
         }
     }
 }

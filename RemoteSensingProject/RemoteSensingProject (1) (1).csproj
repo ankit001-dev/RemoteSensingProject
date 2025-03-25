@@ -1254,6 +1254,8 @@
     <Content Include="Views\Employee\SubOrdinateProblemList.cshtml" />
     <Content Include="Views\Admin\ViewExpenditureAmount.cshtml" />
     <Content Include="Views\Employee\monthly_extr_ProjectStatue.cshtml" />
+    <Content Include="Views\Employee\RaiseProblem.cshtml" />
+    <Content Include="Views\Admin\RaisedProblem.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1262,6 +1264,7 @@
     <Folder Include="ProjectContent\Admin\ProjectDocs\" />
     <Folder Include="ProjectContent\ProjectManager\HeadsSlip\" />
     <Folder Include="ProjectContent\ProjectManager\ProjectDocs\" />
+    <Folder Include="ProjectContent\ProjectManager\raisedproblem\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

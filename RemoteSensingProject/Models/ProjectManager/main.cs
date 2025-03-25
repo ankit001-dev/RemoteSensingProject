@@ -266,4 +266,18 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string note { get; set; }
         public string proposedPlace { get; set; }
     }
+    public class RaiseProblem
+    {
+        public string projectManager {get; set; }  
+        public int userId { get; set; }
+        public bool adminappr { get; set; }
+        public bool newRequest { get; set; }
+        public int id { get; set; }
+        public string projectname { get; set; }
+        public int projectId { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public HttpPostedFileBase document{ get; set; }
+        public string documentname{ get; set; }
+    }
 }

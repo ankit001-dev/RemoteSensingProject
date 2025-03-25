@@ -1,0 +1,200 @@
+﻿
+@{
+    ViewBag.Title = "RaiseProblem";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    int i = 1;
+    var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    var data = ViewData["ProblemList"] as List<RemoteSensingProject.Models.ProjectManager.RaiseProblem>;
+
+
+}
+
+<link href="~/assets/css/reinbursementCssDesign.css" rel="stylesheet" />
+<nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Raise Problem</li>
+    </ol>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Raise Problem</button>
+</nav>
+
+<div class="row mx-0">
+    <div class="col-sm-12">
+        <table class="table-bordered table-striped" id="dataTableExample">
+            <thead>
+                <tr>
+                    <th>S.N.</th>
+                    <th>Project Name</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th class="text-center">View</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if(data!=null){
+                    foreach(var item in data)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.projectname</td>
+                            <td>@item.title</td>
+                            <td>@item.description</td>
+                            <td class="text-center"><a href="@item.documentname" target="_blank" class="view"><i class="fa-regular text-primary fa-eye"></i></a></td>
+                            <td class="text-center">
+                                @{
+                                    if (item.newRequest  && !item.adminappr)
+                                    { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                    else if (!item.newRequest && item.adminappr)
+                                    { <span id="status" class="badge bg-success">Approved</span> }
+                                    else if (!item.newRequest && !item.adminappr )
+                                    { <span id="status" class="badge bg-danger">Rejected</span> }
+                                }
+                            </td>
+                            <td class="text-center"><a class="delete" href="#" data-id="@item.id"><i class="fa-regular text-danger fa-trash-can"></i></a></td>
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!--Moadal start-->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Raise Problem</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="raiseProblemForm">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="projectname" class="form-label">Project Name</label>
+                            <select class="form-select form-select-sm" id="projectname" name="projectId" required>
+                                <option value="" selected>Select Project</option>
+                                @if (projects != null)
+                                {
+                                    foreach (var item in projects)
+                                    {
+                                        <option value="@item.Id">@item.ProjectTitle</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" name="title" class="form-control form-control-sm" id="title" placeholder="Enter Title" required>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="document" class="form-label">Document Upload</label>
+                            <input type="file" name="document" class="form-control form-control-sm" id="document" required>
+                        </div>
+                        <div class="col-lg-12 mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea name="description" class="form-control form-control-sm" id="description" placeholder="Enter Description" required></textarea>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Moadal start-->
+<script>
+    $(document).ready(function () {
+        $("#raiseProblemForm").submit( function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Please wait!',
+                text: 'Your request under process',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            let formdata = new FormData(this);
+            formdata.append('document', $("#document").get(0).files[0]);
+            $.ajax({
+                url: '/employee/RaiseProblem',
+                type: 'post',
+                contentType: false,
+                processData:false,
+                data: formdata,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload(true); }
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'Warning',
+                            text: res.message,
+                            icon: 'warning'
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Server Error. Please try again later!',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+        $(".delete").on("click", function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Please wait!',
+                text: 'Your request under process',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            debugger
+            let id = $(this).attr("data-id");
+            $.ajax({
+                url: '/employee/DeleteRaiseProblem',
+                type: 'get',
+                data: { id: id },
+                success: function (res) {
+                    console.log(res)
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload(true) }
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'Warning',
+                            text: res.message,
+                            icon: 'warning'
+                        });
+                    }
+                },
+                error: function (xhr,status,error) {
+                    Swal.fire({
+                        title: 'Error Occured !',
+                        text: 'Server error. Please Try Again Later...',
+                        icon: 'error'
+                    });
+                    console.log(xhr, status, error);
+                },
+            });
+        });
+    });
+</script>

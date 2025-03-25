@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "RaisedProblem";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var data = ViewData["ProblemList"] as List<RemoteSensingProject.Models.Admin.main.RaisedProblem>;
+    int i = 1;
+}
+
+<div class="row mx-0">
+    <div class="col-sm-12">
+        <table class="table-bordered table-striped" id="dataTableExample">
+            <thead>
+                <tr>
+                    <th>S.N.</th>
+                    <th>ProjectManager</th>
+                    <th>Project Name</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th class="text-center">View</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (data != null)
+                {
+                    foreach (var item in data)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.projectManager</td>
+                            <td>@item.projectname</td>
+                            <td>@item.title</td>
+                            <td>@item.description</td>
+                            <td class="text-center"><a href="@item.documentname" target="_blank" class="view"><i class="fa-regular text-primary fa-eye"></i></a></td>
+                            <td class="text-center">
+                                @{
+                                    if (item.newRequest && !item.adminappr)
+                                    { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                    else if (!item.newRequest && item.adminappr)
+                                    { <span id="status" class="badge bg-success">Approved</span> }
+                                    else if (!item.newRequest && !item.adminappr)
+                                    { <span id="status" class="badge bg-danger">Rejected</span> }
+                                }
+                            </td>
+                            <td class="text-center">
+                                <a href="#" class="changeStatus" data-value="true" data-id="@item.id">
+                                    <i class="fa-solid fa-check text-success"></i>
+                                </a> &nbsp; | &nbsp; 
+                                <a href="#" class="changeStatus" data-value="false" data-id="@item.id">
+                                    <i class="fa-solid fa-xmark text-danger"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@*<script>
+    $(document).ready(function () {
+        $(".changeStatus").on("click", async function (e) {
+            e.preventDefault();
+            let status = $(this).data("value");
+            let id = $(this).data("id")
+            let remark = "";
+
+            if (!status) {
+                Swal.close();
+                const { value: userRemark, isConfirmed } = await Swal.fire({
+                    title: "Enter Remark",
+                    input: "text",
+                    inputLabel: "Remark",
+                    inputPlaceholder: "Type here...",
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                });
+
+                if (isConfirmed && userRemark && userRemark != "") {
+                    remark = userRemark;
+                    Swal.fire({
+                        title: 'Please wait !',
+                        allowOutsideClick: false,
+                        allowEscapeKey:false,
+                        text: 'Your request under process',
+                        didOpen: () => { Swal.showLoading(); }
+                    })
+                }
+            }
+            $.ajax({
+                url: '/admin/raisedproblem',
+                type: 'post',
+                data: { status: status, id: id,remark:remark },
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload(true) }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'Warning',
+                            text: res.message,
+                            icon: 'warning'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'error',
+                        text: 'Server busy Please try after sometime.',
+                        icon: 'error'
+                    })
+                }
+            })
+        })
+    });
+</script>*@

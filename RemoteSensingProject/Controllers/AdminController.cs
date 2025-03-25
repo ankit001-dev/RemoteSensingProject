@@ -659,5 +659,34 @@ namespace RemoteSensingProject.Controllers
         //        });
         //    }
         //}
+
+
+
+        public ActionResult RaisedProblem()
+        {
+            ViewData["problemList"] = _adminServices.getProblemList();
+            return View();
+        }
+        //[HttpPost]
+        //public ActionResult RaisedProblem(int id,bool status,string remark)
+        //{
+        //    bool res = _adminServices.approveRaisedProblem(id, status, remark);
+        //    if (res)
+        //    {
+        //        return Json(new
+        //        {
+        //            status = res,
+        //            message = (res == true && status == true) ? "Approved Successfully" : "Rejected Successfully"
+        //        });
+        //    }
+        //    else
+        //    {
+        //        return Json(new
+        //        {
+        //            status = res,
+        //            message = "Some error Occured"
+        //        });
+        //    }
+        //}
     }
 }

@@ -1,4 +1,4 @@
-﻿using RemoteSensingProject.Models.Accounts;
+﻿  using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using System;
 using System.Collections.Generic;
@@ -107,6 +107,30 @@ namespace RemoteSensingProject.ApiServices
                     status=false,
                     StatusCode = 500,
                     message="Data not found"
+                });
+            }
+        }
+
+        [Route("api/getAllTour")]
+        [HttpGet]
+        public IHttpActionResult getAllTour()
+        {
+            try
+            {
+                var data = _accountSerivce.getTourList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = "Data not found"
                 });
             }
         }
