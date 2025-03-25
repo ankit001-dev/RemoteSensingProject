@@ -238,6 +238,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class tourProposalrepo
         {
+            public string employeecode { get; set; }
             public string remark { get; set; }
             public bool newRequest { get; set; }
             public bool adminappr { get; set; }
@@ -345,6 +346,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class HiringVehicle1
         {
+            public string employeecode { get; set; }
             public string remark { get; set; }
             public bool newRequest { get; set; }
             public bool adminappr { get; set; }
@@ -367,6 +369,20 @@ namespace RemoteSensingProject.Models.Admin
             public string availbilityOfFund { get; set; }
             public string note { get; set; }
             public string proposedPlace { get; set; }
+        }
+        public class RaisedProblem
+        {
+            public string projectManager { get; set; }
+            public int userId { get; set; }
+            public bool adminappr { get; set; }
+            public bool newRequest { get; set; }
+            public int id { get; set; }
+            public string projectname { get; set; }
+            public int projectId { get; set; }
+            public string title { get; set; }
+            public string description { get; set; }
+            public HttpPostedFileBase document { get; set; }
+            public string documentname { get; set; }
         }
     }
 }
