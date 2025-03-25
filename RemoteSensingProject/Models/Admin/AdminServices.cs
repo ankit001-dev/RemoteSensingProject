@@ -2144,8 +2144,10 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         list.Add(new HiringVehicle1
                         {
-                            id = (int)res["projectId"],
-                            projectName = Convert.ToString(res["title"])
+                            id = Convert.ToInt32(res["projectId"]),
+                            projectName = Convert.ToString(res["title"]),
+                            employeecode = res["empcode"].ToString(),
+                            projectManager = res["empname"].ToString()
                         });
                     }
                 }
@@ -2237,7 +2239,9 @@ namespace RemoteSensingProject.Models.Admin
                         getlist.Add(new tourProposalrepo
                         {
                             id = Convert.ToInt32(res["projectId"]),
-                            projectManager = Convert.ToString(res["title"])
+                            projectName = Convert.ToString(res["title"]),
+                            employeecode = res["empcode"].ToString(),
+                            projectManager = res["empname"].ToString()
                         });
                     }
                 }
@@ -2349,6 +2353,75 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
+        #endregion
+
+        #region Raised Problem
+        public List<RaisedProblem> getProblemList()
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_raiseProblem", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectProblemsforAdmin");
+                List<RaisedProblem> list = new List<RaisedProblem>();
+                con.Open();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new RaisedProblem
+                        {
+                            id = Convert.ToInt32(res["id"]),
+                            title = res["title"].ToString(),
+                            description = res["description"].ToString(),
+                            adminappr = Convert.ToBoolean(res["adminappr"]),
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            documentname = res["document"].ToString(),
+                            projectname = res["projectName"].ToString(),
+                            projectManager = res["projectManager"].ToString()  
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        //public bool approveRaisedProblem(int id, bool status, string remark)
+        //{
+        //    try
+        //    {
+        //        cmd = new SqlCommand("sp_raiseProblem", con);
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.Parameters.AddWithValue("@action", "approval");
+        //        cmd.Parameters.AddWithValue("@adminappr", status);
+        //        cmd.Parameters.AddWithValue("@id", id);
+        //        con.Open();
+        //        int res = cmd.ExecuteNonQuery();
+        //        return res > 0;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //    finally
+        //    {
+        //        if (con.State == ConnectionState.Open)
+        //        {
+        //            con.Close();
+        //        }
+        //        cmd.Dispose();
+        //    }
+        //}
         #endregion
     }
 }

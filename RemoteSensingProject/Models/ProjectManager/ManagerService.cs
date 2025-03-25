@@ -2117,5 +2117,136 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
         #endregion
+
+        #region Raise Problem Full Crud
+        public List<RaiseProblem> getProjectListForProblem(int userId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_raiseProblem", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectproject");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                con.Open();
+                List<RaiseProblem> projectList = new List<RaiseProblem>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        projectList.Add(new RaiseProblem
+                        {
+                            projectId = (int)res["id"],
+                            projectname = (string)res["title"]
+                        });
+                    }
+                }
+                return projectList;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
+                cmd.Dispose();
+            }
+        } 
+        public bool insertRaisedProblem(RaiseProblem rp)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_raiseProblem", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insert");
+                cmd.Parameters.AddWithValue("@title", rp.title);
+                cmd.Parameters.AddWithValue("@projectId", rp.projectId);
+                cmd.Parameters.AddWithValue("@description", rp.description);
+                cmd.Parameters.AddWithValue("@document", rp.documentname);
+                cmd.Parameters.AddWithValue("@userId", rp.id);
+                con.Open();
+                int res = cmd.ExecuteNonQuery();
+                return res> 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public List<RaiseProblem> getProblems(int userId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_raiseProblem", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectProblems");
+                cmd.Parameters.AddWithValue("@userId", userId);
+                List<RaiseProblem> list = new List<RaiseProblem>();
+                con.Open();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new RaiseProblem
+                        {
+                            id = Convert.ToInt32(res["id"]),
+                            title = res["title"].ToString(),
+                            description = res["description"].ToString(),
+                            adminappr = Convert.ToBoolean(res["adminappr"]),
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            documentname = res["document"].ToString(),
+                            projectname = res["projectName"].ToString()
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public bool deleteRaisedProblem(int id,int userId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_raiseProblem", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "delete");
+                cmd.Parameters.AddWithValue("@id",id);
+                cmd.Parameters.AddWithValue("@userId",userId);
+                con.Open();
+                int res = cmd.ExecuteNonQuery();
+                return res > 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        #endregion
     }
 }
