@@ -1909,5 +1909,30 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+        #region RaisedProblem
+        [HttpGet]
+        [Route("api/getraisedproblemforadmin")]
+        public IHttpActionResult getRaisedProblem()
+        {
+            try
+            {
+                var data = _adminServices.getProblemList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }
