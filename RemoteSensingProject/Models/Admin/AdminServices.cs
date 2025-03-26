@@ -1993,14 +1993,14 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                var location = getlocationasync();
+                //var location = getlocationasync();
                 cmd = new SqlCommand("sp_HiringVehicle", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "approval");
                 cmd.Parameters.AddWithValue("@adminappr", status);
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@remark", remark);
-                cmd.Parameters.AddWithValue("@location", location);
+                //cmd.Parameters.AddWithValue("@location", location);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
