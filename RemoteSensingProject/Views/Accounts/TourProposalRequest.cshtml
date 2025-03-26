@@ -8,6 +8,11 @@
 }
 
 <link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
+<style>
+    .modal-dialog{
+        margin-top:5% !important;
+    }
+</style>
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -64,7 +69,7 @@
                                 <th>Date of return</th>
                                 <th>Remark</th>
                                 <th>Status</th>
-                                <th>View</th>
+                                @*<th>View</th>*@
                             </tr>
                         </thead>
                         <tbody>
@@ -75,7 +80,7 @@
                                             {
                                     <tr>
                                         <td>@i</td>
-                                        <td>@item.projectManager</td>
+                                        <td data-id="@item.id"><a class="action" href="#">@item.projectManager</a></td>
                                         <td>@item.projectName</td>
                                         <td>@item.purpose</td>
                                         <td>@item.dateOfDept</td>
@@ -101,7 +106,7 @@
                                                 { <span id="status" class="badge bg-danger">Rejected</span> }
                                             }
                                         </td>
-                                        <td data-id="@item.id" class="text-center"><i class="fa-solid fa-eye action"></i> </td>
+                                        @*<td data-id="@item.id" class="text-center"><i class="fa-solid fa-eye action"></i> </td>*@
                                     </tr>
                                                                     i++;
                                                                 }

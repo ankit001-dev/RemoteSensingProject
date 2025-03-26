@@ -70,7 +70,11 @@
                                 {
                                     <tr>
                                         <td>@i</td>
-                                        <td>@item.projectManager</td>
+                                        <td>
+                                            <a href="#" class="action" data-id="@item.id">
+                                                @item.projectManager
+                                            </a>
+                                         </td>
                                         <td>@item.projectName</td>
                                         <td>@item.purpose</td>
                                         <td>@Convert.ToDateTime(item.dateOfDept).ToString("dd-MM-yyyy")</td>
@@ -78,18 +82,12 @@
                                         <td>@Convert.ToDateTime(item.periodFrom).ToString("dd-MM-yyyy")</td>
                                         <td>@Convert.ToDateTime(item.periodTo).ToString("dd-MM-yyyy")</td>
                                         <td data-id="id_@item.id">
-                                            <a href="#" class="changeStatus" data-value="true" data-id="@item.id">
+                                            <a href="#" class="changeStatus" data-value="true" data-title="Approve" data-id="@item.id">
                                                 <i class="fa-solid fa-check text-success"></i>
                                             </a> &nbsp; | &nbsp;
-                                            <a href="#" class="changeStatus" data-value="false" data-id="@item.id">
+                                            <a href="#" class="changeStatus" data-title="Reject" data-value="false" data-id="@item.id">
                                                 <i class="fa-solid fa-xmark text-danger"></i>
-
-
-                                            </a> &nbsp; | &nbsp;
-                                            <a href="#" class="action" data-id="@item.id">
-                                                <i class="fa-solid fa-eye text-success"></i>
                                             </a>
-
                                         </td>
                                     </tr>
                                     i++;

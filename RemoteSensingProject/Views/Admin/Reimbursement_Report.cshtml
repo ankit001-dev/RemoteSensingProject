@@ -200,7 +200,7 @@
                         <th>Approved Amt.</th>
                         <th>Remark</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        @*<th>Action</th>*@
                     </tr>
                 </thead>
                 <tbody>
@@ -211,7 +211,11 @@
                         {
                             <tr>
                                 <td>@i</td>
-                                <td>@item.EmpName</td>
+                                <td>
+                                    <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id" data-chequeNum="@item.chequeNum" data-chequeDate="@item.chequeDate" data-apprAmt="@item.approveAmount">
+                                        @item.EmpName
+                                    </a>
+                                </td>
                                 <td>@item.type</td>
                                 <td>@item.amount</td>
                                 <td>@item.approveAmount</td>
@@ -232,11 +236,11 @@
                                     }
 
                                 </td>
-                                <td data-id="@item.id" class="text-center">
+                                @*<td data-id="@item.id" class="text-center">
                                     <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id" data-chequeNum="@item.chequeNum" data-chequeDate="@item.chequeDate" data-apprAmt="@item.approveAmount">
                                         <i class="fa-solid fa-eye text-success"></i>
                                     </a>
-                                </td>
+                                </td>*@
                             </tr>
 
                             i++;

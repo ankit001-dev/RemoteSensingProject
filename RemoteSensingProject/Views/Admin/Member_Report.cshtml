@@ -94,7 +94,7 @@
                                 <th>Name</th>
                                 <th>Divison</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-center">Action</th>
+                                @*<th class="text-center">Action</th>*@
                             </tr>
                         </thead>
                         <tbody>
@@ -106,12 +106,14 @@
                                     <td class="text-start">@count</td>
                                     <td>@item.EmployeeCode</td>
                                   
-                                    <td>@item.EmployeeName</td>
+                                    <td>
+                                        <a data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider">@item.EmployeeName</a>
+                                    </td>
                                     <td>@item.DevisionName</td>
                                     <td class="text-center">
                                         <span class="text-light px-2 py-1 rounded @(item.ActiveStatus?"bg-success":"bg-danger")">@(item.ActiveStatus?"Active":"Deactive")</span>
                                     </td>
-                                    <td class="text-center">
+                                    @*<td class="text-center">
                                         <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                             <li class="me-2">
                                                 <a data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
@@ -119,7 +121,7 @@
                                             </li>
 
                                         </ul>
-                                    </td>
+                                    </td>*@
                                 </tr>
                                     count++;
                                 }

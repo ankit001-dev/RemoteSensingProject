@@ -16,9 +16,8 @@
                     <th>Project Name</th>
                     <th>Title</th>
                     <th>Description</th>
-                    <th class="text-center">View</th>
                     <th class="text-center">Status</th>
-                    <th class="text-center">Action</th>
+                    @*<th class="text-center">Action</th>*@
                 </tr>
             </thead>
             <tbody>
@@ -28,11 +27,12 @@
                     {
                         <tr>
                             <td>@i</td>
-                            <td>@item.projectManager</td>
+                            <td>
+                                <a href="@item.documentname" target="_blank" class="view">@item.projectManager</a>
+                            </td>
                             <td>@item.projectname</td>
                             <td>@item.title</td>
                             <td>@item.description</td>
-                            <td class="text-center"><a href="@item.documentname" target="_blank" class="view"><i class="fa-regular text-primary fa-eye"></i></a></td>
                             <td class="text-center">
                                 @{
                                     if (item.newRequest && !item.adminappr)
@@ -43,14 +43,14 @@
                                     { <span id="status" class="badge bg-danger">Rejected</span> }
                                 }
                             </td>
-                            <td class="text-center">
-                                <a href="#" class="changeStatus" data-value="true" data-id="@item.id">
+                            @*<td class="text-center">
+                                <a href="#" class="changeStatus" data-value="true" data-title="Approve" data-id="@item.id">
                                     <i class="fa-solid fa-check text-success"></i>
                                 </a> &nbsp; | &nbsp; 
-                                <a href="#" class="changeStatus" data-value="false" data-id="@item.id">
+                                <a href="#" class="changeStatus" data-value="false" data-title="Reject" data-id="@item.id">
                                     <i class="fa-solid fa-xmark text-danger"></i>
                                 </a>
-                            </td>
+                            </td>*@
                         </tr>
                         i++;
                     }

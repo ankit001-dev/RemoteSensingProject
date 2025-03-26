@@ -52,7 +52,7 @@
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Task Status</th>
-                                <th>Action</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,16 +62,18 @@
                 {
                     <tr>
                         <td>@i</td>
-                        <td>@item.title</td>
+                        <td>
+                            <a href="#" class="viewAssignedSource" data-taskId="@item.Id">@item.title</a>
+                         </td>
                         <td>@item.description</td>
                         <td>
                             <span class="badge bg-@(item.completeStatus ? "success" : "primary")">@(item.completeStatus ? "completed" : "pending")</span>
                         </td>
-                        <td>
-                            <a href="#" class="viewAssignedSource" data-taskId="@item.Id"><i class="fa-solid fa-eye"></i></a> &nbsp;
+                        <td class="text-center">
+                            @*<a href="#" class="viewAssignedSource" data-taskId="@item.Id"><i class="fa-solid fa-eye"></i></a> &nbsp;*@
                             @if (!item.completeStatus)
                             {
-                            <a href="#" class="updateTaskStatus" data-taskId="@item.Id"><i class="fa-solid fa-check"></i></a>
+                            <a href="#" data-title="Approve" class="updateTaskStatus" data-taskId="@item.Id"><i class="fa-solid fa-check"></i></a>
                             }
                         </td>
                     </tr>

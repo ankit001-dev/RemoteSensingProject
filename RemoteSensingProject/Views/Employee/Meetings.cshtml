@@ -35,7 +35,7 @@
                     <table id="dataTableExample" class="table table-striped">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>S.N.</th>
                                 <th>Title</th>
                                 <th>Meet Mode</th>
                                 <th>Meet Address</th>
@@ -54,7 +54,7 @@
                                     <tr>
                                         <td>@count</td>
                                         <td>
-                                            @item.MeetingTitle
+                                            <a href="#" onclick="showAllConclusion(@item.Id)" role="button" >@item.MeetingTitle</a>
                                         </td>
                                         <td>
                                             @item.MeetingType
@@ -70,10 +70,10 @@
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 @if (item.AppStatus == 0 && item.CompleteStatus == 0)
                                                 {
-                                                    <li class="me-2"><a href="#" title="Accept" data-id="@item.Id" class="acceptMeetingBtn"><i class="fa-regular fa-circle-check text-success"> </i></a></li>
-                                                    <li class="me-2"><a href="#" data-id="@item.Id" class="rejectMeetingBtn" title="Reject"><i class="fa-regular fa-circle-xmark text-danger"> </i></a></li>
+                                                    <li class="me-2"><a href="#" data-title="Accept" data-id="@item.Id" class="acceptMeetingBtn"><i class="fa-regular fa-circle-check text-success"> </i></a></li>
+                                                    <li class="me-2"><a href="#" data-id="@item.Id" class="rejectMeetingBtn" data-title="Reject"><i class="fa-regular fa-circle-xmark text-danger"> </i></a></li>
                                                 }
-                                                <li class="me-2"><i onclick="showAllConclusion(@item.Id)" role="button" class="fa-solid text-primary fa-eye"></i></li>
+                                                @*<li class="me-2"><i onclick="showAllConclusion(@item.Id)" role="button" class="fa-solid text-primary fa-eye"></i></li>*@
 
 
                                             </ul>

@@ -32,7 +32,7 @@ namespace RemoteSensingProject.Controllers
             ViewData["physical"]= _adminServices.Project_List();
             return View(TotalCount);
         }
-
+        
 
         public ActionResult ViewExpenditureAmount()
         {

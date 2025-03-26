@@ -89,7 +89,7 @@
                             <th>Total Days & Night</th>
                             <th>Avaiability of fund</th>
                             <th>Remark</th>
-                            <th>Action</th>
+                            @*<th>Action</th>*@
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -101,7 +101,7 @@
                                         {
                                 <tr>
                                     <td>@i</td>
-                                    <td>@item.projectManager</td>
+                                    <td data-id="@item.id"><a class="action" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal">@item.projectManager</a></td>
                                     <td>@item.projectName</td>
                                     <td>@item.headName</td>
                                     <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
@@ -118,7 +118,7 @@
                                         else
                                         { <span>@item.remark</span>}
                                     </td>
-                                    <td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>
+                                    @*<td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>*@
                                     <td>
                                         @{
                                             if (item.newRequest == true && item.adminappr == false)

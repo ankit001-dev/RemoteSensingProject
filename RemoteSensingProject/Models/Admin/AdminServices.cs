@@ -8,6 +8,8 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using System.Net;
 using System.Web.Http.ValueProviders.Providers;
+using System.Threading.Tasks;
+using System.Net.Http;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
@@ -1968,17 +1970,37 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
-
+        public async Task<string> getlocationasync()
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    string url = "https://ipinfo.io/json";
+                    HttpResponseMessage response =  await client.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    var jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(responseBody);
+                    return jsonData.city;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public bool HiringApproval(int id, bool status,string remark)
         {
             try
             {
+                var location = getlocationasync();
                 cmd = new SqlCommand("sp_HiringVehicle", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "approval");
                 cmd.Parameters.AddWithValue("@adminappr", status);
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@remark", remark);
+                cmd.Parameters.AddWithValue("@location", location);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }

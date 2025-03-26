@@ -62,17 +62,16 @@
                                 {
                                     <tr>
                                         <td>@i</td>
-                                        <td>@item.EmpName</td>
+                                        <td> 
+                                            <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id">@item.EmpName </a>
+                                         </td>
                                         <td>@item.type</td>
                                         <td>@Convert.ToDecimal(item.amount).ToString("N2")</td>
                                         <td data-id="@item.id" class="text-center">
-                                            <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id">
-                                                <i class="fa-solid fa-eye text-success"></i>
-                                            </a> &nbsp; | &nbsp;
-                                            <a href="#" class="act" data-appr="true" data-id="@item.id" data-type="@item.type">
+                                            <a href="#" data-title="Approve" class="act" data-appr="true" data-id="@item.id" data-type="@item.type">
                                                 <i class="fa-solid fa-check text-success"></i>
                                             </a> &nbsp; | &nbsp;
-                                            <a href="#" class="act" data-appr="false" data-id="@item.id" data-type="@item.type">
+                                            <a href="#" data-title="Reject" class="act" data-appr="false" data-id="@item.id" data-type="@item.type">
                                                 <i class="fa-solid fa-xmark text-danger"></i>
                                             </a>
 

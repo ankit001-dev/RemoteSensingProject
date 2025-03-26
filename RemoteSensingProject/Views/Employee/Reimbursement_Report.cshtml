@@ -92,7 +92,7 @@
                         <th>Amount</th>
                         <th>Remark</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        @*<th>Action</th>*@
                     </tr>
                 </thead>
                 <tbody>
@@ -103,7 +103,11 @@
                         {
                             <tr>
                                 <td>@i</td>
-                                <td>@item.type</td>
+                                <td>
+                                <a href="#" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId" data-id="@item.id" data-chequeNum="@item.chequeNum" data-chequeDate="@item.chequeDate" data-apprAmt="@item.approveAmount">
+                                @item.type
+                                </a>
+                                </td>
                                 <td>@item.amount</td>
                                 <td>
                                     @if (item.adminappr && !item.newRequest && item.remark == null)
@@ -129,11 +133,11 @@
                                     }
 
                                 </td>
-                                <td data-id="@item.id" class="text-center">
+                                @*<td data-id="@item.id" class="text-center">
                                     <a href="#" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId" data-id="@item.id" data-chequeNum="@item.chequeNum" data-chequeDate="@item.chequeDate" data-apprAmt="@item.approveAmount">
                                         <i class="fa-solid fa-eye text-success"></i>
                                     </a>
-                                </td>
+                                </td>*@
                             </tr>
 
                             i++;

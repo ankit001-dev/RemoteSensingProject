@@ -79,11 +79,11 @@
                                         <td class="text-center">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 <li class="me-2">
-                                                    <a href="#" onclick="shownotice(`@item.Notice`)"><i class="link-icon" data-feather="file"></i></a>
+                                                    <a href="#" data-title="Show Notice" onclick="shownotice(`@item.Notice`)"><i class="link-icon" data-feather="file"></i></a>
 
                                                 </li>
                                                 <li class="me-2">
-                                                    <a href="#" data-bs-toggle="modal" onclick="updateNotice(`@item.Notice`,@item.Id,@item.ProjectId)" class="editNoticeBtn" data-bs-target="#editNoticeModal"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                    <a href="#" data-bs-toggle="modal" onclick="updateNotice(`@item.Notice`,@item.Id,@item.ProjectId)" data-title="Edit" class="editNoticeBtn" data-bs-target="#editNoticeModal"><i class="fa-solid fa-pen-to-square"></i></a>
 
                                                 </li>
                                             </ul>

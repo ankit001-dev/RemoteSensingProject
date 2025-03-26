@@ -113,7 +113,7 @@
                                 <th>Period To</th>
                                 <th>Date of return</th>
                                 <th>Remark</th>
-                                <th class="text-center">Action</th>
+                                @*<th class="text-center">Action</th>*@
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -124,7 +124,9 @@
                     {
                             <tr>
                                 <td>@i</td>
-                                <td>@item.projectManager</td>
+                                <td data-id="@item.id">
+                                    <a href="#" class="action">@item.projectManager</a>
+                                </td>
                                 <td>@item.projectName</td>
                                 <td>@item.purpose</td>
                                 <td>@item.dateOfDept</td>
@@ -133,9 +135,9 @@
                                 <td>@item.periodTo</td>
                                 <td>@item.returnDate</td>
                                 <td>@item.remark</td>
-                                <td class="text-center" data-id="@item.id">
+                                @*<td class="text-center" data-id="@item.id">
                                     <a href="#" class="action"><i class="fa-solid fa-eye text-success"></i></a>
-                                </td>
+                                </td>*@
                                 <td class="text-center">
                                     @{
                         if (item.newRequest == true && item.adminappr == false)

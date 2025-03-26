@@ -81,7 +81,7 @@
                                         <td class="text-start">@count</td>
                                         <td>@item.EmployeeCode</td>
                                         <td>@item.EmployeeRole</td>
-                                        <td>@item.EmployeeName</td>
+                                        <td><a data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider">@item.EmployeeName</a></td>
                                         <td>@item.DevisionName</td>
                                         <td>@item.DesignationName</td>
                                         <td>@item.CreationDate</td>
@@ -90,12 +90,8 @@
                                         </td>
                                         <td class="text-center">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                <li class="me-2">
-                                                    <a data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
-                                                  
-                                                </li>
-                                                <li class="me-2"><a class="editEmployee" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
-                                                <li><a class="deleteEmployee"  data-id="@item.Id"><i class="link-icon " data-feather="trash"></i></a></li>
+                                                <li class="me-2"><a data-title="Edit" class="editEmployee" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="edit"></i></a></li>
+                                                <li><a class="deleteEmployee" data-title="Delete"  data-id="@item.Id"><i class="link-icon " data-feather="trash"></i></a></li>
                                             </ul>
                                         </td>
                                     </tr>

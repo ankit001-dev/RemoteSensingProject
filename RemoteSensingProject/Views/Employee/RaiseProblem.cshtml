@@ -26,7 +26,7 @@
                     <th>Project Name</th>
                     <th>Title</th>
                     <th>Description</th>
-                    <th class="text-center">View</th>
+                    @*<th class="text-center">View</th>*@
                     <th class="text-center">Status</th>
                     <th class="text-center">Action</th>
                 </tr>
@@ -37,21 +37,21 @@
                     {
                         <tr>
                             <td>@i</td>
-                            <td>@item.projectname</td>
+                            <td class="text-center"><a href="@item.documentname" target="_blank" class="view">@item.projectname</a></td>
                             <td>@item.title</td>
                             <td>@item.description</td>
-                            <td class="text-center"><a href="@item.documentname" target="_blank" class="view"><i class="fa-regular text-primary fa-eye"></i></a></td>
+                            @*<td class="text-center"><a href="@item.documentname" target="_blank" class="view"><i class="fa-regular text-primary fa-eye"></i></a></td>*@
                             <td class="text-center">
                                 @{
-                                    if (item.newRequest  && !item.adminappr)
+                                    if (item.newRequest && !item.adminappr)
                                     { <span id="status" class="badge bg-primary pt-1">Pending</span> }
                                     else if (!item.newRequest && item.adminappr)
                                     { <span id="status" class="badge bg-success">Approved</span> }
-                                    else if (!item.newRequest && !item.adminappr )
+                                    else if (!item.newRequest && !item.adminappr)
                                     { <span id="status" class="badge bg-danger">Rejected</span> }
                                 }
                             </td>
-                            <td class="text-center"><a class="delete" href="#" data-id="@item.id"><i class="fa-regular text-danger fa-trash-can"></i></a></td>
+                            <td class="text-center"><a class="delete" data-title="Delete" href="#" data-id="@item.id"><i class="fa-regular text-danger fa-trash-can"></i></a></td>
                         </tr>
                         i++;
                     }
