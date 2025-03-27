@@ -93,6 +93,12 @@
     </style>
 </head>
 <body>
+    @*<div id="loader" class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-light bg-opacity-75" style="z-index: 9999; display: none;">
+        <div class="spinner-border spinner-border-l text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>*@
+
     <div class="main-wrapper">
 
         <nav class="sidebar">
@@ -197,11 +203,11 @@
 
 
                     @*<li class="nav-item">
-                        <a href="/Admin/SubOrdinateProblemList" class="nav-link">
-                            <i class="link-icon" data-feather="pocket"></i>
-                            <span class="link-title">Project Problem</span>
-                        </a>
-                    </li>*@
+                            <a href="/Admin/SubOrdinateProblemList" class="nav-link">
+                                <i class="link-icon" data-feather="pocket"></i>
+                                <span class="link-title">Project Problem</span>
+                            </a>
+                        </li>*@
 
 
                     <li class="nav-item">
@@ -261,101 +267,101 @@
                         </div>
                     </li>
                     @*<li class="nav-item">
-            <a href="about-sec.html" class="nav-link">
-                <i class="link-icon" data-feather="file"></i>
-                <span class="link-title">About Section</span>
-            </a>
-        </li>*@
+                            <a href="about-sec.html" class="nav-link">
+                                <i class="link-icon" data-feather="file"></i>
+                                <span class="link-title">About Section</span>
+                            </a>
+                        </li>*@
                     @*<li class="nav-item">
-            <a href="title-section.html" class="nav-link">
-                <i class="link-icon" data-feather="type"></i>
-                <span class="link-title">Content Management</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="services-list.html" class="nav-link">
-                <i class="link-icon" data-feather="columns"></i>
-                <span class="link-title">Sevices Section</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="gallery.html" class="nav-link">
-                <i class="link-icon" data-feather="image"></i>
-                <span class="link-title">Gallery Section</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#events" role="button" aria-expanded="false" aria-controls="events">
-                <i class="link-icon" data-feather="user"></i>
-                <span class="link-title">Package Management</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-            </a>
-            <div class="collapse" id="events">
-                <ul class="nav sub-menu">
-                    <li class="nav-item">
-                        <a href="events.html" class="nav-link">All Package Lists</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="addevents.html" class="nav-link">Add Package</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a href="testimonial.html" class="nav-link">
-                <i class="link-icon" data-feather="pocket"></i>
-                <span class="link-title">Testimonial Section</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="appointment.html" class="nav-link">
-                <i class="link-icon" data-feather="table"></i>
-                <span class="link-title">Booking Section</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="coupon.html" class="nav-link">
-                <i class="link-icon" data-feather="gift"></i>
-                <span class="link-title">Coupons</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#users" role="button" aria-expanded="false" aria-controls="users">
-                <i class="link-icon" data-feather="user"></i>
-                <span class="link-title">User Management</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-            </a>
-            <div class="collapse" id="users">
-                <ul class="nav sub-menu">
-                    <li class="nav-item">
-                        <a href="user-manage.html" class="nav-link">All User Lists</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="adduser.html" class="nav-link">Add User</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#setting" role="button" aria-expanded="false" aria-controls="setting">
-                <i class="link-icon" data-feather="settings"></i>
-                <span class="link-title">Settings</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-            </a>
-            <div class="collapse" id="setting">
-                <ul class="nav sub-menu">
-                    <li class="nav-item">
-                        <a href="company-profile.html" class="nav-link">Company Profile</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="role-manange-list.html" class="nav-link">Role Management</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="configuration.html" class="nav-link">Configuration</a>
-                    </li>
-                </ul>
-            </div>
-        </li>*@
+                            <a href="title-section.html" class="nav-link">
+                                <i class="link-icon" data-feather="type"></i>
+                                <span class="link-title">Content Management</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="services-list.html" class="nav-link">
+                                <i class="link-icon" data-feather="columns"></i>
+                                <span class="link-title">Sevices Section</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="gallery.html" class="nav-link">
+                                <i class="link-icon" data-feather="image"></i>
+                                <span class="link-title">Gallery Section</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#events" role="button" aria-expanded="false" aria-controls="events">
+                                <i class="link-icon" data-feather="user"></i>
+                                <span class="link-title">Package Management</span>
+                                <i class="link-arrow" data-feather="chevron-down"></i>
+                            </a>
+                            <div class="collapse" id="events">
+                                <ul class="nav sub-menu">
+                                    <li class="nav-item">
+                                        <a href="events.html" class="nav-link">All Package Lists</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="addevents.html" class="nav-link">Add Package</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a href="testimonial.html" class="nav-link">
+                                <i class="link-icon" data-feather="pocket"></i>
+                                <span class="link-title">Testimonial Section</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="appointment.html" class="nav-link">
+                                <i class="link-icon" data-feather="table"></i>
+                                <span class="link-title">Booking Section</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coupon.html" class="nav-link">
+                                <i class="link-icon" data-feather="gift"></i>
+                                <span class="link-title">Coupons</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#users" role="button" aria-expanded="false" aria-controls="users">
+                                <i class="link-icon" data-feather="user"></i>
+                                <span class="link-title">User Management</span>
+                                <i class="link-arrow" data-feather="chevron-down"></i>
+                            </a>
+                            <div class="collapse" id="users">
+                                <ul class="nav sub-menu">
+                                    <li class="nav-item">
+                                        <a href="user-manage.html" class="nav-link">All User Lists</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="adduser.html" class="nav-link">Add User</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#setting" role="button" aria-expanded="false" aria-controls="setting">
+                                <i class="link-icon" data-feather="settings"></i>
+                                <span class="link-title">Settings</span>
+                                <i class="link-arrow" data-feather="chevron-down"></i>
+                            </a>
+                            <div class="collapse" id="setting">
+                                <ul class="nav sub-menu">
+                                    <li class="nav-item">
+                                        <a href="company-profile.html" class="nav-link">Company Profile</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="role-manange-list.html" class="nav-link">Role Management</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="configuration.html" class="nav-link">Configuration</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>*@
                 </ul>
             </div>
         </nav>
@@ -433,17 +439,17 @@
                                 </div>
                                 <ul class="list-unstyled p-1">
                                     @*<li class="dropdown-item py-2">
-                                        <a href="/Employee/MyProfile" class="text-body ms-0">
-                                            <i class="me-2 icon-md" data-feather="user"></i>
-                                            <span>Profile</span>
-                                        </a>
-                                    </li>
-                                    <li class="dropdown-item py-2">
-                                        <a class="text-body ms-0">
-                                            <i class="me-2 icon-md" data-feather="edit"></i>
-                                            <span>Edit Profile</span>
-                                        </a>
-                                    </li>*@
+                                            <a href="/Employee/MyProfile" class="text-body ms-0">
+                                                <i class="me-2 icon-md" data-feather="user"></i>
+                                                <span>Profile</span>
+                                            </a>
+                                        </li>
+                                        <li class="dropdown-item py-2">
+                                            <a class="text-body ms-0">
+                                                <i class="me-2 icon-md" data-feather="edit"></i>
+                                                <span>Edit Profile</span>
+                                            </a>
+                                        </li>*@
                                     @*<li class="dropdown-item py-2">
                                             <a class="text-body ms-0">
                                                 <i class="me-2 icon-md" data-feather="repeat"></i>
@@ -497,7 +503,7 @@
 
     <script src="~/assets/vendors/select2/select2.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css" />
 
     <script src="https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.dataTables.js"></script>
@@ -510,13 +516,26 @@
 
     <script>
         $(document).ready(function () {
+            // Show the loader when the page is still loading
+            $('#loader').fadeIn();
+
+            // Hide the loader once the page is fully loaded
+            $(window).on('load', function () {
+                $('#loader').fadeOut();
+            });
+
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
             $('#dataTableExample').DataTable({
                 deferRender: false,
                 drawCallback: function () {
                     feather.replace();
                 },
                 columnDefs: [
-                    {width:"20px",targets:0}
+                    { width: "20px", targets: 0 }
                 ],
                 paging: true,
                 searching: true,
@@ -546,7 +565,7 @@
 
         $(document).ready(function () {
             $("img").on("error", function () {
-                $(this).attr("src","/assets/no-pictures.png")
+                $(this).attr("src", "/assets/no-pictures.png")
             })
         })
     </script>

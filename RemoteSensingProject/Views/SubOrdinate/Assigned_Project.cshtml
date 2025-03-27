@@ -59,7 +59,7 @@
                                 {
                                     <tr>
                                         <td>@i</td>
-                                        <td>@item.Title</td>
+                                        <td><a href="#" class="viewProject" data-title="View Details" data-id="@item.Id">@item.Title</a></td>
                                         <td>@item.CreatedBy</td>
                                         <td>@item.AssignDateString</td>
                                         <td>@item.StartDateString</td>
@@ -80,15 +80,15 @@
                                         </td>
                                         <td class="text-center">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                <li class="me-2">
+                                                @*<li class="me-2">
                                                     <a href="#" class="viewProject" data-id="@item.Id">
                                                         <i class="link-icon" data-feather="eye"></i>
                                                     </a>
 
-                                                </li>
+                                                </li>*@
 
                                                 <li class="me-2">
-                                                    <a href="#" id="viewCompleteDetails" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#viewStatusModal">
+                                                    <a href="#" data-title="Raise Problem" id="viewCompleteDetails" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#viewStatusModal">
                                                         <i class="link-icon text-success" data-feather="plus-circle"></i>
                                                     </a>
 
