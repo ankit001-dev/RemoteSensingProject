@@ -733,7 +733,7 @@
                 const data = {
                     labels: res.data.map(item => item.month),
                     datasets: [{
-                        label: 'Budget',
+                        label: '',
                         data: res.data.map(item => item.budget),
                         fill: false,
                         borderColor: 'rgb(255, 99, 132)',
@@ -899,7 +899,7 @@
             data: {
                 labels: data.map(prname => prname.ProjectTitle),
                 datasets: [{
-                    label: 'Physical',
+                    label: '',
                     data: data.map(per => per.physicalcomplete),
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
@@ -955,7 +955,7 @@
             labels: data.map(prname => prname.ProjectTitle),
             datasets: [
                 {
-                    label: 'Financial',
+                    label: '',
                     data: data.map(per => per.Percentage),
                     backgroundColor: 'rgba(255, 99, 132, 0.5)',
                     borderColor: 'rgba(255, 99, 132, 1)',

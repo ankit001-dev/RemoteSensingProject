@@ -87,7 +87,7 @@
                             {
                                         <tr>
                                             <td>@i</td>
-                                            <td><a href="#" class="viewProject" data-Id="@item.Id">@item.ProjectTitle</a></td>
+                                            <td><a data-title="View Details" href="#" class="viewProject" data-Id="@item.Id">@item.ProjectTitle</a></td>
                                             <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
                                             <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
                                             <td><span class='text-light px-2 border-0 rounded-1 @(item.ApproveStatus?"bg-success":"bg-warning")'>@(item.ApproveStatus?"Completed":"Pending")</span></td>
@@ -95,7 +95,7 @@
                                                 <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                     @*<li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>*@
                                                     <li class="me-2">
-                                                        <a href="/accounts/Expenses?Id=@item.Id" title="Add Expenses">
+                                                        <a href="/accounts/Expenses?Id=@item.Id" data-title="Add Expenses">
                                                             <i class="link-icon text-danger" data-feather="file-plus"></i>
                                                         </a>
                                                     </li>

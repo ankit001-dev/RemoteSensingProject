@@ -104,7 +104,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table" id="dataTableExamples">
+                    <table class="table" id="expensesDatatable">
                         <thead>
                             <tr>
                                 <th>S.No.</th>
@@ -151,8 +151,8 @@
             type: "GET",
             data: { headId: hId, projectId: pId },
             success: function (res) {
-                const $tbody = $("#dataTableExamples tbody");
-                    let elem = $('#dataTableExamples');
+                const $tbody = $("#expensesDatatable tbody");
+                    let elem = $('#expensesDatatable');
                 elem.DataTable().destroy()
                 $tbody.empty();
 
@@ -166,13 +166,11 @@
                             <td>${item.title}</td>
                             <td>${item.description}</td>
                             <td>${item.amount}</td>
-                            <td><a href="${item.attatchment_url}" target="_blank" title="View Attachment">View</a></td>
+                            <td><a data-title="View" href="${item.attatchment_url}" target="_blank" title="View Attachment">View</a></td>
                         </tr>`;
                         $tbody.append(row);
                     });
-                } else {
-                    $tbody.append('<tr><td  class="text-center">No expenses available</td></tr>');
-                }
+                } 
                  elem.DataTable({
                      layout: {
                          topStart: {

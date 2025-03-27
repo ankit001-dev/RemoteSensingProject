@@ -20,8 +20,8 @@
                                     <td>@i</td>
                                     <td>@item.name</td>
                                     <td>
-                                        <a href="#" class="editDivison" data-id="@item.id"> <i class="fa-solid fa-pen"></i></a> &nbsp;&nbsp;    
-                                        <a href="#" class="deletDivion" data-id="@item.id"> <i class="fa-solid fa-trash text-danger"></i></a>
+                                        <a href="#" data-title="Edit" class="editDivison" data-id="@item.id"> <i class="fa-solid fa-pen"></i></a> &nbsp;&nbsp;    
+                                        <a href="#" class="deletDivion" data-title="Delete" data-id="@item.id"> <i class="fa-solid fa-trash text-danger"></i></a>
                                     </td>
                                 </tr>
                                 i++;
@@ -64,7 +64,11 @@
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script>
     $(document).ready(function () {
-        $(".table").DataTable();
+        $(".table").DataTable({
+            columnDefs: [
+                { width: "20px", targets: 0 }
+            ]
+        });
 
         $("#categoryForms").on("submit", function (e) {
 

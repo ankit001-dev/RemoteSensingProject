@@ -252,7 +252,7 @@
                 $.each(res.empList, function (index, item) {
                     rows += `<tr>
                    <td>${index + 1}</td>
-                   <td><a href="#"><span onclick="showAllConclusion(${item.Id})" role="button" >${item.MeetingTitle}</span></a></td>
+                   <td><a href="#" data-title="View Details"><span onclick="showAllConclusion(${item.Id})" role="button" >${item.MeetingTitle}</span></a></td>
                    <td>${item.MeetingType}</td>
                    <td>${item.MeetingDate}</td>
                <td>

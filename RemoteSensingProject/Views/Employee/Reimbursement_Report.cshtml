@@ -9,6 +9,9 @@
 }
 <link href="~/assets/css/reinbursementCssDesign.css" rel="stylesheet" />
 <style>
+    #dataTableExample thead tr:first-child {
+        width: 10px !important;
+    }
     .dt-button {
         font-size: 14px !important;
         padding: 10px 20px !important;
@@ -104,7 +107,7 @@
                             <tr>
                                 <td>@i</td>
                                 <td>
-                                <a href="#" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId" data-id="@item.id" data-chequeNum="@item.chequeNum" data-chequeDate="@item.chequeDate" data-apprAmt="@item.approveAmount">
+                                <a href="#" data-title="View Details" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId" data-id="@item.id" data-chequeNum="@item.chequeNum" data-chequeDate="@item.chequeDate" data-apprAmt="@item.approveAmount">
                                 @item.type
                                 </a>
                                 </td>
@@ -262,7 +265,10 @@
                 topStart: {
                     buttons: ['excel', 'pdf']
                 }
-            }
+            },
+            columnDefs: [
+                { width: "20px", targets: 0 }
+            ],
         });
 
 

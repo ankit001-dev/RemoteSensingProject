@@ -34,7 +34,7 @@
                                         <td>@item.type</td>
                                         <td>₹@Convert.ToDecimal(item.amount).ToString("N2")</td>
                                         <td class="text-center">
-                                            <a href="#" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId" data-id="@item.id">
+                                            <a href="#" data-title="View" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId" data-id="@item.id">
                                                 <i class="fa-solid fa-eye text-success"></i>
                                             </a>
                                             @if (item.appr_status)
@@ -42,12 +42,12 @@
 
                                                 <span>&nbsp; | &nbsp; </span>
 
-                                                <a href="#" data-type="@item.type" data-userId="@item.userId" data-totalAmount="@item.amount" data-Id="@item.id" class="submitamoutSanction">
+                                                <a href="#" data-title="Accept" data-type="@item.type" data-userId="@item.userId" data-totalAmount="@item.amount" data-Id="@item.id" class="submitamoutSanction">
                                                     <i class="fa-solid fa-check text-success"></i>
                                                 </a>
 
                                                 <span>&nbsp; | &nbsp;</span>
-                                                <a href="#" data-type="@item.type" data-userId="@item.userId" data-totalAmount="@item.amount" data-Id="@item.id" class="rejectAmountSanction">
+                                                <a href="#" data-type="@item.type" data-title="Reject" data-userId="@item.userId" data-totalAmount="@item.amount" data-Id="@item.id" class="rejectAmountSanction">
                                                     <i class="fa-solid fa-xmark text-danger"></i>
                                                 </a>
                                             }

@@ -63,7 +63,7 @@
                                     <tr>
                                         <td>@i</td>
                                         <td> 
-                                            <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id">@item.EmpName </a>
+                                            <a href="#" class="viewSanctionreciept" data-title="View Details" data-userId="@item.userId" data-type="@item.type" data-id="@item.id">@item.EmpName </a>
                                          </td>
                                         <td>@item.type</td>
                                         <td>@Convert.ToDecimal(item.amount).ToString("N2")</td>
@@ -282,22 +282,32 @@
 
             if (!status) {
                 Swal.close();
-                const { value: userRemark, isConfirmed } = await Swal.fire({
-                    title: "Enter Remark",
-                    input: "text", 
-                    inputLabel: "Remark",
-                    inputPlaceholder: "Type here...",
-                    showCancelButton: true,
-                    confirmButtonText: 'Submit',
-                });
 
-                if (isConfirmed && userRemark && userRemark != "") {
-                    remark = userRemark;
+
+                const { value: text, isConfirmed } = await Swal.fire({
+                    input: "text",
+                    inputLabel: "Remark",
+                    inputPlaceholder: "Type your remark here...",
+                    inputAttributes: {
+                        "aria-label": "Type your remark here",
+                        "autocomplete": "off"
+                    },
+                    showCancelButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                });
+                if (isConfirmed && text) {
+                    remark = text;
                     Swal.fire({
                         title: 'Please wait !',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
                         text: 'Your request under process',
                         didOpen: () => { Swal.showLoading(); }
                     })
+                }
+                else if (!isConfirmed) {
+                    return
                 }
             }
           

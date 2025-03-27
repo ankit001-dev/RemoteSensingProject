@@ -54,7 +54,7 @@
                                     <tr>
                                         <td>@count</td>
                                         <td>
-                                            <a href="#" onclick="showAllConclusion(@item.Id)" role="button" >@item.MeetingTitle</a>
+                                            <a href="#" data-title="View Details" onclick="showAllConclusion(@item.Id)" role="button" >@item.MeetingTitle</a>
                                         </td>
                                         <td>
                                             @item.MeetingType
@@ -65,7 +65,7 @@
                                         <td>
                                             @item.MeetingDate
                                         </td>
-                                        <td><span class="badge @(item.CompleteStatus==0?"bg-warning":"bg-success")">@(item.CompleteStatus==0?"Pending":"Complete")</span></td>
+                                        <td class="text-center"><span class="badge @(item.CompleteStatus==0?"bg-warning":"bg-success")">@(item.CompleteStatus==0?"Pending":"Complete")</span></td>
                                         <td>
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 @if (item.AppStatus == 0 && item.CompleteStatus == 0)
@@ -79,7 +79,7 @@
                                             </ul>
 
                                         </td>
-                                        <td><span class="badge @(item.AppStatus==0?"bg-warning":item.AppStatus==1?"bg-success":"bg-danger")">@(item.AppStatus==0?"Pending":item.AppStatus==1?"Accept":"Rejected")</span></td>
+                                        <td class="text-center"><span class="badge @(item.AppStatus==0?"bg-warning":item.AppStatus==1?"bg-success":"bg-danger")">@(item.AppStatus==0?"Pending":item.AppStatus==1?"Accept":"Rejected")</span></td>
                                     </tr>
                                     count++;
                                 }

@@ -40,11 +40,11 @@
                     <table id="dataTableExample" class="table">
                         <thead>
                             <tr>
-                                <th class="text-center">Sr</th>
-                                <th>Date</th>
+                                <th class="text-center" style="width:15px;">Sr</th>
                                 <th>Project Name</th>
+                                <th>Date</th>
                                 <th>Attachment</th>
-                                <th class="text-center">Action</th>
+                                <th class="text-center">Notice</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -55,9 +55,9 @@
                                 {
                                     <tr>
                                         <td class="text-start">@count</td>
-                                        <td>@item.noticeDate</td>
                       
-                                        <td><a href="#" data-bs-toggle="modal" class="showProjectDetail" data-id="@item.ProjectId" data-bs-target="#addslider">@item.ProjectName</a></td>
+                                        <td><a href="#"  data-title="View Details" data-bs-toggle="modal" class="showProjectDetail" data-id="@item.ProjectId" data-bs-target="#addslider">@item.ProjectName</a></td>
+                                        <td>@item.noticeDate</td>
                                         <td> <a href="@item.Attachment_Url" target="_blank"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a></td>
                                         <td class="text-center">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">

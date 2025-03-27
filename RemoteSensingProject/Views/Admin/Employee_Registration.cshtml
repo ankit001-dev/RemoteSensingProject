@@ -62,8 +62,8 @@
                             <tr>
                                 <th class="text-center">Sr</th>
                                 <th>EmployeeCode</th>
-                                <th>Role</th>
                                 <th>Name</th>
+                                <th>Role</th>
                                 <th>Division</th>
                                 <th>Designation</th>
                                 <th>Date</th>
@@ -80,8 +80,8 @@
                                     <tr>
                                         <td class="text-start">@count</td>
                                         <td>@item.EmployeeCode</td>
+                                        <td><a href="#" data-title="View Details" data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider">@item.EmployeeName</a></td>
                                         <td>@item.EmployeeRole</td>
-                                        <td><a data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider">@item.EmployeeName</a></td>
                                         <td>@item.DevisionName</td>
                                         <td>@item.DesignationName</td>
                                         <td>@item.CreationDate</td>

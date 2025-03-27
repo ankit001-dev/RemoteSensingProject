@@ -12,6 +12,9 @@
     #reimbursementForm {
         display: none;
     }
+    #dataTableExample thead tr:first-child {
+        width: 10px !important;
+    }
 </style>
 <link href="~/assets/css/reinbursementCssDesign.css" rel="stylesheet" />
 <nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
@@ -117,7 +120,7 @@
                                     <td>₹ @Convert.ToDecimal(items.amount).ToString("N2")</td>
 
                                     <td class="text-center">
-                                        <a href="#" class="viewSanctionreciept" data-type="@items.type" data-userId="@items.userId" data-id="@items.id" data-chequeNum="@items.chequeNum" data-chequeDate="@items.chequeDate" data-apprAmt="@items.approveAmount">
+                                        <a href="#" data-title="View" class="viewSanctionreciept" data-type="@items.type" data-userId="@items.userId" data-id="@items.id" data-chequeNum="@items.chequeNum" data-chequeDate="@items.chequeDate" data-apprAmt="@items.approveAmount">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
                                         @{
@@ -131,7 +134,7 @@
                                             }
                                             else if (!items.subStatus && items.type.Equals("contigency"))
                                             {
-                                                <a href="#" class="saveSanctionReciept" data-type="@items.type" data-id="@items.id">
+                                                <a href="#" data-title="Save" class="saveSanctionReciept" data-type="@items.type" data-id="@items.id"> <span>&nbsp; | &nbsp;</span>
                                                     <i class="fa-solid fa-floppy-disk"></i>
                                                 </a>
                                             }

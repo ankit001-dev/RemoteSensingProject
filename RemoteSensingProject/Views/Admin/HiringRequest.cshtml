@@ -94,7 +94,7 @@
                                     <tr>
                                         <td>@i</td>
                                         <td>
-                                            <a href="#">
+                                            <a href="#" data-title="View Details">
                                                 <span class="action" data-id="@item.id">@item.projectManager</span>
                                             </a>
                                         </td>
@@ -359,24 +359,32 @@
 
             if (!status) {
                 Swal.close();
-                const { value: userRemark, isConfirmed } = await Swal.fire({
-                    title: "Enter Remark",
+
+
+                const { value: text, isConfirmed } = await Swal.fire({
                     input: "text",
                     inputLabel: "Remark",
-                    inputPlaceholder: "Type here...",
+                    inputPlaceholder: "Type your remark here...",
+                    inputAttributes: {
+                        "aria-label": "Type your remark here",
+                        "autocomplete": "off"
+                    },
                     showCancelButton: true,
-                    confirmButtonText: 'Submit',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
                 });
-
-                if (isConfirmed && userRemark && userRemark != "") {
-                    remark = userRemark;
+                if (isConfirmed && text) {
+                    remark = text;
                     Swal.fire({
                         title: 'Please wait !',
                         allowOutsideClick: false,
-                        allowEscapeKey:false,
+                        allowEscapeKey: false,
                         text: 'Your request under process',
                         didOpen: () => { Swal.showLoading(); }
                     })
+                }
+                else if (!isConfirmed) {
+                    return
                 }
             }
             $.ajax({
