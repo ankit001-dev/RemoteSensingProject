@@ -3,88 +3,36 @@
   "WorkspaceRootPath": "D:\\Himanshu Project\\RemoteSensingProject\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\accounts\\requesthistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\accounts\\requesthistory.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\accounts\\hiring_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\accounts\\hiring_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\accounts\\tourproposal_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\accounts\\tourproposal_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\accounts\\reimbursement_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\accounts\\reimbursement_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\accounts\\fundreport.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\accounts\\fundreport.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\accounts\\hiringrequest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\accounts\\hiringrequest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\accounts\\tourproposalrequest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\accounts\\tourproposalrequest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\accounts\\reinbursementrequest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\accounts\\reinbursementrequest.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\accounts\\requests.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\accounts\\requests.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\employee\\hiring_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\hiring_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\employee\\tourproposal_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\tourproposal_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\employee\\reimbursement_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\reimbursement_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\employee\\expense_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\expense_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\employee\\complete_project_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\complete_project_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\employee\\pending_project_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\pending_project_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\employee\\all_project_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\all_project_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\employee\\raiseproblem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\raiseproblem.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\employee\\hiring_vehicle.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\hiring_vehicle.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\admin\\expense_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\admin\\expense_report.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\controllers\\employeecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\employeecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\shared\\_adminlayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\employee\\reimbursement_form.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\employee\\reimbursement_form.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\shared\\_employeelayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\shared\\_employeelayout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\admin\\_divison.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\admin\\_divison.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\admin\\_desgination.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\admin\\_desgination.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\views\\admin\\emp_category.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\admin\\emp_category.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|d:\\himanshu project\\remotesensingproject\\remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -111,274 +59,105 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "RequestHistory.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\RequestHistory.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\RequestHistory.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\RequestHistory.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\RequestHistory.cshtml",
-              "ViewState": "AgIAACcAAAAAAAAAAAAAADgAAABeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:16:39.937Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Hiring_Report.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Hiring_Report.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\Hiring_Report.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Hiring_Report.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\Hiring_Report.cshtml",
-              "ViewState": "AgIAAIYAAAAAAAAAAAAAAJIAAABlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:15:37.995Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "TourProposal_Report.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\TourProposal_Report.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\TourProposal_Report.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\TourProposal_Report.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\TourProposal_Report.cshtml",
-              "ViewState": "AgIAAHMAAAAAAAAAAAAAAIAAAABkAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:15:05.801Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Reimbursement_Report.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Reimbursement_Report.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\Reimbursement_Report.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Reimbursement_Report.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\Reimbursement_Report.cshtml",
-              "ViewState": "AgIAAG4AAAAAAAAAAAAAAHsAAABIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:14:38.689Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "FundReport.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\FundReport.cshtml",
-              "ViewState": "AgIAAFQAAAAAAAAAAAAAAGEAAABmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:13:17.892Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "HiringRequest.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\HiringRequest.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\HiringRequest.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\HiringRequest.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\HiringRequest.cshtml",
-              "ViewState": "AgIAAF0AAAAAAAAAAAAAAGcAAABlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:12:40.07Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "TourProposalRequest.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\TourProposalRequest.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\TourProposalRequest.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\TourProposalRequest.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\TourProposalRequest.cshtml",
-              "ViewState": "AgIAAEsAAAAAAAAAAAAAAFIAAABpAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:12:14.71Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ReinbursementRequest.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\ReinbursementRequest.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\ReinbursementRequest.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\ReinbursementRequest.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\ReinbursementRequest.cshtml",
-              "ViewState": "AgIAABUAAAAAAAAAAAAAACQAAABIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:10:51.981Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Requests.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Requests.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Accounts\\Requests.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Accounts\\Requests.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Accounts\\Requests.cshtml",
-              "ViewState": "AgIAACAAAAAAAAAAAAAAACQAAABEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:10:18.429Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Hiring_Report.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Hiring_Report.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Hiring_Report.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Hiring_Report.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Hiring_Report.cshtml",
-              "ViewState": "AgIAAHYAAAAAAAAAAAAAAH8AAABfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:09:02.024Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "TourProposal_Report.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\TourProposal_Report.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\TourProposal_Report.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\TourProposal_Report.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\TourProposal_Report.cshtml",
-              "ViewState": "AgIAAGUAAAAAAAAAAAAAAHMAAABQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:08:24.236Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
               "Title": "Reimbursement_Report.cshtml",
               "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Reimbursement_Report.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Reimbursement_Report.cshtml",
               "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Reimbursement_Report.cshtml",
               "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Reimbursement_Report.cshtml",
-              "ViewState": "AgIAAFkAAAAAAAAAAAAAAGoAAABEAAAAAAAAAA==",
+              "ViewState": "AgIAAP8AAAAAAAAAAAAAAAYBAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:08:03.089Z",
+              "WhenOpened": "2025-03-27T06:07:07.564Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "Complete_Project_Report.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Complete_Project_Report.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Complete_Project_Report.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Complete_Project_Report.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Complete_Project_Report.cshtml",
-              "ViewState": "AgIAAHcAAAAAAAAAAAAAAIwAAABfAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "_employeeLayout.cshtml",
+              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_employeeLayout.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Shared\\_employeeLayout.cshtml",
+              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_employeeLayout.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Shared\\_employeeLayout.cshtml",
+              "ViewState": "AgIAAI4BAAAAAAAAAAAAAJ8BAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:05:51.928Z",
+              "WhenOpened": "2025-03-27T05:51:48.953Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "Pending_Project_Report.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Pending_Project_Report.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Pending_Project_Report.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Pending_Project_Report.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Pending_Project_Report.cshtml",
-              "ViewState": "AgIAAHEAAAAAAAAAAAAAAIAAAABfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:05:16.106Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "All_Project_Report.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\All_Project_Report.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\All_Project_Report.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\All_Project_Report.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\All_Project_Report.cshtml",
-              "ViewState": "AgIAAH8AAAAAAAAAAAAAAJAAAABfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:04:25.555Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "RaiseProblem.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\RaiseProblem.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\RaiseProblem.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\RaiseProblem.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\RaiseProblem.cshtml",
-              "ViewState": "AgIAACEAAAAAAAAAAAAAACcAAABpAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:02:02.078Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "Hiring_Vehicle.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Hiring_Vehicle.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Hiring_Vehicle.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Hiring_Vehicle.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Hiring_Vehicle.cshtml",
-              "ViewState": "AgIAAJUAAAAAAAAAAAAAAJ4AAABiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T05:01:13.152Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "Expense_Report.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Expense_Report.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Expense_Report.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Expense_Report.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Expense_Report.cshtml",
-              "ViewState": "AgIAAIQAAAAAAAAAAAAAALcAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T04:58:09.092Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "EmployeeController.cs",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\EmployeeController.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\EmployeeController.cs",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\EmployeeController.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Controllers\\EmployeeController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-27T04:57:33.094Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 1,
               "Title": "_adminLayout.cshtml",
               "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
               "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
               "RelativeToolTip": "RemoteSensingProject\\Views\\Shared\\_adminLayout.cshtml",
-              "ViewState": "AgIAAPMBAAAAAAAAAIAwwAACAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAPQBAAAAAAAAAAAAAAMCAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-27T04:51:29.263Z",
+              "WhenOpened": "2025-03-27T05:46:59.051Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "Expense_Report.cshtml",
-              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Expense_Report.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Expense_Report.cshtml",
-              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Expense_Report.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Expense_Report.cshtml",
-              "ViewState": "AgIAAJwAAAAAAAAAAAAAAKgAAAAzAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "Reimbursement_Form.cshtml",
+              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Reimbursement_Form.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Employee\\Reimbursement_Form.cshtml",
+              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Employee\\Reimbursement_Form.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Employee\\Reimbursement_Form.cshtml",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABAAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-03-26T13:31:40.701Z",
+              "WhenOpened": "2025-03-27T05:41:56.763Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "_divison.cshtml",
+              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\_divison.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\_divison.cshtml",
+              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\_divison.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\_divison.cshtml",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAEUAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-27T05:32:53.625Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "_desgination.cshtml",
+              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\_desgination.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\_desgination.cshtml",
+              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\_desgination.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\_desgination.cshtml",
+              "ViewState": "AgIAADgAAAAAAAAAAAAAAEUAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-27T05:32:06.885Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Emp_Category.cshtml",
+              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Emp_Category.cshtml",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Emp_Category.cshtml",
+              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Emp_Category.cshtml",
+              "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Emp_Category.cshtml",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAAADAAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-27T05:31:23.992Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\AdminController.cs",
+              "ToolTip": "D:\\Himanshu Project\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "RemoteSensingProject\\Controllers\\AdminController.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAjwDAAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-27T05:30:50.046Z",
               "EditorCaption": ""
             }
           ]
