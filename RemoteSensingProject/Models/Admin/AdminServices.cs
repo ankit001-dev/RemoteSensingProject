@@ -549,8 +549,8 @@ namespace RemoteSensingProject.Models.Admin
                             CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
                             AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
-                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy")
-
+                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
+                            projectType = rd["projectType"].ToString()
                         });
                     }
                 }
@@ -916,6 +916,15 @@ namespace RemoteSensingProject.Models.Admin
                     obj.TotalBudget = Convert.ToDecimal(sdr["totalBudgets"] != DBNull.Value ? sdr["totalBudgets"] : 0);
                     obj.PendingBudget = Convert.ToDecimal(sdr["pendingBudget"] != DBNull.Value ? sdr["pendingBudget"] : 0);
                     obj.expenditure = Convert.ToDecimal(sdr["expenditure"] != DBNull.Value ? sdr["expenditure"] : 0);
+                    obj.monTotalBudget = Convert.ToDecimal(sdr["monTotalBudget"]);
+                    obj.monPendingBudget = Convert.ToDecimal(sdr["monPendingBudget"]);
+                    obj.monExpenditureBudget = Convert.ToDecimal(sdr["monExpenditureBudget"]);
+                    obj.monTotalProject = Convert.ToInt32(sdr["monTotalProject"]);
+                    obj.monInternalProject = Convert.ToInt32(sdr["monInternalProject"]);
+                    obj.monExternalProject = Convert.ToInt32(sdr["monExternalProject"]);
+                    obj.monTotalReinbursementReq = Convert.ToInt32(sdr["monTotalReinbursementReq"]);
+                    obj.monTotalTourProposalReq = Convert.ToInt32(sdr["monTotalTourProposalReq"]);
+                    obj.montotalVehicleHiringRequest = Convert.ToInt32(sdr["montotalVehicleHiringRequest"]);
                 }
 
                 sdr.Close();

@@ -8,6 +8,7 @@ using RemoteSensingProject.Models.Admin;
 using static RemoteSensingProject.Models.Admin.main;
 using  RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.Accounts;
+using System.Runtime.CompilerServices;
 
 
 namespace RemoteSensingProject.Controllers
@@ -246,10 +247,10 @@ namespace RemoteSensingProject.Controllers
         }
         #endregion
 
-        public ActionResult All_Projects()
+        public ActionResult All_Projects(string req)
         {
             ViewBag.ManagerList = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            ViewBag.ProjectList = _adminServices.Project_List();
+            ViewBag.ProjectList = req!=null && req.Length>0? _adminServices.Project_List().Where(d => d.projectType.Equals(req)).ToList(): _adminServices.Project_List();
             return View();
         }
         public ActionResult Project_Request()
@@ -397,9 +398,9 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Meeting_Report()
+        public ActionResult Meeting_Report(string req)
         {
-            var empList = _adminServices.BindEmployee();
+            var empList = Convert.ToBoolean(req)== false ? _adminServices.BindEmployee().Where(d => d.CompleteStatus.Equals(req)).ToList() : _adminServices.BindEmployee();
 
             return View(empList);
         }

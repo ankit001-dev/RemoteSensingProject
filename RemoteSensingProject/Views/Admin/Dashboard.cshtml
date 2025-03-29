@@ -38,9 +38,9 @@
             margin: 0 auto;
         }
 
-    .grid-margin .w-100 .card {
+    /*    .grid-margin .w-100 .card {
         background: #0a6d9d6b;
-    }
+    }*/
 
     .align-items-baseline .text-success {
         color: #000 !important;
@@ -57,7 +57,7 @@
 
     /*Trae*/
     .uniform-card {
-        height: 150px !important; /* Fixed height for all cards */
+        height: 120px !important; /* Fixed height for all cards */
         overflow: hidden;
     }
 
@@ -111,17 +111,17 @@
 
 
             <!-- Total Budget Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1 ">
                 <a href="/Admin/ViewExpenditureAmount" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Budget's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-9">
+                                <div class="col-6 col-md-12 col-xl-12">
                                     <h6 class="mb-2 text-success"></h6>
-                                    <div class="d-flex py-1 align-items-baseline">
+                                    <div class="d-flex align-items-baseline">
                                         <p class="text-success w-100 inst py-0">
                                             <span>
                                                 <span class="text-dark">Total Budget :  </span> ₹
@@ -131,7 +131,7 @@
                                     </div>
 
 
-                                    <div class="d-flex py-1 align-items-baseline">
+                                    <div class="d-flex align-items-baseline">
                                         <p class="text-success w-100 py-0">
                                             <span>
                                                 <span class="text-dark">Expenditure : </span> ₹
@@ -139,7 +139,7 @@
                                             </span>
                                         </p>
                                     </div>
-                                    <div class="d-flex py-1 align-items-baseline">
+                                    <div class="d-flex align-items-baseline">
                                         <p class="text-success w-100 py-0">
                                             <span>
                                                 <span class="text-dark">Remaining : </span>₹
@@ -148,9 +148,7 @@
                                         </p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-3 pt-2">
-                                    <img src="~/assets/gif/Tbudget.gif" height="60" />
-                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -159,22 +157,29 @@
 
 
             <!-- Project's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Project's</h6>
                             </div>
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success w-100"><span><span class="text-dark">Total Project's :  </span> @data.TotalProject</span></p>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/All_Projects?req">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total Project's :  </span> @data.TotalProject</span></p>
+                                        </a>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success w-100"><span><span class="text-dark">Internal Project's :  </span> @data.TotalInternalProject</span></p>
-                                    </div><div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success w-100"><span><span class="text-dark">External Project's :  </span> @data.TotalExternalProject</span></p>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/All_Projects?req=Internal">
+                                            <p class="text-success w-100"><span><span class="text-dark">Internal Project's :  </span> @data.TotalInternalProject</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                              <a href="/Admin/All_Projects?req=External">
+                                                  <p class="text-success w-100"><span><span class="text-dark">External Project's :  </span> @data.TotalExternalProject</span></p>
+                                              </a>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-5">
@@ -183,13 +188,13 @@
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
 
             <!-- Project's Status Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Project's Status</h6>
@@ -197,17 +202,17 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h6 class="mb-2 text-success"></h6>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success w-100"><span><span class="text-dark">Completed Project's :  </span> @data.TotalCompleteProject</span></p>
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@data.TotalCompleteProject</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success w-100"><span><span class="text-dark">Pending Project's :  </span> @data.TotalDelayproject</span></p>
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success w-100"><span><span class="text-dark">Pending Project :  </span> @data.TotalDelayproject</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success w-100"><span><span class="text-dark">Ongoing Project's :  </span> @data.TotalOngoingProject</span></p>
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @data.TotalOngoingProject</span></p>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-5 pt-2">
                                     <img src="~/assets/gif/file.gif" height="60" />
                                 </div>
                             </div>
@@ -218,137 +223,136 @@
 
             <!-- Internal Project's Card -->
             @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-5 grid-margin stretch-card">
-            <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                <div class="card uniform-card w-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-0 text-nowrap">Internal Project's</h6>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 col-md-12 col-xl-5">
-                                <h6 class="mb-2 text-success"></h6>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success"><span>@data.TotalDelayProject</span></p>
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0 text-nowrap">Internal Project's</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h6 class="mb-2 text-success"></h6>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span>@data.TotalDelayProject</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <img src="~/assets/gif/internproject.gif" height="70" />
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-12 col-xl-7">
-                                <img src="~/assets/gif/internproject.gif" height="70" />
-                            </div>
                         </div>
-                    </div>
-                </div>
-            </a>
-        </div>*@
+                    </a>
+                </div>*@
 
             <!-- External Project's Card -->
             @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-5 grid-margin stretch-card">
-            <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                <div class="card uniform-card w-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-0 text-nowrap">External Project's</h6>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 col-md-12 col-xl-5">
-                                <h6 class="mb-2 text-success"></h6>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success"><span>@data.TotalDelayProject</span></p>
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0 text-nowrap">External Project's</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h6 class="mb-2 text-success"></h6>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span>@data.TotalDelayProject</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <img src="~/assets/gif/externproject.gif" height="70" />
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-12 col-xl-7">
-                                <img src="~/assets/gif/externproject.gif" height="70" />
-                            </div>
                         </div>
-                    </div>
-                </div>
-            </a>
-        </div>*@
+                    </a>
+                </div>*@
 
             <!-- Another Meeting's Card -->
             @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-5 grid-margin stretch-card">
-            <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                <div class="card uniform-card w-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-0 text-nowrap">Ongoing Project</h6>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 col-md-12 col-xl-5">
-                                <h3 class="mb-2 text-success"></h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success"><span>@data.TotalOngoingProject</span></p>
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0 text-nowrap">Ongoing Project</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h3 class="mb-2 text-success"></h3>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span>@data.TotalOngoingProject</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <img src="~/assets/gif/notification.gif" height="70" />
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-12 col-xl-7">
-                                <img src="~/assets/gif/notification.gif" height="70" />
-                            </div>
                         </div>
-                    </div>
-                </div>
-            </a>
-        </div>*@
+                    </a>
+                </div>*@
             <!-- Completed Project's Card -->
             @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-5 grid-margin stretch-card">
-            <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                <div class="card uniform-card w-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-0 text-nowrap">Completed Project's</h6>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 col-md-12 col-xl-5">
-                                <h3 class="mb-2 text-success"></h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success"><span>@data.TotalCompleteProject</span></p>
+                    <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0 text-nowrap">Completed Project's</h6>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <h3 class="mb-2 text-success"></h3>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success"><span>@data.TotalCompleteProject</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <img src="~/assets/gif/checklist.gif" height="70" />
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-6 col-md-12 col-xl-7">
-                                <img src="~/assets/gif/checklist.gif" height="70" />
-                            </div>
                         </div>
-                    </div>
-                </div>
-            </a>
-        </div>*@
+                    </a>
+                </div>*@
 
             <!-- Employee's Card -->
-
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/Employee_Registration" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 w-100">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
-                            </div>
-                            <div class="row">
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success w-100"><span><span class="text-dark">Total Employees :  </span> @data.TotalEmployee</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @data.TotalProjectManager</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success w-100"><span><span class="text-dark">Accounts : </span> @data.TotalAccounts</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success w-100"><span><span class="text-dark">Subordinates : </span> @data.TotalSubOrdinate</span></p>
-                                    </div>
+            @*<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
+                    <a href="/Admin/Employee_Registration" class="w-100" style="text-decoration: none; color: inherit;">
+                        <div class="card uniform-card w-100 w-100 rounded shadow-lg" style="background: #f0e31f";>
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-baseline">
+                                    <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-5">
-                                    <img src="~/assets/gif/success.gif" height="60" />
+                                <div class="row">
+                                    <div class="col-6 col-md-12 col-xl-7">
+                                        <h3 class="mb-2 text-success"></h3>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total Employees :  </span> @data.TotalEmployee</span></p>
+                                        </div>
+                                        <div class="d-flex align-items-baseline ">
+                                            <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @data.TotalProjectManager</span></p>
+                                        </div>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success w-100"><span><span class="text-dark">Accounts : </span> @data.TotalAccounts</span></p>
+                                        </div>
+                                        <div class="d-flex align-items-baseline">
+                                            <p class="text-success w-100"><span><span class="text-dark">Subordinates : </span> @data.TotalSubOrdinate</span></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-12 col-xl-5">
+                                        <img src="~/assets/gif/success.gif" height="60" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>*@
 
             <!-- Meeting's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-                <a href="/Admin/Meeting_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
@@ -356,14 +360,20 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success w-100"><span><span class="text-dark">Total :  </span> @data.TotalMeetings</span></p>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total :  </span> @data.TotalMeetings</span></p>
+                                        </a>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success w-100"><span><span class="text-dark">Admin :  </span> @data.TotalAdminMeetings</span></p>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report?req=false">
+                                            <p class="text-success w-100"><span><span class="text-dark">Admin :  </span> @data.TotalAdminMeetings</span></p>
+                                            </a>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @data.TotalProjectManagerMeetings</span></p>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report?req=true">
+                                            <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @data.TotalProjectManagerMeetings</span></p>
+                                            </a>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-5">
@@ -372,13 +382,13 @@
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
 
             <!-- Request's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <a href="/Admin/ReimbursementRequest" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Request's</h6>
@@ -386,13 +396,13 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Reimbursement :  </span> @data.TotalReinbursementReq</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Tour Proposal :  </span> @data.TotalTourProposalReq</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Hiring Vehicle :  </span> @data.totalVehicleHiringRequest</span></p>
                                     </div>
                                 </div>
@@ -405,9 +415,9 @@
                 </a>
             </div>
             <!-- Request's status Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <a href="/Admin/Reimbursement_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Reimbursement's</h6>
@@ -415,13 +425,13 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Pending :  </span> @data.totalReinbursementPendingRequest</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalReinbursementapprovedRequest</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalReinbursementRejectRequest</span></p>
                                     </div>
                                 </div>
@@ -434,9 +444,9 @@
                 </a>
             </div>
             <!-- Request's status Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <a href="/Admin/TourProposal_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Tour Proposal's</h6>
@@ -444,13 +454,13 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Pending :  </span> @data.totaTourProposalPendingReque</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalTourProposalApprReque</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalTourProposalRejectReque</span></p>
                                     </div>
                                 </div>
@@ -463,9 +473,9 @@
                 </a>
             </div>
             <!-- Request's status Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <a href="/Admin/Hiring_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Hiring Vehicle's</h6>
@@ -473,13 +483,13 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Pending :  </span> @data.totalPendingHiringVehicle</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalApproveHiringVehicle</span></p>
                                     </div>
-                                    <div class="d-flex align-items-baseline py-1">
+                                    <div class="d-flex align-items-baseline ">
                                         <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalRejectHiringVehicle</span></p>
                                     </div>
                                 </div>
@@ -496,38 +506,72 @@
         </div>
     </div>
 </div>
+<style>
+    /*    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }*/
 
-@*<div class="row mx-0">
-    <div class="col-12 col-xl-12">
-        <div class="row flex-grow-1">
-           
+    .card-chart-mini {
+        max-width: 265px;
+        max-height: 150px !important;
+    }
+</style>
+<!--Mini charts-->
+<div class="row mx-0">
+    <div class="col-sm-4 px-1">
+        <div class="card ">
+            <div class="card-header">Budget</div>
+            <div class="card-body">
+                <div>
+                    <canvas id="myChart" style="max-height:200px; width:264px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 px-1">
+        <div class="card ">
+            <div class="card-header">Project</div>
+            <div class="card-body">
+                <div>
+                    <canvas id="pichart" style="max-height:200px; width:264px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4 px-1">
+        <div class="card ">
+            <div class="card-header">Requests</div>
+            <div class="card-body">
+                <div>
+                    <canvas id="brchart" style="min-height:200px; width:264px;"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<!--Mini charts-->
 
-<div class="row mx-0">
-    <div class="col-12 col-xl-12">
-        <div class="row flex-grow-1">
-           
-        </div>
-    </div>
-</div>*@
-<div class="row mx-0">
-    <div class="col-lg-7 col-xl-8 grid-margin stretch-card">
-        <div class="card">
+<div class="row mx-0 mt-1">
+    <div class="col-lg-7 col-xl-8 px-1 ">
+        <div class="card ">
             <div class="card-body">
                 <div id="monthlySalesChart"></div>
             </div>
         </div>
     </div>
-    <div class="col-lg-5 col-xl-4 grid-margin stretch-card">
-        <div class="card">
+    <div class="col-lg-5 col-xl-4 px-1 ">
+        <div class="card ">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline">
                     <h6 class="card-title mb-0">Project Data</h6>
                 </div>
                 <div id="storageChart"></div>
-                <div class="row mb-3">
+                <div class="row mb-4">
                     <div class="col-6 d-flex justify-content-end">
                         <div>
                             <label class="d-flex align-items-center justify-content-end tx-10 text-uppercase fw-bolder">Total Projects <span class="p-1 ms-1 rounded-circle bg-secondary"></span></label>
@@ -552,8 +596,8 @@
 
 
 <div class="row mx-0 mt-1">
-    <div class="col-sm-12">
-        <div class="card">
+    <div class="col-sm-12 px-1">
+        <div class="card ">
             <div class="card-header">
                 <b>Budget Chart</b>
             </div>
@@ -564,8 +608,8 @@
     </div>
 </div>
 <div class="row mx-0 my-1">
-    <div class="col-sm-6">
-        <div class="card">
+    <div class="col-sm-6 px-1">
+        <div class="card ">
             <div class="card-header">
                 <b>Physical Chart</b>
             </div>
@@ -576,8 +620,8 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-6">
-        <div class="card">
+    <div class="col-sm-6 px-1">
+        <div class="card ">
             <div class="card-header">
                 <b>Financial Chart</b>
             </div>
@@ -591,7 +635,7 @@
 </div>
 
 
-<div class="row mx-0">
+@*<div class="row mx-0">
     <div class="col-lg-7 col-xl-12 stretch-card">
         <div class="card">
             <div class="card-body">
@@ -666,7 +710,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>*@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 @*<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>*@
@@ -1013,3 +1057,190 @@
     });
 </script>
 
+<!--Mini charts-->
+<script>
+
+  $(document).ready(function () {
+    // Pass the Razor data as JSON to the JavaScript context
+    var yearlyData = [
+        @Convert.ToDecimal(data.TotalBudget),
+        @Convert.ToDecimal(data.expenditure),
+        @Convert.ToDecimal(data.PendingBudget)
+    ];
+
+      var datac = yearlyData;
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+
+    var myDoughnutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Total', 'Expenditure', 'Pending'],
+            datasets: [{
+                label: 'Budget Overview',
+                data: datac,
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    enabled: true
+                }
+            }
+        }
+    });
+        // Update the chart with new data
+        myDoughnutChart.data.datasets[0].data = datac;
+        myDoughnutChart.update();
+});
+
+
+</script>
+
+<!--Mini charts-->
+<script>
+    $(document).ready(function () {
+        $(".filter1").change()
+    })
+
+  $(document).ready(function () {
+    // Pass the Razor data as JSON to the JavaScript context
+    var yearlyData = [
+       @Convert.ToInt32(data.TotalProject),
+       @Convert.ToInt32(data.TotalInternalProject),
+       @Convert.ToInt32(data.TotalExternalProject)
+    ];
+
+    var monthlyData = [@Convert.ToInt32(@data.monTotalProject),@Convert.ToInt32(data.monInternalProject), @Convert.ToInt32(data.monExternalProject)];  // Example monthly data
+
+      // Set the initial data for the chart (monthly by default)
+      var datac = yearlyData;
+
+    // Get the chart context
+    var ctx = document.getElementById('pichart').getContext('2d');
+
+    // Initialize chart with default data (monthly)
+    var pichart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Total', 'Internal', 'External'],
+            datasets: [{
+                label: 'Project Overview',
+                data: datac,
+                backgroundColor: ['#4bd6e7', '#84a0eb', '#9db4c7'],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    enabled: true
+                }
+            }
+        }
+    });
+
+    // Handle the filter change
+    $(".filter1").on("change", function () {
+        var opt = $(this).val();
+
+        // Update the data based on the selected filter
+        if (opt === "yearly") {
+            datac = yearlyData;  // Use the Razor data for the yearly option
+        } else if (opt === "monthly") {
+            datac = monthlyData;  // Use the monthly data for the monthly option
+        }
+
+        // Update the chart with new data
+        pichart.data.datasets[0].data = datac;
+        pichart.update();
+    });
+});
+
+
+</script>
+
+
+<!--Mini charts-->
+<script>
+    $(document).ready(function () {
+        $(".filter2").change()
+    })
+
+  $(document).ready(function () {
+    // Pass the Razor data as JSON to the JavaScript context
+    var yearlyData = [
+       @data.TotalReinbursementReq,
+       @data.TotalTourProposalReq,
+       @data.totalVehicleHiringRequest
+    ];
+
+    var monthlyData = [@Convert.ToInt32(data.monTotalReinbursementReq),@Convert.ToInt32(data.monTotalTourProposalReq),@Convert.ToInt32(data.montotalVehicleHiringRequest)]  // Example monthly data
+
+      // Set the initial data for the chart (monthly by default)
+      var datac = yearlyData;
+
+    // Get the chart context
+    var ctx = document.getElementById('brchart').getContext('2d');
+
+    // Initialize chart with default data (monthly)
+    var brchart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Reimbursement', 'Tour Proposal', 'Hiring Vehicle'],
+            datasets: [{
+                label: '',
+                data: datac,
+                maxBarThickness: 28,
+                backgroundColor: [' #00e6b8', '#6600ff', '#ff6600'],
+                hoverOffset: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: '',
+                },
+                tooltip: {
+                    enabled: true
+                }
+            },
+            scales: {
+                x: {
+                    // Set bar width strictly to 10px
+                    barThickness: 2, // Strictly setting bar width to 10px
+                }
+            }
+        }
+    });
+
+    // Handle the filter change
+    $(".filter2").on("change", function () {
+        var opt = $(this).val();
+
+        // Update the data based on the selected filter
+        if (opt === "yearly") {
+            datac = yearlyData;  // Use the Razor data for the yearly option
+        } else if (opt === "monthly") {
+            datac = monthlyData;  // Use the monthly data for the monthly option
+        }
+
+        // Update the chart with new data
+        brchart.data.datasets[0].data = datac;
+        brchart.update();
+    });
+});
+
+
+</script>

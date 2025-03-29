@@ -16,6 +16,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class Employee_model
         {
+            public bool CompleteStatus { get; set; }
             public int Id { get; set; }
             public string EmployeeCode { get; set; }
             public string EmployeeName { get; set; }
@@ -71,6 +72,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class Project_model
         {        
+            public string projectType { get; set; }
             public int Id { get; set; }
             public string letterNo { get; set; }
             public decimal physicalcomplete { get; set; }
@@ -288,6 +290,16 @@ namespace RemoteSensingProject.Models.Admin
             public decimal TotalBudget { get; set; }
             public decimal PendingBudget { get; set; }
             public decimal ExpenditureBudget { get; set; }
+            public decimal monTotalBudget { get; set; }
+            public decimal monPendingBudget { get; set; }
+            public decimal monExpenditureBudget { get; set; }
+            public int monTotalProject { get; set; }
+            public int monInternalProject { get; set; }
+            public int monExternalProject { get; set; }
+            public int monTotalReinbursementReq { get; set; }
+            public int monTotalTourProposalReq { get; set; }
+            public int montotalVehicleHiringRequest { get; set; }
+
 
         }
         public class ProjectExpenditure
