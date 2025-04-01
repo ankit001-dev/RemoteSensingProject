@@ -336,7 +336,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                             createdBy = rd["createdBy"].ToString(),
                             Percentage = rd["financialStatusPercentage"].ToString(),
                             physicalcomplete = Convert.ToDecimal(rd["completionPercentage"]),
-                            overallPercentage = Convert.ToDecimal(rd["overallPercentage"])
+                            overallPercentage = Convert.ToDecimal(rd["overallPercentage"]),
+                            completestatus = Convert.ToBoolean(rd["CompleteStatus"])
                         });
                     }
                 }
@@ -1156,6 +1157,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
                     obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy hh:mm tt");
                     _list.Add(obj);
+                    obj.createdBy = sdr["createdBy"].ToString();
                 }
 
                 sdr.Close();

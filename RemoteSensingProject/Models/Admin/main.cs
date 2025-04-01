@@ -72,6 +72,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class Project_model
         {        
+            public bool completestatus { get; set; }
             public string projectType { get; set; }
             public int Id { get; set; }
             public string letterNo { get; set; }
@@ -161,6 +162,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class Meeting_Model
         {
+            public string createdBy { get; set; }
             public int Id { get; set; }
             public string MeetingType { get; set; }
             public string MeetingMember { get; set; }
@@ -304,6 +306,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class ProjectExpenditure
         {
+            public string projectmanager { get; set; }
             public int id { get; set; }
             public string ProjectName  { get; set; }
             public decimal ProjectBudget  { get; set; }
@@ -339,6 +342,7 @@ namespace RemoteSensingProject.Models.Admin
             public string remark { get; set; }
             public bool status { get; set; }
             public bool adminappr { get; set; }
+            public bool admin_appr { get; set; }
             public bool newRequest { get; set; }
             public int id { get; set; }
             public int userId { get; set; }

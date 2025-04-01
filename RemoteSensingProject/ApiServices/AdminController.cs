@@ -1958,5 +1958,79 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
+        #region expenses
+        [HttpGet]
+        [Route("api/viewExpenses")]
+        public IHttpActionResult viewExpenses(int id)
+        {
+            try
+            {
+                var data = _adminServices.ProjectBudgetList(id);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+        #region meeting by admin
+        [HttpGet]
+        [Route("api/getmeetingforadmin")]
+        public IHttpActionResult getmeetingadmin()
+        {
+            try
+            {
+                var data = _adminServices.getAllmeetingforAdmin() ;
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getmeetingforprojectmanager")]
+        public IHttpActionResult getmeetingprojectmanager()
+        {
+            try
+            {
+                var data = _adminServices.getAllmeetingforprojectmanager();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }

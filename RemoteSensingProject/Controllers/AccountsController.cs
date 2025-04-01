@@ -28,7 +28,9 @@ namespace RemoteSensingProject.Controllers
             ViewBag.CompleteRequest = _accountSerivce.Project_List().Count(e => e.ApproveStatus);
             ViewBag.PendingStatus = _accountSerivce.Project_List().Count(e => !e.ApproveStatus);
             ViewBag.TotalFunRequest = _accountSerivce.Project_List().Count();
-            return View();
+            var TotalCount = _accountSerivce.DashboardCount();
+
+            return View(TotalCount);
         }
 
         public ActionResult Requests()

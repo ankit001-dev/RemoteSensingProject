@@ -250,7 +250,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult All_Projects(string req)
         {
             ViewBag.ManagerList = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            ViewBag.ProjectList = req!=null && req.Length>0? _adminServices.Project_List().Where(d => d.projectType.Equals(req)).ToList(): _adminServices.Project_List();
+            ViewBag.ProjectList = req == "completed" ? _adminServices.Project_List().Where(d => d.CompletionDate < DateTime.Now && d.StartDate < DateTime.Now && d.completestatus == true).ToList() : req == "delay" ? _adminServices.Project_List().Where(d => d.completestatus == false && d.CompletionDate <= DateTime.Now).ToList() : req == "ongoing" ? _adminServices.Project_List().Where(d =>  d.StartDate<DateTime.Now && d.CompletionDate>DateTime.Now && d.completestatus == false).ToList() : _adminServices.Project_List();
             return View();
         }
         public ActionResult Project_Request()
@@ -332,10 +332,10 @@ namespace RemoteSensingProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetAllMeeting()
+        public ActionResult GetAllMeeting(string req)
         {
             List<Meeting_Model> empList = new List<Meeting_Model>();
-            empList = _adminServices.getAllmeeting().Where(e=>e.CreaterId==0).ToList();
+            empList = req == "admin"? _adminServices.getAllmeeting().Where(d => d.createdBy == "admin").ToList():req == "projectManager"? _adminServices.getAllmeeting().Where(d=>d.createdBy == "projectManager").ToList(): _adminServices.getAllmeeting() ;
             return Json(new { empList = empList },JsonRequestBehavior.AllowGet);
         }
 
@@ -398,9 +398,9 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Meeting_Report(string req)
+        public ActionResult Meeting_Report()
         {
-            var empList = Convert.ToBoolean(req)== false ? _adminServices.BindEmployee().Where(d => d.CompleteStatus.Equals(req)).ToList() : _adminServices.BindEmployee();
+            var empList = _adminServices.BindEmployee();
 
             return View(empList);
         }
@@ -613,22 +613,22 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
-        public ActionResult Reimbursement_Report()
+        public ActionResult Reimbursement_Report(string req)
         {
             ViewData["totalProjectManager"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            ViewData["totalReinursementReport"] = _adminServices.ReinbursementReport();
+            ViewData["totalReinursementReport"] = req=="approved"? _adminServices.ReinbursementReport().Where(d => d.newRequest==false && d.appr_status == true).ToList():req== "rejected" ? _adminServices.ReinbursementReport().Where(d=> d.newRequest==false && d.appr_status==false).ToList(): _adminServices.ReinbursementReport();
             return View();
         }
-        public ActionResult TourProposal_Report()
+        public ActionResult TourProposal_Report(string req)
         {
-            ViewData["allTourList"] = _accountService.getTourList();
+            ViewData["allTourList"] = req == "approved" ? _accountService.getTourList().Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _accountService.getTourList().Where(d => d.newRequest == false && d.adminappr == false).ToList() : _accountService.getTourList();
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
-        public ActionResult Hiring_Report()
+        public ActionResult Hiring_Report(string req)
         {
-            ViewData["hiringList"] = _adminServices.HiringReort();
+            ViewData["hiringList"] = req == "approved" ? _adminServices.HiringReort().Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _adminServices.HiringReort().Where(d => d.newRequest == false && d.adminappr == false).ToList() : _adminServices.HiringReort();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             ViewData["projects"] = _adminServices.Project_List();
             return View();

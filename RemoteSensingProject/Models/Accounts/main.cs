@@ -8,7 +8,21 @@ namespace RemoteSensingProject.Models.Accounts
 {
     public class main
     {
-
+        public class DashboardCount
+        {
+            public string TotalReinbursementReq { get; set; }
+            public string TotalTourProposalReq { get; set; }
+            public string totalVehicleHiringRequest { get; set; }
+            public string totalReinbursementPendingRequest { get; set; }
+            public string totalReinbursementapprovedRequest { get; set; }
+            public string totalReinbursementRejectRequest { get; set; }
+            public string totalTourProposalApprReque { get; set; }
+            public string totalTourProposalRejectReque { get; set; }
+            public string totaTourProposalPendingReque { get; set; }
+            public string totalPendingHiringVehicle { get; set; }
+            public string totalApproveHiringVehicle { get; set; }
+            public string totalRejectHiringVehicle { get; set; }
+        }
         public class Project_model
         {
             public int Id { get; set; }

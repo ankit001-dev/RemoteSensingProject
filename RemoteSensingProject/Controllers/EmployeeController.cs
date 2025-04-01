@@ -437,10 +437,10 @@ namespace RemoteSensingProject.Controllers
             var res = _adminServices.getKeypointResponse(id);
             return Json(res, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Meetings()
+        public ActionResult Meetings(string req)
         {
             var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            var res = _managerServices.getAllmeeting(int.Parse(userId.userId));
+            var res = req=="admin"? _managerServices.getAllmeeting(int.Parse(userId.userId)).Where(d => d.createdBy == "admin").ToList(): req=="projectmanager"? _managerServices.getAllmeeting(int.Parse(userId.userId)).Where(d=>d.createdBy == "projectmanager").ToList(): _managerServices.getAllmeeting(int.Parse(userId.userId));
             return View(res);
         }
 
@@ -517,10 +517,10 @@ namespace RemoteSensingProject.Controllers
                 message = res ? "Problem solved successfully !" : "Some issue occured.  Try after sometime."
             });
         }
-        public ActionResult All_Project_Report()
+        public ActionResult All_Project_Report(string req)
         {
             var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-            ViewData["ProjectList"] = _managerServices.All_Project_List(userObj);
+            ViewData["ProjectList"] = req == "completed" ?  _managerServices.All_Project_List(userObj).Where(d => d.CompletionDate < DateTime.Now && d.StartDate<DateTime.Now && d.completestatus == true).ToList() : req == "delay" ?  _managerServices.All_Project_List(userObj).Where(d => d.completestatus == false && d.CompletionDate <= DateTime.Now).ToList() : req == "ongoing" ?  _managerServices.All_Project_List(userObj).Where(d => d.StartDate < DateTime.Now && d.CompletionDate > DateTime.Now).ToList() : _managerServices.All_Project_List(userObj);
             return View();
         }
 
@@ -672,26 +672,26 @@ namespace RemoteSensingProject.Controllers
                 }
         }
 
-        public ActionResult Reimbursement_Report()
+        public ActionResult Reimbursement_Report(string req)
         {
             int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["totalReinursementReport"] = _managerServices.reinbursementReport(userId);
+            ViewData["totalReinursementReport"] = req=="approved"?_managerServices.reinbursementReport(userId).Where(d => d.newRequest== false && d.adminappr == true).ToList():req == "rejected"? _managerServices.reinbursementReport(userId).Where(d=>d.newRequest==false&&d.adminappr==false).ToList(): _managerServices.reinbursementReport(userId);
             return View();
         }
-        public ActionResult TourProposal_Report()
+        public ActionResult TourProposal_Report(string req)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["tourList"] = _managerServices.getTourList(userid);
+            ViewData["tourList"] = req=="approved"? _managerServices.getTourList(userid).Where(d=>d.newRequest == false && d.adminappr == true).ToList():req=="rejected"? _managerServices.getTourList(userid).Where(d=>d.newRequest&&d.adminappr ==false).ToList(): req=="pending"? _managerServices.getTourList(userid).Where(d => d.newRequest == true && d.adminappr == false).ToList(): _managerServices.getTourList(userid);
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
-        public ActionResult Hiring_Report()
+        public ActionResult Hiring_Report(string req)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             var res = _managerServices.getProjectList(userid);
             ViewData["projectlist"] = res;
-            var res1 = _managerServices.GetHiringVehicles(userid);
+            var res1 = req == "approved" ? _managerServices.GetHiringVehicles(userid).Where(d => d.newRequest == false && d.adminappr == true).ToList() : req =="rejected"? _managerServices.GetHiringVehicles(userid).Where(d=>d.newRequest==false && d.adminappr == false).ToList(): req=="pending"? _managerServices.GetHiringVehicles(userid).Where(d=>d.newRequest == true&&d.adminappr == false).ToList(): _managerServices.GetHiringVehicles(userid);
             ViewData["hiringList"] = res1;
             ViewData["projects"] = _adminServices.Project_List();
             return View();

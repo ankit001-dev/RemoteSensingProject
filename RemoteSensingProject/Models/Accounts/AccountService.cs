@@ -314,5 +314,49 @@ namespace RemoteSensingProject.Models.Accounts
                 cmd.Dispose();
             }
         }
+
+        public DashboardCount DashboardCount()
+        {
+            DashboardCount obj = null;
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "AccountDashboardCount");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                if (sdr.Read())
+                {
+                    obj = new DashboardCount();
+                    obj.TotalReinbursementReq = sdr["TotalReinbursementReq"].ToString();
+                    obj.TotalTourProposalReq = sdr["TotalTourProposalReq"].ToString();
+                    obj.totalVehicleHiringRequest = sdr["totalVehicleHiringRequest"].ToString();
+                    obj.totalReinbursementPendingRequest = sdr["totalReinbursementPendingRequest"].ToString();
+                    obj.totalReinbursementapprovedRequest = sdr["totalReinbursementapprovedRequest"].ToString();
+                    obj.totalReinbursementRejectRequest = sdr["totalReinbursementRejectRequest"].ToString();
+                    obj.totalTourProposalApprReque = sdr["totalTourProposalApprReque"].ToString();
+                    obj.totalTourProposalRejectReque = sdr["totalTourProposalRejectReque"].ToString();
+                    obj.totaTourProposalPendingReque = sdr["totaTourProposalPendingReque"].ToString();
+                    obj.totalPendingHiringVehicle = sdr["totalPendingHiringVehicle"].ToString();
+                    obj.totalApproveHiringVehicle = sdr["totalApproveHiringVehicle"].ToString();
+                    obj.totalRejectHiringVehicle = sdr["totalRejectHiringVehicle"].ToString();
+                }
+
+                sdr.Close();
+
+                return obj;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+
+            }
+        }
     }
 }

@@ -962,6 +962,7 @@ namespace RemoteSensingProject.Models.Admin
                         {
                             id = Convert.ToInt32(rd["id"]),
                             ProjectName = rd["title"].ToString(),
+                            projectmanager = rd["name"].ToString(),
                             ProjectBudget = Convert.ToDecimal(rd["budget"]),
                             expenditure = Convert.ToDecimal(rd["ExpendedAmt"]),
                             remaining = Convert.ToDecimal(rd["remainingAmt"])
@@ -2498,6 +2499,89 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
+        #endregion
+
+        #region get meeting list
+        public List<Meeting_Model> getAllmeetingforAdmin()
+        {
+            try
+            {
+                List<Meeting_Model> _list = new List<Meeting_Model>();
+                Meeting_Model obj = null;
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getAllmeetingofadmin");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    obj = new Meeting_Model();
+                    obj.Id = Convert.ToInt32(sdr["id"]);
+                    obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
+                    obj.MeetingType = sdr["meetingType"].ToString();
+                    obj.MeetingLink = sdr["meetingLink"].ToString();
+                    obj.MeetingTitle = sdr["MeetingTitle"].ToString();
+                    obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
+                    obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
+                    obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
+                    obj.summary = sdr["meetSummary"].ToString();
+                    _list.Add(obj);
+                    obj.createdBy = sdr["createdBy"].ToString();
+                }
+
+                sdr.Close();
+                return _list;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        public List<Meeting_Model> getAllmeetingforprojectmanager()
+        {
+            try
+            {
+                List<Meeting_Model> _list = new List<Meeting_Model>();
+                Meeting_Model obj = null;
+                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getAllmeetingofprojectmanager");
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+
+                while (sdr.Read())
+                {
+                    obj = new Meeting_Model();
+                    obj.Id = Convert.ToInt32(sdr["id"]);
+                    obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
+                    obj.MeetingType = sdr["meetingType"].ToString();
+                    obj.MeetingLink = sdr["meetingLink"].ToString();
+                    obj.MeetingTitle = sdr["MeetingTitle"].ToString();
+                    obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
+                    obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
+                    obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
+                    obj.summary = sdr["meetSummary"].ToString();
+                    _list.Add(obj);
+                    obj.createdBy = sdr["createdBy"].ToString();
+                }
+
+                sdr.Close();
+                return _list;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
         #endregion
     }
 }

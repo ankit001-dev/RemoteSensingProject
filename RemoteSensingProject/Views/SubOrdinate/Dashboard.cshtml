@@ -47,74 +47,168 @@
         }
 </style>
 
-<div class="row">
-    <div class="col-12 col-xl-12 stretch-card">
+<style>
+    .uniform-card {
+        /*        height: 200px;
+    */ width: 160px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+    }
+
+        .uniform-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+        }
+
+        .uniform-card .card-title {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .uniform-card p.text-success {
+            font-size: 13px;
+        }
+
+        .uniform-card img {
+            margin: 0 auto;
+        }
+
+    /*    .grid-margin .w-100 .card {
+        background: #0a6d9d6b;
+    }*/
+
+    .align-items-baseline .text-success {
+        color: #000 !important;
+    }
+
+    .grid-margin {
+        margin: 3px 0px !important;
+    }
+
+    .card .card-body .justify-content-between {
+        padding-bottom: 3px !important;
+    }
+
+
+    /*Trae*/
+    .uniform-card {
+        height: 120px !important; /* Fixed height for all cards */
+        overflow: hidden;
+    }
+
+    .card-body {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+        /* Hide scrollbar but keep functionality */
+        .card-body::-webkit-scrollbar {
+            display: none;
+        }
+    /*Trae*/
+</style>
+<!--Trae-->
+<!--trae-->
+
+<style>
+
+    .text-success span {
+        display: flex;
+        align-items: center;
+    }
+
+    .text-success span {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0px;
+    }
+
+        .text-success span span.text-dark {
+            min-width: 110px;
+            text-align: left;
+        }
+
+    .card-body {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+        /* Hide scrollbar but keep functionality */
+        .card-body::-webkit-scrollbar {
+            display: none;
+        }
+</style>
+<!--Trae-->
+<!--trae-->
+
+
+<div class="row mx-0">
+    <div class="col-12 col-xl-12">
         <div class="row flex-grow-1">
 
-            <!-- Employee's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Admin/Employee_Registration" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
-                            </div>
-                            <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
-                                    <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span> </span></p>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/success.gif" height="60" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
 
             <!-- Project's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Admin/All_Projects" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Project's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
-                                    <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span></span></p>
+                                @*<div class="col-6 col-md-12 col-xl-7">
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/All_Projects?req">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total Project's :  </span> @(Convert.ToInt32(Model.SelfCreatedProject) + Convert.ToInt32(Model.TotalAssignProject))</span></p>
+                                        </a>
                                     </div>
-                                </div>
-                                <div class="col-6 col-md-12 col-xl-7">
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/All_Projects?req=Internal">
+                                            <p class="text-success w-100"><span><span class="text-dark">Assigned Project's :  </span> @Model.TotalAssignProject</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/All_Projects?req=External">
+                                            <p class="text-success w-100"><span><span class="text-dark">My Project's :  </span> @Model.SelfCreatedProject</span></p>
+                                        </a>
+                                    </div>
+                                </div>*@
+                                <div class="col-6 col-md-12 col-xl-5">
                                     <img src="~/assets/gif/project.gif" height="60" />
                                 </div>
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
 
-            <!-- Pending Project's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Admin/Pending_Project" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
+            <!-- Project's Status Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
+                <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0 text-nowrap">Delay Project's</h6>
+                                <h6 class="card-title mb-0 text-nowrap">Project's Status</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                @*<div class="col-6 col-md-12 col-xl-7">
                                     <h6 class="mb-2 text-success"></h6>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span></span></p>
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@Model.TotaCompleteProject</span></p>
                                     </div>
-                                </div>
-                                <div class="col-6 col-md-12 col-xl-7">
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @Model.TotalDelayProject</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @Model.TotalOngoingProject</span></p>
+                                    </div>
+                                </div>*@
+                                <div class="col-6 col-md-12 col-xl-5 pt-2">
                                     <img src="~/assets/gif/file.gif" height="60" />
                                 </div>
                             </div>
@@ -122,46 +216,68 @@
                     </div>
                 </a>
             </div>
-            <!-- Another Meeting's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Admin/Project_Request" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
+
+
+
+            <!-- Meeting's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0 text-nowrap">Ongoing Project</h6>
+                                <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
+                                @*<div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span></span></p>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total :  </span> @Model.TotalMeeting</span></p>
+                                        </a>
                                     </div>
-                                </div>
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/notification.gif" height="60" />
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report?req=false">
+                                            <p class="text-success w-100"><span><span class="text-dark">Admin :  </span> @Model.EmpMeeting</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report?req=true">
+                                            <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @Model.AdminMeeting</span></p>
+                                        </a>
+                                    </div>
+                                </div>*@
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <img src="~/assets/gif/discussion.gif" height="60" />
                                 </div>
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
-            <!-- Completed Project's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Admin/Completed_Project" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
+
+            <!-- Task Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
+                <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 rounded shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0 text-nowrap">Completed Project's</h6>
+                                <h6 class="card-title mb-0 text-nowrap">Task's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
-                                    <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span></span></p>
+                                @*<div class="col-6 col-md-12 col-xl-7">
+                                    <h6 class="mb-2 text-success"></h6>
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success w-100"><span><span class="text-dark">Total Task: </span> @Model.TotalTask</span></p>
                                     </div>
-                                </div>
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/checklist.gif" height="60" />
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success w-100"><span><span class="text-dark">Complete :  </span> @Model.CompletedTask</span></p>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <p class="text-success w-100"><span><span class="text-dark">Pending :  </span>  @(Convert.ToInt32(Model.TotalTask)-Convert.ToInt32(Model.CompletedTask))</span></p>
+                                    </div>
+                                </div>*@
+                                <div class="col-6 col-md-12 col-xl-5 pt-2">
+                                    <img src="~/assets/gif/file.gif" height="60" />
                                 </div>
                             </div>
                         </div>
@@ -169,8 +285,134 @@
                 </a>
             </div>
 
-            <!-- Meeting's Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+            
+
+
+        </div>
+    </div>
+</div>
+
+
+<!--<div class="row">
+    <div class="col-12 col-xl-12 stretch-card">
+        <div class="row flex-grow-1">-->
+<!-- Employee's Card -->
+<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+    <a href="/Admin/Employee_Registration" style="text-decoration: none; color: inherit;">
+        <div class="card uniform-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
+                </div>
+                <div class="row">
+                    <div class="col-6 col-md-12 col-xl-5">
+                        <h3 class="mb-2 text-success"></h3>
+                        <div class="d-flex align-items-baseline">
+                            <p class="text-success"><span> </span></p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-12 col-xl-7">
+                        <img src="~/assets/gif/success.gif" height="60" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>-->
+<!-- Project's Card -->
+<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+    <a href="/Admin/All_Projects" style="text-decoration: none; color: inherit;">
+        <div class="card uniform-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title mb-0">Project's</h6>
+                </div>
+                <div class="row">
+                    <div class="col-6 col-md-12 col-xl-5">
+                        <h3 class="mb-2 text-success"></h3>
+                        <div class="d-flex align-items-baseline">
+                            <p class="text-success"><span></span></p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-12 col-xl-7">
+                        <img src="~/assets/gif/project.gif" height="60" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>-->
+<!-- Pending Project's Card -->
+<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+    <a href="/Admin/Pending_Project" style="text-decoration: none; color: inherit;">
+        <div class="card uniform-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title mb-0 text-nowrap">Delay Project's</h6>
+                </div>
+                <div class="row">
+                    <div class="col-6 col-md-12 col-xl-5">
+                        <h6 class="mb-2 text-success"></h6>
+                        <div class="d-flex align-items-baseline">
+                            <p class="text-success"><span></span></p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-12 col-xl-7">
+                        <img src="~/assets/gif/file.gif" height="60" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>-->
+<!-- Another Meeting's Card -->
+<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+    <a href="/Admin/Project_Request" style="text-decoration: none; color: inherit;">
+        <div class="card uniform-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title mb-0 text-nowrap">Ongoing Project</h6>
+                </div>
+                <div class="row">
+                    <div class="col-6 col-md-12 col-xl-5">
+                        <h3 class="mb-2 text-success"></h3>
+                        <div class="d-flex align-items-baseline">
+                            <p class="text-success"><span></span></p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-12 col-xl-7">
+                        <img src="~/assets/gif/notification.gif" height="60" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>-->
+<!-- Completed Project's Card -->
+<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
+    <a href="/Admin/Completed_Project" style="text-decoration: none; color: inherit;">
+        <div class="card uniform-card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-baseline">
+                    <h6 class="card-title mb-0 text-nowrap">Completed Project's</h6>
+                </div>
+                <div class="row">
+                    <div class="col-6 col-md-12 col-xl-5">
+                        <h3 class="mb-2 text-success"></h3>
+                        <div class="d-flex align-items-baseline">
+                            <p class="text-success"><span></span></p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-12 col-xl-7">
+                        <img src="~/assets/gif/checklist.gif" height="60" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+</div>-->
+<!-- Meeting's Card -->
+<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
                 <a href="/Admin/Meeting_Report" style="text-decoration: none; color: inherit;">
                     <div class="card uniform-card">
                         <div class="card-body">
@@ -197,7 +439,7 @@
 
         </div>
     </div>
-</div>
+</div>-->
 @*<div class="row">
         <div class="col-12 col-xl-12 grid-margin stretch-card">
             <div class="card overflow-hidden">
