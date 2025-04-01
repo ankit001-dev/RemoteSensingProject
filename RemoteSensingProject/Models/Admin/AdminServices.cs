@@ -916,15 +916,15 @@ namespace RemoteSensingProject.Models.Admin
                     obj.TotalBudget = Convert.ToDecimal(sdr["totalBudgets"] != DBNull.Value ? sdr["totalBudgets"] : 0);
                     obj.PendingBudget = Convert.ToDecimal(sdr["pendingBudget"] != DBNull.Value ? sdr["pendingBudget"] : 0);
                     obj.expenditure = Convert.ToDecimal(sdr["expenditure"] != DBNull.Value ? sdr["expenditure"] : 0);
-                    obj.monTotalBudget = Convert.ToDecimal(sdr["monTotalBudget"]);
-                    obj.monPendingBudget = Convert.ToDecimal(sdr["monPendingBudget"]);
-                    obj.monExpenditureBudget = Convert.ToDecimal(sdr["monExpenditureBudget"]);
-                    obj.monTotalProject = Convert.ToInt32(sdr["monTotalProject"]);
-                    obj.monInternalProject = Convert.ToInt32(sdr["monInternalProject"]);
-                    obj.monExternalProject = Convert.ToInt32(sdr["monExternalProject"]);
-                    obj.monTotalReinbursementReq = Convert.ToInt32(sdr["monTotalReinbursementReq"]);
-                    obj.monTotalTourProposalReq = Convert.ToInt32(sdr["monTotalTourProposalReq"]);
-                    obj.montotalVehicleHiringRequest = Convert.ToInt32(sdr["montotalVehicleHiringRequest"]);
+                    //obj.monTotalBudget = Convert.ToDecimal(sdr["monTotalBudget"]);
+                    //obj.monPendingBudget = Convert.ToDecimal(sdr["monPendingBudget"]);
+                    //obj.monExpenditureBudget = Convert.ToDecimal(sdr["monExpenditureBudget"]);
+                    //obj.monTotalProject = Convert.ToInt32(sdr["monTotalProject"]);
+                    //obj.monInternalProject = Convert.ToInt32(sdr["monInternalProject"]);
+                    //obj.monExternalProject = Convert.ToInt32(sdr["monExternalProject"]);
+                    //obj.monTotalReinbursementReq = Convert.ToInt32(sdr["monTotalReinbursementReq"]);
+                    //obj.monTotalTourProposalReq = Convert.ToInt32(sdr["monTotalTourProposalReq"]);
+                    //obj.montotalVehicleHiringRequest = Convert.ToInt32(sdr["montotalVehicleHiringRequest"]);
                 }
 
                 sdr.Close();
@@ -2455,6 +2455,49 @@ namespace RemoteSensingProject.Models.Admin
         //        cmd.Dispose();
         //    }
         //}
+
+        public List<RaisedProblem> getproblembyId(int id)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_raiseProblem", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectProblemsforAdminById");
+                cmd.Parameters.AddWithValue("@id", id);
+                List<RaisedProblem> list = new List<RaisedProblem>();
+                con.Open();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new RaisedProblem
+                        {
+                            id = Convert.ToInt32(res["id"]),
+                            title = res["title"].ToString(),
+                            description = res["description"].ToString(),
+                            adminappr = Convert.ToBoolean(res["adminappr"]),
+                            newRequest = Convert.ToBoolean(res["newRequest"]),
+                            documentname = res["document"].ToString(),
+                            projectname = res["projectName"].ToString(),
+                            projectManager = res["projectManager"].ToString()
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
         #endregion
     }
 }

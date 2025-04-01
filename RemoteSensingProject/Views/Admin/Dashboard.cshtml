@@ -528,7 +528,7 @@
             <div class="card-header">Budget</div>
             <div class="card-body">
                 <div>
-                    <canvas id="myChart" style="max-height:200px; width:264px;"></canvas>
+                    <canvas id="bbchart" style="min-height:200px; width:264px;"></canvas>
                 </div>
             </div>
         </div>
@@ -1060,34 +1060,31 @@
 <!--Mini charts-->
 <script>
 
-  $(document).ready(function () {
+    $(document).ready(function () {
+        debugger
     // Pass the Razor data as JSON to the JavaScript context
-    var yearlyData = [
-        @Convert.ToDecimal(data.TotalBudget),
-        @Convert.ToDecimal(data.expenditure),
-        @Convert.ToDecimal(data.PendingBudget)
-    ];
 
-      var datac = yearlyData;
+    var ctx = document.getElementById('bbchart').getContext('2d');
+        var datac = [
+            { y:@Convert.ToDecimal(data.TotalBudget), x:100,r:8 },
+{y:@Convert.ToDecimal(data.expenditure), x:50,r:8},
+{y:@Convert.ToDecimal(data.PendingBudget), x:20,r:8}];
 
-    var ctx = document.getElementById('myChart').getContext('2d');
-
-    var myDoughnutChart = new Chart(ctx, {
-        type: 'doughnut',
+    var bubblechart = new Chart(ctx, {
+        type: 'bubble',
         data: {
-            labels: ['Total', 'Expenditure', 'Pending'],
+            labels: 'Budget',
             datasets: [{
-                label: 'Budget Overview',
+                label: 'Budget',
                 data: datac,
-                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-                hoverOffset: 4
+                backgroundColor: 'red',
             }]
         },
         options: {
             responsive: true,
             plugins: {
                 legend: {
-                    position: 'top',
+                    position: '',
                 },
                 tooltip: {
                     enabled: true
@@ -1096,8 +1093,8 @@
         }
     });
         // Update the chart with new data
-        myDoughnutChart.data.datasets[0].data = datac;
-        myDoughnutChart.update();
+      bubblechart.data.datasets[0].data = datac;
+      bubblechart.update();
 });
 
 
@@ -1117,7 +1114,7 @@
        @Convert.ToInt32(data.TotalExternalProject)
     ];
 
-    var monthlyData = [@Convert.ToInt32(@data.monTotalProject),@Convert.ToInt32(data.monInternalProject), @Convert.ToInt32(data.monExternalProject)];  // Example monthly data
+    @*var monthlyData = [@Convert.ToInt32(@data.monTotalProject),@Convert.ToInt32(data.monInternalProject), @Convert.ToInt32(data.monExternalProject)];  // Example monthly data*@
 
       // Set the initial data for the chart (monthly by default)
       var datac = yearlyData;
@@ -1185,7 +1182,7 @@
        @data.totalVehicleHiringRequest
     ];
 
-    var monthlyData = [@Convert.ToInt32(data.monTotalReinbursementReq),@Convert.ToInt32(data.monTotalTourProposalReq),@Convert.ToInt32(data.montotalVehicleHiringRequest)]  // Example monthly data
+    @*var monthlyData = [@Convert.ToInt32(data.monTotalReinbursementReq),@Convert.ToInt32(data.monTotalTourProposalReq),@Convert.ToInt32(data.montotalVehicleHiringRequest)]  // Example monthly data*@
 
       // Set the initial data for the chart (monthly by default)
       var datac = yearlyData;
@@ -1195,13 +1192,13 @@
 
     // Initialize chart with default data (monthly)
     var brchart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: ['Reimbursement', 'Tour Proposal', 'Hiring Vehicle'],
             datasets: [{
                 label: '',
                 data: datac,
-                maxBarThickness: 28,
+                pointRadius: 5,
                 backgroundColor: [' #00e6b8', '#6600ff', '#ff6600'],
                 hoverOffset: 4
             }]
@@ -1219,7 +1216,7 @@
             scales: {
                 x: {
                     // Set bar width strictly to 10px
-                    barThickness: 2, // Strictly setting bar width to 10px
+                    pointRadius: 30, // Strictly setting bar width to 10px
                 }
             }
         }
