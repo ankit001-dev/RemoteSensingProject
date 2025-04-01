@@ -11,7 +11,7 @@
         <table class="table-bordered table-striped" id="dataTableExample">
             <thead>
                 <tr>
-                    <th>S.N.</th>
+                    <th>Sr. No.</th>
                     <th>ProjectManager</th>
                     <th>Project Name</th>
                     <th>Title</th>
@@ -28,7 +28,7 @@
                         <tr>
                             <td>@i</td>
                             <td>
-                                <a href="@item.documentname" data-title="View Details" target="_blank" class="view">@item.projectManager</a>
+                                <a href="#" data-title="View Details" id="raisedmodel" class="view" >@item.projectManager</a>
                             </td>
                             <td>@item.projectname</td>
                             <td>@item.title</td>
@@ -59,6 +59,48 @@
         </table>
     </div>
 </div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Proposal Request </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container mt-4" id="formToPrint">
+                    <div class="cards">
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary py-1 rounded-0" id="printBtn">Print</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".view").on("click", function () {
+            let id = $(this).data("id");
+            $.ajax({
+                url: 'api/getRaisedProblemById',
+                type: 'get',
+                data: { id: id },
+                success: function (res) {
+                    console.log(res)
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
 
 @*<script>
     $(document).ready(function () {
