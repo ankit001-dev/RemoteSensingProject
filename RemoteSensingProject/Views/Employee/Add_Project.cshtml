@@ -205,7 +205,7 @@
         });
 
 
-        $("#addStageIcon").click(function () {
+        $("#addStageIcon").click(function ()  
             let count = parseInt($(this).attr("data-count"));
             if (count < 10) {
                 let newElement = `
@@ -305,7 +305,7 @@
         let formData = new FormData(this);
         let file = $("#projectDocumentFile")[0].files[0];
         if (file) {
-            formData.append("pm.pm.projectDocument", file);
+            formData.append("pm.pm.projectDocument", file); 
         }
         $.each($(".stagesImages"), function (i, d) {
             file = $(d)[0].files[0];
