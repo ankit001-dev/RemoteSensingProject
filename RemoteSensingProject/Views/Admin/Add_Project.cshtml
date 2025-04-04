@@ -31,7 +31,7 @@
         <div class="col-md-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <form class="forms-sample" id="createProjectForm">
+                    <form class="forms-sample" id="createProjectForm" >
                         <div class="row">
                             <div class="col-lg-4 mb-3">
                                 <label for="upload" class="form-label">Title</label>
@@ -85,7 +85,7 @@
                             <div class="col-lg-4 mb-3">
                                 <label for="letterNumber" class="form-label">Letter Number</label>
                                 <div class="input-group">
-                                    <input type="text" required class="form-control form-control-sm" name="letterNo" id="letterNumber" placeholder="Enter Letter Number">
+                                    <input type="text" required class="form-control form-control-sm" name="pm.pm.letterNo" id="letterNumber" placeholder="Enter Letter Number">
                                 </div>
                             </div>
 
@@ -339,76 +339,101 @@
 
     </script>
 
+
 <script>
-    $("#createProjectForm").on("submit", function (e) {
-        e.preventDefault();
+    $(document).ready(function () {
+        $("#createProjectForm").on("submit", function (e) {
+            e.preventDefault();
 
-        Swal.fire({
-            title: "Please wait !",
-            text: "Processing your request ....",
-            timer: 100000,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
+            Swal.fire({
+                title: "Please wait !",
+                text: "Processing your request ....",
+                timer: 100000,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            let formData = new FormData();
+            let arrData = $(this).serializeArray();
 
-        let formData = new FormData();
-        let arrData = $(this).serializeArray();
-        arrData.forEach(function (d) {
-            formData.append(d.name,d.value)
-        })
-        let file = $("#projectDocumentFile")[0].files[0];
-        if (file) {
-            formData.append("pm.pm.projectDocument", file);
-        }
-        $.each($(".stagesImages"), function (i, d) {
-             file = $(d)[0].files[0];
+            // Loop through the serialized form data and append it to FormData
+            arrData.forEach(function (d) {
+                // Check if the key already exists in the formData
+                if (!formData.has(d.name) && d.value.trim() !== "") {
+                    formData.append(d.name, d.value);
+                } else {
+                    console.log(`Duplicate or empty key skipped: ${d.name}`);
+                }
+            });
+            //let arrData = $(this).serializeArray();
+
+            //// Add regular form data to formData object
+            //arrData.forEach(function (d) {
+            //    formData.append(d.name, d.value);
+            //});
+
+            // Check if the project document file exists and append if not already added
+            let file = $("#projectDocumentFile")[0].files[0];
             if (file) {
-                formData.append(`pm.stages[${d}].Stage_Document`, file);
+                // Avoid adding the same file multiple times
+                if (!formData.has("pm.pm.projectDocument")) {
+                    formData.append("pm.pm.projectDocument", file);
+                }
             }
-        });
-   
 
-        $.ajax({
-            url: "/admin/InsertProject",
-            type: "post",
-            processData: false,
-            contentType: false,
-            data: formData,
-            success: function (res) {
-                if (res.status) {
-                    Swal.fire({
-                        title: "Successfully !",
-                        text: "Project created successfully !",
-                        icon: "success",
-                        didClose: () => {
-                            location.reload(true);
-                        }
-                    })
+            // Loop through stages images and add them
+            $.each($(".stagesImages"), function (i, d) {
+                file = $(d)[0].files[0];
+                if (file) {
+                    let stageKey = `pm.stages[${i}].Stage_Document`;
+
+                    // Avoid adding the same stage document multiple times
+                    if (!formData.has(stageKey)) {
+                        formData.append(stageKey, file);
+                    }
                 }
-                else {
+            });
+            // Send the data via AJAX
+            $.ajax({
+                url: "/admin/InsertProject",
+                type: "post",
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: "Successfully !",
+                            text: "Project created successfully !",
+                            icon: "success",
+                            didClose: () => {
+                                location.reload(true);
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Sorry !",
+                            text: "Some issue occurred while processing your request ! Please try after sometime.",
+                            icon: "warning"
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error Details:");
+                    console.log("XHR Object: ", xhr);
+                    console.log("Status: ", status);
+                    console.log("Error Message: ", error);
+                    console.log("Response Text: ", xhr.responseText);
+                    console.log("HTTP Status Code: ", xhr.status);
                     Swal.fire({
-                        title: "Sorry !",
-                        text: "Some issue occured while processing your request ! Please try after sometime.",
-                        icon: "warning"
-                    })
+                        title: "Server issue !",
+                        text: "Server is busy ! Try after sometime.",
+                        icon: "error"
+                    });
                 }
-            },
-            error: function (xhr, status, error) {
-                console.log("Error Details:");
-                console.log("XHR Object: ", xhr);
-                console.log("Status: ", status);
-                console.log("Error Message: ", error);
-                console.log("Response Text: ", xhr.responseText);
-                console.log("HTTP Status Code: ", xhr.status);
-                Swal.fire({
-                    title: "Server issue !",
-                    text: "Server is busy ! Try after sometime.",
-                    icon: "error"
-                })
-            }
-        })
-    })
+            });
+        });
+    });
 </script>

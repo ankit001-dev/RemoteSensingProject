@@ -65,11 +65,11 @@
                                         <td>@item.StartDateString</td>
                                         <td>@item.CompletionDatestring</td>
                                         <td>
-                                            @if (item.CompleteionStatus == 1 && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
+                                            @if (item.CompleteionStatus == true && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
                                             {
                                                 <span class="badge bg-success">Completed</span>
                                             }
-                                            else if (item.CompleteionStatus == 0 && item.CompletionDate > currentDate)
+                                            else if (item.CompleteionStatus == false && item.CompletionDate > currentDate)
                                             {
                                                 <span class="badge bg-warning text-dark">Processing</span>
                                             }

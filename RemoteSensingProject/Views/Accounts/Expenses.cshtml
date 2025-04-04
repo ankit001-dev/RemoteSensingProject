@@ -34,7 +34,6 @@
                                 <th class="text-center">Amount</th>
                                 <th class="text-center">Expended Amount</th>
                                 <th class="text-center">Approved Amount</th>
-                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,13 +44,14 @@
                                 {
                                     <tr>
                                         <td class="text-start">@i</td>
-                                        <td>@item.ProjectHeads</td>
+                                        <td>
+                                            <a href="#" data-title="View Details" class="headExpense" data-Id="@item.Id">@item.ProjectHeads</a>
+                                            </td>
                                         <td class="text-center">
                                             ₹@item.ProjectAmount
                                         </td>
                                         <td class="text-center">₹@item.TotalAskAmount</td>
                                         <td class="text-center">₹@item.ApproveAmount</td>
-                                        <td class="text-center"><a href="#" class="headExpense" data-Id="@item.Id"><i class="fa-solid fa-eye"></i></a></td>
                                     </tr>
                                     i++;
                                 }

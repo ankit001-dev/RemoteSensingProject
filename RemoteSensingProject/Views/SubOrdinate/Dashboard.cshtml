@@ -2,6 +2,10 @@
 @{
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
+    var data = Model as RemoteSensingProject.Models.SubOrdinate.main.DashboardCount;
+    var projectlist = ViewData["AssignedProjectList"] as List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList>;
+    int i;
+    DateTime currentDate = DateTime.Now;
 }
 
 
@@ -155,29 +159,29 @@
             <!-- Project's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 rounded shadow-lg">
+                    <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Project's</h6>
                             </div>
                             <div class="row">
-                                @*<div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-7">
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/All_Projects?req">
-                                            <p class="text-success w-100"><span><span class="text-dark">Total Project's :  </span> @(Convert.ToInt32(Model.SelfCreatedProject) + Convert.ToInt32(Model.TotalAssignProject))</span></p>
+                                        <a href="/SubOrdinate/Assigned_Project">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total Project's :  </span> @data.TotalAssignProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/All_Projects?req=Internal">
-                                            <p class="text-success w-100"><span><span class="text-dark">Assigned Project's :  </span> @Model.TotalAssignProject</span></p>
+                                        <a href="/SubOrdinate/Assigned_Project?req=Internal">
+                                            <p class="text-success w-100"><span><span class="text-dark">Internal Project's :  </span> @data.InternalProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/All_Projects?req=External">
-                                            <p class="text-success w-100"><span><span class="text-dark">My Project's :  </span> @Model.SelfCreatedProject</span></p>
+                                        <a href="/SubOrdinate/Assigned_Project?req=External">
+                                            <p class="text-success w-100"><span><span class="text-dark">External Project's :  </span> @data.ExternalProject</span></p>
                                         </a>
                                     </div>
-                                </div>*@
+                                </div>
                                 <div class="col-6 col-md-12 col-xl-5">
                                     <img src="~/assets/gif/project.gif" height="60" />
                                 </div>
@@ -189,32 +193,38 @@
 
             <!-- Project's Status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
-                <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 rounded shadow-lg">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Project's Status</h6>
                             </div>
                             <div class="row">
-                                @*<div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-7">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@Model.TotaCompleteProject</span></p>
+                                        <a href="/SubOrdinate/Assigned_Project?req=completed">
+                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@data.CompletedProject</span></p>
+                                        </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @Model.TotalDelayProject</span></p>
+                                        <a href="/SubOrdinate/Assigned_Project?req=pending">
+                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @data.PendingProject</span></p>
+                                        </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @Model.TotalOngoingProject</span></p>
+                                        <a href="/SubOrdinate/Assigned_Project?req=ongoing">
+                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @data.OngoingProject</span></p>
+                                        </a>
                                     </div>
-                                </div>*@
+                                </div>
                                 <div class="col-6 col-md-12 col-xl-5 pt-2">
                                     <img src="~/assets/gif/file.gif" height="60" />
                                 </div>
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
 
 
@@ -222,30 +232,30 @@
             <!-- Meeting's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 rounded shadow-lg">
+                    <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
                             </div>
                             <div class="row">
-                                @*<div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/Meeting_Report">
-                                            <p class="text-success w-100"><span><span class="text-dark">Total :  </span> @Model.TotalMeeting</span></p>
+                                        <a href="/SubOrdinate/Meeting_List">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total :  </span> @data.TotalMeetings</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/Meeting_Report?req=false">
-                                            <p class="text-success w-100"><span><span class="text-dark">Admin :  </span> @Model.EmpMeeting</span></p>
+                                        <a href="/SubOrdinate/Meeting_List?req=admin">
+                                            <p class="text-success w-100"><span><span class="text-dark">Admin :  </span> @data.AdminMeetings</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/Meeting_Report?req=true">
-                                            <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @Model.AdminMeeting</span></p>
+                                        <a href="/SubOrdinate/Meeting_List?req=projectmanager">
+                                            <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @data.ProjectManagerMeetings</span></p>
                                         </a>
                                     </div>
-                                </div>*@
+                                </div>
                                 <div class="col-6 col-md-12 col-xl-5">
                                     <img src="~/assets/gif/discussion.gif" height="60" />
                                 </div>
@@ -255,35 +265,7 @@
                 </div>
             </div>
 
-            <!-- Task Card -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
-                <a href="/Admin/All_Projects" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 rounded shadow-lg">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0 text-nowrap">Task's</h6>
-                            </div>
-                            <div class="row">
-                                @*<div class="col-6 col-md-12 col-xl-7">
-                                    <h6 class="mb-2 text-success"></h6>
-                                    <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Total Task: </span> @Model.TotalTask</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Complete :  </span> @Model.CompletedTask</span></p>
-                                    </div>
-                                    <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Pending :  </span>  @(Convert.ToInt32(Model.TotalTask)-Convert.ToInt32(Model.CompletedTask))</span></p>
-                                    </div>
-                                </div>*@
-                                <div class="col-6 col-md-12 col-xl-5 pt-2">
-                                    <img src="~/assets/gif/file.gif" height="60" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
+           
 
             
 
@@ -293,193 +275,9 @@
 </div>
 
 
-<!--<div class="row">
-    <div class="col-12 col-xl-12 stretch-card">
-        <div class="row flex-grow-1">-->
-<!-- Employee's Card -->
-<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-    <a href="/Admin/Employee_Registration" style="text-decoration: none; color: inherit;">
-        <div class="card uniform-card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title mb-0" style="text-decoration: none;">Employee's</h6>
-                </div>
-                <div class="row">
-                    <div class="col-6 col-md-12 col-xl-5">
-                        <h3 class="mb-2 text-success"></h3>
-                        <div class="d-flex align-items-baseline">
-                            <p class="text-success"><span> </span></p>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-12 col-xl-7">
-                        <img src="~/assets/gif/success.gif" height="60" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-</div>-->
-<!-- Project's Card -->
-<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-    <a href="/Admin/All_Projects" style="text-decoration: none; color: inherit;">
-        <div class="card uniform-card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title mb-0">Project's</h6>
-                </div>
-                <div class="row">
-                    <div class="col-6 col-md-12 col-xl-5">
-                        <h3 class="mb-2 text-success"></h3>
-                        <div class="d-flex align-items-baseline">
-                            <p class="text-success"><span></span></p>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-12 col-xl-7">
-                        <img src="~/assets/gif/project.gif" height="60" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-</div>-->
-<!-- Pending Project's Card -->
-<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-    <a href="/Admin/Pending_Project" style="text-decoration: none; color: inherit;">
-        <div class="card uniform-card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title mb-0 text-nowrap">Delay Project's</h6>
-                </div>
-                <div class="row">
-                    <div class="col-6 col-md-12 col-xl-5">
-                        <h6 class="mb-2 text-success"></h6>
-                        <div class="d-flex align-items-baseline">
-                            <p class="text-success"><span></span></p>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-12 col-xl-7">
-                        <img src="~/assets/gif/file.gif" height="60" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-</div>-->
-<!-- Another Meeting's Card -->
-<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-    <a href="/Admin/Project_Request" style="text-decoration: none; color: inherit;">
-        <div class="card uniform-card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title mb-0 text-nowrap">Ongoing Project</h6>
-                </div>
-                <div class="row">
-                    <div class="col-6 col-md-12 col-xl-5">
-                        <h3 class="mb-2 text-success"></h3>
-                        <div class="d-flex align-items-baseline">
-                            <p class="text-success"><span></span></p>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-12 col-xl-7">
-                        <img src="~/assets/gif/notification.gif" height="60" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-</div>-->
-<!-- Completed Project's Card -->
-<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-    <a href="/Admin/Completed_Project" style="text-decoration: none; color: inherit;">
-        <div class="card uniform-card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title mb-0 text-nowrap">Completed Project's</h6>
-                </div>
-                <div class="row">
-                    <div class="col-6 col-md-12 col-xl-5">
-                        <h3 class="mb-2 text-success"></h3>
-                        <div class="d-flex align-items-baseline">
-                            <p class="text-success"><span></span></p>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-12 col-xl-7">
-                        <img src="~/assets/gif/checklist.gif" height="60" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-</div>-->
-<!-- Meeting's Card -->
-<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 grid-margin stretch-card">
-                <a href="/Admin/Meeting_Report" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
-                            </div>
-                            <div class="row">
-                                <div class="col-6 col-md-12 col-xl-5">
-                                    <h3 class="mb-2 text-success"></h3>
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success"><span> </span></p>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-12 col-xl-7">
-                                    <img src="~/assets/gif/discussion.gif" height="60" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
 
-
-
-        </div>
-    </div>
-</div>-->
-@*<div class="row">
-        <div class="col-12 col-xl-12 grid-margin stretch-card">
-            <div class="card overflow-hidden">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-baseline mb-4 mb-md-3">
-                        <h6 class="card-title mb-0">Travel data</h6>
-                        <div class="dropdown">
-                            <button class="btn p-0" type="button" id="dropdownMenuButton3" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                                <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span class>View</span></a>
-                                <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span class>Edit</span></a>
-                                <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span class>Delete</span></a>
-                                <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span class>Print</span></a>
-                                <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span class>Download</span></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row align-items-start">
-                        <div class="col-md-7">
-                            <p class="text-muted tx-13 mb-3 mb-md-0">Revenue is the income that a business has from its normal business activities, usually from the sale of goods and services to customers.</p>
-                        </div>
-                        <div class="col-md-5 d-flex justify-content-md-end">
-                            <div class="btn-group mb-3 mb-md-0" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-outline-primary">Today</button>
-                                <button type="button" class="btn btn-outline-primary d-none d-md-block">Week</button>
-                                <button type="button" class="btn btn-primary">Month</button>
-                                <button type="button" class="btn btn-outline-primary">Year</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="revenueChart"></div>
-                </div>
-            </div>
-        </div>
-    </div>*@
-
-<div class="row">
-    <div class="col-lg-7 col-xl-8 grid-margin stretch-card">
+<div class="row mx-0">
+    <div class="col-lg-7 col-xl-8 px-1">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
@@ -502,9 +300,9 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-5 col-xl-4 grid-margin stretch-card">
+    <div class="col-lg-5 col-xl-4 px-1">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body" style="min-height:428px !important;">
                 <div class="d-flex justify-content-between align-items-baseline">
                     <h6 class="card-title mb-0">Project Data</h6>
                     <div class="dropdown mb-2">
@@ -544,7 +342,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-5 col-xl-4 grid-margin grid-margin-xl-0 stretch-card">
+    @*<div class="col-lg-5 col-xl-4 grid-margin grid-margin-xl-0 stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
@@ -626,8 +424,8 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-7 col-xl-8 stretch-card">
+    </div>*@
+    <div class="col-lg-7 col-xl-12 stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
@@ -649,73 +447,48 @@
                     <table class="table table-hover mb-0">
                         <thead>
                             <tr>
-                                <th class="pt-0">#</th>
+                                <th class="pt-0">Sr. No.</th>
                                 <th class="pt-0">Project Name</th>
                                 <th class="pt-0">Start Date</th>
-                                <th class="pt-0">Due Date</th>
+                                <th class="pt-0">Completion Date</th>
                                 <th class="pt-0">Status</th>
                                 <th class="pt-0">Assign</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Travelin jQuery</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-                                <td><span class="badge bg-danger">Released</span></td>
-                                <td>Leonardo Payne</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Travelin Angular</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-                                <td><span class="badge bg-success">Review</span></td>
-                                <td>Carl Henson</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Travelin ReactJs</td>
-                                <td>01/05/2022</td>
-                                <td>10/09/2022</td>
-                                <td><span class="badge bg-info">Pending</span></td>
-                                <td>Jensen Combs</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Travelin VueJs</td>
-                                <td>01/01/2022</td>
-                                <td>31/11/2022</td>
-                                <td>
-                                    <span class="badge bg-warning">Work in Progress</span>
-                                </td>
-                                <td>Amiah Burton</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Travelin Laravel</td>
-                                <td>01/01/2022</td>
-                                <td>31/12/2022</td>
-                                <td><span class="badge bg-danger">Coming soon</span></td>
-                                <td>Yaretzi Mayo</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>Travelin NodeJs</td>
-                                <td>01/01/2022</td>
-                                <td>31/12/2022</td>
-                                <td><span class="badge bg-primary">Coming soon</span></td>
-                                <td>Carl Henson</td>
-                            </tr>
-                            <tr>
-                                <td class="border-bottom">3</td>
-                                <td class="border-bottom">Travelin EmberJs</td>
-                                <td class="border-bottom">01/05/2022</td>
-                                <td class="border-bottom">10/11/2022</td>
-                                <td class="border-bottom"><span class="badge bg-info">Pending</span></td>
-                                <td class="border-bottom">Jensen Combs</td>
-                            </tr>
+                            @if (projectlist != null)
+                                        {
+                                            i = 1;
+                                            foreach(var item in projectlist)
+                                            {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.Title</td>
+                                        <td>@item.StartDate</td>
+                                        <td>@item.CompletionDate</td>
+                                        <td>
+                                            @if (item.CompleteionStatus == true && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
+                                                                        {
+                                                <span class="badge bg-success">Completed</span>
+                                }
+                                            else if (item.CompleteionStatus == false && item.CompletionDate > currentDate)
+                                            {
+                                                <span class="badge bg-warning text-dark">Processing</span>
+                            }
+                                            else
+                            {
+                                                <span class="badge bg-secondary">Pending</span>
+                                            }
+                                        </td>
+                                        <td>@item.AssignDate</td>
+                                    </tr>
+                                    if(i>5)
+                                    {
+                                        break;
+                                    }
+                                    i++;
+                                }
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -728,7 +501,10 @@
 
 <script>
     $(document).ready(function () {
+        var prdata = @Html.Raw(Json.Encode(ViewData["AssignedProjectList"]));
+        console.log(prdata)
         if ($('#monthlySalesChart').length) {
+            
             var options = {
                 chart: {
                     type: 'bar',
@@ -767,7 +543,7 @@
                 }],
                 xaxis: {
                     type: 'category', // Change type from 'datetime' to 'category'
-                    categories: ['Project1', 'Project2', 'Project3', 'Project4', 'Project5', 'Project6', 'Project7', 'Project8', 'Project9', 'Project10', 'Project11', 'Project12'], // Updated categories
+                    categories: prdata.map(item => item.Title), // Updated categories
                     axisBorder: {
                         color: '#dee2e6', // Light gray color
                     },
@@ -838,7 +614,7 @@
                     height: 260,
                     type: "radialBar"
                 },
-                series: [],
+                series: [@data.CompletedProject],
                 colors: [colors.primary],
                 plotOptions: {
                     radialBar: {

@@ -28,17 +28,46 @@ namespace RemoteSensingProject.Controllers
         // GET: SubOrdinate
         public ActionResult Dashboard()
         {
-            return View();
+            var managerName = User.Identity.Name;
+            Models.SubOrdinate.main.UserCredential userObj = new Models.SubOrdinate.main.UserCredential();
+            userObj = _subOrdinate.getManagerDetails(managerName);
+            var dcount = _subOrdinate.GetDashboardCounts(userObj.userId);
+            List<Models.SubOrdinate.main.ProjectList> _list = new List<Models.SubOrdinate.main.ProjectList>();
+            ViewData["AssignedProjectList"] =  _subOrdinate.getProjectBySubOrdinate(userObj.userId);
+            return View(dcount);
         }
         #region Assigned Project
-        public ActionResult Assigned_Project()
+        public ActionResult Assigned_Project(string req)
         {
             var managerName = User.Identity.Name;
             Models.SubOrdinate.main.UserCredential userObj = new Models.SubOrdinate.main.UserCredential();
             userObj = _subOrdinate.getManagerDetails(managerName);
 
             List<Models.SubOrdinate.main.ProjectList> _list = new List<Models.SubOrdinate.main.ProjectList>();
+            if (req == "Internal")
+            {
+                ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId).Where(d=>d.projectType=="Internal").ToList();
+            }
+            else if (req == "External")
+            {
+                ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId).Where(d => d.projectType == req).ToList();
+            }
+            else if (req == "completed")
+            {
+                ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId).Where(d => d.CompleteionStatus == true && d.CompletionDate<DateTime.Now).ToList();
+            }
+            else if (req == "ongoing")
+            {
+                ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId).Where(d => d.CompleteionStatus == false && d.CompletionDate>DateTime.Now).ToList();
+            }
+            else if(req == "pending")
+            {
+                ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId).Where(d => d.StartDate>DateTime.Now).ToList();
+            }
+            else
             ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId);
+
+
 
             return View();
         }
@@ -76,10 +105,10 @@ namespace RemoteSensingProject.Controllers
         }
 
         #endregion End Problem
-        public ActionResult Meeting_List()
+        public ActionResult Meeting_List(string req)
         {
             var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            var res = _managerServices.getAllmeeting(int.Parse(userId.userId));
+            var res = req=="admin"? _managerServices.getAllmeeting(int.Parse(userId.userId)).Where(d=>d.createdBy=="admin").ToList():req=="projectmanager"? _managerServices.getAllmeeting(int.Parse(userId.userId)).Where(d=>d.createdBy=="projectManager").ToList(): _managerServices.getAllmeeting(int.Parse(userId.userId));
             return View(res);
         }
         public ActionResult GetConclusions(int id)

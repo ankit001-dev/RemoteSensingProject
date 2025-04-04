@@ -522,6 +522,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                         obj.Description = sdr["Description"].ToString();
                         obj.Attchment_Url = sdr["Attachment"].ToString();
                         obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                        obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
                         problemList.Add(obj);
                     }
                 }
@@ -540,7 +541,49 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
 
         }
+        public List<Raise_Problem> getAllSubOrdinateProblemById(string projectManager , int id)
+        {
+            try
+            {
+                List<Raise_Problem> problemList = new List<Raise_Problem>();
+                Raise_Problem obj = null;
+                SqlCommand cmd = new SqlCommand("sp_ManageSubordinateProjectProblem", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getAllProblemListByManagerById");
+                cmd.Parameters.AddWithValue("@projectManager", projectManager);
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    while (sdr.Read())
+                    {
+                        obj = new Raise_Problem();
+                        obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
+                        obj.ProjectName = sdr["ProjectName"].ToString();
+                        obj.Title = sdr["Title"].ToString();
+                        obj.Description = sdr["Description"].ToString();
+                        obj.Attchment_Url = sdr["Attachment"].ToString();
+                        obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                        obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
+                        problemList.Add(obj);
+                    }
+                }
+                return problemList;
 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+
+        }
         public bool CompleteSelectedProblem(int probId)
         {
             try
@@ -1040,6 +1083,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@emp_email", os.email);
                 cmd.Parameters.AddWithValue("@emp_gender", os.gender);
                 cmd.Parameters.AddWithValue("@password", userpassword);
+                cmd.Parameters.AddWithValue("@joiningdate", os.joiningdate);
                 con.Open();
                 int j = cmd.ExecuteNonQuery();
                 if (j > 0)
@@ -1083,6 +1127,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             EmpName = rd["emp_name"].ToString(),
                             mobileNo = Convert.ToInt64(rd["emp_mobile"]),
                             email = rd["emp_email"].ToString(),
+                            joiningdate = rd["joiningdate"] .ToString(),
                             gender = rd["emp_gender"].ToString()
                         });
                     }
@@ -2208,7 +2253,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                             adminappr = Convert.ToBoolean(res["adminappr"]),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
                             documentname = res["document"].ToString(),
-                            projectname = res["projectName"].ToString()
+                            projectname = res["projectName"].ToString(),
+                            createdAt = Convert.ToDateTime(res["createdAt"])
                         });
                     }
                 }

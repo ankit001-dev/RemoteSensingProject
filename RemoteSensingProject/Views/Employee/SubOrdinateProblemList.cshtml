@@ -35,7 +35,8 @@
                                 <th>Problem Date</th>
                                 <th>Problem Title</th>
                                 <th>Description</th>
-                                @*<th>Action</th>*@
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -49,17 +50,35 @@
                                         <td>@problem.ProjectName</td>
                                         <td>@problem.CreatedDate</td>
                                         <td>@problem.Title</td>
-                                        <td>@problem.Description</td>
+                                        <td>
+                                                                                @if (problem.Description.Length <= 8)
+                                                                                {
+                                                                                    <span>@problem.Description</span>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <span>@problem.Description.Substring(0, 8)...</span>
+                                                                                }
+                                                                            </td>
+                                        <td>
+                                            @if (problem.newRequest)
+                                            {<span id="status" class="badge bg-primary pt-1">Not Seen</span> }
+                                            else if (!problem.newRequest)
+                                            { <span id="status" class="badge bg-success">Viewed</span>}
+                                        </td>
+                                        <td data-id="@problem.ProblemId">
+                                            <a href="#" data-title="View" class="descri text-decoration-underline">View</a>
+                                        </td>
                                         @*<td>
-                                            <a href="#" class="completeTaskAction" data-probId="@problem.ProblemId">
-                                                <i class="fa-solid fa-check text-success"></i>
-                                            </a>
+            <a href="#" class="completeTaskAction" data-probId="@problem.ProblemId">
+                <i class="fa-solid fa-check text-success"></i>
+            </a>
 
-                                            &nbsp; | &nbsp;
-                                            <a href="#" class="rejectTaskAction" data-probId="@problem.ProblemId">
-                                                <i class="fa-solid fa-xmark text-danger"></i>
-                                            </a>
-                                        </td>*@
+            &nbsp; | &nbsp;
+            <a href="#" class="rejectTaskAction" data-probId="@problem.ProblemId">
+                <i class="fa-solid fa-xmark text-danger"></i>
+            </a>
+        </td>*@
                                     </tr>
                                     index++;
                                 }
@@ -72,6 +91,41 @@
         </div>
 
 
+    </div>
+</div>
+
+<!--Detail Modal-->
+<div class="modal fade" id="problemModal" tabindex="-1" aria-labelledby="problemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="modal-title" id="problemModalLabel">Problem Details</h5>
+                <button type="button" class="btn-close modalClose" aria-label="Close" ></button>
+            </div>
+            <div class="modal-body">
+                <!-- Problem details form or information -->
+                <div class="mb-3">
+                    <label for="projectName" class="form-label">Project Name</label>
+                    <input type="text" class="form-control" id="projectName1" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title1" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description1" rows="4" readonly></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="document" class="form-label">Document</label>
+                    <a href="#" id="document1" class="btn btn-link" target="_blank">View Document</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary py-1 me-4 modalClose" >Ok</button>
+                <!-- If needed, you can add more buttons like "Edit" or "Resolve" here -->
+            </div>
+        </div>
     </div>
 </div>
 
@@ -216,4 +270,49 @@
             }
         })
     })
+</script>
+<script>
+    $(document).ready(function () {
+
+        $(".modalClose").on("click", function () {
+            $("#problemModal").modal("hide")
+            location.reload(true);
+        })
+
+        $(".descri").on("click", function () {
+            Swal.fire({
+                title: 'Please Wait!',
+                text: 'Processing your request...',
+                didOpen: () => { Swal.showLoading(); },
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+            let id = $(this).parent().data("id");
+            $.ajax({
+                url: '/employee/SubordinateProblemListById',
+                type: 'get',
+                data: { id: id },
+                success: function (res) {
+                    console.log(res)
+                    $("#projectName1").val(res[0].ProjectName);
+                    $("#title1").val(res[0].Title);
+                    $("#description1").text(res[0].Description);
+                    $("#document1").attr("href", res[0].Attchment_Url);
+                    $("#problemModal").modal("show")
+                    Swal.close();
+                    
+                },
+                error: function (xhr,error,message) {
+                    Swal.fire({
+                        title: 'Some Error Occured',
+                        text: 'Failed to Fetch the data',
+                        icon: 'warning'
+                    })
+                    console.log(xhr)
+                    console.log(error)
+                    console.log(message)
+                }
+            });
+        });
+    });
 </script>

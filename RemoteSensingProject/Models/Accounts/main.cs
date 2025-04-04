@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 
 namespace RemoteSensingProject.Models.Accounts
@@ -51,7 +52,13 @@ namespace RemoteSensingProject.Models.Accounts
             public bool ApproveStatus { get; set; }
 
         }
-
+        public class GraphData
+        {
+            public decimal AppAmount { get; set; }
+            public string title { get; set; }
+            public decimal amount { get; set; }
+            public string month { get; set; }
+        }
         public class HeadExpenses
         {
             public int Id { get; set; }

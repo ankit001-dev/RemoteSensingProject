@@ -2413,7 +2413,8 @@ namespace RemoteSensingProject.Models.Admin
                             newRequest = Convert.ToBoolean(res["newRequest"]),
                             documentname = res["document"].ToString(),
                             projectname = res["projectName"].ToString(),
-                            projectManager = res["projectManager"].ToString()  
+                            projectManager = res["projectManager"].ToString(),
+                            createdAt = Convert.ToDateTime(res["createdAt"])
                         });
                     }
                 }

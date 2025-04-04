@@ -358,5 +358,38 @@ namespace RemoteSensingProject.Models.Accounts
 
             }
         }
+        public GraphData ExpencesListforgraph()
+        {
+            GraphData obj = null;
+            try
+            {
+                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "selectExpensesforgraph");
+                con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        obj = new GraphData();
+                            obj.AppAmount = Convert.ToDecimal(rd["appamount"]);
+                        obj.amount = Convert.ToDecimal(rd["totalamount"]);
+                        //obj.month = rd["monthname"].ToString();
+                    }
+                }
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
     }
 }

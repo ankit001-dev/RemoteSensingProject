@@ -193,9 +193,10 @@ namespace RemoteSensingProject.Controllers
             return Json(new
             {
                 status = true,
-                data = data
+                data = data     
             }, JsonRequestBehavior.AllowGet);
         }
+        [HttpPost]
         public ActionResult InsertProject(createProjectModel pm)
         {
             if(pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
@@ -250,7 +251,30 @@ namespace RemoteSensingProject.Controllers
         public ActionResult All_Projects(string req)
         {
             ViewBag.ManagerList = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            ViewBag.ProjectList = req == "completed" ? _adminServices.Project_List().Where(d => d.CompletionDate < DateTime.Now && d.StartDate < DateTime.Now && d.completestatus == true).ToList() : req == "delay" ? _adminServices.Project_List().Where(d => d.completestatus == false && d.CompletionDate <= DateTime.Now).ToList() : req == "ongoing" ? _adminServices.Project_List().Where(d =>  d.StartDate<DateTime.Now && d.CompletionDate>DateTime.Now && d.completestatus == false).ToList() : _adminServices.Project_List();
+            if(req == "completed")
+            {
+                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.CompletionDate < DateTime.Now && d.StartDate < DateTime.Now && d.completestatus == true).ToList();
+            }
+            else if(req == "delay")
+            {
+                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.completestatus == false && d.CompletionDate <= DateTime.Now).ToList();
+            }
+            else if(req == "ongoing")
+            {
+                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.StartDate < DateTime.Now && d.CompletionDate > DateTime.Now && d.completestatus == false).ToList();
+            }
+            else if (req == "Internal")
+            {
+                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.projectType == "Internal").ToList();
+            }
+            else if (req == "External")
+            {
+                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.projectType == "External").ToList();
+            }
+            else
+            {
+                ViewBag.ProjectList = _adminServices.Project_List();
+            }
             return View();
         }
         public ActionResult Project_Request()

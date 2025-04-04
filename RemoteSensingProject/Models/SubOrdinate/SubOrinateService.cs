@@ -67,9 +67,10 @@ namespace RemoteSensingProject.Models.SubOrdinate
                     obj.CompletionDate = Convert.ToDateTime(sdr["CompletionDate"]);
                     obj.CompletionDatestring = Convert.ToDateTime(sdr["CompletionDate"]).ToString("dd-MM-yyyy");
                     obj.Status = sdr["status"].ToString();
-                    obj.CompleteionStatus = Convert.ToInt32(sdr["CompleteStatus"]);
+                    obj.CompleteionStatus = Convert.ToBoolean(sdr["CompleteStatus"]);
                     obj.ApproveStatus = Convert.ToInt32(sdr["ApproveStatus"]);
                     obj.CreatedBy = sdr["name"].ToString();
+                    obj.projectType = sdr["projectType"].ToString();
                     _list.Add(obj);
                 }
                 sdr.Close();
@@ -184,5 +185,49 @@ namespace RemoteSensingProject.Models.SubOrdinate
         }
 
         #endregion Out Source End
+
+        #region DashboardCount
+        public DashboardCount GetDashboardCounts(string userId)
+        {
+            
+            DashboardCount obj = null;
+            try
+            {
+                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "managesubordinatedashboard");
+                cmd.Parameters.AddWithValue("@sid", userId);
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    while (sdr.Read())
+                    {
+                        obj = new DashboardCount();
+                        obj.TotalAssignProject = Convert.ToInt32(sdr["TotalProject"]);
+                        obj.InternalProject = Convert.ToInt32(sdr["InternalProject"]);
+                        obj.ExternalProject = Convert.ToInt32(sdr["ExternalProject"]);
+                        obj.CompletedProject = Convert.ToInt32(sdr["CompletedProject"]);
+                        obj.PendingProject = Convert.ToInt32(sdr["PendingProject"]);
+                        obj.OngoingProject = Convert.ToInt32(sdr["OngoingProject"]);
+                        obj.TotalMeetings = Convert.ToInt32(sdr["TotalMeetings"]);
+                        obj.AdminMeetings = Convert.ToInt32(sdr["AdminMeetings"]);
+                        obj.ProjectManagerMeetings = Convert.ToInt32(sdr["ProjectManagerMeetings"]);
+                    }
+                    sdr.Close();
+                }
+                    return obj;
+               
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        #endregion
     }
 }
