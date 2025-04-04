@@ -186,6 +186,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 
     public class OuterSource
     {
+        public string joiningdate { get; set; }
         public int Id { get; set; }
         public int EmpId { get; set; }
         public string EmpName { get; set; }
@@ -268,6 +269,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class RaiseProblem
     {
+        public DateTime createdAt { get; set; }
         public string projectManager {get; set; }  
         public int userId { get; set; }
         public bool adminappr { get; set; }

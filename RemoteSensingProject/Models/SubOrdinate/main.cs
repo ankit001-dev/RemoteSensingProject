@@ -10,12 +10,15 @@ namespace RemoteSensingProject.Models.SubOrdinate
 
         public class DashboardCount
         {
-            public string TotalAssignProject { get; set; }
-            public string TotaCompleteProject { get; set; }
-            public string TotalDelayProject { get; set; }
-            public string TotalMeeting { get; set; }
-            public string TotalOngoingProject { get; set; }
-            public string TotalNotice { get; set; }
+            public int TotalAssignProject { get; set; }
+            public int InternalProject { get; set; }
+            public int ExternalProject { get; set; }
+            public int CompletedProject { get; set; }
+            public int PendingProject { get; set; } 
+            public int OngoingProject { get; set; }
+            public int TotalMeetings { get; set; }
+            public int AdminMeetings { get; set; }
+            public int ProjectManagerMeetings { get; set; } 
 
         }
         public class AssignedProject
@@ -52,7 +55,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
             public string CreatedAt { get; set; }
             public string Upadtedat { get; set; }
             public string CreatedBy { get; set; }
-            public int CompleteionStatus { get; set; }
+            public bool CompleteionStatus { get; set; }
             public int ApproveStatus { get; set; }
             public string CompletionDatestring { get; set; }
             public string AssignDateString { get; set; }
@@ -60,6 +63,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
         }
         public class Raise_Problem
         {
+            public bool newRequest { get; set; }
             public int ProblemId { get; set; }
             public int Project_Id { get; set; }
             public string ProjectName { get; set; }

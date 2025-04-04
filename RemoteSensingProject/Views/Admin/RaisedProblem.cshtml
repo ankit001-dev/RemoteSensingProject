@@ -15,9 +15,10 @@
                     <th>ProjectManager</th>
                     <th>Project Name</th>
                     <th>Title</th>
+                    <th>Problem Date</th>
                     <th>Description</th>
-                    @*<th class="text-center">Status</th>*@
-                    @*<th class="text-center">Action</th>*@
+                    <th class="text-center">Status</th>
+                    <th class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,6 +33,7 @@
                             </td>
                             <td>@item.projectname</td>
                             <td>@item.title</td>
+                            <td>@Convert.ToDateTime(item.createdAt).ToString("dd-MMM-yyyy")</td>
                             <td>
                                 @if (item.description.Length <= 8) {
                                     <span>@item.description</span>
@@ -41,24 +43,15 @@
                             <span>@item.description.Substring(0, 8)...</span>
                                 }
                             </td>
-                            @*<td class="text-center">
-                                @{
-                                    if (item.newRequest && !item.adminappr)
-                                    { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                    else if (!item.newRequest && item.adminappr)
-                                    { <span id="status" class="badge bg-success">Approved</span> }
-                                    else if (!item.newRequest && !item.adminappr)
-                                    { <span id="status" class="badge bg-danger">Rejected</span> }
-                                }
-                            </td>*@
-                            @*<td class="text-center">
-                                <a href="#" class="changeStatus" data-value="true" data-title="Approve" data-id="@item.id">
-                                    <i class="fa-solid fa-check text-success"></i>
-                                </a> &nbsp; | &nbsp; 
-                                <a href="#" class="changeStatus" data-value="false" data-title="Reject" data-id="@item.id">
-                                    <i class="fa-solid fa-xmark text-danger"></i>
-                                </a>
-                            </td>*@
+                            <td class="text-center">
+                                @if (item.newRequest)
+                                    { <span id="status" class="badge bg-primary pt-1">Not Seen</span> }
+                                    else if (!item.newRequest)
+                                    { <span id="status" class="badge bg-success">Viewed</span> }
+                            </td>
+                            <td class="text-center" data-id="@item.id">
+                                <a href="#" data-title="View" class="descri text-decoration-underline">View</a>
+                            </td>
                         </tr>
                         i++;
                     }
@@ -74,8 +67,8 @@
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h5 class="modal-title" id="problemModalLabel">Problem Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+                <button type="button" class="btn-close modalClose" aria-label="Close"></button>
+            </div> 
             <div class="modal-body">
                 <!-- Problem details form or information -->
                 <div class="mb-3">
@@ -96,7 +89,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary py-1 me-4" data-bs-dismiss="modal">Ok</button>
+                <button type="button" class="btn btn-secondary py-1 me-4 modalClose">Ok</button>
                 <!-- If needed, you can add more buttons like "Edit" or "Resolve" here -->
             </div>
         </div>
@@ -107,6 +100,11 @@
 
 <script>
     $(document).ready(function () {
+        $(".modalClose").on("click", function () {
+            $("#problemModal").modal("hide")
+            location.reload(true);
+        })
+
         $(".descri").on("click", function () {
             Swal.fire({
                 title: 'Please Wait!',

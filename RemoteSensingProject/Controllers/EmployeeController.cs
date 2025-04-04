@@ -71,11 +71,11 @@ namespace RemoteSensingProject.Controllers
         #endregion
 
         #region  Task Assign
-        public ActionResult CreateTask()
+        public ActionResult CreateTask(string req)
         {
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             ViewData["OutSourceList"] = _managerServices.selectAllOutSOurceList(userObj);
-            ViewData["TaskList"] = _managerServices.taskList(userObj);
+            ViewData["TaskList"] = req=="completed"?_managerServices.taskList(userObj).Where(d=>d.completeStatus).ToList():req=="pending"? _managerServices.taskList(userObj).Where(d=>!d.completeStatus).ToList(): _managerServices.taskList(userObj);
             return View();
         }
         [HttpPost]
@@ -506,7 +506,15 @@ namespace RemoteSensingProject.Controllers
             ViewBag.ProjectProblemList = _managerServices.getAllSubOrdinateProblem(userObj.userId);
             return View();
         }
-
+        [HttpGet]
+        public ActionResult SubordinateProblemListById(int id)
+        {
+            var managerName = User.Identity.Name;
+            UserCredential userObj = new UserCredential();
+            userObj = _managerServices.getManagerDetails(managerName);
+            var data = _managerServices.getAllSubOrdinateProblemById(userObj.userId, id);
+            return Json(data,JsonRequestBehavior.AllowGet);
+        }
         [HttpPost]
         public ActionResult updateProjectProblemStatus(int problemId)
         {

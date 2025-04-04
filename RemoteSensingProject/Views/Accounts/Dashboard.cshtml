@@ -3,6 +3,9 @@
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
     var data = Model as RemoteSensingProject.Models.Accounts.main.DashboardCount;
+    var projectlist = ViewData["projectlist"] as List<RemoteSensingProject.Models.Accounts.main.Project_model>;
+    int i;
+    var graphdata = ViewData["graphdata"] as List<RemoteSensingProject.Models.ProjectManager.ProjectExpenses>;
 }
 
 
@@ -162,14 +165,14 @@
         }
 </style>
 <div class="row mx-0 mb-0">
-    <div class="col-12 col-xl-12">
+    <div class="col-12 col-xl-12 mb-0">
         <div class="row flex-grow-1">
 
 
             <!-- Request's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 rounded shadow-lg">
+                    <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Fund Request's</h6>
@@ -177,17 +180,17 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <div class="d-flex align-items-baseline mt-2">
-                                        <a href="#">
+                                        <a href="/accounts/FundReport">
                                             <p class="text-success w-100"><span><span class="text-dark">Total :  </span> @ViewBag.TotalFunRequest</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="#">
+                                        <a href="/accounts/FundReport?req=complete">
                                             <p class="text-success w-100"><span><span class="text-dark">Complete :  </span> @ViewBag.CompleteRequest</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                    <a href="/Admin/All_Projects?req=External">
+                                    <a href="/accounts/FundReport?req=pending">
                                         <p class="text-success w-100"><span><span class="text-dark">Pending :  </span> @(Convert.ToInt32(ViewBag.TotalFunRequest) - Convert.ToInt32(ViewBag.CompleteRequest)) </span></p>
                                     </a>
                                 </div>
@@ -204,7 +207,7 @@
             <!-- Request's status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 rounded shadow-lg">
+                    <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Reimbursement's</h6>
@@ -213,17 +216,17 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/reimbursementRequest">
+                                        <a href="/accounts/ReinbursementRequest">
                                             <p class="text-success w-100"><span><span class="text-dark">Pending :  </span> @data.totalReinbursementPendingRequest</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/reimbursement_report?req=approved">
+                                        <a href="/accounts/Reimbursement_Report?req=approved">
                                             <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalReinbursementapprovedRequest</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/reimbursement_report?req=rejected">
+                                        <a href="/accounts/Reimbursement_Report?req=rejected">
                                             <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalReinbursementRejectRequest</span></p>
                                         </a>
                                     </div>
@@ -238,8 +241,8 @@
             </div>
             <!-- Request's status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
-                <a href="/Admin/TourProposal_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 rounded shadow-lg">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Tour Proposal's</h6>
@@ -248,13 +251,19 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Pending :  </span> @data.totaTourProposalPendingReque</span></p>
+                                        <a href="/accounts/TourProposal_Report?req=pending">
+                                            <p class="text-success w-100"><span><span class="text-dark">Pending :  </span> @data.totaTourProposalPendingReque</span></p>
+                                        </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
+                                        <a href="/accounts/TourProposal_Report?req=approved">
                                         <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalTourProposalApprReque</span></p>
+                                        </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
+                                        <a href="/accounts/TourProposal_Report?req=rejected">
                                         <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalTourProposalRejectReque</span></p>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-5">
@@ -263,12 +272,12 @@
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
             <!-- Request's status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
-                <a href="/Admin/Hiring_Report" class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 rounded shadow-lg">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Hiring Vehicle's</h6>
@@ -277,13 +286,19 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Pending :  </span> @data.totalPendingHiringVehicle</span></p>
+                                        <a href="/accounts/Hiring_Report?req=pending">
+                                            <p class="text-success w-100"><span><span class="text-dark">Pending :  </span> @data.totalPendingHiringVehicle</span></p>
+                                        </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalApproveHiringVehicle</span></p>
+                                        <a href="/accounts/Hiring_Report?req=approved">
+                                            <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalApproveHiringVehicle</span></p>
+                                        </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalRejectHiringVehicle</span></p>
+                                        <a href="/accounts/Hiring_Report?req=rejected">
+                                            <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalRejectHiringVehicle</span></p>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-5">
@@ -292,19 +307,19 @@
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
 
 
         </div>
     </div>
 </div>
-<div class="row mt-0">
-    <div class="col-lg-7 col-xl-8 grid-margin stretch-card">
+<div class="row mt-0 mx-0" style="margin-top:-16px !important;">
+    <div class="col-lg-7 col-xl-8 px-1">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body" >
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
-                    <h6 class="card-title mb-0">Project Status</h6>
+                    <h6 class="card-title mb-0">Fund Status</h6>
                     <div class="dropdown mb-2">
                         <button class="btn p-0" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
@@ -318,14 +333,16 @@
                         </div>
                     </div>
                 </div>
-                <p class="text-muted">Check the current project status on the dashboard for detailed updates.</p>
-                <div id="monthlySalesChart"></div>
+                <p class="text-muted">Check the current fund status on the dashboard for detailed updates.</p>
+                <div class="py-3">
+                    <div id="monthlySalesChart"></div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-5 col-xl-4 grid-margin stretch-card">
+    <div class="col-lg-5 col-xl-4 px-1">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body" style="min-height:428px !important;">
                 <div class="d-flex justify-content-between align-items-baseline">
                     <h6 class="card-title mb-0">Project Data</h6>
                     <div class="dropdown mb-2">
@@ -365,7 +382,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-5 col-xl-4 grid-margin grid-margin-xl-0 stretch-card">
+    @*<div class="col-lg-5 col-xl-4 grid-margin grid-margin-xl-0 stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
@@ -447,12 +464,12 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-7 col-xl-8 stretch-card">
+    </div>*@
+    <div class="col-lg-7 col-xl-12 stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
-                    <h6 class="card-title mb-0">Projects</h6>
+                    <h6 class="card-title mb-0">Fund Request's</h6>
                     <div class="dropdown mb-2">
                         <button class="btn p-0" type="button" id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
@@ -470,73 +487,33 @@
                     <table class="table table-hover mb-0">
                         <thead>
                             <tr>
-                                <th class="pt-0">#</th>
+                                <th class="pt-0">Sr. No.</th>
                                 <th class="pt-0">Project Name</th>
                                 <th class="pt-0">Start Date</th>
-                                <th class="pt-0">Due Date</th>
+                                <th class="pt-0">Completion Date</th>
                                 <th class="pt-0">Status</th>
-                                <th class="pt-0">Assign</th>
+                                <th class="pt-0">Assign Date</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Travelin jQuery</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-                                <td><span class="badge bg-danger">Released</span></td>
-                                <td>Leonardo Payne</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Travelin Angular</td>
-                                <td>01/01/2022</td>
-                                <td>26/04/2022</td>
-                                <td><span class="badge bg-success">Review</span></td>
-                                <td>Carl Henson</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Travelin ReactJs</td>
-                                <td>01/05/2022</td>
-                                <td>10/09/2022</td>
-                                <td><span class="badge bg-info">Pending</span></td>
-                                <td>Jensen Combs</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Travelin VueJs</td>
-                                <td>01/01/2022</td>
-                                <td>31/11/2022</td>
-                                <td>
-                                    <span class="badge bg-warning">Work in Progress</span>
-                                </td>
-                                <td>Amiah Burton</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Travelin Laravel</td>
-                                <td>01/01/2022</td>
-                                <td>31/12/2022</td>
-                                <td><span class="badge bg-danger">Coming soon</span></td>
-                                <td>Yaretzi Mayo</td>
-                            </tr>
-                            <tr>
-                                <td>6</td>
-                                <td>Travelin NodeJs</td>
-                                <td>01/01/2022</td>
-                                <td>31/12/2022</td>
-                                <td><span class="badge bg-primary">Coming soon</span></td>
-                                <td>Carl Henson</td>
-                            </tr>
-                            <tr>
-                                <td class="border-bottom">3</td>
-                                <td class="border-bottom">Travelin EmberJs</td>
-                                <td class="border-bottom">01/05/2022</td>
-                                <td class="border-bottom">10/11/2022</td>
-                                <td class="border-bottom"><span class="badge bg-info">Pending</span></td>
-                                <td class="border-bottom">Jensen Combs</td>
-                            </tr>
+                           @if (projectlist != null)
+                           {
+                               i = 1;
+                               foreach(var item in projectlist)
+                               {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.ProjectTitle</td>
+                        <td>@item.StartDate</td>
+                        <td>@item.CompletionDate</td>
+                        <td>
+                            <span class='text-light px-2 border-0 rounded-1 @(item.ApproveStatus?"bg-success":"bg-warning")'>@(item.ApproveStatus?"Completed":"Pending")</span>
+                        </td>
+                        <td>@item.AssignDate</td>
+                    </tr>
+                                   i++;
+                               }
+                           }
                         </tbody>
                     </table>
                 </div>
@@ -549,102 +526,108 @@
 
 <script>
     $(document).ready(function () {
-        if ($('#monthlySalesChart').length) {
-            var options = {
-                chart: {
-                    type: 'bar',
-                    height: '318',
-                    parentHeightOffset: 0,
-                    foreColor: '#6c757d', // Replacing colors.bodyColor with a gray color
-                    background: '#ffffff', // Replacing colors.cardBg with white
-                    toolbar: {
-                        show: false
-                    },
-                },
-                theme: {
-                    mode: 'light'
-                },
-                tooltip: {
-                    theme: 'light'
-                },
-                colors: ['#1aa7a6'], // Primary color for the bars (blue)
-                fill: {
-                    opacity: .9
-                },
-                grid: {
-                    padding: {
-                        bottom: -4
-                    },
-                    borderColor: '#D6E9E9', // Replacing colors.gridBorder with a light gray color
-                    xaxis: {
-                        lines: {
-                            show: true
-                        }
-                    }
-                },
-                series: [{
-                    name: 'Completed',
-                    data: [70, 20, 40, 30, 60, 61, 88, 43, 10, 45, 60, 24]
-                }],
-                xaxis: {
-                    type: 'category', // Change type from 'datetime' to 'category'
-                    categories: ['Project1', 'Project2', 'Project3', 'Project4', 'Project5', 'Project6', 'Project7', 'Project8', 'Project9', 'Project10', 'Project11', 'Project12'], // Updated categories
-                    axisBorder: {
-                        color: '#dee2e6', // Light gray color
-                    },
-                    axisTicks: {
-                        color: '#dee2e6', // Light gray color
-                    },
-                },
-                yaxis: {
-                    min: 0,
-                    max: 100,
-                    tickAmount: 5,
-                    title: {
-                        text: 'Project Completion',
-                        style: {
-                            fontSize: '12px',
-                            color: '#adb5bd',
-                            fontFamily: 'inherit',
-                        }
-                    },
-                },
-                legend: {
-                    show: true,
-                    position: "top",
-                    horizontalAlign: 'center',
-                    fontFamily: 'inherit', // Replace with your desired font
-                    itemMargin: {
-                        horizontal: 8,
-                        vertical: 0
-                    },
-                },
-                stroke: {
-                    width: 0
-                },
+       var gdata = @Html.Raw(Json.Encode(ViewData["graphdata"]));
+var gdata = @Html.Raw(Json.Encode(ViewData["graphdata"]));
+if ($('#monthlySalesChart').length) {
+    var options = {
+        chart: {
+            type: 'bar', // Change to bar chart
+            height: '318',
+            parentHeightOffset: 0,
+            foreColor: '#6c757d',
+            background: '#ffffff',
+            toolbar: {
+                show: false
+            },
+        },
+        theme: {
+            mode: 'light'
+        },
+        tooltip: {
+            theme: 'light'
+        },
+        colors: ['#1aa7a6', '#ffb22b', '#f17a7a'], // Three colors for the bars
+        fill: {
+            opacity: 0.9
+        },
+        series: [{
+            name: 'Total Amount',
+            data: [5000,1000,2000,8000] // Data for the Total Amount bar
+        }, {
+            name: 'Approve Amount',
+            data: [4000,1000,500,2000] // Data for the Approve Amount bar
+        }, {
+            name: 'Pending Amount',
+            data: [1000,0,1500,6000] // Data for the Pending Amount bar
+        }],
+        xaxis: {
+            type: 'category',
+            categories: ['m1','m2','m3','m4'], // One category for all three bars
+            axisBorder: {
+                color: '#dee2e6',
+            },
+            axisTicks: {
+                color: '#dee2e6',
+            },
+        },
+        yaxis: {
+            min: 0,
+            max:  10000, // Set max value for y-axis dynamically
+            tickAmount: 5,
+            title: {
+                text: 'Fund Completion',
+                style: {
+                    fontSize: '12px',
+                    color: '#adb5bd',
+                    fontFamily: 'inherit',
+                }
+            },
+        },
+        legend: {
+            show: true,
+            position: "top",
+            horizontalAlign: 'center',
+            fontFamily: 'inherit',
+            itemMargin: {
+                horizontal: 8,
+                vertical: 0
+            },
+        },
+        grid: {
+            padding: {
+                bottom: -4
+            },
+            borderColor: '#D6E9E9',
+            xaxis: {
+                lines: {
+                    show: true
+                }
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            style: {
+                fontSize: '10px',
+                fontFamily: 'inherit',
+            },
+            offsetY: -27
+        },
+        plotOptions: {
+            bar: {
+                columnWidth: "30%", // Adjust width of the bars
+                borderRadius: 4, // Rounded corners for bars
                 dataLabels: {
-                    enabled: true,
-                    style: {
-                        fontSize: '10px',
-                        fontFamily: 'inherit', // Replace with your desired font
-                    },
-                    offsetY: -27
-                },
-                plotOptions: {
-                    bar: {
-                        columnWidth: "50%",
-                        borderRadius: 4,
-                        dataLabels: {
-                            position: 'top',
-                            orientation: 'vertical',
-                        }
-                    },
-                },
-            };
+                    position: 'top',
+                }
+            },
+        },
+    };
 
-            var apexBarChart = new ApexCharts(document.querySelector("#monthlySalesChart"), options);
-            apexBarChart.render();
-        }
+    var apexBarChart = new ApexCharts(document.querySelector("#monthlySalesChart"), options);
+    apexBarChart.render();
+}
+
+
 
 
         if ($('#storageChart').length) {

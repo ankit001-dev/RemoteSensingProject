@@ -388,6 +388,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class RaisedProblem
         {
+            public DateTime createdAt { get; set; }
             public string projectManager { get; set; }
             public int userId { get; set; }
             public bool adminappr { get; set; }

@@ -22,33 +22,44 @@
         <table class="table-bordered table-striped" id="dataTableExample">
             <thead>
                 <tr>
-                    <th>S.N.</th>
+                    <th>Sr. No.</th>
                     <th>Project Name</th>
                     <th>Title</th>
+                    <th>Poblem Date</th>
                     <th>Description</th>
-                    @*<th class="text-center">View</th>*@
-                    <th class="text-center">Status</th>
+                    <th class="text-center">View</th>
                     <th class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
-                @if(data!=null){
-                    foreach(var item in data)
+                @if (data != null)
+                {
+                    foreach (var item in data)
                     {
                         <tr>
                             <td>@i</td>
-                            <td class="text-center"><a href="@item.documentname" data-title="View Details" target="_blank" class="view">@item.projectname</a></td>
+                            <td data-id="@item.id">
+                                <a href="#" class="descri">@item.projectname</a>
+                            </td>
                             <td>@item.title</td>
-                            <td>@item.description</td>
+                            <td>@Convert.ToDateTime(item.createdAt).ToString("dd-MMM-yyyy")</td>
+                            <td>
+                                @if (item.description.Length <= 8)
+                                {
+                                    <span>@item.description</span>
+                                }
+                                else
+                                {
+                                    <span>@item.description.Substring(0, 8)...</span>
+                                }
+                            </td>
                             @*<td class="text-center"><a href="@item.documentname" target="_blank" class="view"><i class="fa-regular text-primary fa-eye"></i></a></td>*@
                             <td class="text-center">
                                 @{
-                                    if (item.newRequest && !item.adminappr)
-                                    { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                    else if (!item.newRequest && item.adminappr)
-                                    { <span id="status" class="badge bg-success">Approved</span> }
-                                    else if (!item.newRequest && !item.adminappr)
-                                    { <span id="status" class="badge bg-danger">Rejected</span> }
+                                    if (!item.newRequest)
+                                    { <span id="status" class="badge bg-success pt-1">Viewed</span> }
+                                    else if (item.newRequest)
+                                    { <span id="status" class="badge bg-primary">Not Seen</span> }
                                 }
                             </td>
                             <td class="text-center"><a class="delete" data-title="Delete" href="#" data-id="@item.id"><i class="fa-regular text-danger fa-trash-can"></i></a></td>
@@ -61,7 +72,7 @@
     </div>
 </div>
 
-<!--Moadal start-->
+<!--Form Moadal start -->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
@@ -108,9 +119,45 @@
 </div>
 
 <!--Moadal start-->
+
+<!--View Modal Start-->
+<div class="modal fade" id="problemModal" tabindex="-1" aria-labelledby="problemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="modal-title" id="problemModalLabel">Problem Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Problem details form or information -->
+                <div class="mb-3">
+                    <label for="projectName" class="form-label">Project Name</label>
+                    <input type="text" class="form-control" id="projectName1" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title1" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description1" rows="4" readonly></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="document" class="form-label">Document</label>
+                    <a href="#" id="document1" class="btn btn-link" target="_blank">View Document</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary py-1 me-4" data-bs-dismiss="modal">Ok</button>
+                <!-- If needed, you can add more buttons like "Edit" or "Resolve" here -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Start-->
 <script>
     $(document).ready(function () {
-        $("#raiseProblemForm").submit( function (e) {
+        $("#raiseProblemForm").submit(function (e) {
             e.preventDefault();
             Swal.fire({
                 title: 'Please wait!',
@@ -125,7 +172,7 @@
                 url: '/employee/RaiseProblem',
                 type: 'post',
                 contentType: false,
-                processData:false,
+                processData: false,
                 data: formdata,
                 success: function (res) {
                     if (res.status) {
@@ -186,7 +233,7 @@
                         });
                     }
                 },
-                error: function (xhr,status,error) {
+                error: function (xhr, status, error) {
                     Swal.fire({
                         title: 'Error Occured !',
                         text: 'Server error. Please Try Again Later...',
@@ -194,6 +241,41 @@
                     });
                     console.log(xhr, status, error);
                 },
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $(".descri").on("click", function () {
+            Swal.fire({
+                title: 'Please Wait!',
+                text: 'Processing your request...',
+                didOpen: () => { Swal.showLoading(); },
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            })
+            let id = $(this).parent().data("id");
+            $.ajax({
+                url: '/api/getRaisedProblemById',
+                type: 'get',
+                data: { id: id },
+                success: function (res) {
+                    console.log(res.data[0])
+                    $("#projectName1").val(res.data[0].projectname);
+                    $("#title1").val(res.data[0].title);
+                    $("#description1").text(res.data[0].description);
+                    $("#document1").attr("href", res.data[0].documentname)
+                    $("#problemModal").modal("show")
+                    Swal.close();
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'Some Error Occured',
+                        text: 'Failed to Fetch the data',
+                        icon: 'warning'
+                    })
+                }
             });
         });
     });

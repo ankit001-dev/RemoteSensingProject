@@ -32,7 +32,11 @@
                 {
 <tr>
     <td >@i</td>
-    <td>@item.ProjectHeads</td>
+    <td>
+        
+        <a href="#" data-title="View Details" class="headExpense" data-Id="@item.Id">@item.ProjectHeads</a>
+
+    </td>
     <td class="text-center">
         ₹@item.ProjectAmount
     </td>
@@ -42,9 +46,9 @@
         @if (item.ProjectAmount >= Convert.ToDecimal(item.TotalAskAmount))
         {
             decimal acceptableAmount = item.ProjectAmount - Convert.ToDecimal(item.TotalAskAmount);
-            <a href="#" class="addExpences" data-acceptableAmount="@acceptableAmount" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a>
+            <a href="#" data-title="Add Expences" class="addExpences" data-acceptableAmount="@acceptableAmount" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a>
         }
-        <a href="#" class="headExpense" data-Id="@item.Id"><i class="fa-solid fa-eye"></i></a>
+        
     </td>
 </tr>        i++;
                 }
@@ -127,7 +131,7 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>Sr. No.</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Amount</th>

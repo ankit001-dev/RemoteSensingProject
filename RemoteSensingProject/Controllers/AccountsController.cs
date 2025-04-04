@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Formatters.Internal;
+using Microsoft.SqlServer.Server;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using System;
@@ -29,6 +30,8 @@ namespace RemoteSensingProject.Controllers
             ViewBag.PendingStatus = _accountSerivce.Project_List().Count(e => !e.ApproveStatus);
             ViewBag.TotalFunRequest = _accountSerivce.Project_List().Count();
             var TotalCount = _accountSerivce.DashboardCount();
+            ViewData["projectlist"] = _accountSerivce.Project_List().Take(5).ToList();
+            ViewData["graphdata"] = _accountSerivce.ExpencesListforgraph();
 
             return View(TotalCount);
         }
@@ -90,28 +93,50 @@ namespace RemoteSensingProject.Controllers
             ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
-        public ActionResult FundReport()
+        public ActionResult FundReport(string req)
         {
-            ViewBag.ProjectList = _accountSerivce.Project_List();
+            ViewBag.ProjectList = req=="complete"? _accountSerivce.Project_List().Where(d => d.ApproveStatus == true).ToList():req=="pending"? _accountSerivce.Project_List().Where(d => d.ApproveStatus == false).ToList(): _accountSerivce.Project_List();
             return View();
         }
 
-        public ActionResult Reimbursement_Report()
+        public ActionResult Reimbursement_Report(string req)
         {
             ViewData["totalProjectManager"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            ViewData["totalReinursementReport"] = _adminServices.ReinbursementReport();
+            ViewData["totalReinursementReport"] = req == "approved" ? _adminServices.ReinbursementReport().Where(d => d.newRequest == false && d.appr_status == true && d.status == true).ToList() : req == "rejected" ? _adminServices.ReinbursementReport().Where(d => d.newRequest == false && (d.appr_status == false || d.status == false)).ToList() : _adminServices.ReinbursementReport();
             return View();
         }
-        public ActionResult TourProposal_Report()
+        public ActionResult TourProposal_Report(string req)
         {
-            ViewData["allTourList"] = _accountSerivce.getTourList();
+           if(req == "pending")
+            {
+                ViewData["allTourList"] = _accountSerivce.getTourList().Where(d => d.newRequest && !d.adminappr).ToList();
+            } 
+            else if (req == "approved")
+            {
+                ViewData["allTourList"] = _accountSerivce.getTourList().Where(d => !d.newRequest && d.adminappr).ToList();
+            }
+            else if (req == "rejected")
+            {
+                ViewData["allTourList"] = _accountSerivce.getTourList().Where(d => !d.newRequest && !d.adminappr).ToList();
+            }
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
-        public ActionResult Hiring_Report()
+        public ActionResult Hiring_Report(string req)
         {
-            ViewData["hiringList"] = _adminServices.HiringReort();
+            if (req == "pending")
+            {
+                ViewData["hiringList"] = _adminServices.HiringReort().Where(d => d.newRequest && !d.adminappr).ToList();
+            }
+            else if (req == "approved")
+            {
+                ViewData["hiringList"] = _adminServices.HiringReort().Where(d => !d.newRequest && d.adminappr).ToList();
+            }
+            else if (req == "rejected")
+            {
+                ViewData["hiringList"] = _adminServices.HiringReort().Where(d => !d.newRequest && !d.adminappr).ToList();
+            }
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             ViewData["projects"] = _adminServices.Project_List();
             return View();
