@@ -638,7 +638,14 @@
             var options = {
                 chart: {
                     height: 260,
-                    type: "radialBar"
+                    type: "radialBar",
+                    events: {
+                        // Listen for click event on the chart
+                        click: function (event, chartContext, config) {
+                            // Redirect based on the click event
+                            window.location.href = "/Admin/All_Projects";  // Change this to your desired URL
+                        }
+                    }
                 },
                 series: [@data.TotalCompleteProject],
                 colors: [colors.primary],
@@ -730,6 +737,13 @@
                             tooltip: {
                                 mode: 'index',
                                 intersect: false
+                            }
+                        },
+                        onClick: function (e, elements) {
+                            // If a point is clicked (elements.length > 0)
+                            if (elements.length > 0) {
+                                // Redirect to the URL
+                                window.location.href = "/Admin/ViewExpenditureAmount";
                             }
                         }
                     }
@@ -961,13 +975,15 @@
     });
 </script>
 
-<!--Mini charts-->
+<!--Mini charts Budget-->
 <script>
 
     $(document).ready(function () {
         debugger
     // Pass the Razor data as JSON to the JavaScript context
-
+        Chart.defaults.font.size = 13;
+        Chart.defaults.font.family = "'Arial', sans-serif";
+        Chart.defaults.color = '#000';
     var ctx = document.getElementById('bbchart').getContext('2d');
         var datac = [
             { y:@Convert.ToDecimal(data.TotalBudget), x:100,r:8 },
@@ -986,12 +1002,23 @@
         },
         options: {
             responsive: true,
+            padding:10,
             plugins: {
                 legend: {
                     position: '',
                 },
                 tooltip: {
-                    enabled: true
+                    enabled: true,
+                    titleFont: {
+                        size: 6
+                    }
+                }
+            },
+            onClick: function (e, elements) {
+                // Check if a bubble is clicked
+                if (elements.length > 0) {
+                    // Redirect to the URL if a point (bubble) is clicked
+                    window.location.href = "/Admin/ViewExpenditureAmount";
                 }
             }
         }
@@ -1011,7 +1038,10 @@
     })
 
   $(document).ready(function () {
-    // Pass the Razor data as JSON to the JavaScript context
+      // Pass the Razor data as JSON to the JavaScript context
+      Chart.defaults.font.size = 13;
+      Chart.defaults.font.family = "'Arial', sans-serif";
+      Chart.defaults.color = '#000';
     var yearlyData = [
        @Convert.ToInt32(data.TotalProject),
        @Convert.ToInt32(data.TotalInternalProject),
@@ -1046,6 +1076,22 @@
                 },
                 tooltip: {
                     enabled: true
+                }
+            },
+            onClick: function (e, elements) {
+                // If a slice is clicked
+                if (elements.length > 0) {
+                    var clickedElementIndex = elements[0].index;  // Get the index of the clicked segment
+                    var clickedLabel = pichart.data.labels[clickedElementIndex];  // Get the label of the clicked segment
+
+                    // Redirect based on the clicked label
+                    if (clickedLabel === 'Total') {
+                        window.location.href = '/Admin/All_Projects';  // Redirect to the page for total projects
+                    } else if (clickedLabel === 'Internal') {
+                        window.location.href = '/Admin/All_Projects?req=Internal';  // Redirect to the page for internal projects
+                    } else if (clickedLabel === 'External') {
+                        window.location.href = '/Admin/All_Projects?req=External';  // Redirect to the page for external projects
+                    }
                 }
             }
         }
@@ -1121,6 +1167,22 @@
                 x: {
                     // Set bar width strictly to 10px
                     pointRadius: 30, // Strictly setting bar width to 10px
+                }
+            },
+            onClick: function (e, elements) {
+                // If a data point is clicked
+                if (elements.length > 0) {
+                    var clickedElementIndex = elements[0].index;  // Get the index of the clicked data point
+                    var clickedLabel = brchart.data.labels[clickedElementIndex];  // Get the label of the clicked data point
+
+                    // Redirect based on the clicked label (Reimbursement, Tour Proposal, Hiring Vehicle)
+                    if (clickedLabel === 'Reimbursement') {
+                        window.location.href = '/admin/Reimbursement_report';  // Redirect to the page for reimbursement
+                    } else if (clickedLabel === 'Tour Proposal') {
+                        window.location.href = '/admin/tourproposal_report';  // Redirect to the page for tour proposals
+                    } else if (clickedLabel === 'Hiring Vehicle') {
+                        window.location.href = '/admin/hiring_report';  // Redirect to the page for vehicle hiring
+                    }
                 }
             }
         }

@@ -2032,5 +2032,55 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+        #region Report for mobile app
+        [HttpGet]
+        [Route("api/allhiringreport")]
+        public IHttpActionResult AllHiringReport()
+        {
+            try
+            {
+                var data = _adminServices.HiringReort();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/alltourproposalreport")]
+        public IHttpActionResult AllTourproposalReport()
+        {
+            try
+            {
+                var data = _accountService.getTourList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
     }
 }

@@ -733,7 +733,7 @@
 <div class="row mx-0">
     <div class="col-sm-4 px-1">
         <div class="card ">
-            <div class="card-header">Budget</div>
+            <div class="card-header">Task</div>
             <div class="card-body">
                 <div>
                     <canvas id="bbchart" style="min-height:200px; width:264px;"></canvas>
@@ -939,7 +939,14 @@
             var options = {
                 chart: {
                     height: 260,
-                    type: "radialBar"
+                    type: "radialBar",
+                    events: {
+                        // Listen for click event on the chart
+                        click: function (event, chartContext, config) {
+                            // Redirect based on the click event
+                            window.location.href = "/employee/All_Project_list";  // Change this to your desired URL
+                        }
+                    }
                 },
                 series: [@Model.TotaCompleteProject],
                 colors: [colors.primary],
@@ -998,9 +1005,9 @@
 
     var ctx = document.getElementById('bbchart').getContext('2d');
         var datac = [
-            { y:@Model.TotalTask, x:100,r:8 },
-{y:@(Convert.ToInt32(Model.TotalTask)-Convert.ToInt32(Model.CompletedTask)), x:50,r:8},
-{y:@Model.CompletedTask, x:20,r:8}];
+            { y:@Model.TotalTask, x:100,r:8, label:'Total Task'},
+{y:@(Convert.ToInt32(Model.TotalTask)-Convert.ToInt32(Model.CompletedTask)), x:50,r:8, label:'Pending Task'},
+{y:@Model.CompletedTask, x:20,r:8,label:'Completed Task'}];
 
     var bubblechart = new Chart(ctx, {
         type: 'bubble',
@@ -1021,7 +1028,24 @@
                 tooltip: {
                     enabled: true
                 }
+            },
+            onClick: function (event, elements) {
+                // Check if an element was clicked
+                if (elements.length > 0) {
+                    var clickedElementIndex = elements[0].index;
+                    // Redirect based on the clicked bubble
+                    var bubbleData = datac[clickedElementIndex];
+                    // You can redirect to a different URL based on the clicked bubble's data
+                    if (bubbleData.y === @Model.TotalTask) {
+                        window.location.href = '/employee/CreateTask'; // Redirect to your desired page
+                    } else if (bubbleData.y === @(Convert.ToInt32(Model.TotalTask) - Convert.ToInt32(Model.CompletedTask))) {
+                        window.location.href = '/employee/CreateTask?req=pending'; // Redirect to incomplete tasks page
+                    } else if (bubbleData.y === @Model.CompletedTask) {
+                        window.location.href = '/employee/CreateTask?req=completed'; // Redirect to completed tasks page
+                    }
+                }
             }
+        
         }
     });
         // Update the chart with new data
@@ -1075,7 +1099,23 @@
                 tooltip: {
                     enabled: true
                 }
+            },
+        onClick: function (e, elements) {
+            // If a slice is clicked
+            if (elements.length > 0) {
+                var clickedElementIndex = elements[0].index;  // Get the index of the clicked segment
+                var clickedLabel = pichart.data.labels[clickedElementIndex];  // Get the label of the clicked segment
+
+                // Redirect based on the clicked label
+                if (clickedLabel === 'Total') {
+                    window.location.href = '/employee/All_project_list';  // Redirect to the page for total projects
+                } else if (clickedLabel === 'Assigned') {
+                    window.location.href = '/employee/Assigned_project';  // Redirect to the page for internal projects
+                } else if (clickedLabel === 'Self Created') {
+                    window.location.href = '/employee/project_list';  // Redirect to the page for external projects
+                }
             }
+        }
         }
     });
 
@@ -1130,9 +1170,9 @@
             datasets: [{
                 label: '',
                 data: datac,
-                pointRadius: 5,
+                pointRadius: 8,
                 backgroundColor: [' #00e6b8', '#6600ff', '#ff6600'],
-                hoverOffset: 4
+                hoverOffset: 10
             }]
         },
         options: {
@@ -1149,6 +1189,22 @@
                 x: {
                     // Set bar width strictly to 10px
                     pointRadius: 30, // Strictly setting bar width to 10px
+                }
+            },
+            onClick: function (e, elements) {
+                // If a data point is clicked
+                if (elements.length > 0) {
+                    var clickedElementIndex = elements[0].index;  // Get the index of the clicked data point
+                    var clickedLabel = brchart.data.labels[clickedElementIndex];  // Get the label of the clicked data point
+
+                    // Redirect based on the clicked label (Reimbursement, Tour Proposal, Hiring Vehicle)
+                    if (clickedLabel === 'Reimbursement') {
+                        window.location.href = '/employee/Reimbursement_report';  // Redirect to the page for reimbursement
+                    } else if (clickedLabel === 'Tour Proposal') {
+                        window.location.href = '/employee/tourproposal_report';  // Redirect to the page for tour proposals
+                    } else if (clickedLabel === 'Hiring Vehicle') {
+                        window.location.href = '/employee/hiring_report';  // Redirect to the page for vehicle hiring
+                    }
                 }
             }
         }

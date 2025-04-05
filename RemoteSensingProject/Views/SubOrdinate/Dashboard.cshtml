@@ -612,7 +612,14 @@
             var options = {
                 chart: {
                     height: 260,
-                    type: "radialBar"
+                    type: "radialBar",
+                    events: {
+                        // Listen for click event on the chart
+                        click: function (event, chartContext, config) {
+                            // Redirect based on the click event
+                            window.location.href = "/SubOrdinate/Assigned_Project";  // Change this to your desired URL
+                        }
+                    }
                 },
                 series: [@data.CompletedProject],
                 colors: [colors.primary],

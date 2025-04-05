@@ -32,6 +32,7 @@ namespace RemoteSensingProject.Controllers
             var TotalCount = _accountSerivce.DashboardCount();
             ViewData["projectlist"] = _accountSerivce.Project_List().Take(5).ToList();
             ViewData["graphdata"] = _accountSerivce.ExpencesListforgraph();
+            ViewData["budgetdataforgraph"] = _accountSerivce.budgetdataforgraph();
 
             return View(TotalCount);
         }

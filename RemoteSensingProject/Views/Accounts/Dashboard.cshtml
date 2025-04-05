@@ -6,6 +6,7 @@
     var projectlist = ViewData["projectlist"] as List<RemoteSensingProject.Models.Accounts.main.Project_model>;
     int i;
     var graphdata = ViewData["graphdata"] as List<RemoteSensingProject.Models.ProjectManager.ProjectExpenses>;
+    var bdata = ViewData["budgetdataforgraph"] as List<RemoteSensingProject.Models.Accounts.main.GraphData>;
 }
 
 
@@ -317,7 +318,7 @@
 <div class="row mt-0 mx-0" style="margin-top:-16px !important;">
     <div class="col-lg-7 col-xl-8 px-1">
         <div class="card">
-            <div class="card-body" >
+            <div class="card-body" style="height:430px !important">
                 <div class="d-flex justify-content-between align-items-baseline mb-2">
                     <h6 class="card-title mb-0">Fund Status</h6>
                     <div class="dropdown mb-2">
@@ -342,7 +343,7 @@
     </div>
     <div class="col-lg-5 col-xl-4 px-1">
         <div class="card">
-            <div class="card-body" style="min-height:428px !important;">
+            <div class="card-body" style="min-height:430px !important;">
                 <div class="d-flex justify-content-between align-items-baseline">
                     <h6 class="card-title mb-0">Project Data</h6>
                     <div class="dropdown mb-2">
@@ -372,9 +373,6 @@
                             <h5 class="fw-bolder mb-0">@ViewBag.CompleteRequest</h5>
                         </div>
                     </div>
-                </div>
-                <div class="d-grid">
-                    <button class="btn btn-primary">View More</button>
                 </div>
             </div>
         </div>
@@ -526,8 +524,9 @@
 
 <script>
     $(document).ready(function () {
-       var gdata = @Html.Raw(Json.Encode(ViewData["graphdata"]));
-var gdata = @Html.Raw(Json.Encode(ViewData["graphdata"]));
+        var gdata = @Html.Raw(Json.Encode(ViewData["graphdata"]));
+        var datag = @Html.Raw(Json.Encode(ViewData["budgetdataforgraph"]));
+       console.log(datag);
 if ($('#monthlySalesChart').length) {
     var options = {
         chart: {
@@ -552,17 +551,17 @@ if ($('#monthlySalesChart').length) {
         },
         series: [{
             name: 'Total Amount',
-            data: [5000,1000,2000,8000] // Data for the Total Amount bar
+            data: datag.map(tt => tt.amount) // Data for the Total Amount bar
         }, {
             name: 'Approve Amount',
-            data: [4000,1000,500,2000] // Data for the Approve Amount bar
+            data: datag.map(aa => aa.ApprAmount) // Data for the Approve Amount bar
         }, {
             name: 'Pending Amount',
-            data: [1000,0,1500,6000] // Data for the Pending Amount bar
+            data: datag.map(pa => pa.pendingamount) // Data for the Pending Amount bar
         }],
         xaxis: {
             type: 'category',
-            categories: ['m1','m2','m3','m4'], // One category for all three bars
+            categories: datag.map(mon =>mon.months), // One category for all three bars
             axisBorder: {
                 color: '#dee2e6',
             },
@@ -640,7 +639,14 @@ if ($('#monthlySalesChart').length) {
             var options = {
                 chart: {
                     height: 260,
-                    type: "radialBar"
+                    type: "radialBar",
+                    events: {
+                        // Listen for click event on the chart
+                        click: function (event, chartContext, config) {
+                            // Redirect based on the click event
+                            window.location.href = "/accounts/FundReport";  // Change this to your desired URL
+                        }
+                    }
                 },
                 series: [@ViewBag.CompleteRequest],
                 colors: [colors.primary],

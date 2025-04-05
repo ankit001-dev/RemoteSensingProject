@@ -54,10 +54,11 @@ namespace RemoteSensingProject.Models.Accounts
         }
         public class GraphData
         {
-            public decimal AppAmount { get; set; }
+            public decimal ApprAmount { get; set; }
             public string title { get; set; }
             public decimal amount { get; set; }
-            public string month { get; set; }
+            public string months { get; set; }
+            public decimal pendingamount { get; set; }
         }
         public class HeadExpenses
         {

@@ -221,7 +221,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                         i += cmd.ExecuteNonQuery();
                     }
 
-                    if (pm.pm.SubOrdinate.Length > 0)
+                    if (pm.pm.SubOrdinate!=null&& pm.pm.SubOrdinate.Length > 0)
                     {
                         foreach (var item in pm.pm.SubOrdinate)
                         {

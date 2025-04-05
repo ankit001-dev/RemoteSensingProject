@@ -373,7 +373,7 @@ namespace RemoteSensingProject.Models.Accounts
                     while (rd.Read())
                     {
                         obj = new GraphData();
-                            obj.AppAmount = Convert.ToDecimal(rd["appamount"]);
+                            obj.ApprAmount = Convert.ToDecimal(rd["appamount"]);
                         obj.amount = Convert.ToDecimal(rd["totalamount"]);
                         //obj.month = rd["monthname"].ToString();
                     }
@@ -387,6 +387,44 @@ namespace RemoteSensingProject.Models.Accounts
             finally
             {
                 if (con.State == System.Data.ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public List<GraphData> budgetdataforgraph()
+        {
+            try
+            {
+                List<GraphData> list = new List<GraphData>();
+                cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "graphdataofaccount");
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
+                SqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new GraphData
+                        {
+                            months = rd["months"].ToString(),
+                            amount = Convert.ToDecimal(rd["amount"]),
+                            ApprAmount = Convert.ToDecimal(rd["appramount"]),
+                            pendingamount = Convert.ToDecimal(rd["pending"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
                     con.Close();
                 cmd.Dispose();
             }

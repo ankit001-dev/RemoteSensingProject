@@ -140,7 +140,7 @@
                                     </div>
                                     <div class="col-lg-5 mb-3">
                                         <label for="title" class="form-label">Amount</label>
-                                        <input type="number" class="form-control form-control-s" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter amount...">
+                                        <input type="number" class="form-control form-control-s amnt" name="pm.budgets[0].ProjectAmount" placeholder="Enter amount...">
                                         <span id="_person" class="ms-2 text-danger"></span>
                                     </div>
                                 </div>
@@ -208,29 +208,11 @@
 
     <script src="~/Scripts/jquery-3.7.1.js"></script>
     <script>
-
-        $(document).ready(function () {
-            $(".person").on("keyup", function () {
-                let am = parseInt($("#budgetAmount").val());
-
-                if ($(this).val() > am) {
-                    $("#_person").text("Amount is not more than project budget");
-                    $("#misAmount").val(0);
-                    $("#addbtn").prop("disabled", true);
-                }
-                else {
-                    $("#_person").text("");
-                    $("#addbtn").prop("disabled", false);
-                     $("#misAmount").val(am - parseInt($(this).val()))
-                }
-            });
-        });
-
-
     $(document).ready(function(){
         $("select").select2({
             placeholder: "Select an option",
         });
+
     })
     $(document).ready(function () {
 
@@ -297,7 +279,13 @@
         //managing budget section
         $("#addBudgetItem").click(function () {
             let budgetAmt = parseInt($("#budgetAmount").val())
-            $("#misAmount").val(budgetAmt)
+            let ammt = parseInt($('#budgetContainerBox').find('.amnt').val())
+            if ($("#budgetContainerBox").find('.amnt').empty()) {
+                $("#misAmount").val(budgetAmt)
+            }
+            else {
+                $('#misAmount').val(budgetAmt - parseInt($('#budgetContainerBox').find('.amnt').val()));
+            }
             if (budgetAmt != null && budgetAmt > 0) {
                 let count = parseInt($(this).attr("data-count"));
                 $("#budgetContainerBox").show();
@@ -309,7 +297,7 @@
     </div>
     <div class="col-lg-5 mb-3">
         <label for="title" class="form-label">Amount</label>
-        <input type="number" class="form-control form-control-sm" id="person" name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
+        <input type="number" class="form-control form-control-sm amnt"  name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
     </div>
     <div class="col-lg-2 text-center mb-3" style="line-height:6;">
         <a href="#" class="deleteCurrntRow">
@@ -337,8 +325,34 @@
         })
     });
 
-    </script>
+       
 
+    </script>
+<script>
+    $(document).ready(function () {
+        $("#budgetAmount").on("keyup", function(){
+            $("#misAmount").val($(this).val())
+        })
+        $("#budgetContainerBox").find(".amnt").on("keyup", function () {
+            debugger
+            let amm = parseInt($("#budgetAmount").val());
+            let am = parseInt($(this).val());
+            if (am > amm) {
+                $("#_person").text("Amount is not more than Budget Amount");
+                $("#misAmount").val(0);
+            }
+            else if (am < amm) {
+                $("#_person").text("");
+                $("#misAmount").val(amm - am);
+            }
+            else if($(this).empty()) {
+                $("#_person").text("");
+                $("#misAmount").val(amm);
+            }
+            
+        });
+    });
+</script>
 
 <script>
     $(document).ready(function () {
@@ -371,7 +385,7 @@
 
             //// Add regular form data to formData object
             //arrData.forEach(function (d) {
-            //    formData.append(d.name, d.value);
+            //    formData.append(d.name, d.value); 
             //});
 
             // Check if the project document file exists and append if not already added

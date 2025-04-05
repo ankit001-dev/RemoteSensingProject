@@ -243,7 +243,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Project_List()
         {
-            ViewBag.ProjectList = _adminServices.Project_List();
+            ViewBag.ProjectList = _adminServices.Project_List().Where(d=>d.createdBy== "projectManager").ToList();
             return View();
         }
         #endregion
@@ -265,11 +265,11 @@ namespace RemoteSensingProject.Controllers
             }
             else if (req == "Internal")
             {
-                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.projectType == "Internal").ToList();
+                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.ProjectType == "Internal").ToList();
             }
             else if (req == "External")
             {
-                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.projectType == "External").ToList();
+                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.ProjectType == "External").ToList();
             }
             else
             {

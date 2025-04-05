@@ -550,7 +550,7 @@ namespace RemoteSensingProject.Models.Admin
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
                             AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
                             StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
-                            projectType = rd["projectType"].ToString()
+                            createdBy = rd["createdBy"].ToString()
                         });
                     }
                 }

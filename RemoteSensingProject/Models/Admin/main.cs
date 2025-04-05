@@ -73,7 +73,7 @@ namespace RemoteSensingProject.Models.Admin
         public class Project_model
         {        
             public bool completestatus { get; set; }
-            public string projectType { get; set; }
+            //public string projectType { get; set; }
             public int Id { get; set; }
             public string letterNo { get; set; }
             public decimal physicalcomplete { get; set; }
