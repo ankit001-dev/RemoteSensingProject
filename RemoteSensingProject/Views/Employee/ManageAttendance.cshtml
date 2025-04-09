@@ -1,0 +1,338 @@
+﻿
+@{
+    ViewBag.Title = "ManageAttendance";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["UserList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
+}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Manage Attendance</li>
+    </ol>
+    @*<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Attendance</button>*@
+</nav>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr. No.</th>
+                                <th>Name</th>
+                                <th>Contact No.</th>
+                                <th>Email</th>
+                                <th>Joining Date</th>
+                                <th>Gender</th>
+                                <th class="text-center">Attendance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (data != null && data.Count > 0)
+                            {
+                                var count = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr data-empid="@item.Id" data-empname="@item.EmpName">
+                                        <td class="text-start">@count</td>
+                                        <td data-empid="@item.Id">
+                                            <a href="#" data-title="View Attendance" class="viewattendance" >@item.EmpName</a>
+                                        </td>
+                                        <td>@item.mobileNo</td>
+                                        <td>@item.email</td>
+                                        <td>@item.joiningdate</td>
+                                        <td>@item.gender</td>
+                                        <td class="text-center" data-id="@item.Id">
+                                            <a href="#" class="open-date-modal" data-title="Add Attendance">
+                                                <i class="link-icon text-info" data-feather="plus-circle"> </i>
+                                            </a>
+                                        </td>
+                                    </tr>
+
+                                    count++;
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ Date Modal -->
+<div class="modal fade" id="dateModal" tabindex="-1">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="text-light">Select Date Range</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="selectedEmpId" />
+                <input type="hidden" id="selectedEmpName" />
+                <div class="mb-3">
+                    <label>From Date</label>
+                    <input type="date" id="fromDate" class="form-control" max="" />
+                </div>
+                <div class="mb-3">
+                    <label>To Date</label>
+                    <input type="date" id="toDate" class="form-control" max="" />
+                </div>
+                <div class="text-end">
+                    <button class="btn btn-primary" id="openAttendanceForm">Generate Attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ Attendance Modal -->
+<div class="modal fade" id="attendanceModal" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-scrollable" style="margin-top:-1%">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="text-light">Attendance for <span id="employeeNameDisplay"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="attendanceForm" class="table-responsive">
+                    <table class="table" id="dataTableExample">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th class="text-center">Present (P)</th>
+                                <th class="text-center">Absent (A)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTableBody"></tbody>
+                    </table>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary">Submit Attendance</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ✅ Attendance List Modal -->
+<div class="modal fade" id="ViewattendanceModal" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-scrollable" style="margin-top:-1%">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="text-light">Attendance Sheet Of <span id="employeeNameDisplayatttend"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="attendanceForm" class="table-responsive">
+                    <table class="table" id="dataTableExample">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th class="text-center">Attendance Status</th>
+                                <th>Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendancelist">
+
+                        </tbody>
+                    </table>
+                    <div class="text-end mt-3">
+                        <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<script>
+    let selectedEmpId = 0;
+    let selectedEmpName = "";
+    let attendanceData = {};
+
+    $(document).ready(function () {
+        let today = new Date().toISOString().split('T')[0];
+        $('#fromDate, #toDate').attr('max', today);
+    });
+
+    // Open Date Modal
+    $(document).on("click", ".open-date-modal", function () {
+        debugger
+        selectedEmpId = $(this).closest("tr").data("empid");
+        selectedEmpName = $(this).closest("tr").data("empname");
+
+        $('#selectedEmpId').val(selectedEmpId);
+        $('#selectedEmpName').val(selectedEmpName);
+        $('#fromDate').val('');
+        $('#toDate').val('');
+        $('#dateModal').modal('show');
+    });
+
+    // Generate Attendance Form
+    $('#openAttendanceForm').click(function () {
+        let from = $('#fromDate').val();
+        let to = $('#toDate').val();
+        let today = new Date().toISOString().split('T')[0];
+
+        if (!from || !to) return Swal.fire("Required", "Select both dates", "warning");
+        if (from > today || to > today) return Swal.fire("Invalid Date", "Future date not allowed", "error");
+        if (from > to) return Swal.fire("Invalid Range", "From Date can't be after To Date", "error");
+
+        generateAttendanceForm(from, to);
+    });
+
+    function generateAttendanceForm(from, to) {
+        attendanceData = {};
+        $('#attendanceTableBody').empty();
+        let start = new Date(from), end = new Date(to);
+
+        while (start <= end) {
+            let dateStr = start.toISOString().split('T')[0];
+            $('#attendanceTableBody').append(`
+          <tr>
+            <td>${dateStr}</td>
+            <td class="text-center"><button type="button" class="btn btn-sm btn-outline-success mark-attendance" data-date="${dateStr}" data-status="P">P</button></td>
+            <td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger mark-attendance" data-date="${dateStr}" data-status="A">A</button></td>
+          </tr>
+        `);
+            start.setDate(start.getDate() + 1);
+        }
+
+        $('#employeeNameDisplay').text(selectedEmpName);
+        $('#dateModal').modal('hide');
+        setTimeout(() => $('#attendanceModal').modal('show'), 300);
+    }
+
+    // Attendance Toggle Buttons
+    $(document).on("click", ".mark-attendance", function () {
+        let date = $(this).data("date");
+        let status = $(this).data("status");
+        attendanceData[date] = status;
+
+        $(this).closest('tr').find('.mark-attendance').removeClass('active');
+        $(this).addClass('active');
+    });
+
+    // Submit Attendance
+    $('#attendanceForm').submit(function (e) {
+        e.preventDefault();
+        debugger
+        Swal.fire({
+            title: "Please Wait!",
+            text: "Processing your request",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+        if (Object.keys(attendanceData).length === 0)
+            return Swal.fire("Warning", "Please mark attendance for at least one date", "warning");
+
+        $.ajax({
+            url: '/employee/AddAttendance',
+            type: 'POST',
+            data: JSON.stringify({
+                EmpId: selectedEmpId,
+                Attendance: attendanceData
+            }),
+            contentType: 'application/json',
+            success: function (response) {
+                if (response.success) {
+                    if (response.skipped && response.skipped.length > 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Some Attendance Already Exists',
+                            html: 'These dates were skipped:<br><b>' + response.skipped.join(', ') + '</b>',
+                            didClose: () => { location.reload(true); }
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success',
+                            text: response.message,
+                            didClose: () => { location.reload(true); }
+                        });
+                    }
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Server Error. Please Try After Sometime!'
+                });
+            }
+        });
+    });
+    $(document).on("click", ".viewattendance", function () {
+        debugger;
+        Swal.fire({
+            title: "Please Wait!",
+            text: "Processing your request",
+            allowOutsideClick: false,
+            allowEscapeKey:false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        let id = $(this).parent().data("empid");
+
+        $.ajax({
+            url: '/employee/GetAttendanceListByEmpId',
+            type: 'get',
+            data: { id: id },  
+            success: function (res) {
+                Swal.close();
+                if (!res || res.length === 0) {
+                    Swal.fire({
+                        title: "No Data Found",
+                        text: "No attendance records found for this employee.",
+                        icon: "info"
+                    });
+                    return;
+                }
+                console.log('Attendance List', res);
+                $("#employeeNameDisplayatttend").text(res[0].EmpName);
+                $("#attendancelist").empty();
+                $.each(res, function (index, item) {
+                    //$("#employeeNameDisplayatttend").text(item.)
+                    var row = $('<tr>');
+                    row.append('<td>' + convertDateFormat(item.attendanceDate) + '</td>');
+                    row.append('<td class="text-center">' + item.attendanceStatus + '</td>');
+                    row.append('<td>' + item.remark + '</td>');
+                    $("#attendancelist").append(row);
+                });
+                $("#ViewattendanceModal").modal("show");
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    title: "Error",
+                    text: 'Failed to fetch Data',
+                    icon: 'error'
+                });
+            }
+        });
+    });
+    function convertDateFormat(dateString) {
+        // Extract milliseconds from the string /Date(1743618600000)/
+        const milliseconds = parseInt(dateString.match(/\d+/)[0]);
+
+        // Create a Date object using the extracted milliseconds
+        const date = new Date(milliseconds);
+
+        // Return only the date in a human-readable format (no time)
+        return date.toLocaleDateString();
+    }
+
+</script>

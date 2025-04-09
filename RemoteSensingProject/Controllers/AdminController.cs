@@ -30,7 +30,8 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Dashboard()
         {
             var TotalCount = _adminServices.DashboardCount();
-            ViewData["physical"]= _adminServices.Project_List();
+            DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
+            ViewData["physical"]= _adminServices.Project_List().Where(d=>d.AssignDate>=twoYearsAgo);
             return View(TotalCount);
         }
         
@@ -547,7 +548,12 @@ namespace RemoteSensingProject.Controllers
             ViewBag.ProjectProblemList = _managerServices.getSubOrdinateProblemforAdmin();
             return View();
         }
-
+        [HttpGet]
+        public ActionResult getsubproblembyid(int id)
+        {
+            var data = _adminServices.getAllSubOrdinateProblemByIdforadmin(id);
+            return Json(data,JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult ReimbursementRequest()
         {

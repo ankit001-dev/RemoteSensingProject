@@ -90,7 +90,7 @@
             <table class="table table-hover" id="reibursementReportTable">
                 <thead>
                     <tr>
-                        <th>Sr. No</th>
+                        <th>Sr. No.</th>
                         <th>Type</th>
                         <th>Amount</th>
                         <th>Remark</th>
@@ -169,7 +169,7 @@
                             <div class="px-4 mt-1 d-flex justify-content-between">
                                 <span>
                                     <p>
-                                        <img src="@baseUrl/assets/images/remote_sensing_logo.jfif" width="50px" />
+                                        <img src="@baseUrl/assets/images/remote_sensing_logo.jfif" width="50" />
                                     </p><b>S.F.A.O/Director</b>
                                 </span>
                                 <span>
@@ -195,7 +195,7 @@
                             <table class="table table-bordered mb-0">
                                 <thead class="text-center">
                                     <tr>
-                                        <th>S.N.</th>
+                                        <th>S. N.</th>
                                         <th>Vr. No. & Date</th>
                                         <th>Particulars</th>
                                         <th>Items</th>
@@ -259,6 +259,7 @@
 
 <script>
     $(document).ready(function () {
+       
 
         $("#reibursementReportTable").DataTable({
             layout: {
@@ -267,7 +268,7 @@
                 }
             },
             columnDefs: [
-                { width: "20px", targets: 0 }
+                { width: "100px", targets: 0 }
             ],
         });
 

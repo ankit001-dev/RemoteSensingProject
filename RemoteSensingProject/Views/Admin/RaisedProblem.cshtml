@@ -12,13 +12,12 @@
             <thead>
                 <tr>
                     <th>Sr. No.</th>
-                    <th>ProjectManager</th>
                     <th>Project Name</th>
+                    <th>ProjectManager</th>
                     <th>Title</th>
                     <th>Problem Date</th>
                     <th>Description</th>
                     <th class="text-center">Status</th>
-                    <th class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,9 +28,9 @@
                         <tr>
                             <td>@i</td>
                             <td data-id="@item.id">
-                                <a href="#" class="descri" >@item.projectManager</a>
+                                <a href="#" data-title="View Details" class="descri">@item.projectname</a>
                             </td>
-                            <td>@item.projectname</td>
+                            <td>@item.projectManager</td>
                             <td>@item.title</td>
                             <td>@Convert.ToDateTime(item.createdAt).ToString("dd-MMM-yyyy")</td>
                             <td>
@@ -47,10 +46,7 @@
                                 @if (item.newRequest)
                                     { <span id="status" class="badge bg-primary pt-1">Not Seen</span> }
                                     else if (!item.newRequest)
-                                    { <span id="status" class="badge bg-success">Viewed</span> }
-                            </td>
-                            <td class="text-center" data-id="@item.id">
-                                <a href="#" data-title="View" class="descri text-decoration-underline">View</a>
+                                    { <span id="status" class="badge bg-success">Seen</span> }
                             </td>
                         </tr>
                         i++;
@@ -138,7 +134,6 @@
         });
     });
 </script>
-
 
 
 

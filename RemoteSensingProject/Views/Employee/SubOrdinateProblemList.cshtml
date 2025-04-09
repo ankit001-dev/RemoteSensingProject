@@ -30,13 +30,12 @@
                     <table id="projectTable" class="dataTableExample" style="width:100%">
                         <thead>
                             <tr>
-                                <th>Sr No.</th>
+                                <th>Sr. No.</th>
                                 <th>Project Name</th>
                                 <th>Problem Date</th>
                                 <th>Problem Title</th>
                                 <th>Description</th>
                                 <th>Status</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,7 +46,9 @@
                                 {
                                     <tr>
                                         <td>@index</td>
-                                        <td>@problem.ProjectName</td>
+                                        <td data-id="@problem.ProblemId">
+                                            <a href="#" data-title="View Details" class="descri ">@problem.ProjectName</a>
+                                        </td>
                                         <td>@problem.CreatedDate</td>
                                         <td>@problem.Title</td>
                                         <td>
@@ -64,11 +65,9 @@
                                             @if (problem.newRequest)
                                             {<span id="status" class="badge bg-primary pt-1">Not Seen</span> }
                                             else if (!problem.newRequest)
-                                            { <span id="status" class="badge bg-success">Viewed</span>}
+                                            { <span id="status" class="badge bg-success">Seen</span>}
                                         </td>
-                                        <td data-id="@problem.ProblemId">
-                                            <a href="#" data-title="View" class="descri text-decoration-underline">View</a>
-                                        </td>
+                                       
                                         @*<td>
             <a href="#" class="completeTaskAction" data-probId="@problem.ProblemId">
                 <i class="fa-solid fa-check text-success"></i>

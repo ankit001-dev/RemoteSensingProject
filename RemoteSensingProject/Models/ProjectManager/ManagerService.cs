@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Web;
 using System.Web.UI;
 using static RemoteSensingProject.Models.Admin.main;
@@ -622,11 +623,13 @@ namespace RemoteSensingProject.Models.ProjectManager
                     while (sdr.Read())
                     {
                         obj = new Raise_Problem();
+                        obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
                         obj.ProjectName = sdr["ProjectName"].ToString();
                         obj.Title = sdr["Title"].ToString();
                         obj.Description = sdr["Description"].ToString();
                         obj.Attchment_Url = sdr["Attachment"].ToString();
                         obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                        obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
                         problemList.Add(obj);
                     }
                 }
@@ -1626,7 +1629,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                             chequeNum = rd["chequeNum"].ToString(),
                             chequeDate = rd["chequeDate"] != DBNull.Value ? Convert.ToDateTime(rd["chequeDate"]).ToString("dd/MM/yyyy") : "",
                             newRequest = Convert.ToBoolean(rd["newStatus"]),
-                            approveAmount = Convert.ToDecimal(rd["apprAmt"] != DBNull.Value ? rd["apprAmt"] : 0)
+                            approveAmount = Convert.ToDecimal(rd["apprAmt"] != DBNull.Value ? rd["apprAmt"] : 0),
+                            //adminappr = Convert.ToBoolean("admin_appr"),
+                            //apprstatus = Convert.ToBoolean("Apprstatus"),
+                            //submitstatus = Convert.ToBoolean("SubmitStatus")
                         });
                     }
                 }
@@ -2292,6 +2298,260 @@ namespace RemoteSensingProject.Models.ProjectManager
             {
                 if (con.State == ConnectionState.Open)
                     con.Close();
+                cmd.Dispose();
+            }
+        }
+        #endregion
+        #region Attendance Manage
+        public (bool success,string error) insertAttendance(AttendanceManage am)
+        {
+            try
+            {
+                con.Open();
+                // Check if already exists
+                SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM ManageAttendance WHERE EmpId = @EmpId AND attendancedate = @Date", con);
+                checkCmd.Parameters.AddWithValue("@EmpId", am.EmpId);
+                checkCmd.Parameters.AddWithValue("@Date", am.attendanceDate);
+                int count = (int)checkCmd.ExecuteScalar();
+
+                if (count > 0)
+                {
+                    return (true, null);
+                }
+                cmd = new SqlCommand("sp_ManageAttendance", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "insertOutsource");
+                cmd.Parameters.AddWithValue("@EmpId", am.EmpId);
+                cmd.Parameters.AddWithValue("@address", am.address);
+                cmd.Parameters.AddWithValue("@longitude", am.longitude);
+                cmd.Parameters.AddWithValue("@latitude", am.latitude);
+                cmd.Parameters.AddWithValue("@attendancestatus", am.attendanceStatus);
+                cmd.Parameters.AddWithValue("@attendancedate", am.attendanceDate);
+                cmd.Parameters.AddWithValue("@projectManager", am.projectManager);
+               
+                int res = cmd.ExecuteNonQuery();
+                if (res > 0)
+                {
+                    return (true, "Added Successfully");
+                }
+                else
+                {
+                    return (false, "Server Error");
+                }
+            }
+            catch
+            {
+                return (false,"Error Occured");
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public (bool success, List<string> skippedDates, string error) InsertAttendance(AttendanceManage model)
+            {
+             List<string> skippedDates = new List<string>();
+             try
+             {
+                    con.Open();
+                    foreach (var item in model.Attendance)
+                    {
+                            // Check if already exists
+                            SqlCommand checkCmd = new SqlCommand("SELECT COUNT(*) FROM ManageAttendance WHERE EmpId = @EmpId AND attendancedate = @Date", con);
+                            checkCmd.Parameters.AddWithValue("@EmpId", model.EmpId);
+                            checkCmd.Parameters.AddWithValue("@Date", item.Key);
+                            int count = (int)checkCmd.ExecuteScalar();
+
+                            if (count > 0)
+                            {
+                                skippedDates.Add(item.Key); // Already exists
+                                continue;
+                            }
+
+                            // Insert only if not exists
+                            SqlCommand cmd = new SqlCommand("sp_ManageAttendance", con);
+                            cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@action", "InsertAttendance");
+                        cmd.Parameters.AddWithValue("@projectManager", model.projectManager);
+                            cmd.Parameters.AddWithValue("@EmpId", model.EmpId);
+                            cmd.Parameters.AddWithValue("@attendancedate", item.Key);
+                            cmd.Parameters.AddWithValue("@attendancestatus", item.Value);
+                            cmd.ExecuteNonQuery();
+                    }
+
+                    return (true, skippedDates, null);
+             }
+             catch (Exception ex)
+             {
+                    return (false, skippedDates, ex.Message);
+             }
+             finally
+             {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+             }
+         }
+
+        public List<AttendanceManage> GetAllAttendanceForOutsource(int EmpId)
+         {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageAttendance", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmpId", EmpId);
+                cmd.Parameters.AddWithValue("@action", "getallforoutsorce");
+                List<AttendanceManage> list = new List<AttendanceManage>();
+                con.Open();
+                var rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new AttendanceManage
+                        {
+                            id = Convert.ToInt32(rd["id"]),
+                            EmpId = Convert.ToInt32(rd["EmpId"]),
+                            projectManager = Convert.ToInt32(rd["projectManager"]),
+                            address = rd["address"].ToString(),
+                            longitude = rd["longitude"].ToString(),
+                            latitude = rd["latitude"].ToString(),
+                            createdAt = Convert.ToDateTime(rd["createdAt"]),
+                            attendanceDate = Convert.ToDateTime(rd["attendancedate"]),
+                            attendanceStatus = rd["attendancestatus"].ToString(),
+                            newRequest = Convert.ToBoolean(rd["newRequest"])
+                            //projectManagerAppr = rd["projectManagerAppr"] != null ? Convert.ToBoolean(rd["projectManagerAppr"]) : false
+                        });
+                    }
+                }
+                return list;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public List<AttendanceManage> GetAllAttendanceForProjectManager(int projectManager, int EmpId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageAttendance", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@EmpId", EmpId);
+                cmd.Parameters.AddWithValue("@projectManager", projectManager);
+                cmd.Parameters.AddWithValue("@action", "getallforprojectmanager");
+                List<AttendanceManage> list = new List<AttendanceManage>();
+                con.Open();
+                var rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new AttendanceManage
+                        {
+                            id = Convert.ToInt32(rd["id"]),
+                            EmpId = Convert.ToInt32(rd["EmpId"]),
+                            projectManager = Convert.ToInt32(rd["projectManager"]),
+                            createdAt = Convert.ToDateTime(rd["createdAt"]),
+                            attendanceDate = Convert.ToDateTime(rd["attendancedate"]),
+                            attendanceStatus = rd["attendancestatus"].ToString(),
+                            newRequest = Convert.ToBoolean(rd["newRequest"]),
+                            projectManagerName = rd["projectManagerName"].ToString(),
+                            EmpName = rd["EmpName"].ToString(),
+                            remark = rd["remark"] != DBNull.Value ? rd["remark"].ToString():"Marked By Project Manager"
+                            //projectManagerAppr = rd["projectManagerAppr"] != null ? Convert.ToBoolean(rd["projectManagerAppr"]) : false
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public List<AttendanceManage> GetAllAttendanceForProjectManager(int projectManager)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageAttendance", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@projectManager", projectManager);
+                cmd.Parameters.AddWithValue("@action", "getallforprojectmanager");
+                List<AttendanceManage> list = new List<AttendanceManage>();
+                con.Open();
+                var rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new AttendanceManage
+                        {
+                            id = Convert.ToInt32(rd["id"]),
+                            EmpId = Convert.ToInt32(rd["EmpId"]),
+                            projectManager = Convert.ToInt32(rd["projectManager"]),
+                            createdAt = Convert.ToDateTime(rd["createdAt"]),
+                            attendanceDate = Convert.ToDateTime(rd["attendancedate"]),
+                            attendanceStatus = rd["attendancestatus"].ToString(),
+                            newRequest = Convert.ToBoolean(rd["newRequest"]),
+                            projectManagerName = rd["projectManagerName"].ToString(),
+                            EmpName = rd["EmpName"].ToString(),
+                            //projectManagerAppr = rd["projectManagerAppr"] != null ? Convert.ToBoolean(rd["projectManagerAppr"]) : false
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+
+        public bool AttendanceApproval(int id,bool status,string remark)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageAttendance", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "approval");
+                cmd.Parameters.AddWithValue("@projectManagerappr", status);
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@remark", status ? null : remark);
+                con.Open();
+                int res = cmd.ExecuteNonQuery();
+                return res > 0;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                }
                 cmd.Dispose();
             }
         }

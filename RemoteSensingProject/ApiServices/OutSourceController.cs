@@ -1,10 +1,12 @@
-﻿using RemoteSensingProject.Models.Admin;
+﻿using Google.Protobuf.WellKnownTypes;
+using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.SubOrdinate;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -95,7 +97,8 @@ namespace RemoteSensingProject.ApiServices
                         message = "Some issue found while processing request. Please try after sometime."
                     });
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -104,11 +107,132 @@ namespace RemoteSensingProject.ApiServices
                     message = ex.Message
                 });
             }
-        }     
+        }
 
         private IHttpActionResult BadRequest(object value)
         {
             throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        [Route("api/addAttendance")]
+        public IHttpActionResult addAttendance()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formdata = new AttendanceManage
+                {
+                    EmpId = Convert.ToInt32(request.Form.Get("EmpId")),
+                    address = request.Form.Get("address").ToString(),
+                    longitude = request.Form.Get("longitude").ToString(),
+                    latitude = request.Form.Get("latitude").ToString(),
+                    attendanceStatus = request.Form.Get("attendanceStatus").ToString(),
+                    attendanceDate = Convert.ToDateTime(request.Form.Get("attendanceDate")),
+                    projectManager = Convert.ToInt32(request.Form.Get("projectManager"))
+                };
+                DateTime today = DateTime.Now.Date;
+                if (formdata.attendanceDate.Date != today)
+                {
+                    return Ok(new
+                    {
+                        status = false,
+                        StatusCode = 500,
+                        message = "Attendance can only be recorded for today."
+                    });
+                }
+                var res = _managerservice.insertAttendance(formdata);
+                if (res.success)
+                {
+                    if (res.error == null)
+                    {
+                        return Ok(new
+                        {
+                            status = res.success,
+                            StatusCode = 400,
+                            message = "Attendance already marked for today."
+                        });
+                    }
+                    else if (res.error == "Added Successfully")
+                    {
+                        return Ok(new
+                        {
+                            status = res.success,
+                            StatusCode = 200,
+                            message = "Attendance added successfully."
+                        });
+                    }
+                    else if (res.error == "Server Error")
+                    {
+                        return Ok(new
+                        {
+                            status = res.success,
+                            StatusCode = 404,
+                            message = "Something went wrong. Try Again!"
+                        });
+                    }
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = res.success,
+                        StatusCode = 500,
+                        message = "Server issue. Please Try after sometime!"
+                    });
+                }
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getAttendance")]
+        public IHttpActionResult GetAllAttendanceForOutsource(int EmpId)
+        {
+            try
+            {
+                var data = _managerservice.GetAllAttendanceForOutsource(EmpId);
+                if (data != null)
+                {
+                    return Ok(new
+                    {
+                        status = true,
+                        data = data,
+                        message = "Data found !"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = false,
+                        data = data,
+                        message = "Data not found !"
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
         }
     }
 }

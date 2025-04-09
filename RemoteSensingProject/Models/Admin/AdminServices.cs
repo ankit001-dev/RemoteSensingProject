@@ -2584,5 +2584,47 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
         #endregion
+        public List<SubProblem> getAllSubOrdinateProblemByIdforadmin( int id)
+        {
+            try
+            {
+                List<SubProblem> problemList = new List<SubProblem>();
+                SubProblem obj = null;
+                SqlCommand cmd = new SqlCommand("sp_ManageSubordinateProjectProblem", con);
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getallproblembyidforadmin");
+                cmd.Parameters.AddWithValue("@id", id);
+                con.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    while (sdr.Read())
+                    {
+                        obj = new SubProblem();
+                        obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
+                        obj.ProjectName = sdr["ProjectName"].ToString();
+                        obj.Title = sdr["Title"].ToString();
+                        obj.Description = sdr["Description"].ToString();
+                        obj.Attchment_Url = sdr["Attachment"].ToString();
+                        obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                        obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
+                        problemList.Add(obj);
+                    }
+                }
+                return problemList;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+
+        }
     }
 }

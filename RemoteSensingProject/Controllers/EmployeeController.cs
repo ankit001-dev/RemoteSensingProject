@@ -244,7 +244,7 @@ namespace RemoteSensingProject.Controllers
             return Json(new
             {
                 status = res,
-                message = res ? "Weekly updated successfully !" : "Some issue conflicted !"
+                message = res ? "Monthly updated successfully !" : "Some issue conflicted !"
             }); 
         }
         #endregion
@@ -758,6 +758,72 @@ namespace RemoteSensingProject.Controllers
                 },
                     JsonRequestBehavior.AllowGet
                 );
+            }
+        }
+        public ActionResult ManageAttendance()
+        {
+            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj);
+            return View();
+        }
+        [HttpGet]
+        public JsonResult GetAttendanceListByEmpId(int id)
+        {
+            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+           var data = _managerServices.GetAllAttendanceForProjectManager(userObj, id);
+            return Json(data,JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public JsonResult AddAttendance(AttendanceManage model)
+        {
+            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            model.projectManager = Convert.ToInt32(userObj);
+            var result = _managerServices.InsertAttendance(model);
+
+            if (result.success)
+            {
+                if (result.skippedDates.Count > 0)
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Attendance submitted. Some dates were skipped as they already exist.",
+                        skipped = result.skippedDates
+                    });
+                }
+
+                return Json(new { success = true, message = "Attendance submitted successfully." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Error occurred: " + result.error });
+            }
+        }
+        public ActionResult AttendanceRequest()
+        {
+            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["newattendancelist"] = _managerServices.GetAllAttendanceForProjectManager(userObj);
+            return View();
+        }
+        [HttpPost]
+        public ActionResult AttendanceRequest(bool status, int id, string remark)
+        {
+            bool res =_managerServices.AttendanceApproval(id, status, remark);
+            if (res)
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = (res == true && status == true) ? "Approved Successfully" : "Rejected Successfully"
+                });
+            }
+            else
+            {
+                return Json(new
+                {
+                    status = res,
+                    message = "Some error Occured"
+                });
             }
         }
     }

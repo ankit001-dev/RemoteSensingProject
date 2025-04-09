@@ -535,7 +535,30 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-
+        [HttpGet]
+        [Route("api/getAllProjectList")]
+        public IHttpActionResult getAllProjectList(int userId)
+        {
+            try
+            {
+                var data = _managerService.All_Project_List(userId.ToString());
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Notice
@@ -1332,6 +1355,285 @@ namespace RemoteSensingProject.ApiServices
             catch (Exception ex)
             {
                 return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+        #region attendance
+        [HttpGet]
+        [Route("api/getattendancebyIdofEmp")]
+        public IHttpActionResult GetAttendanceByIdOfEmp(int projectManager,int EmpId)
+        {
+            try
+            {
+                var data = _managerService.GetAllAttendanceForProjectManager(projectManager, EmpId);
+                if (data != null)
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        data = data,
+                        message = "Data found!"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        data = data,
+                        message = "Data not found!"
+                    });
+                }
+            }
+            catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+        #region Get All Report for App
+        [HttpGet]
+        [Route("api/getallreimbursementfilter")]
+        public IHttpActionResult getallreimbursementforapp(int userId)
+        {
+            try
+            {
+                var data = _managerService.reinbursementReport(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getalltourproposalfilter")]
+        public IHttpActionResult getalltourproposalforapp(int userId)
+        {
+            try
+            {
+                var data = _managerService.getTourList(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getallhiringfilter")]
+        public IHttpActionResult getallhiringforapp(int userId)
+        {
+            try
+            {
+                var data = _managerService.GetHiringVehicles(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Project Update 
+        [HttpGet]
+        [Route("api/getMonthlyIntUpdate")]
+        public IHttpActionResult getMonthlyIntUpdate(int id)
+        {
+            try
+            {
+                var data = _managerService.MonthlyProjectUpdate(id);
+                if (data != null)
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        data = data,
+                        message = "Data Found!"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        StatusCode = 400,
+                        message = "Data not Found!"
+                    });
+                }
+            }
+            catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getMonthlyExtUpdate")]
+        public IHttpActionResult getMonthlyExtUpdate(int id)
+        {
+            try
+            {
+                var data = _managerService.GetExtrnlFinancialReport(id);
+                if (data != null)
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        data = data,
+                        message = "Data Found!"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        StatusCode = 400,
+                        message = "Data not Found!"
+                    });
+                }
+            }
+            catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("api/updateIntMonthly")]
+        public IHttpActionResult MonthlyUpdateInt()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formdata = new Project_MonthlyUpdate
+                {
+                    ProjectId = Convert.ToInt32(request.Form.Get("ProjectId")),
+                    date = Convert.ToDateTime(request.Form.Get("date")),
+                    comments = request.Form.Get("comments").ToString(),
+                    completionPerc = Convert.ToInt32(request.Form.Get("completion")),
+                    unit = request.Form.Get("unit").ToString(),
+                    annual = request.Form.Get("annual").ToString(),
+                    reviewMonth = request.Form.Get("reviewMonth").ToString(),
+                    MonthEndSequentially = request.Form.Get("MonthEndSequentially").ToString(),
+                    StateBeneficiaries = request.Form.Get("StateBeneficiaries").ToString()
+                };
+                bool res = _managerService.UpdateMonthlyStatus(formdata);
+                if (res)
+                {
+                    return Ok(new
+                    {
+                        status = res,
+                        StatusCode = 200,
+                        message = "Update Successfully"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = res,
+                        StatusCode = 500,
+                        message = "Some Issue Occured"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("api/updateExtMonthly")]
+        public IHttpActionResult MonthlyUpdateExt()
+        {
+            try
+            {
+                var request = HttpContext.Current.Request;
+                var formdata = new FinancialMonthlyReport
+                {
+                    projectId = Convert.ToInt32(request.Form.Get("projectId")),
+                    aim = request.Form.Get("aim").ToString(),
+                    date = request.Form.Get("date").ToString(),
+                    month_aim =  request.Form.Get("month_aim").ToString(),
+                    completeInMonth = request.Form.Get("completeInMonth").ToString(),
+                    departBeneficiaries = request.Form.Get("departBeneficiaries").ToString()
+                };
+                bool res = _managerService.updateFinancialReportMonthly(formdata);
+                if (res)
+                {
+                    return Ok(new
+                    {
+                        status = res,
+                        StatusCode = 200,
+                        message = "Update Successfully"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = res,
+                        StatusCode = 500,
+                        message = "Some Issue Occured"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
                 {
                     status = false,
                     StatusCode = 500,

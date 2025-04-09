@@ -38,7 +38,19 @@ namespace RemoteSensingProject.Models.Admin
             public int AppStatus { get; set; }
             public string Reason { get; set; }
         }
+        public class SubProblem
+        {
+            public bool newRequest { get; set; }
+            public int ProblemId { get; set; }
+            public int Project_Id { get; set; }
+            public string ProjectName { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public HttpPostedFileBase Attachment { get; set; }
+            public string Attchment_Url { get; set; }
+            public string CreatedDate { get; set; }
 
+        }
         public class MeetingConclusion
         {
             public int Id { get; set; }

@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewBag.Title = "AttendanceRequest";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["newattendancelist"] as List<RemoteSensingProject.Models.ProjectManager.AttendanceManage>;
+    int i;
+}
+<style>
+    #fscol {
+        width: 50px !important;
+    }
+</style>
+<nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Manage Attendance</li>
+    </ol>
+    @*<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Attendance</button>*@
+</nav>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr. No.</th>
+                                <th>Name</th>
+                                <th>Attendance Date</th>
+                                <th class="text-center">Attendance Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (data != null) {
+                                            i = 1;
+                                            foreach(var item in data)
+                                            {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.EmpName</td>
+                        <td>@Convert.ToDateTime(item.attendanceDate).ToString("dd-MMM-yyyy")</td>
+                        <td class="text-center">@item.attendanceStatus</td>
+                        <td>
+                            <a href="#" class="changeStatus" data-value="true" data-title="Approve" data-id="@item.id">
+                                <i class="fa-solid fa-check text-success"></i>
+                            </a> &nbsp; | &nbsp;
+                            <a href="#" class="changeStatus" data-title="Reject" data-value="false" data-id="@item.id">
+                                <i class="fa-solid fa-xmark text-danger"></i>
+                            </a>
+                        </td>
+                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".changeStatus").on("click", async function (e) {
+            e.preventDefault();
+
+            let status = $(this).data("value");
+            let id = $(this).data("id")
+            let remark = "";
+
+            if (!status) {
+                Swal.close();
+
+
+                const { value: text, isConfirmed } = await Swal.fire({
+                    input: "text",
+                    inputLabel: "Remark",
+                    inputPlaceholder: "Type your remark here...",
+                    inputAttributes: {
+                        "aria-label": "Type your remark here",
+                        "autocomplete": "off"
+                    },
+                    showCancelButton: true,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                });
+                if (isConfirmed && text) {
+                    remark = text;
+                    Swal.fire({
+                        title: 'Please wait !',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        text: 'Your request under process',
+                        didOpen: () => { Swal.showLoading(); }
+                    })
+                }
+                else if (!isConfirmed) {
+                    return
+                }
+            }
+            $.ajax({
+                url: '/employee/AttendanceRequest',
+                type: 'post',
+                data: { status: status, id: id, remark: remark },
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload() }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'success',
+                            text: res.message,
+                            icon: 'success'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'error',
+                        text: 'Server busy Please try after sometime.',
+                        icon: 'error'
+                    })
+                }
+            })
+        })
+    });
+</script>

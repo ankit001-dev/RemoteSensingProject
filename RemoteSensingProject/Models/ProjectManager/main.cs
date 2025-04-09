@@ -207,6 +207,8 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class Reimbursement
     {
+        public bool apprstatus { get; set; }
+        public bool submitstatus { get; set; }
         public string remark { get; set; }
         public bool status { get; set; }
         public string chequeNum { get; set; }
@@ -281,5 +283,25 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string description { get; set; }
         public HttpPostedFileBase document{ get; set; }
         public string documentname{ get; set; }
+    }
+    public class AttendanceManage
+    {
+        public string remark { get; set; }
+        public int id { get; set; }
+        public int projectManager { get; set; }
+        public string projectManagerName { get; set; }
+        public int EmpId { get; set; }
+        public string EmpName { get; set; }
+        public string address { get; set; }
+        public string longitude { get; set; }
+        public string latitude { get; set; }
+        public string attendanceStatus { get; set; }
+        public DateTime attendanceDate { get; set; }
+        public bool projectManagerAppr { get; set; }
+        public DateTime createdAt { get; set; }
+        public bool status { get; set; }
+        public bool newRequest { get; set; }
+        public Dictionary<string, string> Attendance { get; set; } 
+
     }
 }
