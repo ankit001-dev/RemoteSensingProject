@@ -2081,6 +2081,30 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [HttpGet]
+        [Route("api/getOutsource")]
+        public IHttpActionResult GetOutsource(int userId)
+        {
+            try
+            {
+                var data = _managerservice.selectAllOutSOurceList(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
     }
 }

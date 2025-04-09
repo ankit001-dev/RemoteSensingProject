@@ -31,7 +31,7 @@ namespace RemoteSensingProject.Controllers
         {
             var TotalCount = _adminServices.DashboardCount();
             DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
-            ViewData["physical"]= _adminServices.Project_List().Where(d=>d.AssignDate>=twoYearsAgo);
+            ViewData["physical"] = _adminServices.Project_List().Where(d => d.AssignDate >= twoYearsAgo).ToList();
             return View(TotalCount);
         }
         
@@ -698,26 +698,11 @@ namespace RemoteSensingProject.Controllers
             ViewData["problemList"] = _adminServices.getProblemList();
             return View();
         }
-        //[HttpPost]
-        //public ActionResult RaisedProblem(int id,bool status,string remark)
-        //{
-        //    bool res = _adminServices.approveRaisedProblem(id, status, remark);
-        //    if (res)
-        //    {
-        //        return Json(new
-        //        {
-        //            status = res,
-        //            message = (res == true && status == true) ? "Approved Successfully" : "Rejected Successfully"
-        //        });
-        //    }
-        //    else
-        //    {
-        //        return Json(new
-        //        {
-        //            status = res,
-        //            message = "Some error Occured"
-        //        });
-        //    }
-        //}
+        
+        public ActionResult Attendance()
+        {
+            ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord();
+            return View();
+        }
     }
 }
