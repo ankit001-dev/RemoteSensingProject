@@ -1,0 +1,120 @@
+﻿
+@{
+    ViewBag.Title = "Attendance";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+}
+
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">/Employee Registration</li>
+    </ol>
+    @*<button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Employee</button>*@
+</nav>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow mx-0">
+    <div class="row align-items-center mx-0">
+        <div class="col-lg-3">
+            <h5>Employee Lists</h5>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <input type="text" placeholder="Search by employee name" id="searchByEmployeeName" class="form-control">
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <select class="form-select form-select-lg" id="filterDivision">
+                <option selected value=null>--Select Division--</option>
+                @if (ViewBag.division != null)
+                {
+                    if (ViewBag.division.Count > 0)
+                    {
+                        foreach (var item in ViewBag.division)
+                        {
+
+                            <option value="@item.id" @(int.TryParse(Request.QueryString["Division"], out int divisionId) && divisionId == item.id ? "selected" : "")>
+                                @item.name
+                        </option>
+                    }
+                }
+            }
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="row mx-0">
+    <div class="col-md-12 p-0 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr. No.</th>
+                                <th>EmployeeCode</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Division</th>
+                                <th>Designation</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewData["EmployeeList"] != null)
+                            {
+                                var count = 1;
+                                foreach (var item in ViewData["EmployeeList"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                {
+                                    <tr>
+                                        <td class="text-start">@count</td>
+                                        <td>@item.EmployeeCode</td>
+                                        <td><a href="#" data-title="View Attendance" data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider">@item.EmployeeName</a></td>
+                                        <td>@item.EmployeeRole</td>
+                                        <td>@item.DevisionName</td>
+                                        <td>@item.DesignationName</td>
+                                        <td>@item.CreationDate</td>
+                                    </tr>
+                                    count++;
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewslider" tabindex="-1" aria-labelledby="viewslider" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr. No.</th>
+                                <th>Name</th>
+                                <th>Contact No.</th>
+                                <th>Email</th>
+                                <th>Joining Date</th>
+                                <th>Gender</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".showEmployeeProfile").on("click", function () {
+            let id = $(this).data("id");
+        });
+    })
+</script>
