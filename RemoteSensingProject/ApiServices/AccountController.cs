@@ -202,5 +202,75 @@ namespace RemoteSensingProject.ApiServices
         {
             return Content(HttpStatusCode.BadRequest, value);
         }
+
+        [HttpGet]
+        [Route("api/getDashboardCounts")]
+        public IHttpActionResult DashboardCount()
+        {
+            try
+            {
+                var data = _accountSerivce.DashboardCount();
+                return Ok(new
+                {
+                    status = true,
+                    data = data,
+                });
+            }
+            catch
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = "Data not found"
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/graphData")]
+        public IHttpActionResult GraphData()
+        {
+            try
+            {
+                var data = _accountSerivce.ExpencesListforgraph();
+                return Ok(new
+                {
+                    status = true,
+                    data = data,
+                });
+            }
+            catch
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = "Data not found"
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/budgetGraphData")]
+        public IHttpActionResult BudgetGraphData()
+        {
+            try
+            {
+                var data = _accountSerivce.budgetdataforgraph();
+                return Ok(new
+                {
+                    status = true,
+                    data = data,
+                });
+            }
+            catch
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = "Data not found"
+                });
+            }
+        }
     }
 }

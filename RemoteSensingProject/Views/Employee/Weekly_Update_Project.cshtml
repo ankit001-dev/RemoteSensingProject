@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Weekly_Update_Project";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    int k=1;
 }
 
 <style>
@@ -30,24 +31,22 @@
                     <table id="dataTableExample" class="table">
                         <thead>
                             <tr>
-                                <th class="text-center">S.No.</th>
+                                <th class="text-center">Sr. No.</th>
                                 <th>Date</th>
                                 <th>Comment</th>
-                                <th>Completion in %</th>
+                                <th>Unit</th>
                               </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in ViewBag.WeeklyUpdateList as List<RemoteSensingProject.Models.Admin.main.Project_MonthlyUpdate>)
                             {
                                 <tr>
-                                    <td class="text-start">1</td>
-                                    <td>@Convert.ToDateTime(item.date).ToString("dd MMM yyyy")</td>
-                                    <td class="w-25">
-                                        @item.comments
-                                    </td>
-                                    <td>@item.completionPerc%</td>
-
+                                    <td class="text-start">@k</td>
+                                    <td>@Convert.ToDateTime(item.date).ToString("dd-MMM-yyyy")</td>
+                                    <td class="w-25"> @item.comments</td>
+                                    <td>@item.unit</td>
                                 </tr>
+                                k++;
                             }
 
                         </tbody>

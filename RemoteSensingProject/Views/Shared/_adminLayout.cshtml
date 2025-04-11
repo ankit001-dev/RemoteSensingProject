@@ -94,10 +94,10 @@
 </head>
 <body>
     @*<div id="loader" class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-light bg-opacity-75" style="z-index: 9999; display: none;">
-        <div class="spinner-border spinner-border-l text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>*@
+            <div class="spinner-border spinner-border-l text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>*@
 
     <div class="main-wrapper">
 
@@ -551,6 +551,30 @@
             });
             feather.replace();
         });</script>
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '/admin/GetLatLongJson',
+                type: 'GET',
+                success: function (data) {
+                    var latitude = data.latitude;
+                    var longitude = data.longitude;
+
+                    // Set cookie for 7 days across all pages
+                    document.cookie = "latitude=" + latitude + "; path=/";
+                    document.cookie = "longitude=" + longitude + "; path=/";
+                }
+            });
+
+            function getCookie(name) {
+                let value = `; ${document.cookie}`;
+                let parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+        });
+    </script>
+
 
     <script>(function () { if (!document.body) return; var js = "window['__CF$cv$params']={r:'883a8eae8a7f44a7',t:'MTcxNTY4NjIzOS4zNTkwMDA='};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='../../../cdn-cgi/challenge-platform/h/g/scripts/jsd/1b3559406bc8/main.js',document.getElementsByTagName('head')[0].appendChild(_cpo);"; var _0xh = document.createElement('iframe'); _0xh.height = 1; _0xh.width = 1; _0xh.style.position = 'absolute'; _0xh.style.top = 0; _0xh.style.left = 0; _0xh.style.border = 'none'; _0xh.style.visibility = 'hidden'; document.body.appendChild(_0xh); function handler() { var _0xi = _0xh.contentDocument || _0xh.contentWindow.document; if (_0xi) { var _0xj = _0xi.createElement('script'); _0xj.innerHTML = js; _0xi.getElementsByTagName('head')[0].appendChild(_0xj); } } if (document.readyState !== 'loading') { handler(); } else if (window.addEventListener) { document.addEventListener('DOMContentLoaded', handler); } else { var prev = document.onreadystatechange || function () { }; document.onreadystatechange = function (e) { prev(e); if (document.readyState !== 'loading') { document.onreadystatechange = prev; handler(); } }; } })();</script>
     <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vedd3670a3b1c4e178fdfb0cc912d969e1713874337387" integrity="sha512-EzCudv2gYygrCcVhu65FkAxclf3mYM6BCwiGUm6BEuLzSb5ulVhgokzCZED7yMIkzYVg65mxfIBNdNra5ZFNyQ==" data-cf-beacon='{"rayId":"883a8eae8a7f44a7","version":"2024.4.1","r":1,"token":"e2e296138d64407b8469055f5cbf0b42","b":1}' crossorigin="anonymous"></script>

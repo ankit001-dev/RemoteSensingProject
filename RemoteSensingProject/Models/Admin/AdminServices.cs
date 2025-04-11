@@ -11,12 +11,16 @@ using System.Web.Http.ValueProviders.Providers;
 using System.Threading.Tasks;
 using System.Net.Http;
 using Antlr.Runtime.Tree;
+using System.Text.Json;
+using Newtonsoft.Json.Linq;
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
     {
+
         #region Employee Category
         mail _mail = new mail();
+
 
         public bool InsertDesgination(CommonResponse cr)
         {
@@ -964,8 +968,8 @@ namespace RemoteSensingProject.Models.Admin
                             ProjectName = rd["title"].ToString(),
                             projectmanager = rd["name"].ToString(),
                             ProjectBudget = Convert.ToDecimal(rd["budget"]),
-                            expenditure = Convert.ToDecimal(rd["ExpendedAmt"]),
-                            remaining = Convert.ToDecimal(rd["remainingAmt"])
+                            expenditure = rd["ExpendedAmt"]!=DBNull.Value? Convert.ToDecimal(rd["ExpendedAmt"]):0,
+                            remaining = rd["remainingAmt"]!=DBNull.Value? Convert.ToDecimal(rd["remainingAmt"]):0
                         });
                     }
                 }
@@ -1982,18 +1986,26 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Dispose();
             }
         }
-        //public async Task<string> getlocationasync()
+        //public async Task<(string latitude, string longitude)> GetLatLongAsync()
         //{
         //    try
         //    {
         //        using (var client = new HttpClient())
         //        {
         //            string url = "https://ipinfo.io/json";
-        //            HttpResponseMessage response =  await client.GetAsync(url);
+        //            HttpResponseMessage response = await client.GetAsync(url);
         //            response.EnsureSuccessStatusCode();
+
         //            string responseBody = await response.Content.ReadAsStringAsync();
         //            var jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(responseBody);
-        //            return jsonData.city;
+
+        //            string loc = jsonData.loc; 
+        //            string[] coordinates = loc.Split(',');
+
+        //            string latitude = coordinates[0];
+        //            string longitude = coordinates[1];
+
+        //            return (latitude, longitude);
         //        }
         //    }
         //    catch (Exception ex)
@@ -2001,7 +2013,41 @@ namespace RemoteSensingProject.Models.Admin
         //        throw ex;
         //    }
         //}
-        public bool HiringApproval(int id, bool status,string remark)
+        public async Task<string> GetCityStateAsync(string latitude, string longitude)
+        {
+            try
+            {
+                string url = $"https://nominatim.openstreetmap.org/reverse?lat={latitude}&lon={longitude}&format=json";
+
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+                    client.DefaultRequestHeaders.Add("Accept-Language", "en");
+
+                    var response = await client.GetStringAsync(url);
+                    JObject json = JObject.Parse(response);
+
+                    string city = json["address"]?["city"]?.ToString()
+                                ?? json["address"]?["town"]?.ToString()
+                                ?? json["address"]?["village"]?.ToString()
+                                ?? json["address"]?["hamlet"]?.ToString()
+                                ?? "";
+
+                    string state = json["address"]?["state"]?.ToString() ?? "";
+
+                    return $"{city}, {state}".Trim(new char[] { ',', ' ' });
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+
+        public bool HiringApproval(int id, bool status,string remark,dynamic location)
         {
             try
             {
@@ -2012,7 +2058,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@adminappr", status);
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@remark", status?"": remark);
-                //cmd.Parameters.AddWithValue("@location", location);
+                cmd.Parameters.AddWithValue("@location", location);
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
