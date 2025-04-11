@@ -9,6 +9,7 @@ using static RemoteSensingProject.Models.Admin.main;
 using  RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.Accounts;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 
 namespace RemoteSensingProject.Controllers
@@ -32,13 +33,14 @@ namespace RemoteSensingProject.Controllers
             var TotalCount = _adminServices.DashboardCount();
             DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
             ViewData["physical"] = _adminServices.Project_List().Where(d => d.AssignDate >= twoYearsAgo).ToList();
+            ViewData["budgetGraph"] = _adminServices.ViewProjectExpenditure().Where(d => d.expenditure > 0 && d.remaining>0).ToList();
             return View(TotalCount);
         }
         
 
-        public ActionResult ViewExpenditureAmount()
+        public ActionResult ViewExpenditureAmount(string req)
         {
-            ViewData["ExpendedData"] = _adminServices.ViewProjectExpenditure();
+            ViewData["ExpendedData"] =req == "expenditure"?_adminServices.ViewProjectExpenditure().Where(d => d.expenditure>0).ToList():req== "remaining"? _adminServices.ViewProjectExpenditure().Where(d => d.remaining>0).ToList(): _adminServices.ViewProjectExpenditure();
             return View();
         }
         public ActionResult BindOverallCompletionPercentage()
@@ -623,9 +625,11 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult HiringRequest(bool status, int id,string remark)
+        public ActionResult HiringRequest(bool status, int id,string remark,string latitude,string longitude)
         {
-            bool res = _adminServices.HiringApproval(id, status,remark);
+            dynamic location = _adminServices.GetCityStateAsync(latitude, longitude).GetAwaiter().GetResult();
+            //location = location.toString();x
+            bool res = _adminServices.HiringApproval(id, status,remark,location);
             if (res)
             {
                 return Json(new
@@ -701,7 +705,7 @@ namespace RemoteSensingProject.Controllers
         
         public ActionResult Attendance()
         {
-            ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord();
+            ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord().Where(d=>d.EmployeeRole== "projectManager").ToList();
             return View();
         }
     }

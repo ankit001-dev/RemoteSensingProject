@@ -1558,7 +1558,6 @@ namespace RemoteSensingProject.ApiServices
                     ProjectId = Convert.ToInt32(request.Form.Get("ProjectId")),
                     date = Convert.ToDateTime(request.Form.Get("date")),
                     comments = request.Form.Get("comments").ToString(),
-                    completionPerc = Convert.ToInt32(request.Form.Get("completion")),
                     unit = request.Form.Get("unit").ToString(),
                     annual = request.Form.Get("annual").ToString(),
                     reviewMonth = request.Form.Get("reviewMonth").ToString(),

@@ -133,5 +133,29 @@ namespace RemoteSensingProject.ApiServices
         {
             return Content(HttpStatusCode.BadRequest, value);
         }
+        [HttpGet]
+        [Route("api/getDashboardCount")]
+        public IHttpActionResult DashbaordCount(int subId)
+        {
+            try
+            {
+                var data = _subOrdinate.GetDashboardCounts(subId.ToString());
+                    return Ok(new
+                    {
+                        status = true,
+                        data = data
+                    });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
     }
 }

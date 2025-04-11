@@ -112,7 +112,7 @@
 
             <!-- Total Budget Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1 ">
-                <a href="/Admin/ViewExpenditureAmount" class="w-100" style="text-decoration: none; color: inherit;">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
                     <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
@@ -122,37 +122,41 @@
                                 <div class="col-6 col-md-12 col-xl-12">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline">
-                                        <p class="text-success w-100 inst py-0">
-                                            <span>
-                                                <span class="text-dark">Total Budget :  </span> ₹
-                                                @Convert.ToDecimal(data.TotalBudget).ToString("N2")
-                                            </span>
-                                        </p>
-                                    </div>
-
-
-                                    <div class="d-flex align-items-baseline">
-                                        <p class="text-success w-100 py-0">
-                                            <span>
-                                                <span class="text-dark">Expenditure : </span> ₹
-                                                @Convert.ToDecimal(data.expenditure).ToString("N2")
-                                            </span>
-                                        </p>
+                                        <a href="/Admin/ViewExpenditureAmount">
+                                            <p class="text-success w-100 inst py-0">
+                                                <span>
+                                                    <span class="text-dark">Total Budget :  </span> ₹
+                                                    @Convert.ToDecimal(data.TotalBudget).ToString("N2")
+                                                </span>
+                                            </p>
+                                        </a>
                                     </div>
                                     <div class="d-flex align-items-baseline">
-                                        <p class="text-success w-100 py-0">
-                                            <span>
-                                                <span class="text-dark">Remaining : </span>₹
-                                                @Convert.ToDecimal(data.PendingBudget).ToString("N2")
-                                            </span>
-                                        </p>
+                                        <a href="/Admin/ViewExpenditureAmount?req=expenditure">
+                                            <p class="text-success w-100 py-0">
+                                                <span>
+                                                    <span class="text-dark">Expenditure : </span> ₹
+                                                    @Convert.ToDecimal(data.expenditure).ToString("N2")
+                                                </span>
+                                            </p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline">
+                                        <a href="/Admin/ViewExpenditureAmount?req=remaining">
+                                            <p class="text-success w-100 py-0">
+                                                <span>
+                                                    <span class="text-dark">Remaining : </span>₹
+                                                    @Convert.ToDecimal(data.PendingBudget).ToString("N2")
+                                                </span>
+                                            </p>
+                                        </a>
                                     </div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                </a>
+                </div>
             </div>
 
 
@@ -177,9 +181,9 @@
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                              <a href="/Admin/All_Projects?req=External">
-                                                  <p class="text-success w-100"><span><span class="text-dark">External Project's :  </span> @data.TotalExternalProject</span></p>
-                                              </a>
+                                        <a href="/Admin/All_Projects?req=External">
+                                            <p class="text-success w-100"><span><span class="text-dark">External Project's :  </span> @data.TotalExternalProject</span></p>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-5">
@@ -227,7 +231,7 @@
                 </div>
             </div>
 
-           
+
 
             <!-- Meeting's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
@@ -248,12 +252,12 @@
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/Admin/Meeting_Report?req=admin">
                                             <p class="text-success w-100"><span><span class="text-dark">Admin :  </span> @data.TotalAdminMeetings</span></p>
-                                            </a>
+                                        </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/Admin/Meeting_Report?req=projectmanager">
                                             <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @data.TotalProjectManagerMeetings</span></p>
-                                            </a>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-5">
@@ -313,8 +317,8 @@
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/admin/reimbursement_report?req=approved">
-                                        <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalReinbursementapprovedRequest</span></p>
-                                            </a>
+                                            <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalReinbursementapprovedRequest</span></p>
+                                        </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/admin/reimbursementRequest">
@@ -324,7 +328,7 @@
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/admin/reimbursement_report?req=rejected">
                                             <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalReinbursementRejectRequest</span></p>
-                                            </a>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-5">
@@ -337,7 +341,7 @@
             </div>
             <!-- Request's status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
-                <div  class="w-100" style="text-decoration: none; color: inherit;">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
                     <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
@@ -432,7 +436,7 @@
             <div class="card-header">Budget</div>
             <div class="card-body">
                 <div>
-                    <canvas id="bbchart" style="min-height:200px; width:264px;"></canvas>
+                    <canvas id="bbchart" style="min-height: 200px; max-height: 200px; width: 264px;"></canvas>
                 </div>
             </div>
         </div>
@@ -450,9 +454,9 @@
     <div class="col-sm-4 px-1">
         <div class="card ">
             <div class="card-header">Requests</div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 <div>
-                    <canvas id="brchart" style="min-height:200px; width:264px;"></canvas>
+                    <canvas id="brchart" style="min-height: 248px; padding:0px !important; max-height:200px !important; width: 264px;"></canvas>
                 </div>
             </div>
         </div>
@@ -499,18 +503,7 @@
 
 
 
-@*<div class="row mx-0 mt-1">
-    <div class="col-sm-12 px-1">
-        <div class="card ">
-            <div class="card-header">
-                <b>Budget Chart</b>
-            </div>
-            <div class="card-body">
-                <div><canvas id="myLineChart" height="100"></canvas></div>
-            </div>
-        </div>
-    </div>
-</div>*@
+
 <div class="row mx-0 my-1">
     <div class="col-sm-6 px-1">
         <div class="card ">
@@ -540,81 +533,81 @@
 
 
 @*<div class="row mx-0">
-    <div class="col-lg-7 col-xl-12 stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-baseline mb-2">
-                    <h6 class="card-title mb-0">Projects</h6>
-                    <div class="dropdown mb-2">
-                        <button class="btn p-0" type="button" id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span>View</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span>Edit</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span>Delete</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span>Print</span></a>
-                            <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span>Download</span></a>
+        <div class="col-lg-7 col-xl-12 stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-baseline mb-2">
+                        <h6 class="card-title mb-0">Projects</h6>
+                        <div class="dropdown mb-2">
+                            <button class="btn p-0" type="button" id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span>View</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span>Edit</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span>Delete</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span>Print</span></a>
+                                <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span>Download</span></a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th class="pt-0">#</th>
-                                <th class="pt-0">Project Name</th>
-                                <th class="pt-0">Start Date</th>
-                                <th class="pt-0">Completion Date</th>
-                                <th class="pt-0">Assign</th>
-                                <th class="pt-0">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (graphdata != null)
-                            {
-                                int i = 1;
-                                foreach (var item in graphdata)
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="pt-0">#</th>
+                                    <th class="pt-0">Project Name</th>
+                                    <th class="pt-0">Start Date</th>
+                                    <th class="pt-0">Completion Date</th>
+                                    <th class="pt-0">Assign</th>
+                                    <th class="pt-0">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (graphdata != null)
                                 {
-                                    <tr>
-                                        <td>@i</td>
-                                        <td>@item.ProjectTitle</td>
-                                        <td>@item.StartDateString</td>
-                                        <td>@item.CompletionDatestring</td>
-                                        <td>@item.AssignDateString</td>
-                                        <td>
-                                            @if (item.ProjectStatus || item.physicalcomplete == 100)
-                                            {
-                                                <span class="badge bg-success">Completed</span>
-                                            }
-                                            else if (item.CompletionDate < DateTime.Now)
-                                            {
-                                                <span class="badge bg-danger">Delay</span>
-                                            }
-                                            else if (item.StartDate < DateTime.Now)
-                                            {
-                                                <span class="badge bg-warning">Work in Progress</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge bg-primary">Not Started</span>
-                                            }
-                                        </td>
-                                    </tr>
-                                    if (i == 5)
+                                    int i = 1;
+                                    foreach (var item in graphdata)
                                     {
-                                        break;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@item.ProjectTitle</td>
+                                            <td>@item.StartDateString</td>
+                                            <td>@item.CompletionDatestring</td>
+                                            <td>@item.AssignDateString</td>
+                                            <td>
+                                                @if (item.ProjectStatus || item.physicalcomplete == 100)
+                                                {
+                                                    <span class="badge bg-success">Completed</span>
+                                                }
+                                                else if (item.CompletionDate < DateTime.Now)
+                                                {
+                                                    <span class="badge bg-danger">Delay</span>
+                                                }
+                                                else if (item.StartDate < DateTime.Now)
+                                                {
+                                                    <span class="badge bg-warning">Work in Progress</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-primary">Not Started</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                        if (i == 5)
+                                        {
+                                            break;
+                                        }
+                                        i++;
                                     }
-                                    i++;
                                 }
-                            }
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>*@
+    </div>*@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 @*<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>*@
@@ -914,66 +907,122 @@
 </script>
 
 <!--Mini charts Budget-->
+
 <script>
-
     $(document).ready(function () {
-        debugger
-    // Pass the Razor data as JSON to the JavaScript context
-        Chart.defaults.font.size = 12;
-        Chart.defaults.font.family = "'Arial', sans-serif";
+        var bgdata = @Html.Raw(Json.Encode(ViewData["budgetGraph"]));
+        console.log("bgdata", bgdata[0].remaining);
+        Chart.defaults.font.size = 13;
+        Chart.defaults.font.family = "'Segoe UI', sans-serif";
         Chart.defaults.color = '#000';
-    var ctx = document.getElementById('bbchart').getContext('2d');
-        var datac = [
-            { y:@Convert.ToDecimal(data.TotalBudget), x:100,r:8 },
-{y:@Convert.ToDecimal(data.expenditure), x:50,r:8},
-{y:@Convert.ToDecimal(data.PendingBudget), x:20,r:8}];
 
-    var bubblechart = new Chart(ctx, {
-        type: 'bubble',
-        data: {
-            labels: 'Budget',
-            datasets: [{
-                label: 'Budget',
-                data: datac,
-                backgroundColor: 'red',
-            }]
-        },
-        options: {
-            responsive: true,
-            padding:10,
-            plugins: {
-                legend: {
-                    position: '',
+        var ctx = document.getElementById('bbchart').getContext('2d');
+
+        if (bgdata != null && bgdata.length > 0) {
+            // 👇 radarLabels me har project ka naam aa jayega
+            var radarLabels = bgdata.map(item => item.ProjectName);
+
+            // 👇 3 alag-alag datasets ban rahe — ek for Total, ek for Expenditure, ek for Pending
+            var projectData = [
+                {
+                    name: "Total Budget",
+                    data: bgdata.map(item => item.ProjectBudget)
                 },
-                tooltip: {
-                    enabled: true,
-                    titleFont: {
-                        size: 6
+                {
+                    name: "Expenditure",
+                    data: bgdata.map(item => item.expenditure)
+                },
+                {
+                    name: "Pending Budget",
+                    data: bgdata.map(item => item.remaining)
+                }
+            ];
+        }
+
+
+        var datasets = projectData.map((project, index) => {
+            const colors = ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 206, 86, 0.2)'];
+            const borderColors = ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 'rgba(255, 206, 86, 1)'];
+            return {
+                label: project.name,
+                data: project.data,
+                fill: true,
+                backgroundColor: colors[index % colors.length],
+                borderColor: borderColors[index % borderColors.length],
+                pointBackgroundColor: borderColors[index % borderColors.length],
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: borderColors[index % borderColors.length]
+            };
+        });
+
+        var radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: radarLabels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                elements: {
+                    line: {
+                        borderWidth: 2
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        grid: {
+                            color: '#e0e0e0'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 13
+                            },
+                            color: '#000'
+                        },
+                        ticks: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.dataset.label}: ₹${context.formattedValue}`;
+                            }
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false
+                },
+                onClick: function (e, elements) {
+                    if (elements.length > 0) {
+                        const clickedLabel = elements[0].dataset.label;
+                        window.location.href = "/Admin/ViewExpenditureAmount?project=" + encodeURIComponent(clickedLabel);
                     }
                 }
-            },
-            onClick: function (e, elements) {
-                // Check if a bubble is clicked
-                if (elements.length > 0) {
-                    // Redirect to the URL if a point (bubble) is clicked
-                    window.location.href = "/Admin/ViewExpenditureAmount";
-                }
             }
-        }
+        });
     });
-        // Update the chart with new data
-      bubblechart.data.datasets[0].data = datac;
-      bubblechart.update();
-});
-
-
 </script>
+
+
 
 <!--Mini charts-->
 <script>
-    $(document).ready(function () {
-        $(".filter1").change()
-    })
 
   $(document).ready(function () {
       // Pass the Razor data as JSON to the JavaScript context
@@ -1016,6 +1065,7 @@
                     enabled: true
                 }
             },
+            radius: '85%',
             onClick: function (e, elements) {
                 // If a slice is clicked
                 if (elements.length > 0) {
@@ -1059,89 +1109,78 @@
 <!--Mini charts-->
 <script>
     $(document).ready(function () {
-        $(".filter2").change()
-    })
+        const datac = [
+            @data.TotalReinbursementReq,
+            @data.TotalTourProposalReq,
+            @data.totalVehicleHiringRequest
+        ];
 
-  $(document).ready(function () {
-    // Pass the Razor data as JSON to the JavaScript context
-    var yearlyData = [
-       @data.TotalReinbursementReq,
-       @data.TotalTourProposalReq,
-       @data.totalVehicleHiringRequest
-    ];
-
-    @*var monthlyData = [@Convert.ToInt32(data.monTotalReinbursementReq),@Convert.ToInt32(data.monTotalTourProposalReq),@Convert.ToInt32(data.montotalVehicleHiringRequest)]  // Example monthly data*@
-
-      // Set the initial data for the chart (monthly by default)
-      var datac = yearlyData;
-
-    // Get the chart context
-    var ctx = document.getElementById('brchart').getContext('2d');
-
-    // Initialize chart with default data (monthly)
-    var brchart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Reimbursement', 'Tour Proposal', 'Hiring Vehicle'],
+        const ctx = document.getElementById('brchart').getContext('2d');
+        const data = {
+            labels: [
+                'Total',
+                'Approved',
+                'Pending',
+                'Rejected'
+            ],
             datasets: [{
-                label: '',
-                data: datac,
-                pointRadius: 5,
-                backgroundColor: [' #00e6b8', '#6600ff', '#ff6600'],
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: '',
+                label: 'Reimbursement',
+                data: [20,35,19,30],
+                fill: true,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgb(255, 99, 132)',
+                pointBackgroundColor: 'rgb(255, 99, 132)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(255, 99, 132)'
+            }, {
+                label: 'Tour Proposal',
+                data: [30,25,25,25],
+                fill: true,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgb(54, 162, 235)',
+                pointBackgroundColor: 'rgb(54, 162, 235)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(54, 162, 235)'
                 },
-                tooltip: {
-                    enabled: true
-                }
-            },
-            scales: {
-                x: {
-                    // Set bar width strictly to 10px
-                    pointRadius: 30, // Strictly setting bar width to 10px
-                }
-            },
-            onClick: function (e, elements) {
-                // If a data point is clicked
-                if (elements.length > 0) {
-                    var clickedElementIndex = elements[0].index;  // Get the index of the clicked data point
-                    var clickedLabel = brchart.data.labels[clickedElementIndex];  // Get the label of the clicked data point
-
-                    // Redirect based on the clicked label (Reimbursement, Tour Proposal, Hiring Vehicle)
-                    if (clickedLabel === 'Reimbursement') {
-                        window.location.href = '/admin/Reimbursement_report';  // Redirect to the page for reimbursement
-                    } else if (clickedLabel === 'Tour Proposal') {
-                        window.location.href = '/admin/tourproposal_report';  // Redirect to the page for tour proposals
-                    } else if (clickedLabel === 'Hiring Vehicle') {
-                        window.location.href = '/admin/hiring_report';  // Redirect to the page for vehicle hiring
+                {
+                    label: 'Hiring Vehicle',
+                    data: [35,20,30,40],
+                    fill: true,
+                    backgroundColor: 'rgba(214, 162, 35, 0.2)',
+                    borderColor: 'rgb(214, 162, 35)',
+                    pointBackgroundColor: 'rgb(54, 162, 235)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(54, 162, 235)'
+                }]
+        };
+        const brchart = new Chart(ctx, {
+            type: 'radar',
+            data: data,
+            options: {
+                elements: {
+                    line: {
+                        borderWidth: 3
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 12 // 👈 Change this value to adjust font size
+                            }
+                        }
                     }
                 }
-            }
-        }
+            },
+        });
     });
-
-    // Handle the filter change
-    $(".filter2").on("change", function () {
-        var opt = $(this).val();
-
-        // Update the data based on the selected filter
-        if (opt === "yearly") {
-            datac = yearlyData;  // Use the Razor data for the yearly option
-        } else if (opt === "monthly") {
-            datac = monthlyData;  // Use the monthly data for the monthly option
-        }
-
-        // Update the chart with new data
-        brchart.data.datasets[0].data = datac;
-        brchart.update();
-    });
-});
-
-
 </script>
+
+
+
+@*<span class="reim">@data.TotalReinbursementReq, @data.totalReinbursementapprovedRequest,@data.totalReinbursementPendingRequest,@data.totalReinbursementRejectRequest</span>
+    <span class="tour">@data.TotalTourProposalReq,@data.totalTourProposalApprReque,@data.totaTourProposalPendingReque, @data.totalTourProposalRejectReque</span>
+    <span class="hirin">@data.totalVehicleHiringRequest,@data.totalApproveHiringVehicle,@data.totalPendingHiringVehicle,@data.totalRejectHiringVehicle</span>*@

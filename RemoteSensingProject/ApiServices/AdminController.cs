@@ -1651,11 +1651,11 @@ namespace RemoteSensingProject.ApiServices
         #region Hiring
         [HttpGet]
         [Route("api/ApprovalHiring")]
-        public IHttpActionResult ApproveHiring(int id,bool status,string remark)
+        public IHttpActionResult ApproveHiring(int id,bool status,string remark,string location)
         {
             try
             { 
-                bool res = _adminServices.HiringApproval(id,status, remark);
+                bool res = _adminServices.HiringApproval(id,status, remark, location);
                 return Ok(new
                 {
                     status = res,
@@ -2088,6 +2088,33 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var data = _managerservice.selectAllOutSOurceList(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+        #region Graph
+        [HttpGet]
+        [Route("api/getphyfinGraphData")]
+        public IHttpActionResult getgraphData()
+        {
+            try
+            {
+                DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
+                var data = _adminServices.Project_List().Where(d => d.AssignDate >= twoYearsAgo).ToList();
                 return Ok(new
                 {
                     status = data.Any(),

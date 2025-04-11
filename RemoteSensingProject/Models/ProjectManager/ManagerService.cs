@@ -661,7 +661,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@project_Id", pwu.ProjectId);
                 cmd.Parameters.AddWithValue("@w_date", pwu.date);
                 cmd.Parameters.AddWithValue("@comment", pwu.comments);
-                cmd.Parameters.AddWithValue("@completion", pwu.completionPerc);
                 cmd.Parameters.AddWithValue("@unit", pwu.unit);
                 cmd.Parameters.AddWithValue("@annual", pwu.annual);
                 cmd.Parameters.AddWithValue("@monthEnd", pwu.monthEnd);
@@ -706,7 +705,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                             Id = Convert.ToInt32(rd["id"]),
                             date = Convert.ToDateTime(rd["w_date"]),
                             comments = rd["comment"].ToString(),
-                            completionPerc = Convert.ToInt32(rd["completion"]),
                             unit = rd["unit"].ToString(),
                             annual = rd["annual"].ToString(),
                             monthEnd = rd["monthEnd"].ToString(),

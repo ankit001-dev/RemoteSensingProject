@@ -697,69 +697,79 @@
 
 
 <!--Mini charts-->
+
 <script>
     $(document).ready(function () {
-        debugger
+        var taskData = @Html.Raw(Json.Encode(ViewData["taskGraph"]));
+        console.log("taskData", taskData);
+
+        Chart.defaults.font.size = 13;
+        Chart.defaults.font.family = "'Segoe UI', sans-serif";
+        Chart.defaults.color = '#333'; // Professional font color
 
         var ctx = document.getElementById('bbchart').getContext('2d');
 
-        var datac = [
-            {
-                label: 'Total Task',
-                value: @Model.TotalTask
-            },
-            {
-                label: 'Pending Task',
-                value: @(Convert.ToInt32(Model.TotalTask) - Convert.ToInt32(Model.CompletedTask))
-            },
-            {
-                label: 'Completed Task',
-                value: @Model.CompletedTask
-            }
-        ];
+        // Aggregate all task counts
+        var aggregated = { total: 0, pending: 0, completed: 0 };
+        if (taskData && taskData.length > 0) {
+            taskData.forEach(function (item) {
+                aggregated.total += item.TotalTask || 0;
+                aggregated.pending += item.PendingTask || 0;
+                aggregated.completed += item.CompletedTask || 0;
+            });
+        }
 
-        var labels = datac.map(function (item) { return item.label; });
-        var values = datac.map(function (item) { return item.value; });
-
-        var pieChart = new Chart(ctx, {
-            type: 'pie',
+        var doughnutChart = new Chart(ctx, {
+            type: 'doughnut',
             data: {
-                labels: labels,
+                labels: ['Total Task', 'Pending Task', 'Completed Task'],
                 datasets: [{
-                    data: values,
-                    backgroundColor: ['#D9534F', '#F0AD4E', '#5CB85C'],
+                    data: [
+                        @Model.TotalTask,
+                        @(Convert.ToInt32(Model.TotalTask) - Convert.ToInt32(Model.CompletedTask)),
+                        @Model.CompletedTask
+                    ],
+                    backgroundColor: [
+                        '#2C3E50', // Dark Blue - Total
+                        '#E67E22', // Orange - Pending
+                        '#1ABC9C'  // Teal - Completed
+                    ],
                     borderColor: '#fff',
-                    borderWidth: 1
+                    borderWidth: 2,
+                    hoverOffset: 10
                 }]
             },
             options: {
                 responsive: true,
+                cutout: '60%', // Doughnut thickness
                 plugins: {
                     legend: {
-                        position: 'top'
+                        position: 'top',
+                        labels: {
+                            color: '#333',
+                            font: {
+                                size: 14,
+                                weight: '500'
+                            }
+                        }
                     },
                     tooltip: {
-                        enabled: true
-                    }
-                },
-                onClick: function (event, elements) {
-                    if (elements.length > 0) {
-                        var clickedIndex = elements[0].index;
-                        var label = labels[clickedIndex];
-
-                        if (label === 'Total Task') {
-                            window.location.href = '/employee/CreateTask';
-                        } else if (label === 'Pending Task') {
-                            window.location.href = '/employee/CreateTask?req=pending';
-                        } else if (label === 'Completed Task') {
-                            window.location.href = '/employee/CreateTask?req=completed';
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.label}: ${context.formattedValue} Tasks`;
+                            }
                         }
                     }
+                },
+                onClick: function () {
+                    window.location.href = "/employee/CreateTask";
                 }
             }
         });
     });
 </script>
+
+
 
 
 <!--Mini charts-->
@@ -847,72 +857,103 @@
 
 
 <!--Mini charts-->
+
 <script>
     $(document).ready(function () {
-        $(".filter2").change(); // Trigger change on page load to load initial data
-    });
 
-    $(document).ready(function () {
-        // Yearly data from Razor model
-        var yearlyData = [
-            @Model.TotalReimbursement,
-            @Model.TotalTourProposal,
-            @Model.TotalHiring
-        ];
-        var datac = yearlyData;
+        // Labels for the radar chart axes
+        const radarLabels = ['Total', 'Approved', 'Pending', 'Rejected'];
+
+        // Yearly Demo Data
+        const yearlyData = {
+            reimbursement: [120, 80, 25, 15],
+            tourProposal: [100, 60, 30, 10],
+            hiring: [90, 50, 30, 10]
+        };
+
+        // Function to build dataset with styling
+        function getRadarDatasets(source) {
+            const colors = [
+                { bg: 'rgba(255, 99, 132, 0.2)', border: 'rgba(255, 99, 132, 1)' },
+                { bg: 'rgba(54, 162, 235, 0.2)', border: 'rgba(54, 162, 235, 1)' },
+                { bg: 'rgba(255, 206, 86, 0.2)', border: 'rgba(255, 206, 86, 1)' }
+            ];
+            return [
+                {
+                    label: 'Reimbursement',
+                    data: source.reimbursement,
+                    backgroundColor: colors[0].bg,
+                    borderColor: colors[0].border,
+                    pointBackgroundColor: colors[0].border,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: colors[0].border,
+                    fill: true
+                },
+                {
+                    label: 'Tour Proposal',
+                    data: source.tourProposal,
+                    backgroundColor: colors[1].bg,
+                    borderColor: colors[1].border,
+                    pointBackgroundColor: colors[1].border,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: colors[1].border,
+                    fill: true
+                },
+                {
+                    label: 'Hiring Vehicle',
+                    data: source.hiring,
+                    backgroundColor: colors[2].bg,
+                    borderColor: colors[2].border,
+                    pointBackgroundColor: colors[2].border,
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: colors[2].border,
+                    fill: true
+                }
+            ];
+        }
 
         var ctx = document.getElementById('brchart').getContext('2d');
 
         var brchart = new Chart(ctx, {
-            type: 'pie',
+            type: 'radar',
             data: {
-                labels: ['Reimbursement', 'Tour Proposal', 'Hiring Vehicle'],
-                datasets: [{
-                    data: datac,
-                    backgroundColor: ['#A0E7E5', '#B4F8C8', '#FBE7C6'], // Light pastel colors
-                    borderColor: '#ffffff',
-                    borderWidth: 2,
-                    hoverOffset: 10
-                }]
+                labels: radarLabels,
+                datasets: getRadarDatasets(yearlyData)
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    },
-                    tooltip: {
-                        enabled: true
+                scales: {
+                    r: {
+                        angleLines: { display: true },
+                        grid: { color: '#e0e0e0' },
+                        pointLabels: {
+                            font: { size: 13 },
+                            color: '#000'
+                        },
+                        ticks: { display: false }
                     }
                 },
-                onClick: function (e, elements) {
-                    if (elements.length > 0) {
-                        var clickedIndex = elements[0].index;
-                        var clickedLabel = brchart.data.labels[clickedIndex];
-
-                        if (clickedLabel === 'Reimbursement') {
-                            window.location.href = '/employee/Reimbursement_report';
-                        } else if (clickedLabel === 'Tour Proposal') {
-                            window.location.href = '/employee/tourproposal_report';
-                        } else if (clickedLabel === 'Hiring Vehicle') {
-                            window.location.href = '/employee/hiring_report';
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.dataset.label} - ${context.label}: ${context.formattedValue}`;
+                            }
                         }
                     }
                 }
             }
         });
 
-        $(".filter2").on("change", function () {
-            var opt = $(this).val();
-
-            if (opt === "yearly") {
-                datac = yearlyData;
-            } else if (opt === "monthly") {
-                datac = monthlyData;
-            }
-
-            brchart.data.datasets[0].data = datac;
-            brchart.update();
-        });
     });
 </script>
+

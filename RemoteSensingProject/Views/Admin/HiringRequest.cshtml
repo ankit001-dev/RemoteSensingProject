@@ -351,11 +351,32 @@
 
 <script>
     $(document).ready(function () {
+        function getCookie(name) {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var c = cookies[i].trim();
+                if (c.indexOf(name + "=") == 0) {
+                    return c.substring(name.length + 1);
+                }
+            }
+            return null;
+        }
         $(".changeStatus").on("click", async function (e) {
             e.preventDefault();
+            debugger
+            var lat = getCookie("latitude");
+            var lng = getCookie("longitude");
             let status = $(this).data("value");
             let id = $(this).data("id")
             let remark = "";
+
+            Swal.fire({
+                title: "Please wait ...",
+                text: "......",
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            })
 
             if (!status) {
                 Swal.close();
@@ -390,7 +411,7 @@
             $.ajax({
                 url: '/admin/HiringRequest',
                 type: 'post',
-                data: { status: status, id: id,remark:remark },
+                data: { status: status, id: id, remark: remark, latitude: lat, longitude: lng },
                 success: function (res) {
                     if (res.status) {
                         Swal.fire({

@@ -4,6 +4,14 @@
     Layout = "~/Views/Shared/_adminLayout.cshtml";
 }
 
+<style>
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+        background: #029e9d;
+        color: white;
+        text-transform: none;
+    }
+</style>
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
@@ -85,27 +93,66 @@
     </div>
 </div>
 
-<div class="modal fade" id="viewslider" tabindex="-1" aria-labelledby="viewslider" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="viewslider" tabindex="-1" aria-labelledby="viewslider" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-body">
-                <div class="table-responsive">
-                    <table id="dataTableExample" class="table">
+               <div class="card p-0">
+                   <div class="card-header py-2 d-flex justify-content-between align-items-center">
+                       <h4 class="py-1">Outsource List</h4>
+                       <button type="button" class="btn btn-close" data-bs-dismiss="modal"><i class="fa-solid fa-square-xmark fa-2xl" style="color: #029e9d !important;"></i></button>
+                   </div>
+                   <div class="card-body mt-0">
+                       <div class="table-responsive">
+                           <table class="table">
+                               <thead>
+                                   <tr class="py-0" style="background: #029e9d; font-weight: bold;">
+                                       <th class="text-center text-light">Sr. No.</th>
+                                       <th class="text-light">Name</th>
+                                       <th class="text-light">Contact No.</th>
+                                       <th class="text-light">Email</th>
+                                       <th class="text-light">Joining Date</th>
+                                       <th class="text-light">Gender</th>
+                                   </tr>
+                               </thead>
+                               <tbody id="outsourcelist">
+                               </tbody>
+                           </table>
+                           <div class="text-end mt-3">
+                               <button type="button" class="btn btn-sm btn-danger rounded-0" data-bs-dismiss="modal">Close</button>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ViewattendanceModal" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-scrollable" style="margin-top:-1%">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="text-light">Attendance Sheet Of <span id="employeeNameDisplayatttend"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="attendanceForm" class="table-responsive">
+                    <table class="table" id="dataTableExample">
                         <thead>
                             <tr>
-                                <th class="text-center">Sr. No.</th>
-                                <th>Name</th>
-                                <th>Contact No.</th>
-                                <th>Email</th>
-                                <th>Joining Date</th>
-                                <th>Gender</th>
+                                <th>Date</th>
+                                <th class="text-center">Attendance Status</th>
+                                <th>Remark</th>
                             </tr>
                         </thead>
-                        <tbody>
-
+                        <tbody id="attendancelist">
                         </tbody>
                     </table>
-                </div>
+                    <div class="text-end mt-3">
+                        <button type="button" class="btn btn-sm btn-danger rounded-0" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -113,8 +160,111 @@
 
 <script>
     $(document).ready(function () {
+        var pm;
+        function convertDateFormat(dateStr) {
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date)) return null;
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}-${month}-${year}`;
+            } catch (error) {
+                return null;
+            }
+        }
+
         $(".showEmployeeProfile").on("click", function () {
+            debugger
+            Swal.fire({
+                title: 'Please wait!', text: 'Processing your request', allowOutsideClick: false, allowEscapeKey: false, didOpen: () => { Swal.showLoading(); }
+            });
             let id = $(this).data("id");
+            pm = id;
+            $.ajax({
+                url: '/api/getOutsource'
+                , type: 'GET', data: { userId: id },
+                success: function (res) {
+                    Swal.close();
+                    console.log(res)
+                    if (res.StatuCode === 200 && res.data != null) {
+                        let rows = '';
+                        $.each(res.data, function (index, item) {
+                            rows += `
+<tr>
+    <td>${index + 1}</td>
+    <td>
+    <a href="#" data-empid="${item.Id}" data-title="View Attendance" class="viewattendance" >${item.EmpName}</a>
+</td>
+    <td>${item.mobileNo}</td>
+    <td>${item.email}</td>
+    <td>${convertDateFormat(item.joiningdate) || 'N/A'}</td>
+    <td>${item.gender}</td>
+</tr>`;
+                        });
+                        $('#outsourcelist').html(rows);
+                    } else {
+                        $('#outsourcelist').html('<tr><td colspan="4">No data found</td></tr>');
+                    }
+
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Error', text: 'Failed to fetch data...', icon: 'error', confirmButtonText: 'OK'
+                    })
+                }
+            })
         });
-    })
+        $(document).on("click", ".viewattendance", function () {
+            debugger;
+            Swal.fire({
+                title: "Please Wait!",
+                text: "Processing your request",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            let id = $(this).attr("data-empid");
+            let pmId = pm;
+            $.ajax({
+                url: '/api/getattendancebyIdofEmp',
+                type: 'get',
+                data: { projectManager: pmId, EmpId: id },
+                success: function (res) {
+                    Swal.close();
+                    console.log('Attendance List', res.data);
+                    if (!res.data || res.data.length === 0) {
+                        Swal.fire({
+                            title: "No Data Found",
+                            text: "No attendance records found for this employee.",
+                            icon: "info"
+                        });
+                        return;
+                    }
+                    
+                    $("#employeeNameDisplayatttend").text(res.data[0].EmpName);
+                    $("#attendancelist").empty();
+                    $.each(res.data, function (index, item) {
+                        //$("#employeeNameDisplayatttend").text(item.)
+                        var row = $('<tr>');
+                        row.append('<td>' + convertDateFormat(item.attendanceDate) + '</td>');
+                        row.append('<td class="text-center">' + item.attendanceStatus + '</td>');
+                        row.append('<td>' + item.remark + '</td>');
+                        $("#attendancelist").append(row);
+                    });
+                    $("#ViewattendanceModal").modal("show");
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: "Error",
+                        text: 'Failed to fetch Data',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+    });
+    
+   
 </script>

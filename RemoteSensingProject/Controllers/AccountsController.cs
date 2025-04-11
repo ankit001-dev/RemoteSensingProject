@@ -138,6 +138,10 @@ namespace RemoteSensingProject.Controllers
             {
                 ViewData["hiringList"] = _adminServices.HiringReort().Where(d => !d.newRequest && !d.adminappr).ToList();
             }
+            else
+            {
+                ViewData["hiringList"] = _adminServices.HiringReort();
+            }
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             ViewData["projects"] = _adminServices.Project_List();
             return View();

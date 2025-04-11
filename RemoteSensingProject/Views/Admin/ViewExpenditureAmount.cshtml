@@ -18,7 +18,6 @@
                                 <th>Project Budget</th>
                                 <th>Expenditure</th>
                                 <th>Remaining</th>
-                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -29,13 +28,14 @@
                 {
                     <tr>
                         <td>@i</td>
-                        <td>@item.ProjectName</td>
+                        <td>
+                            <a href="/Admin/View_Expenses?Id=@item.id">
+                                @item.ProjectName
+                            </a>
+                        </td>
                         <td>@Convert.ToDecimal(item.ProjectBudget).ToString("N2")</td>
                         <td>@Convert.ToDecimal(item.expenditure).ToString("N2")</td>
                         <td>@Convert.ToDecimal(item.remaining).ToString("N2")</td>
-                        <td><a href="/Admin/View_Expenses?Id=@item.id">
-                            <i class="fa-solid fa-eye text-success"></i>
-                            </a></td>
                     </tr>
                                   i++;
                               }
