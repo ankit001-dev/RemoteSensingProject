@@ -429,5 +429,52 @@ namespace RemoteSensingProject.Models.Accounts
                 cmd.Dispose();
             }
         }
+        public List<Reimbursement> getReimbursementrepo()
+        {
+            try
+            {
+                List<Reimbursement> list = new List<Reimbursement>();
+                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "accountrepo");
+                con.Open();
+                SqlDataReader res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new Reimbursement
+                        {
+                            type = res["type"].ToString(),
+                            EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
+                            amount = Convert.ToDecimal(res["amount"]),
+                            approveAmount = Convert.ToDecimal(res["apprAmt"] != DBNull.Value ? res["apprAmt"] : 0),
+                            userId = Convert.ToInt32(res["userId"]),
+                            id = Convert.ToInt32(res["id"]),
+                            appr_status = Convert.ToBoolean(res["Apprstatus"]),
+                            newRequest = Convert.ToBoolean(res["newStatus"]),
+                            status = Convert.ToBoolean(res["apprAmountStatus"] != DBNull.Value ? res["apprAmountStatus"] : false),
+                            remark = res["remark"].ToString(),
+                            apprstatus = Convert.ToBoolean(res["ApprStatus"]),
+                            accountNewRequest = Convert.ToBoolean(res["accountNewRequest"]),
+                            chequeNum = res["chequeNum"].ToString(),
+                            chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : "",
+                        });
+                    }
+                }
+                return list;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
     }
 }

@@ -199,7 +199,9 @@
                         </div>
                         <input type="hidden" name="id" id="sanctionId" />
                     </div>
-                    <input type="submit" id="submitAmtBtn" class="btn btn-primary" />
+                    <div class="text-center mt-3">
+                        <input type="submit" id="submitAmtBtn" class="btn btn-primary" />
+                    </div>
                 </form>
             </div>
         </div>
@@ -219,7 +221,7 @@
                    <label>Reason :</label>
                     <textarea class="form-control form-control-sm" name="reason" placeholder="Enter message ..."></textarea>
                     <input type="hidden" name="sanctionId" id="rejectSanctionId"/>
-                    <p class="text-center py-1">
+                    <p class="text-center mt-3">
                         <input type="submit" id="submitAmtBtn" class="btn btn-primary" />
                     </p>
                 </form>
@@ -415,14 +417,15 @@
                 contentType: false,
                 success: function (res) {
                     if (res.status) {
+                        console.log(res.status)
                         Swal.fire({
                             title: "Successfully !",
                             text: res.message,
                             icon: "success",
                             didClose: () => {
-                                location.reload(true)
+                                location.reload(true);
                             }
-                        })
+                        });
                     }
                     else {
                         Swal.fire({
@@ -430,7 +433,7 @@
                             text: res.message,
                             icon: "warning",
 
-                        })
+                        });
                     }
                 },
                 error: function () {
@@ -441,9 +444,9 @@
                         didClose: () => {
                             location.reload(true)
                         }
-                    })
+                    });
                 }
-            })
-        })
+            });
+        });
     })
 </script>

@@ -103,7 +103,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Reimbursement_Report(string req)
         {
             ViewData["totalProjectManager"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            ViewData["totalReinursementReport"] = req == "approved" ? _adminServices.ReinbursementReport().Where(d => d.newRequest == false && d.appr_status == true && d.status == true).ToList() : req == "rejected" ? _adminServices.ReinbursementReport().Where(d => d.newRequest == false && (d.appr_status == false || d.status == false)).ToList() : _adminServices.ReinbursementReport();
+            ViewData["totalReinursementReport"] = req == "approved" ? _accountSerivce.getReimbursementrepo().Where(d => d.accountNewRequest == false && d.appr_status == true && d.status == true).ToList() : req == "rejected" ? _accountSerivce.getReimbursementrepo().Where(d => d.accountNewRequest == false && (d.appr_status == false || d.status == false)).ToList() : _accountSerivce.getReimbursementrepo();
             return View();
         }
         public ActionResult TourProposal_Report(string req)

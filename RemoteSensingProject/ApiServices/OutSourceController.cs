@@ -234,5 +234,79 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [HttpGet]
+        [Route("api/knowToday")]
+        public IHttpActionResult knowToday(int EmpId,DateTime attendancedate)
+        {
+            try
+            {
+                var data = _managerservice.toKnowToday(EmpId, attendancedate);
+                if (data)
+                {
+                    return Ok(new
+                    {
+                        status = data,
+                        data = data,
+                        message = "Data found !"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = data,
+                        data = data,
+                        message = "Data not found !"
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getChartData")]
+        public IHttpActionResult getChartData(int EmpId)
+        {
+            try
+            {
+                var data = _managerservice.chardata(EmpId);
+                if (data != null)
+                {
+                    return Ok(new
+                    {
+                        status = true,
+                        data = data,
+                        message = "Data found !"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = false,
+                        data = data,
+                        message = "Data not found !"
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
     }
 }

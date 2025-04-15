@@ -2024,7 +2024,7 @@ namespace RemoteSensingProject.Models.Admin
                     client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
                     client.DefaultRequestHeaders.Add("Accept-Language", "en");
 
-                    var response = await client.GetStringAsync(url);
+                    var response = await client.GetStringAsync(url).ConfigureAwait(false);
                     JObject json = JObject.Parse(response);
 
                     string city = json["address"]?["city"]?.ToString()

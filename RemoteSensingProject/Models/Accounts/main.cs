@@ -88,6 +88,13 @@ namespace RemoteSensingProject.Models.Accounts
 
         public class Reimbursement
         {
+            public string chequeNum { get; set; }
+            public string chequeDate { get; set; }
+            public bool accountNewRequest { get; set; }
+            public bool apprstatus { get; set; }
+            public decimal approveAmount { get; set; }
+            public bool newRequest { get; set; }
+            public bool status { get; set; }
             public string remark { get; set; }
             public DateTime date { get; set; }
             public int id { get; set; }

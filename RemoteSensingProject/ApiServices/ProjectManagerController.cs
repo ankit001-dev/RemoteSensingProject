@@ -1364,6 +1364,43 @@ namespace RemoteSensingProject.ApiServices
         }
         #endregion
         #region attendance
+        [HttpPost]
+        [Route("api/addAttendancefrompm")]
+        public IHttpActionResult AddAttendace(AttendanceManage am)
+        {
+            try
+            {
+                var result = _managerService.InsertAttendance(am);
+                if (result.success)
+                {
+                    if (result.skippedDates.Count > 0)
+                    {
+                        return Ok(new
+                        {
+                            success = true,
+                            StatusCode = 200,
+                            message = "Attendance submitted. Some dates were skipped as they already exist.",
+                            skipped = result.skippedDates
+                        });
+                    }
+
+                    return Ok(new { success = true, StatusCode = 200, message = "Attendance submitted successfully." });
+                }
+                else
+                {
+                    return Ok(new { success = false, message = "Error occurred: " + result.error });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 404,
+                    message = ex.Message
+                });
+            }
+        }
         [HttpGet]
         [Route("api/getattendancebyIdofEmp")]
         public IHttpActionResult GetAttendanceByIdOfEmp(int projectManager,int EmpId)
@@ -1391,6 +1428,67 @@ namespace RemoteSensingProject.ApiServices
                 }
             }
             catch(Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/ApproveAttendance")]
+        public IHttpActionResult ApproveAttendance(int id, bool status, string remark)
+        {
+            try
+            {
+                bool res = _managerService.AttendanceApproval(id, status, remark);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = (res == true && status == true) ? "Approved Successfully" : res ? "Rejected  Successfully" : "Something went wrong"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/getrepoattendance")]
+        public IHttpActionResult getrepoattendance(int month, int year,int projectManager,int EmpId)
+        {
+            try
+            {
+                var data = _managerService.getReportAttendance(month, year,projectManager,EmpId);
+                if (data != null)
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        data = data,
+                        message = "Data found!"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        data = data,
+                        message = "Data not found!"
+                    });
+                }
+            }
+            catch (Exception ex)
             {
                 return Ok(new
                 {

@@ -286,6 +286,9 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class AttendanceManage
     {
+        public int total { get; set; }
+        public int present { get; set; }
+        public int absent { get; set; }
         public string remark { get; set; }
         public int id { get; set; }
         public int projectManager { get; set; }

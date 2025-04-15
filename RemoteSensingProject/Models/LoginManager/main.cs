@@ -14,7 +14,8 @@ namespace RemoteSensingProject.Models.LoginManager
             public string Emp_Name { get; set; }
             public string role { get; set; }
             public string profilePath { get; set; }
-            public int userId { get; set; }     
+            public int userId { get; set; }   
+            public int Emp_Id { get; set; }
         }
     }   
 }

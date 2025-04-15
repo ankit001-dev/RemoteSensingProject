@@ -3,7 +3,7 @@
     ViewBag.Title = "Reimbursement_Report";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
     var empData = ViewData["totalProjectManager"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
-    var reportData = ViewData["totalReinursementReport"] as List<RemoteSensingProject.Models.Admin.main.AdminReimbursement>;
+    var reportData = ViewData["totalReinursementReport"] as List<RemoteSensingProject.Models.Accounts.main.Reimbursement>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
 
 }
@@ -129,19 +129,19 @@
                                 <td>@item.amount</td>
                                 <td>@item.approveAmount</td>
                                 <td>
-                                    @if (item.adminappr && !item.newRequest && string.IsNullOrEmpty(item.remark))
+                                    @if (item.status && !item.accountNewRequest && string.IsNullOrEmpty(item.remark))
                                     {<span>Approved</span> }
-                                    else if (item.newRequest && !item.adminappr)
+                                    else if (item.accountNewRequest && !item.status)
                                     { <span>Pending</span>}
                                     else
                                     { <span>@item.remark</span>}
                                 </td>
                                 <td>
-                                    @if (item.appr_status && !item.newRequest && item.status)
+                                    @if (item.appr_status && !item.accountNewRequest && item.status)
                                     {
                                         <span class="badge bg-success">Approved</span>
                                     }
-                                    else if (!item.newRequest && (!item.appr_status || !item.status))
+                                    else if (!item.accountNewRequest && (!item.appr_status || !item.status))
                                     {
                                         <span class="badge bg-danger">Rejected</span>
                                     }

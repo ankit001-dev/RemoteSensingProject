@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security.Cryptography.Pkcs;
 using System.Web;
 using System.Web.UI;
 using static RemoteSensingProject.Models.Admin.main;
@@ -2464,7 +2466,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                             newRequest = Convert.ToBoolean(rd["newRequest"]),
                             projectManagerName = rd["projectManagerName"].ToString(),
                             EmpName = rd["EmpName"].ToString(),
-                            remark = rd["remark"] != DBNull.Value ? rd["remark"].ToString():"Marked By Project Manager"
+                            remark = rd["remark"].ToString(),
+                            absent = Convert.ToInt32(rd["TotalAbsent"]),
+                            present = Convert.ToInt32(rd["TotalPresent"])
                             //projectManagerAppr = rd["projectManagerAppr"] != null ? Convert.ToBoolean(rd["projectManagerAppr"]) : false
                         });
                     }
@@ -2550,6 +2554,154 @@ namespace RemoteSensingProject.Models.ProjectManager
                 {
                     con.Close();
                 }
+                cmd.Dispose();
+            }
+        }
+        public List<AttendanceManage> getAttendanceCount(int projectManager)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageAttendance", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@projectManager", projectManager);
+                cmd.Parameters.AddWithValue("@action", "Totalcountpa");
+                con.Open();
+                List<AttendanceManage> list = new List<AttendanceManage>();
+                var res = cmd.ExecuteReader();
+                if (res.HasRows)
+                {
+                    while (res.Read())
+                    {
+                        list.Add(new AttendanceManage
+                        {
+                            EmpId = Convert.ToInt32(res["EmpId"]),
+                            EmpName = res["Emp_Name"].ToString(),
+                            present = Convert.ToInt32(res["presentcount"]),
+                            absent = Convert.ToInt32(res["absentcount"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public List<AttendanceManage> getReportAttendance(int month,int year,int projectManager,int EmpId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageAttendance", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "getRepo");
+                cmd.Parameters.AddWithValue("@month", month);
+                cmd.Parameters.AddWithValue("@year", year);
+                cmd.Parameters.AddWithValue("@projectManager", projectManager);
+                cmd.Parameters.AddWithValue("@EmpId", EmpId);
+                List<AttendanceManage> list = new List<AttendanceManage>();
+                con.Open();
+                var rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new AttendanceManage
+                        {
+                            id = Convert.ToInt32(rd["id"]),
+                            EmpId = Convert.ToInt32(rd["EmpId"]),
+                            projectManager = Convert.ToInt32(rd["projectManager"]),
+                            createdAt = Convert.ToDateTime(rd["createdAt"]),
+                            attendanceDate = Convert.ToDateTime(rd["attendancedate"]),
+                            attendanceStatus = rd["attendancestatus"].ToString(),
+                            newRequest = Convert.ToBoolean(rd["newRequest"]),
+                            projectManagerName = rd["projectManagerName"].ToString(),
+                            EmpName = rd["EmpName"].ToString(),
+                            absent = Convert.ToInt32(rd["TotalAbsent"]),
+                            present = Convert.ToInt32(rd["TotalPresent"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public bool toKnowToday(int EmpId,DateTime attendanceDate)
+        {
+            try
+            {
+                con.Open();
+                // Check if already exists
+                cmd = new SqlCommand("SELECT COUNT(*) FROM ManageAttendance WHERE EmpId = @EmpId AND attendancedate = @Date", con);
+                cmd.Parameters.AddWithValue("@EmpId", EmpId);
+                cmd.Parameters.AddWithValue("@Date", attendanceDate);
+                int count = (int)cmd.ExecuteScalar();
+
+                if (count > 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public List<AttendanceManage> chardata(int EmpId)
+        {
+            try
+            {
+                cmd = new SqlCommand("sp_ManageAttendance", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@action", "chardata");
+                cmd.Parameters.AddWithValue("@EmpId", EmpId);
+                List<AttendanceManage> list = new List<AttendanceManage>();
+                con.Open();
+                var data = cmd.ExecuteReader();
+                if (data.HasRows)
+                {
+                    while (data.Read())
+                    {
+                        list.Add(new AttendanceManage
+                        {
+                            present = Convert.ToInt32(data["PresentCount"]),
+                            absent = Convert.ToInt32(data["AbsentCount"]),
+                            total = Convert.ToInt32(data["total"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
                 cmd.Dispose();
             }
         }

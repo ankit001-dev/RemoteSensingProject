@@ -30,6 +30,7 @@ namespace RemoteSensingProject.Models.LoginManager
                     cr.userId = Convert.ToInt32(rd["userid"] != DBNull.Value ? rd["userid"] : 0);
                     cr.username = rd["username"].ToString();
                     cr.password = rd["password"].ToString();
+                    cr.Emp_Id = rd["Emp_Id"]!=DBNull.Value? Convert.ToInt32(rd["Emp_Id"]):0;
                     cr.Emp_Name = rd["name"] != DBNull.Value ? rd["name"].ToString() : "Admin";
                     cr.profilePath = rd["profile"] != DBNull.Value ? rd["profile"].ToString() : "/ProjectContent/Admin/Employee_Image/img.png";
                     cr.role = rd["userRole"].ToString();        

@@ -3,6 +3,7 @@
     ViewBag.Title = "ManageAttendance";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["UserList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
+    var counts = ViewData["attendanceCount"] as List<RemoteSensingProject.Models.ProjectManager.AttendanceManage>;
 }
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -22,29 +23,25 @@
                             <tr>
                                 <th class="text-center">Sr. No.</th>
                                 <th>Name</th>
-                                <th>Contact No.</th>
-                                <th>Email</th>
-                                <th>Joining Date</th>
-                                <th>Gender</th>
+                                <th>Present</th>
+                                <th>Absent</th>
                                 <th class="text-center">Attendance</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if (data != null && data.Count > 0)
+                            @if (counts != null && data.Count > 0)
                             {
                                 var count = 1;
-                                foreach (var item in data)
+                                foreach (var item in counts)
                                 {
-                                    <tr data-empid="@item.Id" data-empname="@item.EmpName">
+                                    <tr data-empid="@item.EmpId" data-empname="@item.EmpName">
                                         <td class="text-start">@count</td>
-                                        <td data-empid="@item.Id">
+                                        <td data-empid="@item.EmpId">
                                             <a href="#" data-title="View Attendance" class="viewattendance" >@item.EmpName</a>
                                         </td>
-                                        <td>@item.mobileNo</td>
-                                        <td>@item.email</td>
-                                        <td>@item.joiningdate</td>
-                                        <td>@item.gender</td>
-                                        <td class="text-center" data-id="@item.Id">
+                                        <td>@item.present</td>
+                                        <td>@item.absent</td>
+                                        <td class="text-center" data-id="@item.EmpId">
                                             <a href="#" class="open-date-modal" data-title="Add Attendance">
                                                 <i class="link-icon text-info" data-feather="plus-circle"> </i>
                                             </a>
@@ -129,13 +126,51 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form id="attendanceForm" class="table-responsive">
-                    <table class="table" id="dataTableExample">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <select class="form-select form-select-sm" id="yearFilter">
+                            <option value="">Select Year</option>
+                            @for (int y = 2006; y <= DateTime.Now.Year; y++)
+                            {
+                                <option value="@y" @(y == DateTime.Now.Year ? "selected" : "")>@y</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <select class="form-select form-select-sm" id="monthFilter">
+                            <option value="">Select Month</option>
+                            @{
+                                string[] months = new string[]
+                                {
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            };
+
+                                int currentMonth = DateTime.Now.Month;
+                                int previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+
+                                for (int i = 1; i <= months.Length; i++)
+                                {
+                                    <option value="@i" @(i == previousMonth ? "selected" : "")>@months[i - 1]</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+
+                    <div class="col-sm-4 text-end" style="font-size:12px !important;">
+                        <div>Total Present : <span id="pres"></span></div>
+                        <div>Total Absent : <span id="abs"></span></div>
+                    </div>
+                </div>
+                <div  class="table-responsive">
+                    <table class="table" id="attendancetable">
                         <thead>
                             <tr>
                                 <th>Date</th>
                                 <th class="text-center">Attendance Status</th>
-                                <th>Remark</th>
+                                <th class="text-center">Remark</th>
                             </tr>
                         </thead>
                         <tbody id="attendancelist">
@@ -145,7 +180,7 @@
                     <div class="text-end mt-3">
                         <button type="button" class="btn btn-sm btn-danger rounded-0" data-bs-dismiss="modal">Close</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -304,15 +339,25 @@
                 }
                 console.log('Attendance List', res);
                 $("#employeeNameDisplayatttend").text(res[0].EmpName);
+                $("#employeeNameDisplayatttend").attr('data-id', res[0].EmpId);
+                $("#pres").text(res[0].present)
+                $("#abs").text(res[0].absent)
                 $("#attendancelist").empty();
                 $.each(res, function (index, item) {
-                    //$("#employeeNameDisplayatttend").text(item.)
                     var row = $('<tr>');
                     row.append('<td>' + convertDateFormat(item.attendanceDate) + '</td>');
                     row.append('<td class="text-center">' + item.attendanceStatus + '</td>');
-                    row.append('<td>' + item.remark + '</td>');
+
+                    // Check if remark is null or empty and set 'Approved' if it is
+                    var remarkTitle = (item.remark && item.remark.trim() !== "") ? item.remark : 'Approved';
+
+                    console.log('Remark for EmpId ' + item.EmpId + ': ' + remarkTitle); // Debugging line to check the remark value
+
+                    row.append('<td class="text-center"><a href="#" data-title="' + remarkTitle + '"><i class="fa-solid fa-check-double"></i></a></td>');
+
                     $("#attendancelist").append(row);
                 });
+
                 $("#ViewattendanceModal").modal("show");
             },
             error: function (xhr) {
@@ -334,5 +379,70 @@
         // Return only the date in a human-readable format (no time)
         return date.toLocaleDateString();
     }
+    $(document).ready(function () {
+        $("#attendancetable").DataTable()
 
+        $("#monthFilter").on("change", function () {
+            debugger
+            Swal.fire({
+                title: 'Please Wait!',
+                text: 'Processing your request...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            let id = $("#employeeNameDisplayatttend").attr('data-id');
+            let month = $(this).val();
+            let year = $("#yearFilter").val();
+            $.ajax({
+                url: '/employee/getAttendanceRepo',
+                type: 'get',
+                data: { year: year, month: month, EmpId:id },
+                success: function (res) {
+                    Swal.close();
+                    if (!res.data || res.data.length === 0) {
+                        Swal.fire({
+                            title: "No Data Found",
+                            text: "No attendance records found for this employee of this month.",
+                            icon: "info",
+                            didClose: () => {
+                                $("#attendancelist").empty();
+                                $("#pres").text('0')
+                                $("#abs").text(0)
+                            }
+                        });
+                        return;
+                    }
+                    console.log('Attendance List', res.data);
+                    $("#pres").text(res.data[0].present)
+                    $("#abs").text(res.data[0].absent)
+                    $("#attendancelist").empty();
+                    $.each(res.data, function (index, item) {
+                        var row = $('<tr>');
+                        row.append('<td>' + convertDateFormat(item.attendanceDate) + '</td>');
+                        row.append('<td class="text-center">' + item.attendanceStatus + '</td>');
+
+                        // Check if remark is null or empty and set 'Approved' if it is
+                        var remarkTitle = (item.remark && item.remark.trim() !== "") ? item.remark : 'Approved';
+
+                        console.log('Remark for EmpId ' + item.EmpId + ': ' + remarkTitle); // Debugging line to check the remark value
+
+                        row.append('<td class="text-center"><a href="#" data-title="' + remarkTitle + '"><i class="fa-solid fa-check-double"></i></a></td>');
+
+                        $("#attendancelist").append(row);
+                    });
+                },
+                error: function (xhr,error,message) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to fetch data. Please Try Again!',
+                        icon: 'error'
+                    });
+                    console.log(xhr)
+                    console.log(message)
+                    console.log(error)
+                }
+            });
+        });
+    })
 </script>
