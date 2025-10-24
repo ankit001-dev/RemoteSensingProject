@@ -104,6 +104,7 @@
                         <thead>
                             <tr>
                                 <th>Sr. No.</th>
+                                <th>Project Code</th>
                                 <th>Project Name</th>
                                 <th>Project Manager</th>
                                 <th>Assign Date</th>
@@ -121,6 +122,7 @@
                             {
                                 <tr>
                                     <td class="text-center">@i</td>
+                                    <td>@item.projectCode</td>
                                     <td>
                                         <a href="#" class="viewProject" data-title="View" data-Id="@item.Id">
                                             @item.ProjectTitle
@@ -175,11 +177,11 @@
                                                 </a>
                                             </li>
 
-                                            <li class="me-2">
+                                            @*<li class="me-2">
                                                 <a href="/Admin/View_Project_Stage?Id=@item.Id" data-title="View Stages">
                                                     <i class="link-icon text-info" data-feather="plus-circle"> </i>
                                                 </a>
-                                            </li>
+                                            </li>*@
                                             <li class="me-2">
                                                 <a href="/Admin/View_Expenses?Id=@item.Id" data-title="View Expenses">
                                                     <i class="link-icon text-danger" data-feather="file-plus"></i>

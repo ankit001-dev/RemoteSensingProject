@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Data;
-using System.Data.SqlClient;
 using static RemoteSensingProject.Models.LoginManager.main;
-using System.Web.Security;
-using System.Web.Mvc;
+using Npgsql;
 
 namespace RemoteSensingProject.Models.LoginManager
 {
@@ -17,13 +13,13 @@ namespace RemoteSensingProject.Models.LoginManager
             try
             {
                 Credentials cr = new Credentials();
-                cmd = new SqlCommand("sp_manageLoginMaster", con);
+                cmd = new NpgsqlCommand("sp_manageLoginMaster", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "loginUser");
                 cmd.Parameters.AddWithValue("@username", username);
                 cmd.Parameters.AddWithValue("@password", password);
                 con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     rd.Read();
@@ -55,13 +51,13 @@ namespace RemoteSensingProject.Models.LoginManager
             try
             {
                 List<string> roles = new List<string>();
-                cmd = new SqlCommand("sp_manageLoginMaster", con);
+                cmd = new NpgsqlCommand("sp_manageLoginMaster", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getUserRole");
                 cmd.Parameters.AddWithValue("@username", username);
                 if (con.State == ConnectionState.Closed)
                     con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())

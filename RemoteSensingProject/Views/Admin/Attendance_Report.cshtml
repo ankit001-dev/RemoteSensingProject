@@ -1,0 +1,485 @@
+﻿
+@{
+    ViewBag.Title = "Attendance_Report";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var counts = ViewData["attendanceCount"] as List<RemoteSensingProject.Models.ProjectManager.AttendanceManage>;
+}
+
+<style>
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: bold;
+        background: #029e9d;
+        color: white;
+        text-transform: none;
+    }
+</style>
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">/Employee Registration</li>
+    </ol>
+    @*<button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Employee</button>*@
+</nav>
+
+
+<div class="row mx-0">
+    <div class="col-md-12 p-0 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr. No.</th>
+                                <th>EmployeeCode</th>
+                                <th>Name</th>
+                                <th>Role</th>
+                                <th>Division</th>
+                                <th>Designation</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewData["EmployeeList"] != null)
+                            {
+                                var count = 1;
+                                foreach (var item in ViewData["EmployeeList"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                {
+                                    <tr>
+                                        <td class="text-start">@count</td>
+                                        <td>@item.EmployeeCode</td>
+                                        <td><a href="#" data-title="View Attendance" data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider">@item.EmployeeName</a></td>
+                                        <td>@item.EmployeeRole</td>
+                                        <td>@item.DevisionName</td>
+                                        <td>@item.DesignationName</td>
+                                        <td>@item.CreationDate</td>
+                                    </tr>
+                                    count++;
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewslider" tabindex="-1" aria-labelledby="viewslider" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="card p-0">
+                    <div class="card-header py-2 d-flex justify-content-between align-items-center">
+                        <h4 class="py-1">Outsource List</h4>
+                        <button type="button" class="btn btn-close" data-bs-dismiss="modal"><i class="fa-solid fa-square-xmark fa-2xl" style="color: #029e9d !important;"></i></button>
+                    </div>
+                    <div class="card-body mt-0">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card px-0">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-4">
+                                                <label>Select Year</label>
+                                                <select class="form-select form-select-sm" id="yearFilterTable">
+                                                    <option value="">Select Year</option>
+                                                    @for (int y = DateTime.Now.Year; y >= 2006; y--)
+                                                    {
+                                                        <option value="@y" @(y == DateTime.Now.Year ? "selected" : "")>@y</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label>Select Month</label>
+                                                <select class="form-select form-select-sm" id="monthFilterTable">
+                                                    <option value="">Select Month</option>
+                                                    @{
+                                                        string[] monthname = new string[]
+                                                        {
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            };
+
+                                                        int currentMonth = DateTime.Now.Month;
+                                                        int previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+
+                                                        for (int i = 1; i <= monthname.Length; i++)
+                                                        {
+                                                            <option value="@i" @(i == previousMonth ? "selected" : "")>@monthname[i - 1]</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-4 text-center">
+                                                <label></label><br />
+                                                <a href="#" id="showAllAttendance" class="btn btn-primary py-1">Show All</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr class="py-0" style="background: #029e9d; font-weight: bold;">
+                                        <th class="text-center">Sr. No.</th>
+                                        <th>Name</th>
+                                        <th class="text-center">Present</th>
+                                        <th class="text-center">Absent</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="outsourcelist">
+                                </tbody>
+                            </table>
+                            <div class="text-end mt-3">
+                                <button type="button" class="btn btn-sm btn-danger rounded-0" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ✅ Attendance List Modal -->
+<div class="modal fade" id="ViewattendanceModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable" style="margin-top:-1%">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h5 class="text-light">Attendance Sheet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row mb-2">
+                    <div class="col-sm-3 text-start">
+                        <button type="button" class="btn btn-warning py-1 mt-2 rounded-1" id="exportExcel">Exel</button>
+                        <button type="button" class="ms-2 btn btn-danger py-1 mt-2 rounded-1" id="exceldown">Pdf</button>
+                    </div>
+                    <div class="header col-sm-3 text-end">
+                        <h3 id="employeeNameDisplayatttend"></h3>
+                    </div>
+                    <div class="col-sm-4 px-5 text-end d-flex justify-content-end">
+                        <div class="px me-2">
+                            <select class="form-select form-select-sm" id="yearFilter">
+                                <option value="">Select Year</option>
+                                @for (int y = DateTime.Now.Year; y >= 2006; y--)
+                                {
+                                    <option value="@y" @(y == DateTime.Now.Year ? "selected" : "")>@y</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="px">
+                            <select class="form-select form-select-sm" id="monthFilter">
+                                <option value="">Select Month</option>
+                                @{
+                                    string[] months = new string[]
+                                    {
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+};
+
+                                     currentMonth = DateTime.Now.Month;
+                                     previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+
+                                    for (int i = 1; i <= months.Length; i++)
+                                    {
+                                        <option value="@i" @(i == previousMonth ? "selected" : "")>@months[i - 1]</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+
+                    <div class="col-sm-2 text-end" style="font-size:12px !important;">
+                        <div>Total Present : <span id="pres"></span></div>
+                        <div>Total Absent : <span id="abs"></span></div>
+                    </div>
+                </div>
+
+                <div class="table-responsive" style="font-size:12px;">
+                    <table class="table table-bordered" id="">
+                        <thead id="attendanceListDates">
+                        </thead>
+                        <tbody id="attendancelist">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-end mt-3">
+                    <button type="button" class="btn btn-sm btn-danger rounded-0" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        function convertDateFormat(dateStr) {
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date)) return null;
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}-${month}-${year}`;
+            } catch (error) {
+                return null;
+            }
+        }
+        var pm;
+        $(document).on("click", ".showEmployeeProfile", function () {
+            Swal.fire({
+                title: 'Please wait!', text: 'Processing your request', allowOutsideClick: false, allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            let id = $(this).data("id");
+            pm = id;
+            $.ajax({
+                url: '/api/getOutsourceByPm',
+                type: 'GET',
+                data: { projectManager: id },
+                success: function (res) {
+                    Swal.close();
+
+                    $('#outsourcelist').empty();
+
+                    console.log(res.data);
+                    if (res.StatusCode === 200 && res.data != null) {
+                        let rows = '';
+                        $.each(res.data, function (index, item) {
+                            rows += `
+<tr>
+    <td class="text-center">${index + 1}</td>
+    <td>
+        <a href="#" data-empid="${item.EmpId}" data-title="View Attendance" class="viewattendance">${item.EmpName}</a>
+    </td>
+    <td class="text-center">${item.present}</td>
+    <td class="text-center">${item.absent}</td>
+</tr>`;
+                        });
+                        $('#outsourcelist').html(rows);
+                    } else {
+                        $('#outsourcelist').html('<tr><td colspan="4">No data found</td></tr>');
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Error', text: 'Failed to fetch data...', icon: 'error', confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+
+
+
+        function getDayFromDate(dateString) {
+            var dateParts = dateString.split('/');
+            return parseInt(dateParts[1]);
+        }
+        //Start
+        $(document).on("click", ".viewattendance", function () {
+            Swal.fire({
+                title: "Please Wait!",
+                text: "Processing your request",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            debugger
+            let id = $(this).data("empid");
+
+            $.ajax({
+                url: '/api/getAttendanceByEmp',
+                type: 'get',
+                data: { projectManager: pm, EmpId: id },
+                success: function (res) {
+                    Swal.close();
+                    console.log(res.data)
+                    if (!res.status || res.data.length === 0) {
+                        Swal.fire({
+                            title: "No Data Found",
+                            text: "No attendance records found for this employee.",
+                            icon: "info"
+                        });
+                        return;
+                    }
+
+                    $("#employeeNameDisplayatttend").text(res.data[0].EmpName);
+                    $("#employeeNameDisplayatttend").attr('data-id', res.data[0].EmpId);
+                    $("#pres").text(res.data[0].present)
+                    $("#abs").text(res.data[0].absent)
+                    $("#attendancelist").empty();
+
+                    var dateRow = $('<tr>');
+                    var statusRow = $('<tr>');
+
+                    var month = $("#monthFilter").val()
+                    var year = $("#yearFilter").val();
+                    var totalDays = new Date(year, month, 0).getDate();
+
+                    let attendanceMap = [];
+                    $.each(res.data, function (i, item) {
+
+                        let day = convertToDate(item.attendanceDate).getDate();
+
+                        attendanceMap.push({
+                            date: day,
+                            attd: item.attendanceStatus
+                        })
+                    });
+
+                    function convertToDate(timestamp) {
+                        return new Date(timestamp);
+                    }
+
+
+                    console.log(attendanceMap);
+                    console.log(year);
+                    console.log(totalDays);
+                    console.log(month);
+                    for (let day = 1; day <= totalDays; day++) {
+                        dateRow.append('<th class="text-center">' + day + '</th>');
+                        let attData = attendanceMap.filter(d => d.date === day)
+                        console.log(attData)
+                        if (attData.length > 0) {
+                            statusRow.append('<td class="text-center">' + attData[0].attd + '</td>');
+                        } else {
+                            statusRow.append('<td class="text-center">-</td>');
+                        }
+                    }
+
+                    $("#attendancelist").append(dateRow);
+                    $("#attendancelist").append(statusRow);
+
+                    $("#ViewattendanceModal").modal("show");
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: "Error",
+                        text: 'Failed to fetch Data',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+
+
+
+
+
+        //End
+        function convertDateFormat(dateString) {
+            // Extract milliseconds from the string /Date(1743618600000)/
+            const milliseconds = parseInt(dateString.match(/\d+/)[0]);
+
+            // Create a Date object using the extracted milliseconds
+            const date = new Date(milliseconds);
+
+            // Return only the date in a human-readable format (no time)
+            return date.toLocaleDateString();
+        }
+
+        $("#attendancetable").DataTable()
+
+        $("#monthFilter").on("change", function () {
+            debugger
+            Swal.fire({
+                title: 'Please Wait!',
+                text: 'Processing your request...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            let id = $("#employeeNameDisplayatttend").attr('data-id');
+            let month = $(this).val();
+            let year = $("#yearFilter").val();
+            $.ajax({
+                url: '/api/getAttendanceRepo',
+                type: 'get',
+                data: { year: year, month: month, projectManager: pm, EmpId: id },
+                success: function (res) {
+                    Swal.close();
+                    if (!res.data || res.data.length === 0) {
+                        Swal.fire({
+                            title: "No Data Found",
+                            text: "No attendance records found for this employee of this month.",
+                            icon: "info",
+                            didClose: () => {
+                                $("#attendancelist").empty();
+                                $("#pres").text('0')
+                                $("#abs").text(0)
+                            }
+                        });
+                        return;
+                    }
+                    console.log('Attendance List', res.data[0]);
+                    $("#pres").text(res.data[0].present)
+                    $("#abs").text(res.data[0].absent)
+                    $("#attendancelist").empty();
+                    var dateRow = $('<tr>');
+                    var statusRow = $('<tr>');
+
+                    var totalDays = new Date(year, month, 0).getDate();
+
+                    let attendanceMap = [];
+                    $.each(res.data, function (i, item) {
+
+                        let day = convertToDate(item.attendanceDate).getDate();
+
+                        attendanceMap.push({
+                            date: day,
+                            attd: item.attendanceStatus
+                        })
+                    });
+
+                    function convertToDate(timestamp) {
+                        const parsedTimestamp = parseInt(timestamp.match(/\d+/)[0], 10);
+                        const date = new Date(parsedTimestamp);
+                        return date;
+                    }
+
+
+                    console.log(attendanceMap);
+                    console.log(year);
+                    console.log(totalDays);
+                    console.log(month);
+                    for (let day = 1; day <= totalDays; day++) {
+                        dateRow.append('<th class="text-center">' + day + '</th>');
+                        let attData = attendanceMap.filter(d => d.date === day)
+                        console.log(attData)
+                        if (attData.length > 0) {
+                            statusRow.append('<td class="text-center">' + attData[0].attd + '</td>');
+                        } else {
+                            statusRow.append('<td class="text-center">-</td>');
+                        }
+                    }
+
+                    $("#attendancelist").append(dateRow);
+                    $("#attendancelist").append(statusRow);
+                },
+                error: function (xhr, error, message) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to fetch data. Please Try Again!',
+                        icon: 'error'
+                    });
+                    console.log(xhr)
+                    console.log(message)
+                    console.log(error)
+                }
+            });
+        });
+
+        $('#exportExcel').click(function () {
+
+        });
+    });
+</script>

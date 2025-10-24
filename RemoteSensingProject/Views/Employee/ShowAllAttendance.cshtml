@@ -1,0 +1,93 @@
+﻿
+@{
+    ViewBag.Title = "ShowAllAttendance";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["showAllAtt"] as List<RemoteSensingProject.Models.ProjectManager.AttendanceManage>;
+}
+
+
+
+<div class="row mx-0 mb-2">
+    <div class="col-sm-3 text-start">
+        <button type="button" class="btn btn-warning py-1 mt-2 rounded-1" id="exportExcel">Exel</button>
+        <button type="button" class="ms-2 btn btn-danger py-1 mt-2 rounded-1" id="exceldown">Pdf</button>
+    </div>
+    <div class="header col-sm-3 text-end">
+        <h3 id="employeeNameDisplayatttend"></h3>
+    </div>
+</div>
+
+<script>
+    $('#exportExcel').click(function () {
+        location.href = '/employee/ExportAllAtt?year=' + 2025 + '&month=' + 4;
+    });
+</script>
+<div id="allEmployeesAttendance"></div>
+
+<script>
+    $(document).ready(function () {
+        let year = parseInt("@ViewData["Year"]");
+        let month = parseInt("@ViewData["Month"]");
+        let daysInMonth = new Date(year, month, 0).getDate();
+        let attendanceData = @Html.Raw(@ViewData["AllAttendance"]);
+
+        let container = '';
+
+        attendanceData.forEach(emp => {
+            let totalPresent = emp.showAll[0].present;
+            let totalAbsent = emp.showAll[0].absent;
+            console.log(emp.showAll[0].present)
+
+            // Header: Name + Total Present + Absent
+            container += `
+                <div class="table-responsive mb-4" style="font-size:12px; border:1px solid #ccc; padding:10px; border-radius:6px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <h5 style="text-align:center; width:100%;">${emp.EmpName}</h5>
+                        <div style="position:absolute; right:20px;">
+                            <span style="margin-right:15px;"><strong>Present:</strong> ${totalPresent}</span>
+                            <span><strong>Absent:</strong> ${totalAbsent}</span>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Date</th>`;
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                container += `<th>${d.toString().padStart(2, '0')}</th>`;
+            }
+
+            container += `
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Status</td>`;
+
+            for (let d = 1; d <= daysInMonth; d++) {
+                let currentDate = new Date(year, month - 1, d).toISOString().split('T')[0];
+                let status = "-";
+
+                emp.showAll.forEach(att => {
+                    let attDate = new Date(att.attendanceDate).toISOString().split('T')[0];
+                    if (attDate === currentDate) {
+                        status = att.attendanceStatus || "-";
+                    }
+                });
+
+                container += `<td>${status}</td>`;
+            }
+
+            container += `
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>`;
+        });
+
+        $('#allEmployeesAttendance').html(container);
+    });
+</script>
+
+

@@ -80,6 +80,7 @@
                         <tr>
                             <th>S.N.</th>
                             <th>Project Manager</th>
+                            <th>Project Code</th>
                             <th>Project Name</th>
                             <th>Head Name</th>
                             <th>Date From</th>
@@ -102,6 +103,7 @@
                                 <tr>
                                     <td>@i</td>
                                     <td data-id="@item.id"><a class="action" href="#" data-title="View Details" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal">@item.projectManager</a></td>
+                                    <td>@item.projectCode</td>
                                     <td>@item.projectName</td>
                                     <td>@item.headName</td>
                                     <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>

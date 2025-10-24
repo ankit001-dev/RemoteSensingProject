@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace RemoteSensingProject.Models.SubOrdinate
 {
@@ -38,6 +39,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
         }
         public class ProjectList
         {
+            public string projectCode { get; set; }
             public int Id { get; set; } // Unique identifier for the project
             public DateTime AssignDate { get; set; }
             public string ProjectName { get; set; }
@@ -60,9 +62,11 @@ namespace RemoteSensingProject.Models.SubOrdinate
             public string CompletionDatestring { get; set; }
             public string AssignDateString { get; set; }
             public string StartDateString { get; set; }
+            public float projectStatus { get; set; }
         }
         public class Raise_Problem
         {
+            public string projectCode { get; set; }
             public bool newRequest { get; set; }
             public int ProblemId { get; set; }
             public int Project_Id { get; set; }

@@ -90,6 +90,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center">Sr. No.</th>
+                                <th class="text-center">Project Code</th>
                                 @*<th>Project Manager</th>*@
                                 <th>Project</th>
                                 <th>Purpose</th>
@@ -111,6 +112,7 @@
                                 {
                                     <tr>
                                         <td>@i</td>
+                                        <td>@item.projectCode</td>
                                         @*<td>@item.projectManager</td>*@
                                         <td class="text-center" data-id="@item.id">
                                             <a href="#" data-title="View Details" class="action">@item.projectName</a>

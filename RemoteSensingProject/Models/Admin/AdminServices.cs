@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using static RemoteSensingProject.Models.Admin.main;
-using System.Data.SqlClient;
-using System.Data;
+﻿using Newtonsoft.Json.Linq;
+using Npgsql;
+using NpgsqlTypes;
 using RemoteSensingProject.Models.MailService;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
-using System.Web.UI.WebControls;
-using System.Net;
-using System.Web.Http.ValueProviders.Providers;
-using System.Threading.Tasks;
 using System.Net.Http;
-using Antlr.Runtime.Tree;
-using System.Text.Json;
-using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using System.Web.UI.WebControls;
+using static RemoteSensingProject.Models.Admin.main;
+
+
 namespace RemoteSensingProject.Models.Admin
 {
     public class AdminServices : DataFactory
@@ -22,15 +22,20 @@ namespace RemoteSensingProject.Models.Admin
         mail _mail = new mail();
 
 
-        public bool InsertDesgination(CommonResponse cr)
+        public bool InsertDesignation(CommonResponse cr)
         {
             try
             {
-                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                // Use NpgNpgsqlCommand with connection
+                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", cr.id > 0 ? "UpdateDesignation" : "InsertDesignation");
-                cmd.Parameters.AddWithValue("@designationName", cr.name);
-                cmd.Parameters.AddWithValue("@id", cr.id);
+
+                // Add parameters
+                cmd.Parameters.AddWithValue("action", cr.id > 0 ? "UpdateDesignation" : "InsertDesignation");
+                cmd.Parameters.AddWithValue("designationName", cr.name);
+                cmd.Parameters.AddWithValue("id", cr.id);
+
+                // Open connection and execute
                 con.Open();
                 return cmd.ExecuteNonQuery() > 0;
             }
@@ -40,7 +45,7 @@ namespace RemoteSensingProject.Models.Admin
             }
             finally
             {
-                if (con.State == System.Data.ConnectionState.Open)
+                if (con.State == ConnectionState.Open)
                     con.Close();
                 cmd.Dispose();
             }
@@ -50,7 +55,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", cr.id > 0 ? "UpdateDevision" : "InsertDevision");
                 cmd.Parameters.AddWithValue("@devisionName", cr.name);
@@ -75,11 +80,11 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<CommonResponse> list = new List<CommonResponse>();
-                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetAllDevision");
                 con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
@@ -110,11 +115,11 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<CommonResponse> list = new List<CommonResponse>();
-                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetAllDesignation");
                 con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
@@ -147,7 +152,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "deleteDevision");
                 cmd.Parameters.AddWithValue("@id", Id);
@@ -170,7 +175,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_ManageEmployeeCategory", con);
+                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "deleteDesignation");
                 cmd.Parameters.AddWithValue("@id", Id);
@@ -195,7 +200,7 @@ namespace RemoteSensingProject.Models.Admin
         public bool AddEmployees(Employee_model emp)
         {
             con.Open();
-            SqlTransaction transaction = con.BeginTransaction();
+            NpgsqlTransaction transaction = con.BeginTransaction();
             try
             {
                 string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -211,7 +216,7 @@ namespace RemoteSensingProject.Models.Admin
                 }
 
                 var ActionType = emp.Id != 0 ? "UpdateEmployees" : "InsertEmployees";
-                cmd = new SqlCommand("sp_AdminEmployees", con, transaction);
+                cmd = new NpgsqlCommand("sp_AdminEmployees", con, transaction);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", ActionType);
                 cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
@@ -266,7 +271,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_AdminEmployees", con);
+                cmd = new NpgsqlCommand("sp_AdminEmployees", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "DeleteEmployees");
                 cmd.Parameters.AddWithValue("@id", id);
@@ -298,7 +303,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_AdminEmployees", con);
+                cmd = new NpgsqlCommand("sp_AdminEmployees", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "SelectEmployees");
                 con.Open();
@@ -344,7 +349,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_AdminEmployees", con);
+                cmd = new NpgsqlCommand("sp_AdminEmployees", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "SelectEmployeesById");
                 cmd.Parameters.AddWithValue("@id", id);
@@ -390,7 +395,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_AdminEmployees", con);
+                cmd = new NpgsqlCommand("sp_AdminEmployees", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "ChangeActiveStatus");
                 cmd.Parameters.AddWithValue("@id", id);
@@ -425,10 +430,12 @@ namespace RemoteSensingProject.Models.Admin
         public bool addProject(createProjectModel pm)
         {
             con.Open();
-            SqlTransaction tran = con.BeginTransaction();
+            NpgsqlTransaction tran = con.BeginTransaction();
             try
             {
-                cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                Random rand = new Random();
+                pm.projectCode = $"{rand.Next(1000, 9999).ToString()}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
+                cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "insertProject");
                 cmd.Parameters.AddWithValue("@title", pm.pm.ProjectTitle);
@@ -443,8 +450,9 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@projectType", pm.pm.ProjectType);
                 cmd.Parameters.AddWithValue("@stage", pm.pm.ProjectStage);
                 cmd.Parameters.AddWithValue("@createdBy", "admin");
+                cmd.Parameters.AddWithValue("@projectCode", pm.projectCode);
                 cmd.Parameters.AddWithValue("@ApproveStatus", 1);
-                cmd.Parameters.Add("@project_Id", SqlDbType.Int);
+                cmd.Parameters.Add("@project_Id", NpgsqlDbType.Integer);
                 cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
                 int i = cmd.ExecuteNonQuery();
                 int projectId = Convert.ToInt32(cmd.Parameters["@project_Id"].Value != DBNull.Value ? cmd.Parameters["@project_Id"].Value : 0);
@@ -454,7 +462,7 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         foreach (var item in pm.budgets)
                         {
-                            cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                            cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Parameters.AddWithValue("@action", "insertProjectBudget");
                             cmd.Parameters.AddWithValue("@project_Id", projectId);
@@ -467,7 +475,7 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         foreach (var item in pm.stages)
                         {
-                            cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                            cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Parameters.AddWithValue("@action", "insertProjectStatge");
                             cmd.Parameters.AddWithValue("@project_Id", projectId);
@@ -480,7 +488,7 @@ namespace RemoteSensingProject.Models.Admin
 
                     if (pm.pm.ProjectType.Equals("External") && projectId > 0)
                     {
-                        cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                        cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@action", "insertExternalProject");
                         cmd.Parameters.AddWithValue("@project_Id", projectId);
@@ -494,7 +502,7 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         foreach (var item in pm.pm.SubOrdinate)
                         {
-                            cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                            cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Parameters.AddWithValue("@action", "insertSubOrdinate");
                             cmd.Parameters.AddWithValue("@project_Id", projectId);
@@ -525,11 +533,11 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<Project_model> list = new List<Project_model>();
-                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetAllProject");
                 con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
@@ -554,7 +562,8 @@ namespace RemoteSensingProject.Models.Admin
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
                             AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
                             StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
-                            createdBy = rd["createdBy"].ToString()
+                            createdBy = rd["createdBy"].ToString(),
+                            projectCode = rd["projectCode"] != DBNull.Value? rd["projectCode"].ToString():"N/A"
                         });
                     }
                 }
@@ -577,12 +586,12 @@ namespace RemoteSensingProject.Models.Admin
             {
                 List<Project_model> _headList = new List<Project_model>();
                 Project_model obj = null;
-                SqlCommand cmd = new SqlCommand("sp_adminAddproject", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getHeadByProject");
                 cmd.Parameters.AddWithValue("@id", projectId);
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
                 if (sdr.HasRows)
                 {
                     while (sdr.Read())
@@ -612,19 +621,19 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 createProjectModel cpm = new createProjectModel();
-                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetProjectById");
                 cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 List<Project_Subordination> subList = new List<Project_Subordination>();
                 Project_model pm = new Project_model();
                 if (rd.HasRows)
                 {
 
                     while (rd.Read())
-                    {
+                    { 
                         pm.Id = Convert.ToInt32(rd["id"]);
                         pm.ProjectTitle = rd["title"].ToString();
                         pm.AssignDate = Convert.ToDateTime(rd["assignDate"]);
@@ -640,6 +649,7 @@ namespace RemoteSensingProject.Models.Admin
                         pm.ProjectType = rd["projectType"].ToString();
                         pm.ProjectStage = Convert.ToBoolean(rd["stage"]);
                         pm.ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]);
+                        pm.projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A";
                         if (pm.ProjectType.Equals("External"))
                         {
                             pm.Address = rd["address"].ToString();
@@ -684,10 +694,12 @@ namespace RemoteSensingProject.Models.Admin
         public bool createApiProject(Project_model pm)
         {
             con.Open();
-            SqlTransaction tran = con.BeginTransaction();
+            NpgsqlTransaction tran = con.BeginTransaction();
             try
             {
-                cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                Random rand = new Random();
+                pm.projectCode = $"{rand.Next(1000, 9999).ToString()}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
+                cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", pm.Id > 0 ? "updateProject" : "insertProject");
                 cmd.Parameters.AddWithValue("@title", pm.ProjectTitle);
@@ -701,13 +713,14 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@projectType", pm.ProjectType);
                 cmd.Parameters.AddWithValue("@stage", pm.ProjectStage);
                 cmd.Parameters.AddWithValue("@createdBy", pm.createdBy);
-                cmd.Parameters.Add("@project_Id", SqlDbType.Int);
+                cmd.Parameters.AddWithValue("@projectCode", pm.projectCode);
+                cmd.Parameters.Add("@project_Id", NpgsqlDbType.Integer);
                 cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
                 int i = cmd.ExecuteNonQuery();
                 int projectId = Convert.ToInt32(cmd.Parameters["@project_Id"].Value != DBNull.Value ? cmd.Parameters["@project_Id"].Value : 0);
                 if (pm.ProjectType.Equals("External") && (projectId > 0 || pm.Id > 0))
                 {
-                    cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                    cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@action", pm.Id > 0 ? "updateExternalProject" : "insertExternalProject");
                     cmd.Parameters.AddWithValue("@project_Id", projectId);
@@ -720,7 +733,7 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     foreach (var item in pm.SubOrdinate)
                     {
-                        cmd = new SqlCommand("sp_adminAddproject", con, tran);
+                        cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@action", "insertSubOrdinate");
                         cmd.Parameters.AddWithValue("@project_Id", projectId);
@@ -749,7 +762,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", stg.Id > 0 ? "updateProjectStage" : "insertProjectStatge");
                 cmd.Parameters.AddWithValue("@project_Id", stg.Project_Id);
@@ -774,7 +787,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", bdg.Id > 0 ? "updateProjectBudget" : "insertProjectBudget");
                 cmd.Parameters.AddWithValue("@project_Id", bdg.Project_Id);
@@ -799,13 +812,13 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<Project_Budget> list = new List<Project_Budget>();
-                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetBudgetByProjectId");
                 cmd.Parameters.AddWithValue("@id", Id);
                 if(con.State == ConnectionState.Closed)
                     con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
@@ -839,13 +852,13 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<Project_Statge> list = new List<Project_Statge>();
-                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetProjectStageByProjectId");
                 cmd.Parameters.AddWithValue("@id", Id);
                 if (con.State == ConnectionState.Closed)
                     con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
@@ -883,11 +896,11 @@ namespace RemoteSensingProject.Models.Admin
             DashboardCount obj = null;
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageDashboard", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "AdminDashboardCount");
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
 
                 if (sdr.Read())
                 {
@@ -953,11 +966,11 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<ProjectExpenditure> list = new List<ProjectExpenditure>();
-                cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd = new NpgsqlCommand("sp_ManageDashboard", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "viewProjectExpenditure");
                 con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
@@ -991,11 +1004,11 @@ namespace RemoteSensingProject.Models.Admin
             {
                 List<DashboardCount> list = new List<DashboardCount>();
                 DashboardCount obj = null;
-                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageDashboard", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getOverallProjectCompletion");
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
                 if (sdr.HasRows)
                 {
                     while (sdr.Read())
@@ -1030,11 +1043,11 @@ namespace RemoteSensingProject.Models.Admin
             Employee_model empObj = null;
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "BindMeetingMember");
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
                 while (sdr.Read())
                 {
                     empObj = new Employee_model();
@@ -1062,10 +1075,10 @@ namespace RemoteSensingProject.Models.Admin
         public bool insertMeeting(AddMeeting_Model obj)
         {
             con.Open();
-            SqlTransaction transaction = con.BeginTransaction();
+            NpgsqlTransaction transaction = con.BeginTransaction();
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con, transaction);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con, transaction);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@MeetingType", obj.MeetingType);
@@ -1084,7 +1097,7 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     cmd.Parameters.AddWithValue("@action", "insertMeeting");
                 }
-                SqlParameter outputParam = new SqlParameter("@meetingId", SqlDbType.Int)
+                SqlParameter outputParam = new SqlParameter("@meetingId", NpgsqlDbType.Integer)
                 {
                     Direction = ParameterDirection.Output
                 };
@@ -1162,11 +1175,11 @@ namespace RemoteSensingProject.Models.Admin
         public bool UpdateMeeting(AddMeeting_Model obj)
         {
             con.Open();
-            SqlTransaction transaction = con.BeginTransaction();
+            NpgsqlTransaction transaction = con.BeginTransaction();
 
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con, transaction);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con, transaction);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@MeetingType", obj.MeetingType);
@@ -1249,11 +1262,11 @@ namespace RemoteSensingProject.Models.Admin
             {
             List<Meeting_Model> _list = new List<Meeting_Model>();
             Meeting_Model obj = null;
-                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getAllmeeting");
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
 
                 while (sdr.Read())
                 {
@@ -1290,13 +1303,13 @@ namespace RemoteSensingProject.Models.Admin
             {
                 con.Open();
                 // Get meeting details
-                using (SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con))
+                using (NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@id", id);
                     cmd.Parameters.AddWithValue("@action", "getMeetingById");
 
-                    using (SqlDataReader sdr = cmd.ExecuteReader())
+                    using (NpgsqlDataReader sdr = cmd.ExecuteReader())
                     {
                         if (sdr.Read())
                         {
@@ -1336,13 +1349,13 @@ namespace RemoteSensingProject.Models.Admin
                 //    if (obj.empId != null) { 
                 //    foreach (var emp in obj.empId.Split(','))
                 //    {
-                //        using (SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con))
+                //        using (NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con))
                 //        {
                 //            cmd.CommandType = CommandType.StoredProcedure;
                 //            cmd.Parameters.AddWithValue("@id", emp);
                 //            cmd.Parameters.AddWithValue("@action", "getMeetingMemberById");
 
-                //            using (SqlDataReader sdr2 = cmd.ExecuteReader())
+                //            using (NpgsqlDataReader sdr2 = cmd.ExecuteReader())
                 //            {
                 //                if (sdr2.Read())
                 //                {
@@ -1376,13 +1389,13 @@ namespace RemoteSensingProject.Models.Admin
 
                 con.Open();
                 cmd.Parameters.Clear();
-                cmd = new SqlCommand("sp_ManageMeeting", con);
+                cmd = new NpgsqlCommand("sp_ManageMeeting", con);
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.Parameters.AddWithValue("@action", "getMeetingMemberById");
                 cmd.CommandType = CommandType.StoredProcedure;
                 List<Employee_model> empModel = new List<Employee_model>();
                
-                SqlDataReader res = cmd.ExecuteReader();
+                NpgsqlDataReader res = cmd.ExecuteReader();
                 if (res.HasRows)
                 {
                     while (res.Read())
@@ -1416,11 +1429,11 @@ namespace RemoteSensingProject.Models.Admin
         public bool AddMeetingResponse(MeetingConclusion mc)
         {
             con.Open();
-            SqlTransaction transaction = con.BeginTransaction();
+            NpgsqlTransaction transaction = con.BeginTransaction();
             try
             {
                 cmd.Parameters.Clear();
-                cmd = new SqlCommand("sp_meetingConslusion", con, transaction);
+                cmd = new NpgsqlCommand("sp_meetingConslusion", con, transaction);
                 cmd.Parameters.AddWithValue("@action", "insertConclusion");
                 cmd.Parameters.AddWithValue("@meeting", mc.Meeting);
                 cmd.Parameters.AddWithValue("@conclusion", mc.Conclusion);
@@ -1429,7 +1442,7 @@ namespace RemoteSensingProject.Models.Admin
                 cmd.Parameters.AddWithValue("@summary", mc.summary);
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                SqlParameter outputParam = new SqlParameter("@conclusionId", SqlDbType.Int)
+                SqlParameter outputParam = new SqlParameter("@conclusionId", NpgsqlDbType.Integer)
                 {
                     Direction = ParameterDirection.Output
                 };
@@ -1444,7 +1457,7 @@ namespace RemoteSensingProject.Models.Admin
                         foreach(var item in mc.MemberId) {
                             if (!string.IsNullOrEmpty(item)){
                                 cmd.Parameters.Clear();
-                                cmd = new SqlCommand("sp_meetingConslusion", con, transaction);
+                                cmd = new NpgsqlCommand("sp_meetingConslusion", con, transaction);
                                 cmd.Parameters.AddWithValue("@action", "updateMeetingMemberPresence");
                                 cmd.Parameters.AddWithValue("@id", cId);
                                 cmd.Parameters.AddWithValue("@memberId", item);
@@ -1465,7 +1478,7 @@ namespace RemoteSensingProject.Models.Admin
                             for(var i = 0; i < mc.KeyPointId.Count; i++) 
                             {
                                 cmd.Parameters.Clear();
-                                cmd = new SqlCommand("sp_meetingConslusion", con, transaction);
+                                cmd = new NpgsqlCommand("sp_meetingConslusion", con, transaction);
                                 cmd.Parameters.AddWithValue("@action", "isertKeypointResponse");
                                 cmd.Parameters.AddWithValue("@keyId", mc.KeyPointId[i]);
                                 cmd.Parameters.AddWithValue("@response", mc.KeyResponse[i]);
@@ -1489,7 +1502,7 @@ namespace RemoteSensingProject.Models.Admin
                             if (individualMember!=0)
                             {
                                 cmd.Parameters.Clear();
-                                cmd = new SqlCommand("sp_ManageMeeting", con, transaction);
+                                cmd = new NpgsqlCommand("sp_ManageMeeting", con, transaction);
                                 cmd.Parameters.AddWithValue("@action", "addMeetingMember");
                                 cmd.Parameters.AddWithValue("@employee", individualMember);
                                 cmd.Parameters.AddWithValue("@meeting", mc.Meeting);
@@ -1531,14 +1544,14 @@ namespace RemoteSensingProject.Models.Admin
             {
 
                 cmd.Parameters.Clear();
-                cmd = new SqlCommand("sp_meetingConslusion", con);
+                cmd = new NpgsqlCommand("sp_meetingConslusion", con);
                 cmd.Parameters.AddWithValue("@action", "selectConclusion");
                 cmd.Parameters.AddWithValue("@meeting", id);
                 cmd.CommandType = CommandType.StoredProcedure;
                 List<MeetingConclusion> meetingc = new List<MeetingConclusion>();
 
                 con.Open();
-                SqlDataReader rdr = cmd.ExecuteReader();
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
                 if (rdr.HasRows)
                 {
                     while (rdr.Read())
@@ -1574,14 +1587,14 @@ namespace RemoteSensingProject.Models.Admin
             {
 
                 cmd.Parameters.Clear();
-                cmd = new SqlCommand("sp_meetingConslusion", con);
+                cmd = new NpgsqlCommand("sp_meetingConslusion", con);
                 cmd.Parameters.AddWithValue("@action", "selectPresentMember");
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.CommandType = CommandType.StoredProcedure;
                 List<Employee_model> meetingc = new List<Employee_model>();
 
                 con.Open();
-                SqlDataReader rdr = cmd.ExecuteReader();
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
                 if (rdr.HasRows)
                 {
                     while (rdr.Read())
@@ -1614,13 +1627,13 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 cmd.Parameters.Clear();
-                cmd = new SqlCommand("sp_meetingConslusion", con);
+                cmd = new NpgsqlCommand("sp_meetingConslusion", con);
                 cmd.Parameters.AddWithValue("@action", "KeyPointResponse");
                 cmd.Parameters.AddWithValue("@id", id);
                 cmd.CommandType = CommandType.StoredProcedure;
                 List<KeyPointResponse> md = new List<KeyPointResponse>();
                 con.Open();
-                SqlDataReader rdr = cmd.ExecuteReader();
+                NpgsqlDataReader rdr = cmd.ExecuteReader();
                 if (rdr.HasRows)
                 {
                     while (rdr.Read())
@@ -1654,7 +1667,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_manageNotice", con);
+                cmd = new NpgsqlCommand("sp_manageNotice", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", gn.Id > 0 ? "UpdateNotice" : "InsertNotice");
                 cmd.Parameters.AddWithValue("@projectId", gn.ProjectId);
@@ -1680,7 +1693,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_manageNotice", con);
+                cmd = new NpgsqlCommand("sp_manageNotice", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "SelectNotice");
                 con.Open();
@@ -1724,7 +1737,7 @@ namespace RemoteSensingProject.Models.Admin
         //{
         //    try
         //    {
-        //        cmd = new SqlCommand("sp_manageBudgets", con);
+        //        cmd = new NpgsqlCommand("sp_manageBudgets", con);
         //        cmd.CommandType = CommandType.StoredProcedure;
         //        cmd.Parameters.AddWithValue("@budget", data.budget);
         //        cmd.Parameters.AddWithValue("@action", "insert");
@@ -1747,7 +1760,7 @@ namespace RemoteSensingProject.Models.Admin
         //{
         //    try
         //    {
-        //        cmd = new SqlCommand("sp_manageBudgets", con);
+        //        cmd = new NpgsqlCommand("sp_manageBudgets", con);
         //        cmd.CommandType = CommandType.StoredProcedure;
         //        cmd.Parameters.AddWithValue("@action", "selectAll");
         //        con.Open();
@@ -1786,7 +1799,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd = new NpgsqlCommand("sp_Tourproposal", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectAlltour");
                 con.Open();
@@ -1807,6 +1820,7 @@ namespace RemoteSensingProject.Models.Admin
                             periodTo = Convert.ToDateTime(res["periodTo"]),
                             returnDate = Convert.ToDateTime(res["returnDate"]),
                             purpose = res["purpose"].ToString(),
+                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString():"N/A"
                         });
                     }
                 }
@@ -1830,7 +1844,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd = new NpgsqlCommand("sp_Tourproposal", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "approval");
                     cmd.Parameters.AddWithValue("@adminappr", status);
@@ -1860,7 +1874,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd = new NpgsqlCommand("sp_Reimbursement", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "approval");
                 cmd.Parameters.AddWithValue("@admin_appr", status);
@@ -1888,7 +1902,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd = new NpgsqlCommand("sp_Reimbursement", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetAllSubmittedData");
                 cmd.Parameters.AddWithValue("@userId", id);
@@ -1939,7 +1953,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectAllHiring");
                 con.Open();
@@ -1968,6 +1982,7 @@ namespace RemoteSensingProject.Models.Admin
                             note = res["note"].ToString(),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
                             adminappr = Convert.ToBoolean(res["adminappr"]),
+                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString():"N/A"
                         });
                     }
                 }
@@ -2052,7 +2067,7 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 //var location = getlocationasync();
-                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "approval");
                 cmd.Parameters.AddWithValue("@adminappr", status);
@@ -2082,7 +2097,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd = new NpgsqlCommand("sp_ManageDashboard", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "BudgetGraph");
                 List<BudgetForGraph> list = new List<BudgetForGraph>();
@@ -2119,7 +2134,7 @@ namespace RemoteSensingProject.Models.Admin
         //{
         //    try
         //    {
-        //        cmd = new SqlCommand("sp_ManageDashboard", con);
+        //        cmd = new NpgsqlCommand("sp_ManageDashboard", con);
         //        cmd.CommandType = CommandType.StoredProcedure;
         //        cmd.Parameters.AddWithValue("@action", "BudgetGraph");
         //        List<BudgetForGraph> list = new List<BudgetForGraph>();
@@ -2158,7 +2173,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectAllHiringReport");
                 con.Open();
@@ -2187,7 +2202,8 @@ namespace RemoteSensingProject.Models.Admin
                             note = res["note"].ToString(),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
                             adminappr = Convert.ToBoolean(res["adminappr"]),
-                            remark = res["remark"].ToString()
+                            remark = res["remark"].ToString(),
+                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString():"N/A",
                         });
                     }
                 }
@@ -2212,7 +2228,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selecthiringreportprojects");
                 con.Open();
@@ -2251,7 +2267,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_HiringVehicle", con);
+                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selecthiringreportbyproject");
                 cmd.Parameters.AddWithValue("@projectId", projectid);
@@ -2306,7 +2322,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd = new NpgsqlCommand("sp_Tourproposal", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selecttourproject");
                 con.Open();
@@ -2345,7 +2361,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd = new NpgsqlCommand("sp_Tourproposal", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selecttourproposalbyproject");
                 cmd.Parameters.AddWithValue("@projectId", projectid);
@@ -2394,11 +2410,11 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<AdminReimbursement> list = new List<AdminReimbursement>();
-                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd = new NpgsqlCommand("sp_Reimbursement", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectReinbursementReport");
                 con.Open();
-                SqlDataReader res = cmd.ExecuteReader();
+                NpgsqlDataReader res = cmd.ExecuteReader();
                 if (res.HasRows)
                 {
                     while (res.Read())
@@ -2440,7 +2456,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_raiseProblem", con);
+                cmd = new NpgsqlCommand("sp_raiseProblem", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectProblemsforAdmin");
                 List<RaisedProblem> list = new List<RaisedProblem>();
@@ -2460,7 +2476,8 @@ namespace RemoteSensingProject.Models.Admin
                             documentname = res["document"].ToString(),
                             projectname = res["projectName"].ToString(),
                             projectManager = res["projectManager"].ToString(),
-                            createdAt = Convert.ToDateTime(res["createdAt"])
+                            createdAt = Convert.ToDateTime(res["createdAt"]),
+                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString():"N/A"
                         });
                     }
                 }
@@ -2481,7 +2498,7 @@ namespace RemoteSensingProject.Models.Admin
         //{
         //    try
         //    {
-        //        cmd = new SqlCommand("sp_raiseProblem", con);
+        //        cmd = new NpgsqlCommand("sp_raiseProblem", con);
         //        cmd.CommandType = CommandType.StoredProcedure;
         //        cmd.Parameters.AddWithValue("@action", "approval");
         //        cmd.Parameters.AddWithValue("@adminappr", status);
@@ -2508,7 +2525,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new SqlCommand("sp_raiseProblem", con);
+                cmd = new NpgsqlCommand("sp_raiseProblem", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectProblemsforAdminById");
                 cmd.Parameters.AddWithValue("@id", id);
@@ -2555,11 +2572,11 @@ namespace RemoteSensingProject.Models.Admin
             {
                 List<Meeting_Model> _list = new List<Meeting_Model>();
                 Meeting_Model obj = null;
-                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getAllmeetingofadmin");
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
 
                 while (sdr.Read())
                 {
@@ -2595,11 +2612,11 @@ namespace RemoteSensingProject.Models.Admin
             {
                 List<Meeting_Model> _list = new List<Meeting_Model>();
                 Meeting_Model obj = null;
-                SqlCommand cmd = new SqlCommand("sp_ManageMeeting", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getAllmeetingofprojectmanager");
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
 
                 while (sdr.Read())
                 {
@@ -2636,12 +2653,12 @@ namespace RemoteSensingProject.Models.Admin
             {
                 List<SubProblem> problemList = new List<SubProblem>();
                 SubProblem obj = null;
-                SqlCommand cmd = new SqlCommand("sp_ManageSubordinateProjectProblem", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageSubordinateProjectProblem", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getallproblembyidforadmin");
                 cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
                 if (sdr.HasRows)
                 {
                     while (sdr.Read())

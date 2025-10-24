@@ -709,16 +709,6 @@
 
         var ctx = document.getElementById('bbchart').getContext('2d');
 
-        // Aggregate all task counts
-        var aggregated = { total: 0, pending: 0, completed: 0 };
-        if (taskData && taskData.length > 0) {
-            taskData.forEach(function (item) {
-                aggregated.total += item.TotalTask || 0;
-                aggregated.pending += item.PendingTask || 0;
-                aggregated.completed += item.CompletedTask || 0;
-            });
-        }
-
         var doughnutChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -741,7 +731,7 @@
             },
             options: {
                 responsive: true,
-                cutout: '60%', // Doughnut thickness
+                cutout: '60%',
                 plugins: {
                     legend: {
                         position: 'top',
@@ -761,13 +751,25 @@
                         }
                     }
                 },
-                onClick: function () {
-                    window.location.href = "/employee/CreateTask";
+                onClick: function (evt, elements) {
+                    if (elements.length > 0) {
+                        const clickedIndex = elements[0].index;
+                        const clickedLabel = doughnutChart.data.labels[clickedIndex];
+
+                        if (clickedLabel === 'Total Task') {
+                            window.location.href = "/employee/CreateTask";
+                        } else if (clickedLabel === 'Pending Task') {
+                            window.location.href = "/employee/CreateTask?req=pending";
+                        } else if (clickedLabel === 'Completed Task') {
+                            window.location.href = "/employee/CreateTask?req=completed";
+                        }
+                    }
                 }
             }
         });
     });
 </script>
+
 
 
 

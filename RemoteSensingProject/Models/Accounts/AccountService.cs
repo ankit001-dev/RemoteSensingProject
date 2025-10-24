@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Web;
+using Npgsql;
 using static RemoteSensingProject.Models.Accounts.main;
-using System.Net;
 
 namespace RemoteSensingProject.Models.Accounts
 {
@@ -17,11 +14,11 @@ namespace RemoteSensingProject.Models.Accounts
             try
             {
                 List<Project_model> list = new List<Project_model>();
-                cmd = new SqlCommand("sp_adminAddproject", con);
+                cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getAllManagerProject");
                 con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
@@ -43,7 +40,8 @@ namespace RemoteSensingProject.Models.Accounts
                             CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
                             AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
-                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy")
+                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
+                            projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString():"N/A"
                         });
                     }
                 }
@@ -66,7 +64,7 @@ namespace RemoteSensingProject.Models.Accounts
             try
             {
                 List<Project_model> list = new List<Project_model>();
-                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
+                cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "updateProjectBudgetResponseFromAccounts");
                 cmd.Parameters.AddWithValue("@reason",he.Reason);
@@ -98,13 +96,13 @@ namespace RemoteSensingProject.Models.Accounts
             try
             {
                 List<Project_Budget> list = new List<Project_Budget>();
-                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
+                cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetBudgetByProjectId");
                 cmd.Parameters.AddWithValue("@id", Id);
                 if (con.State == ConnectionState.Closed)
                     con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
@@ -139,7 +137,7 @@ namespace RemoteSensingProject.Models.Accounts
         {
             try
             {
-                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd = new NpgsqlCommand("sp_Reimbursement", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectApprovedReinbursement");
                 con.Open();
@@ -180,7 +178,7 @@ namespace RemoteSensingProject.Models.Accounts
         {
             try
             {
-                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd = new NpgsqlCommand("sp_Tourproposal", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectAlltourforAcc");
                 con.Open();
@@ -203,7 +201,8 @@ namespace RemoteSensingProject.Models.Accounts
                             purpose = Convert.ToString(res["purpose"]),
                             newRequest = Convert.ToBoolean(res["newRequest"]),
                             adminappr = Convert.ToBoolean(res["adminappr"]),
-                            remark = res["remark"].ToString()
+                            remark = res["remark"].ToString(),
+                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString():"N/A"
                         });
                     }
                 }
@@ -226,7 +225,7 @@ namespace RemoteSensingProject.Models.Accounts
         {
             try
             {
-                cmd = new SqlCommand("sp_Tourproposal", con);
+                cmd = new NpgsqlCommand("sp_Tourproposal", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selecttourOne");
                 cmd.Parameters.AddWithValue("id", id);
@@ -274,7 +273,7 @@ namespace RemoteSensingProject.Models.Accounts
         {
             try
             {
-                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd = new NpgsqlCommand("sp_Reimbursement", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "approveReinburseAmt");
                 cmd.Parameters.AddWithValue("@chequeNum", rs.chequeNumber);
@@ -296,7 +295,7 @@ namespace RemoteSensingProject.Models.Accounts
         {
             try
             {
-                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd = new NpgsqlCommand("sp_Reimbursement", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "rejectReinbursementAmtRequest");
                 cmd.Parameters.AddWithValue("@rejectReason", reason);
@@ -320,11 +319,11 @@ namespace RemoteSensingProject.Models.Accounts
             DashboardCount obj = null;
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageDashboard", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "AccountDashboardCount");
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
 
                 if (sdr.Read())
                 {
@@ -363,18 +362,19 @@ namespace RemoteSensingProject.Models.Accounts
             GraphData obj = null;
             try
             {
-                cmd = new SqlCommand("sp_ManageProjectSubstaces", con);
+                cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "selectExpensesforgraph");
                 con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
                     {
                         obj = new GraphData();
-                            obj.ApprAmount = Convert.ToDecimal(rd["appamount"]);
-                        obj.amount = Convert.ToDecimal(rd["totalamount"]);
+
+                        obj.ApprAmount = rd["appamount"] != DBNull.Value ? Convert.ToDecimal(rd["appamount"]) : 0m; // Default to 0 if null
+                        obj.amount = rd["totalamount"] != DBNull.Value ? Convert.ToDecimal(rd["totalamount"]) : 0m;
                         //obj.month = rd["monthname"].ToString();
                     }
                 }
@@ -397,12 +397,12 @@ namespace RemoteSensingProject.Models.Accounts
             try
             {
                 List<GraphData> list = new List<GraphData>();
-                cmd = new SqlCommand("sp_ManageDashboard", con);
+                cmd = new NpgsqlCommand("sp_ManageDashboard", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "graphdataofaccount");
                 if (con.State == ConnectionState.Closed)
                     con.Open();
-                SqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
                     while (rd.Read())
@@ -434,11 +434,11 @@ namespace RemoteSensingProject.Models.Accounts
             try
             {
                 List<Reimbursement> list = new List<Reimbursement>();
-                cmd = new SqlCommand("sp_Reimbursement", con);
+                cmd = new NpgsqlCommand("sp_Reimbursement", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "accountrepo");
                 con.Open();
-                SqlDataReader res = cmd.ExecuteReader();
+                NpgsqlDataReader res = cmd.ExecuteReader();
                 if (res.HasRows)
                 {
                     while (res.Read())

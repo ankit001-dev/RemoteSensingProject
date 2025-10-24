@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
 using System.Xml.Linq;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Grpc.Core;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Routing;
@@ -1725,6 +1726,83 @@ namespace RemoteSensingProject.ApiServices
                         status = res,
                         StatusCode = 500,
                         message = "Some Issue Occured"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Progress Report
+        [HttpPost]
+        [Route("api/addEmpMonthlyReport")]
+        public IHttpActionResult AddEmpMonthlyReport()
+        {
+            try
+            {
+                var req = HttpContext.Current.Request;
+                EmpReportModel emp = new EmpReportModel
+                {
+                    PmId = Convert.ToInt32(req.Form.Get("PmId")),
+                    ProjectId = Convert.ToInt32(req.Form.Get("ProjectId")),
+                    Unit = req.Form.Get("Unit").ToString(),
+                    AnnualTarget = Convert.ToInt32(req.Form.Get("AnnualTarget")),
+                    TargetUptoReviewMonth = Convert.ToInt32(req.Form.Get("TargetUptoReviewMonth")),
+                    AchievementDuringReviewMonth = Convert.ToInt32(req.Form.Get("AchievementDuringReviewMonth")),
+                    CumulativeAchievement = Convert.ToInt32(req.Form.Get("CumulativeAchievement")),
+                    BenefitingDepartments = req.Form.Get("BenefitingDepartments").ToString(),
+                    Remarks = req.Form.Get("Remarks").ToString()
+                };
+                bool res = _managerService.InsertEmpReport(emp);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 200 : 500,
+                    message = res ? "Added Successfully!" : "Some error Occured"
+                });
+            }
+            catch
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = "Some error Occured"
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/getEmpMonthlyReport")]   
+        public IHttpActionResult getEmpMonthlyReport(int userId)
+        {
+            try
+            {
+                var data = _managerService.GetEmpReport(userId);
+                if (data != null)
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        data = data,
+                        message = "Data Found!"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        StatusCode = 400,
+                        message = "Data not Found!"
                     });
                 }
             }

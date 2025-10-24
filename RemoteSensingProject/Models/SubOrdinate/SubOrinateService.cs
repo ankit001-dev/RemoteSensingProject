@@ -1,11 +1,7 @@
-﻿using Microsoft.Ajax.Utilities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using static RemoteSensingProject.Models.SubOrdinate.main;
+using Npgsql;
 
 namespace RemoteSensingProject.Models.SubOrdinate
 {
@@ -16,12 +12,12 @@ namespace RemoteSensingProject.Models.SubOrdinate
             UserCredential _details = new UserCredential();
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_adminAddproject", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getManagerDetails");
                 cmd.Parameters.AddWithValue("@username", managerName);
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
                 while (sdr.Read())
                 {
                     _details = new UserCredential();
@@ -49,12 +45,12 @@ namespace RemoteSensingProject.Models.SubOrdinate
             ProjectList obj = null;
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_adminAddproject", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "GetProjectBySubOrdinate");
                 cmd.Parameters.AddWithValue("@subOrdinate", userId);
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
 
                 while (sdr.Read())
                 {
@@ -71,6 +67,8 @@ namespace RemoteSensingProject.Models.SubOrdinate
                     obj.ApproveStatus = Convert.ToInt32(sdr["ApproveStatus"]);
                     obj.CreatedBy = sdr["name"].ToString();
                     obj.projectType = sdr["projectType"].ToString();
+                    obj.projectStatus = Convert.ToSingle(sdr["completionPercentage"]);
+                    obj.projectCode = sdr["projectCode"] != DBNull.Value ? sdr["projectCode"].ToString() : "N/A";
                     _list.Add(obj);
                 }
                 sdr.Close();
@@ -91,7 +89,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
         {
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_ManageSubordinateProjectProblem", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageSubordinateProjectProblem", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "insertProblem");
                 cmd.Parameters.AddWithValue("@Project_Id", raise.Project_Id);
@@ -130,12 +128,12 @@ namespace RemoteSensingProject.Models.SubOrdinate
             {
                 List<OutSource_Task> taskList = new List<OutSource_Task>();
                 OutSource_Task task = null;
-                SqlCommand cmd = new SqlCommand("sp_manageOutSourceTask", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_manageOutSourceTask", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "getTaskByOutSource");
                 cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
                 if (sdr.HasRows)
                 {
                     while (sdr.Read())
@@ -165,7 +163,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
 
         public bool AddOutSourceTask(OutSource_Task task)
         {
-            SqlCommand cmd = new SqlCommand("sp_manageOutSourceTask",con);
+            NpgsqlCommand cmd = new NpgsqlCommand("sp_manageOutSourceTask",con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@action", "insertOutsource");
             cmd.Parameters.AddWithValue("@response", task.Reason);
@@ -193,12 +191,12 @@ namespace RemoteSensingProject.Models.SubOrdinate
             DashboardCount obj = null;
             try
             {
-                SqlCommand cmd = new SqlCommand("sp_ManageDashboard", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageDashboard", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", "managesubordinatedashboard");
                 cmd.Parameters.AddWithValue("@sid", userId);
                 con.Open();
-                SqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlDataReader sdr = cmd.ExecuteReader();
                 if (sdr.HasRows)
                 {
                     while (sdr.Read())

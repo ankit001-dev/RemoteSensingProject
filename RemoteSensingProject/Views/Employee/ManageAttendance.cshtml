@@ -313,6 +313,7 @@
     });
     $(document).on("click", ".viewattendance", function () {
         debugger;
+        
         Swal.fire({
             title: "Please Wait!",
             text: "Processing your request",
@@ -320,8 +321,13 @@
             allowEscapeKey:false,
             didOpen: () => { Swal.showLoading(); }
         });
-
+        debugger
         let id = $(this).parent().data("empid");
+        let today = new Date();
+        console.log(today.getFullYear())
+        console.log(today.getMonth() - 1)
+        $("#yearFilter").val(today.getFullYear());
+        $("#monthFilter").val(today.getMonth());
 
         $.ajax({
             url: '/employee/GetAttendanceListByEmpId',
@@ -347,13 +353,12 @@
                     var row = $('<tr>');
                     row.append('<td>' + convertDateFormat(item.attendanceDate) + '</td>');
                     row.append('<td class="text-center">' + item.attendanceStatus + '</td>');
-
-                    // Check if remark is null or empty and set 'Approved' if it is
-                    var remarkTitle = (item.remark && item.remark.trim() !== "") ? item.remark : 'Approved';
-
-                    console.log('Remark for EmpId ' + item.EmpId + ': ' + remarkTitle); // Debugging line to check the remark value
-
-                    row.append('<td class="text-center"><a href="#" data-title="' + remarkTitle + '"><i class="fa-solid fa-check-double"></i></a></td>');
+                    console.log('Status',item.projectManagerAppr);
+                    if (item.projectManagerAppr) {
+                        row.append('<td class="text-center"><a href="#" data-title="' + item.remark + '"><i class="fa-solid fa-check-double"></i></a></td>');
+                    } else {
+                        row.append('<td class="text-center"><a href="#" data-title="' + item.remark + '"><i class="fa-solid fa-ban"></i></a></td>');
+                    }
 
                     $("#attendancelist").append(row);
                 });
@@ -422,12 +427,11 @@
                         row.append('<td>' + convertDateFormat(item.attendanceDate) + '</td>');
                         row.append('<td class="text-center">' + item.attendanceStatus + '</td>');
 
-                        // Check if remark is null or empty and set 'Approved' if it is
-                        var remarkTitle = (item.remark && item.remark.trim() !== "") ? item.remark : 'Approved';
-
-                        console.log('Remark for EmpId ' + item.EmpId + ': ' + remarkTitle); // Debugging line to check the remark value
-
-                        row.append('<td class="text-center"><a href="#" data-title="' + remarkTitle + '"><i class="fa-solid fa-check-double"></i></a></td>');
+                        if (item.projectManagerAppr) {
+                            row.append('<td class="text-center"><a href="#" data-title="' + item.remark + '"><i class="fa-solid fa-check-double"></i></a></td>');
+                        } else {
+                            row.append('<td class="text-center"><a href="#" data-title="' + item.remark + '"><i class="fa-solid fa-ban text-danger"></i></a></td>');
+                        }
 
                         $("#attendancelist").append(row);
                     });

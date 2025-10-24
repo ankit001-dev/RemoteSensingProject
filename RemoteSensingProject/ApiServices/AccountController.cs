@@ -272,5 +272,28 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [HttpGet]
+        [Route("api/getAccountReinbursement")]
+        public IHttpActionResult getAccountReinbursement()
+        {
+            try
+            {
+                var data = _accountSerivce.GetReimbursements();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
     }
 }

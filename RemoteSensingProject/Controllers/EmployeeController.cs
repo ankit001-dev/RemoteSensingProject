@@ -16,6 +16,9 @@ using System.Web.Services.Description;
 using System.Xml.Linq;
 using static RemoteSensingProject.Models.Admin.main;
 using OfficeOpenXml;
+using OfficeOpenXml.DataValidation;
+using System.Runtime.InteropServices.ComTypes;
+using Newtonsoft.Json;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -38,7 +41,8 @@ namespace RemoteSensingProject.Controllers
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
             var TotalCount = _managerServices.DashboardCount(userObj.userId);
-            ViewData["emplist"] = _managerServices.All_Project_List(userObj.userId);
+            DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
+            ViewData["emplist"] = _managerServices.All_Project_List(userObj.userId).Where(d=>d.AssignDate>=twoYearsAgo).ToList();
             return View(TotalCount);
         }
         public ActionResult BindOverallCompletionPercentage()
@@ -859,36 +863,65 @@ namespace RemoteSensingProject.Controllers
             ViewData["attendanceCount"] = _managerServices.getAttendanceCount(userObj);
             return View();
         }
-
+        [HttpGet]
+        public JsonResult Attendance_ReportByMonth(int year ,int month)
+        {
+            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var data = _managerServices.getAttendanceCountByMonth(year, month, userObj);
+            return Json(data, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult ExportAttendanceToExcel(int month, int year, int EmpId)
         {
-            ExcelPackage.LicenseContext =OfficeOpenXml.LicenseContext.NonCommercial;
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var attendanceList = _managerServices.getReportAttendance(month, year, userObj, EmpId);
-            using (var package = new ExcelPackage())
+            var data = _managerServices.ConvertExcelFile(month, year, userObj, EmpId);
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReport.xlsx");
+        }
+        public ActionResult ShowAllAttendance(int year,int month)
+        {
+            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var data = _managerServices.GetAllAttendanceForPmByMonth(year, month, userObj);
+            ViewData["showAllAtt"] = data;
+            ViewData["AllAttendance"] = JsonConvert.SerializeObject(data); // 'data' is List<AllAttendance>
+            ViewData["Year"] = year;
+            ViewData["Month"] = month;
+            return View();
+        }
+        public ActionResult ExportAllAtt(int year,int month)
+        {
+            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var data = _managerServices.ConvertExcelFileOfAll(month, year, userObj);
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReportOfAll.xlsx");
+        }
+        public ActionResult EmpMonthlyReport()
+        {
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["projectList"] = _managerServices.All_Project_List(userid.ToString());
+            ViewData["ReportList"] = _managerServices.GetEmpReport(userid);
+            return View();
+        }
+        [HttpPost]
+        public ActionResult InsertEmpReport(EmpReportModel model)
+        {
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            model.PmId = userid;
+            bool res = _managerServices.InsertEmpReport(model);
+
+            if (res)
             {
-                var ws = package.Workbook.Worksheets.Add("Attendance");
-
-                // Row 1 - Dates
-                for (int i = 0; i < attendanceList.Count; i++)
+                return Json(new
                 {
-                    ws.Cells[1, i + 1].Value = attendanceList[i].attendanceDate.ToString("dd-MMM");
-                }
-
-                // Row 2 - Attendance Status
-                for (int i = 0; i < attendanceList.Count; i++)
+                    status = res,
+                    message = "Report inserted successfully!"
+                });
+            }
+            else
+            {
+                return Json(new
                 {
-                    ws.Cells[2, i + 1].Value = attendanceList[i].attendanceStatus;
-                }
-
-                ws.Cells[ws.Dimension.Address].AutoFitColumns();
-
-                var stream = new MemoryStream(package.GetAsByteArray());
-                return File(stream,
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    $"Attendance_{DateTime.Now:ddMMyyyy}.xlsx");
+                    status = res,
+                    message = "Some issue occurred!"
+                });
             }
         }
-
     }
 }

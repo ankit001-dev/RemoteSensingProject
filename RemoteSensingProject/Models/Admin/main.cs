@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Policy;
 using System.Web;
 using System.Web.Mvc;
 
@@ -77,6 +78,7 @@ namespace RemoteSensingProject.Models.Admin
 
         public class createProjectModel
         {
+            public string projectCode { get; set; }
             public Project_model pm { get; set; }
             public List<Project_Budget> budgets { get; set; }
             public List<Project_Statge> stages { get; set; }
@@ -84,6 +86,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class Project_model
         {        
+            public string projectCode { get; set; }
             public bool completestatus { get; set; }
             //public string projectType { get; set; }
             public int Id { get; set; }
@@ -333,6 +336,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class tourProposalAll
         {
+            public string projectCode { get; set; }
             public string remark { get; set; }
             public bool newRequest { get; set; }
             public bool adminappr { get; set; }
@@ -375,6 +379,7 @@ namespace RemoteSensingProject.Models.Admin
         public class HiringVehicle1
         {
             public string employeecode { get; set; }
+            public string projectCode { get; set; }
             public string remark { get; set; }
             public bool newRequest { get; set; }
             public bool adminappr { get; set; }
@@ -400,6 +405,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class RaisedProblem
         {
+            public string projectCode { get; set; }
             public DateTime createdAt { get; set; }
             public string projectManager { get; set; }
             public int userId { get; set; }

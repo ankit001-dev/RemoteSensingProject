@@ -75,6 +75,7 @@
                             <tr>
                                 <th>Sr. No.</th>
                                 <th>Project Manager</th>
+                                <th>Project Code</th>
                                 <th>Project Name</th>
                                 <th>Head Name</th>
                                 <th>Date From</th>
@@ -98,6 +99,7 @@
                                                 <span class="action" data-id="@item.id">@item.projectManager</span>
                                             </a>
                                         </td>
+                                        <td>@item.projectCode</td>
                                         <td>@item.projectName</td>
                                         <td>@item.headName</td>
                                         <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>

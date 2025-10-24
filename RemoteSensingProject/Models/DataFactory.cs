@@ -1,18 +1,17 @@
-﻿using System.Configuration;
+﻿using Npgsql;
+using SelectPdf;
+using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
-using Grpc.Core;
-using Ninject.Activation;
-using SelectPdf;
 namespace RemoteSensingProject.Models
 {
     public class DataFactory
     {
-        public SqlConnection con;
-        public SqlCommand cmd;
-        public DataFactory() { 
-            con = new SqlConnection(ConfigurationManager.ConnectionStrings["con"].ConnectionString);
-            cmd = new SqlCommand();
+        public NpgsqlConnection con;
+        public NpgsqlCommand cmd;
+        public DataFactory() {
+            con = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["con"].ConnectionString);
+            cmd = new NpgsqlCommand();
         }
 
 
@@ -23,7 +22,7 @@ namespace RemoteSensingProject.Models
             PdfDocument doc = converter.ConvertHtmlString(htmlContent);
             byte[] pdfBytes;
             using (MemoryStream ms = new MemoryStream())
-            {
+             {
                 doc.Save(ms);
                 pdfBytes = ms.ToArray();
             }

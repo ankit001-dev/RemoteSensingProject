@@ -37,6 +37,7 @@
                 <thead>
                     <tr>
                         <th class="pt-0">Sr</th>
+                        <th class="pt-0">Project Code</th>
                         <th class="pt-0">Project Name</th>
                         <th class="pt-0">Assign Date</th>
                         <th class="pt-0">Start Date</th>
@@ -50,6 +51,7 @@
                     {
                         <tr>
                             <td>@i</td>
+                            <td>@item.projectCode</td>
                             <td><a href="#" data-title="View Details" class="viewProject" data-Id="@item.Id">@item.ProjectTitle</a></td>
                             <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
                             <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>

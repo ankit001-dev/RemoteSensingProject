@@ -104,6 +104,7 @@
                     <thead>
                         <tr>
                             <th>Sr. No.</th>
+                            <th>Project Code</th>
                             <th>Project Name</th>
                             <th>Head Name</th>
                             <th>Date From</th>
@@ -125,6 +126,7 @@
                             {
                                 <tr>
                                     <td>@i</td>
+                                    <td>@item.projectCode</td>
                                     <td data-id="@item.id"><a href="#" data-title="View Details" class="action">@item.projectName</a></td>
                                     <td>@item.headName</td>
                                     <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>

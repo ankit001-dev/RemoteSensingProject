@@ -41,6 +41,7 @@
                         <thead>
                             <tr>
                                 <th>Sr No.</th>
+                                <th>Project Code</th>
                                 <th>Project Name</th>
                                 <th>Assigned By</th>
                                 <th>Assign Date</th>
@@ -59,6 +60,7 @@
                                 {
                                     <tr>
                                         <td>@i</td>
+                                        <td>@item.projectCode</td>
                                         <td><a href="#" class="viewProject" data-title="View Details" data-id="@item.Id">@item.Title</a></td>
                                         <td>@item.CreatedBy</td>
                                         <td>@item.AssignDateString</td>

@@ -26,6 +26,7 @@ namespace RemoteSensingProject.Models.Accounts
         }
         public class Project_model
         {
+            public string projectCode { get; set; }
             public int Id { get; set; }
             public decimal physicalcomplete { get; set; }
             public string ProjectTitle { get; set; }
@@ -112,6 +113,7 @@ namespace RemoteSensingProject.Models.Accounts
         }
         public class tourProposal
         {
+            public string projectCode { get; set; }
             public string remark { get; set; }
             public bool adminappr { get; set; }
             public string projectName { get; set; }
