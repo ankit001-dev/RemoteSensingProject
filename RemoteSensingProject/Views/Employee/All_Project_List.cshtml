@@ -68,6 +68,7 @@
                         <thead>
                             <tr>
                                 <th>Sr No.</th>
+                                <th>Project Code</th>
                                 <th>Project Name</th>
                                 <th>Assign Date</th>
                                 <th>Start Date</th>
@@ -87,6 +88,7 @@
                                 {
                                     <tr>
                                         <td>@i</td>
+                                        <td>@item.projectCode</td>
                                         <td> <a href="#" data-title="View Details" class="viewProject" data-id="@item.Id">@item.ProjectTitle</a></td>
                                         <td>@item.AssignDateString</td>
                                         <td>@item.StartDateString</td>

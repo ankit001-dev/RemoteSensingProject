@@ -31,6 +31,7 @@
                     <tr>
                         <th class="pt-0">#</th>
                         <th class="pt-0">Assign Date</th>
+                        <th class="pt-0">Project Code</th>
                         <th class="pt-0">Project Name</th>
                         <th class="pt-0">Start Date</th>
                         <th class="pt-0">Complete Status</th>
@@ -47,6 +48,7 @@
                                 <tr>
                                     <td>@i</td>
                                     <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
+                                    <td>@item.projectCode</td>
                                     <td><a href="#" class="viewProject" data-Id="@item.Id">@item.ProjectTitle</a></td>
                                     <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
                                     <td><span class='text-light px-2 border-0 rounded-1 @(item.ApproveStatus?"bg-success":"bg-warning")'>@(item.ApproveStatus?"Completed":"Pending")</span></td>

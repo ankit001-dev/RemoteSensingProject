@@ -2133,5 +2133,155 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+        #region
+        [HttpGet]
+        [Route("api/getOutsourceByPm")]
+        public IHttpActionResult getOutsourceByProjectManager(int projectManager)
+        {
+            try
+            {
+                var data = _managerservice.getAttendanceCount(projectManager);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    StatusCode = 200
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getAttendanceListByEmp")]
+        public IHttpActionResult getAttendanceListByEmp(int projectManager,int EmpId)
+        {
+            try
+            {
+                var data = _managerservice.GetAllAttendanceForProjectManager(projectManager,EmpId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    StatusCode = 200
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/MonthFilter")]
+        public IHttpActionResult monthFilter(int month,int year,int projectManager,int EmpId)
+        {
+            try
+            {
+                var data = _managerservice.getReportAttendance(month,year,projectManager,EmpId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    StatusCode = 200
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getAttendanceByEmp")]
+        public IHttpActionResult getAttendanceByEmp(int projectManager,int EmpId)
+        {
+            try
+            {
+                var data = _managerservice.GetAllAttendanceForProjectManager(projectManager,EmpId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    StatusCode = 200
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getAttendanceRepo")]
+        public IHttpActionResult getAttendanceRepo(int month,int year,int projectManager,int EmpId)
+        {
+            try
+            {
+                var data = _managerservice.getReportAttendance(month,year,projectManager,EmpId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    StatusCode = 200
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Employee Monthly Report
+        [HttpGet]
+        [Route("api/getEmployeeMonthlyReportForAdmin")]
+        public IHttpActionResult EmployeeMonthlyReport(int empId)
+        {
+            try
+            {
+                var data = _managerservice.GetEmpReport(empId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    StatusCode = 200,
+                    message = data.Any() ? "Data found !" : "Data not found !"
+                });
+            }
+            catch
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = "Some issue occured while processing request."
+                });
+            }
+        }
+        #endregion
     }
 }

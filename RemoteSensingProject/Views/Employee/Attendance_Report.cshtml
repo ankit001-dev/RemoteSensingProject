@@ -12,9 +12,55 @@
     </ol>
     @*<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Attendance</button>*@
 </nav>
-<div class="row mx-0">
-    <div class="col-md-12 grid-margin stretch-card">
-        <div class="card">
+<div class="row">
+    <div class="col-md-12">
+        <div class="card px-0">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label>Select Year</label>
+                        <select class="form-select form-select-sm" id="yearFilterTable">
+                            <option value="">Select Year</option>
+                            @for (int y = DateTime.Now.Year; y >= 2006; y--)
+                            {
+                                <option value="@y" @(y == DateTime.Now.Year ? "selected" : "")>@y</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <label>Select Month</label>
+                        <select class="form-select form-select-sm" id="monthFilterTable">
+                            <option value="">Select Month</option>
+                            @{
+                                string[] monthname = new string[]
+                                {
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+                                };
+
+                                int currentMonth = DateTime.Now.Month;
+                                int previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+
+                                for (int i = 1; i <= monthname.Length; i++)
+                                {
+                                    <option value="@i" @(i == previousMonth ? "selected" : "")>@monthname[i - 1]</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-4 text-center">
+                        <label></label><br />
+                       <a href="#" id="showAllAttendance" class="btn btn-primary py-1">Show All</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card  px-0">
             <div class="card-body">
                 <div class="table-responsive">
                     <table id="dataTableExample" class="table">
@@ -26,7 +72,7 @@
                                 <th>Absent</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="outsourceListCount">
                             @if (counts != null && counts.Count > 0)
                             {
                                 var count = 1;
@@ -63,51 +109,54 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="header text-center">
-                    <h3 id="employeeNameDisplayatttend"></h3>
-                </div>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <select class="form-select form-select-sm" id="yearFilter">
-                            <option value="">Select Year</option>
-                            @for (int y = DateTime.Now.Year; y >= 2006; y--)
-                            {
-                                <option value="@y" @(y == DateTime.Now.Year ? "selected" : "")>@y</option>
-                            }
-                        </select>
+                
+                <div class="row mb-2">
+                    <div class="col-sm-3 text-start">
+                        <button type="button" class="btn btn-warning py-1 mt-2 rounded-1" id="exportExcel">Exel</button>
+                        <button type="button" class="ms-2 btn btn-danger py-1 mt-2 rounded-1" id="exceldown">Pdf</button>
                     </div>
-
-                    <div class="col-sm-4">
-                        <select class="form-select form-select-sm" id="monthFilter">
-                            <option value="">Select Month</option>
-                            @{
-                                string[] months = new string[]
+                    <div class="header col-sm-3 text-end">
+                        <h3 id="employeeNameDisplayatttend"></h3>
+                    </div>
+                    <div class="col-sm-4 px-5 text-end d-flex justify-content-end">
+                        <div class="px me-2">
+                            <select class="form-select form-select-sm" id="yearFilter">
+                                <option value="">Select Year</option>
+                                @for (int y = DateTime.Now.Year; y >= 2006; y--)
                                 {
+                                    <option value="@y" @(y == DateTime.Now.Year ? "selected" : "")>@y</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="px">
+                            <select class="form-select form-select-sm" id="monthFilter">
+                                <option value="">Select Month</option>
+                                @{
+                                    string[] months = new string[]
+                                    {
                 "January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"
-};
+                                    };
+                                    previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
 
-                                int currentMonth = DateTime.Now.Month;
-                                int previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
-
-                                for (int i = 1; i <= months.Length; i++)
-                                {
-                                    <option value="@i" @(i == previousMonth ? "selected" : "")>@months[i - 1]</option>
+                                    for (int i = 1; i <= months.Length; i++)
+                                    {
+                                        <option value="@i" @(i == previousMonth ? "selected" : "")>@months[i - 1]</option>
+                                    }
                                 }
-                            }
-                        </select>
+                            </select>
+                        </div>
                     </div>
 
 
-                    <div class="col-sm-4 text-end" style="font-size:12px !important;">
+                    <div class="col-sm-2 text-end" style="font-size:12px !important;">
                         <div>Total Present : <span id="pres"></span></div>
                         <div>Total Absent : <span id="abs"></span></div>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <button type="button" class="btn btn-warning py-1 mt-2 rounded-1" id="exportExcel">Exel</button>
-                    <button type="button" class="ms-2 btn btn-danger py-1 mt-2 rounded-1" id="exceldown">Pdf</button>
-                    <table class="table table-bordered" id="attendancetable">
+
+                <div class="table-responsive" style="font-size:12px;">
+                    <table class="table table-bordered" id="">
                         <thead id="attendanceListDates">
                         </thead>
                         <tbody id="attendancelist">
@@ -170,7 +219,7 @@
                 let attendanceMap = [];
                 $.each(res, function (i, item) {
 
-                    let day = convertToDate(item.attendanceDate).getDate(); 
+                    let day = convertToDate(item.attendanceDate).getDate();
 
                     attendanceMap.push({
                         date : day,
@@ -184,7 +233,7 @@
                     return date;
                 }
 
-                
+
                 console.log(attendanceMap);
                 console.log(year);
                 console.log(totalDays);
@@ -324,8 +373,85 @@
         });
 
         $('#exportExcel').click(function () {
-            
+            location.href = '/employee/ExportAttendanceToExcel?EmpId=' + $("#employeeNameDisplayatttend").attr('data-id') + '&year=' + $("#yearFilter").val() + '&month=' + $("#monthFilter").val();
         });
-    })
-    
+
+        $("#monthFilterTable").on("change", function () {
+            debugger
+            Swal.fire({
+                title: 'Please Wait!',
+                text: 'Processing your request...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            let month = $(this).val();
+            let year = $("#yearFilterTable").val();
+            $.ajax({
+                url: '/employee/Attendance_ReportByMonth',
+                type: 'get',
+                data: { year: year, month: month },
+                success: function (res) {
+                    Swal.close();
+                    if (!res || res.length === 0) {
+                        Swal.fire({
+                            title: "No Data Found",
+                            text: "No attendance records found for this employee of this month.",
+                            icon: "info",
+                            didClose: () => {
+                                $("#attendancelist").empty();
+                                $("#pres").text('0')
+                                $("#abs").text(0)
+                            }
+                        });
+                        return;
+                    }
+                    console.log('Outsource List', res);
+                    $("#outsourceListCount").empty();
+                    let row = '';
+                    $.each(res, function (i, item) {
+                        row += `<tr data-empid="${item.EmpId}" data-empname="${item.EmpName}">
+    <td class="text-start">${i}</td>
+    <td data-empid="${item.EmpId}">
+        <a href="#" data-title="View Attendance" class="viewattendance">${item.EmpName}</a>
+    </td>
+    <td>${item.present}</td>
+    <td>${item.absent}</td>
+</tr>`;
+                    });
+                    $("#outsourceListCount").append(row);
+
+                    function convertToDate(timestamp) {
+                        const parsedTimestamp = parseInt(timestamp.match(/\d+/)[0], 10);
+                        const date = new Date(parsedTimestamp);
+                        return date;
+                    }
+                },
+                error: function (xhr, error, message) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Failed to fetch data. Please Try Again!',
+                        icon: 'error'
+                    });
+                    console.log(xhr)
+                    console.log(message)
+                    console.log(error)
+                }
+            });
+        });
+        $("#showAllAttendance").on("click", function () {
+            Swal.fire({
+                title: 'Please Wait!',
+                text: 'Processing your request...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+            debugger
+            let year = $("#yearFilterTable").val(); 
+            let month = $("#monthFilterTable").val();   
+            location.href = '/employee/ShowAllAttendance?year='+year+'&month='+month;
+        });
+    });
+
 </script>

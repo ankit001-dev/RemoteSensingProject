@@ -65,6 +65,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 
     public class ProjectList
     {
+        public string projectCode { get; set; }
         public int Id { get; set; } // Unique identifier for the project
         public DateTime AssignDate { get; set; }
         public DateTime CurrentDate => DateTime.Now;
@@ -230,6 +231,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class tourProposal
     {
+        public string projectCode { get; set; }
         public string remark { get; set; }
         public bool newRequest { get; set; }
         public bool adminappr { get; set; }
@@ -248,6 +250,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     public class HiringVehicle
     {
         public string remark { get; set; }
+        public string projectCode { get; set; }
         public string projectManager { get; set; }
         public bool adminappr { get; set; }
         public bool newRequest { get; set; }
@@ -271,6 +274,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class RaiseProblem
     {
+        public string projectCode { get; set; }
         public DateTime createdAt { get; set; }
         public string projectManager {get; set; }  
         public int userId { get; set; }
@@ -306,5 +310,33 @@ namespace RemoteSensingProject.Models.ProjectManager
         public bool newRequest { get; set; }
         public Dictionary<string, string> Attendance { get; set; } 
 
+    }
+    public class AllAttendance
+    {
+        public string EmpName { get; set; }
+        public int EmpId { get; set; }
+        public int month { get; set; }
+        public string projectManager { get; set; }
+        public int present { get; set; }
+        public int absent { get; set; }
+        public List<AttendanceManage> showAll { get; set; }
+    }
+    public class EmpReportModel
+    {
+        // Project & Unit Section
+        public int PmId { get; set; }
+        public int ProjectId { get; set; }
+        public string ProjectName { get; set; }
+        public string Unit { get; set; }
+        public int AnnualTarget { get; set; }
+
+        // Target Section
+        public int TargetUptoReviewMonth { get; set; }
+        public int AchievementDuringReviewMonth { get; set; }
+        public int CumulativeAchievement { get; set; }
+
+        // Departments Benefiting & Remarks
+        public string BenefitingDepartments { get; set; }
+        public string Remarks { get; set; }
     }
 }

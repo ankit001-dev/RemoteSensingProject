@@ -504,7 +504,15 @@
         var prdata = @Html.Raw(Json.Encode(ViewData["AssignedProjectList"]));
         console.log(prdata)
         if ($('#monthlySalesChart').length) {
-            
+            var categories = [];
+            var data = [];
+            debugger
+
+            $.each(prdata, function (index, item) {
+                categories.push(item.Title);
+                data.push(item.projectStatus);
+            });
+
             var options = {
                 chart: {
                     type: 'bar',
@@ -539,11 +547,11 @@
                 },
                 series: [{
                     name: 'Completed',
-                    data: [70, 20, 40, 30, 60, 61, 88, 43, 10, 45, 60, 24]
+                    data: data
                 }],
                 xaxis: {
                     type: 'category', // Change type from 'datetime' to 'category'
-                    categories: prdata.map(item => item.Title), // Updated categories
+                    categories: categories, // Updated categories
                     axisBorder: {
                         color: '#dee2e6', // Light gray color
                     },

@@ -1,0 +1,210 @@
+﻿
+@{
+    ViewBag.Title = "EmpMonthlyReport";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    var reports = ViewData["ReportList"] as List<RemoteSensingProject.Models.ProjectManager.EmpReportModel>;
+}
+
+<nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Monthly Report</li>
+    </ol>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Monthly Report</button>
+</nav>
+
+<div class="row mx-0">
+    <div class="col-sm-12">
+        <div class="table-responsive">
+            <table class="table-bordered table-striped" style="white-space:nowrap" id="dataTableExample">
+                <thead>
+                    <tr>
+                        <th>Sr. No.</th>
+                        <th>Project Name</th>
+                        <th>Unit</th>
+                        <th>Annual Target</th>
+                        <th>Target Up to Review Month</th>
+                        <th>Achievement During Review Month</th>
+                        <th>Cumulative Achievement</th>
+                        <th>Benefiting Departments</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                        if (reports != null)
+                        {
+                            foreach (var item in reports)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.ProjectName</td>
+                                    <td>@item.Unit</td>
+                                    <td>@item.AnnualTarget</td>
+                                    <td>@item.TargetUptoReviewMonth</td>
+                                    <td>@item.AchievementDuringReviewMonth</td>
+                                    <td>@item.CumulativeAchievement</td>
+                                    <td>@item.BenefitingDepartments</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.Remarks))
+                                        {
+                                            if (item.Remarks.Length <= 10)
+                                            {
+                                                <span>@item.Remarks</span>
+                                            }
+                                            else
+                                            {
+                                                <span>@item.Remarks.Substring(0, 10)...</span>
+                                            }
+                                        }
+                                    </td>
+                                    
+                                </tr>
+                                i++;
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!--Form Moadal start -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Monthly Report</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="createTargetAchievementForm">
+
+                    <!-- Project & Unit Section -->
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="projectHead" class="form-label"> Project </label>
+                            <select class="form-select form-select-sm" id="projectname" name="ProjectId" required>
+                                <option value="" selected>Select Project</option>
+                                @if (projects != null)
+                                {
+                                    foreach (var item in projects)
+                                    {
+                                        <option value="@item.Id">@item.ProjectTitle</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <label for="unit" class="form-label">Unit</label>
+                            <input type="text" name="Unit" required class="form-control form-control-sm" placeholder="Enter Unit">
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <label for="annualTarget" class="form-label">Annual Target</label>
+                            <input type="number" name="AnnualTarget" required class="form-control form-control-sm" placeholder="Enter Annual Target">
+                        </div>
+
+                    </div>
+
+                    <!-- Target Section -->
+                    <div class="row">
+
+
+                        <div class="col-lg-4 mb-3">
+                            <label for="uptoReviewTarget" class="form-label">Target Up to Review Month</label>
+                            <input type="number" name="TargetUptoReviewMonth" required class="form-control form-control-sm" placeholder="Enter Target Up to Review Month">
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <label for="duringReviewAchievement" class="form-label">Achievement During Review Month</label>
+                            <input type="number" name="AchievementDuringReviewMonth" required class="form-control form-control-sm" placeholder="Enter Achievement During Review Month">
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <label for="cumulativeAchievement" class="form-label">Cumulative Achievement Up to Review Month</label>
+                            <input type="number" name="CumulativeAchievement" required class="form-control form-control-sm" placeholder="Enter Cumulative Achievement">
+                        </div>
+
+                    </div>
+
+                    <!-- Departments Benefiting & Remarks -->
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="benefitingDepartments" class="form-label">Departments Benefiting from State Government</label>
+                            <input type="text" name="BenefitingDepartments" required class="form-control form-control-sm" placeholder="Enter Departments">
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <textarea class="form-control form-control-sm" name="Remarks" rows="3" placeholder="Enter Remarks or Observations"></textarea>
+                        </div>
+
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        // Insert Target
+        $("#createTargetAchievementForm").submit(function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Please wait!',
+                text: 'Your request is being processed...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            let formdata = $(this).serialize();
+
+            $.ajax({
+                url: '/employee/InsertEmpReport',
+                type: 'post',
+                data: formdata,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload(true); }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Warning',
+                            text: res.message,
+                            icon: 'warning'
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Server Error. Please try again later!',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+
+    });
+</script>
+
+

@@ -1,4 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNet.SignalR;
+using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
@@ -10,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Web;
 using System.Web.Http;
 using static RemoteSensingProject.Models.SubOrdinate.main;
@@ -304,6 +307,40 @@ namespace RemoteSensingProject.ApiServices
                 {
                     status = false,
                     StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/getDateTime")]
+        public IHttpActionResult GetDateTime()
+        {
+            try
+            {
+               
+                string currentDateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                // Get SignalR context and push the DateTime to all connected clients
+                var context = GlobalHost.ConnectionManager.GetHubContext<RealtimeDateTime>();
+                context.Clients.All.receiveTime(currentDateTime);  // Broadcasting time to all clients
+
+                // Return the DateTime in the response
+                return Ok(new { time = currentDateTime });
+
+                //DateTime date = DateTime.Now.Date;
+                //DateTime time = DateTime.Now.ToLocalTime();
+                //return Ok(new
+                //{
+                //    date = date,
+                //    //time = 
+                //});
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 404,
                     message = ex.Message
                 });
             }

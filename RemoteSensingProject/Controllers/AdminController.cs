@@ -10,6 +10,7 @@ using  RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.Accounts;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 
 namespace RemoteSensingProject.Controllers
@@ -72,7 +73,7 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult InsertDesgination(CommonResponse cr)
         {
-            bool res = _adminServices.InsertDesgination(cr);
+            bool res = _adminServices.InsertDesignation(cr);
             return Json(new
             {
                 status = res,
@@ -707,6 +708,56 @@ namespace RemoteSensingProject.Controllers
         {
             ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord().Where(d=>d.EmployeeRole== "projectManager").ToList();
             return View();
+        }
+        public ActionResult Attendance_Report()
+        {
+            ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole == "projectManager").ToList();
+            return View();  
+        }
+        public ActionResult ExportAttendanceToExcel(int month, int year, int EmpId,int projectManager)
+        {
+            var data = _managerServices.ConvertExcelFile(month, year, projectManager, EmpId);
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReport.xlsx");
+        }
+        public ActionResult ShowAllAttendance(int year, int month, int projectManager)
+        {
+            var data = _managerServices.GetAllAttendanceForPmByMonth(year, month, projectManager);
+            ViewData["showAllAtt"] = data;
+            ViewData["AllAttendance"] = JsonConvert.SerializeObject(data); // 'data' is List<AllAttendance>
+            ViewData["Year"] = year;
+            ViewData["Month"] = month;
+            return View();
+        }
+        public ActionResult ExportAllAtt(int year, int month, int projectManager)
+        {
+            var data = _managerServices.ConvertExcelFileOfAll(month, year, projectManager);
+            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReportOfAll.xlsx");
+        }
+        public ActionResult EmployeeMonthlyReport()
+        {
+            ViewBag.MemberList = _adminServices.SelectEmployeeRecord();
+            return View();
+        }
+        [HttpGet]
+        public ActionResult EmployeeReportMon(int id)
+        {
+            try
+            {
+                var data = _managerServices.GetEmpReport(id);
+                return Json(new
+                {
+                    status = data != null ? true : false,
+                    data = data
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
         }
     }
 }
