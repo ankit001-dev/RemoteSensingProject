@@ -30,8 +30,8 @@ namespace RemoteSensingProject.Controllers
         {
             var TotalCount = _adminServices.DashboardCount();
             DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
-            ViewData["physical"] = _adminServices.Project_List().Where(d => d.AssignDate >= twoYearsAgo).ToList();
-            ViewData["budgetGraph"] = _adminServices.ViewProjectExpenditure().Where(d => d.expenditure > 0 && d.remaining>0).ToList();
+            //ViewData["physical"] = _adminServices.Project_List().Where(d => d.AssignDate >= twoYearsAgo).ToList();
+            //ViewData["budgetGraph"] = _adminServices.ViewProjectExpenditure().Where(d => d.expenditure > 0 && d.remaining>0).ToList();
             return View(TotalCount);
         }
         

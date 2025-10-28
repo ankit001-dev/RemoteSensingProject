@@ -1,15 +1,17 @@
-﻿  using RemoteSensingProject.Models.Accounts;
-using RemoteSensingProject.Models.Admin;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Http;
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Accounts;
+using RemoteSensingProject.Models.Admin;
 using static RemoteSensingProject.Models.Accounts.main;
 
 namespace RemoteSensingProject.ApiServices
 {
+    [JwtAuthorize]
     public class AccountController : ApiController
     {
         // GET: Account
