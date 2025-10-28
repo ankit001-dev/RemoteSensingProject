@@ -13,6 +13,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Grpc.Core;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Routing;
+using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
@@ -20,6 +21,7 @@ using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.ApiServices
 {
+    [JwtAuthorize]
     public class ProjectManagerController : ApiController
     {
         private readonly AdminServices _adminServices;

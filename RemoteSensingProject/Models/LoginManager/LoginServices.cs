@@ -1,12 +1,27 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
-using static RemoteSensingProject.Models.LoginManager.main;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using DocumentFormat.OpenXml.Bibliography;
 using Npgsql;
+using static RemoteSensingProject.Models.LoginManager.main;
 
 namespace RemoteSensingProject.Models.LoginManager
 {
     public class LoginServices : DataFactory
-    {  
+    {
+        private readonly string _secretKey;
+        private readonly string _issuer;
+        private readonly string _audience;
+        public LoginServices()
+        {
+            _secretKey = ConfigurationManager.AppSettings["JwtSecretKey"];
+            _issuer = ConfigurationManager.AppSettings["JwtIssuer"];
+            _audience = ConfigurationManager.AppSettings["JwtAudience"];
+        }
         public Credentials Login(string username, string password)
         {
             try
@@ -50,6 +65,35 @@ namespace RemoteSensingProject.Models.LoginManager
                     con.Close();
             }
         }
+
+        public string GenerateToken(Credentials cr)
+        {
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
+            var creds = new SigningCredentials(
+                key,
+                SecurityAlgorithms.HmacSha256Signature,  // Signature algorithm
+                SecurityAlgorithms.Sha256Digest          // Digest algorithm
+            );
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, cr.username),
+                new Claim("role", cr.role),
+                new Claim("userId", cr.userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: _issuer,
+                audience: _audience,
+                claims: claims,
+                expires: DateTime.Now.AddHours(5),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
 
     }
 }
