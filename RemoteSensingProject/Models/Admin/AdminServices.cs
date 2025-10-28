@@ -894,75 +894,81 @@ namespace RemoteSensingProject.Models.Admin
         public DashboardCount DashboardCount()
         {
             DashboardCount obj = null;
+
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand();
-                cmd.Connection = con;
-                cmd.CommandText = cmd.CommandText = @"
-            BEGIN;
-            SELECT fn_managedashboard_cursor('AdminDashboardCount', NULL, 0);
-            FETCH ALL FROM result_cursor;
-            COMMIT;";
-                cmd.Parameters.AddWithValue("@action", "AdminDashboardCount");
                 con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
 
-                if (sdr.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managedashboard_cursor", con))
                 {
-                    sdr.Read();
-                    obj = new DashboardCount();
-                    obj.TotalEmployee = sdr["TotalEmployee"].ToString();
-                    obj.TotalProjectManager = sdr["TotalProjectManager"].ToString();
-                    obj.TotalSubOrdinate = sdr["TotalSubOrdinate"].ToString();
-                    obj.TotalAccounts = sdr["TotalAccounts"].ToString();
-                    obj.TotalProject = sdr["TotalProject"].ToString();
-                    obj.TotalInternalProject = sdr["TotalInternalProject"].ToString();
-                    obj.TotalExternalProject = sdr["TotalExternalProject"].ToString();
-                    obj.TotalDelayproject = sdr["TotalDelayproject"].ToString();
-                    obj.TotalCompleteProject = sdr["TotalCompleteProject"].ToString();
-                    obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
-                    obj.TotalMeetings = sdr["TotalMeetings"].ToString();
-                    obj.TotalAdminMeetings = sdr["TotalAdminMeetings"].ToString();
-                    obj.TotalProjectManagerMeetings = sdr["TotalProjectManagerMeetings"].ToString();
-                    obj.TotalReinbursementReq = sdr["TotalReinbursementReq"].ToString();
-                    obj.TotalTourProposalReq = sdr["TotalTourProposalReq"].ToString();
-                    obj.totalVehicleHiringRequest = sdr["totalVehicleHiringRequest"].ToString();
-                    obj.totalReinbursementPendingRequest = sdr["totalReinbursementPendingRequest"].ToString();
-                    obj.totalReinbursementapprovedRequest = sdr["totalReinbursementapprovedRequest"].ToString();
-                    obj.totalReinbursementRejectRequest = sdr["totalReinbursementRejectRequest"].ToString();
-                    obj.totalTourProposalApprReque = sdr["totalTourProposalApprReque"].ToString();
-                    obj.totalTourProposalRejectReque = sdr["totalTourProposalRejectReque"].ToString();
-                    obj.totaTourProposalPendingReque = sdr["totaTourProposalPendingReque"].ToString();
-                    obj.totalPendingHiringVehicle = sdr["totalPendingHiringVehicle"].ToString();
-                    obj.totalApproveHiringVehicle = sdr["totalApproveHiringVehicle"].ToString();
-                    obj.totalRejectHiringVehicle = sdr["totalRejectHiringVehicle"].ToString();
-                    obj.TotalBudget = Convert.ToDecimal(sdr["totalBudgets"] != DBNull.Value ? sdr["totalBudgets"] : 0);
-                    obj.PendingBudget = Convert.ToDecimal(sdr["pendingBudget"] != DBNull.Value ? sdr["pendingBudget"] : 0);
-                    obj.expenditure = Convert.ToDecimal(sdr["expenditure"] != DBNull.Value ? sdr["expenditure"] : 0);
-                    //obj.monTotalBudget = Convert.ToDecimal(sdr["monTotalBudget"]);
-                    //obj.monPendingBudget = Convert.ToDecimal(sdr["monPendingBudget"]);
-                    //obj.monExpenditureBudget = Convert.ToDecimal(sdr["monExpenditureBudget"]);
-                    //obj.monTotalProject = Convert.ToInt32(sdr["monTotalProject"]);
-                    //obj.monInternalProject = Convert.ToInt32(sdr["monInternalProject"]);
-                    //obj.monExternalProject = Convert.ToInt32(sdr["monExternalProject"]);
-                    //obj.monTotalReinbursementReq = Convert.ToInt32(sdr["monTotalReinbursementReq"]);
-                    //obj.monTotalTourProposalReq = Convert.ToInt32(sdr["monTotalTourProposalReq"]);
-                    //obj.montotalVehicleHiringRequest = Convert.ToInt32(sdr["montotalVehicleHiringRequest"]);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "AdminDashboardCount");
+                    cmd.Parameters.AddWithValue("v_projectmanager", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_sid", 0);
+
+                    // Execute the function — it returns the cursor name
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    // Now fetch the data from the cursor
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                    using (var sdr = fetchCmd.ExecuteReader())
+                    {
+                        if (sdr.HasRows)
+                        {
+                            sdr.Read();
+                            obj = new DashboardCount
+                            {
+                                TotalEmployee = sdr["TotalEmployee"].ToString(),
+                                TotalProjectManager = sdr["TotalProjectManager"].ToString(),
+                                TotalSubOrdinate = sdr["TotalSubOrdinate"].ToString(),
+                                TotalAccounts = sdr["TotalAccounts"].ToString(),
+                                TotalProject = sdr["TotalProject"].ToString(),
+                                TotalInternalProject = sdr["TotalInternalProject"].ToString(),
+                                TotalExternalProject = sdr["TotalExternalProject"].ToString(),
+                                TotalDelayproject = sdr["TotalDelayproject"].ToString(),
+                                TotalCompleteProject = sdr["TotalCompleteProject"].ToString(),
+                                TotalOngoingProject = sdr["TotalOngoingProject"].ToString(),
+                                TotalMeetings = sdr["TotalMeetings"].ToString(),
+                                TotalAdminMeetings = sdr["TotalAdminMeetings"].ToString(),
+                                TotalProjectManagerMeetings = sdr["TotalProjectManagerMeetings"].ToString(),
+                                TotalReinbursementReq = sdr["TotalReinbursementReq"].ToString(),
+                                TotalTourProposalReq = sdr["TotalTourProposalReq"].ToString(),
+                                totalVehicleHiringRequest = sdr["totalVehicleHiringRequest"].ToString(),
+                                totalReinbursementPendingRequest = sdr["totalReinbursementPendingRequest"].ToString(),
+                                totalReinbursementapprovedRequest = sdr["totalReinbursementapprovedRequest"].ToString(),
+                                totalReinbursementRejectRequest = sdr["totalReinbursementRejectRequest"].ToString(),
+                                totalTourProposalApprReque = sdr["totalTourProposalApprReque"].ToString(),
+                                totalTourProposalRejectReque = sdr["totalTourProposalRejectReque"].ToString(),
+                                totaTourProposalPendingReque = sdr["totaTourProposalPendingReque"].ToString(),
+                                totalPendingHiringVehicle = sdr["totalPendingHiringVehicle"].ToString(),
+                                totalApproveHiringVehicle = sdr["totalApproveHiringVehicle"].ToString(),
+                                totalRejectHiringVehicle = sdr["totalRejectHiringVehicle"].ToString(),
+                                TotalBudget = Convert.ToDecimal(sdr["totalBudgets"] != DBNull.Value ? sdr["totalBudgets"] : 0),
+                                PendingBudget = Convert.ToDecimal(sdr["pendingBudget"] != DBNull.Value ? sdr["pendingBudget"] : 0),
+                                expenditure = Convert.ToDecimal(sdr["AppStatus"] != DBNull.Value ? sdr["AppStatus"] : 0)
+                            };
+                        }
+                    }
+
+                    // Close the cursor explicitly
+                    using (var closeCmd = new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+
+                    tran.Commit();
                 }
 
-                sdr.Close();
-
                 return obj;
-
             }
             catch (Exception ex)
             {
-                throw new Exception("An error accured", ex);
+                throw new Exception("Error while fetching dashboard data", ex);
             }
             finally
             {
                 con.Close();
-
             }
         }
 

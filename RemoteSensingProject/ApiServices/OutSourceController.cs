@@ -19,6 +19,7 @@ using static RemoteSensingProject.Models.SubOrdinate.main;
 
 namespace RemoteSensingProject.ApiServices
 {
+    [JwtAuthorize]
     public class OutSourceController : ApiController
     {
         private readonly AdminServices _adminServices;

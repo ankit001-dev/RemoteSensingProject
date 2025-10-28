@@ -64,6 +64,8 @@ namespace RemoteSensingProject.Controllers
             }
         }
 
+
+
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
