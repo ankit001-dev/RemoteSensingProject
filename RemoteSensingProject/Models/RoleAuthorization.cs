@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Security;
 using RemoteSensingProject.Models.LoginManager;
+using Npgsql;
 
 namespace RemoteSensingProject.Models
 {
@@ -41,36 +42,43 @@ namespace RemoteSensingProject.Models
        
         public override string[] GetRolesForUser(string username)
         {
-
-            List<string> role = new List<string>();
-            using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["con"].ConnectionString))
+            try
             {
-                con.Open();
-                using (SqlCommand cmd = new SqlCommand("sp_manageLoginMaster", con))
+                List<string> role = new List<string>();
+                using (NpgsqlConnection con = new NpgsqlConnection(ConfigurationManager.ConnectionStrings["con"].ConnectionString))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;  
-                    cmd.Parameters.AddWithValue("@action", "getUserRole");
-                    cmd.Parameters.AddWithValue("@username", username);
-                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    con.Open();
+                    using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM sp_manageloginmaster(@action, @userid, @username)", con))
                     {
-                        if (rd.HasRows)
+                        cmd.Parameters.AddWithValue("@action", "getUserRole");
+                        cmd.Parameters.AddWithValue("@username", username);
+                        cmd.Parameters.AddWithValue("@userid", 0);
+                        using (NpgsqlDataReader rd = cmd.ExecuteReader())
                         {
-                            while (rd.Read())
+                            if (rd.HasRows)
                             {
-                                role.Add(rd["userRole"].ToString());
+                                while (rd.Read())
+                                {
+                                    role.Add(rd["userRole"].ToString());
+                                }
                             }
                         }
                     }
                 }
+                if (role != null && role.Count > 0)
+                {
+                    return role.ToArray();
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
             }
-            if (role != null && role.Count > 0)
+            catch(Exception ex)
             {
-                return role.ToArray();
+                throw ex;
             }
-            else
-            {
-                throw new NotImplementedException();
-            }
+           
         }
 
         public override string[] GetUsersInRole(string roleName)
