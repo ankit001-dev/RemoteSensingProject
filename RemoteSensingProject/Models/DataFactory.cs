@@ -1,7 +1,6 @@
 ﻿using Npgsql;
 using SelectPdf;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.IO;
 namespace RemoteSensingProject.Models
 {

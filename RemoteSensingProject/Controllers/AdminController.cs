@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using RemoteSensingProject.Models.Admin;
 using static RemoteSensingProject.Models.Admin.main;
-using  RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.Accounts;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 

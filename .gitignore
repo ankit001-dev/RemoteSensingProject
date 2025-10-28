@@ -1,91 +1,88 @@
-# Ignore Visual Studio temporary files, build results, and
-# user-specific files
+## === Visual Studio / .NET MVC 4.5.6 ===
 
-## Build results
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# VS cache / settings
+.vs/
+VishanSabha/.vs/
+.vscode/
+*.DotSettings.user
+
+# Build output folders
+bin/
+obj/
 [Bb]in/
 [Oo]bj/
 
-## NuGet Packages
-*.nupkg
-*.snupkg
-*/packages/
-# Uncomment if necessary: prevent NuGet package restore
-# packages/
-
-## User-specific files
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-*.vs/
-
-## Rider project files
-.idea/
-*.sln.iml
-
-## ASP.NET temporary files
-Temporary ASP.NET Files/
-
-## Visual Studio Code
-.vscode/
-
-## Logs
+# Logs
+[Ll]og/
+[Ll]ogs/
 *.log
 
-## Database files
-*.mdf
-*.ldf
+# Architecture-specific folders
+x64/
+x86/
+[Aa][Rr][Mm]*/
+bld/
 
-## Publish Web Output
-*.Publish.xml
+# Web publish outputs
+*.PublishSettings
 *.pubxml
+*.pubxml.user
+PublishProfiles/
 *.publishproj
 
-## Web config transforms
-web.*.config
+# IIS Express / local web server
+.iisexpress/
+*.vspscc
+*.vssscc
 
-## Node modules (if used)
-node_modules/
-
-## npm package logs
-npm-debug.log
-yarn-debug.log
-yarn-error.log
-
-## Compiled DLLs
-*.dll
-
-## Test Results
-TestResults/
-
-## Resharper
-_ReSharper*/
-*.[Rr]e[Ss]harper
-
-## Backup files
+# SQL/Database local dev files
+*.mdf
+*.ldf
+*.ndf
+*.dbmdl
 *.bak
+*.trn
 
-## Logs and generated files
-*.log
-*.tlog
+# NuGet packages
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
 
-## Environment settings
-.env
+# Profiling
+*.psess
+*.vsp
+*.vspx
+*.sap
 
-## IIS Express
-\.vsconfig
-/.vs/
-/.vscode/
+# Crash dumps
+*.dmp
+*.pidb
+*.pid
 
-# End of .gitignore
-/.vs/RemoteSensingProject/v17/DocumentLayout.backup.json
-/.vs/RemoteSensingProject/v17/DocumentLayout.json
-/.vs/RemoteSensingProject/v17/.suo
-/RemoteSensingProject/obj/Debug/RemoteSensingProject.pdb
-/RemoteSensingProject/bin/RemoteSensingProject.pdb
-/RemoteSensingProject/bin/RemoteSensingProject.dll
-/RemoteSensingProject/obj/Debug/RemoteSensingProject.dll
-/RemoteSensingProject/obj/Debug/RemoteSensingProject.csproj.CoreCompileInputs.cache
-/RemoteSensingProject/Controllers.zip
-/RemoteSensingProject/ApiServices.zip
-/RemoteSensingProject/ApiServices.zip
+# Angular / Frontend in MVC
+/node_modules/
+/bower_components/
+/dist/
+/wwwroot/dist/
+/tmp/
+/temp/
+
+# Miscellaneous
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# Ignore generated config and merge leftovers
+*.orig
+
+/RemoteSensingProject/RemoteSensingProject.csproj

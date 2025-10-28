@@ -896,14 +896,20 @@ namespace RemoteSensingProject.Models.Admin
             DashboardCount obj = null;
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageDashboard", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                NpgsqlCommand cmd = new NpgsqlCommand();
+                cmd.Connection = con;
+                cmd.CommandText = cmd.CommandText = @"
+            BEGIN;
+            SELECT fn_managedashboard_cursor('AdminDashboardCount', NULL, 0);
+            FETCH ALL FROM result_cursor;
+            COMMIT;";
                 cmd.Parameters.AddWithValue("@action", "AdminDashboardCount");
                 con.Open();
                 NpgsqlDataReader sdr = cmd.ExecuteReader();
 
-                if (sdr.Read())
+                if (sdr.HasRows)
                 {
+                    sdr.Read();
                     obj = new DashboardCount();
                     obj.TotalEmployee = sdr["TotalEmployee"].ToString();
                     obj.TotalProjectManager = sdr["TotalProjectManager"].ToString();
