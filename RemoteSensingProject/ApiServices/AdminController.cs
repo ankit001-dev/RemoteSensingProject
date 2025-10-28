@@ -2,23 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
-using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using System.Web.Razor.Generator;
-using Microsoft.Ajax.Utilities;
-using RemoteSensingProject.Controllers;
+using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
+using static System.Web.Http.AllowAnonymousAttribute;
+using static System.Web.Http.Filters.AuthorizationFilterAttribute;
 using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.LoginManager.main;
 
 namespace RemoteSensingProject.ApiServices
 {
+    [JwtAuthorize]
     public class AdminController : ApiController
     {
         private readonly AdminServices _adminServices;
@@ -32,55 +31,63 @@ namespace RemoteSensingProject.ApiServices
             _managerservice = new ManagerService();
             _accountService = new AccountService();
         }
-        [HttpPost]
-        [Route("api/login")]
-        public IHttpActionResult Login()
-        {
-            try
-            {
+        //[HttpPost]
+        //[Route("api/login")]
+        //public IHttpActionResult Login()
+        //{
+        //    try
+        //    {
 
-                var request = HttpContext.Current.Request;
-                string username = request.Form.Get("username");
-                string password = request.Form.Get("password");
-                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-                {
-                    return BadRequest(new
-                    {
-                        status = false,
-                        StatusCode = 400,
-                        Message = "Username and password are required."
-                    });
-                }
-                Credentials data = _loginService.Login(username, password);
+        //        var request = HttpContext.Current.Request;
+        //        string username = request.Form.Get("username");
+        //        string password = request.Form.Get("password");
+        //        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+        //        {
+        //            return BadRequest(new
+        //            {
+        //                status = false,
+        //                StatusCode = 400,
+        //                Message = "Username and password are required."
+        //            });
+        //        }
+        //        Credentials data = _loginService.Login(username, password);
 
-                if (username.Equals(data.username) && password.Equals(data.password))
-                {
-                    return Ok(new
-                    {
-                        status = true,
-                        StatusCode = 200,
-                        message = "User authorised successfully !",
-                        data = data
-                    });
-                }
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 400,
-                    message = "Invalid userid or password."
-                });
-            } catch (Exception ex) {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message,
-                    data = ex
-                });
-            }
+        //        if (username.Equals(data.username) && password.Equals(data.password))
+        //        {
+        //           string token = _loginService.GenerateToken(data);
+        //            var userData = new
+        //            {
+        //                username = data.username,
+        //                Emp_Id = data.Emp_Id,
+        //                Emp_Name = data.Emp_Name,
+        //                profilePath = data.profilePath,
+        //            };
+        //            return Ok(new
+        //            {
+        //                status = true,
+        //                StatusCode = 200,
+        //                data = userData,
+        //                token = token
+        //            });
+        //        }
+        //        return BadRequest(new
+        //        {
+        //            status = false,
+        //            StatusCode = 400,
+        //            message = "Invalid userid or password."
+        //        });
+        //    } catch (Exception ex) {
+        //        return BadRequest(new
+        //        {
+        //            status = false,
+        //            StatusCode = 500,
+        //            message = ex.Message,
+        //            data = ex
+        //        });
+        //    }
 
 
-        }
+        //}
 
         #region ExpenditureAmt
         [HttpGet]
