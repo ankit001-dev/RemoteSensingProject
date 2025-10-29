@@ -80,22 +80,24 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<CommonResponse> list = new List<CommonResponse>();
-                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "GetAllDevision");
-                con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
+                using (var cmd = new NpgsqlCommand("fn_get_employee_category", con))
                 {
-                    while (rd.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "GetAllDevision");
+                    con.Open();
+                    NpgsqlDataReader rd = cmd.ExecuteReader();
+                    if (rd.HasRows)
                     {
-                        list.Add(new CommonResponse
+                        while (rd.Read())
                         {
-                            id = Convert.ToInt32(rd["id"]),
-                            name = rd["devisionName"].ToString()
-                        });
+                            list.Add(new CommonResponse
+                            {
+                                id = Convert.ToInt32(rd["id"]),
+                                name = rd["devisionName"].ToString()
+                            });
+                        }
+                        rd.Close();
                     }
-                    rd.Close();
                 }
                 return list;
             }

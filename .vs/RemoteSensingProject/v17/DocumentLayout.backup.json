@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\",
   "Documents": [
     {
+<<<<<<< HEAD
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\hp\\desktop\\himansu_projects\\remotesensing\\remotesensingproject\\models\\admin\\adminservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\admin\\adminservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+=======
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\hp\\desktop\\himansu_projects\\remotesensing\\remotesensingproject\\apiservices\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\apiservices\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -24,12 +28,17 @@
     {
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\hp\\desktop\\himansu_projects\\remotesensing\\remotesensingproject\\apiservices\\subordinatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\apiservices\\subordinatecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+>>>>>>> e0dc5c583f59ae12633f05d3d55cc587567a8e36
     },
     {
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\hp\\desktop\\himansu_projects\\remotesensing\\remotesensingproject\\apiservices\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\apiservices\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+<<<<<<< HEAD
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+=======
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\hp\\desktop\\himansu_projects\\remotesensing\\remotesensingproject\\models\\loginmanager\\loginservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
 >>>>>>> 927dd12709dd04c2cb3101d72d7cc57fac7cd4b7
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\loginmanager\\loginservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
@@ -50,6 +59,7 @@
       "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\hp\\desktop\\himansu_projects\\remotesensing\\remotesensingproject\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\logincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
 >>>>>>> 927dd12709dd04c2cb3101d72d7cc57fac7cd4b7
+>>>>>>> e0dc5c583f59ae12633f05d3d55cc587567a8e36
     }
   ],
   "DocumentGroupContainers": [
@@ -133,6 +143,16 @@
               "WhenOpened": "2025-10-27T11:54:03.428Z",
 =======
               "DocumentIndex": 1,
+<<<<<<< HEAD
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\ApiServices\\AdminController.cs",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\ApiServices\\AdminController.cs",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\ApiServices\\AdminController.cs",
+              "RelativeToolTip": "RemoteSensingProject\\ApiServices\\AdminController.cs",
+              "ViewState": "AgIAAG4FAAAAAAAAAAAAwIQFAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-29T07:47:27.507Z",
+=======
               "Title": "OutSourceController.cs",
               "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\ApiServices\\OutSourceController.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\ApiServices\\OutSourceController.cs",
@@ -204,10 +224,20 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-27T07:59:33.471Z",
+>>>>>>> e0dc5c583f59ae12633f05d3d55cc587567a8e36
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
+              "DocumentIndex": 2,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "RemoteSensingProject\\Controllers\\AdminController.cs",
+              "ViewState": "AgIAACYAAAAAAAAAAAAowA8AAAAtAAAAAAAAAA==",
+=======
               "DocumentIndex": 3,
 =======
 >>>>>>> 927dd12709dd04c2cb3101d72d7cc57fac7cd4b7
@@ -245,12 +275,24 @@
               "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\LoginManager\\LoginServices.cs",
               "RelativeToolTip": "RemoteSensingProject\\Models\\LoginManager\\LoginServices.cs",
               "ViewState": "AgIAADMAAAAAAAAAAAAswEUAAAAIAAAAAAAAAA==",
+>>>>>>> e0dc5c583f59ae12633f05d3d55cc587567a8e36
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T09:03:00.325Z",
+              "WhenOpened": "2025-10-28T13:01:23.549Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+<<<<<<< HEAD
+              "DocumentIndex": 0,
+              "Title": "AdminServices.cs",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
+              "RelativeToolTip": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
+              "ViewState": "AgIAANAFAAAAAAAAAAAuwKIFAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T11:52:15.059Z",
+=======
               "DocumentIndex": 8,
               "Title": "LoginController.cs",
               "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Controllers\\LoginController.cs",
@@ -261,6 +303,7 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-28T09:02:33.649Z",
 >>>>>>> 927dd12709dd04c2cb3101d72d7cc57fac7cd4b7
+>>>>>>> e0dc5c583f59ae12633f05d3d55cc587567a8e36
               "EditorCaption": ""
             }
           ]
