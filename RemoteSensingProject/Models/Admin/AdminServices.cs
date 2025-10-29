@@ -115,8 +115,7 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<CommonResponse> list = new List<CommonResponse>();
-                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("select * FROM fn_get_employee_category(@action)", con);
                 cmd.Parameters.AddWithValue("@action", "GetAllDesignation");
                 con.Open();
                 NpgsqlDataReader rd = cmd.ExecuteReader();
@@ -533,8 +532,7 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action)", con);
                 cmd.Parameters.AddWithValue("@action", "GetAllProject");
                 con.Open();
                 NpgsqlDataReader rd = cmd.ExecuteReader();
@@ -978,27 +976,47 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<ProjectExpenditure> list = new List<ProjectExpenditure>();
-                cmd = new NpgsqlCommand("sp_ManageDashboard", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "viewProjectExpenditure");
                 con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managedashboard_cursor", con))
                 {
-                    while (rd.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "viewProjectExpenditure");
+                    cmd.Parameters.AddWithValue("v_projectmanager", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_sid", 0);
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    // Now fetch the data from the cursor
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                    using (var rd = fetchCmd.ExecuteReader())
                     {
-                        list.Add(new ProjectExpenditure
+                        if (rd.HasRows)
                         {
-                            id = Convert.ToInt32(rd["id"]),
-                            ProjectName = rd["title"].ToString(),
-                            projectmanager = rd["name"].ToString(),
-                            ProjectBudget = Convert.ToDecimal(rd["budget"]),
-                            expenditure = rd["ExpendedAmt"]!=DBNull.Value? Convert.ToDecimal(rd["ExpendedAmt"]):0,
-                            remaining = rd["remainingAmt"]!=DBNull.Value? Convert.ToDecimal(rd["remainingAmt"]):0
-                        });
+                            while (rd.Read())
+                            {
+                                list.Add(new ProjectExpenditure
+                                {
+                                    id = Convert.ToInt32(rd["id"]),
+                                    ProjectName = rd["title"].ToString(),
+                                    projectmanager = rd["name"].ToString(),
+                                    ProjectBudget = Convert.ToDecimal(rd["budget"]),
+                                    expenditure = rd["ExpendedAmt"] != DBNull.Value ? Convert.ToDecimal(rd["ExpendedAmt"]) : 0,
+                                    remaining = rd["remainingAmt"] != DBNull.Value ? Convert.ToDecimal(rd["remainingAmt"]) : 0
+                                });
+                            }
+                        }
+                        return list;
                     }
+
+                    // Close the cursor explicitly
+                    using (var closeCmd = new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+
+                    tran.Commit();
                 }
-                    return list;
             }catch(Exception ex)
             {
                 throw ex;
