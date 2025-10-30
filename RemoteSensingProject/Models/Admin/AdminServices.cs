@@ -328,23 +328,22 @@ namespace RemoteSensingProject.Models.Admin
 
         public bool RemoveEmployees(int id)
         {
+            NpgsqlCommand cmd = null;
             try
             {
-                cmd = new NpgsqlCommand("sp_AdminEmployees", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "DeleteEmployees");
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd = new NpgsqlCommand();
+                cmd.Connection = con;
+                cmd.CommandType = CommandType.Text;
+
+                cmd.CommandText = "CALL sp_adminemployees(p_id => @p_id, p_action => @p_action)";
+
+                // Set procedure parameters
+                cmd.Parameters.AddWithValue("p_action", "DeleteEmployees");
+                cmd.Parameters.AddWithValue("p_id", id);
 
                 con.Open();
-                int res = cmd.ExecuteNonQuery();
-                if (res > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                cmd.ExecuteNonQuery();
+                return true; // if no exception, assume success
             }
             catch (Exception ex)
             {
@@ -434,7 +433,9 @@ namespace RemoteSensingProject.Models.Admin
                                 MobileNo = record["mobile"] != DBNull.Value ? Convert.ToInt64(record["mobile"]) : 0,
                                 EmployeeRole = record["role"] != DBNull.Value ? record["role"].ToString().Trim() : "",
                                 Division = record["devision"] != DBNull.Value ? Convert.ToInt32(record["devision"]) : 0,
+                                Designation = record["designation"] != DBNull.Value ? Convert.ToInt32(record["devision"]) : 0,
                                 DesignationName = record["designationname"]?.ToString(),
+                                Gender = record["gender"]?.ToString(),
                                 Status = record["status"] != DBNull.Value && Convert.ToBoolean(record["status"]),
                                 Image_url = record["profile"] != DBNull.Value ? record["profile"].ToString() : null
                             };
@@ -460,21 +461,19 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_AdminEmployees", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "ChangeActiveStatus");
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd = new NpgsqlCommand();
+                cmd.Connection = con;
+                cmd.CommandType = CommandType.Text;
+
+                cmd.CommandText = "CALL sp_adminemployees(p_id => @p_id, p_action => @p_action)";
+
+                // Set procedure parameters
+                cmd.Parameters.AddWithValue("p_action", "ChangeActiveStatus");
+                cmd.Parameters.AddWithValue("p_id", id);
 
                 con.Open();
-                int res = cmd.ExecuteNonQuery();
-                if (res > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                cmd.ExecuteNonQuery();
+                return true; // if no exception, assume success
             }
             catch (Exception ex)
             {
