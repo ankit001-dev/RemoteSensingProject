@@ -532,104 +532,159 @@ namespace RemoteSensingProject.Models.Admin
         #region Create Project
         public bool addProject(createProjectModel pm)
         {
-            con.Open();
-            NpgsqlTransaction tran = con.BeginTransaction();
+            NpgsqlTransaction tran = null;
+            NpgsqlCommand cmd = null;
+
             try
             {
+                con.Open();
+                tran = con.BeginTransaction();
+
+                // Generate Project Code
                 Random rand = new Random();
-                pm.projectCode = $"{rand.Next(1000, 9999).ToString()}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
-                cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "insertProject");
-                cmd.Parameters.AddWithValue("@title", pm.pm.ProjectTitle);
-                cmd.Parameters.AddWithValue("@letterNo", pm.pm.letterNo);
-                cmd.Parameters.AddWithValue("@assignDate", pm.pm.AssignDate);
-                cmd.Parameters.AddWithValue("@startDate", pm.pm.StartDate);
-                cmd.Parameters.AddWithValue("@completionDate", pm.pm.CompletionDate);
-                cmd.Parameters.AddWithValue("@projectmanager", pm.pm.ProjectManager);
-                cmd.Parameters.AddWithValue("@budget", pm.pm.ProjectBudget);
-                cmd.Parameters.AddWithValue("@description", pm.pm.ProjectDescription);
-                cmd.Parameters.AddWithValue("@ProjectDocument", pm.pm.projectDocumentUrl);
-                cmd.Parameters.AddWithValue("@projectType", pm.pm.ProjectType);
-                cmd.Parameters.AddWithValue("@stage", pm.pm.ProjectStage);
-                cmd.Parameters.AddWithValue("@createdBy", "admin");
-                cmd.Parameters.AddWithValue("@projectCode", pm.projectCode);
-                cmd.Parameters.AddWithValue("@ApproveStatus", 1);
-                cmd.Parameters.Add("@project_Id", NpgsqlDbType.Integer);
-                cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
-                int i = cmd.ExecuteNonQuery();
-                int projectId = Convert.ToInt32(cmd.Parameters["@project_Id"].Value != DBNull.Value ? cmd.Parameters["@project_Id"].Value : 0);
-                if (i > 0)
+                pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
+
+                // 1️⃣ Insert main project
+                var projectParams = new Dictionary<string, object>
                 {
-                    if (pm.budgets != null && pm.budgets.Count > 0)
-                    {
-                        foreach (var item in pm.budgets)
-                        {
-                            cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddWithValue("@action", "insertProjectBudget");
-                            cmd.Parameters.AddWithValue("@project_Id", projectId);
-                            cmd.Parameters.AddWithValue("@heads", item.ProjectHeads);
-                            cmd.Parameters.AddWithValue("@headsAmount", item.ProjectAmount);
-                            i += cmd.ExecuteNonQuery();
-                        }
-                    }
-                    if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
-                    {
-                        foreach (var item in pm.stages)
-                        {
-                            cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddWithValue("@action", "insertProjectStatge");
-                            cmd.Parameters.AddWithValue("@project_Id", projectId);
-                            cmd.Parameters.AddWithValue("@keyPoint", item.KeyPoint);
-                            cmd.Parameters.AddWithValue("@completeDate", item.CompletionDate);
-                            cmd.Parameters.AddWithValue("@stageDocument", item.Document_Url);
-                            i += cmd.ExecuteNonQuery();
-                        }
-                    }
+                    ["p_action"] = "insertProject",
+                    ["p_letterno"] = pm.pm.letterNo,
+                    ["p_title"] = pm.pm.ProjectTitle,
+                    ["p_assigndate"] = pm.pm.AssignDate,
+                    ["p_startdate"] = pm.pm.StartDate,
+                    ["p_completiondate"] = pm.pm.CompletionDate,
+                    ["p_projectmanager"] = pm.pm.ProjectManager,
+                    ["p_budget"] = pm.pm.ProjectBudget,
+                    ["p_description"] = pm.pm.ProjectDescription,
+                    ["p_projectdocument"] = pm.pm.projectDocumentUrl,
+                    ["p_projecttype"] = pm.pm.ProjectType,
+                    ["p_stage"] = pm.pm.ProjectStage,
+                    ["p_createdby"] = "admin",
+                    ["p_status"] = true,
+                    ["p_approvestatus"] = true,
+                    ["p_projectcode"] = pm.projectCode
+                };
 
-                    if (pm.pm.ProjectType.Equals("External") && projectId > 0)
-                    {
-                        cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@action", "insertExternalProject");
-                        cmd.Parameters.AddWithValue("@project_Id", projectId);
-                        cmd.Parameters.AddWithValue("@DepartmentName", pm.pm.ProjectDepartment);
-                        cmd.Parameters.AddWithValue("@contactPerson", pm.pm.ContactPerson);
-                        cmd.Parameters.AddWithValue("@address", pm.pm.Address);
-                        i += cmd.ExecuteNonQuery();
-                    }
+                int projectId = ExecuteProjectAction(projectParams, tran);
 
-                    if (pm.pm.SubOrdinate.Length > 0)
+                // 2️⃣ Insert budgets
+                if (pm.budgets != null && pm.budgets.Count > 0)
+                {
+                    foreach (var item in pm.budgets)
                     {
-                        foreach (var item in pm.pm.SubOrdinate)
+                        var budgetParams = new Dictionary<string, object>
                         {
-                            cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddWithValue("@action", "insertSubOrdinate");
-                            cmd.Parameters.AddWithValue("@project_Id", projectId);
-                            cmd.Parameters.AddWithValue("@id", item);
-                            cmd.Parameters.AddWithValue("@projectmanager", pm.pm.ProjectManager);
-                            i += cmd.ExecuteNonQuery();
-                        }
+                            ["p_action"] = "insertProjectBudget",
+                            ["p_project_id"] = projectId,
+                            ["p_heads"] = item.ProjectHeads,
+                            ["p_headsamount"] = item.ProjectAmount
+                        };
+                        ExecuteProjectAction(budgetParams, tran);
                     }
                 }
+
+                // 3️⃣ Insert stages
+                if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
+                {
+                    foreach (var item in pm.stages)
+                    {
+                        var stageParams = new Dictionary<string, object>
+                        {
+                            ["p_action"] = "insertProjectStage",
+                            ["p_project_id"] = projectId,
+                            ["p_keypoint"] = item.KeyPoint,
+                            ["p_completedate"] = item.CompletionDate,
+                            ["p_stagedocument"] = item.Document_Url
+                        };
+                        ExecuteProjectAction(stageParams, tran);
+                    }
+                }
+
+                // 4️⃣ Insert subordinates
+                if (pm.pm.SubOrdinate != null && pm.pm.SubOrdinate.Length > 0)
+                {
+                    foreach (var subId in pm.pm.SubOrdinate)
+                    {
+                        var subParams = new Dictionary<string, object>
+                        {
+                            ["p_action"] = "insertSubOrdinate",
+                            ["p_project_id"] = projectId,
+                            ["p_id"] = subId,
+                            ["p_projectmanager"] = pm.pm.ProjectManager
+                        };
+                        ExecuteProjectAction(subParams, tran);
+                    }
+                }
+
+                // 5️⃣ Insert External project details
+                if (pm.pm.ProjectType.Equals("External") && projectId > 0)
+                {
+                    var extParams = new Dictionary<string, object>
+                    {
+                        ["p_action"] = "insertExternalProject",
+                        ["p_project_id"] = projectId,
+                        ["p_departmentname"] = pm.pm.ProjectDepartment,
+                        ["p_contactperson"] = pm.pm.ContactPerson,
+                        ["p_address"] = pm.pm.Address
+                    };
+                    ExecuteProjectAction(extParams, tran);
+                }
+
                 tran.Commit();
-                return i > 0;
+                return true;
             }
             catch (Exception ex)
             {
-                tran.Rollback();
+                tran?.Rollback();
+                Console.WriteLine("❌ Error: " + ex.Message);
                 return false;
             }
             finally
             {
                 if (con.State == ConnectionState.Open)
                     con.Close();
-                cmd.Dispose();
+                cmd?.Dispose();
             }
         }
+
+
+        private int ExecuteProjectAction(Dictionary<string, object> parameters, NpgsqlTransaction tran)
+        {
+            using (var cmd = new NpgsqlCommand(
+                "CALL sp_adminaddproject(:p_action, :p_letterno, :p_id, :p_title, :p_assigndate, :p_startdate, :p_completiondate, :p_projectmanager, :p_subordinate, :p_budget, :p_description, :p_projectdocument, :p_projecttype, :p_stage, :p_createdby, :p_status, :p_project_id, :p_departmentname, :p_contactperson, :p_address, :p_heads, :p_headsamount, :p_miscellaneous, :p_miscamount, :p_keypoint, :p_completedate, :p_stagedocument, :p_username, :p_approvestatus, :p_projectcode, :ref)", con, tran))
+            {
+                cmd.CommandType = CommandType.Text;
+
+                // Define all parameters with defaults
+                var allParams = new List<string>
+        {
+            "p_action","p_letterno","p_id","p_title","p_assigndate","p_startdate","p_completiondate","p_projectmanager","p_subordinate","p_budget",
+            "p_description","p_projectdocument","p_projecttype","p_stage","p_createdby","p_status","p_project_id","p_departmentname","p_contactperson",
+            "p_address","p_heads","p_headsamount","p_miscellaneous","p_miscamount","p_keypoint","p_completedate","p_stagedocument","p_username",
+            "p_approvestatus","p_projectcode","ref"
+        };
+
+                // Assign provided params or default DBNull
+                foreach (var paramName in allParams)
+                {
+                    if (parameters.ContainsKey(paramName))
+                        cmd.Parameters.AddWithValue(paramName, parameters[paramName] ?? (object)DBNull.Value);
+                    else if (paramName == "p_project_id" || paramName == "ref")
+                        cmd.Parameters.AddWithValue(paramName, 0).Direction = ParameterDirection.InputOutput;
+                    else
+                        cmd.Parameters.AddWithValue(paramName, DBNull.Value);
+                }
+
+                cmd.ExecuteNonQuery();
+
+                // Return project id if available
+                if (cmd.Parameters.Contains("p_project_id") && cmd.Parameters["p_project_id"].Value != DBNull.Value)
+                    return Convert.ToInt32(cmd.Parameters["p_project_id"].Value);
+                else
+                    return 0;
+            }
+        }
+
 
         public List<Project_model> Project_List()
         {
@@ -885,7 +940,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public bool insertProjectBudgets(Project_Budget bdg)
+        public bool insertProjectBudgets(Project_Budget bdg) 
         {
             try
             {
