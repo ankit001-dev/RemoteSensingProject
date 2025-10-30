@@ -231,6 +231,8 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var data = _adminServices.SelectEmployeeRecord();
+                var selectProperties = new[] { "Id", "EmployeeCode", "EmployeeName", "DevisionName", "Email", "MobileNo", "EmployeeRole", "Division", "DesignationName", "Status", "ActiveStatus", "CreationDate", "Image_url" };
+                var filtered = CommonHelper.SelectProperties(data, selectProperties);
                 if (data != null && data.Count > 0)
                 {
                     return Ok(new
@@ -238,7 +240,7 @@ namespace RemoteSensingProject.ApiServices
                         status = true,
                         StatusCode = 200,
                         message = "Data found !",
-                        data = data
+                        data = filtered
                     });
                 }
                 else

@@ -249,70 +249,82 @@ namespace RemoteSensingProject.Models.Admin
         public bool AddEmployees(Employee_model emp)
         {
             con.Open();
-            NpgsqlTransaction transaction = con.BeginTransaction();
-            try
+            using (var transaction = con.BeginTransaction())
             {
-                string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                Random rnd = new Random();
-                var userName = emp.EmployeeName.Substring(0, 5) + "@" + emp.MobileNo.ToString().PadLeft(4, '0').Substring(emp.MobileNo.ToString().Length - 4);
-                string userpassword = "";
-                if (emp.Id == 0)
+                try
                 {
-                    for (int i = 0; i < 8; i++)
+                    // Generate username
+                    string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                    Random rnd = new Random();
+                    string userName = emp.EmployeeName.Substring(0, Math.Min(5, emp.EmployeeName.Length))
+                                        + "@" + emp.MobileNo.ToString().PadLeft(4, '0')
+                                        .Substring(emp.MobileNo.ToString().Length - 4);
+
+                    // Generate password only for new employees
+                    string userPassword = "";
+                    if (emp.Id == 0)
                     {
-                        userpassword += validChars[rnd.Next(validChars.Length)];
+                        for (int i = 0; i < 8; i++)
+                        {
+                            userPassword += validChars[rnd.Next(validChars.Length)];
+                        }
+                    }
+
+                    // Determine the procedure action
+                    string actionType = emp.Id != 0 ? "UpdateEmployees" : "InsertEmployees";
+
+                    using (var cmd = new NpgsqlCommand("CALL sp_adminemployees(@p_id, @p_employeecode, @p_name, @p_mobile, @p_email, @p_gender, @p_role, @p_username, @p_password, @p_devision, @p_designation, @p_profile, @p_action, NULL)", con, transaction))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        // Add parameters
+                        cmd.Parameters.AddWithValue("@p_id", emp.Id);
+                        cmd.Parameters.AddWithValue("@p_employeecode", (object)emp.EmployeeCode ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@p_name", (object)emp.EmployeeName ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@p_mobile", emp.MobileNo);
+                        cmd.Parameters.AddWithValue("@p_email", (object)emp.Email ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@p_gender", (object)emp.Gender ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@p_role", (object)emp.EmployeeRole ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@p_username", (object)userName ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@p_password", (object)userPassword ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@p_devision", emp.Division);
+                        cmd.Parameters.AddWithValue("@p_designation", emp.Designation);
+                        cmd.Parameters.AddWithValue("@p_profile", (object)emp.Image_url ?? DBNull.Value);
+                        cmd.Parameters.AddWithValue("@p_action", actionType);
+
+                        // Execute procedure
+                        int res = cmd.ExecuteNonQuery();
+
+                        if (res >= 0)
+                        {
+                            // For Insert, send mail
+                            if (emp.Id == 0)
+                            {
+                                string subject = "Login Credential";
+                                string message = $"<p>Your user id: <b>{userName}</b></p><br><p>Password: <b>{userPassword}</b></p>";
+                                _mail.SendMail(emp.EmployeeName, emp.Email, subject, message);
+                            }
+
+                            transaction.Commit();
+                            return true;
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                            return false;
+                        }
                     }
                 }
-
-                var ActionType = emp.Id != 0 ? "UpdateEmployees" : "InsertEmployees";
-                cmd = new NpgsqlCommand("sp_AdminEmployees", con, transaction);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", ActionType);
-                cmd.Parameters.AddWithValue("@employeeCode", emp.EmployeeCode);
-                cmd.Parameters.AddWithValue("@id", emp.Id);
-                cmd.Parameters.AddWithValue("@name", emp.EmployeeName);
-                cmd.Parameters.AddWithValue("@mobile", emp.MobileNo);
-                cmd.Parameters.AddWithValue("@email", emp.Email);
-                cmd.Parameters.AddWithValue("@gender", emp.Gender);
-                cmd.Parameters.AddWithValue("@role", emp.EmployeeRole);
-                cmd.Parameters.AddWithValue("@devision", emp.Division);
-                cmd.Parameters.AddWithValue("@designation", emp.Designation);
-                cmd.Parameters.AddWithValue("@profile", emp.Image_url);
-                cmd.Parameters.AddWithValue("@username", userName);
-                cmd.Parameters.AddWithValue("@password", userpassword);
-                int res = cmd.ExecuteNonQuery();
-                if (res > 0 && emp.Id == 0)
+                catch (Exception ex)
                 {
-                    string subject = "Login Credential";
-                    string message = $"<p>Your user id : <b>{userName}</b></p><br><p>Password : <b>{userpassword}</b></p>";
-                    _mail.SendMail(emp.EmployeeName, emp.Email, subject, message);
-                    transaction.Commit();
-                    return true;
-
+                    transaction.Rollback();
+                    throw new Exception("Error while adding/updating employee: " + ex.Message, ex);
                 }
-                else if (res > 0)
+                finally
                 {
-                    transaction.Commit();
-                    return true;
+                    if (con.State == ConnectionState.Open)
+                        con.Close();
                 }
-                else
-                {
-                    return false;
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
             }
         }
 
@@ -350,81 +362,123 @@ namespace RemoteSensingProject.Models.Admin
 
         public List<Employee_model> SelectEmployeeRecord()
         {
+            List<Employee_model> empModel = new List<Employee_model>();
+
             try
             {
-                cmd = new NpgsqlCommand("sp_AdminEmployees", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "SelectEmployees");
                 con.Open();
-                var record = cmd.ExecuteReader();
-                List<Employee_model> empModel = new List<Employee_model>();
-                while (record.Read())
+
+                using (var tran = con.BeginTransaction())
                 {
-                    empModel.Add(new Employee_model
+                    using (var cmd = new NpgsqlCommand("fn_get_employees", con, tran))
                     {
-                        Id = (int)record["id"],
-                        EmployeeCode = record["employeeCode"].ToString(),
-                        EmployeeName = record["name"].ToString(),
-                        DevisionName = record["devisionName"].ToString(),
-                        Email = record["email"].ToString(),
-                        MobileNo = Convert.ToInt64(record["mobile"]),
-                        EmployeeRole = record["role"].ToString().Trim(),
-                        Division = (int)record["devision"],
-                        DesignationName = record["designationName"].ToString(),
-                        Status = (bool)record["status"],
-                        ActiveStatus = (bool)record["activeStatus"],
-                        CreationDate = Convert.ToDateTime(record["creationDate"]).ToString("dd-MM-yyyy"),
-                        Image_url = record["profile"] != DBNull.Value ? record["profile"].ToString() : null
-                    });
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("v_action", "SelectEmployees");
+
+                        // Execute the function — it returns the cursor name
+                        string cursorName = (string)cmd.ExecuteScalar();
+
+                        // Now fetch data from that cursor (still in the same transaction)
+                        using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                        using (var record = fetchCmd.ExecuteReader())
+                        {
+                            while (record.Read())
+                            {
+                                empModel.Add(new Employee_model
+                                {
+                                    Id = Convert.ToInt32(record["id"]),
+                                    EmployeeCode = record["employeeCode"]?.ToString(),
+                                    EmployeeName = record["employeename"]?.ToString(),
+                                    DevisionName = record["devisionName"]?.ToString(),
+                                    Email = record["email"]?.ToString(),
+                                    MobileNo = record["mobile"] != DBNull.Value ? Convert.ToInt64(record["mobile"]) : 0,
+                                    EmployeeRole = record["role"] != DBNull.Value ? record["role"].ToString().Trim() : "",
+                                    Division = Convert.ToInt32(record["devision"]),
+                                    DesignationName = record["designationName"]?.ToString(),
+                                    Status = Convert.ToBoolean(record["status"]),
+                                    ActiveStatus = record["activestatus"] != DBNull.Value ? Convert.ToBoolean(record["activestatus"]) : false,
+                                    CreationDate = record["creationDate"] != DBNull.Value
+                                        ? Convert.ToDateTime(record["creationDate"]).ToString("dd-MM-yyyy")
+                                        : "",
+                                    Image_url = record["profile"] != DBNull.Value ? record["profile"].ToString() : null
+                                });
+                            }
+                        }
+
+                        // Close the cursor explicitly (optional but clean)
+                        using (var closeCmd = new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
+                        {
+                            closeCmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    // Commit after fetch + close
+                    tran.Commit();
                 }
+
                 return empModel;
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("Error while fetching employee records", ex);
             }
             finally
             {
-                if (con.State == System.Data.ConnectionState.Open)
+                if (con.State == ConnectionState.Open)
                     con.Close();
-                cmd.Dispose();
             }
         }
-
-
 
 
         public Employee_model SelectEmployeeRecordById(int id)
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_AdminEmployees", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "SelectEmployeesById");
-                cmd.Parameters.AddWithValue("@id", id);
-                con.Open();
+                con.Open();   
                 Employee_model empModel = new Employee_model();
-                var record = cmd.ExecuteReader();
-                while (record.Read())
+                using (var tran = con.BeginTransaction())
                 {
-                    empModel = new Employee_model
+                    using (var cmd = new NpgsqlCommand("fn_get_employees", con, tran))
                     {
-                        Id = (int)record["id"],
-                        EmployeeCode = record["employeeCode"].ToString(),
-                        Email = record["email"].ToString(),
-                        Gender = record["gender"].ToString(),
-                        MobileNo = (long)record["mobile"],
-                        EmployeeName = record["name"].ToString(),
-                        DevisionName = record["devisionName"].ToString(),
-                        Division = (int)record["devision"],
-                        Designation = (int)record["designation"],
-                        EmployeeRole = record["role"].ToString(),
-                        DesignationName = record["designationName"].ToString(),
-                        Status = (bool)record["status"],
-                        ActiveStatus = (bool)record["activeStatus"],
-                        CreationDate = Convert.ToDateTime(record["creationDate"]).ToString("dd-MM-yyyy"),
-                        Image_url = record["profile"] != null ? record["profile"].ToString() : null
-                    };
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("v_action", "SelectEmployees");
+
+                        // Execute the function — it returns the cursor name
+                        string cursorName = (string)cmd.ExecuteScalar();
+
+                        // Now fetch data from that cursor (still in the same transaction)
+                        using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                        using (var record = fetchCmd.ExecuteReader())
+                        {
+                            while (record.Read())
+                            {
+                                empModel = new Employee_model
+                                {
+                                    Id = Convert.ToInt32(record["id"]),
+                                    EmployeeCode = record["employeeCode"]?.ToString(),
+                                    EmployeeName = record["employeename"]?.ToString(),
+                                    DevisionName = record["devisionName"]?.ToString(),
+                                    Email = record["email"]?.ToString(),
+                                    MobileNo = record["mobile"] != DBNull.Value ? Convert.ToInt64(record["mobile"]) : 0,
+                                    EmployeeRole = record["role"] != DBNull.Value ? record["role"].ToString().Trim() : "",
+                                    Division = Convert.ToInt32(record["devision"]),
+                                    DesignationName = record["designationName"]?.ToString(),
+                                    Status = Convert.ToBoolean(record["status"]),
+                                    ActiveStatus = record["activestatus"] != DBNull.Value ? Convert.ToBoolean(record["activestatus"]) : false,
+                                    CreationDate = record["creationDate"] != DBNull.Value
+                                        ? Convert.ToDateTime(record["creationDate"]).ToString("dd-MM-yyyy")
+                                        : "",
+                                    Image_url = record["profile"] != DBNull.Value ? record["profile"].ToString() : null
+                                };
+                            }
+                        }
+                        // Close the cursor explicitly (optional but clean)
+                        using (var closeCmd = new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
+                        {
+                            closeCmd.ExecuteNonQuery();
+                        }
+                    }
+                    tran.Commit();
                 }
                 return empModel;
             }
