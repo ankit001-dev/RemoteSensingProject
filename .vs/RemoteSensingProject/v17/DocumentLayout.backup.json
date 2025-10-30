@@ -1,69 +1,22 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\",
+  "WorkspaceRootPath": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\",
   "Documents": [
     {
-<<<<<<< HEAD
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\remotesensingproject\\models\\admin\\adminservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\remotesensingproject\\models\\admin\\adminservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\admin\\adminservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\hp\\desktop\\himansu_projects\\remotesensing\\remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|z:\\ankit projects\\ankit projects\\remotesensingproject\\remotesensingproject\\views\\admin\\min_of_meeting.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\views\\admin\\min_of_meeting.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\remotesensingproject\\models\\loginmanager\\loginservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\loginmanager\\loginservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-=======
-<<<<<<< HEAD
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\hp\\desktop\\himansu_projects\\remotesensing\\remotesensingproject\\models\\admin\\adminservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\admin\\adminservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-<<<<<<< HEAD
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\remotesensingproject\\apiservices\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\hp\\desktop\\himansu_projects\\remotesensing\\remotesensingproject\\apiservices\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\apiservices\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-=======
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|z:\\ankit projects\\ankit projects\\remotesensingproject\\remotesensingproject\\models\\admin\\adminservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\admin\\adminservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-=======
-=======
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|c:\\users\\hp\\desktop\\himansu_projects\\remotesensing\\remotesensingproject\\apiservices\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\apiservices\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
->>>>>>> f2c4413d39d8afb81db99cd383dc216f70c4adeb
-    },
-    {
->>>>>>> 2a9e65e6cec67afb33d78a0a6f99033e2b168f1b
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\remotesensingproject\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\web.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
-    },
-    {
-<<<<<<< HEAD
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\remotesensingproject\\models\\datafactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\datafactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-=======
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\remotesensingproject\\models\\loginmanager\\loginservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\loginmanager\\loginservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\remotesensingproject\\models\\datafactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\datafactory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
->>>>>>> e0dc5c583f59ae12633f05d3d55cc587567a8e36
->>>>>>> f2c4413d39d8afb81db99cd383dc216f70c4adeb
+      "AbsoluteMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\remotesensingproject\\models\\commonhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CC32A7FD-784D-4264-8526-F802B19C82D0}|RemoteSensingProject\\RemoteSensingProject (1) (1).csproj|solutionrelative:remotesensingproject\\models\\commonhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -73,210 +26,90 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-<<<<<<< HEAD
-<<<<<<< HEAD
-          "SelectedChildIndex": 10,
-=======
-          "SelectedChildIndex": 2,
->>>>>>> 2a9e65e6cec67afb33d78a0a6f99033e2b168f1b
+          "SelectedChildIndex": 11,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Min_Of_Meeting.cshtml",
-              "DocumentMoniker": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Min_Of_Meeting.cshtml",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Views\\Admin\\Min_Of_Meeting.cshtml",
-              "ToolTip": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Views\\Admin\\Min_Of_Meeting.cshtml",
-              "RelativeToolTip": "RemoteSensingProject\\Views\\Admin\\Min_Of_Meeting.cshtml",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAAAFgAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-10-28T12:29:36.92Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:2:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
             },
             {
               "$type": "Document",
-<<<<<<< HEAD
               "DocumentIndex": 1,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\ApiServices\\AdminController.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\ApiServices\\AdminController.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\ApiServices\\AdminController.cs",
-              "RelativeToolTip": "RemoteSensingProject\\ApiServices\\AdminController.cs",
-              "ViewState": "AgIAAG4FAAAAAAAAAAAAwIQFAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-29T07:47:27.507Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "AdminController.cs",
               "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\AdminController.cs",
               "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Controllers\\AdminController.cs",
               "RelativeToolTip": "RemoteSensingProject\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAACYAAAAAAAAAAAAowA8AAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAACgAAAAAAAAAAAAwwHEAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T13:01:23.549Z"
+              "WhenOpened": "2025-10-30T06:26:07.563Z",
+              "EditorCaption": ""
             },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AdminServices.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
-              "ViewState": "AgIAAIEFAAAAAAAAAAAqwKIFAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T11:52:15.059Z",
-=======
-          "SelectedChildIndex": 1,
-          "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 2,
-=======
-              "DocumentIndex": 3,
->>>>>>> 2a9e65e6cec67afb33d78a0a6f99033e2b168f1b
-              "Title": "LoginServices.cs",
-              "DocumentMoniker": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Models\\LoginManager\\LoginServices.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\LoginManager\\LoginServices.cs",
-              "ToolTip": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Models\\LoginManager\\LoginServices.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Models\\LoginManager\\LoginServices.cs",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAQwB4AAABeAAAAAAAAAA==",
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\ApiServices\\AdminController.cs",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\ApiServices\\AdminController.cs",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\ApiServices\\AdminController.cs",
+              "RelativeToolTip": "RemoteSensingProject\\ApiServices\\AdminController.cs",
+              "ViewState": "AgIAAOAAAAAAAAAAAAAQwOoAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-<<<<<<< HEAD
-              "WhenOpened": "2025-10-27T11:54:03.428Z"
-=======
-              "WhenOpened": "2025-10-27T11:54:03.428Z",
-              "EditorCaption": ""
->>>>>>> f2c4413d39d8afb81db99cd383dc216f70c4adeb
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AdminServices.cs",
-              "DocumentMoniker": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
-              "ToolTip": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
-<<<<<<< HEAD
-              "ViewState": "AgIAALgDAAAAAAAAAAAUwMMDAAAcAAAAAAAAAA==",
-=======
-              "ViewState": "AgIAANoDAAAAAAAAAAAiwPYDAAAVAAAAAAAAAA==",
->>>>>>> 2a9e65e6cec67afb33d78a0a6f99033e2b168f1b
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T11:44:59.51Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-<<<<<<< HEAD
-              "DocumentIndex": 4,
-=======
-              "DocumentIndex": 5,
->>>>>>> 2a9e65e6cec67afb33d78a0a6f99033e2b168f1b
-              "Title": "DataFactory.cs",
-              "DocumentMoniker": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Models\\DataFactory.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\DataFactory.cs",
-              "ToolTip": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Models\\DataFactory.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Models\\DataFactory.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAbAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-<<<<<<< HEAD
-              "WhenOpened": "2025-10-27T07:59:33.471Z"
-            },
-            {
-              "$type": "Document",
-=======
-              "WhenOpened": "2025-10-27T07:59:33.471Z",
+              "WhenOpened": "2025-10-30T06:25:08.475Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\AdminController.cs",
-              "ToolTip": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAABYAAAAAAAAAAAAgwB4AAAAzAAAAAAAAAA==",
+              "Title": "CommonHelper.cs",
+              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\CommonHelper.cs",
+              "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\CommonHelper.cs",
+              "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\CommonHelper.cs",
+              "RelativeToolTip": "RemoteSensingProject\\Models\\CommonHelper.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T07:53:15.527Z",
+              "WhenOpened": "2025-10-29T12:43:20.912Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> f2c4413d39d8afb81db99cd383dc216f70c4adeb
->>>>>>> 2a9e65e6cec67afb33d78a0a6f99033e2b168f1b
-              "DocumentIndex": 1,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\AdminController.cs",
-              "ToolTip": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAACEAAAA+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-27T07:53:15.527Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Web.config",
-              "DocumentMoniker": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Web.config",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Web.config",
-              "ToolTip": "Z:\\Ankit Projects\\Ankit Projects\\RemoteSensingProject\\RemoteSensingProject\\Web.config",
-              "RelativeToolTip": "RemoteSensingProject\\Web.config",
-              "ViewState": "AgIAAJoAAAAAAAAAAAAgwLMAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2025-10-27T07:00:44.069Z",
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-              "DocumentIndex": 5,
-              "Title": "LoginServices.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\LoginManager\\LoginServices.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\LoginManager\\LoginServices.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\LoginManager\\LoginServices.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Models\\LoginManager\\LoginServices.cs",
-              "ViewState": "AgIAADMAAAAAAAAAAAAswEUAAAAIAAAAAAAAAA==",
->>>>>>> e0dc5c583f59ae12633f05d3d55cc587567a8e36
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T13:01:23.549Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-<<<<<<< HEAD
               "DocumentIndex": 0,
               "Title": "AdminServices.cs",
               "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
               "RelativeDocumentMoniker": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
               "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
               "RelativeToolTip": "RemoteSensingProject\\Models\\Admin\\AdminServices.cs",
-              "ViewState": "AgIAANAFAAAAAAAAAAAuwKIFAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAP8AAAAAAAAAAAAcwA0BAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-28T11:52:15.059Z",
-=======
-              "DocumentIndex": 8,
-              "Title": "LoginController.cs",
-              "DocumentMoniker": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Controllers\\LoginController.cs",
-              "RelativeDocumentMoniker": "RemoteSensingProject\\Controllers\\LoginController.cs",
-              "ToolTip": "C:\\Users\\Hp\\Desktop\\Himansu_Projects\\RemoteSensing\\RemoteSensingProject\\Controllers\\LoginController.cs",
-              "RelativeToolTip": "RemoteSensingProject\\Controllers\\LoginController.cs",
-              "ViewState": "AgIAABMAAAAAAAAAAAAuwBoAAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-28T09:02:33.649Z",
->>>>>>> 927dd12709dd04c2cb3101d72d7cc57fac7cd4b7
->>>>>>> 2a9e65e6cec67afb33d78a0a6f99033e2b168f1b
->>>>>>> e0dc5c583f59ae12633f05d3d55cc587567a8e36
->>>>>>> f2c4413d39d8afb81db99cd383dc216f70c4adeb
               "EditorCaption": ""
             }
           ]
