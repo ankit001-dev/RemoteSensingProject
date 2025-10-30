@@ -226,11 +226,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/allEmployeeList")]
-        public IHttpActionResult All_EmpList()
+        public IHttpActionResult All_EmpList(int page,int limit)
         {
             try
             {
-                var data = _adminServices.SelectEmployeeRecord();
+                var data = _adminServices.SelectEmployeeRecord(page,limit);
                 var selectProperties = new[] { "Id", "EmployeeCode", "EmployeeName", "DevisionName", "Email", "MobileNo", "EmployeeRole", "Division", "DesignationName", "Status", "ActiveStatus", "CreationDate", "Image_url" };
                 var filtered = CommonHelper.SelectProperties(data, selectProperties);
                 if (data != null && data.Count > 0)
