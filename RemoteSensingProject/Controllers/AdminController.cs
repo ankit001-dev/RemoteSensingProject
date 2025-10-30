@@ -113,8 +113,8 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Employee_Registration(int? division)
         {
 
-            ViewBag.division = _adminServices.ListDivison();
-            ViewBag.designation = _adminServices.ListDesgination();
+            //ViewBag.division = _adminServices.ListDivison();
+            //ViewBag.designation = _adminServices.ListDesgination();
             List<Employee_model> empList= new List<Employee_model>();
             if (division!=null && division!=0)
             {
