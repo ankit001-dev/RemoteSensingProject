@@ -26,42 +26,64 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                // Use NpgNpgsqlCommand with connection
-                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                using (var cmd = new NpgsqlCommand(
+                    "CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con))
+                {
+                    cmd.CommandType = CommandType.Text; // must be Text for CALL
 
-                // Add parameters
-                cmd.Parameters.AddWithValue("action", cr.id > 0 ? "UpdateDesignation" : "InsertDesignation");
-                cmd.Parameters.AddWithValue("designationName", cr.name);
-                cmd.Parameters.AddWithValue("id", cr.id);
+                    cmd.Parameters.AddWithValue("v_id", cr.id == 0 ? (object)DBNull.Value : cr.id);
+                    cmd.Parameters.AddWithValue("v_designationname", cr.name ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_status", true);
+                    cmd.Parameters.AddWithValue("v_devisionname", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_action", cr.id > 0 ? "UpdateDesignation" : "InsertDesignation");
+                    cmd.Parameters.Add(new NpgsqlParameter("v_rc", NpgsqlDbType.Refcursor)
+                    {
+                        Direction = ParameterDirection.InputOutput,
+                        Value = DBNull.Value
+                    });
 
-                // Open connection and execute
-                con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    return true;
+                }
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
             finally
             {
                 if (con.State == ConnectionState.Open)
                     con.Close();
-                cmd.Dispose();
             }
         }
+
+
 
         public bool InsertDivison(CommonResponse cr)
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", cr.id > 0 ? "UpdateDevision" : "InsertDevision");
-                cmd.Parameters.AddWithValue("@devisionName", cr.name);
-                cmd.Parameters.AddWithValue("@id", cr.id);
-                con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                using (var cmd = new NpgsqlCommand(
+                    "CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con))
+                {
+                    cmd.CommandType = CommandType.Text; // must be Text for CALL
+
+                    cmd.Parameters.AddWithValue("v_id", cr.id == 0 ? (object)DBNull.Value : cr.id);
+                    cmd.Parameters.AddWithValue("v_designationname", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_status", true);
+                    cmd.Parameters.AddWithValue("v_devisionname", cr.name ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_action", cr.id > 0 ? "UpdateDevision" : "InsertDevision");
+                    cmd.Parameters.Add(new NpgsqlParameter("v_rc", NpgsqlDbType.Refcursor)
+                    {
+                        Direction = ParameterDirection.InputOutput,
+                        Value = DBNull.Value
+                    });
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -80,10 +102,9 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<CommonResponse> list = new List<CommonResponse>();
-                using (var cmd = new NpgsqlCommand("fn_get_employee_category", con))
+                using (var cmd = new NpgsqlCommand("select * FROM fn_get_employee_category(@action)", con))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("v_action", "GetAllDevision");
+                    cmd.Parameters.AddWithValue("@action", "GetAllDevision");
                     con.Open();
                     NpgsqlDataReader rd = cmd.ExecuteReader();
                     if (rd.HasRows)
@@ -93,7 +114,7 @@ namespace RemoteSensingProject.Models.Admin
                             list.Add(new CommonResponse
                             {
                                 id = Convert.ToInt32(rd["id"]),
-                                name = rd["devisionName"].ToString()
+                                name = rd["name"].ToString()
                             });
                         }
                         rd.Close();
@@ -128,7 +149,7 @@ namespace RemoteSensingProject.Models.Admin
                         list.Add(new CommonResponse
                         {
                             id = Convert.ToInt32(rd["id"]),
-                            name = rd["designationName"].ToString()
+                            name = rd["name"].ToString()
                         });
                     }
                     rd.Close();
@@ -153,13 +174,26 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "deleteDevision");
-                cmd.Parameters.AddWithValue("@id", Id);
-                con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                using (var cmd = new NpgsqlCommand(
+                    "CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con))
+                {
+                    cmd.CommandType = CommandType.Text; // must be Text for CALL
 
+                    cmd.Parameters.AddWithValue("v_id", Id == 0 ? (object)DBNull.Value : Id);
+                    cmd.Parameters.AddWithValue("v_designationname", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_status",  false);
+                    cmd.Parameters.AddWithValue("v_devisionname", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_action", "deleteDevision");
+                    cmd.Parameters.Add(new NpgsqlParameter("v_rc", NpgsqlDbType.Refcursor)
+                    {
+                        Direction = ParameterDirection.InputOutput,
+                        Value = DBNull.Value
+                    });
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -174,15 +208,29 @@ namespace RemoteSensingProject.Models.Admin
         }
         public bool removeDesgination(int Id)
         {
+
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageEmployeeCategory", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "deleteDesignation");
-                cmd.Parameters.AddWithValue("@id", Id);
-                con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                using (var cmd = new NpgsqlCommand(
+                    "CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con))
+                {
+                    cmd.CommandType = CommandType.Text; // must be Text for CALL
 
+                    cmd.Parameters.AddWithValue("v_id", Id == 0 ? (object)DBNull.Value : Id);
+                    cmd.Parameters.AddWithValue("v_designationname", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_status", false);
+                    cmd.Parameters.AddWithValue("v_devisionname", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_action", "deleteDesignation");
+                    cmd.Parameters.Add(new NpgsqlParameter("v_rc", NpgsqlDbType.Refcursor)
+                    {
+                        Direction = ParameterDirection.InputOutput,
+                        Value = DBNull.Value
+                    });
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -787,7 +835,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
+                    cmd = new NpgsqlCommand("sp_adminAddproject", con);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@action", bdg.Id > 0 ? "updateProjectBudget" : "insertProjectBudget");
                 cmd.Parameters.AddWithValue("@project_Id", bdg.Project_Id);
