@@ -86,3 +86,6 @@ desktop.ini
 *.orig
 
 /RemoteSensingProject/RemoteSensingProject.csproj
+/.vs/RemoteSensingProject/v17/.suo
+/.vs/RemoteSensingProject/v17/DocumentLayout.backup.json
+/.vs/RemoteSensingProject/v17/DocumentLayout.json
