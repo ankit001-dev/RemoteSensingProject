@@ -357,7 +357,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public List<Employee_model> SelectEmployeeRecord()
+        public List<Employee_model> SelectEmployeeRecord(int? page = null, int? limit = null)
         {
             List<Employee_model> empModel = new List<Employee_model>();
 
@@ -365,10 +365,12 @@ namespace RemoteSensingProject.Models.Admin
             {
                 con.Open();
 
-                using (var cmd = new NpgsqlCommand("SELECT * FROM fn_get_employees(@v_action);", con))
+                using (var cmd = new NpgsqlCommand("SELECT * FROM fn_get_employees(@v_action,@v_limit,@v_offset);", con))
                 {
                     cmd.CommandType = CommandType.Text; // Use text since function returns rows
                     cmd.Parameters.AddWithValue("@v_action", "SelectEmployees");
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_offset", (page.HasValue && limit.HasValue) ? (object)((page.Value - 1) * limit.Value) : DBNull.Value);
 
                     using (var record = cmd.ExecuteReader())
                     {
