@@ -511,12 +511,12 @@ namespace RemoteSensingProject.Models.Admin
                 var projectParams = new Dictionary<string, object>
                 {
                     ["p_action"] = "insertProject",
-                    ["p_letterno"] = pm.pm.letterNo,
+                    ["p_letterno"] = int.TryParse(pm.pm.letterNo, out int letterNo) ? letterNo : 0,
                     ["p_title"] = pm.pm.ProjectTitle,
                     ["p_assigndate"] = pm.pm.AssignDate,
                     ["p_startdate"] = pm.pm.StartDate,
                     ["p_completiondate"] = pm.pm.CompletionDate,
-                    ["p_projectmanager"] = pm.pm.ProjectManager,
+                    ["p_projectmanager"] = int.TryParse(pm.pm.ProjectManager, out int ProjectManager) ? ProjectManager : 0,
                     ["p_budget"] = pm.pm.ProjectBudget,
                     ["p_description"] = pm.pm.ProjectDescription,
                     ["p_projectdocument"] = pm.pm.projectDocumentUrl,
@@ -556,7 +556,7 @@ namespace RemoteSensingProject.Models.Admin
                             ["p_action"] = "insertProjectStage",
                             ["p_project_id"] = projectId,
                             ["p_keypoint"] = item.KeyPoint,
-                            ["p_completedate"] = item.CompletionDate,
+                            ["p_completiondate"] = item.CompletionDate,
                             ["p_stagedocument"] = item.Document_Url
                         };
                         ExecuteProjectAction(stageParams, tran);
@@ -614,7 +614,7 @@ namespace RemoteSensingProject.Models.Admin
         private int ExecuteProjectAction(Dictionary<string, object> parameters, NpgsqlTransaction tran)
         {
             using (var cmd = new NpgsqlCommand(
-                "CALL sp_adminaddproject(:p_action, :p_letterno, :p_id, :p_title, :p_assigndate, :p_startdate, :p_completiondate, :p_projectmanager, :p_subordinate, :p_budget, :p_description, :p_projectdocument, :p_projecttype, :p_stage, :p_createdby, :p_status, :p_project_id, :p_departmentname, :p_contactperson, :p_address, :p_heads, :p_headsamount, :p_miscellaneous, :p_miscamount, :p_keypoint, :p_completedate, :p_stagedocument, :p_username, :p_approvestatus, :p_projectcode, :ref)", con, tran))
+                "CALL sp_adminaddproject(:p_action, :p_letterno, :p_id, :p_title, :p_assigndate, :p_startdate, :p_completiondate, :p_projectmanager, :p_subordinate, :p_budget, :p_description, :p_projectdocument, :p_projecttype, :p_stage, :p_projectcode, :p_approvestatus, :p_createdby, :p_status, :p_heads, :p_headsamount, :p_keypoint, :p_stagedocument, :p_project_id)", con, tran))
             {
                 cmd.CommandType = CommandType.Text;
 
@@ -622,9 +622,7 @@ namespace RemoteSensingProject.Models.Admin
                 var allParams = new List<string>
         {
             "p_action","p_letterno","p_id","p_title","p_assigndate","p_startdate","p_completiondate","p_projectmanager","p_subordinate","p_budget",
-            "p_description","p_projectdocument","p_projecttype","p_stage","p_createdby","p_status","p_project_id","p_departmentname","p_contactperson",
-            "p_address","p_heads","p_headsamount","p_miscellaneous","p_miscamount","p_keypoint","p_completedate","p_stagedocument","p_username",
-            "p_approvestatus","p_projectcode","ref"
+            "p_description","p_projectdocument","p_projecttype","p_stage","p_projectcode","p_approvestatus","p_createdby","p_status", "p_heads", "p_headsamount", "p_keypoint","p_stagedocument", "p_project_id"
         };
 
                 // Assign provided params or default DBNull
