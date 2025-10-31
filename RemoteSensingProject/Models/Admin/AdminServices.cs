@@ -1,8 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using Npgsql;
-using NpgsqlTypes;
-using RemoteSensingProject.Models.MailService;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -10,6 +6,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
+using DocumentFormat.OpenXml.Math;
+using Newtonsoft.Json.Linq;
+using Npgsql;
+using NpgsqlTypes;
+using RemoteSensingProject.Models.MailService;
 using static RemoteSensingProject.Models.Admin.main;
 
 
@@ -365,12 +366,13 @@ namespace RemoteSensingProject.Models.Admin
             {
                 con.Open();
 
-                using (var cmd = new NpgsqlCommand("SELECT * FROM fn_get_employees(@v_action,@v_limit,@v_offset);", con))
+                using (var cmd = new NpgsqlCommand("SELECT * FROM fn_get_employees(@v_action,@v_id,@v_limit,@v_page);", con))
                 {
                     cmd.CommandType = CommandType.Text; // Use text since function returns rows
                     cmd.Parameters.AddWithValue("@v_action", "SelectEmployees");
+                    cmd.Parameters.AddWithValue("@v_id", 0);
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_offset", (page.HasValue && limit.HasValue) ? (object)((page.Value - 1) * limit.Value) : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
 
                     using (var record = cmd.ExecuteReader())
                     {
@@ -647,13 +649,15 @@ namespace RemoteSensingProject.Models.Admin
         }
 
 
-        public List<Project_model> Project_List()
+        public List<Project_model> Project_List(int? page = null, int? limit = null)
         {
             try
             {
                 List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action)", con);
+                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_limit,@v_page)", con);
                 cmd.Parameters.AddWithValue("@action", "GetAllProject");
+                cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
                 con.Open();
                 NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)

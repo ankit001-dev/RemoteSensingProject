@@ -104,7 +104,7 @@ namespace RemoteSensingProject.ApiServices
                     data = data
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -211,7 +211,8 @@ namespace RemoteSensingProject.ApiServices
                         message = res ? "Employee registration completed successfully !" : "Some issue occured while processing with your request. Please try after sometime."
                     });
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -226,11 +227,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/allEmployeeList")]
-        public IHttpActionResult All_EmpList(int page,int limit)
+        public IHttpActionResult All_EmpList(int page, int limit)
         {
             try
             {
-                var data = _adminServices.SelectEmployeeRecord(page,limit);
+                var data = _adminServices.SelectEmployeeRecord(page, limit);
                 var selectProperties = new[] { "Id", "EmployeeCode", "EmployeeName", "DevisionName", "Email", "MobileNo", "EmployeeRole", "Division", "DesignationName", "Status", "ActiveStatus", "CreationDate", "Image_url" };
                 var filtered = CommonHelper.SelectProperties(data, selectProperties);
                 if (data != null && data.Count > 0)
@@ -270,99 +271,100 @@ namespace RemoteSensingProject.ApiServices
         [Route("api/updateEmployeeData")]
         public IHttpActionResult Update_Employee()
         {
-            try { 
-            var request = HttpContext.Current.Request;
-            var empData = new Employee_model
+            try
             {
-                Id = Convert.ToInt32(request.Form.Get("Id")),
-                EmployeeCode = request.Form.Get("EmployeeCode"),
-                EmployeeName = request.Form.Get("EmployeeName"),
-                MobileNo = Convert.ToInt64(request.Form.Get("MobileNo")),
-                Email = request.Form.Get("Email"),
-                EmployeeRole = request.Form.Get("EmployeeRole"),
-                Division = Convert.ToInt32(request.Form.Get("Division")),
-                Designation = Convert.ToInt32(request.Form.Get("Designation")),
-                Gender = request.Form.Get("Gender"),
-                Image_url = request.Form.Get("Image_url")
-            };
-            var file = request.Files["EmployeeImages"];
-            if (file != null && file.FileName != "")
-            {
-                empData.Image_url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                empData.Image_url = "/ProjectContent/Admin/Employee_Images/" + empData.Image_url;
-            }
-            else if (string.IsNullOrEmpty(empData.Image_url))
-            {
-                return BadRequest(new
+                var request = HttpContext.Current.Request;
+                var empData = new Employee_model
                 {
-                    status = false,
-                    StatusCode = 404,
-                    message = "Employee image is not found. Try with employee image profile."
-                });
-            }
-
-            List<string> validationErrors = new List<string>();
-
-            if (empData.Id <= 0)
-                validationErrors.Add("Invalid request.");
-
-            if (string.IsNullOrWhiteSpace(empData.EmployeeCode))
-                validationErrors.Add("Employee Code is required.");
-
-            if (string.IsNullOrWhiteSpace(empData.EmployeeName))
-                validationErrors.Add("Employee Name is required.");
-
-            if (empData.MobileNo == 0 || empData.MobileNo.ToString().Length != 10)
-                validationErrors.Add("A valid 10-digit Mobile Number is required.");
-
-            if (string.IsNullOrWhiteSpace(empData.Email) || !empData.Email.Contains("@"))
-                validationErrors.Add("A valid Email address is required.");
-
-            if (string.IsNullOrWhiteSpace(empData.EmployeeRole))
-                validationErrors.Add("Employee Role is required.");
-
-            if (empData.Division <= 0)
-                validationErrors.Add("Division must be selected.");
-
-            if (empData.Designation <= 0)
-                validationErrors.Add("Designation must be selected.");
-
-            if (string.IsNullOrWhiteSpace(empData.Gender) ||
-                !(empData.Gender.Equals("Male", StringComparison.OrdinalIgnoreCase) ||
-                  empData.Gender.Equals("Female", StringComparison.OrdinalIgnoreCase) ||
-                  empData.Gender.Equals("Other", StringComparison.OrdinalIgnoreCase)))
-                validationErrors.Add("Gender must be Male, Female, or Other.");
-
-            if (string.IsNullOrWhiteSpace(empData.Image_url))
-                validationErrors.Add("Employee Image not found !");
-
-            if (validationErrors.Any())
-            {
-                return BadRequest(new
+                    Id = Convert.ToInt32(request.Form.Get("Id")),
+                    EmployeeCode = request.Form.Get("EmployeeCode"),
+                    EmployeeName = request.Form.Get("EmployeeName"),
+                    MobileNo = Convert.ToInt64(request.Form.Get("MobileNo")),
+                    Email = request.Form.Get("Email"),
+                    EmployeeRole = request.Form.Get("EmployeeRole"),
+                    Division = Convert.ToInt32(request.Form.Get("Division")),
+                    Designation = Convert.ToInt32(request.Form.Get("Designation")),
+                    Gender = request.Form.Get("Gender"),
+                    Image_url = request.Form.Get("Image_url")
+                };
+                var file = request.Files["EmployeeImages"];
+                if (file != null && file.FileName != "")
                 {
-                    status = false,
-                    StatusCode = 500,
-                    message = string.Join("\n", validationErrors)
-                });
-
-            }
-            else
-            {
-                bool res = _adminServices.AddEmployees(empData);
-                if (res)
-                {
-                    if (file != null && file.FileName != "")
-                    {
-                        file.SaveAs(HttpContext.Current.Server.MapPath(empData.Image_url));
-                    }
+                    empData.Image_url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    empData.Image_url = "/ProjectContent/Admin/Employee_Images/" + empData.Image_url;
                 }
-                return Ok(new
+                else if (string.IsNullOrEmpty(empData.Image_url))
                 {
-                    status = res,
-                    StatusCode = res ? 200 : 500,
-                    message = res ? "Employee profile updation completed successfully !" : "Some issue occured while processing with your request. Please try after sometime."
-                });
-            }
+                    return BadRequest(new
+                    {
+                        status = false,
+                        StatusCode = 404,
+                        message = "Employee image is not found. Try with employee image profile."
+                    });
+                }
+
+                List<string> validationErrors = new List<string>();
+
+                if (empData.Id <= 0)
+                    validationErrors.Add("Invalid request.");
+
+                if (string.IsNullOrWhiteSpace(empData.EmployeeCode))
+                    validationErrors.Add("Employee Code is required.");
+
+                if (string.IsNullOrWhiteSpace(empData.EmployeeName))
+                    validationErrors.Add("Employee Name is required.");
+
+                if (empData.MobileNo == 0 || empData.MobileNo.ToString().Length != 10)
+                    validationErrors.Add("A valid 10-digit Mobile Number is required.");
+
+                if (string.IsNullOrWhiteSpace(empData.Email) || !empData.Email.Contains("@"))
+                    validationErrors.Add("A valid Email address is required.");
+
+                if (string.IsNullOrWhiteSpace(empData.EmployeeRole))
+                    validationErrors.Add("Employee Role is required.");
+
+                if (empData.Division <= 0)
+                    validationErrors.Add("Division must be selected.");
+
+                if (empData.Designation <= 0)
+                    validationErrors.Add("Designation must be selected.");
+
+                if (string.IsNullOrWhiteSpace(empData.Gender) ||
+                    !(empData.Gender.Equals("Male", StringComparison.OrdinalIgnoreCase) ||
+                      empData.Gender.Equals("Female", StringComparison.OrdinalIgnoreCase) ||
+                      empData.Gender.Equals("Other", StringComparison.OrdinalIgnoreCase)))
+                    validationErrors.Add("Gender must be Male, Female, or Other.");
+
+                if (string.IsNullOrWhiteSpace(empData.Image_url))
+                    validationErrors.Add("Employee Image not found !");
+
+                if (validationErrors.Any())
+                {
+                    return BadRequest(new
+                    {
+                        status = false,
+                        StatusCode = 500,
+                        message = string.Join("\n", validationErrors)
+                    });
+
+                }
+                else
+                {
+                    bool res = _adminServices.AddEmployees(empData);
+                    if (res)
+                    {
+                        if (file != null && file.FileName != "")
+                        {
+                            file.SaveAs(HttpContext.Current.Server.MapPath(empData.Image_url));
+                        }
+                    }
+                    return Ok(new
+                    {
+                        status = res,
+                        StatusCode = res ? 200 : 500,
+                        message = res ? "Employee profile updation completed successfully !" : "Some issue occured while processing with your request. Please try after sometime."
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -383,7 +385,7 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var data = _adminServices.SelectEmployeeRecordById(Id);
-                if(data != null && data.Id > 0)
+                if (data != null && data.Id > 0)
                 {
                     return Ok(new
                     {
@@ -402,7 +404,8 @@ namespace RemoteSensingProject.ApiServices
                         message = "Data not found "
                     });
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -430,7 +433,7 @@ namespace RemoteSensingProject.ApiServices
                     });
                 }
                 var data = _adminServices.SelectEmployeeRecordById(Id);
-                if (data.Id <=0)
+                if (data.Id <= 0)
                 {
                     return BadRequest(new
                     {
@@ -446,8 +449,9 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = res ? 200 : 500,
                     message = res ? "Selected employee removed successfully !" : "Some issue occred while processing your request."
                 });
-            
-            }catch(Exception ex)
+
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -455,7 +459,7 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = 500,
                     message = ex.Message,
                     data = ex
-    });
+                });
             }
         }
         #endregion
@@ -465,27 +469,28 @@ namespace RemoteSensingProject.ApiServices
         [Route("api/adminDashboard")]
         public IHttpActionResult adminDashboard()
         {
-            try { 
-            var data = _adminServices.DashboardCount();
-            if (data != null)
+            try
             {
-                return Ok(new
+                var data = _adminServices.DashboardCount();
+                if (data != null)
                 {
-                    status = true,
-                    StatusCode = 200,
-                    message = "Data Found !",
-                    data = data
-                });
-            }
-            else
-            {
-                return Ok(new
+                    return Ok(new
+                    {
+                        status = true,
+                        StatusCode = 200,
+                        message = "Data Found !",
+                        data = data
+                    });
+                }
+                else
                 {
-                    status = false,
-                    StatusCode = 404,
-                    message = "Admin dashboard not found !"
-                });
-            }
+                    return Ok(new
+                    {
+                        status = false,
+                        StatusCode = 404,
+                        message = "Admin dashboard not found !"
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -512,7 +517,7 @@ namespace RemoteSensingProject.ApiServices
                     data = data
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -525,19 +530,22 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/adminDelayProject")]
-        public IHttpActionResult DelayProject()
+        public IHttpActionResult DelayProject(int page, int limit)
         {
             try
             {
-                var data = _adminServices.Project_List().Where(d => d.CompletionDate < DateTime.Now && !d.ProjectStatus).ToList();
+                var data = _adminServices.Project_List(page, limit).Where(d => d.CompletionDate < DateTime.Now && !d.ProjectStatus).ToList();
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var newData = CommonHelper.SelectProperties(data, selectProperties);
                 return Ok(new
                 {
                     status = true,
                     message = "Delay project data !",
-                    data = data,
+                    data = newData,
 
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -550,16 +558,18 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/adminOngoingProject")]
-        public IHttpActionResult ongoingProject()
+        public IHttpActionResult ongoingProject(int page,int limit)
         {
             try
             {
-                var data = _adminServices.Project_List().Where(d => d.CompletionDate > DateTime.Now && d.StartDate<DateTime.Now).ToList();
+                var data = _adminServices.Project_List(page,limit).Where(d => d.CompletionDate > DateTime.Now && d.StartDate < DateTime.Now).ToList();
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var newData = CommonHelper.SelectProperties(data, selectProperties);
                 return Ok(new
                 {
                     status = true,
                     message = "Delay project data !",
-                    data = data,
+                    data = newData,
 
                 });
             }
@@ -576,16 +586,18 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/adminCompleteProject")]
-        public IHttpActionResult completeProject()
+        public IHttpActionResult completeProject(int page,int limit)
         {
             try
             {
-                var data = _adminServices.Project_List().Where(d => d.ProjectStatus).ToList();
+                var data = _adminServices.Project_List(page,limit).Where(d => d.ProjectStatus).ToList();
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var newData = CommonHelper.SelectProperties(data, selectProperties);
                 return Ok(new
                 {
                     status = true,
                     message = "Delay project data !",
-                    data = data,
+                    data = newData,
 
                 });
             }
@@ -613,7 +625,7 @@ namespace RemoteSensingProject.ApiServices
             {
                 return Ok();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -626,11 +638,13 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/adminProjectList")]
-        public IHttpActionResult getProjectList()
+        public IHttpActionResult getProjectList(int page, int limit)
         {
             try
             {
-                var data = _adminServices.Project_List();
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var data = _adminServices.Project_List(page, limit);
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (!data.Any())
                 {
                     return BadRequest(new
@@ -645,7 +659,7 @@ namespace RemoteSensingProject.ApiServices
                     status = true,
                     StatusCode = 200,
                     message = "Data found !",
-                    data = data
+                    data = filterData
                 });
             }
             catch (Exception ex)
@@ -718,7 +732,7 @@ namespace RemoteSensingProject.ApiServices
                 if (string.IsNullOrWhiteSpace(formData.ProjectBudget.ToString()))
                     validationErrors.Add("Project Budget is required.");
 
-                
+
                 if (!decimal.TryParse(request.Form.Get("ProjectBudget"), out decimal projectBudget))
                     validationErrors.Add("Invalid Project Budget format.");
 
@@ -736,7 +750,7 @@ namespace RemoteSensingProject.ApiServices
                     bool res = _adminServices.createApiProject(formData);
                     if (res)
                     {
-                        if(file != null && file.FileName != "")
+                        if (file != null && file.FileName != "")
                         {
                             file.SaveAs(HttpContext.Current.Server.MapPath(formData.projectDocumentUrl));
                         }
@@ -748,7 +762,8 @@ namespace RemoteSensingProject.ApiServices
                         message = res ? "Project created successfully !" : "Some issue occured ! Please try after sometime."
                     });
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -764,7 +779,8 @@ namespace RemoteSensingProject.ApiServices
         [Route("api/adminAddBudgets")]
         public IHttpActionResult AddBudgets()
         {
-            try{
+            try
+            {
                 var request = HttpContext.Current.Request;
                 // Validations
                 List<string> validationErrors = new List<string>();
@@ -777,14 +793,14 @@ namespace RemoteSensingProject.ApiServices
                 if (string.IsNullOrWhiteSpace(request.Form.Get("ProjectAmount")))
                     validationErrors.Add("Project Amount is required.");
 
-                
+
                 if (!int.TryParse(request.Form.Get("Project_Id"), out int projectId))
                     validationErrors.Add("Invalid Project ID format.");
 
                 if (!decimal.TryParse(request.Form.Get("ProjectAmount"), out decimal projectAmount))
                     validationErrors.Add("Invalid Project Amount format.");
 
-               
+
 
                 var formData = new Project_Budget
                 {
@@ -826,7 +842,7 @@ namespace RemoteSensingProject.ApiServices
                     });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -891,7 +907,7 @@ namespace RemoteSensingProject.ApiServices
                     message = res ? "Project stages added successfully !" : "Some issue occured while processing request ! Please try after sometome."
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -914,7 +930,8 @@ namespace RemoteSensingProject.ApiServices
                     status = true,
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -949,7 +966,7 @@ namespace RemoteSensingProject.ApiServices
                     data = data
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -985,7 +1002,7 @@ namespace RemoteSensingProject.ApiServices
                     data = data
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -1065,7 +1082,7 @@ namespace RemoteSensingProject.ApiServices
                 bool res = _adminServices.insertMeeting(formData);
                 if (res)
                 {
-                    if(file != null && file.FileName != "")
+                    if (file != null && file.FileName != "")
                     {
                         file.SaveAs(HttpContext.Current.Server.MapPath(formData.Attachment_Url));
                     }
@@ -1076,7 +1093,8 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = res ? 200 : 500,
                     message = res ? "Meeting created successfully !" : "Some issue occured while processing request."
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -1169,7 +1187,7 @@ namespace RemoteSensingProject.ApiServices
                     message = res ? "Meeting created successfully !" : "Some issue occured while processing request."
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -1204,7 +1222,8 @@ namespace RemoteSensingProject.ApiServices
                     message = "Data found !",
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -1228,7 +1247,8 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = 200,
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -1316,7 +1336,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("api/getMeetingConclusion")]
         public IHttpActionResult GetMeetingCoclusion(int MeetId)
@@ -1369,11 +1389,11 @@ namespace RemoteSensingProject.ApiServices
                     NextFollowUpDate = string.IsNullOrWhiteSpace(request.Form["NextFollowUpDate"])
     ? (DateTime?)null
     : DateTime.Parse(request.Form["NextFollowUpDate"]),
-                    summary = request.Form.Get("summary") 
+                    summary = request.Form.Get("summary")
                 };
                 if (request.Form["MeetingMemberList"] != null)
                 {
-                    formData.MeetingMemberList = request.Form["MeetingMemberList"].Split(',').Select(e=>int.Parse(e)).ToList();
+                    formData.MeetingMemberList = request.Form["MeetingMemberList"].Split(',').Select(e => int.Parse(e)).ToList();
                 }
                 else
                 {
@@ -1439,7 +1459,7 @@ namespace RemoteSensingProject.ApiServices
             var res = _managerservice.getMemberJoiningStatus(meetingId);
             return Ok(new { status = true, message = "data retrieved", data = res });
         }
-      
+
 
         #endregion
 
@@ -1468,7 +1488,8 @@ namespace RemoteSensingProject.ApiServices
                     message = "Data found !",
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -1484,14 +1505,15 @@ namespace RemoteSensingProject.ApiServices
         public IHttpActionResult CreateNotice()
         {
             var request = HttpContext.Current.Request;
-            var formData = new Generate_Notice { 
+            var formData = new Generate_Notice
+            {
                 Id = Convert.ToInt32(request.Form.Get("Id")),
                 ProjectId = Convert.ToInt32(request.Form.Get("ProjectId")),
                 Attachment_Url = request.Form.Get("Attachment_Url"),
                 Notice = request.Form.Get("Notice")
             };
             var file = request.Files["Attachment"];
-            if(file != null && file.FileName != "")
+            if (file != null && file.FileName != "")
             {
                 formData.Attachment_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 formData.Attachment_Url = Path.Combine("/ProjectContent/Admin/NoticeDocs/", formData.Attachment_Url);
@@ -1500,7 +1522,7 @@ namespace RemoteSensingProject.ApiServices
             bool res = _adminServices.InsertNotice(formData);
             if (res)
             {
-                if(file != null && file.FileName != "")
+                if (file != null && file.FileName != "")
                 {
                     file.SaveAs(HttpContext.Current.Server.MapPath(formData.Attachment_Url));
                 }
@@ -1520,26 +1542,27 @@ namespace RemoteSensingProject.ApiServices
         [Route("api/DivisonList")]
         public IHttpActionResult DivisonList()
         {
-            try { 
-            var data = _adminServices.ListDivison();
-            if(data != null && data.Count > 0)
+            try
             {
-                return Ok(new
+                var data = _adminServices.ListDivison();
+                if (data != null && data.Count > 0)
                 {
-                    status = true,
-                    StatusCode = 200,
-                    message = "All divison fetched !",
-                    data = data
-                });
-            }
-            else
-            {
-                return BadRequest(new
+                    return Ok(new
+                    {
+                        status = true,
+                        StatusCode = 200,
+                        message = "All divison fetched !",
+                        data = data
+                    });
+                }
+                else
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    message = "Some issue found while processing request."
-                });
-            }
+                    return BadRequest(new
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        message = "Some issue found while processing request."
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -1559,7 +1582,7 @@ namespace RemoteSensingProject.ApiServices
         [Route("api/getAllProblemList")]
         public IHttpActionResult getAllProblemList()
         {
-            var res =_managerservice.getSubOrdinateProblemforAdmin();
+            var res = _managerservice.getSubOrdinateProblemforAdmin();
 
 
             return Ok(new { status = true, message = "data retrieved", data = res });
@@ -1571,26 +1594,27 @@ namespace RemoteSensingProject.ApiServices
         [Route("api/DesginationList")]
         public IHttpActionResult DesginationList()
         {
-            try { 
-            var data = _adminServices.ListDesgination();
-            if (data != null && data.Count > 0)
+            try
             {
-                return Ok(new
+                var data = _adminServices.ListDesgination();
+                if (data != null && data.Count > 0)
                 {
-                    status = true,
-                    StatusCode = 200,
-                    message = "All desgination fetched !",
-                    data = data
-                });
-            }
-            else
-            {
-                return BadRequest(new
+                    return Ok(new
+                    {
+                        status = true,
+                        StatusCode = 200,
+                        message = "All desgination fetched !",
+                        data = data
+                    });
+                }
+                else
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    message = "Some issue found while processing request."
-                });
-            }
+                    return BadRequest(new
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        message = "Some issue found while processing request."
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -1633,11 +1657,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/ApproveReimbursement")]
-        public IHttpActionResult ApproveReimbursement(int id, bool status,string type, string remark)
+        public IHttpActionResult ApproveReimbursement(int id, bool status, string type, string remark)
         {
             try
             {
-                bool res = _adminServices.ReimbursementApproval(status,id,type, remark);
+                bool res = _adminServices.ReimbursementApproval(status, id, type, remark);
                 return Ok(new
                 {
                     status = res,
@@ -1654,17 +1678,17 @@ namespace RemoteSensingProject.ApiServices
                     message = ex.Message
                 });
             }
-         }
+        }
         #endregion
 
         #region Hiring
         [HttpGet]
         [Route("api/ApprovalHiring")]
-        public IHttpActionResult ApproveHiring(int id,bool status,string remark,string location)
+        public IHttpActionResult ApproveHiring(int id, bool status, string remark, string location)
         {
             try
-            { 
-                bool res = _adminServices.HiringApproval(id,status, remark, location);
+            {
+                bool res = _adminServices.HiringApproval(id, status, remark, location);
                 return Ok(new
                 {
                     status = res,
@@ -1738,7 +1762,7 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/ApproveTourProposal")]
-        public IHttpActionResult ApproveTourProposal(int id, bool status , string remark)
+        public IHttpActionResult ApproveTourProposal(int id, bool status, string remark)
         {
             try
             {
@@ -1777,7 +1801,7 @@ namespace RemoteSensingProject.ApiServices
                     data = data
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new
                 {
@@ -2000,14 +2024,14 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _adminServices.getAllmeetingforAdmin() ;
+                var data = _adminServices.getAllmeetingforAdmin();
                 return Ok(new
                 {
                     status = data.Any(),
                     data = data
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new
                 {
@@ -2118,17 +2142,19 @@ namespace RemoteSensingProject.ApiServices
         #region Graph
         [HttpGet]
         [Route("api/getphyfinGraphData")]
-        public IHttpActionResult getgraphData()
+        public IHttpActionResult getgraphData(int page,int limit)
         {
             try
             {
                 DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
-                var data = _adminServices.Project_List().Where(d => d.AssignDate >= twoYearsAgo).ToList();
+                var data = _adminServices.Project_List(page,limit).Where(d => d.AssignDate >= twoYearsAgo).ToList();
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var newData = CommonHelper.SelectProperties(data, selectProperties);
                 return Ok(new
                 {
-                    status = data.Any(),
-                    StatuCode = data.Any() ? 200 : 500,
-                    data = data
+                    status = newData.Any(),
+                    StatuCode = newData.Any() ? 200 : 500,
+                    data = newData
                 });
             }
             catch (Exception ex)
@@ -2169,11 +2195,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getAttendanceListByEmp")]
-        public IHttpActionResult getAttendanceListByEmp(int projectManager,int EmpId)
+        public IHttpActionResult getAttendanceListByEmp(int projectManager, int EmpId)
         {
             try
             {
-                var data = _managerservice.GetAllAttendanceForProjectManager(projectManager,EmpId);
+                var data = _managerservice.GetAllAttendanceForProjectManager(projectManager, EmpId);
                 return Ok(new
                 {
                     status = data.Any(),
@@ -2193,11 +2219,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/MonthFilter")]
-        public IHttpActionResult monthFilter(int month,int year,int projectManager,int EmpId)
+        public IHttpActionResult monthFilter(int month, int year, int projectManager, int EmpId)
         {
             try
             {
-                var data = _managerservice.getReportAttendance(month,year,projectManager,EmpId);
+                var data = _managerservice.getReportAttendance(month, year, projectManager, EmpId);
                 return Ok(new
                 {
                     status = data.Any(),
@@ -2217,11 +2243,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getAttendanceByEmp")]
-        public IHttpActionResult getAttendanceByEmp(int projectManager,int EmpId)
+        public IHttpActionResult getAttendanceByEmp(int projectManager, int EmpId)
         {
             try
             {
-                var data = _managerservice.GetAllAttendanceForProjectManager(projectManager,EmpId);
+                var data = _managerservice.GetAllAttendanceForProjectManager(projectManager, EmpId);
                 return Ok(new
                 {
                     status = data.Any(),
@@ -2241,11 +2267,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getAttendanceRepo")]
-        public IHttpActionResult getAttendanceRepo(int month,int year,int projectManager,int EmpId)
+        public IHttpActionResult getAttendanceRepo(int month, int year, int projectManager, int EmpId)
         {
             try
             {
-                var data = _managerservice.getReportAttendance(month,year,projectManager,EmpId);
+                var data = _managerservice.getReportAttendance(month, year, projectManager, EmpId);
                 return Ok(new
                 {
                     status = data.Any(),
