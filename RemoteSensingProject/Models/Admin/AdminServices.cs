@@ -2778,30 +2778,42 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_raiseProblem", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectProblemsforAdmin");
                 List<RaisedProblem> list = new List<RaisedProblem>();
                 con.Open();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageproblems_cursor", con, tran))
                 {
-                    while (res.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "selectProblemsforAdmin");
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\"", con, tran))
+                    using (var res = fetchCmd.ExecuteReader())
                     {
-                        list.Add(new RaisedProblem
+                        if (res.HasRows)
                         {
-                            id = Convert.ToInt32(res["id"]),
-                            title = res["title"].ToString(),
-                            description = res["description"].ToString(),
-                            adminappr = Convert.ToBoolean(res["adminappr"]),
-                            newRequest = Convert.ToBoolean(res["newRequest"]),
-                            documentname = res["document"].ToString(),
-                            projectname = res["projectName"].ToString(),
-                            projectManager = res["projectManager"].ToString(),
-                            createdAt = Convert.ToDateTime(res["createdAt"]),
-                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
-                        });
+                            while (res.Read())
+                            {
+                                list.Add(new RaisedProblem
+                                {
+                                    id = Convert.ToInt32(res["id"]),
+                                    title = res["title"].ToString(),
+                                    description = res["description"].ToString(),
+                                    adminappr = Convert.ToBoolean(res["adminappr"]),
+                                    newRequest = Convert.ToBoolean(res["newRequest"]),
+                                    documentname = res["document"].ToString(),
+                                    projectname = res["projectName"].ToString(),
+                                    projectManager = res["projectManager"].ToString(),
+                                    createdAt = Convert.ToDateTime(res["createdAt"]),
+                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
+                                });
+                            }
+                        }
                     }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return list;
             }
