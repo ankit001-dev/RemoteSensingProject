@@ -1,4 +1,10 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Newtonsoft.Json.Linq;
+using Npgsql;
+using NpgsqlTypes;
+using RemoteSensingProject.Models.MailService;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -6,11 +12,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
-using DocumentFormat.OpenXml.Math;
-using Newtonsoft.Json.Linq;
-using Npgsql;
-using NpgsqlTypes;
-using RemoteSensingProject.Models.MailService;
 using static RemoteSensingProject.Models.Admin.main;
 
 
@@ -575,7 +576,7 @@ namespace RemoteSensingProject.Models.Admin
                             ["p_action"] = "insertSubOrdinate",
                             ["p_project_id"] = projectId,
                             ["p_id"] = subId,
-                            ["p_projectmanager"] = pm.pm.ProjectManager
+                            ["p_projectmanager"] = int.TryParse(pm.pm.ProjectManager, out int SubProjectManager) ? SubProjectManager : 0
                         };
                         ExecuteProjectAction(subParams, tran);
                     }
@@ -616,7 +617,7 @@ namespace RemoteSensingProject.Models.Admin
         private int ExecuteProjectAction(Dictionary<string, object> parameters, NpgsqlTransaction tran)
         {
             using (var cmd = new NpgsqlCommand(
-                "CALL sp_adminaddproject(:p_action, :p_letterno, :p_id, :p_title, :p_assigndate, :p_startdate, :p_completiondate, :p_projectmanager, :p_subordinate, :p_budget, :p_description, :p_projectdocument, :p_projecttype, :p_stage, :p_projectcode, :p_approvestatus, :p_createdby, :p_status, :p_heads, :p_headsamount, :p_keypoint, :p_stagedocument, :p_project_id)", con, tran))
+                "CALL sp_adminaddproject(:p_action, :p_letterno, :p_id, :p_title, :p_assigndate, :p_startdate, :p_completiondate, :p_projectmanager, :p_subordinate, :p_budget, :p_description, :p_projectdocument, :p_projecttype, :p_stage, :p_projectcode, :p_approvestatus, :p_createdby, :p_status, :p_heads, :p_headsamount, :p_keypoint, :p_stagedocument, :p_departmentname, :p_contactperson, :p_address , :p_project_id)", con, tran))
             {
                 cmd.CommandType = CommandType.Text;
 
@@ -624,7 +625,7 @@ namespace RemoteSensingProject.Models.Admin
                 var allParams = new List<string>
         {
             "p_action","p_letterno","p_id","p_title","p_assigndate","p_startdate","p_completiondate","p_projectmanager","p_subordinate","p_budget",
-            "p_description","p_projectdocument","p_projecttype","p_stage","p_projectcode","p_approvestatus","p_createdby","p_status", "p_heads", "p_headsamount", "p_keypoint","p_stagedocument", "p_project_id"
+            "p_description","p_projectdocument","p_projecttype","p_stage","p_projectcode","p_approvestatus","p_createdby","p_status", "p_heads", "p_headsamount", "p_keypoint","p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_project_id"
         };
 
                 // Assign provided params or default DBNull
@@ -654,8 +655,9 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_limit,@v_page)", con);
+                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_limit,@v_page)", con);
                 cmd.Parameters.AddWithValue("@action", "GetAllProject");
+                cmd.Parameters.AddWithValue("@v_id", DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
                 con.Open();
@@ -743,10 +745,12 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 createProjectModel cpm = new createProjectModel();
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_limit,@v_page)", con);
                 cmd.Parameters.AddWithValue("@action", "GetProjectById");
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@v_id", id);
+                cmd.Parameters.AddWithValue("@v_limit",  DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_page",  DBNull.Value);
                 con.Open();
                 NpgsqlDataReader rd = cmd.ExecuteReader();
                 List<Project_Subordination> subList = new List<Project_Subordination>();
@@ -764,7 +768,7 @@ namespace RemoteSensingProject.Models.Admin
                         pm.CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy");
                         pm.StartDate = Convert.ToDateTime(rd["startDate"]);
                         pm.StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy");
-                        pm.ProjectManager = rd["ManagerName"].ToString();
+                        pm.ProjectManager = rd["name"].ToString();
                         pm.ProjectBudget = Convert.ToDecimal(rd["budget"]);
                         pm.ProjectDescription = rd["description"].ToString();
                         pm.projectDocumentUrl = rd["ProjectDocument"].ToString();
@@ -815,62 +819,75 @@ namespace RemoteSensingProject.Models.Admin
         #region Api Create Project
         public bool createApiProject(Project_model pm)
         {
-            con.Open();
-            NpgsqlTransaction tran = con.BeginTransaction();
+            NpgsqlTransaction tran = null;
+            NpgsqlCommand cmd = null;
             try
             {
+                con.Open();
+                tran = con.BeginTransaction();
+
+                // Generate Project Code
                 Random rand = new Random();
-                pm.projectCode = $"{rand.Next(1000, 9999).ToString()}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
-                cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", pm.Id > 0 ? "updateProject" : "insertProject");
-                cmd.Parameters.AddWithValue("@title", pm.ProjectTitle);
-                cmd.Parameters.AddWithValue("@assignDate", pm.AssignDate);
-                cmd.Parameters.AddWithValue("@startDate", pm.StartDate);
-                cmd.Parameters.AddWithValue("@completionDate", pm.CompletionDate);
-                cmd.Parameters.AddWithValue("@projectmanager", pm.ProjectManager);
-                cmd.Parameters.AddWithValue("@budget", pm.ProjectBudget);
-                cmd.Parameters.AddWithValue("@description", pm.ProjectDescription);
-                cmd.Parameters.AddWithValue("@ProjectDocument", pm.projectDocumentUrl);
-                cmd.Parameters.AddWithValue("@projectType", pm.ProjectType);
-                cmd.Parameters.AddWithValue("@stage", pm.ProjectStage);
-                cmd.Parameters.AddWithValue("@createdBy", pm.createdBy);
-                cmd.Parameters.AddWithValue("@projectCode", pm.projectCode);
-                cmd.Parameters.Add("@project_Id", NpgsqlDbType.Integer);
-                cmd.Parameters["@project_Id"].Direction = ParameterDirection.Output;
-                int i = cmd.ExecuteNonQuery();
-                int projectId = Convert.ToInt32(cmd.Parameters["@project_Id"].Value != DBNull.Value ? cmd.Parameters["@project_Id"].Value : 0);
-                if (pm.ProjectType.Equals("External") && (projectId > 0 || pm.Id > 0))
+                pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
+
+                // 1️⃣ Insert main project
+                var projectParams = new Dictionary<string, object>
                 {
-                    cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@action", pm.Id > 0 ? "updateExternalProject" : "insertExternalProject");
-                    cmd.Parameters.AddWithValue("@project_Id", projectId);
-                    cmd.Parameters.AddWithValue("@DepartmentName", pm.ProjectDepartment);
-                    cmd.Parameters.AddWithValue("@contactPerson", pm.ContactPerson);
-                    cmd.Parameters.AddWithValue("@address", pm.Address);
-                    i += cmd.ExecuteNonQuery();
-                }
-                if (pm.SubOrdinate.Length > 0)
+                    ["p_action"] = pm.Id > 0 ? "updateProject" : "insertProject",
+                    ["p_letterno"] = int.TryParse(pm.letterNo, out int letterNo) ? letterNo : 0,
+                    ["p_title"] = pm.ProjectTitle,
+                    ["p_assigndate"] = pm.AssignDate,
+                    ["p_startdate"] = pm.StartDate,
+                    ["p_completiondate"] = pm.CompletionDate,
+                    ["p_projectmanager"] = int.TryParse(pm.ProjectManager, out int ProjectManager) ? ProjectManager : 0,
+                    ["p_budget"] = pm.ProjectBudget,
+                    ["p_description"] = pm.ProjectDescription,
+                    ["p_projectdocument"] = pm.projectDocumentUrl,
+                    ["p_projecttype"] = pm.ProjectType,
+                    ["p_stage"] = pm.ProjectStage,
+                    ["p_createdby"] = "admin",
+                    ["p_status"] = true,
+                    ["p_approvestatus"] = true,
+                    ["p_projectcode"] = pm.projectCode
+                };
+
+                int projectId = ExecuteProjectAction(projectParams, tran);
+
+                if (pm.SubOrdinate != null && pm.SubOrdinate.Length > 0)
                 {
-                    foreach (var item in pm.SubOrdinate)
+                    foreach (var subId in pm.SubOrdinate)
                     {
-                        cmd = new NpgsqlCommand("sp_adminAddproject", con, tran);
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@action", "insertSubOrdinate");
-                        cmd.Parameters.AddWithValue("@project_Id", projectId);
-                        cmd.Parameters.AddWithValue("@id", item);
-                        cmd.Parameters.AddWithValue("@projectmanager", pm.ProjectManager);
-                        i += cmd.ExecuteNonQuery();
+                        var subParams = new Dictionary<string, object>
+                        {
+                            ["p_action"] =  "insertSubOrdinate",
+                            ["p_project_id"] = projectId,
+                            ["p_id"] = subId,
+                            ["p_projectmanager"] = int.TryParse(pm.ProjectManager, out int SubProjectManager) ? SubProjectManager : 0
+                        };
+                        ExecuteProjectAction(subParams, tran);
                     }
                 }
+
+                // 5️⃣ Insert External project details
+                if (pm.ProjectType.Equals("External") && projectId > 0)
+                {
+                    var extParams = new Dictionary<string, object>
+                    {
+                        ["p_action"] = pm.Id > 0 ? "updateExternalProject" : "insertExternalProject",
+                        ["p_project_id"] = projectId,
+                        ["p_departmentname"] = pm.ProjectDepartment,
+                        ["p_contactperson"] = pm.ContactPerson,
+                        ["p_address"] = pm.Address
+                    };
+                    ExecuteProjectAction(extParams, tran);
+                }
                 tran.Commit();
-                return i > 0;
+                return true;
             }
             catch (Exception ex)
             {
                 tran.Rollback();
-                throw ex;
+                return false;
             }
             finally
             {
@@ -882,50 +899,68 @@ namespace RemoteSensingProject.Models.Admin
 
         public bool insertProjectStages(Project_Statge stg)
         {
+            NpgsqlTransaction tran = null;
+            NpgsqlCommand cmd = null;
             try
             {
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", stg.Id > 0 ? "updateProjectStage" : "insertProjectStatge");
-                cmd.Parameters.AddWithValue("@project_Id", stg.Project_Id);
-                cmd.Parameters.AddWithValue("@keyPoint", stg.KeyPoint);
-                cmd.Parameters.AddWithValue("@completeDate", stg.CompletionDate);
-                cmd.Parameters.AddWithValue("@stageDocument", stg.Document_Url);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                tran = con.BeginTransaction();
+                        var stageParams = new Dictionary<string, object>
+                        {
+                            ["p_action"] = "insertProjectStage",
+                            ["p_project_id"] = stg.Project_Id,
+                            ["p_keypoint"] = stg.KeyPoint,
+                            ["p_completiondate"] = stg.CompletionDate,
+                            ["p_stagedocument"] = stg.Document_Url
+                        };
+                        ExecuteProjectAction(stageParams, tran);
+                tran.Commit();
+                return true;
+
             }
             catch (Exception ex)
             {
-                throw ex;
+                tran.Rollback();
+                return false;
             }
             finally
             {
                 if (con.State == ConnectionState.Open)
                     con.Close();
+                cmd.Dispose();
             }
         }
 
         public bool insertProjectBudgets(Project_Budget bdg) 
         {
+            NpgsqlTransaction tran = null;
+            NpgsqlCommand cmd = null;
             try
             {
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", bdg.Id > 0 ? "updateProjectBudget" : "insertProjectBudget");
-                cmd.Parameters.AddWithValue("@project_Id", bdg.Project_Id);
-                cmd.Parameters.AddWithValue("@heads", bdg.ProjectHeads);
-                cmd.Parameters.AddWithValue("@headsAmount", bdg.ProjectAmount);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                tran = con.BeginTransaction();
+                var budgetParams = new Dictionary<string, object>
+                {
+                    ["p_action"] = bdg.Id > 0 ? "updateProjectBudget" : "insertProjectBudget",
+                    ["p_project_id"] = bdg.Project_Id,
+                    ["p_heads"] = bdg.ProjectHeads,
+                    ["p_headsamount"] = bdg.ProjectAmount
+                };
+                ExecuteProjectAction(budgetParams, tran);
+                tran.Commit();
+                return true;
             }
             catch (Exception ex)
             {
+                tran.Rollback();
+                return false;
                 throw ex;
             }
             finally
             {
                 if (con.State == ConnectionState.Open)
                     con.Close();
+                cmd.Dispose();
             }
         }
 
@@ -934,10 +969,11 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<Project_Budget> list = new List<Project_Budget>();
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
                 cmd.Parameters.AddWithValue("@action", "GetBudgetByProjectId");
-                cmd.Parameters.AddWithValue("@id", Id);
+                cmd.Parameters.AddWithValue("@v_id", Id);
+                cmd.Parameters.AddWithValue("@v_limit", DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_page", DBNull.Value);
                 if (con.State == ConnectionState.Closed)
                     con.Open();
                 NpgsqlDataReader rd = cmd.ExecuteReader();
@@ -975,10 +1011,11 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<Project_Statge> list = new List<Project_Statge>();
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
                 cmd.Parameters.AddWithValue("@action", "GetProjectStageByProjectId");
-                cmd.Parameters.AddWithValue("@id", Id);
+                cmd.Parameters.AddWithValue("@v_id", Id);
+                cmd.Parameters.AddWithValue("@v_limit", DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_page", DBNull.Value);
                 if (con.State == ConnectionState.Closed)
                     con.Open();
                 NpgsqlDataReader rd = cmd.ExecuteReader();
@@ -1286,7 +1323,7 @@ namespace RemoteSensingProject.Models.Admin
                         }
                     }
 
-                    if (obj.keyPointList != null && obj.keyPointList.Count > 0)
+                    if (obj.keyPointList != null && obj.keyPointList.Count > 0)      
                     {
                         foreach (var key in obj.keyPointList)
                         {
@@ -1301,7 +1338,7 @@ namespace RemoteSensingProject.Models.Admin
                             }
                             if (i <= 0)
                             {
-                                transaction.Rollback();
+                                transaction.Rollback(); 
                                 return false;
                             }
 
