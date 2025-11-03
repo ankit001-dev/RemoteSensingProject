@@ -830,13 +830,15 @@
                         $("#updatemeetinglink").val(res.MeetingLink)
                         $("#updatemeetinglink").attr("required", true)
                         $("#updatemeetingaddress").attr("required", false)
-
                     }
                     $("#updatemeetingtitle").val(res.MeetingTitle)
                     $("#updatemeetingdatetime").val(res.MeetingTimeString)
                     $("#updateMeetingMember").val(res.memberId).change();
                     if (res.MeetingKeyPointDict.length > 0) {
                         res.MeetingKeyPointDict.forEach(function (d, i) {
+                            if (i === 0) {
+                                $("#updatekeypoints-container").empty();
+                            }
                             const inputField = `
    <div class="row gutters keyItems updateKeyItem" style="display: flex; align-items: center; margin-bottom: 10px;">
      <div class="col-sm-2 col-12"><label style="display: block;font-weight:bold; margin-bottom: 5px;">Key Point ${i + 1}</label></div>

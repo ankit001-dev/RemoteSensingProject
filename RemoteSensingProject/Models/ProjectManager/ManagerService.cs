@@ -775,8 +775,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             try
             {
                 List<FinancialMonthlyReport> list = new List<FinancialMonthlyReport>();
-                cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("SELECT * FROM fn_project_financial_report(v_action => @action, v_id => @project_Id)", con);
                 cmd.Parameters.AddWithValue("@action", "selectFinancilaReportByProjectId");
                 cmd.Parameters.AddWithValue("@project_Id", projectId);
                 con.Open();

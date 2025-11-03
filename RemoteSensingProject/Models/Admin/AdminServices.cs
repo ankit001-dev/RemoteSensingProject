@@ -1344,13 +1344,11 @@ namespace RemoteSensingProject.Models.Admin
                             {
                                 cmd.CommandType = CommandType.Text;
 
-                                cmd.Parameters.AddWithValue("@p_keypoint", NpgsqlTypes.NpgsqlDbType.Varchar, key);
-                                cmd.Parameters.AddWithValue("@p_meeting", NpgsqlTypes.NpgsqlDbType.Integer, meetingId);
-                                cmd.Parameters.AddWithValue("@p_action", NpgsqlTypes.NpgsqlDbType.Varchar, "addMeetingKeyPoint");
+                                cmd.Parameters.AddWithValue("@p_keypoint", key);
+                                cmd.Parameters.AddWithValue("@p_meeting", meetingId);
+                                cmd.Parameters.AddWithValue("@p_action", "AddMeetingKeyPoint");
 
-                               var d =  cmd.ExecuteNonQuery();
-                                transaction.Rollback(); 
-                                return false;
+                                cmd.ExecuteNonQuery();
                             }
                         }
                     }
