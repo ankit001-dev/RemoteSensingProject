@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Npgsql;
 using NpgsqlTypes;
 using RemoteSensingProject.Models.MailService;
@@ -1271,29 +1272,33 @@ namespace RemoteSensingProject.Models.ProjectManager
             try
             {
 
-                cmd.Parameters.Clear();
-                cmd = new NpgsqlCommand("sp_manageMemberResponseForMeeting", con);
-                cmd.Parameters.AddWithValue("@action", "selectMemberJoiningStatus");
-                cmd.Parameters.AddWithValue("@meeting", meetingId);
-                cmd.CommandType = CommandType.StoredProcedure;
                 List<Employee_model> meetingc = new List<Employee_model>();
-
                 con.Open();
-                NpgsqlDataReader rdr = cmd.ExecuteReader();
-                if (rdr.HasRows)
+                
+                using(var cmd1 = new NpgsqlCommand("SELECT * from fn_get_meetings(@p_action,@p_id);", con))
                 {
-                    while (rdr.Read())
+                    cmd1.CommandType = CommandType.Text;
+                    cmd1.Parameters.AddWithValue("@p_action", "selectMemberJoiningStatus");
+                    cmd1.Parameters.AddWithValue("@p_id", meetingId);
+                    using (var rdr = cmd1.ExecuteReader())
                     {
-                        meetingc.Add(new Employee_model
+                        if (rdr.HasRows)
                         {
-                            EmployeeName = rdr["name"].ToString(),
-                            Image_url = rdr["profile"].ToString(),
-                            EmployeeRole = rdr["role"].ToString(),
-                            AppStatus = rdr["appstatus"] != DBNull.Value ? (int)rdr["appstatus"] : 0,
-                            Reason = rdr["reason"] != DBNull.Value ? rdr["reason"].ToString() : "N/A",
-                        });
+                            while (rdr.Read())
+                            {
+                                meetingc.Add(new Employee_model
+                                {
+                                    EmployeeName = rdr["name"].ToString(),
+                                    Image_url = rdr["profile"].ToString(),
+                                    EmployeeRole = rdr["role"].ToString(),
+                                    AppStatus = rdr["appstatus"] != DBNull.Value ? (int)rdr["appstatus"] : 0,
+                                    Reason = rdr["reason"] != DBNull.Value ? rdr["reason"].ToString() : "N/A",
+                                });
+                            }
+                        }
                     }
                 }
+
                 return meetingc;
             }
             catch (Exception ex)
