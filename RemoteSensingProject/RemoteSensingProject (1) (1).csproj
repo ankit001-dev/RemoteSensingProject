@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -578,7 +578,6 @@
     <Compile Include="Models\Startup.cs" />
     <Compile Include="Models\SubOrdinate\main.cs" />
     <Compile Include="Models\SubOrdinate\SubOrinateService.cs" />
-    <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -1168,22 +1167,6 @@
     <Content Include="assets\vendors\select2\select2.min.css" />
     <Content Include="assets\vendors\select2\select2.min.js" />
     <Content Include="assets\vendors\tinymce\tinymce.min.js" />
-    <Content Include="bin\Antlr3.Runtime.dll" />
-    <Content Include="bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll" />
-    <Content Include="bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml" />
-    <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
-    <Content Include="bin\Newtonsoft.Json.dll" />
-    <Content Include="bin\System.Net.Http.Formatting.dll" />
-    <Content Include="bin\System.Web.Helpers.dll" />
-    <Content Include="bin\System.Web.Http.dll" />
-    <Content Include="bin\System.Web.Http.WebHost.dll" />
-    <Content Include="bin\System.Web.Mvc.dll" />
-    <Content Include="bin\System.Web.Optimization.dll" />
-    <Content Include="bin\System.Web.Razor.dll" />
-    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
-    <Content Include="bin\System.Web.WebPages.dll" />
-    <Content Include="bin\System.Web.WebPages.Razor.dll" />
-    <Content Include="bin\WebGrease.dll" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -1210,22 +1193,12 @@
     <Content Include="assets\fonts\feather-font\fonts\feathere8ab.ttf" />
     <Content Include="assets\fonts\feather-font\fonts\feathere8ab.woff" />
     <Content Include="loginAssets\css\style.css.map" />
-    <Content Include="obj\Debug\build.force" />
-    <Content Include="obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
-    <Content Include="obj\Debug\RemoteSensingProject.csproj.AssemblyReference.cache" />
-    <Content Include="ProjectContent\Admin\Employee_Images\img.png" />
-    <Content Include="ProjectContent\Admin\Meeting_Attachment\09b16bf3-4191-48eb-b04a-e9fde6a9df45.png" />
-    <Content Include="ProjectContent\Admin\Meeting_Attachment\1086f5bd-cf9d-48d0-8710-e80d9a45824f.png" />
-    <Content Include="ProjectContent\Admin\Meeting_Attachment\246e7cfd-95e4-4aa1-a402-3f6825560b23.png" />
-    <Content Include="ProjectContent\Admin\Meeting_Attachment\ed2cd55c-a52d-40c9-a405-becaffd7949f.png" />
-    <Content Include="ProjectContent\ProjectManager\Meeting_Attachment\b20d9b34-1533-4177-be6f-9700fbda98da.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include=".vs\RemoteSensingProject.csproj.dtbcache.json" />
     <Content Include="assets\Summernotes\summernote.woff" />
     <Content Include="assets\Summernotes\summernote.eot" />
     <Content Include="assets\Summernotes\summernote.ttf" />
@@ -1347,7 +1320,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="obj\Debug\TempPE\" />
+    <Folder Include="ProjectContent\Admin\Employee_Images\" />
+    <Folder Include="ProjectContent\Admin\Meeting_Attachment\" />
     <Folder Include="ProjectContent\Admin\NoticeDocs\" />
     <Folder Include="ProjectContent\Admin\ProjectDocs\" />
     <Folder Include="ProjectContent\ProjectManager\HeadsSlip\" />
