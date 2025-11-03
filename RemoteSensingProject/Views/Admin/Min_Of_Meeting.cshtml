@@ -276,9 +276,6 @@
                 </form>
 
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
@@ -552,7 +549,7 @@
             let keyPointList = [];
 
             var arrData = $(this).serializeArray();
-
+            debugger
             arrData.forEach(function (para) {
                 if (para.name == "MeetingMember") {
                     meetingMemberList.push(para.value);
@@ -570,7 +567,9 @@
                 formData.append("Attachment", $("#Attachment").get(0).files[0]);
             }
             formData.append("meetingMemberList", meetingMemberList)
-            formData.append("KeyPointList", keyPointList)
+            keyPointList.forEach((v, i) => {
+                formData.append(`keyPointList[${i}]`, v);
+            });
             debugger
 
             $.ajax({
