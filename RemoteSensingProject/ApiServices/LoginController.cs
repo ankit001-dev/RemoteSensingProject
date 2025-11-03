@@ -47,6 +47,7 @@ namespace RemoteSensingProject.ApiServices
                         Emp_Id = data.Emp_Id,
                         Emp_Name = data.Emp_Name,
                         profilePath = data.profilePath,
+                        role = data.role
                     };
                     return Ok(new
                     {
