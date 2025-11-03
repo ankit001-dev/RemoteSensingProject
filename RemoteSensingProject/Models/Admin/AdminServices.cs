@@ -1065,13 +1065,13 @@ namespace RemoteSensingProject.Models.Admin
                                 totalReinbursementRejectRequest = sdr["totalReinbursementRejectRequest"].ToString(),
                                 totalTourProposalApprReque = sdr["totalTourProposalApprReque"].ToString(),
                                 totalTourProposalRejectReque = sdr["totalTourProposalRejectReque"].ToString(),
-                                totaTourProposalPendingReque = sdr["totaTourProposalPendingReque"].ToString(),
+                                totaTourProposalPendingReque = sdr["totalTourProposalRejectReque"].ToString(),
                                 totalPendingHiringVehicle = sdr["totalPendingHiringVehicle"].ToString(),
                                 totalApproveHiringVehicle = sdr["totalApproveHiringVehicle"].ToString(),
                                 totalRejectHiringVehicle = sdr["totalRejectHiringVehicle"].ToString(),
                                 TotalBudget = Convert.ToDecimal(sdr["totalBudgets"] != DBNull.Value ? sdr["totalBudgets"] : 0),
                                 PendingBudget = Convert.ToDecimal(sdr["pendingBudget"] != DBNull.Value ? sdr["pendingBudget"] : 0),
-                                expenditure = Convert.ToDecimal(sdr["AppStatus"] != DBNull.Value ? sdr["AppStatus"] : 0)
+                                //expenditure = Convert.ToDecimal(sdr["AppStatus"] != DBNull.Value ? sdr["AppStatus"] : 0)
                             };
                         }
                     }
@@ -2050,30 +2050,46 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Tourproposal", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectAlltour");
-                con.Open();
                 List<tourProposalAll> getlist = new List<tourProposalAll>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
+                con.Open();
+                using(var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageTourProposal_cursor", con))
                 {
-                    while (res.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "selectAlltour");
+                    // Execute the function — it returns the cursor name
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    // Now fetch the data from the cursor
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                    using (var res = fetchCmd.ExecuteReader())
                     {
-                        getlist.Add(new tourProposalAll
+                        if (res.HasRows)
                         {
-                            id = Convert.ToInt32(res["id"]),
-                            projectName = res["title"].ToString(),
-                            projectManager = res["name"].ToString(),
-                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
-                            place = res["place"].ToString(),
-                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
-                            periodTo = Convert.ToDateTime(res["periodTo"]),
-                            returnDate = Convert.ToDateTime(res["returnDate"]),
-                            purpose = res["purpose"].ToString(),
-                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
-                        });
+                            while (res.Read())
+                            {
+                                getlist.Add(new tourProposalAll
+                                {
+                                    id = Convert.ToInt32(res["id"]),
+                                    projectName = res["title"].ToString(),
+                                    projectManager = res["name"].ToString(),
+                                    dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+                                    place = res["place"].ToString(),
+                                    periodFrom = Convert.ToDateTime(res["periodFrom"]),
+                                    periodTo = Convert.ToDateTime(res["periodTo"]),
+                                    returnDate = Convert.ToDateTime(res["returnDate"]),
+                                    purpose = res["purpose"].ToString(),
+                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
+                                });
+                            }
+                        }
                     }
+                    // Close the cursor explicitly
+                    using (var closeCmd = new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return getlist;
             }
@@ -2204,38 +2220,54 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectAllHiring");
                 con.Open();
                 List<HiringVehicle1> list = new List<HiringVehicle1>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageHiringVehicle_cursor", con))
                 {
-                    while (res.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "selectAllHiring");
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+
+                    using (var res = fetchCmd.ExecuteReader())
                     {
-                        list.Add(new HiringVehicle1
+                        if (res.HasRows)
                         {
-                            id = (int)res["id"],
-                            projectName = Convert.ToString(res["title"]),
-                            projectManager = Convert.ToString(res["name"]),
-                            headName = Convert.ToString(res["heads"]),
-                            amount = Convert.ToDecimal(res["amount"]),
-                            dateFrom = Convert.ToDateTime(res["dateFrom"]),
-                            dateTo = Convert.ToDateTime(res["dateTo"]),
-                            proposedPlace = res["proposedPlace"].ToString(),
-                            purposeOfVisit = res["purposeOfVisit"].ToString(),
-                            totalDaysNight = res["totalDaysNight"].ToString(),
-                            totalPlainHills = res["totalPlainHills"].ToString(),
-                            taxi = res["taxi"].ToString(),
-                            BookAgainstCentre = res["BookAgainstCentre"].ToString(),
-                            availbilityOfFund = res["availbilityOfFund"].ToString(),
-                            note = res["note"].ToString(),
-                            newRequest = Convert.ToBoolean(res["newRequest"]),
-                            adminappr = Convert.ToBoolean(res["adminappr"]),
-                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
-                        });
+                            while (res.Read())
+                            {
+                                list.Add(new HiringVehicle1
+                                {
+                                    id = (int)res["id"],
+                                    projectName = Convert.ToString(res["title"]),
+                                    projectManager = Convert.ToString(res["name"]),
+                                    headName = Convert.ToString(res["heads"]),
+                                    amount = Convert.ToDecimal(res["amount"]),
+                                    dateFrom = Convert.ToDateTime(res["dateFrom"]),
+                                    dateTo = Convert.ToDateTime(res["dateTo"]),
+                                    proposedPlace = res["proposedPlace"].ToString(),
+                                    purposeOfVisit = res["purposeOfVisit"].ToString(),
+                                    totalDaysNight = res["totalDaysNight"].ToString(),
+                                    totalPlainHills = res["totalPlainHills"].ToString(),
+                                    taxi = res["taxi"].ToString(),
+                                    BookAgainstCentre = res["BookAgainstCentre"].ToString(),
+                                    availbilityOfFund = res["availbilityOfFund"].ToString(),
+                                    note = res["note"].ToString(),
+                                    newRequest = Convert.ToBoolean(res["newRequest"]),
+                                    adminappr = Convert.ToBoolean(res["adminappr"]),
+                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
+                                });
+                            }
+                        }
                     }
+                    // Close the cursor explicitly
+                    using (var closeCmd = new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return list;
             }
