@@ -333,6 +333,7 @@ namespace RemoteSensingProject.Controllers
 
                 formData.Attachment_Url = path;
             }
+            
             bool status = _adminServices.UpdateMeeting(formData);
             if (status && formData.Attachment!=null)
             {
