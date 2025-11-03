@@ -13,52 +13,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace RemoteSensingProject.Models
 {
-    //public class JwtValidator
-    //{
-    //    private readonly string _secretKey;
-    //    private readonly string _issuer;
-    //    private readonly string _audience;
-
-    //    public JwtValidator(string secretKey, string issuer, string audience)
-    //    {
-    //        _secretKey = secretKey;
-    //        _issuer = issuer;
-    //        _audience = audience;
-    //    }
-
-    //    public ClaimsPrincipal ValidateToken(string token)
-    //    {
-    //        var tokenHandler = new JwtSecurityTokenHandler();
-
-    //        var key = Encoding.UTF8.GetBytes(_secretKey);
-
-    //        var validationParameters = new TokenValidationParameters
-    //        {
-    //            ValidateIssuerSigningKey = true,
-    //            IssuerSigningKey = new SymmetricSecurityKey(key),
-
-    //            ValidateIssuer = true,
-    //            ValidIssuer = _issuer,
-
-    //            ValidateAudience = true,
-    //            ValidAudience = _audience,
-
-    //            ValidateLifetime = true,
-    //            ClockSkew = TimeSpan.Zero // optional: reduce allowed clock skew
-    //        };
-
-    //        try
-    //        {
-    //            var principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
-    //            return principal;
-    //        }
-    //        catch
-    //        {
-    //            // Token validation failed
-    //            return null;
-    //        }
-    //    }
-    //}
 
     public class JwtAuthorizeAttribute : AuthorizationFilterAttribute
     {
