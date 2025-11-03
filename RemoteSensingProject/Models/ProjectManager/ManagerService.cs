@@ -621,28 +621,40 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
+                con.Open();
                 List<Raise_Problem> problemList = new List<Raise_Problem>();
                 Raise_Problem obj = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageSubordinateProjectProblem", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getAllSubOrdinateProblem");
-                con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageproblems_cursor", con,tran))
                 {
-                    while (sdr.Read())
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "getAllSubOrdinateProblem");
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";",con,tran))
+                    using (var sdr = fetchCmd.ExecuteReader())
                     {
-                        obj = new Raise_Problem();
-                        obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
-                        obj.ProjectName = sdr["ProjectName"].ToString();
-                        obj.Title = sdr["Title"].ToString();
-                        obj.Description = sdr["Description"].ToString();
-                        obj.Attchment_Url = sdr["Attachment"].ToString();
-                        obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
-                        obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
-                        obj.projectCode = sdr["projectCode"] != DBNull.Value ? sdr["projectCode"].ToString() : "N/A";
-                        problemList.Add(obj);
+                        if (sdr.HasRows)
+                        {
+                            while (sdr.Read())
+                            {
+                                obj = new Raise_Problem();
+                                obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
+                                obj.ProjectName = sdr["ProjectName"].ToString();
+                                obj.Title = sdr["Title"].ToString();
+                                obj.Description = sdr["Description"].ToString();
+                                obj.Attchment_Url = sdr["Attachment"].ToString();
+                                obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                                obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
+                                obj.projectCode = sdr["projectCode"] != DBNull.Value ? sdr["projectCode"].ToString() : "N/A";
+                                problemList.Add(obj);
+                            }
+                        }
                     }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return problemList;
 
@@ -1525,30 +1537,44 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Reimbursement", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectAll");
                 con.Open();
                 List<Reimbursement> getlist = new List<Reimbursement>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageReimbursement_cursor", con))
                 {
-                    while(res.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "selectAll");
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var res = fetchCmd.ExecuteReader())
                     {
-                        getlist.Add(new Reimbursement
+                        if (res.HasRows)
                         {
-                            EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
-                            type = res["type"].ToString(),
-                            id = Convert.ToInt32(res["id"]),
-                            amount = Convert.ToDecimal(res["amount"]),
-                            userId = Convert.ToInt32(res["userId"]),
-                            chequeNum = res["chequeNum"].ToString(),
-                            chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : ""
-                        });
+                            while (res.Read())
+                            {
+                                getlist.Add(new Reimbursement
+                                {
+                                    EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
+                                    type = res["type"].ToString(),
+                                    id = Convert.ToInt32(res["id"]),
+                                    amount = Convert.ToDecimal(res["amount"]),
+                                    userId = Convert.ToInt32(res["userId"]),
+                                    chequeNum = res["chequeNum"].ToString(),
+                                    chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : ""
+                                });
+                            }
+                        }
                     }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
-                return getlist;
-            }
+                    return getlist;
+                }
             catch(Exception ex)
             {
                 throw ex;
