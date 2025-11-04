@@ -10,7 +10,6 @@ using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
-using static System.Web.Http.AllowAnonymousAttribute;
 using static System.Web.Http.Filters.AuthorizationFilterAttribute;
 using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.LoginManager.main;
@@ -2169,6 +2168,7 @@ namespace RemoteSensingProject.ApiServices
         }
         #endregion
         #region
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getOutsourceByPm")]
         public IHttpActionResult getOutsourceByProjectManager(int projectManager)
@@ -2193,6 +2193,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getAttendanceListByEmp")]
         public IHttpActionResult getAttendanceListByEmp(int projectManager, int EmpId)

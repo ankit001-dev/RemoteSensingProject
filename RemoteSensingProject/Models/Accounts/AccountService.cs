@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
+using System.Data.SqlClient;
+using DocumentFormat.OpenXml.Math;
 using Npgsql;
 using static RemoteSensingProject.Models.Accounts.main;
 
@@ -174,37 +175,51 @@ namespace RemoteSensingProject.Models.Accounts
             }
         }
 
-        public List<tourProposal> getTourList()
+        public List<tourProposal> getTourList(int? limit = null,int? page = null)
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Tourproposal", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectAlltourforAcc");
                 con.Open();
                 List<tourProposal> getlist = new List<tourProposal>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managetourproposal_cursor", con, tran))
                 {
-                    while (res.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "selectAlltourforAcc");
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var res = fetchCmd.ExecuteReader())
                     {
-                        getlist.Add(new tourProposal
+                        if (res.HasRows)
                         {
-                            id = Convert.ToInt32(res["id"]),
-                            projectManager = Convert.ToString(res["name"]),
-                            projectName = Convert.ToString(res["title"]),
-                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
-                            place = Convert.ToString(res["place"]),
-                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
-                            periodTo = Convert.ToDateTime(res["periodTo"]),
-                            returnDate = Convert.ToDateTime(res["returnDate"]),
-                            purpose = Convert.ToString(res["purpose"]),
-                            newRequest = Convert.ToBoolean(res["newRequest"]),
-                            adminappr = Convert.ToBoolean(res["adminappr"]),
-                            remark = res["remark"].ToString(),
-                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString():"N/A"
-                        });
+                            while (res.Read())
+                            {
+                                getlist.Add(new tourProposal
+                                {
+                                    id = Convert.ToInt32(res["id"]),
+                                    projectManager = Convert.ToString(res["name"]),
+                                    projectName = Convert.ToString(res["title"]),
+                                    dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+                                    place = Convert.ToString(res["place"]),
+                                    periodFrom = Convert.ToDateTime(res["periodFrom"]),
+                                    periodTo = Convert.ToDateTime(res["periodTo"]),
+                                    returnDate = Convert.ToDateTime(res["returnDate"]),
+                                    purpose = Convert.ToString(res["purpose"]),
+                                    newRequest = Convert.ToBoolean(res["newRequest"]),
+                                    adminappr = Convert.ToBoolean(res["adminappr"]),
+                                    remark = res["remark"].ToString(),
+                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
+                                });
+                            }
+                        }
                     }
+                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return getlist;
             }

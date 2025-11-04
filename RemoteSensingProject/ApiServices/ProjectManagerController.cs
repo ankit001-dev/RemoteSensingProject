@@ -153,7 +153,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-
+        [AllowAnonymous]
         [HttpGet]
         [Route("api/getFinancialReport")]
         public IHttpActionResult getFinancialReport(int projectId)
@@ -177,7 +177,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-
+        [AllowAnonymous]
         [HttpGet]
         [Route("api/getWeeklyUpdate")]
         public IHttpActionResult getWeeklyUpdate(int projectId)
