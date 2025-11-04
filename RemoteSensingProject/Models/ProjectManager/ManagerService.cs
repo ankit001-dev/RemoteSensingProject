@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Npgsql;
 using NpgsqlTypes;
@@ -9,6 +10,7 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.PeerToPeer;
 using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 
@@ -18,49 +20,57 @@ namespace RemoteSensingProject.Models.ProjectManager
     {
        
         #region /* Dashboard Count */
-        public DashboardCount DashboardCount(string userId)
+        public DashboardCount DashboardCount(int userId)
         {
             DashboardCount obj = null;
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageDashboard", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "ManagerDashboardCount");
-                cmd.Parameters.AddWithValue("@projectManager", userId);
                 con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.Read())
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managedashboard_cursor", con))
                 {
-                    obj = new DashboardCount();
-                    obj.TotalAssignProject = sdr["TotalAssignProject"].ToString();
-                    obj.TotaCompleteProject = sdr["TotaCompleteProject"].ToString();
-                    obj.TotalDelayProject = sdr["TotalDelayproject"].ToString();
-                    obj.TotalNotice = sdr["TotalNotice"].ToString();
-                    obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
-                    obj.TotalMeeting = sdr["totalMeetings"].ToString();
-                    obj.SelfCreatedProject = sdr["SelfCreatedProject"].ToString();
-                    obj.EmpMeeting = sdr["EmpMeeting"].ToString();
-                    obj.AdminMeeting = sdr["AdminMeeting"].ToString();
-                    obj.TotalReimbursement = sdr["TotalReimbursement"].ToString();
-                    obj.TotalTourProposal = sdr["TotalTourProposal"].ToString();
-                    obj.TotalHiring = sdr["TotalHiring"].ToString();
-                    obj.ReimbursementPendingRequest = sdr["ReimbursementPendingRequest"].ToString();
-                    obj.ReimbursementApprovedRequest = sdr["ReimbursementApprovedRequest"].ToString();
-                    obj.ReimbursementRejectedRequest = sdr["ReimbursementRejectedRequest"].ToString();
-                    obj.TourPendingRequest = sdr["TourPendingRequest"].ToString();
-                    obj.TourApprovedRequest = sdr["TourApprovedRequest"].ToString();
-                    obj.TourRejectedRequest = sdr["TourRejectedRequest"].ToString();
-                    obj.HiringPendingRequest = sdr["HiringPendingRequest"].ToString();
-                    obj.HiringApprovedRequest = sdr["HiringApprovedRequest"].ToString();
-                    obj.HiringRejectedRequest = sdr["HiringRejectedRequest"].ToString();
-                    obj.TotalTask = sdr["TotalTask"].ToString();
-                    obj.CompletedTask = sdr["CompletedTask"].ToString();
-                    obj.OutSource = sdr["OutSource"].ToString();
-                    obj.ProjectProblem = sdr["ProjectProblem"].ToString();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "ManagerDashboardCount");
+                    cmd.Parameters.AddWithValue("v_projectmanager", userId);
+                    cmd.Parameters.AddWithValue("v_sid", 0);
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    // Now fetch the data from the cursor
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                    using (var sdr = fetchCmd.ExecuteReader())
+                    {
+                        if (sdr.HasRows)
+                        {
+                            sdr.Read();
+                            obj = new DashboardCount();
+                            obj.TotalAssignProject = sdr["TotalAssignProject"].ToString();
+                            obj.TotaCompleteProject = sdr["TotalCompleteProject"].ToString();
+                            obj.TotalDelayProject = sdr["TotalDelayproject"].ToString();
+                            obj.TotalNotice = sdr["TotalNotice"].ToString();
+                            obj.TotalOngoingProject = sdr["TotalOngoingProject"].ToString();
+                            obj.TotalMeeting = sdr["totalMeetings"].ToString();
+                            obj.SelfCreatedProject = sdr["SelfCreatedProject"].ToString();
+                            obj.EmpMeeting = sdr["EmpMeeting"].ToString();
+                            obj.AdminMeeting = sdr["AdminMeeting"].ToString();
+                            obj.TotalReimbursement = sdr["TotalReimbursement"].ToString();
+                            obj.TotalTourProposal = sdr["TotalTourProposal"].ToString();
+                            obj.TotalHiring = sdr["TotalHiring"].ToString();
+                            obj.ReimbursementPendingRequest = sdr["ReimbursementPendingRequest"].ToString();
+                            obj.ReimbursementApprovedRequest = sdr["ReimbursementApprovedRequest"].ToString();
+                            obj.ReimbursementRejectedRequest = sdr["ReimbursementRejectedRequest"].ToString();
+                            obj.TourPendingRequest = sdr["TourPendingRequest"].ToString();
+                            obj.TourApprovedRequest = sdr["TourApprovedRequest"].ToString();
+                            obj.TourRejectedRequest = sdr["TourRejectedRequest"].ToString();
+                            obj.HiringPendingRequest = sdr["HiringPendingRequest"].ToString();
+                            obj.HiringApprovedRequest = sdr["HiringApprovedRequest"].ToString();
+                            obj.HiringRejectedRequest = sdr["HiringRejectedRequest"].ToString();
+                            obj.TotalTask = sdr["TotalTask"].ToString();
+                            obj.CompletedTask = sdr["CompletedTask"].ToString();
+                            obj.OutSource = sdr["OutSource"].ToString();
+                            obj.ProjectProblem = sdr["ProjectProblem"].ToString();
+                        }
+                    }
                 }
-
-                sdr.Close();
-
                 return obj;
 
             }
@@ -129,21 +139,25 @@ namespace RemoteSensingProject.Models.ProjectManager
             UserCredential _details = new UserCredential();
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getManagerDetails");
-                cmd.Parameters.AddWithValue("@username", managerName);
                 con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                while (sdr.Read())
+                using (NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM sp_manageloginmaster(@action, @userid, @username)", con))
                 {
-                    _details = new UserCredential();
-                    _details.username = sdr["username"].ToString();
-                    _details.userId = sdr["userid"].ToString();
-                    _details.userRole = sdr["userRole"].ToString();
-
+                    cmd.Parameters.AddWithValue("@action", "getUserRole");
+                    cmd.Parameters.AddWithValue("@username", managerName);
+                    cmd.Parameters.AddWithValue("@userid", 0);
+                    using (NpgsqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        if (sdr.HasRows)
+                        {
+                            sdr.Read();
+                                _details = new UserCredential();
+                                _details.username = sdr["username"].ToString();
+                                _details.userId = sdr["userid"].ToString();
+                                _details.userRole = sdr["userRole"].ToString();
+                        }
+                    }
+                    return _details;
                 }
-                sdr.Close();
             } catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
@@ -153,7 +167,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             {
                 con.Close();
             }
-            return _details;
+           
         }
         #endregion
 
@@ -308,16 +322,18 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Project_model> All_Project_List(string userId)
+        public List<Project_model> All_Project_List( int userId, int?limit, int?page)
         {
             try
             {
-                List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getProjectManagerTotalProject");
-                cmd.Parameters.AddWithValue("@projectManager", userId);
                 con.Open();
+                List<Project_model> list = new List<Project_model>();
+                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_limit,@v_page)", con);
+                cmd.Parameters.AddWithValue("@action", "GetAllProject");
+                cmd.Parameters.AddWithValue("@v_projectManager", userId);
+                cmd.Parameters.AddWithValue("@v_id", DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
                 NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {

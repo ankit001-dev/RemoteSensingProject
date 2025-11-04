@@ -364,7 +364,8 @@ namespace RemoteSensingProject.ApiServices
                         message = "Invalid userid !"
                     });
                 }
-                var data = _managerService.DashboardCount(userId);
+
+                var data = _managerService.DashboardCount(Convert.ToInt32(userId));
                 return Ok(new
                 {
                     status = true,
@@ -466,11 +467,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getManagerCompleteProject")]
-        public IHttpActionResult GetCompleteProject(int userId)
+        public IHttpActionResult GetCompleteProject(int userId, int page, int limit)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.ProjectStatus).ToList();
+                var data = _managerService.All_Project_List(userId, limit, page).Where(d => d.ProjectStatus).ToList();
                 return Ok(new
                 {
                     status = data.Any(),
@@ -491,11 +492,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getmanagerdelayProject")]
-        public IHttpActionResult getmanagerDelay(int userId)
+        public IHttpActionResult getmanagerDelay(int userId, int? limit, int? page)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.CompletionDate < DateTime.Now && !d.ProjectStatus).ToList();
+                var data = _managerService.All_Project_List(userId, limit, page).Where(d => d.CompletionDate < DateTime.Now && !d.ProjectStatus).ToList();
                 return Ok(new
                 {
                     status = data.Any(),
@@ -515,11 +516,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getmanagerOngoingProject")]
-        public IHttpActionResult onGoingProject(int userId)
+        public IHttpActionResult onGoingProject(int userId, int? limit, int? page)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.StartDate > DateTime.Now && d.CompletionDate < DateTime.Now).ToList();
+                var data = _managerService.All_Project_List(userId, limit, page).Where(d => d.StartDate > DateTime.Now && d.CompletionDate < DateTime.Now).ToList();
                 return Ok(new
                 {
                     status = data.Any(),
@@ -540,11 +541,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getAllProjectList")]
-        public IHttpActionResult getAllProjectList(int userId)
+        public IHttpActionResult getAllProjectList(int userId, int? limit, int? page)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId.ToString());
+                var data = _managerService.All_Project_List(userId, limit, page);
                 return Ok(new
                 {
                     status = data.Any(),

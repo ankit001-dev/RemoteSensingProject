@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Math;
+﻿using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using Newtonsoft.Json.Linq;
 using Npgsql;
@@ -377,9 +378,10 @@ namespace RemoteSensingProject.Models.Admin
 
                     using (var record = cmd.ExecuteReader())
                     {
+                        bool firstRow = true;
                         while (record.Read())
                         {
-                            empModel.Add(new Employee_model
+                            var employee = new Employee_model
                             {
                                 Id = Convert.ToInt32(record["id"]),
                                 EmployeeCode = record["employeecode"]?.ToString(),
@@ -393,7 +395,23 @@ namespace RemoteSensingProject.Models.Admin
                                 Status = record["status"] != DBNull.Value && Convert.ToBoolean(record["status"]),
                                 Image_url = record["profile"] != DBNull.Value ? record["profile"].ToString() : null,
                                 ActiveStatus = Convert.ToBoolean(record["activestatus"])
-                            });
+                            };
+
+                            // Assign pagination info only for the first row
+                            if (firstRow)
+                            {
+                                employee.Pagination = new ApiCommon.PaginationInfo
+                                {
+                                    PageNumber = page ?? 0,
+                                    TotalPages = Convert.ToInt32(record["totalpages"] != DBNull.Value ? record["totalpages"] : 0),
+                                    TotalRecords = Convert.ToInt32(record["totalrecords"] != DBNull.Value ? record["totalrecords"] : 0),
+                                    PageSize = limit ?? 0
+                                };
+                                firstRow = false; // Optional: ensure pagination is only assigned once
+                            }
+
+                            empModel.Add(employee);
+
                         }
                     }
                 }
@@ -657,8 +675,9 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_limit,@v_page)", con);
+                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_limit,@v_page)", con);
                 cmd.Parameters.AddWithValue("@action", "GetAllProject");
+                cmd.Parameters.AddWithValue("@v_projectManager", DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_id", DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
@@ -666,9 +685,10 @@ namespace RemoteSensingProject.Models.Admin
                 NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
                 {
+                    bool firstRow = true;
                     while (rd.Read())
                     {
-                        list.Add(new Project_model
+                        var project = new Project_model
                         {
                             Id = Convert.ToInt32(rd["id"]),
                             ProjectTitle = rd["title"].ToString(),
@@ -690,7 +710,20 @@ namespace RemoteSensingProject.Models.Admin
                             StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
                             createdBy = rd["createdBy"].ToString(),
                             projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
-                        });
+                        };
+                        if (firstRow)
+                        {
+                            project.Pagination = new ApiCommon.PaginationInfo
+                            {
+                                PageNumber = page ?? 0,
+                                TotalPages = Convert.ToInt32(rd["totalpages"] != DBNull.Value ? rd["totalpages"] : 0),
+                                TotalRecords = Convert.ToInt32(rd["totalrecords"] != DBNull.Value ? rd["totalrecords"] : 0),
+                                PageSize = limit ?? 0
+                            };
+                            firstRow = false; // Optional: ensure pagination is only assigned once
+                        }
+
+                        list.Add(project);
                     }
                 }
                 return list;
@@ -1066,7 +1099,7 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "AdminDashboardCount");
-                    cmd.Parameters.AddWithValue("v_projectmanager", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
                     cmd.Parameters.AddWithValue("v_sid", 0);
 
                     // Execute the function — it returns the cursor name
@@ -2084,7 +2117,7 @@ namespace RemoteSensingProject.Models.Admin
         //#endregion
 
         #region /*tour*/
-        public List<tourProposalAll> getAllTourList()
+        public List<tourProposalAll> getAllTourList(int?page, int?limit)
         {
             try
             {
@@ -2095,6 +2128,10 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAlltour");
+                    cmd.Parameters.AddWithValue("v_projectmanager", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_id", 0);
+                    cmd.Parameters.AddWithValue("v_limit", page);
+                    cmd.Parameters.AddWithValue("v_page", limit);
                     // Execute the function — it returns the cursor name
                     string cursorName = (string)cmd.ExecuteScalar();
 
@@ -2104,9 +2141,10 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         if (res.HasRows)
                         {
+                            bool firstRow = true;
                             while (res.Read())
                             {
-                                getlist.Add(new tourProposalAll
+                                var tourData = new tourProposalAll
                                 {
                                     id = Convert.ToInt32(res["id"]),
                                     projectName = res["title"].ToString(),
@@ -2118,7 +2156,18 @@ namespace RemoteSensingProject.Models.Admin
                                     returnDate = Convert.ToDateTime(res["returnDate"]),
                                     purpose = res["purpose"].ToString(),
                                     projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
-                                });
+                                };
+                                if (firstRow)
+                                {
+                                    tourData.Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        TotalPages = Convert.ToInt32(res["totalpages"]),
+                                        TotalRecords = Convert.ToInt32(res["totalrecords"]),
+                                        PageNumber = page ?? 0,
+                                        PageSize = limit ?? 0
+                                    };
+                                    firstRow = false;
+                                }
                             }
                         }
                     }
@@ -2254,7 +2303,7 @@ namespace RemoteSensingProject.Models.Admin
         #endregion
 
         #region /* Hiring*/
-        public List<HiringVehicle1> HiringList()
+        public List<HiringVehicle1> HiringList(int?page, int?limit)
         {
             try
             {
@@ -2265,6 +2314,10 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAllHiring");
+                    cmd.Parameters.AddWithValue("v_projectmanager", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_id", 0);
+                    cmd.Parameters.AddWithValue("v_limit", page);
+                    cmd.Parameters.AddWithValue("v_page", limit);
 
                     string cursorName = (string)cmd.ExecuteScalar();
 
@@ -2274,9 +2327,10 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         if (res.HasRows)
                         {
+                            bool firstRow = true;
                             while (res.Read())
                             {
-                                list.Add(new HiringVehicle1
+                                var hiringVehicle = new HiringVehicle1
                                 {
                                     id = (int)res["id"],
                                     projectName = Convert.ToString(res["title"]),
@@ -2296,7 +2350,20 @@ namespace RemoteSensingProject.Models.Admin
                                     newRequest = Convert.ToBoolean(res["newRequest"]),
                                     adminappr = Convert.ToBoolean(res["adminappr"]),
                                     projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
-                                });
+                                };
+                                if (firstRow)
+                                {
+                                    hiringVehicle.Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        TotalPages = Convert.ToInt32(res["totalpages"]),
+                                        TotalRecords = Convert.ToInt32(res["totalrecords"]),
+                                        PageNumber = page ?? 0,
+                                        PageSize = limit ?? 0
+                                    };
+                                    firstRow = false;
+                                }
+
+                                list.Add(hiringVehicle);
                             }
                         }
                     }

@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Http;
+﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
-using static System.Web.Http.AllowAnonymousAttribute;
-using static System.Web.Http.Filters.AuthorizationFilterAttribute;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Web;
+using System.Web.Http;
 using static RemoteSensingProject.Models.Admin.main;
-using static RemoteSensingProject.Models.LoginManager.main;
 
 namespace RemoteSensingProject.ApiServices
 {
@@ -31,63 +30,6 @@ namespace RemoteSensingProject.ApiServices
             _managerservice = new ManagerService();
             _accountService = new AccountService();
         }
-        //[HttpPost]
-        //[Route("api/login")]
-        //public IHttpActionResult Login()
-        //{
-        //    try
-        //    {
-
-        //        var request = HttpContext.Current.Request;
-        //        string username = request.Form.Get("username");
-        //        string password = request.Form.Get("password");
-        //        if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-        //        {
-        //            return BadRequest(new
-        //            {
-        //                status = false,
-        //                StatusCode = 400,
-        //                Message = "Username and password are required."
-        //            });
-        //        }
-        //        Credentials data = _loginService.Login(username, password);
-
-        //        if (username.Equals(data.username) && password.Equals(data.password))
-        //        {
-        //           string token = _loginService.GenerateToken(data);
-        //            var userData = new
-        //            {
-        //                username = data.username,
-        //                Emp_Id = data.Emp_Id,
-        //                Emp_Name = data.Emp_Name,
-        //                profilePath = data.profilePath,
-        //            };
-        //            return Ok(new
-        //            {
-        //                status = true,
-        //                StatusCode = 200,
-        //                data = userData,
-        //                token = token
-        //            });
-        //        }
-        //        return BadRequest(new
-        //        {
-        //            status = false,
-        //            StatusCode = 400,
-        //            message = "Invalid userid or password."
-        //        });
-        //    } catch (Exception ex) {
-        //        return BadRequest(new
-        //        {
-        //            status = false,
-        //            StatusCode = 500,
-        //            message = ex.Message,
-        //            data = ex
-        //        });
-        //    }
-
-
-        //}
 
         #region ExpenditureAmt
         [HttpGet]
@@ -232,38 +174,22 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var data = _adminServices.SelectEmployeeRecord(page, limit);
-                var selectProperties = new[] { "Id", "EmployeeCode", "EmployeeName", "DevisionName", "Email", "MobileNo", "EmployeeRole", "Division", "DesignationName", "Status", "ActiveStatus", "CreationDate", "Image_url" };
+                var selectProperties = new[] { "Id", "EmployeeCode", "EmployeeName", "DevisionName", "Email", "MobileNo", "EmployeeRole", "Division", "DesignationName", "Status", "ActiveStatus", "CreationDate", "Image_url"};
                 var filtered = CommonHelper.SelectProperties(data, selectProperties);
+
                 if (data != null && data.Count > 0)
                 {
-                    return Ok(new
-                    {
-                        status = true,
-                        StatusCode = 200,
-                        message = "Data found !",
-                        data = filtered
-                    });
+                    var pagination = data[0].Pagination;
+                    return CommonHelper.Success(this, filtered, "Data fetched successfully.", 200, pagination);
                 }
                 else
                 {
-                    return BadRequest(new
-                    {
-                        status = false,
-                        StatusCode = 500,
-                        message = "No data found!"
-                    });
-
+                    return CommonHelper.NoData(this);
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message,
-                    data = ex
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
@@ -537,22 +463,19 @@ namespace RemoteSensingProject.ApiServices
                 var data = _adminServices.Project_List(page, limit).Where(d => d.CompletionDate < DateTime.Now && !d.ProjectStatus).ToList();
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var newData = CommonHelper.SelectProperties(data, selectProperties);
-                return Ok(new
-                {
-                    status = true,
-                    message = "Delay project data !",
-                    data = newData,
 
-                });
+                if(data.Count > 0)
+                {
+                    return CommonHelper.Success(this, newData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
@@ -565,22 +488,18 @@ namespace RemoteSensingProject.ApiServices
                 var data = _adminServices.Project_List(page,limit).Where(d => d.CompletionDate > DateTime.Now && d.StartDate < DateTime.Now).ToList();
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var newData = CommonHelper.SelectProperties(data, selectProperties);
-                return Ok(new
+                if (data.Count > 0)
                 {
-                    status = true,
-                    message = "Delay project data !",
-                    data = newData,
-
-                });
+                    return CommonHelper.Success(this, newData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
@@ -593,22 +512,18 @@ namespace RemoteSensingProject.ApiServices
                 var data = _adminServices.Project_List(page,limit).Where(d => d.ProjectStatus).ToList();
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var newData = CommonHelper.SelectProperties(data, selectProperties);
-                return Ok(new
+                if (data.Count > 0)
                 {
-                    status = true,
-                    message = "Delay project data !",
-                    data = newData,
-
-                });
+                    return CommonHelper.Success(this, newData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
@@ -645,32 +560,18 @@ namespace RemoteSensingProject.ApiServices
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var data = _adminServices.Project_List(page, limit);
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
-                if (!data.Any())
+                if (data.Count > 0)
                 {
-                    return BadRequest(new
-                    {
-                        status = false,
-                        StatusCode = 404,
-                        message = "Data not found !"
-                    });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
                 }
-                return Ok(new
+                else
                 {
-                    status = true,
-                    StatusCode = 200,
-                    message = "Data found !",
-                    data = filterData
-                });
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message,
-                    data = ex
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
@@ -1709,26 +1610,23 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/GetAllHiring")]
-        public IHttpActionResult AllHiring()
+        public IHttpActionResult AllHiring(int page, int limit)
         {
             try
             {
-                var data = _adminServices.HiringList();
-                return Ok(new
+                var data = _adminServices.HiringList(page, limit).ToList();
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    StatuCode = data.Any() ? 200 : 500,
-                    data = data
-                });
+                    return CommonHelper.Success(this, data, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
         #endregion
@@ -1737,26 +1635,24 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/ViewAlltourAdminView")]
-        public IHttpActionResult AllTour()
+        public IHttpActionResult AllTour(int page, int limit)
         {
             try
             {
-                var data = _adminServices.getAllTourList();
-                return Ok(new
+                var data = _adminServices.getAllTourList(page, limit).ToList();
+
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    StatuCode = data.Any() ? 200 : 500,
-                    data = data
-                });
+                    return CommonHelper.Success(this, data, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
@@ -2150,21 +2046,18 @@ namespace RemoteSensingProject.ApiServices
                 var data = _adminServices.Project_List(page,limit).Where(d => d.AssignDate >= twoYearsAgo).ToList();
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var newData = CommonHelper.SelectProperties(data, selectProperties);
-                return Ok(new
+                if (data.Count > 0)
                 {
-                    status = newData.Any(),
-                    StatuCode = newData.Any() ? 200 : 500,
-                    data = newData
-                });
+                    return CommonHelper.Success(this, newData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
         #endregion

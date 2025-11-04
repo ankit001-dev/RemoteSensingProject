@@ -585,7 +585,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult TravelRequest()
         {
-            var res = _adminServices.getAllTourList();
+            var res = _adminServices.getAllTourList(null, null);
             ViewData["allTourList"] = res;
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
@@ -616,7 +616,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult HiringRequest()
         {
-            ViewData["hiringList"] = _adminServices.HiringList();
+            ViewData["hiringList"] = _adminServices.HiringList(null,null);
             //var res1 = _managerServices.getProjectList(userid);
             //ViewData["projectList"] = res1;
             ViewData["projects"] = _adminServices.Project_List();
