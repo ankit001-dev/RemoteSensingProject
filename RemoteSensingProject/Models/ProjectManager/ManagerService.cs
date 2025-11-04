@@ -1,16 +1,13 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Wordprocessing;
 using Npgsql;
 using NpgsqlTypes;
 using RemoteSensingProject.Models.MailService;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.PeerToPeer;
 using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 
