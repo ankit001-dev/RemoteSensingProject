@@ -4,11 +4,9 @@ using RemoteSensingProject.Models.SubOrdinate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.IO;
 using RemoteSensingProject.Models.ProjectManager;
-using Microsoft.Ajax.Utilities;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -29,43 +27,41 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Dashboard()
         {
             var managerName = User.Identity.Name;
-            Models.SubOrdinate.main.UserCredential userObj = new Models.SubOrdinate.main.UserCredential();
-            userObj = _subOrdinate.getManagerDetails(managerName);
-            var dcount = _subOrdinate.GetDashboardCounts(userObj.userId);
+            int userId =Convert.ToInt32(_managerServices.getManagerDetails(managerName).userId);
+            var dcount = _subOrdinate.GetDashboardCounts(Convert.ToInt32(userId));
             List<Models.SubOrdinate.main.ProjectList> _list = new List<Models.SubOrdinate.main.ProjectList>();
-            ViewData["AssignedProjectList"] =  _subOrdinate.getProjectBySubOrdinate(userObj.userId);
+            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId);
             return View(dcount);
         }
         #region Assigned Project
         public ActionResult Assigned_Project(string req)
         {
             var managerName = User.Identity.Name;
-            Models.SubOrdinate.main.UserCredential userObj = new Models.SubOrdinate.main.UserCredential();
-            userObj = _subOrdinate.getManagerDetails(managerName);
+            int userId = Convert.ToInt32(_managerServices.getManagerDetails(managerName).userId);
 
             List<Models.SubOrdinate.main.ProjectList> _list = new List<Models.SubOrdinate.main.ProjectList>();
             if (req == "Internal")
             {
-                ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId).Where(d=>d.projectType=="Internal").ToList();
+                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId).Where(d=>d.ProjectType=="Internal").ToList();
             }
             else if (req == "External")
             {
-                ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId).Where(d => d.projectType == req).ToList();
+                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId).Where(d => d.ProjectType == req).ToList();
             }
             else if (req == "completed")
             {
-                ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId).Where(d => d.CompleteionStatus == true && d.CompletionDate<DateTime.Now).ToList();
+                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId).Where(d => d.completestatus == true && d.CompletionDate<DateTime.Now).ToList();
             }
             else if (req == "ongoing")
             {
-                ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId).Where(d => d.CompleteionStatus == false && d.CompletionDate>DateTime.Now).ToList();
+                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId).Where(d => d.completestatus == false && d.CompletionDate>DateTime.Now).ToList();
             }
             else if(req == "pending")
             {
-                ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId).Where(d => d.StartDate>DateTime.Now).ToList();
+                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId).Where(d => d.StartDate>DateTime.Now).ToList();
             }
             else
-            ViewData["AssignedProjectList"] = _subOrdinate.getProjectBySubOrdinate(userObj.userId);
+            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId);
 
 
 
