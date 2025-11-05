@@ -1863,13 +1863,14 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getRaisedProblemById")]
         public IHttpActionResult getRaisedProblemById(int id)
         {
             try
             {
-                var data = _adminServices.getproblembyId(id);
+                var data = _adminServices.getProblemList(null,null,id,null);
                 return Ok(new
                 {
                     status = data.Any(),
