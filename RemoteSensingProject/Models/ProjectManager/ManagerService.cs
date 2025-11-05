@@ -9,6 +9,11 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Math;
+using Npgsql;
+using NpgsqlTypes;
+using RemoteSensingProject.Models.MailService;
 using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 
@@ -914,27 +919,26 @@ namespace RemoteSensingProject.Models.ProjectManager
                         userpassword += validChars[rnd.Next(validChars.Length)];
                     }
                 }
-                cmd = new NpgsqlCommand("sp_manageOutSource", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "createOutSource");
-                cmd.Parameters.AddWithValue("@EmpId", os.EmpId);
-                cmd.Parameters.AddWithValue("@outCode", userName);
-                cmd.Parameters.AddWithValue("@emp_name", os.EmpName);
-                cmd.Parameters.AddWithValue("@emp_mobile", os.mobileNo);
-                cmd.Parameters.AddWithValue("@emp_email", os.email);
-                cmd.Parameters.AddWithValue("@emp_gender", os.gender);
-                cmd.Parameters.AddWithValue("@password", userpassword);
-                cmd.Parameters.AddWithValue("@joiningdate", os.joiningdate);
+                cmd = new NpgsqlCommand("CALL sp_manageoutsource(@p_action, NULL::int, @p_empid, @p_outcode, @p_emp_name, @p_emp_mobile, @p_emp_email, @p_joiningdate, @p_emp_gender, @p_password,NULL::boolean)", con);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.Add("@p_action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "createOutSource";
+                cmd.Parameters.Add("@p_empid", NpgsqlTypes.NpgsqlDbType.Integer).Value = os.EmpId;
+                cmd.Parameters.Add("@p_outcode", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userName;
+                cmd.Parameters.Add("@p_emp_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.EmpName;
+                cmd.Parameters.Add("@p_emp_mobile", NpgsqlTypes.NpgsqlDbType.Bigint).Value = Convert.ToInt64(os.mobileNo);
+                cmd.Parameters.Add("@p_emp_email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.email;
+                cmd.Parameters.Add("@p_joiningdate", NpgsqlTypes.NpgsqlDbType.Timestamp)
+              .Value = Convert.ToDateTime(os.joiningdate);
+                cmd.Parameters.Add("@p_emp_gender", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.gender;
+                cmd.Parameters.Add("@p_password", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userpassword;
                 con.Open();
-                int j = cmd.ExecuteNonQuery();
-                if (j > 0)
-                {
-                    mail _mail = new mail();
-                    string subject = "Login Credential";
-                    string message = $"<p>Your user id : <b>{userName}</b></p><br><p>Password : <b>{userpassword}</b></p>";
-                    _mail.SendMail(os.EmpName, os.email, subject, message);
-                }
-                return j > 0;
+                cmd.ExecuteNonQuery();
+                mail _mail = new mail();
+                string subject = "Login Credential";
+                string message = $"<p>Your user id : <b>{userName}</b></p><br><p>Password : <b>{userpassword}</b></p>";
+                _mail.SendMail(os.EmpName, os.email, subject, message);
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -948,31 +952,45 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<OuterSource> selectAllOutSOurceList(int userId)
+        public List<OuterSource> selectAllOutSOurceList(int userId,int? limit = null,int? page = null)
         {
             try
             {
                 List<OuterSource> list = new List<OuterSource>();
-                cmd = new NpgsqlCommand("sp_manageOutSource", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectAll");
-                cmd.Parameters.AddWithValue("@empId", userId);
                 con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageOutsource_cursor", con, tran))
                 {
-                    while (rd.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "selectAll");
+                    cmd.Parameters.AddWithValue("@v_id", userId);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var rd = fetchCmd.ExecuteReader())
                     {
-                        list.Add(new OuterSource
+                        if (rd.HasRows)
                         {
-                            Id = Convert.ToInt32(rd["id"]),
-                            EmpName = rd["emp_name"].ToString(),
-                            mobileNo = Convert.ToInt64(rd["emp_mobile"]),
-                            email = rd["emp_email"].ToString(),
-                            joiningdate = rd["joiningdate"].ToString(),
-                            gender = rd["emp_gender"].ToString()
-                        });
+                            while (rd.Read())
+                            {
+                                list.Add(new OuterSource
+                                {
+                                    Id = Convert.ToInt32(rd["id"]),
+                                    EmpName = rd["emp_name"].ToString(),
+                                    mobileNo = Convert.ToInt64(rd["emp_mobile"]),
+                                    email = rd["emp_email"].ToString(),
+                                    joiningdate = rd["joiningdate"].ToString(),
+                                    gender = rd["emp_gender"].ToString()
+                                });
+                            }
+                        }
                     }
+                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\"", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return list;
             }
@@ -1060,35 +1078,48 @@ namespace RemoteSensingProject.Models.ProjectManager
                 con.Close();
             }
         }
-        public List<GetConclusion> getConclusionForMeeting(int meetingId, int userId)
+        public List<GetConclusion> getConclusionForMeeting(int meetingId, int userId,int? limit = null,int? page = null)
         {
             try
             {
                 List<GetConclusion> _list = new List<GetConclusion>();
-
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_meetingConslusion", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectConclusionForProjectManager");
-                cmd.Parameters.AddWithValue("@memberId", userId);
-                cmd.Parameters.AddWithValue("@meeting", meetingId);
                 con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-
-                if (sdr.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managemeetingconclusion_cursor", con,tran))
                 {
-                    while (sdr.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "selectConclusionForProjectManager");
+                    cmd.Parameters.AddWithValue("@v_id", 0);
+                    cmd.Parameters.AddWithValue("@v_memberid", userId);
+                    cmd.Parameters.AddWithValue("@v_meeting", meetingId);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : 0);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : 0);
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\"; ", con, tran))
+                    using (var sdr = fetchCmd.ExecuteReader())
                     {
-                        _list.Add(new GetConclusion
+
+                        if (sdr.HasRows)
                         {
-                            Id = Convert.ToInt32(sdr["id"]),
-                            Conclusion = sdr["conclusion"].ToString(),
-                            FollowDate = sdr["nextFollow"] != DBNull.Value ? Convert.ToDateTime(sdr["nextFollow"]).ToString("dd-MM-yyyy") : "N/A"
-                        });
+                            while (sdr.Read())
+                            {
+                                _list.Add(new GetConclusion
+                                {
+                                    Id = Convert.ToInt32(sdr["id"]),
+                                    Conclusion = sdr["conclusion"].ToString(),
+                                    FollowDate = sdr["nextFollow"] != DBNull.Value ? Convert.ToDateTime(sdr["nextFollow"]).ToString("dd-MM-yyyy") : "N/A"
+                                });
 
 
+                            }
+                        }
                     }
-
-                    sdr.Close();
+                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return _list;
             }
@@ -1156,32 +1187,36 @@ namespace RemoteSensingProject.Models.ProjectManager
             NpgsqlTransaction tran = con.BeginTransaction();
             try
             {
-                cmd = new NpgsqlCommand("sp_manageOutSourceTask", con, tran);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "createTask");
-                cmd.Parameters.AddWithValue("@empId", ost.empId);
-                cmd.Parameters.AddWithValue("@title", ost.title);
-                cmd.Parameters.AddWithValue("@description", ost.description);
-                cmd.Parameters.Add("@taskId", NpgsqlDbType.Integer);
-                cmd.Parameters["@taskId"].Direction = ParameterDirection.Output;
-                int i = cmd.ExecuteNonQuery();
-                int taskId = Convert.ToInt32(cmd.Parameters["@taskId"].Value != DBNull.Value ? cmd.Parameters["@taskId"].Value : 0);
-                if (i > 0 && taskId > 0 && ost.outSourceId.Length > 0)
+                cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, null::int, @v_empid, @v_title, @v_description, null::text, null::smallint, @v_taskid, NULL, NULL)", con, tran);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@v_action", "createTask");
+                cmd.Parameters.AddWithValue("@v_empid", ost.empId);
+                cmd.Parameters.AddWithValue("@v_title", ost.title);
+                cmd.Parameters.AddWithValue("@v_description", ost.description);
+                var p_taskid = new NpgsqlParameter("v_taskid", NpgsqlTypes.NpgsqlDbType.Integer)
+                {
+                    Direction = ParameterDirection.InputOutput,
+                    Value = 0 // must be set!
+                };
+                cmd.Parameters.Add(p_taskid);
+                cmd.ExecuteNonQuery();
+                int taskId = Convert.ToInt32(cmd.Parameters["@v_taskid"].Value != DBNull.Value ? cmd.Parameters["@v_taskid"].Value : 0);
+                if (taskId > 0 && ost.outSourceId.Length > 0)
                 {
                     foreach (var item in ost.outSourceId)
                     {
                         cmd.Dispose();
-                        cmd = new NpgsqlCommand("sp_manageOutSourceTask", con, tran);
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@action", "assignTask");
-                        cmd.Parameters.AddWithValue("@empId", item);
-                        cmd.Parameters.AddWithValue("@id", taskId);
-                        i += cmd.ExecuteNonQuery();
+                        cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, @v_id, @v_empid, NULL, NULL, null::text, null::smallint, NULL, NULL, NULL)", con, tran);
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("@v_action", "assignTask");
+                        cmd.Parameters.AddWithValue("@v_empid", item);
+                        cmd.Parameters.AddWithValue("@v_id", taskId);
+                        cmd.ExecuteNonQuery();
                     }
                 }
 
                 tran.Commit();
-                return i > 0;
+                return true;
             }
             catch (Exception ex)
             {
@@ -1196,33 +1231,47 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<OutSourceTask> taskList(int empId)
+        public List<OutSourceTask> taskList(int empId,int? limit = null,int? page = null)
         {
             try
             {
                 List<OutSourceTask> list = new List<OutSourceTask>();
-                cmd = new NpgsqlCommand("sp_manageOutSourceTask", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectAllTask");
-                cmd.Parameters.AddWithValue("@empId", empId);
                 con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageoutsource_cursor", con, tran))
                 {
-                    while (rd.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "selectAllTask");
+                    cmd.Parameters.AddWithValue("@v_id", empId);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var rd = fetchCmd.ExecuteReader())
                     {
-                        list.Add(new OutSourceTask
+                        if (rd.HasRows)
                         {
-                            Id = Convert.ToInt32(rd["id"]),
-                            title = rd["title"].ToString(),
-                            description = rd["description"].ToString(),
-                            completeStatus = Convert.ToBoolean(rd["completeStatus"])
-                        });
+                            while (rd.Read())
+                            {
+                                list.Add(new OutSourceTask
+                                {
+                                    Id = Convert.ToInt32(rd["id"]),
+                                    title = rd["title"].ToString(),
+                                    description = rd["description"].ToString(),
+                                    completeStatus = Convert.ToBoolean(rd["completeStatus"])
+                                });
+                            }
+                        }
                     }
+                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return list;
             }
-            catch (Exception ex)
+                catch (Exception ex)
             {
                 throw ex;
             }
@@ -1239,27 +1288,39 @@ namespace RemoteSensingProject.Models.ProjectManager
             try
             {
                 List<OuterSource> list = new List<OuterSource>();
-                cmd = new NpgsqlCommand("sp_manageOutSourceTask", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "ViewTaskEmpStatus");
-                cmd.Parameters.AddWithValue("@id", taskId);
                 con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageoutsource_cursor", con))
                 {
-                    while (rd.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "ViewTaskEmpStatus");
+                    cmd.Parameters.AddWithValue("@v_id", taskId);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var rd = fetchCmd.ExecuteReader())
                     {
-                        list.Add(new OuterSource
+                        if (rd.HasRows)
                         {
-                            Id = Convert.ToInt32(rd["id"]),
-                            EmpName = rd["emp_name"].ToString(),
-                            mobileNo = Convert.ToInt64(rd["emp_mobile"]),
-                            email = rd["emp_email"].ToString(),
-                            gender = rd["emp_gender"].ToString(),
-                            completeStatus = Convert.ToBoolean(rd["completeStatus"]),
-                            message = rd["response"].ToString()
-                        });
+                            while (rd.Read())
+                            {
+                                list.Add(new OuterSource
+                                {
+                                    Id = Convert.ToInt32(rd["id"]),
+                                    EmpName = rd["emp_name"].ToString(),
+                                    mobileNo = Convert.ToInt64(rd["emp_mobile"]),
+                                    email = rd["emp_email"].ToString(),
+                                    gender = rd["emp_gender"].ToString(),
+                                    completeStatus = Convert.ToBoolean(rd["completeStatus"]),
+                                    message = rd["response"].ToString()
+                                });
+                            }
+                        }
                     }
+                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\"", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return list;
             }
@@ -1279,12 +1340,13 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_manageOutSourceTask", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "updateTaskStatus");
-                cmd.Parameters.AddWithValue("@id", taskId);
+                cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, @v_id, NULL, NULL, NULL, NULL::text, NULL::smallint, NULL, NULL, NULL)", con);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@v_action", "updateTaskStatus");
+                cmd.Parameters.AddWithValue("@v_id", taskId);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch (Exception ex)
             {
