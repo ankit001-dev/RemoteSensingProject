@@ -1533,11 +1533,11 @@ namespace RemoteSensingProject.ApiServices
         #region Reimbursement
         [HttpGet]
         [Route("api/GetReimbursementList")]
-        public IHttpActionResult GetReimbursementList()
+        public IHttpActionResult GetReimbursementList(int page, int limit)
         {
             try
             {
-                var data = _managerservice.GetReimbursements();
+                var data = _managerservice.GetReimbursements(page, limit);
                 return Ok(new
                 {
                     status = data.Any(),
