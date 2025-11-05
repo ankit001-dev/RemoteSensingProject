@@ -548,7 +548,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Reimbursement_Form()
         {
             int id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.GetReimbursements(null, null, null, id);
+            var res = _managerServices.GetReimbursements(null, null, null, id, "getSpecificUserData");
             ViewData["reimlist"] = res;
             return View();
         }
@@ -642,11 +642,10 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Tour_Proposal()
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.getTourList(userid);
-            var res1 = _managerServices.getProjectList(userid);
+            var res = _managerServices.getTourList(userId: userid, type: "specificUser");
+            var res1 = _managerServices.All_Project_List(userid, null, null, null);
             ViewData["projectList"] = res1;
             ViewData["tourList"] = res;
-            ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
         [HttpPost]
@@ -681,7 +680,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult TourProposal_Report(string req)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["tourList"] = req == "approved" ? _managerServices.getTourList(userid).Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _managerServices.getTourList(userid).Where(d => d.newRequest && d.adminappr == false).ToList() : req == "pending" ? _managerServices.getTourList(userid).Where(d => d.newRequest == true && d.adminappr == false).ToList() : _managerServices.getTourList(userid);
+            ViewData["tourList"] = req == "approved" ? _managerServices.getTourList(userId:userid, type: "specificUser").Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _managerServices.getTourList(userId: userid, type: "specificUser").Where(d => d.newRequest && d.adminappr == false).ToList() : req == "pending" ? _managerServices.getTourList(userId: userid, type: "specificUser").Where(d => d.newRequest == true && d.adminappr == false).ToList() : _managerServices.getTourList(userId: userid, type: "specificUser");
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();

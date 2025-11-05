@@ -2791,65 +2791,6 @@ namespace RemoteSensingProject.Models.Admin
         }
         #endregion
 
-        public List<AdminReimbursement> ReinbursementReport(int? limit = null,int? page = null)
-        {
-            try
-            {
-                con.Open();
-                List<AdminReimbursement> list = new List<AdminReimbursement>();
-                using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_managereimbursement_cursor", con, tran))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("v_action", "selectReinbursementReport");
-                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-                    string cursorName = (string)cmd.ExecuteScalar();
-                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
-                    using (var res = fetchCmd.ExecuteReader())
-                    {
-                        if (res.HasRows)
-                        {
-                            while (res.Read())
-                            {
-                                list.Add(new AdminReimbursement
-                                {
-                                    type = res["type"].ToString(),
-                                    EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
-                                    amount = Convert.ToDecimal(res["amount"]),
-                                    approveAmount = Convert.ToDecimal(res["apprAmt"] != DBNull.Value ? res["apprAmt"] : 0),
-                                    userId = Convert.ToInt32(res["userId"]),
-                                    id = Convert.ToInt32(res["id"]),
-                                    appr_status = Convert.ToBoolean(res["Apprstatus"]),
-                                    newRequest = Convert.ToBoolean(res["newStatus"]),
-                                    status = Convert.ToBoolean(res["apprAmountStatus"] != DBNull.Value ? res["apprAmountStatus"] : false),
-                                    chequeNum = res["chequeNum"].ToString(),
-                                    chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : "",
-                                    remark = res["remark"].ToString()
-                                });
-                            }
-                        }
-                    }
-                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
-                    {
-                        closeCmd.ExecuteNonQuery();
-                    }
-                    tran.Commit();
-                }
-                return list;
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
         #endregion
 
         #region Raised Problem

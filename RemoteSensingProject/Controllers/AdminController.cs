@@ -558,7 +558,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult ReimbursementRequest()
         {
-            ViewData["ReimBurseData"] = _managerServices.GetReimbursements();
+            ViewData["ReimBurseData"] = _managerServices.GetReimbursements(type: "selectAll");
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
@@ -649,7 +649,20 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Reimbursement_Report(string req)
         {
             ViewData["totalProjectManager"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            ViewData["totalReinursementReport"] = req=="approved"? _adminServices.ReinbursementReport().Where(d => d.newRequest==false && d.appr_status == true).ToList():req== "rejected" ? _adminServices.ReinbursementReport().Where(d=> d.newRequest==false && d.appr_status==false).ToList(): _adminServices.ReinbursementReport();
+            List<Reimbursement> data = _managerServices.GetReimbursements(type: "selectReinbursementReport");
+            if (!string.IsNullOrWhiteSpace(req))
+            {
+                if (req.Equals("approved"))
+                {
+                    data = data.Where(d => d.newRequest == false && d.apprstatus == true).ToList();
+                }
+                else if (req.Equals("rejected"))
+                {
+                    data = data.Where(d => d.newRequest == false && d.apprstatus == false).ToList();
+                }
+            }
+            
+            ViewData["totalReinursementReport"] = data;
             return View();
         }
         public ActionResult TourProposal_Report(string req)
