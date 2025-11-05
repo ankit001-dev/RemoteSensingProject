@@ -1098,15 +1098,14 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getHiringList")]
         public IHttpActionResult getHiringList(int id)
-
-
         {
             try
             {
-                var data = _managerService.GetHiringList(id);
+                var data = _managerService.GetHiringVehicles(id:id, type: "GetById");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1129,7 +1128,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.GetHiringVehicles(userId);
+                var data = _managerService.GetHiringVehicles(userId:userId, type: "projectManager");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1558,7 +1557,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.GetHiringVehicles(userId);
+                var data = _managerService.GetHiringVehicles(userId:userId, type: "projectManager");
                 return Ok(new
                 {
                     status = data.Any(),

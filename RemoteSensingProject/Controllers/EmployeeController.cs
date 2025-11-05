@@ -609,9 +609,9 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Hiring_Vehicle()
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.getProjectList(userid);
+            var res = _managerServices.All_Project_List(userid, null, null, null);
             ViewData["projectlist"] = res;
-            var res1 = _managerServices.GetHiringVehicles(userid);
+            var res1 = _managerServices.GetHiringVehicles(userId: userid, type: "projectManager");
             ViewData["hiringList"] = res1;
             ViewData["projects"] = _adminServices.Project_List();
             return View();
@@ -674,7 +674,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Reimbursement_Report(string req)
         {
             int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["totalReinursementReport"] = req == "approved" ? _managerServices.reinbursementReport(userId).Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _managerServices.reinbursementReport(userId).Where(d => d.newRequest == false && d.adminappr == false).ToList() : _managerServices.reinbursementReport(userId);
+            ViewData["totalReinursementReport"] = req == "approved" ? _managerServices.GetReimbursements(managerId:userId, type: "selectReinbursementforUserReport").Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _managerServices.GetReimbursements(managerId: userId, type: "selectReinbursementforUserReport").Where(d => d.newRequest == false && d.adminappr == false).ToList() : _managerServices.GetReimbursements(managerId: userId, type: "selectReinbursementforUserReport");
             return View();
         }
         public ActionResult TourProposal_Report(string req)
@@ -688,9 +688,9 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Hiring_Report(string req)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.getProjectList(userid);
+            var res = _managerServices.All_Project_List(userid, null, null, null);
             ViewData["projectlist"] = res;
-            var res1 = req == "approved" ? _managerServices.GetHiringVehicles(userid).Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _managerServices.GetHiringVehicles(userid).Where(d => d.newRequest == false && d.adminappr == false).ToList() : req == "pending" ? _managerServices.GetHiringVehicles(userid).Where(d => d.newRequest == true && d.adminappr == false).ToList() : _managerServices.GetHiringVehicles(userid);
+            var res1 = req == "approved" ? _managerServices.GetHiringVehicles(userId: userid, type: "projectManager").Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _managerServices.GetHiringVehicles(userId: userid, type: "projectManager").Where(d => d.newRequest == false && d.adminappr == false).ToList() : req == "pending" ? _managerServices.GetHiringVehicles(userId: userid, type: "projectManager").Where(d => d.newRequest == true && d.adminappr == false).ToList() : _managerServices.GetHiringVehicles(userId: userid, type: "projectManager");
             ViewData["hiringList"] = res1;
             ViewData["projects"] = _adminServices.Project_List();
             return View();

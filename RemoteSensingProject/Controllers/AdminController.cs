@@ -9,7 +9,6 @@ using RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.Accounts;
 using Newtonsoft.Json;
 
-
 namespace RemoteSensingProject.Controllers
 {
     [Authorize(Roles ="admin")]
@@ -200,7 +199,8 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult InsertProject(createProjectModel pm)
         {
-            if(pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
+
+            if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
             {
                 pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
                 pm.pm.projectDocumentUrl = Path.Combine("/ProjectContent/Admin/ProjectDocs/", pm.pm.projectDocumentUrl);
