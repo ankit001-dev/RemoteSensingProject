@@ -1366,8 +1366,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Reimbursement", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("CALL sp_Reimbursement(p_vrno => @vrNo, p_date => @date, p_particulars => @particulars, p_items => @items, p_userid => @userId, p_amount => @amount, p_purpose => @purpose, p_type => @type, p_action => @action)", con);
                 cmd.Parameters.AddWithValue("@vrNo", data.vrNo);
                 cmd.Parameters.AddWithValue("@date", data.date);
                 cmd.Parameters.AddWithValue("@particulars", data.particulars);
@@ -1378,9 +1377,11 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@type", data.type);
                 cmd.Parameters.AddWithValue("@action", "insert");
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+
+                return true;
             }
-            catch
+            catch(Exception ex)
             {
                 return false;
             }
@@ -1398,14 +1399,14 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Reimbursement", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("CALL sp_Reimbursement(p_action => @action, p_userid => @userId, p_type => @type, p_id => @id)", con);
                 cmd.Parameters.AddWithValue("@action", "submitReinbursementForm");
                 cmd.Parameters.AddWithValue("@userId", userId);
                 cmd.Parameters.AddWithValue("@type", type);
                 cmd.Parameters.AddWithValue("@id", Id);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch
             {
@@ -1423,7 +1424,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public List<Reimbursement> GetReimbursements(int? page = null, int? limit = null, int? id = null, int? managerId = null, string type = null)
         {
             try
-            {
+            { 
                 con.Open();
                 List<Reimbursement> getlist = new List<Reimbursement>();
                 using (var tran = con.BeginTransaction())
@@ -1460,6 +1461,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     id = Convert.ToInt32(res["id"]),
                                     amount = Convert.ToDecimal(res["amount"]),
                                     userId = Convert.ToInt32(res["userId"]),
+                                    subStatus = Convert.ToBoolean(res["SaveStatus"]),
+                                    adminappr = Convert.ToBoolean(res["Apprstatus"]),
                                     chequeNum = res["chequeNum"].ToString(),
                                     chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : ""
                                 });
@@ -1488,40 +1491,59 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Reimbursement> GetSpecificUserReimbursements(int userid, string type, int id)
+        public List<Reimbursement> GetSpecificUserReimbursements(int userid, string type, int id, int?page, int?limit)
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Reimbursement", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "GetSpecificTypeData");
-                cmd.Parameters.AddWithValue("@userId", userid);
-                cmd.Parameters.AddWithValue("@type", type);
-                cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
                 List<Reimbursement> getlist = new List<Reimbursement>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageReimbursement_cursor", con))
                 {
-                    while (res.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "GetSpecificTypeData");
+                    cmd.Parameters.AddWithValue("v_projectmanager", userid);
+                    cmd.Parameters.AddWithValue("v_id", id);
+                    if (string.IsNullOrWhiteSpace(type))
                     {
-                        getlist.Add(new Reimbursement
-                        {
-                            id = Convert.ToInt32(res["id"]),
-                            type = res["type"].ToString(),
-                            vrNo = res["vrNo"].ToString(),
-                            date = Convert.ToDateTime(res["date"]),
-                            particulars = res["particulars"].ToString(),
-                            items = res["items"].ToString(),
-                            amount = Convert.ToDecimal(res["amount"]),
-                            purpose = res["purpose"].ToString(),
-                            status = Convert.ToBoolean(res["status"]),
-                            newRequest = Convert.ToBoolean(res["newRequest"]),
-                            adminappr = Convert.ToBoolean(res["admin_appr"])
-                        });
+                        cmd.Parameters.AddWithValue("v_type", DBNull.Value);
                     }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("v_type", type);
+                    }
+                    cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? limit : 0);
+                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? page : 0);
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var res = fetchCmd.ExecuteReader())
+                    {
+                        if (res.HasRows)
+                        {
+                            while (res.Read())
+                            {
+                                getlist.Add(new Reimbursement
+                                {
+                                    id = Convert.ToInt32(res["id"]),
+                                    type = res["type"].ToString(),
+                                    vrNo = res["vrNo"].ToString(),
+                                    date = Convert.ToDateTime(res["date"]),
+                                    particulars = res["particulars"].ToString(),
+                                    items = res["items"].ToString(),
+                                    amount = Convert.ToDecimal(res["amount"]),
+                                    purpose = res["purpose"].ToString(),
+                                    status = Convert.ToBoolean(res["status"]),
+                                    newRequest = Convert.ToBoolean(res["newRequest"]),
+                                    adminappr = Convert.ToBoolean(res["admin_appr"])
+                                });
+                            }
+                        }
+                    }
+
+                        return getlist;
                 }
-                return getlist;
             }
             catch (Exception ex)
             {
@@ -1545,8 +1567,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Tourproposal", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("CALL sp_Tourproposal(v_userid => @userId, v_projectid => @projectId, v_dateofdept => @dateOfDept, v_place => @place, v_periodfrom => @periodFrom, v_periodto => @periodTo, v_returndate => @returnDate, v_purpose => @purpose, v_action => @action)", con);
                 cmd.Parameters.AddWithValue("@userId", data.userId);
                 cmd.Parameters.AddWithValue("@projectId", data.projectId);
                 cmd.Parameters.AddWithValue("@dateOfDept", data.dateOfDept);
@@ -1557,7 +1578,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@purpose", data.purpose);
                 cmd.Parameters.AddWithValue("@action", "insert");
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch
             {
@@ -1573,38 +1595,58 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<tourProposal> getTourList(int userId)
+        public List<tourProposal> getTourList(int?userId = null, int?id = null, string type = null, int?page = null, int?limit = null)
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Tourproposal", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectAll");
-                cmd.Parameters.AddWithValue("@userId", userId);
                 con.Open();
                 List<tourProposal> getlist = new List<tourProposal>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managetourproposal_cursor", con))
                 {
-                    while (res.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "selectAlltour");
+                    cmd.Parameters.AddWithValue("v_projectmanager", userId.HasValue ? userId : 0);
+                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? id : 0);
+                    if (string.IsNullOrWhiteSpace(type))
                     {
-                        getlist.Add(new tourProposal
+                        cmd.Parameters.AddWithValue("v_type", DBNull.Value);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("v_type", type);
+                    }
+                    cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? limit : 0);
+                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? page : 0);
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var res = fetchCmd.ExecuteReader())
+                    {
+                        if (res.HasRows)
                         {
-                            id = Convert.ToInt32(res["id"]),
-                            projectName = Convert.ToString(res["title"]),
-                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
-                            place = Convert.ToString(res["place"]),
-                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
-                            periodTo = Convert.ToDateTime(res["periodTo"]),
-                            returnDate = Convert.ToDateTime(res["returnDate"]),
-                            purpose = Convert.ToString(res["purpose"]),
-                            newRequest = Convert.ToBoolean(res["newRequest"]),
-                            adminappr = Convert.ToBoolean(res["adminappr"]),
-                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
-                        });
+                            while (res.Read())
+                            {
+                                getlist.Add(new tourProposal
+                                {
+                                    id = Convert.ToInt32(res["id"]),
+                                    projectName = Convert.ToString(res["title"]),
+                                    dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
+                                    place = Convert.ToString(res["place"]),
+                                    periodFrom = Convert.ToDateTime(res["periodFrom"]),
+                                    periodTo = Convert.ToDateTime(res["periodTo"]),
+                                    returnDate = Convert.ToDateTime(res["returnDate"]),
+                                    purpose = Convert.ToString(res["purpose"]),
+                                    newRequest = Convert.ToBoolean(res["newRequest"]),
+                                    adminappr = Convert.ToBoolean(res["adminappr"]),
+                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
+                                });
+                            }
+                        }
+                        return getlist;
                     }
                 }
-                return getlist;
             }
             catch (Exception ex)
             {

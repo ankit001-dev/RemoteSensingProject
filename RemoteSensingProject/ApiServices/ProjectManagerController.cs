@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
 using System.Xml.Linq;
+using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Grpc.Core;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -946,7 +947,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.GetReimbursements(page, limit, null, userId);
+                var data = _managerService.GetReimbursements(page, limit, null, userId, "getSpecificUserData");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -965,13 +966,14 @@ namespace RemoteSensingProject.ApiServices
         }
 
 
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/ViewReinbursementBytype")]
-        public IHttpActionResult viewReinbursement(int userId, string type, int id, int page, int limit)
+        public IHttpActionResult viewReinbursement(int userId, string type, int id, int?page, int?limit)
         {
             try
             {
-                var data = _managerService.GetReimbursements(page, limit, id, userId, type);
+                var data = _managerService.GetSpecificUserReimbursements(userId, type, id, page, limit);
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1030,11 +1032,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/GetTourForUserId")]
-        public IHttpActionResult gettour(int userId)
+        public IHttpActionResult gettour(int userId, int page, int limit)
         {
             try
             {
-                var data = _managerService.getTourList(userId);
+                var data = _managerService.getTourList(userId: userId,page:page, limit: limit, type: "specificUser");
                 return Ok(new
                 {
                     status = data.Any(),

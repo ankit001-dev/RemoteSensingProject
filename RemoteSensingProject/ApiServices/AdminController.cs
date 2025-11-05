@@ -1720,7 +1720,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _adminServices.ReinbursementReport();
+                var data = _managerservice.GetReimbursements(type: "selectReinbursementReport");
                 return Ok(new
                 {
                     status = data.Any(),
