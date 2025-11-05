@@ -2864,10 +2864,10 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectProblemsforAdmin");
-                    cmd.Parameters.AddWithValue("v_projectmanager", managerId);
+                    cmd.Parameters.AddWithValue("v_projectmanager", managerId.HasValue ? managerId : 0);
                     cmd.Parameters.AddWithValue("v_id", id.HasValue ? id : 0);
-                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? page : 0);
-                    cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? limit : 0);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\"", con, tran))
                     using (var res = fetchCmd.ExecuteReader())
