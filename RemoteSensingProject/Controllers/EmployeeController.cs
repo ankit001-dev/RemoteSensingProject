@@ -30,7 +30,7 @@ namespace RemoteSensingProject.Controllers
             userObj = _managerServices.getManagerDetails(managerName);
             var TotalCount = _managerServices.DashboardCount(Convert.ToInt32(userObj.userId));
             DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
-            ViewData["emplist"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null,null).Where(d=>d.AssignDate>=twoYearsAgo).ToList();
+            ViewData["emplist"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null,null,null).Where(d=>d.AssignDate>=twoYearsAgo).ToList();
             return View(TotalCount);
         }
         public ActionResult BindOverallCompletionPercentage()
@@ -110,6 +110,11 @@ namespace RemoteSensingProject.Controllers
             if (userObj != null)
             {
                 pm.pm.ProjectManager = userObj.userId;
+                pm.pm.createdBy = "projectManager";
+            }
+            else
+            {
+                return RedirectToAction("login","login");
             }
             if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
             {
@@ -128,8 +133,8 @@ namespace RemoteSensingProject.Controllers
                     }
                 }
             }
-
-            bool res = _managerServices.addManagerProject(pm);
+            
+            bool res = _adminServices.addProject(pm);
 
             if (res)
             {
@@ -159,14 +164,14 @@ namespace RemoteSensingProject.Controllers
             var managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
-            ViewBag.ProjectList = _managerServices.Project_List(userObj.userId);
+            ViewBag.ProjectList = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "ManagerProject");
             return View();
         }
 
         public ActionResult All_Project_List()
         {
             var userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null);
+            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, null);
             return View();
         }
 
@@ -178,7 +183,7 @@ namespace RemoteSensingProject.Controllers
             userObj = _managerServices.getManagerDetails(managerName);
 
             List<ProjectList> _list = new List<ProjectList>();
-            ViewData["AssignedProjectList"] = _managerServices.getAllProjectByManager(userObj.userId);
+            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AdminProject");
             return View();
         }
         public ActionResult GetAllProjectByManager()
@@ -187,8 +192,8 @@ namespace RemoteSensingProject.Controllers
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
 
-            List<ProjectList> _list = new List<ProjectList>();
-            _list = _managerServices.getAllProjectByManager(userObj.userId);
+            List<Project_model> _list = new List<Project_model>();
+            _list = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AssignedProject");
             return Json(new { _list = _list }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult GetProjecDatatById(int Id)
@@ -464,16 +469,8 @@ namespace RemoteSensingProject.Controllers
             dynamic noticeList = null;
             var managerName = User.Identity.Name;
             UserCredential userObj = _managerServices.getManagerDetails(managerName);
-            if (projectId.HasValue)
-            {
-                noticeList = _adminServices.getNoticeList().Where(e => e.ProjectManagerId == projectId).ToList();
-            }
-            else
-            {
-                noticeList = _managerServices.getNoticeList(userObj.userId);
-
-
-            }
+            noticeList = _adminServices.getNoticeList(null, null, projectId, Convert.ToInt32(userObj.userId));
+           
             ViewBag.ProjectList = _adminServices.Project_List();
 
             ViewData["NoticeList"] = noticeList;
@@ -497,7 +494,8 @@ namespace RemoteSensingProject.Controllers
             var managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
-            ViewBag.ProjectProblemList = _managerServices.getAllSubOrdinateProblem(userObj.userId);
+            ViewBag.ProjectProblemList = _adminServices.getProblemList(null, null, null, Convert.ToInt32(userObj.userId));
+              
             return View();
         }
         [HttpGet]
@@ -522,35 +520,35 @@ namespace RemoteSensingProject.Controllers
         public ActionResult All_Project_Report(string req)
         {
             var userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewData["ProjectList"] = req == "completed" ? _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null).Where(d => d.CompletionDate < DateTime.Now && d.StartDate < DateTime.Now && d.completestatus == true).ToList() : req == "delay" ? _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null).Where(d => d.completestatus == false && d.CompletionDate <= DateTime.Now).ToList() : req == "ongoing" ? _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null).Where(d => d.StartDate < DateTime.Now && d.CompletionDate > DateTime.Now).ToList() : _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null);
-            return View();
+            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, req);
+                return View();
         }
 
         public ActionResult Pending_Project_Report()
         {
             var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-            ViewData["NotStartedProject"] = _managerServices.GetNotStartedProject_List(userObj);
+            ViewData["NotStartedProject"] = _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "Upcoming");
             return View();
         }
 
         public ActionResult Complete_Project_Report()
         {
             var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-            ViewData["CompleteProjectList"] = _managerServices.GetCompleteProject_List(userObj);
+            ViewData["CompleteProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "Complete");
             return View();
         }
 
         public ActionResult Expense_Report()
         {
             var userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewBag.ProjectList = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null);
+            ViewBag.ProjectList = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, null);
             return View();
         }
 
         public ActionResult Reimbursement_Form()
         {
             int id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.GetReinbursementDatabyType(id);
+            var res = _managerServices.GetReimbursements(null, null, null, id);
             ViewData["reimlist"] = res;
             return View();
         }
@@ -586,7 +584,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult ViewReinbursementListByType(string type, int id)
         {
             int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _managerServices.GetSpecificUserReimbursements(userId, type, id);
+            var data = _managerServices.GetReimbursements(null, null, id, userId, type);
             return Json(new
             {
                 status = data.Any(),
@@ -701,7 +699,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult RaiseProblem()
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["projectList"] = _managerServices.All_Project_List(userid, null, null);
+            ViewData["projectList"] = _managerServices.All_Project_List(userid, null, null, null);
             ViewData["ProblemList"] = _managerServices.getProblems(userid);
             return View();
         }
@@ -883,7 +881,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult EmpMonthlyReport()
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["projectList"] = _managerServices.All_Project_List(userid, null, null);
+            ViewData["projectList"] = _managerServices.All_Project_List(userid, null, null, null);
             ViewData["ReportList"] = _managerServices.GetEmpReport(userid);
             return View();
         }

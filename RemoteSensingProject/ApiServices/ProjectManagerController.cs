@@ -388,11 +388,11 @@ namespace RemoteSensingProject.ApiServices
         #region Assigned PRoject
         [HttpGet]
         [Route("api/managerAssignedProject")]
-        public IHttpActionResult AssignedPRoject(int userId)
+        public IHttpActionResult AssignedPRoject(int userId, int page, int limit)
         {
             try
             {
-                var data = _managerService.getAllProjectByManager(userId.ToString());
+                var data = _managerService.All_Project_List(userId, page, limit, "AssignedProject");
                 if (data.Any())
                 {
                     return Ok(new
@@ -428,11 +428,11 @@ namespace RemoteSensingProject.ApiServices
         #region Project
         [HttpGet]
         [Route("api/getManagerProject")]
-        public IHttpActionResult GetProjectList(int userId)
+        public IHttpActionResult GetProjectList(int userId, int page, int limit)
         {
             try
             {
-                var data = _managerService.Project_List(userId.ToString());
+                var data = _managerService.All_Project_List(userId, limit, page, "ManagerProject");
                 if (data.Any())
                 {
                     return Ok(new
@@ -471,7 +471,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.All_Project_List(userId, limit, page).Where(d => d.ProjectStatus).ToList();
+                var data = _managerService.All_Project_List(userId, limit, page, "Complete");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -496,7 +496,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.All_Project_List(userId, limit, page).Where(d => d.CompletionDate < DateTime.Now && !d.ProjectStatus).ToList();
+                var data = _managerService.All_Project_List(userId, limit, page, "Delay");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -520,7 +520,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.All_Project_List(userId, limit, page).Where(d => d.StartDate > DateTime.Now && d.CompletionDate < DateTime.Now).ToList();
+                var data = _managerService.All_Project_List(userId, limit, page, "Ongoing");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -545,7 +545,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.All_Project_List(userId, limit, page);
+                var data = _managerService.All_Project_List(userId, limit, page, null);
                 return Ok(new
                 {
                     status = data.Any(),
@@ -686,9 +686,9 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getProblemListByManager")]
-        public IHttpActionResult getProblemListByManager(string userId)
+        public IHttpActionResult getProblemListByManager(int userId, int page, int limit)
         {
-            var res = _managerService.getAllSubOrdinateProblem(userId);
+            var res = _adminServices.getProblemList(page, limit, null, userId);
 
 
             return Ok(new { status = true, message = "data retrieved", data = res });
@@ -942,11 +942,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getReimbursementByUserId")]
-        public IHttpActionResult getReimbursement(int userId)
+        public IHttpActionResult getReimbursement(int userId, int page, int limit)
         {
             try
             {
-                var data = _managerService.GetReinbursementDatabyType(userId);
+                var data = _managerService.GetReimbursements(page, limit, null, userId);
                 return Ok(new
                 {
                     status = data.Any(),
@@ -967,11 +967,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/ViewReinbursementBytype")]
-        public IHttpActionResult viewReinbursement(int userId, string type, int id)
+        public IHttpActionResult viewReinbursement(int userId, string type, int id, int page, int limit)
         {
             try
             {
-                var data = _managerService.GetSpecificUserReimbursements(userId, type, id);
+                var data = _managerService.GetReimbursements(page, limit, id, userId, type);
                 return Ok(new
                 {
                     status = data.Any(),

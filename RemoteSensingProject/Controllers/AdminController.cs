@@ -217,7 +217,7 @@ namespace RemoteSensingProject.Controllers
                     }
                 }
             }
-
+            pm.pm.createdBy = "admin";
             bool res = _adminServices.addProject(pm);
             if (res)
             {

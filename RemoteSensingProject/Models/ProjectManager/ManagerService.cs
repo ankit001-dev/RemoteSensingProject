@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Math;
 using Npgsql;
 using NpgsqlTypes;
 using RemoteSensingProject.Models.MailService;
@@ -85,52 +86,6 @@ namespace RemoteSensingProject.Models.ProjectManager
         #endregion 
 
         #region /* Assign Project */
-        public List<ProjectList> getAllProjectByManager(string userId)
-        {
-            List<ProjectList> _list = new List<ProjectList>();
-            ProjectList obj = null;
-            try
-            {
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "GetAllProjectByManager");
-                cmd.Parameters.AddWithValue("@projectManager", userId);
-                con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                while (sdr.Read())
-                {
-                    obj = new ProjectList();
-                    obj.Id = Convert.ToInt32(sdr["id"]);
-                    obj.Title = sdr["title"].ToString();
-                    obj.AssignDateString = Convert.ToDateTime(sdr["AssignDate"]).ToString("dd-MM-yyyy");
-                    obj.StartDateString = Convert.ToDateTime(sdr["StartDate"]).ToString("dd-MM-yyyy");
-                    obj.StartDate = Convert.ToDateTime(sdr["StartDate"]);
-                    obj.CompletionDate = Convert.ToDateTime(sdr["CompletionDate"]);
-                    obj.CompletionDatestring = Convert.ToDateTime(sdr["CompletionDate"]).ToString("dd-MM-yyyy");
-                    obj.Status = sdr["status"].ToString();
-                    obj.CompleteionStatus = Convert.ToInt32(sdr["CompleteStatus"]);
-                    obj.ApproveStatus = Convert.ToInt32(sdr["ApproveStatus"]);
-                    obj.budget = (float)Convert.ToDecimal(sdr["budget"]);
-                    obj.stage = Convert.ToBoolean(sdr["stage"].ToString());
-                    obj.physicalPercent = Convert.ToDecimal(sdr["completionPercentage"]);
-                    obj.projectType = sdr["projectType"].ToString();
-                    obj.overAllPercent = Convert.ToDecimal(sdr["overallPercentage"]);
-                    obj.Percentage = (sdr["financialStatusPercentage"] != DBNull.Value ? Convert.ToDecimal(sdr["financialStatusPercentage"]) : (decimal)0.00);
-                    _list.Add(obj);
-                    obj.projectCode = sdr["projectCode"] != DBNull.Value ? sdr["projectCode"].ToString() : "N/A";
-                }
-                sdr.Close();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                con.Close();
-            }
-            return _list;
-        }
 
         public UserCredential getManagerDetails(string managerName)
         {
@@ -270,65 +225,19 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Project_model> Project_List(string userId)
-        {
-            try
-            {
-                List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getManagerProject");
-                cmd.Parameters.AddWithValue("@projectManager", userId);
-                con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        list.Add(new Project_model
-                        {
-                            Id = Convert.ToInt32(rd["id"]),
-                            ProjectTitle = rd["title"].ToString(),
-                            AssignDate = Convert.ToDateTime(rd["assignDate"]),
-                            CompletionDate = Convert.ToDateTime(rd["completionDate"]),
-                            StartDate = Convert.ToDateTime(rd["startDate"]),
-                            ProjectManager = rd["name"].ToString(),
-                            ProjectBudget = Convert.ToDecimal(rd["budget"]),
-                            ProjectDescription = rd["description"].ToString(),
-                            projectDocumentUrl = rd["ProjectDocument"].ToString(),
-                            ProjectType = rd["projectType"].ToString(),
-                            ProjectStage = Convert.ToBoolean(rd["stage"]),
-                            CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
-                            ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
-                            AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
-                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
-                            projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public List<Project_model> All_Project_List( int userId, int?limit, int?page)
+        public List<Project_model> All_Project_List( int userId, int?limit, int?page, string filterType)
         {
             try
             {
                 con.Open();
                 List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_limit,@v_page)", con);
+                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_filterType,@v_limit,@v_page)", con);
                 cmd.Parameters.AddWithValue("@action", "GetAllProject");
                 cmd.Parameters.AddWithValue("@v_projectManager", userId);
+                if (string.IsNullOrWhiteSpace(filterType))
+                    cmd.Parameters.AddWithValue("@v_filterType", DBNull.Value);
+                else
+                    cmd.Parameters.AddWithValue("@v_filterType", filterType);
                 cmd.Parameters.AddWithValue("@v_id", DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
@@ -359,107 +268,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                             physicalcomplete = Convert.ToDecimal(rd["completionPercentage"]),
                             overallPercentage = Convert.ToDecimal(rd["overallPercentage"]),
                             completestatus = Convert.ToBoolean(rd["CompleteStatus"]),
-                            projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public List<Project_model> GetNotStartedProject_List(string userId)
-        {
-            try
-            {
-                List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getNotStartedProjectByManager");
-                cmd.Parameters.AddWithValue("@projectManager", userId);
-                con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        list.Add(new Project_model
-                        {
-                            Id = Convert.ToInt32(rd["id"]),
-                            ProjectTitle = rd["title"].ToString(),
-                            AssignDate = Convert.ToDateTime(rd["assignDate"]),
-                            CompletionDate = Convert.ToDateTime(rd["completionDate"]),
-                            StartDate = Convert.ToDateTime(rd["startDate"]),
-                            ProjectManager = rd["name"].ToString(),
-                            ProjectBudget = Convert.ToDecimal(rd["budget"]),
-                            ProjectDescription = rd["description"].ToString(),
-                            projectDocumentUrl = rd["ProjectDocument"].ToString(),
-                            ProjectType = rd["projectType"].ToString(),
-                            ProjectStage = Convert.ToBoolean(rd["stage"]),
-                            CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
-                            ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
-                            AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
-                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
-                            createdBy = rd["createdBy"].ToString(),
-                            projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-        public List<Project_model> GetCompleteProject_List(string userId)
-        {
-            try
-            {
-                List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getCompleteprojectByManager");
-                cmd.Parameters.AddWithValue("@projectManager", userId);
-                con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        list.Add(new Project_model
-                        {
-                            Id = Convert.ToInt32(rd["id"]),
-                            ProjectTitle = rd["title"].ToString(),
-                            AssignDate = Convert.ToDateTime(rd["assignDate"]),
-                            CompletionDate = Convert.ToDateTime(rd["completionDate"]),
-                            StartDate = Convert.ToDateTime(rd["startDate"]),
-                            ProjectManager = rd["name"].ToString(),
-                            ProjectBudget = Convert.ToDecimal(rd["budget"]),
-                            ProjectDescription = rd["description"].ToString(),
-                            projectDocumentUrl = rd["ProjectDocument"].ToString(),
-                            ProjectType = rd["projectType"].ToString(),
-                            ProjectStage = Convert.ToBoolean(rd["stage"]),
-                            CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
-                            ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
-                            AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
-                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
-                            createdBy = rd["createdBy"].ToString(),
                             projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
                         });
                     }
@@ -523,49 +331,6 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Raise_Problem> getAllSubOrdinateProblem(string projectManager)
-        {
-            try
-            {
-                List<Raise_Problem> problemList = new List<Raise_Problem>();
-                Raise_Problem obj = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageSubordinateProjectProblem", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getAllProblemListByManager");
-                cmd.Parameters.AddWithValue("@projectManager", projectManager);
-                con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
-                {
-                    while (sdr.Read())
-                    {
-                        obj = new Raise_Problem();
-                        obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
-                        obj.ProjectName = sdr["ProjectName"].ToString();
-                        obj.Title = sdr["Title"].ToString();
-                        obj.Description = sdr["Description"].ToString();
-                        obj.Attchment_Url = sdr["Attachment"].ToString();
-                        obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
-                        obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
-                        obj.projectCode = sdr["projectCode"] != DBNull.Value ? sdr["projectCode"].ToString() : "N/A";
-                        problemList.Add(obj);
-                    }
-                }
-                return problemList;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-
-        }
         public List<Raise_Problem> getAllSubOrdinateProblemById(string projectManager, int id)
         {
             try
@@ -1594,7 +1359,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Reimbursement> GetReimbursements()
+        public List<Reimbursement> GetReimbursements(int?page = null, int?limit = null, int?id = null, int?managerId = null, string type = null)
         {
             try
             {
@@ -1605,6 +1370,18 @@ namespace RemoteSensingProject.Models.ProjectManager
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAll");
+                    cmd.Parameters.AddWithValue("v_projectmanager", managerId.HasValue ? managerId : 0);
+                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? id : 0);
+                    if (string.IsNullOrWhiteSpace(type))
+                    {
+                        cmd.Parameters.AddWithValue("v_type", DBNull.Value);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("v_type", type);
+                    }
+                        cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? limit : 0);
+                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? page : 0);
 
                     string cursorName = (string)cmd.ExecuteScalar();
 
@@ -1699,51 +1476,6 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Reimbursement> GetReinbursementDatabyType(int userId)
-        {
-            try
-            {
-                List<Reimbursement> list = new List<Reimbursement>();
-                cmd = new NpgsqlCommand("sp_Reimbursement", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getSpecificUserData");
-                cmd.Parameters.AddWithValue("@userId", userId);
-                con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        list.Add(new Reimbursement
-                        {
-                            id = Convert.ToInt32(rd["id"]),
-                            type = rd["type"].ToString(),
-                            amount = Convert.ToDecimal(rd["amount"]),
-                            subStatus = Convert.ToBoolean(rd["SaveStatus"]),
-                            userId = Convert.ToInt32(rd["userId"]),
-                            chequeNum = rd["chequeNum"].ToString(),
-                            chequeDate = rd["chequeDate"] != DBNull.Value ? Convert.ToDateTime(rd["chequeDate"]).ToString("dd/MM/yyyy") : "",
-                            newRequest = Convert.ToBoolean(rd["newStatus"]),
-                            approveAmount = Convert.ToDecimal(rd["apprAmt"] != DBNull.Value ? rd["apprAmt"] : 0),
-                            //adminappr = Convert.ToBoolean("admin_appr"),
-                            //apprstatus = Convert.ToBoolean("Apprstatus"),
-                            //submitstatus = Convert.ToBoolean("SubmitStatus")
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
         #endregion
 
         #region tourproposal

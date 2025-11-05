@@ -545,7 +545,7 @@ namespace RemoteSensingProject.Models.Admin
                     ["p_projectdocument"] = pm.pm.projectDocumentUrl,
                     ["p_projecttype"] = pm.pm.ProjectType,
                     ["p_stage"] = pm.pm.ProjectStage,
-                    ["p_createdby"] = "admin",
+                    ["p_createdby"] = pm.pm.createdBy,
                     ["p_status"] = true,
                     ["p_approvestatus"] = true,
                     ["p_projectcode"] = pm.projectCode
@@ -675,9 +675,10 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_limit,@v_page)", con);
+                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_filterType,@v_limit,@v_page)", con);
                 cmd.Parameters.AddWithValue("@action", "GetAllProject");
                 cmd.Parameters.AddWithValue("@v_projectManager", DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_filterType", DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_id", DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
@@ -1090,11 +1091,9 @@ namespace RemoteSensingProject.Models.Admin
         public DashboardCount DashboardCount()
         {
             DashboardCount obj = null;
-
             try
             {
                 con.Open();
-
                 using (var tran = con.BeginTransaction())
                 using (var cmd = new NpgsqlCommand("fn_managedashboard_cursor", con))
                 {
@@ -1102,10 +1101,8 @@ namespace RemoteSensingProject.Models.Admin
                     cmd.Parameters.AddWithValue("v_action", "AdminDashboardCount");
                     cmd.Parameters.AddWithValue("v_projectmanager", 0);
                     cmd.Parameters.AddWithValue("v_sid", 0);
-
                     // Execute the function — it returns the cursor name
                     string cursorName = (string)cmd.ExecuteScalar();
-
                     // Now fetch the data from the cursor
                     using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
                     using (var sdr = fetchCmd.ExecuteReader())
@@ -1982,7 +1979,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public List<Generate_Notice> getNoticeList(int? limit = null,int? page = null)
+        public List<Generate_Notice> getNoticeList(int? limit = null,int? page = null, int?id = null, int?managerId = null)
         {
             try
             {
@@ -1995,6 +1992,8 @@ namespace RemoteSensingProject.Models.Admin
                     cmd.Parameters.AddWithValue("@v_action", "SelectNotice");
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_projectmanager", managerId.HasValue ? (object)managerId.Value : 0);
+                    cmd.Parameters.AddWithValue("@v_id", id.HasValue ? (object)id.Value : DBNull.Value);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (var res = fetchCmd.ExecuteReader())
@@ -2854,7 +2853,7 @@ namespace RemoteSensingProject.Models.Admin
         #endregion
 
         #region Raised Problem
-        public List<RaisedProblem> getProblemList()
+        public List<RaisedProblem> getProblemList(int? page = null, int?limit = null, int?id=null, int?managerId=null)
         {
             try
             {
@@ -2865,6 +2864,10 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectProblemsforAdmin");
+                    cmd.Parameters.AddWithValue("v_projectmanager", managerId);
+                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? id : 0);
+                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? page : 0);
+                    cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? limit : 0);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\"", con, tran))
                     using (var res = fetchCmd.ExecuteReader())
