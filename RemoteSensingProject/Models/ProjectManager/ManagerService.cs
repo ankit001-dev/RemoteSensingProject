@@ -1,5 +1,4 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Math;
 using Npgsql;
 using NpgsqlTypes;
 using RemoteSensingProject.Models.MailService;
@@ -9,11 +8,6 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Math;
-using Npgsql;
-using NpgsqlTypes;
-using RemoteSensingProject.Models.MailService;
 using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 
