@@ -373,7 +373,7 @@
             $.ajax({
                 url: "/api/ViewReinbursementBytype",
                 type: "Get",
-                data: { "userId": userId, "type": type, id: Id },
+                data: { "userId": userId, "type": type, id: Id, page: null, limit:null },
                 success: function (result) {
                     if (result.status) {
                         $("#apprAmttext").text(apprvAmt);

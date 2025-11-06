@@ -227,7 +227,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Project_model> All_Project_List(int userId, int? limit, int? page, string filterType)
+        public List<Project_model> All_Project_List( int userId, int?limit, int?page, string filterType, int?id = null)
         {
             try
             {
@@ -240,7 +240,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.Parameters.AddWithValue("@v_filterType", DBNull.Value);
                 else
                     cmd.Parameters.AddWithValue("@v_filterType", filterType);
-                cmd.Parameters.AddWithValue("@v_id", DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_id", id.HasValue ? id : 0);
                 cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
                 NpgsqlDataReader rd = cmd.ExecuteReader();
@@ -1505,7 +1505,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     subStatus = Convert.ToBoolean(res["SaveStatus"]),
                                     adminappr = Convert.ToBoolean(res["Apprstatus"]),
                                     chequeNum = res["chequeNum"].ToString(),
-                                    chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : ""
+                                    chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : "",
+                                    newRequest = Convert.ToBoolean(res["newStatus"]),
+                                    approveAmount = Convert.ToDecimal(res["apprAmt"] != DBNull.Value ? res["apprAmt"] : 0)
                                 });
                             }
                         }
@@ -1748,8 +1750,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("CALL sp_HiringVehicle(v_hid => @hid, v_amount => @amount, v_userid => @userId, v_projectid => @projectId, v_datefrom => @dateFrom, v_dateto => @dateTo, v_proposedplace=> @proposedPlace, v_purposeofvisit=>@purposeOfVisit, v_totaldaysnight=>@totalDaysNight, v_totalplainhills=>@totalPlainHills,v_taxi=>@taxi,v_bookagainstcentre=>@BookAgainstCentre,v_note =>@note, v_action=>@action )", con);
                 cmd.Parameters.AddWithValue("@hid", data.headId);
                 cmd.Parameters.AddWithValue("@amount", data.amount);
                 cmd.Parameters.AddWithValue("@userId", data.userId);
@@ -1762,11 +1763,11 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@totalPlainHills", data.totalPlainHills);
                 cmd.Parameters.AddWithValue("@taxi", data.taxi);
                 cmd.Parameters.AddWithValue("@BookAgainstCentre", data.BookAgainstCentre);
-                cmd.Parameters.AddWithValue("@availbilityOfFund", data.availbilityOfFund);
                 cmd.Parameters.AddWithValue("@note", data.note);
                 cmd.Parameters.AddWithValue("@action", "insert");
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return  true;
             }
             catch
             {
@@ -1782,44 +1783,65 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<HiringVehicle> GetHiringVehicles(int userId)
+        public List<HiringVehicle> GetHiringVehicles(int?userId = null, int?id = null, string type = null, int?page = null, int?limit = null)
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectAll");
-                cmd.Parameters.AddWithValue("@userId", userId);
                 con.Open();
                 List<HiringVehicle> hiringList = new List<HiringVehicle>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managehiringvehicle_cursor", con))
                 {
-                    while (res.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "selectAllHiring");
+                    cmd.Parameters.AddWithValue("v_projectmanager", userId.HasValue ? userId : 0);
+                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? id : 0);
+                    if (string.IsNullOrWhiteSpace(type))
                     {
-                        hiringList.Add(new HiringVehicle
+                        cmd.Parameters.AddWithValue("v_type", DBNull.Value);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("v_type", type);
+                    }
+                    cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? limit : 0);
+                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? page : 0);
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var res = fetchCmd.ExecuteReader())
+                    {
+
+                        if (res.HasRows)
                         {
-                            id = (int)res["id"],
-                            projectName = Convert.ToString(res["title"]),
-                            headName = Convert.ToString(res["heads"]),
-                            amount = Convert.ToDecimal(res["amount"]),
-                            dateFrom = Convert.ToDateTime(res["dateFrom"]),
-                            dateTo = Convert.ToDateTime(res["dateTo"]),
-                            proposedPlace = res["proposedPlace"].ToString(),
-                            purposeOfVisit = res["purposeOfVisit"].ToString(),
-                            totalDaysNight = res["totalDaysNight"].ToString(),
-                            totalPlainHills = res["totalPlainHills"].ToString(),
-                            taxi = res["taxi"].ToString(),
-                            BookAgainstCentre = res["BookAgainstCentre"].ToString(),
-                            availbilityOfFund = res["availbilityOfFund"].ToString(),
-                            note = res["note"].ToString(),
-                            newRequest = Convert.ToBoolean(res["newRequest"]),
-                            adminappr = Convert.ToBoolean(res["adminappr"]),
-                            projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
-                        });
+                            while (res.Read())
+                            {
+                                hiringList.Add(new HiringVehicle
+                                {
+                                    id = (int)res["id"],
+                                    projectName = Convert.ToString(res["title"]),
+                                    headName = Convert.ToString(res["heads"]),
+                                    amount = Convert.ToDecimal(res["amount"]),
+                                    dateFrom = Convert.ToDateTime(res["dateFrom"]),
+                                    dateTo = Convert.ToDateTime(res["dateTo"]),
+                                    proposedPlace = res["proposedPlace"].ToString(),
+                                    purposeOfVisit = res["purposeOfVisit"].ToString(),
+                                    totalDaysNight = res["totalDaysNight"].ToString(),
+                                    totalPlainHills = res["totalPlainHills"].ToString(),
+                                    taxi = res["taxi"].ToString(),
+                                    BookAgainstCentre = res["BookAgainstCentre"].ToString(),
+                                    availbilityOfFund = res["availbilityOfFund"].ToString(),
+                                    note = res["note"].ToString(),
+                                    newRequest = Convert.ToBoolean(res["newRequest"]),
+                                    adminappr = Convert.ToBoolean(res["adminappr"]),
+                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
+                                });
+                            }
+                        }
+                        return hiringList;
                     }
                 }
-                return hiringList;
             }
             catch (Exception ex)
             {

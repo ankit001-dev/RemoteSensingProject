@@ -3,7 +3,7 @@
     ViewBag.Title = "Hiring_Vehicle";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
-    var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
+    var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
 
@@ -68,7 +68,7 @@
                                 {
                                     foreach (var item in data1)
                                     {
-                                        <option value="@item.projectId">@item.projectName</option>
+                                        <option value="@item.Id">@item.ProjectTitle</option>
                                     }
                                 }
                             </select>

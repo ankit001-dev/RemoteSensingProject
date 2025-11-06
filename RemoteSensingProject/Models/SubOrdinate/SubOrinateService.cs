@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 using Npgsql;
+using System.Data;
 
 namespace RemoteSensingProject.Models.SubOrdinate
 {
@@ -185,36 +186,46 @@ namespace RemoteSensingProject.Models.SubOrdinate
         #endregion Out Source End
 
         #region DashboardCount
-        public DashboardCount GetDashboardCounts(string userId)
+        public DashboardCount GetDashboardCounts(int userId)
         {
             
             DashboardCount obj = null;
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageDashboard", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "managesubordinatedashboard");
-                cmd.Parameters.AddWithValue("@sid", userId);
                 con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managedashboard_cursor", con))
                 {
-                    while (sdr.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "managesubordinatedashboard");
+                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
+                    cmd.Parameters.AddWithValue("v_sid", userId);
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    // Now fetch the data from the cursor
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                    using (var sdr = fetchCmd.ExecuteReader())
                     {
-                        obj = new DashboardCount();
-                        obj.TotalAssignProject = Convert.ToInt32(sdr["TotalProject"]);
-                        obj.InternalProject = Convert.ToInt32(sdr["InternalProject"]);
-                        obj.ExternalProject = Convert.ToInt32(sdr["ExternalProject"]);
-                        obj.CompletedProject = Convert.ToInt32(sdr["CompletedProject"]);
-                        obj.PendingProject = Convert.ToInt32(sdr["PendingProject"]);
-                        obj.OngoingProject = Convert.ToInt32(sdr["OngoingProject"]);
-                        obj.TotalMeetings = Convert.ToInt32(sdr["TotalMeetings"]);
-                        obj.AdminMeetings = Convert.ToInt32(sdr["AdminMeetings"]);
-                        obj.ProjectManagerMeetings = Convert.ToInt32(sdr["ProjectManagerMeetings"]);
+                        if (sdr.HasRows)
+                        {
+                            while (sdr.Read())
+                            {
+                                obj = new DashboardCount();
+                                obj.TotalAssignProject = Convert.ToInt32(sdr["TotalProject"]);
+                                obj.InternalProject = Convert.ToInt32(sdr["InternalProject"]);
+                                obj.ExternalProject = Convert.ToInt32(sdr["ExternalProject"]);
+                                obj.CompletedProject = Convert.ToInt32(sdr["CompletedProject"]);
+                                obj.PendingProject = Convert.ToInt32(sdr["PendingProject"]);
+                                obj.OngoingProject = Convert.ToInt32(sdr["OngoingProject"]);
+                                obj.TotalMeetings = Convert.ToInt32(sdr["TotalMeetings"]);
+                                obj.AdminMeetings = Convert.ToInt32(sdr["AdminMeetings"]);
+                                obj.ProjectManagerMeetings = Convert.ToInt32(sdr["ProjectManagerMeetings"]);
+                            }
+                            sdr.Close();
+                        }
+                        return obj;
                     }
-                    sdr.Close();
                 }
-                    return obj;
                
             }
             catch (Exception ex)

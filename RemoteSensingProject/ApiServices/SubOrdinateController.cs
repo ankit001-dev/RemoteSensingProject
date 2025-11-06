@@ -141,7 +141,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _subOrdinate.GetDashboardCounts(subId.ToString());
+                var data = _subOrdinate.GetDashboardCounts(subId);
                     return Ok(new
                     {
                         status = true,

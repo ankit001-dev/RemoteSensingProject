@@ -843,6 +843,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/GetProjectBudgets")]
         public IHttpActionResult GetProjetBudgets(int projectId)
