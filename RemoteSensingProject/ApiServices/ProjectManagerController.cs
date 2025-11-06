@@ -179,7 +179,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-        [AllowAnonymous]
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getWeeklyUpdate")]
         public IHttpActionResult getWeeklyUpdate(int projectId)

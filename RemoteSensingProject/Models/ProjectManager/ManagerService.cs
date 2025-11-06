@@ -459,20 +459,58 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "insertUpdate");
-                cmd.Parameters.AddWithValue("@project_Id", pwu.ProjectId);
-                cmd.Parameters.AddWithValue("@w_date", pwu.date);
-                cmd.Parameters.AddWithValue("@comment", pwu.comments);
-                cmd.Parameters.AddWithValue("@unit", pwu.unit);
-                cmd.Parameters.AddWithValue("@annual", pwu.annual);
-                cmd.Parameters.AddWithValue("@monthEnd", pwu.monthEnd);
-                cmd.Parameters.AddWithValue("@reviewMonth", pwu.reviewMonth);
-                cmd.Parameters.AddWithValue("@MonthEndSequentially", pwu.MonthEndSequentially);
-                cmd.Parameters.AddWithValue("@StateBeneficiaries", pwu.StateBeneficiaries);
-                con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                string sql = @"
+    CALL public.sp_manageprojectsubstaces(
+        @v_action,                 -- v_action (varchar)
+        NULL::int,                 -- v_id
+        @project_id,               -- v_project_id (int)
+        @w_date,                   -- v_w_date (date)
+        NULL::varchar,             -- v_title
+        @comment,                  -- v_comment (text)
+        NULL::text,                -- v_reason
+        0,                         -- v_completion (int)
+        NULL::varchar,             -- v_attatchment
+        0.0,                       -- v_amount (double precision)
+        @unit,                     -- v_unit (varchar)
+        @annual,                   -- v_annual (varchar)
+        @monthend,                 -- v_monthend (text)
+        @reviewmonth,              -- v_reviewmonth (text)
+        @monthendseq,              -- v_monthendsequentially (text)
+        @statebeneficiaries,       -- v_statebeneficiaries (varchar)
+        NOW(),                     -- v_createdat (timestamp)
+        @project_id,               -- v_projectid (int)
+        NULL::int,                 -- v_headid
+        NOW(),                     -- v_updateat (timestamp)
+        TRUE,                      -- v_status (boolean)
+        NULL::varchar,             -- v_aim
+        NULL::text,                -- v_month_aim
+        NULL::text,                -- v_completeinmonth
+        NULL::text,                -- v_departbeneficiaries
+        NULL::boolean              -- v_appstatus
+    );
+                ";
+
+                using (var cmd = new NpgsqlCommand(sql, con))
+                {
+                    cmd.CommandType = CommandType.Text;
+
+                    // Only bind the parameters you actually need
+                    cmd.Parameters.Add("@v_action", NpgsqlDbType.Varchar).Value = "insertUpdate";
+                    cmd.Parameters.Add("@project_id", NpgsqlDbType.Integer).Value = pwu.ProjectId;
+                    cmd.Parameters.Add("@w_date", NpgsqlDbType.Date).Value = pwu.date;
+                    cmd.Parameters.Add("@comment", NpgsqlDbType.Text).Value = (object)pwu.comments ?? DBNull.Value;
+                    cmd.Parameters.Add("@unit", NpgsqlDbType.Varchar).Value = (object)pwu.unit ?? DBNull.Value;
+                    cmd.Parameters.Add("@annual", NpgsqlDbType.Varchar).Value = (object)pwu.annual ?? DBNull.Value;
+                    cmd.Parameters.Add("@monthend", NpgsqlDbType.Text).Value = (object)pwu.monthEnd ?? DBNull.Value;
+                    cmd.Parameters.Add("@reviewmonth", NpgsqlDbType.Text).Value = (object)pwu.reviewMonth ?? DBNull.Value;
+                    cmd.Parameters.Add("@monthendseq", NpgsqlDbType.Text).Value = (object)pwu.MonthEndSequentially ?? DBNull.Value;
+                    cmd.Parameters.Add("@statebeneficiaries", NpgsqlDbType.Varchar).Value = (object)pwu.StateBeneficiaries ?? DBNull.Value;
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                }
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -496,11 +534,14 @@ namespace RemoteSensingProject.Models.ProjectManager
                 List<Project_MonthlyUpdate> list = new List<Project_MonthlyUpdate>();
                 Project_model pm = new Project_model();
                 using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_manageProjectSubstances_cursor", con, tran))
+                using (var cmd = new NpgsqlCommand("fn_manageprojectsubstances_cursor", con, tran))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAllByProject");
-                    cmd.Parameters.AddWithValue("v_project_Id", projectId);
+                    cmd.Parameters.AddWithValue("v_project_id", projectId);
+                    cmd.Parameters.AddWithValue("v_id", 0);
+                    cmd.Parameters.AddWithValue("v_limit", 0);
+                    cmd.Parameters.AddWithValue("v_page", 0);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (var rd = fetchCmd.ExecuteReader())
@@ -2370,69 +2411,73 @@ namespace RemoteSensingProject.Models.ProjectManager
             {
 
                 con.Open();
-                using (var tran = con.BeginTransaction())
                     foreach (var item in model.Attendance)
                     {
-                        int count = 0;
-                        // Check if already exists
-                        using (var checkCmd = new NpgsqlCommand("select fn_manageattendance_cursor(@v_action,NULL::int,@v_id,NULL::int,NULL::int,@v_date)", con, tran))
+                        using (var tran = con.BeginTransaction())
                         {
-                            checkCmd.Parameters.AddWithValue("@v_action", "checkattendance");
-                            checkCmd.Parameters.AddWithValue("@v_id", model.EmpId);
-                            checkCmd.Parameters.AddWithValue("@v_date", DateTime.Parse(item.Key));
-                            string cursorName = (string)checkCmd.ExecuteScalar();
-
-                            if (string.IsNullOrEmpty(cursorName))
+                            int count = 0;
+                            // Check if already exists
+                            using (var checkCmd = new NpgsqlCommand("select fn_manageattendance_cursor(@v_action,NULL::int,@v_id,NULL::int,NULL::int,@v_date)", con, tran))
                             {
-                                // If no cursor returned, move to the next record
+                                checkCmd.Parameters.AddWithValue("@v_action", "checkattendance");
+                                checkCmd.Parameters.AddWithValue("@v_id", model.EmpId);
+                                checkCmd.Parameters.AddWithValue("@v_date", DateTime.Parse(item.Key));
+                                string cursorName = (string)checkCmd.ExecuteScalar();
+
+                                if (string.IsNullOrEmpty(cursorName))
+                                {
+                                    // If no cursor returned, move to the next record
+                                    continue;
+                                }
+
+                                // Fetch the results from the cursor
+                                using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\"", con, tran))
+                                {
+                                    count = Convert.ToInt32(fetchCmd.ExecuteScalar());
+                                }
+                            }
+
+
+                            if (count > 0)
+                            {
+                                skippedDates.Add(item.Key); // Already exists
                                 continue;
                             }
 
-                            // Fetch the results from the cursor
-                            using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\"", con, tran))
-                            {
-                                count = Convert.ToInt32(fetchCmd.ExecuteScalar());
-                            }
+                            // Insert only if not exists
+                            NpgsqlCommand cmd = new NpgsqlCommand(@"
+                            call sp_manageattendance(
+                                0,
+                                @v_projectmanager,
+                                @v_empid,
+                                NULL::varchar,                     -- address
+                                NULL::varchar,                     -- longitude
+                                NULL::varchar,                     -- latitude
+                                @v_attendancestatus,
+                                @v_attendancedate,
+                                NULL::boolean,                     -- v_projectmanagerappr
+                                NULL::timestamp without time zone, -- v_createdat
+                                NULL::timestamp without time zone, -- v_updatedat
+                                NULL::boolean,                     -- v_newrequest
+                                NULL::boolean,                     -- v_status
+                                NULL::varchar,                     -- v_remark
+                                NULL::integer,                     -- v_month
+                                NULL::integer,                     -- v_year
+                                @v_action
+                            );", con, tran);
+
+                            cmd.CommandType = System.Data.CommandType.Text;
+
+                            // ✅ Add parameters with explicit PostgreSQL types
+                            cmd.Parameters.Add("@v_action", NpgsqlDbType.Varchar).Value = "InsertAttendance";
+                            cmd.Parameters.Add("@v_projectmanager", NpgsqlDbType.Integer).Value = (int)model.projectManager;
+                            cmd.Parameters.Add("@v_empid", NpgsqlDbType.Integer).Value = (int)model.EmpId;
+                            cmd.Parameters.Add("@v_attendancedate", NpgsqlDbType.Timestamp).Value = Convert.ToDateTime(item.Key);  // DateTime or DateOnly
+                            cmd.Parameters.Add("@v_attendancestatus", NpgsqlDbType.Varchar).Value = item.Value;
+                            cmd.ExecuteNonQuery();
+
+                            tran.Commit();
                         }
-
-
-                        if (count > 0)
-                        {
-                            skippedDates.Add(item.Key); // Already exists
-                            continue;
-                        }
-
-                        // Insert only if not exists
-                        NpgsqlCommand cmd = new NpgsqlCommand(@"
-                        call sp_manageattendance(
-                            0,
-                            @v_projectmanager,
-                            @v_empid,
-                            NULL::character varying,      -- address
-                            NULL::character varying,      -- longitude
-                            NULL::character varying,      -- latitude
-                            @v_attendancestatus,
-                            @v_attendancedate,
-                            false,                        -- v_projectmanagerappr
-                            NULL::timestamp without time zone,  -- v_createdat
-                            NULL::timestamp without time zone,  -- v_updatedat
-                            true,                         -- v_newrequest
-                            true,                         -- v_status
-                            NULL::character varying,      -- v_remark
-                            NULL::integer,                -- v_month
-                            NULL::integer,                -- v_year
-                            @v_action,
-                            NULL::refcursor               -- v_rc
-                        );", con, tran);
-                        cmd.CommandType = System.Data.CommandType.Text;
-                        cmd.Parameters.AddWithValue("@v_action", "InsertAttendance");
-                        cmd.Parameters.AddWithValue("@v_projectmanager", model.projectManager);
-                        cmd.Parameters.AddWithValue("@v_empid", model.EmpId);
-                        cmd.Parameters.AddWithValue("@v_attendancedate", item.Key);
-                        cmd.Parameters.AddWithValue("@v_attendancestatus", item.Value);
-                        cmd.ExecuteNonQuery();
-
-                        tran.Commit();
                     }
 
                 return (true, skippedDates, null);
@@ -2554,38 +2599,53 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<AttendanceManage> GetAllAttendanceForProjectManager(int projectManager)
+        public List<AttendanceManage> GetAllAttendanceForProjectManager(int projectManager,int? limit = null,int? page = null)
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageAttendance", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@projectManager", projectManager);
-                cmd.Parameters.AddWithValue("@action", "getallforprojectmanager");
                 List<AttendanceManage> list = new List<AttendanceManage>();
                 con.Open();
-                var rd = cmd.ExecuteReader();
-                if (rd.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageattendance_cursor", con, tran))
                 {
-                    while (rd.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "getallforprojectmanager");
+                    cmd.Parameters.AddWithValue("@v_projectmanager", projectManager);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var rd = fetchCmd.ExecuteReader())
                     {
-                        list.Add(new AttendanceManage
+                        if (rd.HasRows)
                         {
-                            id = Convert.ToInt32(rd["id"]),
-                            EmpId = Convert.ToInt32(rd["EmpId"]),
-                            projectManager = Convert.ToInt32(rd["projectManager"]),
-                            createdAt = Convert.ToDateTime(rd["createdAt"]),
-                            attendanceDate = Convert.ToDateTime(rd["attendancedate"]),
-                            attendanceStatus = rd["attendancestatus"].ToString(),
-                            newRequest = Convert.ToBoolean(rd["newRequest"]),
-                            projectManagerName = rd["projectManagerName"].ToString(),
-                            EmpName = rd["EmpName"].ToString(),
-                            remark = rd["remark"].ToString(),
-                            //absent = Convert.ToInt32(rd["TotalAbsent"]),
-                            //present = Convert.ToInt32(rd["TotalPresent"]),
-                            projectManagerAppr = Convert.ToBoolean(rd["projectManagerAppr"])
-                        });
+                            while (rd.Read())
+                            {
+                                list.Add(new AttendanceManage
+                                {
+                                    id = Convert.ToInt32(rd["id"]),
+                                    EmpId = Convert.ToInt32(rd["EmpId"]),
+                                    projectManager = Convert.ToInt32(rd["projectManager"]),
+                                    createdAt = Convert.ToDateTime(rd["createdAt"]),
+                                    attendanceDate = Convert.ToDateTime(rd["attendancedate"]),
+                                    attendanceStatus = rd["attendancestatus"].ToString(),
+                                    newRequest = Convert.ToBoolean(rd["newRequest"]),
+                                    projectManagerName = rd["projectManagerName"].ToString(),
+                                    EmpName = rd["EmpName"].ToString(),
+                                    remark = rd["remark"].ToString(),
+                                    //absent = Convert.ToInt32(rd["TotalAbsent"]),
+                                    //present = Convert.ToInt32(rd["TotalPresent"]),
+                                    projectManagerAppr = Convert.ToBoolean(rd["projectManagerAppr"])
+                                });
+                            }
+                        }
                     }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return list;
             }
