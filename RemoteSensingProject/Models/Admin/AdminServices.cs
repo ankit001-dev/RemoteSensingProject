@@ -2112,10 +2112,11 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAlltour");
-                    cmd.Parameters.AddWithValue("v_projectmanager", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
                     cmd.Parameters.AddWithValue("v_id", 0);
-                    cmd.Parameters.AddWithValue("v_limit", page);
-                    cmd.Parameters.AddWithValue("v_page", limit);
+                    cmd.Parameters.AddWithValue("v_type", "AllData");
+                    cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? (object)page.Value : DBNull.Value);
                     // Execute the function — it returns the cursor name
                     string cursorName = (string)cmd.ExecuteScalar();
 
@@ -2152,6 +2153,7 @@ namespace RemoteSensingProject.Models.Admin
                                     };
                                     firstRow = false;
                                 }
+                                getlist.Add(tourData);
                             }
                         }
                     }
@@ -2182,15 +2184,14 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Tourproposal", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "approval");
-                cmd.Parameters.AddWithValue("@adminappr", status);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.Parameters.AddWithValue("@remark", status ? "" : remark);
+                NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_Tourproposal(v_remark=>@v_remark,v_id=>@v_id,v_adminappr=>@v_adminappr, v_action=>@v_action)", con);
+                cmd.Parameters.AddWithValue("@v_action", "approval");
+                cmd.Parameters.AddWithValue("@v_adminappr", status);
+                cmd.Parameters.AddWithValue("@v_id", id);
+                cmd.Parameters.AddWithValue("@v_remark", status ? "" : remark);
                 con.Open();
-                int res = cmd.ExecuteNonQuery();
-                return res > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch
             {
@@ -2287,7 +2288,7 @@ namespace RemoteSensingProject.Models.Admin
         #endregion
 
         #region /* Hiring*/
-        public List<HiringVehicle1> HiringList(int?page, int?limit)
+        public List<HiringVehicle1> HiringList(int?page = null, int?limit = null)
         {
             try
             {
@@ -2298,10 +2299,11 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAllHiring");
-                    cmd.Parameters.AddWithValue("v_projectmanager", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_projectmanager",0);
                     cmd.Parameters.AddWithValue("v_id", 0);
-                    cmd.Parameters.AddWithValue("v_limit", page);
-                    cmd.Parameters.AddWithValue("v_page", limit);
+                    cmd.Parameters.AddWithValue("v_type", "AllData");
+                    cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? (object)page.Value : DBNull.Value);
 
                     string cursorName = (string)cmd.ExecuteScalar();
 
@@ -2434,20 +2436,20 @@ namespace RemoteSensingProject.Models.Admin
 
 
 
-        public bool HiringApproval(int id, bool status, string remark, dynamic location)
+        public bool HiringApproval(int id, bool status, string remark, string location)
         {
             try
             {
                 //var location = getlocationasync();
-                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "approval");
-                cmd.Parameters.AddWithValue("@adminappr", status);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.Parameters.AddWithValue("@remark", status ? "" : remark);
-                cmd.Parameters.AddWithValue("@location", location);
+                cmd = new NpgsqlCommand("CALL sp_HiringVehicle(v_id=>@v_id,v_adminappr=>@v_adminappr,v_remark => @v_remark, v_address=>@v_address,v_action=>@v_action )", con);
+                cmd.Parameters.AddWithValue("@v_action", "approval");
+                cmd.Parameters.AddWithValue("@v_adminappr", status);
+                cmd.Parameters.AddWithValue("@v_id", id);
+                cmd.Parameters.AddWithValue("@v_remark", status ? "" : remark);
+                cmd.Parameters.AddWithValue("@v_address", location);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch
             {

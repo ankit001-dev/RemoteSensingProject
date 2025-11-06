@@ -7,7 +7,7 @@
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
-    int i = 1; 
+    int i = 1;
 }
 <link href="~/assets/css/hiringVehicleStyle.css" rel="stylesheet" />
 <style>
@@ -111,7 +111,7 @@
                                         <td data-id="id_@item.id" class="text-center">
                                             <a href="#" class="changeStatus" data-value="true" data-title="Approve" data-id="@item.id">
                                                 <i class="fa-solid fa-check text-success"></i>
-                                            </a>  &nbsp; | &nbsp; 
+                                            </a>  &nbsp; | &nbsp;
                                             <a href="#" class="changeStatus" data-value="false" data-title="Reject" data-id="@item.id">
                                                 <i class="fa-solid fa-xmark text-danger"></i>
                                             </a>
@@ -189,7 +189,7 @@
 
                         <div class="note-section w-100">
                             <div>
-                                Note : 
+                                Note :
                                 <span class="dotted-line w-100" id="note1">
                                 </span>
                             </div>
@@ -349,7 +349,7 @@
         return date.toLocaleDateString();
     }
 
-</script>  
+</script>
 
 <script>
     $(document).ready(function () {
@@ -365,20 +365,13 @@
         }
         $(".changeStatus").on("click", async function (e) {
             e.preventDefault();
-            debugger
             var lat = getCookie("latitude");
             var lng = getCookie("longitude");
             let status = $(this).data("value");
             let id = $(this).data("id")
             let remark = "";
 
-            Swal.fire({
-                title: "Please wait ...",
-                text: "......",
-                didOpen: () => {
-                    Swal.showLoading()
-                }
-            })
+            
 
             if (!status) {
                 Swal.close();
@@ -404,12 +397,13 @@
                         allowEscapeKey: false,
                         text: 'Your request under process',
                         didOpen: () => { Swal.showLoading(); }
-                    })
+                    });
                 }
                 else if (!isConfirmed) {
                     return
                 }
             }
+
             $.ajax({
                 url: '/admin/HiringRequest',
                 type: 'post',
@@ -436,9 +430,9 @@
                         title: 'error',
                         text: 'Server busy Please try after sometime.',
                         icon: 'error'
-                    })
+                    });
                 }
-            })
-        })
+            });
+        });
     });
 </script>
