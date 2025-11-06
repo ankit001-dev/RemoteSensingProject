@@ -553,12 +553,13 @@
 
     function loadInternalProjectDetail(prjId) {
         if (prjId != null && prjId > 0) {
-
+            debugger
             $.ajax({
                 url: "/api/getWeeklyUpdate",
                 type: "get",
                 data: { projectId: prjId },
                 success: function (res) {
+                    console.log('Utilealgsas',res);
                     if (res.status) {
                         $("#internalProjectTbody").empty();
                         let index = 1;
@@ -581,6 +582,12 @@
                         })
 
                         $("#viewMonthlyReportInternalPrj").modal("show")
+                    } else {
+                        Swal.fire({
+                            title: 'Warning',
+                            text: 'Data not found !',
+                            icon: 'warning'
+                        });
                     }
                 },
                 error: function () {
