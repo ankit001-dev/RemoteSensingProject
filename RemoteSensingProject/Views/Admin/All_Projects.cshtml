@@ -513,15 +513,15 @@
 
         $("#searchProjectBy").on("keyup", function () {
             var table = $("#AllProjectList").DataTable();
-            table.column(1).search(this.value).draw()
+            table.column(2).search(this.value).draw()
         });
         $("#filterProjectStatus").on("change", function () {
             var table = $("#AllProjectList").DataTable();
-            table.column(9).search(this.value).draw()
+            table.column(10).search(this.value).draw()
         })
         $("#searchByProjectManager").on("change", function () {
             var table = $("#AllProjectList").DataTable();
-            table.column(2).search(this.value).draw()
+            table.column(3).search(this.value).draw()
         })
 
         $('#AllProjectList').DataTable({
@@ -590,11 +590,12 @@
                         });
                     }
                 },
-                error: function () {
+                error: function (xhr) {
+                    console.log(xhr);
                     Swal.fire({
-                        title: "Server issue !",
-                        text: "Some issue occured. Please try after sometime !",
-                        icon: "error",
+                        title: "Warning",
+                        text: xhr.responseJSON.StatusCode == 404? xhr.responseJSON.message:"Server issue occured. Please try again!",
+                        icon: "warning",
                         didClose: () => {
                             location.reload(true)
                         }

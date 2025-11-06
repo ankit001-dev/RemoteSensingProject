@@ -192,7 +192,7 @@ namespace RemoteSensingProject.ApiServices
                     return BadRequest(new
                     {
                         status = false,
-                        StatusCode = 500,
+                        StatusCode = 404,
                         message = "Data not found !"
                     });
                 }
