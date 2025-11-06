@@ -252,7 +252,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Update_Project_Stage(int Id)
         {
 
-            ViewBag.ProjectStages = _managerServices.ProjectStagesList(Id);
+            ViewBag.ProjectStages = _adminServices.ProjectStagesList(Id);
             return View();
         }
         [HttpPost]
