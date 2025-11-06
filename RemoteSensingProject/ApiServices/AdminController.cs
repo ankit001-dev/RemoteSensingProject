@@ -577,7 +577,7 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpPost]
         [Route("api/adminCreateProject")]
-        public IHttpActionResult CreateProject()
+        public IHttpActionResult CreateProject(createProjectModel pm)
         {
             try
             {

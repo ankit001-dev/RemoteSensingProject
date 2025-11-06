@@ -459,42 +459,8 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                string sql = @"
-    CALL public.sp_manageprojectsubstaces(
-        @v_action,                 -- v_action (varchar)
-        NULL::int,                 -- v_id
-        @project_id,               -- v_project_id (int)
-        @w_date,                   -- v_w_date (date)
-        NULL::varchar,             -- v_title
-        @comment,                  -- v_comment (text)
-        NULL::text,                -- v_reason
-        0,                         -- v_completion (int)
-        NULL::varchar,             -- v_attatchment
-        0.0,                       -- v_amount (double precision)
-        @unit,                     -- v_unit (varchar)
-        @annual,                   -- v_annual (varchar)
-        @monthend,                 -- v_monthend (text)
-        @reviewmonth,              -- v_reviewmonth (text)
-        @monthendseq,              -- v_monthendsequentially (text)
-        @statebeneficiaries,       -- v_statebeneficiaries (varchar)
-        NOW(),                     -- v_createdat (timestamp)
-        @project_id,               -- v_projectid (int)
-        NULL::int,                 -- v_headid
-        NOW(),                     -- v_updateat (timestamp)
-        TRUE,                      -- v_status (boolean)
-        NULL::varchar,             -- v_aim
-        NULL::text,                -- v_month_aim
-        NULL::text,                -- v_completeinmonth
-        NULL::text,                -- v_departbeneficiaries
-        NULL::boolean              -- v_appstatus
-    );
-                ";
-
-                using (var cmd = new NpgsqlCommand(sql, con))
+                using (var cmd = new NpgsqlCommand("CALL sp_manageprojectsubstaces(v_action=>@v_action, v_project_Id => @project_id, v_w_date=>@w_date, v_comment=>@comment, v_unit=>@unit, v_annual=>@annual, v_monthEnd=>@monthend, v_reviewMonth=>@reviewmonth, v_MonthEndSequentially=>@monthendseq, v_StateBeneficiaries=>@statebeneficiaries)", con))
                 {
-                    cmd.CommandType = CommandType.Text;
-
-                    // Only bind the parameters you actually need
                     cmd.Parameters.Add("@v_action", NpgsqlDbType.Varchar).Value = "insertUpdate";
                     cmd.Parameters.Add("@project_id", NpgsqlDbType.Integer).Value = pwu.ProjectId;
                     cmd.Parameters.Add("@w_date", NpgsqlDbType.Date).Value = pwu.date;
@@ -680,18 +646,26 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("CALL sp_ManageProjectSubstaces(v_action=>@action, v_project_id=>@project_id, v_id=>@id, v_title=>@title, v_w_date=>@w_date, v_amount=>@amount, v_attatchment=>@attatchment, v_comment =>@comment )", con);
                 cmd.Parameters.AddWithValue("@action", "insertExpences");
                 cmd.Parameters.AddWithValue("@project_id", exp.projectId);
                 cmd.Parameters.AddWithValue("@id", exp.projectHeadId);
                 cmd.Parameters.AddWithValue("@title", exp.title);
                 cmd.Parameters.AddWithValue("@w_date", exp.date);
                 cmd.Parameters.AddWithValue("@amount", exp.amount);
-                cmd.Parameters.AddWithValue("@attatchment", exp.attatchment_url);
+                if (string.IsNullOrEmpty(exp.attatchment_url))
+                {
+                    cmd.Parameters.AddWithValue("@attatchment", DBNull.Value);
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@attatchment", exp.attatchment_url);
+                }
+
                 cmd.Parameters.AddWithValue("@comment", exp.description);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch (Exception ex)
             {
@@ -812,49 +786,6 @@ namespace RemoteSensingProject.Models.ProjectManager
         #endregion
 
         #region Satges
-        public List<Project_Statge> ProjectStagesList(int Id)
-        {
-            try
-            {
-                List<Project_Statge> list = new List<Project_Statge>();
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "GetProjectStageByProjectId");
-                cmd.Parameters.AddWithValue("@id", Id);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        list.Add(new Project_Statge
-                        {
-                            Id = Convert.ToInt32(rd["id"]),
-                            Project_Id = Convert.ToInt32(rd["project_id"]),
-                            KeyPoint = rd["keyPoint"].ToString(),
-                            CompletionDate = Convert.ToDateTime(rd["completeDate"]),
-                            CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
-                            Document_Url = rd["stageDocument"].ToString(),
-                            Status = rd["StagesStatus"] != DBNull.Value ? rd["StagesStatus"].ToString() : "Pending",
-                            completionStatus = Convert.ToInt32(rd["completionStatus"])
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    if (con.State == ConnectionState.Open)
-                        con.Close();
-                cmd.Dispose();
-            }
-        }
         public bool InsertStageStatus(Project_Statge obj)
         {
             try

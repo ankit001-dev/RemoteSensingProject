@@ -65,20 +65,23 @@ namespace RemoteSensingProject.Models.Accounts
             try
             {
                 List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("CALL sp_ManageProjectSubstaces(v_action=>@action, v_reason=>@reason, v_amount=>@amount, v_id=>@id, v_projectId=>@projectId, V_appStatus=>@appStatus )", con);
                 cmd.Parameters.AddWithValue("@action", "updateProjectBudgetResponseFromAccounts");
-                cmd.Parameters.AddWithValue("@reason",he.Reason);
-                cmd.Parameters.AddWithValue("@amount", he.Amount);
+                if (string.IsNullOrWhiteSpace(he.Reason))
+                {
+                    cmd.Parameters.AddWithValue("@reason", DBNull.Value);
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@reason", he.Reason);
+                }
+                cmd.Parameters.AddWithValue("@amount",Convert.ToDecimal(he.Amount));
                 cmd.Parameters.AddWithValue("@id", he.Id);
                 cmd.Parameters.AddWithValue("@projectId", he.ProjectId);
-                cmd.Parameters.AddWithValue("@headId", he.HeadId);
                 cmd.Parameters.AddWithValue("@appStatus", he.AppStatus);
                 con.Open();
-
-                int res = cmd.ExecuteNonQuery();
-
-                return res>0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch (Exception ex)
             {

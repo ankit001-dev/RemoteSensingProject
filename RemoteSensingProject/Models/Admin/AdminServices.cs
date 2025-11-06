@@ -1068,7 +1068,8 @@ namespace RemoteSensingProject.Models.Admin
                             CompletionDate = Convert.ToDateTime(rd["completeDate"]),
                             CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
                             Status = rd["StagesStatus"].ToString(),
-                            Document_Url = rd["stageDocument"].ToString()
+                            Document_Url = rd["stageDocument"].ToString(),
+                            completionStatus = Convert.ToInt32(rd["completionStatus"])
                         });
                     }
                 }
