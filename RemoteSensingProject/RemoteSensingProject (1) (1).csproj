@@ -1194,6 +1194,7 @@
     <Content Include="assets\fonts\feather-font\fonts\feathere8ab.ttf" />
     <Content Include="assets\fonts\feather-font\fonts\feathere8ab.woff" />
     <Content Include="loginAssets\css\style.css.map" />
+    <Content Include="ProjectContent\Admin\Employee_Images\f83f5807-529b-475d-b9c2-108c737dbae4301020250320op-rajbhar-1746276582 %282%29 %281%29.jpg" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
@@ -1321,7 +1322,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="ProjectContent\Admin\Employee_Images\" />
     <Folder Include="ProjectContent\Admin\Meeting_Attachment\" />
     <Folder Include="ProjectContent\Admin\NoticeDocs\" />
     <Folder Include="ProjectContent\Admin\ProjectDocs\" />
