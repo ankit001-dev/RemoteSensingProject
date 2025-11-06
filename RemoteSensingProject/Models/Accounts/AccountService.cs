@@ -334,30 +334,41 @@ namespace RemoteSensingProject.Models.Accounts
             DashboardCount obj = null;
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageDashboard", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "AccountDashboardCount");
                 con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-
-                if (sdr.Read())
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managedashboard_cursor", con))
                 {
-                    obj = new DashboardCount();
-                    obj.TotalReinbursementReq = sdr["TotalReinbursementReq"].ToString();
-                    obj.TotalTourProposalReq = sdr["TotalTourProposalReq"].ToString();
-                    obj.totalVehicleHiringRequest = sdr["totalVehicleHiringRequest"].ToString();
-                    obj.totalReinbursementPendingRequest = sdr["totalReinbursementPendingRequest"].ToString();
-                    obj.totalReinbursementapprovedRequest = sdr["totalReinbursementapprovedRequest"].ToString();
-                    obj.totalReinbursementRejectRequest = sdr["totalReinbursementRejectRequest"].ToString();
-                    obj.totalTourProposalApprReque = sdr["totalTourProposalApprReque"].ToString();
-                    obj.totalTourProposalRejectReque = sdr["totalTourProposalRejectReque"].ToString();
-                    obj.totaTourProposalPendingReque = sdr["totaTourProposalPendingReque"].ToString();
-                    obj.totalPendingHiringVehicle = sdr["totalPendingHiringVehicle"].ToString();
-                    obj.totalApproveHiringVehicle = sdr["totalApproveHiringVehicle"].ToString();
-                    obj.totalRejectHiringVehicle = sdr["totalRejectHiringVehicle"].ToString();
-                }
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "AccountDashboardCount");
+                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
+                    cmd.Parameters.AddWithValue("v_sid", 0);
+                    // Execute the function — it returns the cursor name
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    // Now fetch the data from the cursor
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                    using (var sdr = fetchCmd.ExecuteReader())
+                    {
+                        if (sdr.HasRows)
+                        {
+                            sdr.Read();
+                            obj = new DashboardCount();
+                            obj.TotalReinbursementReq = sdr["TotalReinbursementReq"].ToString();
+                            obj.TotalTourProposalReq = sdr["TotalTourProposalReq"].ToString();
+                            obj.totalVehicleHiringRequest = sdr["totalVehicleHiringRequest"].ToString();
+                            obj.totalReinbursementPendingRequest = sdr["totalReinbursementPendingRequest"].ToString();
+                            obj.totalReinbursementapprovedRequest = sdr["totalReinbursementapprovedRequest"].ToString();
+                            obj.totalReinbursementRejectRequest = sdr["totalReinbursementRejectRequest"].ToString();
+                            obj.totalTourProposalApprReque = sdr["totalTourProposalApprReque"].ToString();
+                            obj.totalTourProposalRejectReque = sdr["totalTourProposalRejectReque"].ToString();
+                            obj.totaTourProposalPendingReque = sdr["totaTourProposalPendingReque"].ToString();
+                            obj.totalPendingHiringVehicle = sdr["totalPendingHiringVehicle"].ToString();
+                            obj.totalApproveHiringVehicle = sdr["totalApproveHiringVehicle"].ToString();
+                            obj.totalRejectHiringVehicle = sdr["totalRejectHiringVehicle"].ToString();
+                        }
 
-                sdr.Close();
+                        sdr.Close();
+                    }
+                }
 
                 return obj;
 
@@ -377,23 +388,33 @@ namespace RemoteSensingProject.Models.Accounts
             GraphData obj = null;
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selectExpensesforgraph");
                 con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managedashboard_cursor", con))
                 {
-                    while (rd.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "selectExpensesforgraph");
+                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
+                    cmd.Parameters.AddWithValue("v_sid", 0);
+                    // Execute the function — it returns the cursor name
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    // Now fetch the data from the cursor
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                    using (var rd = fetchCmd.ExecuteReader())
                     {
-                        obj = new GraphData();
-
-                        obj.ApprAmount = rd["appamount"] != DBNull.Value ? Convert.ToDecimal(rd["appamount"]) : 0m; // Default to 0 if null
-                        obj.amount = rd["totalamount"] != DBNull.Value ? Convert.ToDecimal(rd["totalamount"]) : 0m;
-                        //obj.month = rd["monthname"].ToString();
+                        if (rd.HasRows)
+                        {
+                            while (rd.Read())
+                            {
+                                obj = new GraphData();
+                                obj.ApprAmount = rd["appamount"] != DBNull.Value ? Convert.ToDecimal(rd["appamount"]) : 0m; // Default to 0 if null
+                                obj.amount = rd["totalamount"] != DBNull.Value ? Convert.ToDecimal(rd["totalamount"]) : 0m;
+                                //obj.month = rd["monthname"].ToString();
+                            }
+                        }
                     }
+                    return obj;
                 }
-                return obj;
             }
             catch (Exception ex)
             {
@@ -412,26 +433,36 @@ namespace RemoteSensingProject.Models.Accounts
             try
             {
                 List<GraphData> list = new List<GraphData>();
-                cmd = new NpgsqlCommand("sp_ManageDashboard", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "graphdataofaccount");
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_managedashboard_cursor", con))
                 {
-                    while (rd.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "graphdataofaccount");
+                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
+                    cmd.Parameters.AddWithValue("v_sid", 0);
+                    // Execute the function — it returns the cursor name
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    // Now fetch the data from the cursor
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                    using (var rd = fetchCmd.ExecuteReader())
                     {
-                        list.Add(new GraphData
+                        if (rd.HasRows)
                         {
-                            months = rd["months"].ToString(),
-                            amount = Convert.ToDecimal(rd["amount"]),
-                            ApprAmount = Convert.ToDecimal(rd["appramount"]),
-                            pendingamount = Convert.ToDecimal(rd["pending"])
-                        });
+                            while (rd.Read())
+                            {
+                                list.Add(new GraphData
+                                {
+                                    months = rd["months"].ToString(),
+                                    amount = Convert.ToDecimal(rd["amount"]),
+                                    ApprAmount = Convert.ToDecimal(rd["appramount"]),
+                                    pendingamount = Convert.ToDecimal(rd["pending"])
+                                });
+                            }
+                        }
                     }
+                    return list;
                 }
-                return list;
             }
             catch (Exception ex)
             {
