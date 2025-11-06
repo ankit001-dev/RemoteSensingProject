@@ -41,7 +41,7 @@
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="filterDivision">
-                    <option selected value=null>--Select Division--</option>
+                    <option selected value=null>Select Division</option>
                     @if (ViewBag.division != null)
                     {
                         if (ViewBag.division.Count > 0)
@@ -73,7 +73,7 @@
                                 <th>Division</th>
                                 <th>Designation</th>
                                 <th>Date</th>
-                                <th class="text-center">Status</th>
+                                <th class="text-center">Active Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
                         </thead>
@@ -238,7 +238,7 @@
                             <p class="EmployeeName">Harsh Agarwal</p>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="mobile" class="form-label">Mobile</label>
+                            <label for="mobile" class="form-label">Mobile Number</label>
                             <p class="mobileNumber">9876543210</p>
                         </div>
                         <div class="mb-3 col-md-6">
@@ -488,6 +488,6 @@
     })
     $('#searchByEmployeeName').on('keyup', function () {
         let table = $("#dataTableExample").DataTable();
-        table.columns(3).search(this.value).draw();
+        table.columns(2).search(this.value).draw();
     });
 </script>
