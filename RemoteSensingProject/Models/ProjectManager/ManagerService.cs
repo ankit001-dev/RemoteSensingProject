@@ -1,15 +1,14 @@
-﻿using System;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Math;
+using Npgsql;
+using NpgsqlTypes;
+using RemoteSensingProject.Models.MailService;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using Npgsql;
-using NpgsqlTypes;
-using RemoteSensingProject.Models.MailService;
 using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 
@@ -255,6 +254,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             AssignDate = Convert.ToDateTime(rd["assignDate"]),
                             CompletionDate = Convert.ToDateTime(rd["completionDate"]),
                             StartDate = Convert.ToDateTime(rd["startDate"]),
+                            ApproveStatus = (bool)rd["ApproveStatus"],
                             ProjectManager = rd["name"].ToString(),
                             ProjectBudget = Convert.ToDecimal(rd["budget"]),
                             ProjectDescription = rd["description"].ToString(),
@@ -764,32 +764,38 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Project_Budget> ProjectBudgetList(int Id)
+        public List<Project_Budget> ProjectBudgetList(int Id, int?page, int?limit)
         {
+           
+            List<Project_Budget> list = new List<Project_Budget>();
             try
             {
-                List<Project_Budget> list = new List<Project_Budget>();
-                cmd = new NpgsqlCommand("sp_adminAddproject", con);
+                con.Open();
+            using (var cmd = new NpgsqlCommand("fn_getprojectstagesandbudget", con))
+            {
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "GetBudgetByProjectId");
-                cmd.Parameters.AddWithValue("@id", Id);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
+                cmd.Parameters.AddWithValue("v_action", "GetBudgetByProjectId");
+                cmd.Parameters.AddWithValue("v_id", Id);
+                cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                using (var rd = cmd.ExecuteReader())
                 {
-                    while (rd.Read())
+                    if (rd.HasRows)
                     {
-                        list.Add(new Project_Budget
+                        while (rd.Read())
                         {
-                            Id = Convert.ToInt32(rd["id"]),
-                            Project_Id = Convert.ToInt32(rd["project_id"]),
-                            ProjectHeads = rd["heads"].ToString(),
-                            ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0)
-                        });
+                            list.Add(new Project_Budget
+                            {
+                                Id = Convert.ToInt32(rd["id"]),
+                                Project_Id = Convert.ToInt32(rd["project_id"]),
+                                ProjectHeads = rd["heads"].ToString(),
+                                ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0)
+                            });
+                        }
                     }
+                    return list;
                 }
-                return list;
+            }
             }
             catch (Exception ex)
             {
@@ -1502,9 +1508,12 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     id = Convert.ToInt32(res["id"]),
                                     amount = Convert.ToDecimal(res["amount"]),
                                     userId = Convert.ToInt32(res["userId"]),
+                                    apprstatus = Convert.ToBoolean(res["Apprstatus"]),
                                     subStatus = Convert.ToBoolean(res["SaveStatus"]),
                                     adminappr = Convert.ToBoolean(res["Apprstatus"]),
+                                    status = Convert.ToBoolean(res["apprAmountStatus"] != DBNull.Value ? res["apprAmountStatus"] : false),
                                     chequeNum = res["chequeNum"].ToString(),
+                                    accountNewRequest = Convert.ToBoolean(res["accountNewRequest"]),
                                     chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : "",
                                     newRequest = Convert.ToBoolean(res["newStatus"]),
                                     approveAmount = Convert.ToDecimal(res["apprAmt"] != DBNull.Value ? res["apprAmt"] : 0)

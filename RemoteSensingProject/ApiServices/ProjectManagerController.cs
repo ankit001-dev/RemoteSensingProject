@@ -37,6 +37,7 @@ namespace RemoteSensingProject.ApiServices
 
 
         #region Project substances
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getProjectExpencesList")]
         public IHttpActionResult GetExpencesList(int projectId, int headId)
