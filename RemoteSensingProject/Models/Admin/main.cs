@@ -112,6 +112,7 @@ namespace RemoteSensingProject.Models.Admin
             public decimal ProjectBudget { get; set; }
             public string ProjectType { get; set; }
             public string ProjectDescription { get; set; }
+            public bool ApproveStatus { get; set; }
             public bool ProjectStage { get; set; }
             public bool ProjectStatus { get; set; }
             public string ProjectDepartment { get; set; }

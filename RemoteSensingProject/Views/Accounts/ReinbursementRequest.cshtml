@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "ReinbursementRequest";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
-    var data = ViewData["ReimBurseData"] as List<RemoteSensingProject.Models.Accounts.main.Reimbursement>;
+    var data = ViewData["ReimBurseData"] as List<RemoteSensingProject.Models.ProjectManager.Reimbursement>;
     int i = 1;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
 
@@ -37,7 +37,7 @@
                                             <a href="#" data-title="View" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId" data-id="@item.id">
                                                 <i class="fa-solid fa-eye text-success"></i>
                                             </a>
-                                            @if (item.appr_status)
+                                            @if (item.apprstatus)
                                             {
 
                                                 <span>&nbsp; | &nbsp; </span>
