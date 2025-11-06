@@ -2,6 +2,7 @@
 using Microsoft.SqlServer.Server;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,21 +17,23 @@ namespace RemoteSensingProject.Controllers
     {
         private readonly AccountService _accountSerivce;
         private readonly AdminServices _adminServices;
+        private readonly ManagerService _managerServices;
         public AccountsController()
         {
             _accountSerivce = new AccountService();
             _adminServices = new AdminServices();
+            _managerServices = new ManagerService();
         }
 
 
         // GET: Accounts
         public ActionResult Dashboard()
         {
-            ViewBag.CompleteRequest = _accountSerivce.Project_List().Count(e => e.ApproveStatus);
-            ViewBag.PendingStatus = _accountSerivce.Project_List().Count(e => !e.ApproveStatus);
-            ViewBag.TotalFunRequest = _accountSerivce.Project_List().Count();
+            ViewBag.CompleteRequest = _managerServices.All_Project_List(0, null, null, "AccountApproved").Count();
+            ViewBag.PendingStatus = _managerServices.All_Project_List(0, null, null, "AccountPending").Count();
+            ViewBag.TotalFunRequest = _managerServices.All_Project_List(0, null, null, null).Count();
             var TotalCount = _accountSerivce.DashboardCount();
-            ViewData["projectlist"] = _accountSerivce.Project_List().Take(5).ToList();
+            ViewData["projectlist"] = _managerServices.All_Project_List(0, 1, 5, "AccountApproved").Take(5).ToList();
             ViewData["graphdata"] = _accountSerivce.ExpencesListforgraph();
             ViewData["budgetdataforgraph"] = _accountSerivce.budgetdataforgraph();
 
@@ -39,7 +42,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Requests()
         {
-            ViewBag.ProjectList = _accountSerivce.Project_List().Where(e=>e.ApproveStatus==false).ToList();
+            ViewBag.ProjectList = _managerServices.All_Project_List(0, null, null, "AccountApproved");
             return View();
         }
         public ActionResult GetProjecDatatById(int Id)
@@ -53,7 +56,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Expenses(int Id)
         {
-            ViewData["ProjectStages"] = _accountSerivce.ProjectBudgetList(Id);
+            ViewData["ProjectStages"] = _managerServices.ProjectBudgetList(Id, null, null);
             return View();
         
         }
@@ -66,7 +69,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult RequestHistory()
         {
-            ViewBag.ProjectList = _accountSerivce.Project_List().Where(e => e.ApproveStatus == true).ToList();
+            ViewBag.ProjectList = _managerServices.All_Project_List(0, null, null, "AccountApproved");
             return View();
         }
         public ActionResult Meeting_List()
@@ -83,7 +86,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult ReinbursementRequest()
         {
-            ViewData["ReimBurseData"] = _accountSerivce.GetReimbursements();
+            ViewData["ReimBurseData"] = _managerServices.GetReimbursements(type: "selectApprovedReinbursement");
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
@@ -96,14 +99,37 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult FundReport(string req)
         {
-            ViewBag.ProjectList = req=="complete"? _accountSerivce.Project_List().Where(d => d.ApproveStatus == true).ToList():req=="pending"? _accountSerivce.Project_List().Where(d => d.ApproveStatus == false).ToList(): _accountSerivce.Project_List();
+            var data = _managerServices.All_Project_List(0, null, null, null);
+            if (!string.IsNullOrWhiteSpace(req))
+            {
+                if (req.Equals("complete"))
+                {
+                    data = _managerServices.All_Project_List(0, null, null, "AccountApproved");
+                }
+                else if (req.Equals("pending"))
+                {
+                    data = _managerServices.All_Project_List(0, null, null, "AccountPending");
+                }
+            }
+            ViewBag.ProjectList = data;
             return View();
         }
 
         public ActionResult Reimbursement_Report(string req)
         {
             ViewData["totalProjectManager"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            ViewData["totalReinursementReport"] = req == "approved" ? _accountSerivce.getReimbursementrepo().Where(d => d.accountNewRequest == false && d.appr_status == true && d.status == true).ToList() : req == "rejected" ? _accountSerivce.getReimbursementrepo().Where(d => d.accountNewRequest == false && (d.appr_status == false || d.status == false)).ToList() : _accountSerivce.getReimbursementrepo();
+            var data = _managerServices.GetReimbursements(type: "accountrepo").ToList();
+            if (!string.IsNullOrWhiteSpace(req))
+            {
+                if (req.Equals("approved"))
+                {
+                    data = data.Where(d => d.accountNewRequest == false && d.apprstatus == true && d.status == true).ToList();
+                }else if (req.Equals("rejected"))
+                {
+                    data = data.Where(d => d.accountNewRequest == false && (d.apprstatus == false || d.status == false)).ToList();
+                }
+            }
+            ViewData["totalReinursementReport"] = data;
             return View();
         }
         public ActionResult TourProposal_Report(string req)
