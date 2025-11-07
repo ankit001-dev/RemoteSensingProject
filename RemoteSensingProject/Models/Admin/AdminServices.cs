@@ -2214,15 +2214,15 @@ namespace RemoteSensingProject.Models.Admin
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Reimbursement", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "approval");
-                cmd.Parameters.AddWithValue("@admin_appr", status);
-                cmd.Parameters.AddWithValue("@id", id);
-                cmd.Parameters.AddWithValue("@type", type);
-                cmd.Parameters.AddWithValue("@remark", status ? "" : remark);
+                cmd = new NpgsqlCommand("call sp_reimbursement(p_action=>@p_action,p_admin_appr=>@p_admin_appr,p_id=>@p_id,p_type=>@p_type,p_remark=>@p_remark)", con);
+                cmd.Parameters.AddWithValue("@p_action", "approval");
+                cmd.Parameters.AddWithValue("@p_admin_appr", status);
+                cmd.Parameters.AddWithValue("@p_id", id);
+                cmd.Parameters.AddWithValue("@p_type", type);
+                cmd.Parameters.AddWithValue("@p_remark", status ? "" : remark);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch
             {
