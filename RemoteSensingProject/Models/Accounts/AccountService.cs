@@ -291,19 +291,19 @@ namespace RemoteSensingProject.Models.Accounts
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Reimbursement", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "approveReinburseAmt");
-                cmd.Parameters.AddWithValue("@chequeNum", rs.chequeNumber);
-                cmd.Parameters.AddWithValue("@chequeDate", rs.date);
-                cmd.Parameters.AddWithValue("@sanctionAmt", rs.amount);
-                cmd.Parameters.AddWithValue("@apprAmt", rs.apprAmt);
-                cmd.Parameters.AddWithValue("@rejectAmt", rs.amount-rs.apprAmt);
-                cmd.Parameters.AddWithValue("@id", rs.id);
+                NpgsqlCommand cmd = new NpgsqlCommand("call sp_Reimbursement(p_action=>@p_action,p_chequenum=>@p_chequenum,p_chequedate=>@p_chequedate,p_sanctionamt=>@p_sanctionamt,p_appramt=>@p_appramt,p_rejectamt=>@p_rejectamt,p_id=>@p_id)", con);
+                cmd.Parameters.AddWithValue("@p_action", "approveReinburseAmt");
+                cmd.Parameters.AddWithValue("@p_chequenum", rs.chequeNumber);
+                cmd.Parameters.AddWithValue("@p_chequedate", Convert.ToDateTime(rs.date));
+                cmd.Parameters.AddWithValue("@p_sanctionamt", rs.amount);
+                cmd.Parameters.AddWithValue("@p_appramt", rs.apprAmt);
+                cmd.Parameters.AddWithValue("@p_rejectamt", rs.amount-rs.apprAmt);
+                cmd.Parameters.AddWithValue("@p_id", rs.id);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
-
-            }catch(Exception ex)
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch(Exception ex)
             {
                 throw ex;
             }
