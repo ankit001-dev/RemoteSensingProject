@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+﻿using DocumentFormat.OpenXml.Office2010.ExcelAc;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Grpc.Core;
 using Newtonsoft.Json;
 using RemoteSensingProject.Models;
@@ -462,7 +463,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _adminServices.Project_List(page, limit).Where(d => d.CompletionDate < DateTime.Now && !d.ProjectStatus).ToList();
+                var data = _managerservice.All_Project_List(0,limit,page, "delay", null);
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var newData = CommonHelper.SelectProperties(data, selectProperties);
 
@@ -487,10 +488,10 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _adminServices.Project_List(page,limit).Where(d => d.CompletionDate > DateTime.Now && d.StartDate < DateTime.Now).ToList();
+                var data = _managerservice.All_Project_List(0,limit,page, "Ongoing", null);
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var newData = CommonHelper.SelectProperties(data, selectProperties);
-                if (data.Count > 0)
+                if (newData.Count > 0)
                 {
                     return CommonHelper.Success(this, newData, "Data fetched successfully", 200, data[0].Pagination);
                 }
@@ -511,10 +512,10 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _adminServices.Project_List(page,limit).Where(d => d.ProjectStatus).ToList();
+                var data = _managerservice.All_Project_List(0, limit, page, "Complete", null);
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var newData = CommonHelper.SelectProperties(data, selectProperties);
-                if (data.Count > 0)
+                if (newData.Count > 0)
                 {
                     return CommonHelper.Success(this, newData, "Data fetched successfully", 200, data[0].Pagination);
                 }
@@ -1085,13 +1086,13 @@ namespace RemoteSensingProject.ApiServices
 
                 var formData = new AddMeeting_Model
                 {
-                    Id = Convert.ToInt32(request.Form.Get("Id")),
-                    MeetingType = request.Form.Get("MeetingType"),
-                    MeetingLink = request.Form.Get("MeetingLink"),
-                    MeetingTitle = request.Form.Get("MeetingTitle"),
-                    MeetingAddress = request.Form.Get("MeetingAddress"),
-                    MeetingTime = Convert.ToDateTime(request.Form.Get("MeetingTime")),
-                    Attachment_Url = request.Form.Get("Attachment_Url"),
+                    Id = request.Form.Get("Id") != null ? Convert.ToInt32(request.Form.Get("Id")) : 0,
+                    MeetingType = request.Form.Get("MeetingType") ?? string.Empty,
+                    MeetingLink = request.Form.Get("MeetingLink") ?? string.Empty,
+                    MeetingTitle = request.Form.Get("MeetingTitle") ?? string.Empty,
+                    MeetingAddress = request.Form.Get("MeetingAddress") ?? string.Empty,
+                    MeetingTime = request.Form.Get("MeetingTime") != null ? Convert.ToDateTime(request.Form.Get("MeetingTime")) : DateTime.MinValue,
+                    Attachment_Url = request.Form.Get("Attachment_Url") != null ? request.Form.Get("Attachment_Url").ToString():string.Empty,
                     CreaterId = Convert.ToInt32(request.Form["CreaterId"] ?? "0")
                 };
                 var file = request.Files["Attachment"];
@@ -1105,7 +1106,7 @@ namespace RemoteSensingProject.ApiServices
 
                 if (request.Form["meetingMemberList"] != null)
                 {
-                    formData.meetingMemberList = request.Form["meetingMemberList"].Split(',').Select(value => int.Parse(value.ToString())).ToList();
+                    formData.meetingMemberList = request.Form["meetingMemberList"]!=null?request.Form["meetingMemberList"].Split(',').Select(value => int.Parse(value.ToString())).ToList() : new List<int>();
                 }
 
                 if (request.Form["keyPointList"] != null)
@@ -1244,11 +1245,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/adminMeetingList")]
-        public IHttpActionResult MeetingList()
+        public IHttpActionResult MeetingList(int? limit = null, int? page = null)
         {
             try
             {
-                var data = _adminServices.getAllmeeting();
+                var data = _adminServices.getAllmeeting(limit,page);
                 if (!data.Any())
                 {
                     return BadRequest(new
@@ -1310,21 +1311,20 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var data = _adminServices.GetMeetingMemberList(meetId);
-                return Ok(new
+                var selectProperties = new[] { "Id", "EmployeeCode", "EmployeeName", "EmployeeRole", "MobileNo", "Email", "meetingId" };
+                var newData = CommonHelper.SelectProperties(data, selectProperties);
+                if (newData.Count > 0)
                 {
-                    status = true,
-                    StatusCode = 200,
-                    data = data
-                });
+                    return CommonHelper.Success(this, newData, "Data fetched successfully", 200);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
@@ -1510,7 +1510,7 @@ namespace RemoteSensingProject.ApiServices
         #region Admin Generate Notice
         [HttpGet]
         [Route("api/getallNoticeList")]
-        public IHttpActionResult NoticeList()
+        public IHttpActionResult NoticeList(int? limit = null,int?page = null)
         {
             try
             {

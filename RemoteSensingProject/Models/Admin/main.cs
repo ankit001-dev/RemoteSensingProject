@@ -209,6 +209,7 @@ namespace RemoteSensingProject.Models.Admin
             public List<string> memberId { get; set; }
             public List<KeyPoint> MeetingKeyPointDict { get; set; }
             public string summary { get; set; }
+            public PaginationInfo Pagination { get; set; }
 
         }
         public class KeyPoint
@@ -258,7 +259,7 @@ namespace RemoteSensingProject.Models.Admin
             [AllowHtml]
             public string Notice { get; set; }
             public string noticeDate { get; set; }
-
+            public PaginationInfo Pagination { get; set; }
         }
         public class tourProposalrepo
         {
