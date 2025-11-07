@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IdentityModel;
 using System.IO;
 using System.Linq;
 using static RemoteSensingProject.Models.Admin.main;
@@ -959,9 +960,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         if (rd.HasRows)
                         {
+                            bool firstRow = true;
                             while (rd.Read())
                             {
-                                list.Add(new OuterSource
+                                var data = new OuterSource
                                 {
                                     Id = Convert.ToInt32(rd["id"]),
                                     EmpName = rd["emp_name"].ToString(),
@@ -969,7 +971,19 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     email = rd["emp_email"].ToString(),
                                     joiningdate = rd["joiningdate"].ToString(),
                                     gender = rd["emp_gender"].ToString()
-                                });
+                                };
+                                if (firstRow)
+                                {
+                                    data.Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        TotalPages = Convert.ToInt32(rd["totalpages"]),
+                                        TotalRecords = Convert.ToInt32(rd["totalrecords"]),
+                                        PageNumber = page ?? 0,
+                                        PageSize = limit ?? 0
+                                    };
+                                    firstRow = false;
+                                }
+                                list.Add(data);
                             }
                         }
                     }
@@ -1240,15 +1254,29 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         if (rd.HasRows)
                         {
+                            bool firstRow = true;
                             while (rd.Read())
                             {
-                                list.Add(new OutSourceTask
+                                var data = new OutSourceTask
                                 {
                                     Id = Convert.ToInt32(rd["id"]),
                                     title = rd["title"].ToString(),
                                     description = rd["description"].ToString(),
                                     completeStatus = Convert.ToBoolean(rd["completeStatus"])
-                                });
+                                };
+
+                                if (firstRow)
+                                {
+                                    data.Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        TotalPages = Convert.ToInt32(rd["totalpages"]),
+                                        TotalRecords = Convert.ToInt32(rd["totalrecords"]),
+                                        PageNumber = page ?? 0,
+                                        PageSize = limit ?? 0
+                                    };
+                                    firstRow = false;
+                                }
+                                list.Add(data);
                             }
                         }
                     }
@@ -1442,9 +1470,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         if (res.HasRows)
                         {
+                            bool firstRow = true;
                             while (res.Read())
                             {
-                                getlist.Add(new Reimbursement
+                               var data = new Reimbursement
                                 {
                                     EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
                                     type = res["type"].ToString(),
@@ -1460,7 +1489,20 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : "",
                                     newRequest = Convert.ToBoolean(res["newStatus"]),
                                     approveAmount = Convert.ToDecimal(res["apprAmt"] != DBNull.Value ? res["apprAmt"] : 0)
-                                });
+                                };
+
+                                if (firstRow)
+                                {
+                                    data.Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        TotalPages = Convert.ToInt32(res["totalpages"]),
+                                        TotalRecords = Convert.ToInt32(res["totalrecords"]),
+                                        PageSize = limit ?? 0,
+                                        PageNumber = page ?? 0
+                                    };
+                                    firstRow = false;
+                                }
+                                getlist.Add(data);
                             }
                         }
                     }
@@ -1517,9 +1559,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         if (res.HasRows)
                         {
+                            bool firstRow = true;
                             while (res.Read())
                             {
-                                getlist.Add(new Reimbursement
+                                var data = new Reimbursement
                                 {
                                     id = Convert.ToInt32(res["id"]),
                                     type = res["type"].ToString(),
@@ -1532,7 +1575,20 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     status = Convert.ToBoolean(res["status"]),
                                     newRequest = Convert.ToBoolean(res["newRequest"]),
                                     adminappr = Convert.ToBoolean(res["admin_appr"])
-                                });
+                                };
+
+                                if (firstRow)
+                                {
+                                    data.Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        TotalPages = Convert.ToInt32(res["totalpages"]),
+                                        TotalRecords = Convert.ToInt32(res["totalrecords"]),
+                                        PageNumber = page ?? 0,
+                                        PageSize = limit ?? 0
+                                    };
+                                    firstRow = false;
+                                }
+                                getlist.Add(data);
                             }
                         }
                     }
@@ -1621,9 +1677,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         if (res.HasRows)
                         {
+                            bool firstRow = true;
                             while (res.Read())
                             {
-                                getlist.Add(new tourProposal
+                                var data = new tourProposal
                                 {
                                     id = Convert.ToInt32(res["id"]),
                                     projectName = Convert.ToString(res["title"]),
@@ -1636,7 +1693,19 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     newRequest = Convert.ToBoolean(res["newRequest"]),
                                     adminappr = Convert.ToBoolean(res["adminappr"]),
                                     projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
-                                });
+                                };
+                                if (firstRow)
+                                {
+                                    data.Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        TotalPages = Convert.ToInt32(res["totalpages"]),
+                                        TotalRecords = Convert.ToInt32(res["totalrecords"]),
+                                        PageSize = limit ?? 0,
+                                        PageNumber = page ?? 0
+                                    };
+                                    firstRow = false;
+                                }
+                                getlist.Add(data);
                             }
                         }
                         return getlist;
