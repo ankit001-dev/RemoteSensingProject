@@ -1134,8 +1134,8 @@ namespace RemoteSensingProject.ApiServices
                 return Ok(new
                 {
                     status = res,
-                    StatusCode = res ? 200 : 500,
-                    message = res ? "Meeting created successfully !" : "Some issue occured while processing request."
+                    StatusCode = res ? formData.Id > 0 ? 200 : 201 : 500,
+                    message = res ? formData.Id > 0 ? "Meeting updated successfully" : "Meeting created successfully !" : "Some issue occured while processing request."
                 });
             }
             catch (Exception ex)
@@ -1150,97 +1150,97 @@ namespace RemoteSensingProject.ApiServices
         }
 
 
-        [HttpPut]
-        [Route("api/updateadminMeeting")]
-        public IHttpActionResult UpdateMeeting()
-        {
-            try
-            {
-                var request = HttpContext.Current.Request;
-                List<string> validationErrors = new List<string>();
-                if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingType")))
-                    validationErrors.Add("Meeting Type is required.");
+        //[HttpPut]
+        //[Route("api/updateadminMeeting")]
+        //public IHttpActionResult UpdateMeeting()
+        //{
+        //    try
+        //    {
+        //        var request = HttpContext.Current.Request;
+        //        List<string> validationErrors = new List<string>();
+        //        if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingType")))
+        //            validationErrors.Add("Meeting Type is required.");
 
-                if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTitle")))
-                    validationErrors.Add("Meeting title is required.");
+        //        if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTitle")))
+        //            validationErrors.Add("Meeting title is required.");
 
-                if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTime")))
-                    validationErrors.Add("Meeting time is required.");
+        //        if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTime")))
+        //            validationErrors.Add("Meeting time is required.");
 
-                if (string.IsNullOrWhiteSpace(request.Form.Get("meetingMemberList")))
-                    validationErrors.Add("Meeting member is required.");
+        //        if (string.IsNullOrWhiteSpace(request.Form.Get("meetingMemberList")))
+        //            validationErrors.Add("Meeting member is required.");
 
-                if (string.IsNullOrWhiteSpace(request.Form.Get("keyPointList")))
-                    validationErrors.Add("Key points is required.");
+        //        if (string.IsNullOrWhiteSpace(request.Form.Get("keyPointList")))
+        //            validationErrors.Add("Key points is required.");
 
-                var formData = new AddMeeting_Model
-                {
-                    Id = Convert.ToInt32(request.Form.Get("Id")),
-                    MeetingType = request.Form.Get("MeetingType"),
-                    MeetingLink = request.Form.Get("MeetingLink"),
-                    MeetingAddress = request.Form.Get("MeetingAddress"),
-                    MeetingTitle = request.Form.Get("MeetingTitle"),
-                    MeetingTime = Convert.ToDateTime(request.Form.Get("MeetingTime")),
-                    Attachment_Url = request.Form.Get("Attachment_Url")
-                };
-                var file = request.Files["Attachment"];
-                if (file != null && file.FileName != "")
-                {
-                    formData.Attachment_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    formData.Attachment_Url = Path.Combine("/ProjectContent/Admin/Meeting_Attachment/", formData.Attachment_Url);
-                }
-                else if (string.IsNullOrWhiteSpace(request.Form.Get("Attachment_Url")))
-                    validationErrors.Add("Meeting attachment is required.");
+        //        var formData = new AddMeeting_Model
+        //        {
+        //            Id = Convert.ToInt32(request.Form.Get("Id")),
+        //            MeetingType = request.Form.Get("MeetingType"),
+        //            MeetingLink = request.Form.Get("MeetingLink"),
+        //            MeetingAddress = request.Form.Get("MeetingAddress"),
+        //            MeetingTitle = request.Form.Get("MeetingTitle"),
+        //            MeetingTime = Convert.ToDateTime(request.Form.Get("MeetingTime")),
+        //            Attachment_Url = request.Form.Get("Attachment_Url")
+        //        };
+        //        var file = request.Files["Attachment"];
+        //        if (file != null && file.FileName != "")
+        //        {
+        //            formData.Attachment_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+        //            formData.Attachment_Url = Path.Combine("/ProjectContent/Admin/Meeting_Attachment/", formData.Attachment_Url);
+        //        }
+        //        else if (string.IsNullOrWhiteSpace(request.Form.Get("Attachment_Url")))
+        //            validationErrors.Add("Meeting attachment is required.");
 
-                if (request.Form["meetingMemberList"] != null)
-                {
-                    formData.meetingMemberList = request.Form["meetingMemberList"].Split(',').Select(value => int.Parse(value.ToString())).ToList();
-                }
+        //        if (request.Form["meetingMemberList"] != null)
+        //        {
+        //            formData.meetingMemberList = request.Form["meetingMemberList"].Split(',').Select(value => int.Parse(value.ToString())).ToList();
+        //        }
 
-                if (request.Form["keyPointList"] != null)
-                {
-                    formData.keyPointList = request.Form["keyPointList"].Split(',').ToList();
-                }
+        //        if (request.Form["keyPointList"] != null)
+        //        {
+        //            formData.keyPointList = request.Form["keyPointList"].Split(',').ToList();
+        //        }
 
-                if (request.Form["KeypointId"] != null)
-                {
-                    formData.KeypointId = request.Form["KeypointId"].Split(',').ToList();
-                }
+        //        if (request.Form["KeypointId"] != null)
+        //        {
+        //            formData.KeypointId = request.Form["KeypointId"].Split(',').ToList();
+        //        }
 
-                if (validationErrors.Any())
-                {
-                    return BadRequest(new
-                    {
-                        status = false,
-                        StatusCode = 500,
-                        message = string.Join("\n", validationErrors)
-                    });
-                }
-                bool res = _adminServices.UpdateMeeting(formData);
-                if (res)
-                {
-                    if (file != null && file.FileName != "")
-                    {
-                        file.SaveAs(HttpContext.Current.Server.MapPath(formData.Attachment_Url));
-                    }
-                }
-                return Ok(new
-                {
-                    status = res,
-                    StatusCode = res ? 200 : 500,
-                    message = res ? "Meeting created successfully !" : "Some issue occured while processing request."
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
-            }
-        }
+        //        if (validationErrors.Any())
+        //        {
+        //            return BadRequest(new
+        //            {
+        //                status = false,
+        //                StatusCode = 500,
+        //                message = string.Join("\n", validationErrors)
+        //            });
+        //        }
+        //        bool res = _adminServices.UpdateMeeting(formData);
+        //        if (res)
+        //        {
+        //            if (file != null && file.FileName != "")
+        //            {
+        //                file.SaveAs(HttpContext.Current.Server.MapPath(formData.Attachment_Url));
+        //            }
+        //        }
+        //        return Ok(new
+        //        {
+        //            status = res,
+        //            StatusCode = res ? formData.Id>0?200:201 : 500,
+        //            message = res ? formData.Id > 0 ?"Meeting updated successfully": "Meeting created successfully !" : "Some issue occured while processing request."
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            status = false,
+        //            StatusCode = 500,
+        //            message = ex.Message
+        //        });
+        //    }
+        //}
 
 
         [HttpGet]
@@ -1250,31 +1250,20 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var data = _adminServices.getAllmeeting(limit,page);
-                if (!data.Any())
+                var selectprop = new[] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "memberId", "CreaterId", "MeetingDate", "summary", "Attachment_Url" };
+                var newData = CommonHelper.SelectProperties(data, selectprop);
+                if (newData.Count > 0)
                 {
-                    return BadRequest(new
-                    {
-                        status = false,
-                        StatusCode = 404,
-                        message = "Data not found !"
-                    });
+                    return CommonHelper.Success(this, newData, "Data fetched successfully", 200, data[0].Pagination);
                 }
-                return Ok(new
+                else
                 {
-                    status = true,
-                    StatusCode = data.Count > 0 ? 200 : 500,
-                    message = "Data found !",
-                    data = data
-                });
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
@@ -1362,11 +1351,13 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var data = _adminServices.getPresentMember(MeetId);
+                var selectedprop = new[] { "EmployeeName", "Image_url", "EmployeeRole", "PresentStatus" };
+                var newData = CommonHelper.SelectProperties(data, selectedprop);
                 return Ok(new
                 {
                     status = true,
                     StatusCode = 200,
-                    data = data
+                    data = newData
                 });
             }
             catch (Exception ex)
@@ -1480,7 +1471,7 @@ namespace RemoteSensingProject.ApiServices
                 {
                     status = res,
                     StatusCode = res ? 200 : 500,
-                    message = res ? "Meeting created successfully !" : "Some issue occured while processing request."
+                    message = res ? "Meeting conclusion updated successfully !" : "Some issue occured while processing request."
                 });
             }
             catch (Exception ex)
@@ -1515,31 +1506,20 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var data = _adminServices.getNoticeList();
-                if (!data.Any())
+                var selectprop = new[] { "Id", "ProjectId", "ProjectManagerId", "Attachment_Url", "Notice", "ProjectManagerImage", "ProjectManager", "ProjectName", "noticeDate" };
+                var newData = CommonHelper.SelectProperties(data, selectprop);
+                if (data.Count > 0)
                 {
-                    return Ok(new
-                    {
-                        status = false,
-                        StatusCode = 500,
-                        message = "Data Not found !"
-                    });
+                    return CommonHelper.Success(this, newData, "Data fetched successfully", 200, data[0].Pagination);
                 }
-                return Ok(new
+                else
                 {
-                    status = true,
-                    StatusCode = 200,
-                    message = "Data found !",
-                    data = data
-                });
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 

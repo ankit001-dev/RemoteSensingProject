@@ -1546,6 +1546,7 @@ namespace RemoteSensingProject.Models.Admin
                             obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
                             obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
                             obj.summary = sdr["meetSummary"].ToString();
+                            obj.Attachment_Url = sdr["reason"] != null ? sdr["reason"].ToString() : "";
                             _list.Add(obj);
                             if (firstRow)
                             {
@@ -1597,6 +1598,7 @@ namespace RemoteSensingProject.Models.Admin
                             obj.MeetingTime = Convert.ToDateTime(sdr["meetingTime"]);
                             obj.MeetingTimeString = Convert.ToDateTime(sdr["meetingTime"]).ToString("yyyy-MM-ddTHH:mm");
                             obj.memberId = sdr["empId"] != DBNull.Value ? sdr["empId"].ToString().Split(',').ToList() : new List<string>();
+                            obj.Attachment_Url = sdr["reason"] != null ? sdr["reason"].ToString() : "";
 
                         }
                         if (sdr["meetingKey"] != null)
@@ -1804,15 +1806,15 @@ namespace RemoteSensingProject.Models.Admin
                         {
                             var memberCmd = new NpgsqlCommand(@"
                         CALL sp_ManageMeeting(
-                            @v_action::varchar,
-                            @v_employee::integer,
-                            @v_meeting::integer
+                           p_action=> @v_action::varchar,
+                           p_employee=> @v_employee::integer,
+                           p_meeting=> @v_meeting::integer
                         )", con, transaction);
                             memberCmd.CommandType = CommandType.Text;
 
-                            memberCmd.Parameters.AddWithValue("v_action", "addMeetingMember");
-                            memberCmd.Parameters.AddWithValue("v_employee", individualMember);
-                            memberCmd.Parameters.AddWithValue("v_meeting", mc.Meeting);
+                            memberCmd.Parameters.AddWithValue("@v_action", "addMeetingMember");
+                            memberCmd.Parameters.AddWithValue("@v_employee", individualMember);
+                            memberCmd.Parameters.AddWithValue("@v_meeting", mc.Meeting);
 
                             memberCmd.ExecuteNonQuery();
                         }
