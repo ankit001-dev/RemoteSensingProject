@@ -138,7 +138,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-
+        [System.Web.Mvc.AllowAnonymous]
         [HttpPost]
         [Route("api/approveReinbursementAmtRequest")]
         public IHttpActionResult InsertReinbursementForm()
