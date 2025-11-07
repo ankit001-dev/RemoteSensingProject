@@ -591,7 +591,6 @@ namespace RemoteSensingProject.ApiServices
                 var model = new createProjectModel();
                 model.pm = new Project_model();
 
-                // ✅ Read simple fields
                 model.pm.Id = Convert.ToInt32(form["Id"] ?? "0");
                 model.pm.ProjectTitle = form["ProjectTitle"];
                 model.pm.ProjectManager = form["ProjectManager"];
