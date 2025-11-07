@@ -2348,7 +2348,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                         {
                             int count = 0;
                             // Check if already exists
-                            using (var checkCmd = new NpgsqlCommand("select fn_manageattendance_cursor(@v_action,NULL::int,@v_id,NULL::int,NULL::int,@v_date)", con, tran))
+                            using (var checkCmd = new NpgsqlCommand("select fn_manageattendance_cursor(@v_action,NULL::int,@v_id,NULL::int,NULL::int,NULL::int,NULL::int,@v_date)", con, tran))
                             {
                                 checkCmd.Parameters.AddWithValue("@v_action", "checkattendance");
                                 checkCmd.Parameters.AddWithValue("@v_id", model.EmpId);
