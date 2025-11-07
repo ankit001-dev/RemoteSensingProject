@@ -1517,20 +1517,23 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public List<Meeting_Model> getAllmeeting()
+        public List<Meeting_Model> getAllmeeting(int? limit= null,int? page = null)
         {
             try
             {
                 con.Open();
                 List<Meeting_Model> _list = new List<Meeting_Model>();
                 Meeting_Model obj = null;
-                using (var cmd = new NpgsqlCommand("SELECT * from fn_get_meetings(@p_action);", con))
+                using (var cmd = new NpgsqlCommand("SELECT * from fn_get_meetings(@p_action,@v_limit,@v_page);", con))
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@p_action", "getAllmeeting");
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
 
                     using (var sdr = cmd.ExecuteReader())
                     {
+                        bool firstRow = true;
                         while (sdr.Read())
                         {
                             obj = new Meeting_Model();
@@ -1544,6 +1547,17 @@ namespace RemoteSensingProject.Models.Admin
                             obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
                             obj.summary = sdr["meetSummary"].ToString();
                             _list.Add(obj);
+                            if (firstRow)
+                            {
+                                obj.Pagination = new ApiCommon.PaginationInfo
+                                {
+                                    PageNumber = page ?? 0,
+                                    TotalPages = Convert.ToInt32(sdr["totalpages"] != DBNull.Value ? sdr["totalpages"] : 0),
+                                    TotalRecords = Convert.ToInt32(sdr["totalrecords"] != DBNull.Value ? sdr["totalrecords"] : 0),
+                                    PageSize = limit ?? 0
+                                };
+                                firstRow = false; // Optional: ensure pagination is only assigned once
+                            }
                         }
                     }
                 }
@@ -2001,6 +2015,7 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         while (res.Read())
                         {
+                            bool firstRow = true;
                             noticeList.Add(new Generate_Notice
                             {
                                 Id = (int)res["id"],
@@ -2014,6 +2029,17 @@ namespace RemoteSensingProject.Models.Admin
                                 noticeDate = Convert.ToDateTime(res["noticeDate"]).ToString("dd-MM-yyyy")
 
                             });
+                            if (firstRow)
+                            {
+                                noticeList[0].Pagination = new ApiCommon.PaginationInfo
+                                {
+                                    PageNumber = page ?? 0,
+                                    TotalPages = Convert.ToInt32(res["totalpages"] != DBNull.Value ? res["totalpages"] : 0),
+                                    TotalRecords = Convert.ToInt32(res["totalrecords"] != DBNull.Value ? res["totalrecords"] : 0),
+                                    PageSize = limit ?? 0
+                                };
+                                firstRow = false; // Optional: ensure pagination is only assigned once
+                            }
                         }
                     }
                     using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
