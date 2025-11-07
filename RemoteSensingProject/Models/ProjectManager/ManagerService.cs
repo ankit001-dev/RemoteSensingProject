@@ -247,6 +247,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 {
                     while (rd.Read())
                     {
+                        bool firstRow = true;
                         list.Add(new Project_model
                         {
                             Id = Convert.ToInt32(rd["id"]),
@@ -272,6 +273,17 @@ namespace RemoteSensingProject.Models.ProjectManager
                             completestatus = Convert.ToBoolean(rd["CompleteStatus"]),
                             projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
                         });
+                        if (firstRow)
+                        {
+                            list[0].Pagination = new ApiCommon.PaginationInfo
+                            {
+                                PageNumber = page ?? 0,
+                                TotalPages = Convert.ToInt32(rd["totalpages"] != DBNull.Value ? rd["totalpages"] : 0),
+                                TotalRecords = Convert.ToInt32(rd["totalrecords"] != DBNull.Value ? rd["totalrecords"] : 0),
+                                PageSize = limit ?? 0
+                            };
+                            firstRow = false; // Optional: ensure pagination is only assigned once
+                        }
                     }
                 }
                 return list;

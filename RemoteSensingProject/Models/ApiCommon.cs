@@ -12,7 +12,7 @@ namespace RemoteSensingProject.Models
             public int StatusCode { get; set; }
             public bool Status { get; set; }  // "success" or "error"
             public string Message { get; set; }
-            public T Data { get; set; }
+            public T data { get; set; }
             public PaginationInfo Pagination { get; set; }
         }
 
