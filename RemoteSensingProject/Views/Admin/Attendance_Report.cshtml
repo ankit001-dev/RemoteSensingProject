@@ -251,7 +251,7 @@
 
                     $('#outsourcelist').empty();
 
-                    console.log(res.data);
+                    console.log('OutSource List',res.data);
                     if (res.StatusCode === 200 && res.data != null) {
                         let rows = '';
                         $.each(res.data, function (index, item) {
@@ -404,9 +404,10 @@
             $.ajax({
                 url: '/api/getAttendanceRepo',
                 type: 'get',
-                data: { year: year, month: month, projectManager: pm, EmpId: id },
+                data: { month: month, year: year, projectManager: pm, EmpId: id },
                 success: function (res) {
                     Swal.close();
+                    console.log('attendancelist',res);
                     if (!res.data || res.data.length === 0) {
                         Swal.fire({
                             title: "No Data Found",
@@ -421,6 +422,22 @@
                         return;
                     }
                     console.log('Attendance List', res.data[0]);
+                    $("#outsourcelist").empty();
+                    let row = '';
+                    let repeated = [];
+                    $.each(res.data, function (i, item) {
+                        repeated.push(item.EmpId);
+                        if (!repeated.includes(item.EmpId))
+                        row += `<tr data-empid="${item.EmpId}" data-empname="${item.EmpName}">
+    <td class="text-start">${i}</td>
+    <td data-empid="${item.EmpId}">
+        <a href="#" data-title="View Attendance" class="viewattendance">${item.EmpName}</a>
+    </td>
+    <td>${item.present}</td>
+    <td>${item.absent}</td>
+</tr>`;
+                    });
+                    $("#outsourcelist").append(row);
                     $("#pres").text(res.data[0].present)
                     $("#abs").text(res.data[0].absent)
                     $("#attendancelist").empty();

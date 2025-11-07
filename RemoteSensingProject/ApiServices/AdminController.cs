@@ -2166,11 +2166,11 @@ namespace RemoteSensingProject.ApiServices
         [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getAttendanceRepo")]
-        public IHttpActionResult getAttendanceRepo(int month, int year, int projectManager, int EmpId)
+        public IHttpActionResult getAttendanceRepo(int month, int year, int projectManager, int? EmpId=null)
         {
             try
             {
-                var data = _managerservice.getReportAttendance(month, year, projectManager, EmpId);
+                var data = _managerservice.getReportAttendance(month, year, projectManager,EmpId.HasValue? Convert.ToInt32(EmpId):0);
                 return Ok(new
                 {
                     status = data.Any(),
