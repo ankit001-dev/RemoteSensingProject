@@ -113,7 +113,7 @@
                 <div class="row mb-2">
                     <div class="col-sm-3 text-start">
                         <button type="button" class="btn btn-warning py-1 mt-2 rounded-1" id="exportExcel">Exel</button>
-                        <button type="button" class="ms-2 btn btn-danger py-1 mt-2 rounded-1" id="exceldown">Pdf</button>
+                        @*<button type="button" class="ms-2 btn btn-danger py-1 mt-2 rounded-1" id="exceldown">Pdf</button>*@
                     </div>
                     <div class="header col-sm-3 text-end">
                         <h3 id="employeeNameDisplayatttend"></h3>
@@ -445,7 +445,10 @@
                 text: 'Processing your request...',
                 allowEscapeKey: false,
                 allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
+                timer: 1000, // 1 second
+                didOpen: () => {
+                    Swal.showLoading();
+                }
             });
             debugger
             let year = $("#yearFilterTable").val(); 

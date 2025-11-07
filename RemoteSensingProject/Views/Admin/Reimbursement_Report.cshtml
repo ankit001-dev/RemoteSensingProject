@@ -3,7 +3,7 @@
     ViewBag.Title = "Reimbursement_Report";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
     var empData = ViewData["totalProjectManager"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
-    var reportData = ViewData["totalReinursementReport"] as List<RemoteSensingProject.Models.Admin.main.AdminReimbursement>;
+    var reportData = ViewData["totalReinursementReport"] as List<RemoteSensingProject.Models.ProjectManager.Reimbursement>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
 }
 <link href="~/assets/css/reinbursementCssDesign.css" rel="stylesheet" />
@@ -222,11 +222,11 @@
                                 <td>@item.approveAmount</td>
                                 <td>@item.remark</td>
                                 <td>
-                                    @if (item.appr_status && !item.newRequest)
+                                    @if (item.apprstatus && !item.newRequest)
                                     {
                                         <span class="badge bg-success">Approved</span>
                                     }
-                                    else if (!item.newRequest && !item.appr_status)
+                                    else if (!item.newRequest && !item.apprstatus)
                                     {
                                         <span class="badge bg-danger">Rejected</span>
                                     }

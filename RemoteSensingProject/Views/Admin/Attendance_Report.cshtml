@@ -158,7 +158,7 @@
                 <div class="row mb-2">
                     <div class="col-sm-3 text-start">
                         <button type="button" class="btn btn-warning py-1 mt-2 rounded-1" id="exportExcel">Exel</button>
-                        <button type="button" class="ms-2 btn btn-danger py-1 mt-2 rounded-1" id="exceldown">Pdf</button>
+                        @*<button type="button" class="ms-2 btn btn-danger py-1 mt-2 rounded-1" id="exceldown">Pdf</button>*@
                     </div>
                     <div class="header col-sm-3 text-end">
                         <h3 id="employeeNameDisplayatttend"></h3>
@@ -389,7 +389,7 @@
 
         $("#attendancetable").DataTable()
 
-        $("#monthFilter").on("change", function () {
+        $("#monthFilterTable").on("change", function () {
             debugger
             Swal.fire({
                 title: 'Please Wait!',
@@ -480,6 +480,24 @@
 
         $('#exportExcel').click(function () {
 
+        });
+
+        $("#showAllAttendance").on("click", function () {
+            Swal.fire({
+                title: 'Please Wait!',
+                text: 'Processing your request...',
+                allowEscapeKey: false,
+                allowOutsideClick: false,
+                timer: 1000, // 1 second
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            debugger
+            let year = $("#yearFilterTable").val();
+            let month = $("#monthFilterTable").val();
+            let proj = $('.showEmployeeProfile').data('id');
+            location.href = '/admin/ShowAllAttendance?year=' + year + '&month=' + month + '&projectManager=' +proj;
         });
     });
 </script>
