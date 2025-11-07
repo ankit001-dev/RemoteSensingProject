@@ -970,7 +970,7 @@ namespace RemoteSensingProject.ApiServices
         [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/ViewReinbursementBytype")]
-        public IHttpActionResult viewReinbursement(int userId, string type, int id, int?page, int?limit)
+        public IHttpActionResult viewReinbursement(int userId, string type, int id, int?page=null, int?limit=null)
         {
             try
             {

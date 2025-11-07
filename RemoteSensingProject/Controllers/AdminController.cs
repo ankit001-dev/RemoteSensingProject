@@ -661,7 +661,7 @@ namespace RemoteSensingProject.Controllers
                     data = data.Where(d => d.newRequest == false && d.apprstatus == false).ToList();
                 }
             }
-            
+
             ViewData["totalReinursementReport"] = data;
             return View();
         }
