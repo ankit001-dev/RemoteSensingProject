@@ -2591,57 +2591,69 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<AllAttendance> GetAllAttendanceForPmByMonth(int year, int month, int projectManager)
+        public List<AllAttendance> GetAllAttendanceForPmByMonth(int year, int month, int projectManager,int?limit = null,int?page = null)
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageAttendance", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@projectManager", projectManager);
-                cmd.Parameters.AddWithValue("@action", "showAllAttendance");
-                cmd.Parameters.AddWithValue("@year", year);
-                cmd.Parameters.AddWithValue("@month", month);
                 List<AllAttendance> list = new List<AllAttendance>();
-                con.Open();
-                var rd = cmd.ExecuteReader();
-
                 Dictionary<int, AllAttendance> attendanceDict = new Dictionary<int, AllAttendance>();
-
-                while (rd.Read())
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageattendance_cursor", con, tran))
                 {
-                    int empId = Convert.ToInt32(rd["EmpId"]);
-                    string empName = rd["EmpName"].ToString();
-                    int present = Convert.ToInt32(rd["TotalPresent"]);
-                    int absent = Convert.ToInt32(rd["TotalAbsent"]);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "showAllAttendance");
+                    cmd.Parameters.AddWithValue("@v_projectmanager", projectManager);
+                    cmd.Parameters.AddWithValue("@v_id", 0);
+                    cmd.Parameters.AddWithValue("@v_year", year);
+                    cmd.Parameters.AddWithValue("@v_month", month);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
 
-                    AttendanceManage att = new AttendanceManage
-                    {
-                        EmpId = empId,
-                        EmpName = empName,
-                        present = present,
-                        absent = absent,
-                        attendanceDate = rd["attendanceDate"] != DBNull.Value ? Convert.ToDateTime(rd["attendanceDate"]) : DateTime.MinValue,
-                        attendanceStatus = rd["attendanceStatus"]?.ToString(),
-                    };
+                    string curcorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{curcorName}\";", con))
+                    using (var rd = fetchCmd.ExecuteReader()) { 
 
-                    if (!attendanceDict.ContainsKey(empId))
-                    {
-                        attendanceDict[empId] = new AllAttendance
+                        while (rd.Read())
                         {
-                            EmpId = empId,
-                            EmpName = empName,
-                            month = month,
-                            present = present,
-                            absent = absent,
-                            showAll = new List<AttendanceManage> { att }
-                        };
-                    }
-                    else
-                    {
-                        attendanceDict[empId].showAll.Add(att);
-                    }
-                }
+                            int empId = Convert.ToInt32(rd["EmpId"]);
+                            string empName = rd["EmpName"].ToString();
+                            int present = Convert.ToInt32(rd["TotalPresent"]);
+                            int absent = Convert.ToInt32(rd["TotalAbsent"]);
 
+                            AttendanceManage att = new AttendanceManage
+                            {
+                                EmpId = empId,
+                                EmpName = empName,
+                                present = present,
+                                absent = absent,
+                                attendanceDate = rd["attendanceDate"] != DBNull.Value ? Convert.ToDateTime(rd["attendanceDate"]) : DateTime.MinValue,
+                                attendanceStatus = rd["attendanceStatus"]?.ToString(),
+                            };
+
+                            if (!attendanceDict.ContainsKey(empId))
+                            {
+                                attendanceDict[empId] = new AllAttendance
+                                {
+                                    EmpId = empId,
+                                    EmpName = empName,
+                                    month = month,
+                                    present = present,
+                                    absent = absent,
+                                    showAll = new List<AttendanceManage> { att }
+                                };
+                            }
+                            else
+                            {
+                                attendanceDict[empId].showAll.Add(att);
+                            }
+                        }
+                    }
+                     using(var closeCmd = new NpgsqlCommand($"close \"{curcorName}\";", con,tran)) {
+                        closeCmd.ExecuteNonQuery();
+                     }
+                }
+                
                 return attendanceDict.Values.ToList();
             }
             catch (Exception ex)
@@ -2653,6 +2665,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 if (con.State == ConnectionState.Open)
                     con.Close();
                 cmd.Dispose();
+                
             }
         }
 
@@ -2695,8 +2708,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "Totalcountpa");
                     cmd.Parameters.AddWithValue("v_id", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_year", 0);
-                    cmd.Parameters.AddWithValue("v_month", 0);
+                    cmd.Parameters.AddWithValue("v_year", Convert.ToInt32(DateTime.Now.Year));
+                    cmd.Parameters.AddWithValue("v_month", Convert.ToInt32(DateTime.Now.Month-1));
                     cmd.Parameters.AddWithValue("v_projectmanager", projectManager);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
@@ -2735,31 +2748,48 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<AttendanceManage> getAttendanceCountByMonth(int year, int month, int projectManager)
+        public List<AttendanceManage> getAttendanceCountByMonth(int year, int month, int projectManager,int? limit = null,int? page = null)
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageAttendance", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@projectManager", projectManager);
-                cmd.Parameters.AddWithValue("@action", "Totalcountpa");
-                cmd.Parameters.AddWithValue("@year", year);
-                cmd.Parameters.AddWithValue("@month", month);
                 con.Open();
                 List<AttendanceManage> list = new List<AttendanceManage>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageattendance_cursor", con, tran))
                 {
-                    while (res.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "Totalcountpa");
+                    cmd.Parameters.AddWithValue("@v_projectmanager", projectManager);
+                    cmd.Parameters.AddWithValue("@v_id", 0);
+                    cmd.Parameters.AddWithValue("@v_year", year);
+                    cmd.Parameters.AddWithValue("@v_month", month);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_date", NpgsqlTypes.NpgsqlDbType.Timestamp, DBNull.Value);
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var res = fetchCmd.ExecuteReader())
                     {
-                        list.Add(new AttendanceManage
+                        if (res.HasRows)
                         {
-                            EmpId = Convert.ToInt32(res["EmpId"]),
-                            EmpName = res["Emp_Name"].ToString(),
-                            present = Convert.ToInt32(res["presentcount"]),
-                            absent = Convert.ToInt32(res["absentcount"])
-                        });
+                            while (res.Read())
+                            {
+                                list.Add(new AttendanceManage
+                                {
+                                    EmpId = Convert.ToInt32(res["EmpId"]),
+                                    EmpName = res["Emp_Name"].ToString(),
+                                    present = Convert.ToInt32(res["presentcount"]),
+                                    absent = Convert.ToInt32(res["absentcount"])
+                                });
+                            }
+                        }
                     }
+                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return list;
             }

@@ -10,22 +10,19 @@
 <div class="row mx-0 mb-2">
     <div class="col-sm-3 text-start">
         <button type="button" class="btn btn-warning py-1 mt-2 rounded-1" id="exportExcel">Exel</button>
-        <button type="button" class="ms-2 btn btn-danger py-1 mt-2 rounded-1" id="exceldown">Pdf</button>
+        @*<button type="button" class="ms-2 btn btn-danger py-1 mt-2 rounded-1" id="exceldown">Pdf</button>*@
     </div>
     <div class="header col-sm-3 text-end">
         <h3 id="employeeNameDisplayatttend"></h3>
     </div>
 </div>
 
-<script>
-    $('#exportExcel').click(function () {
-        location.href = '/employee/ExportAllAtt?year=' + 2025 + '&month=' + 4;
-    });
-</script>
+
 <div id="allEmployeesAttendance"></div>
 
 <script>
     $(document).ready(function () {
+        Swal.close();
         let year = parseInt("@ViewData["Year"]");
         let month = parseInt("@ViewData["Month"]");
         let daysInMonth = new Date(year, month, 0).getDate();
@@ -87,6 +84,11 @@
         });
 
         $('#allEmployeesAttendance').html(container);
+
+
+        $('#exportExcel').click(function () {
+            location.href = '/employee/ExportAllAtt?year=' + year + '&month=' + month;
+        });
     });
 </script>
 

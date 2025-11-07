@@ -2138,6 +2138,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getAttendanceByEmp")]
         public IHttpActionResult getAttendanceByEmp(int projectManager, int EmpId)
@@ -2162,6 +2163,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getAttendanceRepo")]
         public IHttpActionResult getAttendanceRepo(int month, int year, int projectManager, int EmpId)
