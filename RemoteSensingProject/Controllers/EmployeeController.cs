@@ -520,7 +520,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult All_Project_Report(string req)
         {
             var userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, req);
+            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId),null,null,req,null);
                 return View();
         }
 
