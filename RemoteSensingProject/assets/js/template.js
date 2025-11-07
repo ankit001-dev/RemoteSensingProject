@@ -98,7 +98,8 @@
 
 
     //Add active class to nav-link based on url dynamically
-    function addActiveClass(element) {
+      function addActiveClass(element) {
+          var hrefPage = element.attr('href')?.split("/").pop();
         if (current === "") {
           //for root url
           if (element.attr('href').indexOf("index.html") !== -1) {
@@ -110,7 +111,7 @@
           }
         } else {
           //for other url
-          if (element.attr('href').indexOf(current) !== -1) {
+            if (hrefPage === current) {
             element.parents('.nav-item').last().addClass('active');
             if (element.parents('.sub-menu').length) {
               element.closest('.collapse').addClass('show');

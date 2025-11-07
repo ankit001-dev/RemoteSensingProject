@@ -313,14 +313,15 @@ namespace RemoteSensingProject.Models.Accounts
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_Reimbursement", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand("CALL sp_Reimbursement(p_rejectreason => @rejectReason, p_action => @action, p_id => @id)", con);
                 cmd.Parameters.AddWithValue("@action", "rejectReinbursementAmtRequest");
                 cmd.Parameters.AddWithValue("@rejectReason", reason);
                 cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
-            }catch(Exception ex)
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch(Exception ex)
             {
                 throw ex;
             }

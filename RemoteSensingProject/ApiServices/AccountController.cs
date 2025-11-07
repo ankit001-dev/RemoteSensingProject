@@ -174,7 +174,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-
+        [System.Web.Mvc.AllowAnonymous]
         [HttpPost]
         [Route("api/rejectReinbursementAmountRequest")]
         public IHttpActionResult RejectReinbursementForm()

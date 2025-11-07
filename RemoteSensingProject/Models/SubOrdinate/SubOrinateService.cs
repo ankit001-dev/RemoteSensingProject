@@ -122,7 +122,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
 
         #endregion Problem End 
 
-        #region Out Source Start
+        #region Outsource Start
         public List<OutSource_Task> getOutSourceTask(int id)
         {
             try
@@ -183,7 +183,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
 
         }
 
-        #endregion Out Source End
+        #endregion Outsource End
 
         #region DashboardCount
         public DashboardCount GetDashboardCounts(int userId)
