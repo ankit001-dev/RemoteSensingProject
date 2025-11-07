@@ -26,19 +26,19 @@
                     <div class="row">
                         <div class="col-lg-4 mb-3">
                             <label for="upload" class="form-label">Title</label>
-                            <input type="text" name="pm.pm.ProjectTitle" class="form-control form-control-sm" id="daynight" placeholder="Enter Project Title">
+                            <input type="text" name="pm.pm.ProjectTitle" class="form-control form-control-sm" id="daynight" placeholder="Enter Project Title" required>
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Assign Date</label>
                             <div class="input-group date datepicker datePickerExample">
-                                <input type="text" class="form-control form-control-sm" name="pm.pm.AssignDate">
+                                <input type="text" class="form-control form-control-sm" name="pm.pm.AssignDate" required>
                                 <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="subtitle" class="form-label">Start Date</label>
                             <div class="input-group date datepicker datePickerExample">
-                                <input type="text" class="form-control form-control-sm" name="pm.pm.StartDate">
+                                <input type="text" class="form-control form-control-sm" name="pm.pm.StartDate" required>
                                 <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Completion Date</label>
                             <div class="input-group date datepicker datePickerExample">
-                                <input type="text" class="form-control form-control-sm" name="pm.pm.CompletionDate">
+                                <input type="text" class="form-control form-control-sm" name="pm.pm.CompletionDate" required>
                                 <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
                       
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Sub-Ordinate</label>
-                            <select class="form-control form-control-sm" name="pm.pm.SubOrdinate" multiple>
+                            <select class="form-control form-control-sm" name="pm.pm.SubOrdinate" multiple required>
                                 <option value="">Select an Option</option>
                                 @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
                                 {
@@ -69,11 +69,11 @@
                             <div class="d-flex justify-content-between">
                                 <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
                             </div>
-                            <input type="text" class="form-control form-control-sm" name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
+                            <input type="text" class="form-control form-control-sm" name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget" required>
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Project Document</label>
-                            <input type="file" class="form-control form-control-sm" name="" id="projectDocumentFile">
+                            <input type="file" class="form-control form-control-sm" name="" id="projectDocumentFile" required>
                         </div>
 
 
@@ -81,10 +81,10 @@
                             <label for="title" class="form-label">Project Type</label>
                             <br />
                             <label for="projectType" class="form-label">
-                                <input type="radio" name="pm.pm.ProjectType" class="form-check-input" value="Internal" checked /><span>Internal</span>
+                                <input type="radio" name="pm.pm.ProjectType" class="form-check-input" value="Internal" checked required /><span>Internal</span>
                             </label>
                             <label for="stage" class="form-label ms-2">
-                                <input type="radio" name="pm.pm.ProjectType" class="form-check-input" value="External" /> <span>External</span>
+                                <input type="radio" name="pm.pm.ProjectType" class="form-check-input" value="External" required /> <span>External</span>
                             </label>
                         </div>
 
@@ -92,10 +92,10 @@
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label w-100">Stage</label>
                             <label for="stage" class="form-label">
-                                <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="true" /> <span>Yes</span>
+                                <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="true" required/> <span>Yes</span>
                             </label>
                             <label for="stage" class="form-label ms-2">
-                                <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="false" checked /><span>No</span>
+                                <input type="radio" name="pm.pm.ProjectStage" class="form-check-input" value="false" checked required/><span>No</span>
                             </label>
 
 
@@ -109,11 +109,11 @@
                             <div class="row budgetList">
                                 <div class="col-lg-5 mb-3">
                                     <label for="title" class="form-label">Heads</label>
-                                    <input type="text" class="form-control form-control-sm" name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point">
+                                    <input type="text" class="form-control form-control-sm" name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point" required>
                                 </div>
                                 <div class="col-lg-5 mb-3">
                                     <label for="title" class="form-label">Amount</label>
-                                    <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter Contact Person Name">
+                                    <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter Contact Person Name" required>
                                 </div>
 
 
@@ -170,7 +170,7 @@
                     <div class="row">
                         <div class="col-lg-12 mb-3">
                             <label for="description" class="form-label"> Description</label>
-<textarea class="form-control form-control-sm" name="pm.pm.ProjectDescription" id="tinymceExample" rows="10" placeholder="Project Description"></textarea>
+                            <textarea class="form-control form-control-sm" name="pm.pm.ProjectDescription" id="tinymceExample" rows="10" placeholder="Project Description" required></textarea>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary">Submit</button>
@@ -212,7 +212,7 @@
                 <div class="row stageListItem">
                     <div class="col-lg-4 mb-3">
                         <label for="venue" class="form-label">Key Point</label>
-                        <input type="text" class="form-control form-control-sm" name="pm.stages[${count}].KeyPoint" placeholder="Enter Key Point">
+                        <input type="text" class="form-control form-control-sm" name="pm.stages[${count}].KeyPoint" placeholder="Enter Key Point" required>
                     </div>
                     <div class="col-lg-4 mb-3">
                         <label for="person" class="form-label">Pdf Upload</label>
@@ -220,7 +220,7 @@
                     </div>
                     <div class="col-lg-3 mb-3">
                         <label for="date" class="form-label">Complete Date</label>
-                        <input type="date" class="form-control form-control-sm" name="pm.stages[${count}].CompletionDate">
+                        <input type="date" class="form-control form-control-sm" name="pm.stages[${count}].CompletionDate" required>
                     </div>
                     <div class="col-lg-1 text-center mb-3" style="line-height:6;">
                         <a href="#" class="deleteCurrntRow">
@@ -260,11 +260,11 @@
             let ele = `<div class="row budgetList">
     <div class="col-lg-5 mb-3">
         <label for="title" class="form-label">Heads</label>
-        <input type="text" class="form-control form-control-sm" name="pm.budgets[${count+1}].ProjectHeads" id="venue" placeholder="Enter Key Point">
+        <input type="text" class="form-control form-control-sm" name="pm.budgets[${count + 1}].ProjectHeads" id="venue" placeholder="Enter Key Point" required>
     </div>
     <div class="col-lg-5 mb-3">
         <label for="title" class="form-label">Amount</label>
-        <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[${count+1}].ProjectAmount" placeholder="Enter Contact Person Name">
+        <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount" required>
     </div>
     <div class="col-lg-2 text-center mb-3" style="line-height:6;">
         <a href="#" class="deleteCurrntRow">

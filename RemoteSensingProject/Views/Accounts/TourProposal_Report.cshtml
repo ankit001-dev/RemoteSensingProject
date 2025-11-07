@@ -311,12 +311,12 @@
         $("#Filter2").on("change", function () {
             let filter = $(this).val();
             let table = $("#tableTour").DataTable()
-            table.column(2).search(filter).draw()
+            table.column(3).search(filter).draw()
         })
         $("#Filter3").on("change", function () {
             let filter = $(this).val();
             let table = $("#tableTour").DataTable()
-            table.column(10).search(filter).draw()
+            table.column(11).search(filter).draw()
         })
 
         $(".action").on("click", function () {

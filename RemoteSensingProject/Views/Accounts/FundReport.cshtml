@@ -49,9 +49,6 @@
         <div class="col-lg-3">
             <h5>Project Lists</h5>
         </div>
-        <div class="col-lg-6 col-md-6">
-            <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
-        </div>
         <div class="col-lg-3 col-md-6">
             <select class="form-select form-select-lg" id="filterProjectStatus">
                 <option value="" selected>Project Status</option>
@@ -297,7 +294,7 @@
 
         $("#filterProjectStatus").on("change", function () {
             var table = $("#dataTableExamples").DataTable();
-            table.column(4).search(this.value).draw();
+            table.column(5).search(this.value).draw();
         })
         $('#dataTableExamples').DataTable({
             layout: {

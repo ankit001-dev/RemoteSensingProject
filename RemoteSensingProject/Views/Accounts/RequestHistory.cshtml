@@ -34,7 +34,6 @@
                         <th class="pt-0">Project Code</th>
                         <th class="pt-0">Project Name</th>
                         <th class="pt-0">Start Date</th>
-                        <th class="pt-0">Complete Status</th>
                         <th class="pt-0">Action</th>
                     </tr>
                 </thead>
@@ -51,7 +50,6 @@
                                     <td>@item.projectCode</td>
                                     <td><a href="#" class="viewProject" data-Id="@item.Id">@item.ProjectTitle</a></td>
                                     <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
-                                    <td><span class='text-light px-2 border-0 rounded-1 @(item.ApproveStatus?"bg-success":"bg-warning")'>@(item.ApproveStatus?"Completed":"Pending")</span></td>
                                     <td class="text-center">
                                         <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                             @*<li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>*@
@@ -251,7 +249,7 @@
     $(document).ready(function () {
         $("#searchProjectBy").on("input", function () {
             var table = $("#dataTableExample").DataTable();
-            table.column(2).search(this.value).draw()
+            table.column(3).search(this.value).draw()
         });
        
     });

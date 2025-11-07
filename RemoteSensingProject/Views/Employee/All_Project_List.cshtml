@@ -36,9 +36,6 @@
             <div class="col-lg-2">
                 <h5>All Project Lists</h5>
             </div>
-            <div class="col-lg-4 col-md-6">
-                <input type="text" placeholder="Search by project name" class="form-control">
-            </div>
             @*<div class="col-lg-3 col-md-6">
                     <select class="form-select form-select-lg">
                         <option selected>Serch by Project Manager</option>
@@ -184,7 +181,7 @@
         $("#statusFilter").on("change", function () {
             debugger
             var projectStatus = $(this).val();
-            table.column(8).search(projectStatus).draw();
+            table.column(10).search(projectStatus).draw();
         })
 
         $('#searchByProjectName').on('keyup', function () {
