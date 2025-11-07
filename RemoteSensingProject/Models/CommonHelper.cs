@@ -40,8 +40,8 @@ namespace RemoteSensingProject.Models
                 StatusCode = statusCode,
                 Status = true,
                 Message = message,
-                Data = data,
-                Pagination = pagination
+                Pagination = pagination,
+                data = data
             };
 
             return new ResponseMessageResult(controller.Request.CreateResponse((HttpStatusCode)statusCode, response));
@@ -50,8 +50,8 @@ namespace RemoteSensingProject.Models
 
         public static IHttpActionResult NoData(
             ApiController controller,
-            string message = "No Data Found !",
-            int statusCode = 204
+            string message = "No data Found !",
+            int statusCode = 200
             )
         {
             var response = new ApiResponse<Object>
@@ -59,7 +59,7 @@ namespace RemoteSensingProject.Models
                 StatusCode = statusCode,
                 Status = true,
                 Message = message,
-                Data = null
+                data = null
             };
 
             return new ResponseMessageResult(controller.Request.CreateResponse((HttpStatusCode)statusCode, response));
@@ -76,7 +76,7 @@ namespace RemoteSensingProject.Models
                 StatusCode = statusCode,
                 Status = false,
                 Message = message ?? "An unexpected error occurred.",
-                Data = null
+                data = null
             };
 
             return new ResponseMessageResult(controller.Request.CreateResponse((HttpStatusCode)statusCode, response));
