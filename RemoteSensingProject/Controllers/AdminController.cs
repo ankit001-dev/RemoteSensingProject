@@ -131,6 +131,9 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult Employee_Registration(Employee_model emp)
         {
+            string filePage = Server.MapPath("~/ProjectContent/Admin/Employee_Images/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             string path = null;
             if (emp.EmployeeImages != null)
             {
@@ -199,7 +202,9 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult InsertProject(createProjectModel pm)
         {
-
+            string filePage = Server.MapPath("~/ProjectContent/Admin/ProjectDocs/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
             {
                 pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
@@ -303,6 +308,9 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult AddMeeting(AddMeeting_Model formData)
         {
+            string filePage = Server.MapPath("~/ProjectContent/Admin/Meeting_Attachment/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             string path = null;
             if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
             {
@@ -486,6 +494,9 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult AddNotice(Generate_Notice gn)
         {
+            string filePage = Server.MapPath("~/ProjectContent/Admin/NoticeDocs/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             string path = null;
             if (gn.Attachment != null)
             {
