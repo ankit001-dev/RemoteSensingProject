@@ -596,6 +596,7 @@ namespace RemoteSensingProject.ApiServices
                 model.pm.ProjectManager = form["ProjectManager"];
                 model.pm.ProjectDescription = form["ProjectDescription"];
                 model.pm.ProjectType = form["ProjectType"];
+                model.pm.letterNo = form["letterNo"] ?? "0";
                 model.pm.createdBy = "admin";
 
                 // Project Stages
@@ -699,7 +700,7 @@ namespace RemoteSensingProject.ApiServices
                 }
                 else
                 {
-                    return CommonHelper.Error(this, "Something went wrong", 500);
+                    return CommonHelper.Error(this, "Something went wrong.", 500);
                 }
             }
             catch (Exception ex)
