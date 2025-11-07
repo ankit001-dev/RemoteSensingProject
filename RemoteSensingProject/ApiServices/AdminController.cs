@@ -1,4 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Grpc.Core;
+using Newtonsoft.Json;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
@@ -574,107 +576,246 @@ namespace RemoteSensingProject.ApiServices
                 return CommonHelper.Error(this, ex.Message);
             }
         }
-
         [HttpPost]
         [Route("api/adminCreateProject")]
-        public IHttpActionResult CreateProject(createProjectModel pm)
+        public IHttpActionResult CreateProject()
         {
+                List<string> savedFiles = new List<string>();
             try
             {
                 var request = HttpContext.Current.Request;
-                var formData = new Project_model
+                var form = request.Form;
+                var files = request.Files;
+
+                // ✅ Initialize main model
+                var model = new createProjectModel();
+                model.pm = new Project_model();
+
+                // ✅ Read simple fields
+                model.pm.Id = Convert.ToInt32(form["Id"] ?? "0");
+                model.pm.ProjectTitle = form["ProjectTitle"];
+                model.pm.ProjectManager = form["ProjectManager"];
+                model.pm.ProjectDescription = form["ProjectDescription"];
+                model.pm.ProjectType = form["ProjectType"];
+                model.pm.createdBy = "admin";
+
+                // Project Stages
+                if (!Boolean.TryParse(form["projectStage"], out var projectStages))
+                    return CommonHelper.Error(this, "Project Stages is required",500);
+                model.pm.ProjectStage = projectStages;
+
+                // ✅ Dates
+                if (!DateTime.TryParse(form["AssignDate"], out var assignDate))
+                    return CommonHelper.Error(this, "Assign Date is required.", 500);
+                model.pm.AssignDate = assignDate;
+
+                if (!DateTime.TryParse(form["StartDate"], out var startDate))
+                    return CommonHelper.Error(this, "Start Date is required.", 500);
+                model.pm.StartDate = startDate;
+
+                if (!DateTime.TryParse(form["CompletionDate"], out var compDate))
+                    return CommonHelper.Error(this, "Completion Date is required.", 500);
+                model.pm.CompletionDate = compDate;
+
+                // ✅ Budget
+                if (!decimal.TryParse(form["ProjectBudget"], out var budget))
+                    return CommonHelper.Error(this, "Invalid Project Budget", 500);
+                model.pm.ProjectBudget = budget;
+
+                // ✅ External Project Extra Fields
+                if (model.pm.ProjectType?.ToLower() == "external")
                 {
-                    Id = Convert.ToInt32(request.Form.Get("Id")),
-                    ProjectTitle = request.Form.Get("ProjectTitle"),
-                    AssignDate = Convert.ToDateTime(request.Form.Get("AssignDate")),
-                    StartDate = Convert.ToDateTime(request.Form.Get("StartDate")),
-                    CompletionDate = Convert.ToDateTime(request.Form.Get("CompletionDate")),
-                    ProjectManager = request.Form.Get("ProjectManager"),
-                    ProjectBudget = Convert.ToDecimal(request.Form.Get("ProjectBudget")),
-                    ProjectDescription = request.Form.Get("ProjectDescription"),
-                    projectDocumentUrl = request.Form.Get("projectDocumentUrl"),
-                    ProjectType = request.Form.Get("ProjectType"),
-                    ProjectStage = Convert.ToBoolean(request.Form.Get("ProjectStage")),
-                    createdBy = request.Form.Get("createdBy")
-                };
-                if (request.Form["SubOrdinate"] != null)
-                {
-                    formData.SubOrdinate = request.Form["SubOrdinate"].Split(',').Select(value => int.Parse(value.ToString())).ToArray();
+                    model.pm.ContactPerson = form["ContactPerson"];
+                    model.pm.ProjectDepartment = form["ProjectDepartment"];
+                    model.pm.Address = form["Address"];
                 }
-                if (formData.ProjectType.Equals("External"))
+
+                // ✅ Subordinates (ID list)
+                if (!string.IsNullOrEmpty(form["SubOrdinate"]))
                 {
-                    formData.ContactPerson = request.Form.Get("ContactPerson");
-                    formData.ProjectDepartment = request.Form.Get("ProjectDepartment");
-                    formData.Address = request.Form.Get("Address");
+                    model.pm.SubOrdinate =
+                        form["SubOrdinate"]
+                        .Split(',')
+                        .Select(int.Parse)
+                        .ToArray();
                 }
-                var file = request.Files["projectDocument"];
-                if (file != null && file.FileName != "")
+
+                // ✅ Parse budgets JSON
+                if (!string.IsNullOrEmpty(form["budgets"]))
                 {
-                    formData.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    formData.projectDocumentUrl = Path.Combine("/ProjectContent/Admin/ProjectDocs/", formData.projectDocumentUrl);
+                    model.budgets = JsonConvert.DeserializeObject<List<Project_Budget>>(form["budgets"]);
                 }
-                // Validations
-                List<string> validationErrors = new List<string>();
-                if (string.IsNullOrWhiteSpace(formData.ProjectTitle))
-                    validationErrors.Add("Project Title is required.");
 
-                if (formData.AssignDate == null)
-                    validationErrors.Add("Assign Date is required.");
-
-                if (formData.StartDate == null)
-                    validationErrors.Add("Start Date is required.");
-
-                if (formData.CompletionDate == null)
-                    validationErrors.Add("Completion Date is required.");
-
-                if (string.IsNullOrWhiteSpace(formData.ProjectManager))
-                    validationErrors.Add("Project Manager is required.");
-
-                if (string.IsNullOrWhiteSpace(formData.ProjectBudget.ToString()))
-                    validationErrors.Add("Project Budget is required.");
-
-
-                if (!decimal.TryParse(request.Form.Get("ProjectBudget"), out decimal projectBudget))
-                    validationErrors.Add("Invalid Project Budget format.");
-
-                if (validationErrors.Any())
+                // ✅ Parse stages JSON
+                if (!string.IsNullOrEmpty(form["stages"]) && model.pm.ProjectStage)
                 {
-                    return BadRequest(new
+                    model.stages = JsonConvert.DeserializeObject<List<Project_Statge>>(form["stages"]);
+                }
+
+                // ✅ Upload Project Document (single)
+                string filePage = HttpContext.Current.Server.MapPath("~/ProjectContent/Admin/ProjectDocs/");
+                if (!Directory.Exists(filePage))
+                    Directory.CreateDirectory(filePage);
+                var projectFile = files["projectDocument"];
+                if (projectFile != null && projectFile.ContentLength > 0)
+                {
+                    string fileName = DateTime.Now.ToString("ddMMyyyy") + "_" + Guid.NewGuid()
+                                      + Path.GetExtension(projectFile.FileName);
+                    string filePath = "/ProjectContent/Admin/ProjectDocs/" + fileName;
+
+                    model.pm.projectDocumentUrl = filePath;
+                    projectFile.SaveAs(HttpContext.Current.Server.MapPath(filePath));
+                    savedFiles.Add(filePath);
+                }
+
+                // ✅ Upload Stage Documents (multiple)
+                if (model.stages != null && model.pm.ProjectStage)
+                {
+                    for (int i = 0; i < model.stages.Count; i++)
                     {
-                        status = false,
-                        StatusCode = 500,
-                        message = string.Join("\n", validationErrors)
-                    });
+                        var stageFile = files["StageDocument_" + i];
+                        if (stageFile != null && stageFile.ContentLength > 0)
+                        {
+                            string fileName = "STAGE_" + i + "_" + DateTime.Now.ToString("ddMMyyyy")
+                                              + "_" + Guid.NewGuid() + Path.GetExtension(stageFile.FileName);
+
+                            string filePath = "/ProjectContent/Admin/ProjectDocs/" + fileName;
+
+                            // ✅ Save file
+                            stageFile.SaveAs(HttpContext.Current.Server.MapPath(filePath));
+
+                            // ✅ Store URL in model
+                            model.stages[i].StageDocument_Url = filePath;
+                            savedFiles.Add(filePath);
+                        }
+                    }
+                }
+
+                // ✅ Save project in DB
+                bool result = _adminServices.addProject(model);
+
+                if (result)
+                {
+                    return CommonHelper.Success(this, "Project created successfully!");
                 }
                 else
                 {
-                    bool res = _adminServices.createApiProject(formData);
-                    if (res)
-                    {
-                        if (file != null && file.FileName != "")
-                        {
-                            file.SaveAs(HttpContext.Current.Server.MapPath(formData.projectDocumentUrl));
-                        }
-                    }
-                    return Ok(new
-                    {
-                        status = res,
-                        StatusCode = res ? 200 : 500,
-                        message = res ? "Project created successfully !" : "Some issue occured ! Please try after sometime."
-                    });
+                    return CommonHelper.Error(this, "Something went wrong", 500);
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
+                foreach (var f in savedFiles)
                 {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message,
-                    data = ex
-                });
+                    if (File.Exists(f))
+                        File.Delete(f);
+                }
+                return CommonHelper.Error(this, ex.Message, 500);
+            
             }
         }
+
+
+        //[HttpPost]
+        //[Route("api/adminCreateProject")]
+        //public IHttpActionResult CreateProject([FromBody]createProjectModel pm)
+        //{
+        //    try
+        //    {
+        //        var request = HttpContext.Current.Request;
+        //        var formData = new Project_model
+        //        {
+        //            Id = Convert.ToInt32(request.Form.Get("Id")),
+        //            ProjectTitle = request.Form.Get("ProjectTitle"),
+        //            AssignDate = Convert.ToDateTime(request.Form.Get("AssignDate")),
+        //            StartDate = Convert.ToDateTime(request.Form.Get("StartDate")),
+        //            CompletionDate = Convert.ToDateTime(request.Form.Get("CompletionDate")),
+        //            ProjectManager = request.Form.Get("ProjectManager"),
+        //            ProjectBudget = Convert.ToDecimal(request.Form.Get("ProjectBudget")),
+        //            ProjectDescription = request.Form.Get("ProjectDescription"),
+        //            projectDocumentUrl = request.Form.Get("projectDocumentUrl"),
+        //            ProjectType = request.Form.Get("ProjectType"),
+        //            ProjectStage = Convert.ToBoolean(request.Form.Get("ProjectStage")),
+        //            createdBy = request.Form.Get("createdBy")
+        //        };
+        //        if (request.Form["SubOrdinate"] != null)
+        //        {
+        //            formData.SubOrdinate = request.Form["SubOrdinate"].Split(',').Select(value => int.Parse(value.ToString())).ToArray();
+        //        }
+        //        if (formData.ProjectType.Equals("External"))
+        //        {
+        //            formData.ContactPerson = request.Form.Get("ContactPerson");
+        //            formData.ProjectDepartment = request.Form.Get("ProjectDepartment");
+        //            formData.Address = request.Form.Get("Address");
+        //        }
+        //        var file = request.Files["projectDocument"];
+        //        if (file != null && file.FileName != "")
+        //        {
+        //            formData.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+        //            formData.projectDocumentUrl = Path.Combine("/ProjectContent/Admin/ProjectDocs/", formData.projectDocumentUrl);
+        //        }
+        //        // Validations
+        //        List<string> validationErrors = new List<string>();
+        //        if (string.IsNullOrWhiteSpace(formData.ProjectTitle))
+        //            validationErrors.Add("Project Title is required.");
+
+        //        if (formData.AssignDate == null)
+        //            validationErrors.Add("Assign Date is required.");
+
+        //        if (formData.StartDate == null)
+        //            validationErrors.Add("Start Date is required.");
+
+        //        if (formData.CompletionDate == null)
+        //            validationErrors.Add("Completion Date is required.");
+
+        //        if (string.IsNullOrWhiteSpace(formData.ProjectManager))
+        //            validationErrors.Add("Project Manager is required.");
+
+        //        if (string.IsNullOrWhiteSpace(formData.ProjectBudget.ToString()))
+        //            validationErrors.Add("Project Budget is required.");
+
+
+        //        if (!decimal.TryParse(request.Form.Get("ProjectBudget"), out decimal projectBudget))
+        //            validationErrors.Add("Invalid Project Budget format.");
+
+        //        if (validationErrors.Any())
+        //        {
+        //            return BadRequest(new
+        //            {
+        //                status = false,
+        //                StatusCode = 500,
+        //                message = string.Join("\n", validationErrors)
+        //            });
+        //        }
+        //        else
+        //        {
+        //            bool res = _adminServices.createApiProject(formData);
+        //            if (res)
+        //            {
+        //                if (file != null && file.FileName != "")
+        //                {
+        //                    file.SaveAs(HttpContext.Current.Server.MapPath(formData.projectDocumentUrl));
+        //                }
+        //            }
+        //            return Ok(new
+        //            {
+        //                status = res,
+        //                StatusCode = res ? 200 : 500,
+        //                message = res ? "Project created successfully !" : "Some issue occured ! Please try after sometime."
+        //            });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new
+        //        {
+        //            status = false,
+        //            StatusCode = 500,
+        //            message = ex.Message,
+        //            data = ex
+        //        });
+        //    }
+        //}
 
         [HttpPost]
         [Route("api/adminAddBudgets")]
