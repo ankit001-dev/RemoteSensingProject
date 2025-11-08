@@ -13,9 +13,6 @@
             <div class="col-lg-3">
                 <h5>Project Lists</h5>
             </div>
-            <div class="col-lg-6 col-md-6">
-                <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
-            </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="filterProjectStatus">
                     <option value="" selected>Project Status</option>
@@ -43,7 +40,6 @@
                         <th class="pt-0">Start Date</th>
                         <th class="pt-0">Completion Date</th>
                         <th class="pt-0">Status</th>
-                        <th class="pt-0 text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,12 +74,12 @@
 
 
                             </td>
-                            <td class="text-center">
-                                <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                            <!--<td class="text-center">
+                                <ul class="d-flex list-unstyled mb-0 justify-content-center">-->
                                     @*<li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>*@
-                                    <li class="me-2"><a href="#" data-title="Edit"><i class="link-icon" data-feather="edit"></i></a></li>
+                                    <!--<li class="me-2"><a href="#" data-title="Edit"><i class="link-icon" data-feather="edit"></i></a></li>
                                 </ul>
-                            </td>
+                            </td>-->
                         </tr>
                         i++;
                     }
@@ -277,7 +273,7 @@
         });
         $("#filterProjectStatus").on("change", function () {
             var table = $("#dataTableExample").DataTable();
-            table.column(5).search(this.value).draw();
+            table.column(7).search(this.value).draw();
         })
     });
 </script>

@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using Microsoft.AspNetCore.Hosting.Server;
+using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
@@ -14,6 +15,7 @@ using RemoteSensingProject.Models.SubOrdinate;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 namespace RemoteSensingProject.ApiServices
 {
+    [JwtAuthorize]
     public class SubOrdinateController : ApiController
     {
 
@@ -139,7 +141,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _subOrdinate.GetDashboardCounts(subId.ToString());
+                var data = _subOrdinate.GetDashboardCounts(subId);
                     return Ok(new
                     {
                         status = true,

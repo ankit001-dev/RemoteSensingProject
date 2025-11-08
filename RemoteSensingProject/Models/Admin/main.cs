@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Security.Policy;
 using System.Web;
 using System.Web.Mvc;
+using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.Models.Admin
 {
@@ -38,6 +39,8 @@ namespace RemoteSensingProject.Models.Admin
             public bool PresentStatus { get; set; }
             public int AppStatus { get; set; }
             public string Reason { get; set; }
+
+            public PaginationInfo Pagination { get; set; }
         }
         public class SubProblem
         {
@@ -109,6 +112,7 @@ namespace RemoteSensingProject.Models.Admin
             public decimal ProjectBudget { get; set; }
             public string ProjectType { get; set; }
             public string ProjectDescription { get; set; }
+            public bool ApproveStatus { get; set; }
             public bool ProjectStage { get; set; }
             public bool ProjectStatus { get; set; }
             public string ProjectDepartment { get; set; }
@@ -117,6 +121,7 @@ namespace RemoteSensingProject.Models.Admin
             public string createdBy { get; set; }
             public string heads { get; set; }
             public string Percentage { get; set; }
+            public PaginationInfo Pagination { get; set; }
            
         }
 
@@ -204,6 +209,7 @@ namespace RemoteSensingProject.Models.Admin
             public List<string> memberId { get; set; }
             public List<KeyPoint> MeetingKeyPointDict { get; set; }
             public string summary { get; set; }
+            public PaginationInfo Pagination { get; set; }
 
         }
         public class KeyPoint
@@ -253,7 +259,7 @@ namespace RemoteSensingProject.Models.Admin
             [AllowHtml]
             public string Notice { get; set; }
             public string noticeDate { get; set; }
-
+            public PaginationInfo Pagination { get; set; }
         }
         public class tourProposalrepo
         {
@@ -350,6 +356,7 @@ namespace RemoteSensingProject.Models.Admin
             public DateTime periodTo { get; set; }
             public DateTime returnDate { get; set; }
             public string purpose { get; set; }
+            public PaginationInfo Pagination { get; set; }
         }
 
 
@@ -375,6 +382,7 @@ namespace RemoteSensingProject.Models.Admin
             public bool appr_status { get; set; }
             public string chequeNum { get; set; }
             public string chequeDate { get; set; }
+            public PaginationInfo Pagination { get; set; }
         }
         public class HiringVehicle1
         {
@@ -402,6 +410,7 @@ namespace RemoteSensingProject.Models.Admin
             public string availbilityOfFund { get; set; }
             public string note { get; set; }
             public string proposedPlace { get; set; }
+            public PaginationInfo Pagination { get; set; }
         }
         public class RaisedProblem
         {

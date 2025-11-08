@@ -2,16 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using RemoteSensingProject.Models.Admin;
 using static RemoteSensingProject.Models.Admin.main;
-using  RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.Accounts;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-
 
 namespace RemoteSensingProject.Controllers
 {
@@ -135,6 +131,9 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult Employee_Registration(Employee_model emp)
         {
+            string filePage = Server.MapPath("~/ProjectContent/Admin/Employee_Images/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             string path = null;
             if (emp.EmployeeImages != null)
             {
@@ -203,7 +202,10 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult InsertProject(createProjectModel pm)
         {
-            if(pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
+            string filePage = Server.MapPath("~/ProjectContent/Admin/ProjectDocs/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
+            if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
             {
                 pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
                 pm.pm.projectDocumentUrl = Path.Combine("/ProjectContent/Admin/ProjectDocs/", pm.pm.projectDocumentUrl);
@@ -220,7 +222,7 @@ namespace RemoteSensingProject.Controllers
                     }
                 }
             }
-
+            pm.pm.createdBy = "admin";
             bool res = _adminServices.addProject(pm);
             if (res)
             {
@@ -306,6 +308,9 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult AddMeeting(AddMeeting_Model formData)
         {
+            string filePage = Server.MapPath("~/ProjectContent/Admin/Meeting_Attachment/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             string path = null;
             if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
             {
@@ -336,6 +341,7 @@ namespace RemoteSensingProject.Controllers
 
                 formData.Attachment_Url = path;
             }
+            
             bool status = _adminServices.UpdateMeeting(formData);
             if (status && formData.Attachment!=null)
             {
@@ -488,6 +494,9 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult AddNotice(Generate_Notice gn)
         {
+            string filePage = Server.MapPath("~/ProjectContent/Admin/NoticeDocs/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             string path = null;
             if (gn.Attachment != null)
             {
@@ -560,7 +569,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult ReimbursementRequest()
         {
-            ViewData["ReimBurseData"] = _managerServices.GetReimbursements();
+            ViewData["ReimBurseData"] = _managerServices.GetReimbursements(type: "selectAll");
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
@@ -587,7 +596,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult TravelRequest()
         {
-            var res = _adminServices.getAllTourList();
+            var res = _adminServices.getAllTourList(null, null);
             ViewData["allTourList"] = res;
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
@@ -618,7 +627,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult HiringRequest()
         {
-            ViewData["hiringList"] = _adminServices.HiringList();
+            ViewData["hiringList"] = _adminServices.HiringList(null,null);
             //var res1 = _managerServices.getProjectList(userid);
             //ViewData["projectList"] = res1;
             ViewData["projects"] = _adminServices.Project_List();
@@ -651,7 +660,20 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Reimbursement_Report(string req)
         {
             ViewData["totalProjectManager"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            ViewData["totalReinursementReport"] = req=="approved"? _adminServices.ReinbursementReport().Where(d => d.newRequest==false && d.appr_status == true).ToList():req== "rejected" ? _adminServices.ReinbursementReport().Where(d=> d.newRequest==false && d.appr_status==false).ToList(): _adminServices.ReinbursementReport();
+            List<Reimbursement> data = _managerServices.GetReimbursements(type: "selectReinbursementReport");
+            if (!string.IsNullOrWhiteSpace(req))
+            {
+                if (req.Equals("approved"))
+                {
+                    data = data.Where(d => d.newRequest == false && d.apprstatus == true).ToList();
+                }
+                else if (req.Equals("rejected"))
+                {
+                    data = data.Where(d => d.newRequest == false && d.apprstatus == false).ToList();
+                }
+            }
+
+            ViewData["totalReinursementReport"] = data;
             return View();
         }
         public ActionResult TourProposal_Report(string req)

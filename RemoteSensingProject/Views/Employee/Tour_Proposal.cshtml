@@ -3,8 +3,7 @@
     ViewBag.Title = "Tour_Proposal";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["tourlist"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
-    var dta = ViewData["projectList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
-    var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    var dta = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
 }
 <link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
 <style>
@@ -27,11 +26,11 @@
                     <div class="col-sm-4">
                         <select id="Filter2" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
-                            @if (projects != null)
+                            @if (dta != null)
                             {
-                                foreach (var proj in projects)
+                                foreach (var item in dta)
                                 {
-                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                                    <option value="@item.ProjectTitle">@item.ProjectTitle</option>
                                 }
                             }
                         </select>
@@ -59,7 +58,7 @@
                                 {
                                     foreach (var item in dta)
                                     {
-                                        <option value="@item.projectId">@item.projectName</option>
+                                       <option value="@item.Id">@item.ProjectTitle</option>
                                     }
                                 }
                             </select>
@@ -291,7 +290,7 @@
         $("#Filter2").on("change", function () {
             let filter = $(this).val();
             let table = $("#dataTableExample").DataTable()
-            table.column(1).search(filter).draw()
+            table.column(2).search(filter).draw()
         })
 
         $("#printBtn").click(function () {

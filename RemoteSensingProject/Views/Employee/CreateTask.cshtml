@@ -25,18 +25,15 @@
 
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="dashboard.html">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">/Out Source</li>
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">/Outsource</li>
     </ol>
     <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#createTaskModal"><i class="link-icon" data-feather="plus"></i> Create task</button>
 </nav>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <div class="row align-items-center">
-        <div class="col-lg-3">
+        <div class="col">
             <h5>Task List</h5>
-        </div>
-        <div class="col-lg-9 col-md-9">
-            <input type="text" placeholder="Search by task name" id="searchByEmployeeName" class="form-control">
         </div>
     </div>
 </div>
@@ -73,7 +70,11 @@
                             @*<a href="#" class="viewAssignedSource" data-taskId="@item.Id"><i class="fa-solid fa-eye"></i></a> &nbsp;*@
                             @if (!item.completeStatus)
                             {
-                            <a href="#" data-title="Approve" class="updateTaskStatus" data-taskId="@item.Id"><i class="fa-solid fa-check"></i></a>
+                                <a href="#" data-title="Approve" class="updateTaskStatus" data-taskId="@item.Id"><i class="fa-solid fa-check"></i></a>
+                            }
+                            else
+                            {
+                                <span class="badge bg-@(item.completeStatus ? "success" : "primary")">@(item.completeStatus ? "completed" : "pending")</span>
                             }
                         </td>
                     </tr>
@@ -111,7 +112,7 @@
                     </div>
                     <div class="form-group">
                         <label for="employeeEmail" class="form-label">Assign Outsource</label>
-                        <select class="form-select" name="outSourceId" id="select" multiple>
+                        <select class="form-select" name="outSourceId" id="select" multiple required>
                             <option>---Select Option---</option>
                             @if (outSourceList != null && outSourceList.Count > 0)
                             {
@@ -135,7 +136,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex">
-                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">Task Detail</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="viewProjectModalBody">

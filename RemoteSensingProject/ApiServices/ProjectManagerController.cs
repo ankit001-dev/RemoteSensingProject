@@ -3,16 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Runtime.Remoting.Messaging;
 using System.Web;
-using System.Web.Configuration;
 using System.Web.Http;
-using System.Xml.Linq;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Grpc.Core;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Routing;
+using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
@@ -20,6 +14,7 @@ using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.ApiServices
 {
+    [JwtAuthorize]
     public class ProjectManagerController : ApiController
     {
         private readonly AdminServices _adminServices;
@@ -34,6 +29,7 @@ namespace RemoteSensingProject.ApiServices
 
 
         #region Project substances
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getProjectExpencesList")]
         public IHttpActionResult GetExpencesList(int projectId, int headId)
@@ -151,7 +147,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-
+        [AllowAnonymous]
         [HttpGet]
         [Route("api/getFinancialReport")]
         public IHttpActionResult getFinancialReport(int projectId)
@@ -175,7 +171,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getWeeklyUpdate")]
         public IHttpActionResult getWeeklyUpdate(int projectId)
@@ -188,7 +184,7 @@ namespace RemoteSensingProject.ApiServices
                     return BadRequest(new
                     {
                         status = false,
-                        StatusCode = 500,
+                        StatusCode = 404,
                         message = "Data not found !"
                     });
                 }
@@ -362,7 +358,8 @@ namespace RemoteSensingProject.ApiServices
                         message = "Invalid userid !"
                     });
                 }
-                var data = _managerService.DashboardCount(userId);
+
+                var data = _managerService.DashboardCount(Convert.ToInt32(userId));
                 return Ok(new
                 {
                     status = true,
@@ -385,39 +382,25 @@ namespace RemoteSensingProject.ApiServices
         #region Assigned PRoject
         [HttpGet]
         [Route("api/managerAssignedProject")]
-        public IHttpActionResult AssignedPRoject(int userId)
+        public IHttpActionResult AssignedPRoject(int userId, int page, int limit)
         {
             try
             {
-                var data = _managerService.getAllProjectByManager(userId.ToString());
-                if (data.Any())
+                var data = _managerService.All_Project_List(userId, page, limit, "AssignedProject");
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    return Ok(new
-                    {
-                        status = true,
-                        StatusCode = 200,
-                        message = "Data found !",
-                        data = data
-                    });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
                 }
                 else
                 {
-                    return BadRequest(new
-                    {
-                        status = false,
-                        StatusCode = 500,
-                        message = "Data not found !"
-                    });
+                    return CommonHelper.NoData(this);
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
         #endregion
@@ -425,139 +408,121 @@ namespace RemoteSensingProject.ApiServices
         #region Project
         [HttpGet]
         [Route("api/getManagerProject")]
-        public IHttpActionResult GetProjectList(int userId)
+        public IHttpActionResult GetProjectList(int userId, int page, int limit)
         {
             try
             {
-                var data = _managerService.Project_List(userId.ToString());
-                if (data.Any())
+                var data = _managerService.All_Project_List(userId, limit, page, "ManagerProject");
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    return Ok(new
-                    {
-                        status = true,
-                        StatusCode = 200,
-                        message = "Data found !",
-                        data = data
-                    });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
                 }
                 else
                 {
-                    return Ok(new
-                    {
-                        status = false,
-                        StatusCode = 500,
-                        message = "Data not found !"
-                    });
+                    return CommonHelper.NoData(this);
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
 
         [HttpGet]
         [Route("api/getManagerCompleteProject")]
-        public IHttpActionResult GetCompleteProject(int userId)
+        public IHttpActionResult GetCompleteProject(int userId, int page, int limit)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.ProjectStatus).ToList();
-                return Ok(new
+                var data = _managerService.All_Project_List(userId, limit, page, "Complete");
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    StatusCode = data.Any() ? 200 : 500,
-                    data = data
-                });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
         [HttpGet]
         [Route("api/getmanagerdelayProject")]
-        public IHttpActionResult getmanagerDelay(int userId)
+        public IHttpActionResult getmanagerDelay(int userId, int? limit, int? page)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.CompletionDate < DateTime.Now && !d.ProjectStatus).ToList();
-                return Ok(new
+                var data = _managerService.All_Project_List(userId, limit, page, "delay");
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    StatusCode = data.Any() ? 200 : 500,
-                    data = data
-                });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
         [HttpGet]
         [Route("api/getmanagerOngoingProject")]
-        public IHttpActionResult onGoingProject(int userId)
+        public IHttpActionResult onGoingProject(int userId, int? limit, int? page)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId.ToString()).Where(d => d.StartDate > DateTime.Now && d.CompletionDate < DateTime.Now).ToList();
-                return Ok(new
+                var data = _managerService.All_Project_List(userId, limit, page, "Ongoing");
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    StatusCode = data.Any() ? 200 : 500,
-                    data = data
-                });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
         [HttpGet]
         [Route("api/getAllProjectList")]
-        public IHttpActionResult getAllProjectList(int userId)
+        public IHttpActionResult getAllProjectList(int userId, int? limit, int? page)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId.ToString());
-                return Ok(new
+                var data = _managerService.All_Project_List(userId, limit, page, null);
+                var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    StatusCode = data.Any() ? 200 : 500,
-                    data = data
-                });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
         #endregion
@@ -569,7 +534,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _adminServices.getNoticeList().Where(d => d.ProjectManagerId == managerId).ToList();
+                var data = _adminServices.getNoticeList(managerId:managerId);
                 if (!data.Any())
                 {
                     return BadRequest(new
@@ -683,9 +648,9 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getProblemListByManager")]
-        public IHttpActionResult getProblemListByManager(string userId)
+        public IHttpActionResult getProblemListByManager(int userId, int page, int limit)
         {
-            var res = _managerService.getAllSubOrdinateProblem(userId);
+            var res = _adminServices.getProblemList(page, limit, null, userId);
 
 
             return Ok(new { status = true, message = "data retrieved", data = res });
@@ -732,28 +697,27 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/GetOuterSourceList")]
-        public IHttpActionResult GetOuterSourceListById(int userId)
+        public IHttpActionResult GetOuterSourceListById(int userId, int?page, int?limit)
         {
             try
             {
-                var data = _managerService.selectAllOutSOurceList(userId);
-                return Ok(new
+                var data = _managerService.selectAllOutSOurceList(userId, page, limit);
+                var selectProperties = new[] { "Id", "EmpName", "mobileNo", "email", "joiningdate", "gender" };
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    StatusCode = data.Any() ? 200 : 500,
-                    message = data.Any() ? "Data found !" : "Some issue occured !",
-                    data = data
-                });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
+            
         }
 
         [HttpPost]
@@ -795,29 +759,28 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getTaskList")]
-        public IHttpActionResult getTaskList(int empId)
+        public IHttpActionResult getTaskList(int empId, int?page, int?limit)
         {
             try
             {
                 var data = _managerService.taskList(empId);
-                return Ok(new
+                var selectProperties = new[] { "Id", "title", "description", "completeStatus" };
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    StatusCode = data.Any() ? 200 : 500,
-                    data = data
-                });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
-
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/ViewTaskId")]
         public IHttpActionResult ViewTaskList(int taskId)
@@ -939,51 +902,51 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getReimbursementByUserId")]
-        public IHttpActionResult getReimbursement(int userId)
+        public IHttpActionResult getReimbursement(int userId, int?page, int?limit)
         {
             try
             {
-                var data = _managerService.GetReinbursementDatabyType(userId);
-                return Ok(new
+                var data = _managerService.GetReimbursements(page, limit, null, userId, "getSpecificUserData");
+                var selectProperties = new[] { "EmpName", "type", "id", "amount", "userId", "apprstatus", "subStatus", "adminappr", "status", "chequeNum", "accountNewRequest", "chequeDate", "newRequest", "approveAmount"};
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    data = data,
-                });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
 
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/ViewReinbursementBytype")]
-        public IHttpActionResult viewReinbursement(int userId, string type, int id)
+        public IHttpActionResult viewReinbursement(int userId, string type, int id, int?page=null, int?limit=null)
         {
             try
             {
-                var data = _managerService.GetSpecificUserReimbursements(userId, type, id);
-                return Ok(new
+                var data = _managerService.GetSpecificUserReimbursements(userId, type, id, page, limit);
+                var selectProperties = new[] { "id", "type", "vrNo", "date", "particulars", "items", "amount", "purpose", "status", "newRequest", "adminappr"};
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    StatuCode = data.Any() ? 200 : 500,
-                    data = data
-                });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
         #endregion
@@ -1027,25 +990,25 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/GetTourForUserId")]
-        public IHttpActionResult gettour(int userId)
+        public IHttpActionResult gettour(int userId, int?page, int?limit)
         {
             try
             {
-                var data = _managerService.getTourList(userId);
-                return Ok(new
+                var data = _managerService.getTourList(userId: userId,page:page, limit: limit, type: "specificUser");
+                var selectProperties = new[] { "id", "projectName", "dateOfDept", "place", "periodFrom", "periodTo", "returnDate", "purpose", "newRequest", "adminappr", "projectCode"};
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    data = data
-                });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return Ok(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
         #endregion
@@ -1093,15 +1056,14 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getHiringList")]
         public IHttpActionResult getHiringList(int id)
-
-
         {
             try
             {
-                var data = _managerService.GetHiringList(id);
+                var data = _managerService.GetHiringVehicles(id:id, type: "GetById");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1124,7 +1086,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.GetHiringVehicles(userId);
+                var data = _managerService.GetHiringVehicles(userId:userId, type: "projectManager");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1553,7 +1515,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.GetHiringVehicles(userId);
+                var data = _managerService.GetHiringVehicles(userId:userId, type: "projectManager");
                 return Ok(new
                 {
                     status = data.Any(),

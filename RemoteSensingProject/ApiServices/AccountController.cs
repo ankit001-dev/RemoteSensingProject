@@ -1,24 +1,27 @@
-﻿  using RemoteSensingProject.Models.Accounts;
-using RemoteSensingProject.Models.Admin;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Http;
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Accounts;
+using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
 using static RemoteSensingProject.Models.Accounts.main;
 
 namespace RemoteSensingProject.ApiServices
 {
+    [JwtAuthorize]
     public class AccountController : ApiController
     {
         // GET: Account
         private readonly AccountService _accountSerivce;
-        private readonly AdminServices _adminServices;
+        private readonly ManagerService _mangerServices;
         public AccountController()
         {
             _accountSerivce = new AccountService();
-            _adminServices = new AdminServices();
+            _mangerServices = new ManagerService();
         }
 
         [Route("api/getProjectList")]
@@ -87,13 +90,14 @@ namespace RemoteSensingProject.ApiServices
             return Ok(new { status = true, data = new {CompleteRequist= completeCount ,PendingRequest= pendingCount ,TotalRequest= totalcount }, message = "data retrieved" });
         }
 
+        [System.Web.Mvc.AllowAnonymous]
         [Route("api/getTourById")]
         [HttpGet]
         public IHttpActionResult TourById(int id)
         {
             try
             {
-                var data = _accountSerivce.getTourOne(id);
+                var data = _mangerServices.getTourList(id:id, type: "GetById");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -134,7 +138,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-
+        [System.Web.Mvc.AllowAnonymous]
         [HttpPost]
         [Route("api/approveReinbursementAmtRequest")]
         public IHttpActionResult InsertReinbursementForm()
@@ -142,7 +146,7 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var request = HttpContext.Current.Request;
-                var formData = new Reimbursement
+                var formData = new Models.Accounts.main.Reimbursement
                 {
                   chequeNumber = request.Form.Get("chequeNum"),
                  date = Convert.ToDateTime(request.Form.Get("chequeDate")),
@@ -170,7 +174,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-
+        [System.Web.Mvc.AllowAnonymous]
         [HttpPost]
         [Route("api/rejectReinbursementAmountRequest")]
         public IHttpActionResult RejectReinbursementForm()

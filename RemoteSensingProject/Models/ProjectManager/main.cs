@@ -5,6 +5,8 @@ using System.Linq;
 using System.Numerics;
 using System.Security.Policy;
 using System.Web;
+using System.Windows.Documents;
+using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.Models.ProjectManager
 {
@@ -196,6 +198,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string email { get; set; }
         public bool completeStatus { get; set; }
         public string message { get; set; }
+        public PaginationInfo Pagination { get; set; }
     }
 
     public class OutSourceTask { 
@@ -205,6 +208,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string description { get; set; }
         public int[] outSourceId { get; set; }
         public bool completeStatus { get; set; }
+        public PaginationInfo Pagination { get; set; }
     }
     public class Reimbursement
     {
@@ -216,6 +220,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string chequeDate { get; set; }
         public bool adminappr { get; set; }
         public bool newRequest { get; set; }
+        public bool accountNewRequest { get; set; }
         public int id { get; set; }
         public int userId { get; set; }
         public string EmpName { get; set; }
@@ -228,6 +233,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public decimal amount { get; set; }
         public bool subStatus { get; set; }
         public decimal approveAmount { get; set; }
+        public PaginationInfo Pagination { get; set; }
     }
     public class tourProposal
     {
@@ -246,6 +252,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public DateTime periodTo { get; set; }
         public DateTime returnDate { get; set; }
         public string purpose { get; set; }
+        public PaginationInfo Pagination { get; set; }
     }
     public class HiringVehicle
     {
