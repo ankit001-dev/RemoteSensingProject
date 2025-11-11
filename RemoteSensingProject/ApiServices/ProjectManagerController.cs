@@ -68,6 +68,30 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+        [HttpGet]
+        [Route("api/getsubordinate")]
+        public IHttpActionResult GetSubordinateList()
+        {
+            try
+            {
+                var data = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
+                var selectprop = new[] { "Id", "EmployeeName" };
+                var newdata = CommonHelper.SelectProperties(data, selectprop);
+                if (newdata.Count > 0)
+                {
+                    return CommonHelper.Success(this, newdata, "Data fetched successfully", 200);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return CommonHelper.Error(this, ex.Message);
+            }
+        }
+
         [HttpPost]
         [Route("api/addProjectExpenses")]
         public IHttpActionResult AddExpenses()

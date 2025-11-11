@@ -320,7 +320,7 @@ namespace RemoteSensingProject.Controllers
                     var guid = Guid.NewGuid();
                     var FileExtension = Path.GetExtension(formData.Attachment.FileName);
                     var fileName = $"{guid}{FileExtension}";
-                    path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
+                    path = Path.Combine("/ProjectContent/Admin/ProjectDocs/", fileName);
 
                     formData.Attachment_Url = path;
                 }
@@ -351,7 +351,7 @@ namespace RemoteSensingProject.Controllers
                 var guid = Guid.NewGuid();
                 var FileExtension = Path.GetExtension(formData.Attachment.FileName);
                 var fileName = $"{guid}{FileExtension}";
-                path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
+                path = Path.Combine("/ProjectContent/Admin/ProjectDocs/", fileName);
 
                 formData.Attachment_Url = path;
             }

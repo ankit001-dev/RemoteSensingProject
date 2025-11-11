@@ -664,17 +664,53 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand(@"CALL public.sp_manageprojectsubstaces(
+                    @action,          -- v_action
+                    0,                -- v_id
+                    @project_id,      -- v_project_id
+                    @w_date,          -- v_w_date
+                    NULL,             -- v_title
+                    NULL,             -- v_comment
+                    NULL,             -- v_reason
+                    0,                -- v_completion
+                    NULL,             -- v_attatchment
+                    0,                -- v_amount
+                    NULL,             -- v_unit
+                    NULL,             -- v_annual
+                    NULL,             -- v_monthend
+                    NULL,             -- v_reviewmonth
+                    NULL,             -- v_monthendsequentially
+                    NULL,             -- v_statebeneficiaries
+                    NULL,             -- v_createdat
+                    0,                -- v_projectid
+                    0,                -- v_headid
+                    NULL,             -- v_updateat
+                    false,            -- v_status
+                    @aim,             -- v_aim
+                    @month_aim,       -- v_month_aim
+                    @completeinmonth, -- v_completeinmonth
+                    @departbeneficiaries, -- v_departbeneficiaries
+                    0,                -- v_appstatus
+                    NULL              -- v_rc
+                );", con);
+
+                cmd.CommandType = CommandType.Text;
                 cmd.Parameters.AddWithValue("@action", "insertfinanceUpdate");
-                cmd.Parameters.AddWithValue("@project_Id", fr.projectId);
+                cmd.Parameters.AddWithValue("@project_id", fr.projectId);
                 cmd.Parameters.AddWithValue("@aim", fr.aim);
-                cmd.Parameters.AddWithValue("@w_date", fr.date);
+                //cmd.Parameters.AddWithValue("@v_w_date", fr.date);
+                // 👇 Convert string to DateTime safely
+                DateTime workDate;
+                if (DateTime.TryParse(fr.date, out workDate))
+                    cmd.Parameters.AddWithValue("@w_date", workDate);
+                else
+                    throw new Exception("Invalid date format in fr.date");
                 cmd.Parameters.AddWithValue("@month_aim", fr.month_aim);
-                cmd.Parameters.AddWithValue("@completeInMonth", fr.completeInMonth);
-                cmd.Parameters.AddWithValue("@departBeneficiaries", fr.departBeneficiaries);
+                cmd.Parameters.AddWithValue("@completeinmonth", fr.completeInMonth);
+                cmd.Parameters.AddWithValue("@departbeneficiaries", fr.departBeneficiaries);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch (Exception ex)
             {
@@ -699,7 +735,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectFinancilaReportByProjectId");
-                    cmd.Parameters.AddWithValue("v_project_Id", projectId);
+                    cmd.Parameters.AddWithValue("v_project_id", projectId);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (var rd = fetchCmd.ExecuteReader())
@@ -895,45 +931,63 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageStageStatus", con))
+                using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
+            @v_id,
+            @v_stageid,
+            @v_comment,
+            @v_completionprecentage,
+            @v_stagedocument,
+            @v_delayreason,
+            @v_updatestatus,
+            @v_status,
+            @v_project_id,
+            @v_completionstatus,
+            @v_action,
+            NULL
+        );", con))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@action", "insertStageStatus");
-                    cmd.Parameters.AddWithValue("@stageId", obj.Stage_Id);
-                    cmd.Parameters.AddWithValue("@Comment", obj.Comment);
-                    cmd.Parameters.AddWithValue("@CompletionPrecentage", obj.CompletionPrecentage);
-                    cmd.Parameters.AddWithValue("@StageDocument", obj.StageDocument_Url ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@updateStatus", obj.Status);
+                    cmd.CommandType = CommandType.Text;
+
+                    // 🔹 Explicitly specify types to avoid "unknown"
+                    cmd.Parameters.Add("@v_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = 0;
+                    cmd.Parameters.Add("@v_stageid", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Stage_Id;
+                    cmd.Parameters.Add("@v_comment", NpgsqlTypes.NpgsqlDbType.Text).Value = (object)obj.Comment ?? DBNull.Value;
+                    cmd.Parameters.Add("@v_completionprecentage", NpgsqlTypes.NpgsqlDbType.Varchar).Value = (object)obj.CompletionPrecentage ?? DBNull.Value;
+                    cmd.Parameters.Add("@v_stagedocument", NpgsqlTypes.NpgsqlDbType.Text).Value = (object)obj.StageDocument_Url ?? DBNull.Value;
+                    cmd.Parameters.Add("@v_delayreason", NpgsqlTypes.NpgsqlDbType.Text).Value = DBNull.Value;
+                    cmd.Parameters.Add("@v_updatestatus", NpgsqlTypes.NpgsqlDbType.Varchar).Value = (object)obj.Status ?? DBNull.Value;
+                    cmd.Parameters.Add("@v_status", NpgsqlTypes.NpgsqlDbType.Smallint).Value = 1;
+                    cmd.Parameters.Add("@v_project_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
+                    cmd.Parameters.Add("@v_completionstatus", NpgsqlTypes.NpgsqlDbType.Integer).Value = 0;
+                    cmd.Parameters.Add("@v_action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "insertStageStatus";
+
                     con.Open();
-                    int i = cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
+                }
 
-                    if (obj.Status == "completed")
+                // ✅ If completed, update completion status
+                if (obj.Status?.ToLower() == "completed")
+                {
+                    using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
+                0, @stageId, NULL, NULL, NULL, NULL, NULL, 1, @projectId, @completionStatus, @action, NULL
+            );", con))
                     {
-                        using (NpgsqlCommand updateCmd = new NpgsqlCommand("sp_ManageStageStatus", con))
-                        {
-                            updateCmd.CommandType = CommandType.StoredProcedure;
-                            updateCmd.Parameters.AddWithValue("@action", "updateStageCompetionStatus");
-                            updateCmd.Parameters.AddWithValue("@completionStatus", 1);
-                            updateCmd.Parameters.AddWithValue("@project_Id", obj.Project_Id);
-                            updateCmd.Parameters.AddWithValue("@stageId", obj.Stage_Id);
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add("@stageId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Stage_Id;
+                        cmd.Parameters.Add("@projectId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
+                        cmd.Parameters.Add("@completionStatus", NpgsqlTypes.NpgsqlDbType.Integer).Value = 1;
+                        cmd.Parameters.Add("@action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "updateStageCompetionStatus";
 
-                            updateCmd.ExecuteNonQuery();
-                        }
-                    }
-
-                    if (i > 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
+                        con.Open();
+                        cmd.ExecuteNonQuery();
                     }
                 }
+
+                return true;
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while inserting stage status.", ex);
+                throw new Exception("Error inserting stage status", ex);
             }
             finally
             {
@@ -942,29 +996,44 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Project_Statge> ViewStagesComments(string stageId)
+        public List<Project_Statge> ViewStagesComments(string stageId, int? page = null,int? limit = null)
         {
             try
             {
                 List<Project_Statge> stageList = new List<Project_Statge>();
                 Project_Statge stage = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageStageStatus", con);
-                cmd.Parameters.AddWithValue("@action", "viewDealyReason");
-                cmd.Parameters.AddWithValue("@stageId", stageId);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageprojectsubstances_cursor", con))
                 {
-                    while (sdr.Read())
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "viewDealyReason");
+                    cmd.Parameters.AddWithValue("@v_project_id", 0);
+                    cmd.Parameters.AddWithValue("@v_id", Convert.ToInt32(stageId));
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var sdr = fetchCmd.ExecuteReader())
                     {
-                        stage = new Project_Statge();
-                        stage.StageDocument_Url = sdr["StageDocument"].ToString();
-                        stage.Comment = sdr["Comment"].ToString();
-                        stage.Status = sdr["updateStatus"].ToString();
-                        stage.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
-                        stageList.Add(stage);
+                        if (sdr.HasRows)
+                        {
+                            while (sdr.Read())
+                            {
+                                stage = new Project_Statge();
+                                stage.StageDocument_Url = sdr["StageDocument"].ToString();
+                                stage.Comment = sdr["Comment"].ToString();
+                                stage.Status = sdr["updateStatus"].ToString();
+                                stage.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                                stageList.Add(stage);
+                            }
+                        }
                     }
+                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
 
                 return stageList;
