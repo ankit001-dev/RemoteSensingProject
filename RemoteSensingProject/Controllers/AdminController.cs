@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace RemoteSensingProject.Controllers
 {
-    [Authorize(Roles ="admin")]
+    [Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
         private readonly AdminServices _adminServices;
@@ -20,7 +20,7 @@ namespace RemoteSensingProject.Controllers
 
         public AdminController()
         {
-            _adminServices = new AdminServices();  
+            _adminServices = new AdminServices();
             _managerServices = new ManagerService();
             _accountService = new AccountService();
         }
@@ -30,20 +30,20 @@ namespace RemoteSensingProject.Controllers
             var TotalCount = _adminServices.DashboardCount();
             DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
             ViewData["physical"] = _adminServices.Project_List().Where(d => d.AssignDate >= twoYearsAgo).ToList();
-            ViewData["budgetGraph"] = _adminServices.ViewProjectExpenditure().Where(d => d.expenditure > 0 && d.remaining>0).ToList();
+            ViewData["budgetGraph"] = _adminServices.ViewProjectExpenditure().Where(d => d.expenditure > 0 && d.remaining > 0).ToList();
             return View(TotalCount);
         }
-        
+
 
         public ActionResult ViewExpenditureAmount(string req)
         {
-            ViewData["ExpendedData"] =req == "expenditure"?_adminServices.ViewProjectExpenditure().Where(d => d.expenditure>0).ToList():req== "remaining"? _adminServices.ViewProjectExpenditure().Where(d => d.remaining>0).ToList(): _adminServices.ViewProjectExpenditure();
+            ViewData["ExpendedData"] = req == "expenditure" ? _adminServices.ViewProjectExpenditure().Where(d => d.expenditure > 0).ToList() : req == "remaining" ? _adminServices.ViewProjectExpenditure().Where(d => d.remaining > 0).ToList() : _adminServices.ViewProjectExpenditure();
             return View();
         }
         public ActionResult BindOverallCompletionPercentage()
         {
-            var  list = _adminServices.getAllProjectCompletion();
-            return Json(new { list = list},JsonRequestBehavior.AllowGet);
+            var list = _adminServices.getAllProjectCompletion();
+            return Json(new { list = list }, JsonRequestBehavior.AllowGet);
 
         }
         #region Employee Category
@@ -73,7 +73,7 @@ namespace RemoteSensingProject.Controllers
             return Json(new
             {
                 status = res,
-                message = res ? "Desgination inserted successfully!"  : "Some issue found while processing your request !"
+                message = res ? "Desgination inserted successfully!" : "Some issue found while processing your request !"
             }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -83,7 +83,7 @@ namespace RemoteSensingProject.Controllers
             return Json(new
             {
                 status = res,
-                message = res ? "Divison inserted successfully!"  : "Some issue found while processing your request !"
+                message = res ? "Divison inserted successfully!" : "Some issue found while processing your request !"
             }, JsonRequestBehavior.AllowGet);
         }
         [HttpDelete]
@@ -114,10 +114,10 @@ namespace RemoteSensingProject.Controllers
 
             ViewBag.division = _adminServices.ListDivison();
             ViewBag.designation = _adminServices.ListDesgination();
-            List<Employee_model> empList= new List<Employee_model>();
-            if (division!=null && division!=0)
+            List<Employee_model> empList = new List<Employee_model>();
+            if (division != null && division != 0)
             {
-                empList = _adminServices.SelectEmployeeRecord().Where(e=>e.Division==division).ToList<Employee_model>();
+                empList = _adminServices.SelectEmployeeRecord().Where(e => e.Division == division).ToList<Employee_model>();
 
             }
             else
@@ -138,43 +138,43 @@ namespace RemoteSensingProject.Controllers
             if (emp.EmployeeImages != null)
             {
                 var fileName = Guid.NewGuid() + DateTime.Now.ToString("ddMMyyyyhhmm") + emp.EmployeeImages.FileName;
-                  path = Path.Combine("/ProjectContent/Admin/Employee_Images", fileName);
+                path = Path.Combine("/ProjectContent/Admin/Employee_Images", fileName);
                 emp.Image_url = path;
             }
 
 
             bool res = _adminServices.AddEmployees(emp);
 
-            
-            if (res && emp.EmployeeImages!=null)
+
+            if (res && emp.EmployeeImages != null)
             {
-                
+
                 emp.EmployeeImages.SaveAs(Server.MapPath(path));
 
             }
             return Json(res);
-            
+
         }
         [HttpGet]
         public ActionResult DeleteEmployees(int id)
         {
             var res = _adminServices.RemoveEmployees(id);
-           
-                return Json(res,JsonRequestBehavior.AllowGet);
+
+            return Json(res, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public ActionResult ChangeActieStatus(int id)
         {
             var res = _adminServices.ChangeActieStatus(id);
-           
-                return Json(res,JsonRequestBehavior.AllowGet);
+
+            return Json(res, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public ActionResult SelectEmployeeRecordById(int id)
         {
             var res = _adminServices.SelectEmployeeRecordById(id);
-           
-                return Json(res,JsonRequestBehavior.AllowGet);
+
+            return Json(res, JsonRequestBehavior.AllowGet);
         }
 
         #region add project
@@ -196,7 +196,7 @@ namespace RemoteSensingProject.Controllers
             return Json(new
             {
                 status = true,
-                data = data     
+                data = data
             }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
@@ -211,11 +211,11 @@ namespace RemoteSensingProject.Controllers
                 pm.pm.projectDocumentUrl = Path.Combine("/ProjectContent/Admin/ProjectDocs/", pm.pm.projectDocumentUrl);
             }
 
-            if(pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
+            if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
             {
-                foreach(var item in pm.stages)
+                foreach (var item in pm.stages)
                 {
-                    if(item.Stage_Document != null && item.Stage_Document.FileName != "")
+                    if (item.Stage_Document != null && item.Stage_Document.FileName != "")
                     {
                         item.Document_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(item.Stage_Document.FileName);
                         item.Document_Url = Path.Combine("/ProjectContent/Admin/ProjectDocs/", item.Document_Url);
@@ -249,7 +249,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Project_List()
         {
-            ViewBag.ProjectList = _adminServices.Project_List().Where(d=>d.createdBy== "projectManager").ToList();
+            ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.createdBy == "projectManager").ToList();
             return View();
         }
         #endregion
@@ -257,15 +257,15 @@ namespace RemoteSensingProject.Controllers
         public ActionResult All_Projects(string req)
         {
             ViewBag.ManagerList = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            if(req == "completed")
+            if (req == "completed")
             {
                 ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.CompletionDate < DateTime.Now && d.StartDate < DateTime.Now && d.completestatus == true).ToList();
             }
-            else if(req == "delay")
+            else if (req == "delay")
             {
                 ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.completestatus == false && d.CompletionDate <= DateTime.Now).ToList();
             }
-            else if(req == "ongoing")
+            else if (req == "ongoing")
             {
                 ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.StartDate < DateTime.Now && d.CompletionDate > DateTime.Now && d.completestatus == false).ToList();
             }
@@ -290,7 +290,7 @@ namespace RemoteSensingProject.Controllers
         #region /* Meeting */
         public ActionResult Min_Of_Meeting()
         {
-          
+
             var empList = _adminServices.BindEmployee();
             return View(empList);
         }
@@ -299,34 +299,48 @@ namespace RemoteSensingProject.Controllers
         {
             var res = _adminServices.getConclusion(id);
             return Json(res, JsonRequestBehavior.AllowGet);
-        }   public ActionResult GetConclusionOnly(int id,int meetingId)
+        }
+        public ActionResult GetConclusionOnly(int id, int meetingId)
         {
-            var res = _adminServices.getConclusion(meetingId).Where(e=>e.Id==id).Select(e=>e.Conclusion).FirstOrDefault();
+            var res = _adminServices.getConclusion(meetingId).Where(e => e.Id == id).Select(e => e.Conclusion).FirstOrDefault();
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult AddMeeting(AddMeeting_Model formData)
         {
-            string filePage = Server.MapPath("~/ProjectContent/Admin/Meeting_Attachment/");
-            if (!Directory.Exists(filePage))
-                Directory.CreateDirectory(filePage);
-            string path = null;
-            if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
+            try
             {
-                var guid = Guid.NewGuid();
-                var FileExtension = Path.GetExtension(formData.Attachment.FileName);
-                var fileName = $"{guid}{FileExtension}";
-                path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
+                string filePage = Server.MapPath("~/ProjectContent/Admin/Meeting_Attachment/");
+                if (!Directory.Exists(filePage))
+                    Directory.CreateDirectory(filePage);
+                string path = null;
+                if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
+                {
+                    var guid = Guid.NewGuid();
+                    var FileExtension = Path.GetExtension(formData.Attachment.FileName);
+                    var fileName = $"{guid}{FileExtension}";
+                    path = Path.Combine("/ProjectContent/Admin/ProjectDocs/", fileName);
 
-                formData.Attachment_Url = path;
+                    formData.Attachment_Url = path;
+                }
+                else
+                {
+                    return Json(new { success = false, message =
+                        "Attachment is required"}, JsonRequestBehavior.AllowGet);
+                }
+                    bool status = _adminServices.insertMeeting(formData);
+                if (status && formData.Attachment != null)
+                {
+                    formData.Attachment.SaveAs(Server.MapPath(path));
+                }
+                return Json(new { success = status,message = status? "Meeting add successfully": "Some error occured" }, JsonRequestBehavior.AllowGet);
             }
-            bool status = _adminServices.insertMeeting(formData);
-            if (status && formData.Attachment != null)
+            catch (Exception ex)
             {
-                formData.Attachment.SaveAs(Server.MapPath(path));
+                Console.WriteLine("Error",ex.Message);
+                throw ex;
             }
-            return Json(new { success = status }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult UpdateMeeting(AddMeeting_Model formData)
@@ -337,13 +351,13 @@ namespace RemoteSensingProject.Controllers
                 var guid = Guid.NewGuid();
                 var FileExtension = Path.GetExtension(formData.Attachment.FileName);
                 var fileName = $"{guid}{FileExtension}";
-                path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
+                path = Path.Combine("/ProjectContent/Admin/ProjectDocs/", fileName);
 
                 formData.Attachment_Url = path;
             }
-            
+
             bool status = _adminServices.UpdateMeeting(formData);
-            if (status && formData.Attachment!=null)
+            if (status && formData.Attachment != null)
             {
                 formData.Attachment.SaveAs(Server.MapPath(path));
             }
@@ -353,8 +367,8 @@ namespace RemoteSensingProject.Controllers
         [HttpGet]
         public ActionResult GetMeetingById(int id)
         {
-           var obj = _adminServices.getMeetingById(id);
-            return Json(obj,JsonRequestBehavior.AllowGet);
+            var obj = _adminServices.getMeetingById(id);
+            return Json(obj, JsonRequestBehavior.AllowGet);
 
         }
         [HttpGet]
@@ -369,8 +383,8 @@ namespace RemoteSensingProject.Controllers
         public ActionResult GetAllMeeting(string req)
         {
             List<Meeting_Model> empList = new List<Meeting_Model>();
-            empList = req == "admin"? _adminServices.getAllmeeting().Where(d => d.createdBy == "admin").ToList():req == "projectManager"? _adminServices.getAllmeeting().Where(d=>d.createdBy == "projectManager").ToList(): _adminServices.getAllmeeting() ;
-            return Json(new { empList = empList },JsonRequestBehavior.AllowGet);
+            empList = req == "admin" ? _adminServices.getAllmeeting().Where(d => d.createdBy == "admin").ToList() : req == "projectManager" ? _adminServices.getAllmeeting().Where(d => d.createdBy == "projectManager").ToList() : _adminServices.getAllmeeting();
+            return Json(new { empList = empList }, JsonRequestBehavior.AllowGet);
         }
 
         #endregion End Meeting
@@ -392,12 +406,12 @@ namespace RemoteSensingProject.Controllers
         public ActionResult getPresentMember(int id)
         {
             var res = _adminServices.getPresentMember(id);
-            return Json(res,JsonRequestBehavior.AllowGet);
+            return Json(res, JsonRequestBehavior.AllowGet);
         }
         public ActionResult getKeypointResponse(int id)
         {
             var res = _adminServices.getKeypointResponse(id);
-            return Json(res,JsonRequestBehavior.AllowGet);
+            return Json(res, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Project_Detail()
         {
@@ -469,9 +483,9 @@ namespace RemoteSensingProject.Controllers
             if (id.HasValue)
             {
 
-             projectManager = _adminServices.Project_List().Where(e => e.Id == id).FirstOrDefault();
+                projectManager = _adminServices.Project_List().Where(e => e.Id == id).FirstOrDefault();
             }
-            
+
             return Json(projectManager, JsonRequestBehavior.AllowGet);
 
         }
@@ -482,7 +496,7 @@ namespace RemoteSensingProject.Controllers
             if (id.HasValue)
             {
 
-             project = _adminServices.GetProjectById((int)id);
+                project = _adminServices.GetProjectById((int)id);
 
             }
 
@@ -506,7 +520,7 @@ namespace RemoteSensingProject.Controllers
             }
 
             var res = _adminServices.InsertNotice(gn);
-            if (res && gn.Attachment!=null)
+            if (res && gn.Attachment != null)
             {
                 gn.Attachment.SaveAs(Server.MapPath(path));
             }
@@ -518,7 +532,7 @@ namespace RemoteSensingProject.Controllers
             dynamic noticeList = null;
             if (projectId.HasValue)
             {
-                noticeList= _adminServices.getNoticeList().Where(e=>e.ProjectId== projectId).ToList();
+                noticeList = _adminServices.getNoticeList().Where(e => e.ProjectId == projectId).ToList();
             }
             else
             {
@@ -546,12 +560,12 @@ namespace RemoteSensingProject.Controllers
         {
             List<Project_model> _headList = new List<Project_model>();
             _headList = _adminServices.getHeadByProject(id);
-            return Json(new { _headList = _headList },JsonRequestBehavior.AllowGet);
+            return Json(new { _headList = _headList }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult GetExpenses(int hId,int pId )
+        public ActionResult GetExpenses(int hId, int pId)
         {
             List<ProjectExpenses> list = new List<ProjectExpenses>();
-             list = _managerServices.ExpencesList(hId,pId );
+            list = _managerServices.ExpencesList(hId, pId);
             return Json(new { list = list }, JsonRequestBehavior.AllowGet);
         }
 
@@ -564,7 +578,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult getsubproblembyid(int id)
         {
             var data = _adminServices.getAllSubOrdinateProblemByIdforadmin(id);
-            return Json(data,JsonRequestBehavior.AllowGet);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult ReimbursementRequest()
@@ -574,9 +588,9 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult ReimbursementReque(bool status,int id, string type ,string remark )
+        public ActionResult ReimbursementReque(bool status, int id, string type, string remark)
         {
-            bool res = _adminServices.ReimbursementApproval(status, id, type,remark);
+            bool res = _adminServices.ReimbursementApproval(status, id, type, remark);
             if (res)
             {
                 return Json(new
@@ -604,9 +618,9 @@ namespace RemoteSensingProject.Controllers
         }
 
         [HttpPost]
-        public ActionResult TravelRequest(bool status,int id,string remark)
+        public ActionResult TravelRequest(bool status, int id, string remark)
         {
-            bool res = _adminServices.Tourapproval(id, status,remark);
+            bool res = _adminServices.Tourapproval(id, status, remark);
             if (res)
             {
                 return Json(new
@@ -627,7 +641,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult HiringRequest()
         {
-            ViewData["hiringList"] = _adminServices.HiringList(null,null);
+            ViewData["hiringList"] = _adminServices.HiringList(null, null);
             //var res1 = _managerServices.getProjectList(userid);
             //ViewData["projectList"] = res1;
             ViewData["projects"] = _adminServices.Project_List();
@@ -635,11 +649,11 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult HiringRequest(bool status, int id,string remark,string latitude,string longitude)
+        public ActionResult HiringRequest(bool status, int id, string remark, string latitude, string longitude)
         {
             dynamic location = _adminServices.GetCityStateAsync(latitude, longitude).GetAwaiter().GetResult();
             //location = location.toString();x
-            bool res = _adminServices.HiringApproval(id, status,remark,location);
+            bool res = _adminServices.HiringApproval(id, status, remark, location);
             if (res)
             {
                 return Json(new
@@ -725,18 +739,18 @@ namespace RemoteSensingProject.Controllers
             ViewData["problemList"] = _adminServices.getProblemList();
             return View();
         }
-        
+
         public ActionResult Attendance()
         {
-            ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord().Where(d=>d.EmployeeRole== "projectManager").ToList();
+            ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole == "projectManager").ToList();
             return View();
         }
         public ActionResult Attendance_Report()
         {
             ViewData["EmployeeList"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole == "projectManager").ToList();
-            return View();  
+            return View();
         }
-        public ActionResult ExportAttendanceToExcel(int month, int year, int EmpId,int projectManager)
+        public ActionResult ExportAttendanceToExcel(int month, int year, int EmpId, int projectManager)
         {
             var data = _managerServices.ConvertExcelFile(month, year, projectManager, EmpId);
             return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReport.xlsx");

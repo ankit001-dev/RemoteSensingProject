@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.Models.Accounts
 {
@@ -113,6 +114,7 @@ namespace RemoteSensingProject.Models.Accounts
         }
         public class tourProposal
         {
+            public PaginationInfo Pagination { get; set; }
             public string projectCode { get; set; }
             public string remark { get; set; }
             public bool adminappr { get; set; }
