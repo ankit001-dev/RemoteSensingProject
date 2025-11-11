@@ -139,7 +139,7 @@ namespace RemoteSensingProject.ApiServices
                 model.pm.ProjectManager = form["ProjectManager"];
                 model.pm.ProjectDescription = form["ProjectDescription"];
                 model.pm.ProjectType = form["ProjectType"];
-                if (!Boolean.TryParse(form["letterNo"], out var letterno))
+                if (string.IsNullOrEmpty(form["letterNo"].ToString()))
                     return CommonHelper.Error(this, "Letter no is required", 500);
                 model.pm.letterNo = form["letterNo"] ?? "0";
                 model.pm.createdBy = "admin";
@@ -189,6 +189,18 @@ namespace RemoteSensingProject.ApiServices
                 if (!string.IsNullOrEmpty(form["budgets"]))
                 {
                     model.budgets = JsonConvert.DeserializeObject<List<Project_Budget>>(form["budgets"]);
+
+                    // ✅ Validate sum of ProjectAmount ≤ ProjectBudget
+                    if (model.budgets != null && model.budgets.Any())
+                    {
+                        decimal totalBudgetAmount = model.budgets.Sum(b => b.ProjectAmount);
+                        if (totalBudgetAmount > model.pm.ProjectBudget)
+                        {
+                            return CommonHelper.Error(this,
+                                $"Total of all ProjectAmounts ({totalBudgetAmount}) cannot exceed the main ProjectBudget ({model.pm.ProjectBudget}).",
+                                400);
+                        }
+                    }
                 }
 
                 // ✅ Parse stages JSON

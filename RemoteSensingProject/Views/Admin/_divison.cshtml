@@ -88,7 +88,7 @@
                                 text: res.message,
                                 icon: "success",
                                 didClose: () => {
-                                    loadPartialContent("_divison");
+                                    location.reload();
                                 }
                             })
                         } else {
@@ -105,7 +105,7 @@
                             text: "Server is busy ! Please try after sometime.",
                             icon: "error",
                             didClose: () => {
-                                loadPartialContent("_divison");
+                                location.reload();
                             }
                         })
                     }

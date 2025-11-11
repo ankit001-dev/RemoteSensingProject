@@ -70,6 +70,18 @@
             ]
         });
 
+        function loadPartialContent(partialView) {
+            $("#loading").show();
+            $.get("/admin/getCategoryPartial", { partial: partialView }).done(function (res) {
+                $("#mainContainer").html(res)
+            }).fail(function () {
+                alert("Failed to load content.");
+            })
+            .always(function () {
+                $("#loading").hide();
+            });
+        }
+
         $("#categoryForms").on("submit", function (e) {
 
             e.preventDefault();
@@ -86,7 +98,7 @@
                                 text: res.message,
                                 icon: "success",
                                 didClose: () => {
-                                    loadPartialContent("_desgination");
+                                    location.reload();
                                 }
                             })
                         } else {
@@ -160,17 +172,6 @@
                 }
             });
         })
-        function loadPartialContent(partialView) {
-            $("#loading").show();
-            $.get("/admin/getCategoryPartial", { partial: partialView }).done(function (res) {
-                $("#mainContainer").html(res)
-            }).fail(function () {
-                alert("Failed to load content.");
-            })
-                .always(function () {
-                    $("#loading").hide();
-                });
-        }
 
         $(".editDesgination").click(function () {
             $("#addEmployeeCategory").modal("show");
