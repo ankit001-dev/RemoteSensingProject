@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.Models.SubOrdinate
 {
@@ -66,6 +67,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
         }
         public class Raise_Problem
         {
+            public PaginationInfo Pagination { get; set; }
             public string projectCode { get; set; }
             public bool newRequest { get; set; }
             public int ProblemId { get; set; }

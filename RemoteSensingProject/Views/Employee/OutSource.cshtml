@@ -24,9 +24,9 @@
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item active"><a href="/">Dashboard</a></li>
-        <li class="breadcrumb-item" aria-current="page">/Outsource</li>
+        <li class="breadcrumb-item" aria-current="page">/Out Source</li>
     </ol>
-    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add OutSource</button>
+    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Out Source</button>
 </nav>
 <div class="search-box p-4 bg-white rounded mb-3 mx-3 box-shadow">
     <div class="row align-items-center">
@@ -88,7 +88,7 @@
             <div class="modal-header">
                 <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
 
-                <h5 class="modal-title" id="exampleModalLabel"><span class="actionType">Add</span> OutSource</h5>
+                <h5 class="modal-title" id="exampleModalLabel"><span class="actionType">Add</span> Out Source</h5>
 
             </div>
             <div class="modal-body">
@@ -100,11 +100,12 @@
                         </div>
                         <div class="form-group">
                             <label for="employeemobno" class="form-label">Mobile</label>
-                            <input type="number" class="form-control" name="mobileNo" required id="employeemobno" placeholder="Enter Mobile">
+                            <input type="number" class="form-control mobileval" name="mobileNo" required id="employeemobno" placeholder="Enter Mobile">
+                            <span class="mobileError text-danger"></span>
                         </div>
                         <div class="form-group">
                             <label for="employeeEmail" class="form-label">Email</label>
-                            <input type="text" class="form-control" name="email" required id="employeeEmail" placeholder="Enter Email">
+                            <input type="email" class="form-control" name="email" required id="employeeEmail" placeholder="Enter Email">
                         </div>
                     <div class="form-group">
                             <label for="joiningdate" class="form-label">Joining Date</label>
@@ -128,7 +129,7 @@
                             </div>
                     </div>
                     <div class="text-center mt-3">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Outsource</button>
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Out Source</button>
                     </div>
                 </form>
             </div>
@@ -141,7 +142,18 @@
         $("#searchByEmployeeName").on("input", function () {
             var table = $("#dataTableExample").DataTable();
             table.column(1).search($(this).val()).draw();
-        })
+        });
+
+        $(function () {
+            $('.mobileval').on('input', function () {
+                let m = $(this).val().replace(/\D/g, '').slice(0, 10);
+                $(this).val(m);
+                $('.mobileError').text(
+                    m.length < 10 ? 'Mobile number must be 10 digits.' :
+                        !/^[6-9]/.test(m) ? 'Mobile number must start with 6, 7, 8, or 9.' : ''
+                );
+            });
+        });
     })
 </script>
 
