@@ -415,6 +415,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class RaisedProblem
         {
+            public PaginationInfo Pagination { get; set; }
             public string projectCode { get; set; }
             public DateTime createdAt { get; set; }
             public string projectManager { get; set; }

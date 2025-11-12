@@ -277,57 +277,155 @@
             }
         });
         //managing budget section
-        $("#addBudgetItem").click(function () {
-            let budgetAmt = parseInt($("#budgetAmount").val())
-            let ammt = parseInt($('#budgetContainerBox').find('.amnt').val())
-            if ($("#budgetContainerBox").find('.amnt').empty()) {
-                $("#misAmount").val(budgetAmt)
-            }
-            else {
-                $('#misAmount').val(budgetAmt - parseInt($('#budgetContainerBox').find('.amnt').val()));
-            }
-            if (budgetAmt != null && budgetAmt > 0) {
-                let count = parseInt($(this).attr("data-count"));
-                $("#budgetContainerBox").show();
-                if (count > 0) {
-                    let ele = `<div class="row budgetList">
-    <div class="col-lg-5 mb-3">
-        <label for="title" class="form-label">Heads</label>
-        <input type="text" class="form-control form-control-sm" name="pm.budgets[${count + 1}].ProjectHeads" id="venue" placeholder="Enter Key Point">
-    </div>
-    <div class="col-lg-5 mb-3">
-        <label for="title" class="form-label">Amount</label>
-        <input type="number" class="form-control form-control-sm amnt"  name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
-    </div>
-    <div class="col-lg-2 text-center mb-3" style="line-height:6;">
-        <a href="#" class="deleteCurrntRow">
-            <i class="fa-solid fa-trash text-danger fs-4" style="cursor: pointer;"></i>
-        </a>
-    </div>
+        //$("#addBudgetItem").click(function () {
+        //    debugger
+        //    let budgetAmt = parseInt($("#budgetAmount").val())
+        //    let ammt = parseInt($('#budgetContainerBox').find('.amnt').val())
+        //    if ($("#budgetContainerBox").find('.amnt').empty()) {
+        //        $("#misAmount").val(budgetAmt)
+        //    }
+        //    else {
+        //        $('#misAmount').val(budgetAmt - parseInt($('#budgetContainerBox').find('.amnt').val()));
+        //    }
+        //    if (budgetAmt != null && budgetAmt > 0) {
+        //        let count = parseInt($(this).attr("data-count"));
+        //        $("#budgetContainerBox").show();
+        //        if (count > 0) {
+        //            let ele = `<div class="row budgetList">
+        //                <div class="col-lg-5 mb-3">
+        //                    <label for="title" class="form-label">Heads</label>
+        //                    <input type="text" class="form-control form-control-sm" name="pm.budgets[${count + 1}].ProjectHeads" id="venue" placeholder="Enter Key Point">
+        //                </div>
+        //                <div class="col-lg-5 mb-3">
+        //                    <label for="title" class="form-label">Amount</label>
+        //                    <input type="number" class="form-control form-control-sm amnt"  name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
+        //                </div>
+        //                <div class="col-lg-2 text-center mb-3" style="line-height:6;">
+        //                    <a href="#" class="deleteCurrntRow">
+        //                        <i class="fa-solid fa-trash text-danger fs-4" style="cursor: pointer;"></i>
+        //                    </a>
+        //                </div>
 
-</div>`;
-                    $("#miscList").before(ele);
-                }
-                count++;
-                $(this).attr("data-count", count)
-            }
-            else {
-                Swal.fire("Sorry !", "Budget amount is invalid", "warning")
-            }
-        })
-        $("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
-            e.preventDefault();
-            let i = $("#budgetContainerBox #addBudgetItem").attr("data-count");
-            if (i > 0)
-                i--;
-            $("#budgetContainerBox #addBudgetItem").attr("data-count", i);
-            $(this).closest(".row.budgetList").remove();
-        })
+        //            </div>`;
+        //            $("#miscList").before(ele);
+        //        }
+        //        count++;
+        //        $(this).attr("data-count", count)
+        //    }
+        //    else {
+        //        Swal.fire("Sorry !", "Budget amount is invalid", "warning")
+        //    }
+        //});
+        //$("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
+        //    e.preventDefault();
+        //    let i = $("#budgetContainerBox #addBudgetItem").attr("data-count");
+        //    if (i > 0)
+        //        i--;
+        //    $("#budgetContainerBox #addBudgetItem").attr("data-count", i);
+        //    $(this).closest(".row.budgetList").remove();
+        //});
     });
 
-       
+        $(document).ready(function () {
 
-    </script>
+            // 🔹 Add Budget Head
+            $("#addBudgetItem").click(function (e) {
+                e.preventDefault();
+
+                let budgetAmt = parseFloat($("#budgetAmount").val());
+
+                if (isNaN(budgetAmt) || budgetAmt <= 0) {
+                    Swal.fire("Sorry!", "Please enter a valid Project Budget first.", "warning");
+                    return;
+                }
+
+                $("#budgetContainerBox").show();
+
+                let count = parseInt($(this).attr("data-count")) || 0;
+
+                // ✅ Pehli baar click par sirf ek hi row add ho
+                // (pehle se koi head nahi hona chahiye)
+                if (count === 0 && $(".budgetList").length > 1) {
+                    // Already initial head hai, to new na banao
+                    return;
+                }
+
+                // ✅ Dynamic new row template
+                let ele = `
+                    <div class="row budgetList">
+                        <div class="col-lg-5 mb-3">
+                            <label for="title" class="form-label">Heads</label>
+                            <input type="text" class="form-control form-control-sm" name="pm.budgets[${count + 1}].ProjectHeads" placeholder="Enter Key Point">
+                        </div>
+                        <div class="col-lg-5 mb-3">
+                            <label for="title" class="form-label">Amount</label>
+                            <input type="number" class="form-control form-control-sm amnt" name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
+                        </div>
+                        <div class="col-lg-2 text-center mb-3" style="line-height:6;">
+                            <a href="#" class="deleteCurrntRow">
+                                <i class="fa-solid fa-trash text-danger fs-4" style="cursor: pointer;"></i>
+                            </a>
+                        </div>
+                    </div>`;
+
+                // ✅ Sirf tab add kare jab ek extra row chahiye (avoid duplicate)
+                if (count > 0 || $(".budgetList").length === 0) {
+                    $("#miscList").before(ele);
+                }
+
+                $(this).attr("data-count", count + 1);
+
+                updateMiscAmount();
+            });
+
+            // 🔹 Delete a head
+            $("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
+                e.preventDefault();
+                $(this).closest(".budgetList").remove();
+                updateMiscAmount();
+            });
+
+            // 🔹 When budget or head amount changes
+            $(document).on("input", "#budgetAmount, .amnt", function () {
+                updateMiscAmount($(this)); // Pass current field for reset if exceeded
+            });
+
+            // 🔹 Function to recalc remaining amount (Miscellaneous)
+            function updateMiscAmount(changedInput = null) {
+                let budgetAmt = parseFloat($("#budgetAmount").val()) || 0;
+                let totalHeads = 0;
+
+                $(".amnt").each(function () {
+                    let val = parseFloat($(this).val());
+                    if (!isNaN(val)) totalHeads += val;
+                });
+
+                // ✅ Check for exceed
+                if (totalHeads > budgetAmt) {
+                    Swal.fire("Warning!", "Total of all heads cannot exceed Project Budget!", "error");
+
+                    // 🧹 Clear the field that caused exceed
+                    if (changedInput) {
+                        $(changedInput).val('');
+                    }
+
+                    // Recalculate after clearing
+                    totalHeads = 0;
+                    $(".amnt").each(function () {
+                        let val = parseFloat($(this).val());
+                        if (!isNaN(val)) totalHeads += val;
+                    });
+                }
+
+                let remaining = budgetAmt - totalHeads;
+                if (remaining < 0) remaining = 0;
+
+                $("#misAmount").val(remaining);
+            }
+        });
+
+
+</script>
 <script>
     $(document).ready(function () {
         $("#budgetAmount").on("keyup", function(){

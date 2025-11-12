@@ -109,11 +109,11 @@
                             <div class="row budgetList">
                                 <div class="col-lg-5 mb-3">
                                     <label for="title" class="form-label">Heads</label>
-                                    <input type="text" class="form-control form-control-sm" name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point" required>
+                                    <input type="text" class="form-control form-control-sm" name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point" >
                                 </div>
                                 <div class="col-lg-5 mb-3">
                                     <label for="title" class="form-label">Amount</label>
-                                    <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter Contact Person Name" required>
+                                    <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[0].ProjectAmount" placeholder="Enter Contact Person Name" >
                                 </div>
 
 
@@ -254,35 +254,133 @@
         });
         //managing budget section
 
-        $("#addBudgetItem").click(function () {
-            let count = $(this).attr("data-count");
-            $("#budgetContainerBox").show();
-            let ele = `<div class="row budgetList">
-    <div class="col-lg-5 mb-3">
-        <label for="title" class="form-label">Heads</label>
-        <input type="text" class="form-control form-control-sm" name="pm.budgets[${count + 1}].ProjectHeads" id="venue" placeholder="Enter Key Point" required>
-    </div>
-    <div class="col-lg-5 mb-3">
-        <label for="title" class="form-label">Amount</label>
-        <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount" required>
-    </div>
-    <div class="col-lg-2 text-center mb-3" style="line-height:6;">
-        <a href="#" class="deleteCurrntRow">
-            <i class="fa-solid fa-trash text-danger fs-4" style="cursor: pointer;"></i>
-        </a>
-    </div>
+        //$("#addBudgetItem").click(function () {
+        //    let count = $(this).attr("data-count");
+        //    $("#budgetContainerBox").show();
+        //    let ele = `<div class="row budgetList">
+        //        <div class="col-lg-5 mb-3">
+        //            <label for="title" class="form-label">Heads</label>
+        //            <input type="text" class="form-control form-control-sm" name="pm.budgets[${count + 1}].ProjectHeads" id="venue" placeholder="Enter Key Point" >
+        //        </div>
+        //        <div class="col-lg-5 mb-3">
+        //            <label for="title" class="form-label">Amount</label>
+        //            <input type="text" class="form-control form-control-sm" id="person" name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount" >
+        //        </div>
+        //        <div class="col-lg-2 text-center mb-3" style="line-height:6;">
+        //            <a href="#" class="deleteCurrntRow">
+        //                <i class="fa-solid fa-trash text-danger fs-4" style="cursor: pointer;"></i>
+        //            </a>
+        //        </div>
 
-</div>`;
+        //    </div>`;
+        //    $("#miscList").before(ele);
+        //})
+        //$("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
+        //    e.preventDefault();
+        //    let i = $("#budgetContainerBox #addBudgetItem").attr("data-count");
+        //    if (i > 0)
+        //        i--;
+        //    $("#budgetContainerBox #addBudgetItem").attr("data-count", i);
+        //    $(this).closest(".row.budgetList").remove();
+        //})
+    });
+
+    $(document).ready(function () {
+
+        // 🔹 Add new head on click
+        $("#addBudgetItem").click(function (e) {
+            e.preventDefault();
+
+            let budgetAmt = parseFloat($("#budgetAmount").val());
+            if (isNaN(budgetAmt) || budgetAmt <= 0) {
+                Swal.fire("Warning!", "Please enter a valid Project Budget before adding heads.", "warning");
+                return;
+            }
+
+            $("#budgetContainerBox").show();
+
+            let count = parseInt($(this).attr("data-count")) || 0;
+
+            // ✅ First-time click fix:
+            // Agar already ek static head (first) hai aur count == 0, to nayi row na banaye
+            if (count === 0 && $(".budgetList").length > 0) {
+                $(this).attr("data-count", 1); // increment internally, but don't create
+                updateMiscAmount();
+                return;
+            }
+
+            // 🔹 New head row template
+            let ele = `
+        <div class="row budgetList">
+            <div class="col-lg-5 mb-3">
+                <label class="form-label">Heads</label>
+                <input type="text" class="form-control form-control-sm" 
+                    name="pm.budgets[${count + 1}].ProjectHeads" placeholder="Enter Key Point">
+            </div>
+            <div class="col-lg-5 mb-3">
+                <label class="form-label">Amount</label>
+                <input type="number" class="form-control form-control-sm amnt" 
+                    name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
+            </div>
+            <div class="col-lg-2 text-center mb-3" style="line-height:6;">
+                <a href="#" class="deleteCurrntRow">
+                    <i class="fa-solid fa-trash text-danger fs-4" style="cursor:pointer;"></i>
+                </a>
+            </div>
+        </div>`;
+
             $("#miscList").before(ele);
-        })
+            $(this).attr("data-count", count + 1);
+
+            updateMiscAmount();
+        });
+
+        // 🔹 Delete a head
         $("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
             e.preventDefault();
-            let i = $("#budgetContainerBox #addBudgetItem").attr("data-count");
-            if (i > 0)
-                i--;
-            $("#budgetContainerBox #addBudgetItem").attr("data-count", i);
+            let count = parseInt($("#addBudgetItem").attr("data-count")) || 0;
+            if (count > 0) count--;
+            $("#addBudgetItem").attr("data-count", count);
             $(this).closest(".row.budgetList").remove();
-        })
+            updateMiscAmount();
+        });
+
+        // 🔹 On any input change
+        $(document).on("input", "#budgetAmount, .amnt", function () {
+            updateMiscAmount($(this)); // pass current input
+        });
+
+        // 🔹 Function: Update Miscellaneous (remaining)
+        function updateMiscAmount(changedInput = null) {
+            let budgetAmt = parseFloat($("#budgetAmount").val()) || 0;
+            let totalHeads = 0;
+
+            $(".amnt").each(function () {
+                let val = parseFloat($(this).val());
+                if (!isNaN(val)) totalHeads += val;
+            });
+
+            // ⚠️ Check exceed
+            if (totalHeads > budgetAmt) {
+                Swal.fire("Error!", "Total of all heads cannot exceed Project Budget!", "error");
+
+                // 🧹 Clear the field which exceeded
+                if (changedInput) $(changedInput).val('');
+
+                // Recalculate
+                totalHeads = 0;
+                $(".amnt").each(function () {
+                    let val = parseFloat($(this).val());
+                    if (!isNaN(val)) totalHeads += val;
+                });
+            }
+
+            // ✅ Update Misc amount
+            let remaining = budgetAmt - totalHeads;
+            if (remaining < 0) remaining = 0;
+
+            $("#misAmount").val(remaining.toFixed(2));
+        }
     });
 
 </script>

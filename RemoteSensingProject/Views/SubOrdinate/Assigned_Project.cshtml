@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Assigned_Project";
     Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
-    var assignedData = ViewData["AssignedProjectList"] as List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList>;
+    var assignedData = ViewData["AssignedProjectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     int i = 1;
 }
 
@@ -61,17 +61,17 @@
                                     <tr>
                                         <td>@i</td>
                                         <td>@item.projectCode</td>
-                                        <td><a href="#" class="viewProject" data-title="View Details" data-id="@item.Id">@item.Title</a></td>
-                                        <td>@item.CreatedBy</td>
+                                        <td><a href="#" class="viewProject" data-title="View Details" data-id="@item.Id">@item.ProjectTitle</a></td>
+                                        <td>@item.createdBy</td>
                                         <td>@item.AssignDateString</td>
                                         <td>@item.StartDateString</td>
                                         <td>@item.CompletionDatestring</td>
                                         <td>
-                                            @if (item.CompleteionStatus == true && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
+                                            @if (item.completestatus == true && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
                                             {
                                                 <span class="badge bg-success">Completed</span>
                                             }
-                                            else if (item.CompleteionStatus == false && item.CompletionDate > currentDate)
+                                            else if (item.completestatus == false && item.CompletionDate > currentDate)
                                             {
                                                 <span class="badge bg-warning text-dark">Processing</span>
                                             }

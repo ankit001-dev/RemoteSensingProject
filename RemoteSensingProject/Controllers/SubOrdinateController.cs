@@ -42,26 +42,26 @@ namespace RemoteSensingProject.Controllers
             List<Models.SubOrdinate.main.ProjectList> _list = new List<Models.SubOrdinate.main.ProjectList>();
             if (req == "Internal")
             {
-                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId).Where(d=>d.ProjectType=="Internal").ToList();
+                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId).Where(d=>d.ProjectType=="Internal").ToList();
             }
             else if (req == "External")
             {
-                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId).Where(d => d.ProjectType == req).ToList();
+                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId).Where(d => d.ProjectType == req).ToList();
             }
             else if (req == "completed")
             {
-                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId).Where(d => d.completestatus == true && d.CompletionDate<DateTime.Now).ToList();
+                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId).Where(d => d.completestatus == true && d.CompletionDate<DateTime.Now).ToList();
             }
             else if (req == "ongoing")
             {
-                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId).Where(d => d.completestatus == false && d.CompletionDate>DateTime.Now).ToList();
+                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId).Where(d => d.completestatus == false && d.CompletionDate>DateTime.Now).ToList();
             }
             else if(req == "pending")
             {
-                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId).Where(d => d.StartDate>DateTime.Now).ToList();
+                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId).Where(d => d.StartDate>DateTime.Now).ToList();
             }
             else
-            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, null, id: userId);
+            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId);
 
 
 

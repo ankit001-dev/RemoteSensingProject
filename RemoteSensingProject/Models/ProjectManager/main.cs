@@ -281,6 +281,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class RaiseProblem
     {
+        public PaginationInfo Pagination { get; set; }
         public string projectCode { get; set; }
         public DateTime createdAt { get; set; }
         public string projectManager {get; set; }  

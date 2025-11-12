@@ -1,15 +1,16 @@
-﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Math;
-using Npgsql;
-using NpgsqlTypes;
-using RemoteSensingProject.Models.MailService;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.IdentityModel;
 using System.IO;
 using System.Linq;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Math;
+using Npgsql;
+using NpgsqlTypes;
+using RemoteSensingProject.Models.MailService;
 using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 
@@ -227,7 +228,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Project_model> All_Project_List( int userId, int?limit, int?page, string filterType, int?id = null)
+        public List<Project_model> All_Project_List(int userId, int? limit, int? page, string filterType, int? id = null)
         {
             try
             {
@@ -272,7 +273,19 @@ namespace RemoteSensingProject.Models.ProjectManager
                             physicalcomplete = Convert.ToDecimal(rd["completionPercentage"]),
                             overallPercentage = Convert.ToDecimal(rd["overallPercentage"]),
                             completestatus = Convert.ToBoolean(rd["CompleteStatus"]),
-                            projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
+                            projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A",
+                            // ✅ These three only when projectType == "external"
+                            ProjectDepartment = rd["projectType"].ToString().ToLower() == "external"
+        ? rd["departmentname"].ToString()
+        : string.Empty,
+
+                            ContactPerson = rd["projectType"].ToString().ToLower() == "external"
+        ? rd["contactperson"].ToString()
+        : string.Empty,
+
+                            Address = rd["projectType"].ToString().ToLower() == "external"
+        ? rd["address"].ToString()
+        : string.Empty
                         });
                         if (firstRow)
                         {
@@ -345,35 +358,99 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
+        public List<Raise_Problem> getAllSubOrdinateProblem(string projectManager,int?page= null,int? limit = null)
+        {
+            try
+            {
+                con.Open();
+                List<Raise_Problem> problemList = new List<Raise_Problem>();
+                Raise_Problem obj = null;
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageproblems_cursor", con, tran))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "getAllProblemListByManager");
+                    cmd.Parameters.AddWithValue("@v_projectmanager", Convert.ToInt32(projectManager));
+                    cmd.Parameters.AddWithValue("@v_id", 0);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
 
+                    using (var sdr = fetchCmd.ExecuteReader())
+                    {
+                        if (sdr.HasRows)
+                        {
+                            while (sdr.Read())
+                            {
+                                obj = new Raise_Problem();
+                                obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
+                                obj.ProjectName = sdr["ProjectName"].ToString();
+                                obj.Title = sdr["Title"].ToString();
+                                obj.Description = sdr["Description"].ToString();
+                                obj.Attchment_Url = sdr["Attachment"].ToString();
+                                obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                                obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
+                                obj.projectCode = sdr["projectCode"] != DBNull.Value ? sdr["projectCode"].ToString() : "N/A";
+                                problemList.Add(obj);
+                            }
+                        }
+                    }
+                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
+                }
+                return problemList;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+
+        }
         public List<Raise_Problem> getAllSubOrdinateProblemById(string projectManager, int id)
         {
             try
             {
+                con.Open();
                 List<Raise_Problem> problemList = new List<Raise_Problem>();
                 Raise_Problem obj = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageSubordinateProjectProblem", con);
+                var cmd = new NpgsqlCommand("fn_manageproblems_cursor", con);
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getAllProblemListByManagerById");
-                cmd.Parameters.AddWithValue("@projectManager", projectManager);
-                cmd.Parameters.AddWithValue("@id", id);
-                con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
+                cmd.Parameters.AddWithValue("@v_action", "getAllProblemListByManagerById");
+                cmd.Parameters.AddWithValue("@v_projectmanager", projectManager);
+                cmd.Parameters.AddWithValue("@v_id", id);
+                string cursorName = (string)cmd.ExecuteScalar();
+                using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con))
+
+                using (var sdr = fetchCmd.ExecuteReader())
                 {
-                    while (sdr.Read())
+                    if (sdr.HasRows)
                     {
-                        obj = new Raise_Problem();
-                        obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
-                        obj.ProjectName = sdr["ProjectName"].ToString();
-                        obj.Title = sdr["Title"].ToString();
-                        obj.Description = sdr["Description"].ToString();
-                        obj.Attchment_Url = sdr["Attachment"].ToString();
-                        obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
-                        obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
-                        problemList.Add(obj);
+                        while (sdr.Read())
+                        {
+                            obj = new Raise_Problem();
+                            obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
+                            obj.ProjectName = sdr["ProjectName"].ToString();
+                            obj.Title = sdr["Title"].ToString();
+                            obj.Description = sdr["Description"].ToString();
+                            obj.Attchment_Url = sdr["Attachment"].ToString();
+                            obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                            obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
+                            problemList.Add(obj);
+                        }
                     }
                 }
+
                 return problemList;
 
             }
@@ -411,7 +488,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Raise_Problem> getSubOrdinateProblemforAdmin(int? limit=null,int?page=null)
+        public List<Raise_Problem> getSubOrdinateProblemforAdmin(int? limit = null, int? page = null)
         {
             try
             {
@@ -587,17 +664,53 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
-                cmd.CommandType = CommandType.StoredProcedure;
+                cmd = new NpgsqlCommand(@"CALL public.sp_manageprojectsubstaces(
+                    @action,          -- v_action
+                    0,                -- v_id
+                    @project_id,      -- v_project_id
+                    @w_date,          -- v_w_date
+                    NULL,             -- v_title
+                    NULL,             -- v_comment
+                    NULL,             -- v_reason
+                    0,                -- v_completion
+                    NULL,             -- v_attatchment
+                    0,                -- v_amount
+                    NULL,             -- v_unit
+                    NULL,             -- v_annual
+                    NULL,             -- v_monthend
+                    NULL,             -- v_reviewmonth
+                    NULL,             -- v_monthendsequentially
+                    NULL,             -- v_statebeneficiaries
+                    NULL,             -- v_createdat
+                    0,                -- v_projectid
+                    0,                -- v_headid
+                    NULL,             -- v_updateat
+                    false,            -- v_status
+                    @aim,             -- v_aim
+                    @month_aim,       -- v_month_aim
+                    @completeinmonth, -- v_completeinmonth
+                    @departbeneficiaries, -- v_departbeneficiaries
+                    0,                -- v_appstatus
+                    NULL              -- v_rc
+                );", con);
+
+                cmd.CommandType = CommandType.Text;
                 cmd.Parameters.AddWithValue("@action", "insertfinanceUpdate");
-                cmd.Parameters.AddWithValue("@project_Id", fr.projectId);
+                cmd.Parameters.AddWithValue("@project_id", fr.projectId);
                 cmd.Parameters.AddWithValue("@aim", fr.aim);
-                cmd.Parameters.AddWithValue("@w_date", fr.date);
+                //cmd.Parameters.AddWithValue("@v_w_date", fr.date);
+                // 👇 Convert string to DateTime safely
+                DateTime workDate;
+                if (DateTime.TryParse(fr.date, out workDate))
+                    cmd.Parameters.AddWithValue("@w_date", workDate);
+                else
+                    throw new Exception("Invalid date format in fr.date");
                 cmd.Parameters.AddWithValue("@month_aim", fr.month_aim);
-                cmd.Parameters.AddWithValue("@completeInMonth", fr.completeInMonth);
-                cmd.Parameters.AddWithValue("@departBeneficiaries", fr.departBeneficiaries);
+                cmd.Parameters.AddWithValue("@completeinmonth", fr.completeInMonth);
+                cmd.Parameters.AddWithValue("@departbeneficiaries", fr.departBeneficiaries);
                 con.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch (Exception ex)
             {
@@ -622,7 +735,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectFinancilaReportByProjectId");
-                    cmd.Parameters.AddWithValue("v_project_Id", projectId);
+                    cmd.Parameters.AddWithValue("v_project_id", projectId);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (var rd = fetchCmd.ExecuteReader())
@@ -766,38 +879,40 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Project_Budget> ProjectBudgetList(int Id, int?page, int?limit)
+        public List<Project_Budget> ProjectBudgetList(int Id, int? page=null, int? limit=null)
         {
-           
+
             List<Project_Budget> list = new List<Project_Budget>();
             try
             {
                 con.Open();
-            using (var cmd = new NpgsqlCommand("fn_getprojectstagesandbudget", con))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("v_action", "GetBudgetByProjectId");
-                cmd.Parameters.AddWithValue("v_id", Id);
-                cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-                using (var rd = cmd.ExecuteReader())
+                using (var cmd = new NpgsqlCommand("fn_getprojectstagesandbudget", con))
                 {
-                    if (rd.HasRows)
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "GetBudgetByProjectId");
+                    cmd.Parameters.AddWithValue("v_id", Id);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    using (var rd = cmd.ExecuteReader())
                     {
-                        while (rd.Read())
+                        if (rd.HasRows)
                         {
-                            list.Add(new Project_Budget
+                            while (rd.Read())
                             {
-                                Id = Convert.ToInt32(rd["id"]),
-                                Project_Id = Convert.ToInt32(rd["project_id"]),
-                                ProjectHeads = rd["heads"].ToString(),
-                                ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0)
-                            });
+                                list.Add(new Project_Budget
+                                {
+                                    Id = Convert.ToInt32(rd["id"]),
+                                    Project_Id = Convert.ToInt32(rd["project_id"]),
+                                    ProjectHeads = rd["heads"].ToString(),
+                                    ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0),
+                                    TotalAskAmount = rd["totalAskAmount"].ToString(),
+                                    ApproveAmount = rd["approveAmount"].ToString(),
+                                });
+                            }
                         }
+                        return list;
                     }
-                    return list;
                 }
-            }
             }
             catch (Exception ex)
             {
@@ -818,45 +933,63 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageStageStatus", con))
+                using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
+            @v_id,
+            @v_stageid,
+            @v_comment,
+            @v_completionprecentage,
+            @v_stagedocument,
+            @v_delayreason,
+            @v_updatestatus,
+            @v_status,
+            @v_project_id,
+            @v_completionstatus,
+            @v_action,
+            NULL
+        );", con))
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@action", "insertStageStatus");
-                    cmd.Parameters.AddWithValue("@stageId", obj.Stage_Id);
-                    cmd.Parameters.AddWithValue("@Comment", obj.Comment);
-                    cmd.Parameters.AddWithValue("@CompletionPrecentage", obj.CompletionPrecentage);
-                    cmd.Parameters.AddWithValue("@StageDocument", obj.StageDocument_Url ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@updateStatus", obj.Status);
+                    cmd.CommandType = CommandType.Text;
+
+                    // 🔹 Explicitly specify types to avoid "unknown"
+                    cmd.Parameters.Add("@v_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = 0;
+                    cmd.Parameters.Add("@v_stageid", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Stage_Id;
+                    cmd.Parameters.Add("@v_comment", NpgsqlTypes.NpgsqlDbType.Text).Value = (object)obj.Comment ?? DBNull.Value;
+                    cmd.Parameters.Add("@v_completionprecentage", NpgsqlTypes.NpgsqlDbType.Varchar).Value = (object)obj.CompletionPrecentage ?? DBNull.Value;
+                    cmd.Parameters.Add("@v_stagedocument", NpgsqlTypes.NpgsqlDbType.Text).Value = (object)obj.StageDocument_Url ?? DBNull.Value;
+                    cmd.Parameters.Add("@v_delayreason", NpgsqlTypes.NpgsqlDbType.Text).Value = DBNull.Value;
+                    cmd.Parameters.Add("@v_updatestatus", NpgsqlTypes.NpgsqlDbType.Varchar).Value = (object)obj.Status ?? DBNull.Value;
+                    cmd.Parameters.Add("@v_status", NpgsqlTypes.NpgsqlDbType.Smallint).Value = 1;
+                    cmd.Parameters.Add("@v_project_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
+                    cmd.Parameters.Add("@v_completionstatus", NpgsqlTypes.NpgsqlDbType.Integer).Value = 0;
+                    cmd.Parameters.Add("@v_action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "insertStageStatus";
+
                     con.Open();
-                    int i = cmd.ExecuteNonQuery();
+                    cmd.ExecuteNonQuery();
+                }
 
-                    if (obj.Status == "completed")
+                // ✅ If completed, update completion status
+                if (obj.Status?.ToLower() == "completed")
+                {
+                    using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
+                0, @stageId, NULL, NULL, NULL, NULL, NULL, 1, @projectId, @completionStatus, @action, NULL
+            );", con))
                     {
-                        using (NpgsqlCommand updateCmd = new NpgsqlCommand("sp_ManageStageStatus", con))
-                        {
-                            updateCmd.CommandType = CommandType.StoredProcedure;
-                            updateCmd.Parameters.AddWithValue("@action", "updateStageCompetionStatus");
-                            updateCmd.Parameters.AddWithValue("@completionStatus", 1);
-                            updateCmd.Parameters.AddWithValue("@project_Id", obj.Project_Id);
-                            updateCmd.Parameters.AddWithValue("@stageId", obj.Stage_Id);
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add("@stageId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Stage_Id;
+                        cmd.Parameters.Add("@projectId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
+                        cmd.Parameters.Add("@completionStatus", NpgsqlTypes.NpgsqlDbType.Integer).Value = 1;
+                        cmd.Parameters.Add("@action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "updateStageCompetionStatus";
 
-                            updateCmd.ExecuteNonQuery();
-                        }
-                    }
-
-                    if (i > 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
+                        con.Open();
+                        cmd.ExecuteNonQuery();
                     }
                 }
+
+                return true;
             }
             catch (Exception ex)
             {
-                throw new Exception("An error occurred while inserting stage status.", ex);
+                throw new Exception("Error inserting stage status", ex);
             }
             finally
             {
@@ -865,29 +998,44 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Project_Statge> ViewStagesComments(string stageId)
+        public List<Project_Statge> ViewStagesComments(string stageId, int? page = null,int? limit = null)
         {
             try
             {
                 List<Project_Statge> stageList = new List<Project_Statge>();
                 Project_Statge stage = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageStageStatus", con);
-                cmd.Parameters.AddWithValue("@action", "viewDealyReason");
-                cmd.Parameters.AddWithValue("@stageId", stageId);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
                 con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageprojectsubstances_cursor", con))
                 {
-                    while (sdr.Read())
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "viewDealyReason");
+                    cmd.Parameters.AddWithValue("@v_project_id", 0);
+                    cmd.Parameters.AddWithValue("@v_id", Convert.ToInt32(stageId));
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var sdr = fetchCmd.ExecuteReader())
                     {
-                        stage = new Project_Statge();
-                        stage.StageDocument_Url = sdr["StageDocument"].ToString();
-                        stage.Comment = sdr["Comment"].ToString();
-                        stage.Status = sdr["updateStatus"].ToString();
-                        stage.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
-                        stageList.Add(stage);
+                        if (sdr.HasRows)
+                        {
+                            while (sdr.Read())
+                            {
+                                stage = new Project_Statge();
+                                stage.StageDocument_Url = sdr["StageDocument"].ToString();
+                                stage.Comment = sdr["Comment"].ToString();
+                                stage.Status = sdr["updateStatus"].ToString();
+                                stage.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
+                                stageList.Add(stage);
+                            }
+                        }
                     }
+                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
 
                 return stageList;
@@ -1030,16 +1178,16 @@ namespace RemoteSensingProject.Models.ProjectManager
             try
             {
                 cmd.Parameters.Clear();
-                cmd = new NpgsqlCommand("sp_manageMemberResponseForMeeting", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getResponseFromMemberForMeeting");
-                cmd.Parameters.AddWithValue("@appStatus", mr.ApprovedStatus);
-                cmd.Parameters.AddWithValue("@reason", mr.reason);
-                cmd.Parameters.AddWithValue("@meeting", mr.MeetingId);
-                cmd.Parameters.AddWithValue("@employee", mr.MemberId);
+                cmd = new NpgsqlCommand("call sp_managememberresponseformeeting(v_action=>@v_action,v_appstatus=>@v_appstatus,v_reason=>@v_reason,v_meeting=>@v_meeting,v_employee=>@v_employee)", con);
+                //cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@v_action", "getResponseFromMemberForMeeting");
+                cmd.Parameters.AddWithValue("@v_appstatus", mr.ApprovedStatus);
+                cmd.Parameters.AddWithValue("@v_reason", mr.reason??"");
+                cmd.Parameters.AddWithValue("@v_meeting", mr.MeetingId);
+                cmd.Parameters.AddWithValue("@v_employee", mr.MemberId);
                 con.Open();
-                int res = cmd.ExecuteNonQuery();
-                return res > 0;
+                cmd.ExecuteNonQuery();
+                return true;
             }
             catch (Exception ex)
             {
@@ -1069,6 +1217,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
                     var sdr = cmd.ExecuteReader();
+                    bool firstRow = true;
                     while (sdr.Read())
                     {
                         obj = new Meeting_Model();
@@ -1081,8 +1230,20 @@ namespace RemoteSensingProject.Models.ProjectManager
                         obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
                         obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
                         obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy hh:mm tt");
-                        _list.Add(obj);
                         obj.createdBy = sdr["createdBy"].ToString();
+                        _list.Add(obj);
+
+                        if (firstRow)
+                        {
+                            obj.Pagination = new ApiCommon.PaginationInfo
+                            {
+                                PageNumber = page ?? 0,
+                                TotalPages = Convert.ToInt32(sdr["totalpages"] != DBNull.Value ? sdr["totalpages"] : 0),
+                                TotalRecords = Convert.ToInt32(sdr["totalrecords"] != DBNull.Value ? sdr["totalrecords"] : 0),
+                                PageSize = limit ?? 0
+                            };
+                            firstRow = false; // Optional: ensure pagination is only assigned once
+                        }
                     }
                 }
                 return _list;
@@ -1414,7 +1575,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
@@ -1457,7 +1618,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public List<Reimbursement> GetReimbursements(int? page = null, int? limit = null, int? id = null, int? managerId = null, string type = null)
         {
             try
-            { 
+            {
                 con.Open();
                 List<Reimbursement> getlist = new List<Reimbursement>();
                 using (var tran = con.BeginTransaction())
@@ -1488,7 +1649,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             bool firstRow = true;
                             while (res.Read())
                             {
-                               var data = new Reimbursement
+                                var data = new Reimbursement
                                 {
                                     EmpName = res["name"].ToString() + $"({res["employeeCode"].ToString()})",
                                     type = res["type"].ToString(),
@@ -1543,7 +1704,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Reimbursement> GetSpecificUserReimbursements(int userid, string type, int id, int?page, int?limit)
+        public List<Reimbursement> GetSpecificUserReimbursements(int userid, string type, int id, int? page, int? limit)
         {
             try
             {
@@ -1608,7 +1769,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                         }
                     }
 
-                        return getlist;
+                    return getlist;
                 }
             }
             catch (Exception ex)
@@ -1661,7 +1822,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<tourProposal> getTourList(int?userId = null, int?id = null, string type = null, int?page = null, int?limit = null)
+        public List<tourProposal> getTourList(int? userId = null, int? id = null, string type = null, int? page = null, int? limit = null)
         {
             try
             {
@@ -1803,7 +1964,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@action", "insert");
                 con.Open();
                 cmd.ExecuteNonQuery();
-                return  true;
+                return true;
             }
             catch
             {
@@ -1819,7 +1980,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<HiringVehicle> GetHiringVehicles(int?userId = null, int?id = null, string type = null, int?page = null, int?limit = null)
+        public List<HiringVehicle> GetHiringVehicles(int? userId = null, int? id = null, string type = null, int? page = null, int? limit = null)
         {
             try
             {
@@ -2267,7 +2428,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("@v_title", rp.title);
                 cmd.Parameters.AddWithValue("@v_projectid", rp.projectId);
                 cmd.Parameters.AddWithValue("@v_description", rp.description);
-                cmd.Parameters.AddWithValue("@v_document", rp.documentname);
+                cmd.Parameters.AddWithValue("@v_document", rp.documentname??"");
                 cmd.Parameters.AddWithValue("@v_userid", rp.id);
                 con.Open();
                 cmd.ExecuteNonQuery();
@@ -2305,6 +2466,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         if (res.HasRows)
                         {
+                            bool firstRow = true;
                             while (res.Read())
                             {
                                 list.Add(new RaiseProblem
@@ -2319,6 +2481,17 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     createdAt = Convert.ToDateTime(res["createdAt"]),
                                     projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
                                 });
+                                if (firstRow)
+                                {
+                                    list[0].Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        PageNumber = page ?? 0,
+                                        TotalPages = Convert.ToInt32(res["totalpages"] != DBNull.Value ? res["totalpages"] : 0),
+                                        TotalRecords = Convert.ToInt32(res["totalrecords"] != DBNull.Value ? res["totalrecords"] : 0),
+                                        PageSize = limit ?? 0
+                                    };
+                                    firstRow = false; // Optional: ensure pagination is only assigned once
+                                }
                             }
                         }
                     }
@@ -2438,41 +2611,41 @@ namespace RemoteSensingProject.Models.ProjectManager
             {
 
                 con.Open();
-                    foreach (var item in model.Attendance)
+                foreach (var item in model.Attendance)
+                {
+                    using (var tran = con.BeginTransaction())
                     {
-                        using (var tran = con.BeginTransaction())
+                        int count = 0;
+                        // Check if already exists
+                        using (var checkCmd = new NpgsqlCommand("select fn_manageattendance_cursor(@v_action,NULL::int,@v_id,NULL::int,NULL::int,NULL::int,NULL::int,@v_date)", con, tran))
                         {
-                            int count = 0;
-                            // Check if already exists
-                            using (var checkCmd = new NpgsqlCommand("select fn_manageattendance_cursor(@v_action,NULL::int,@v_id,NULL::int,NULL::int,NULL::int,NULL::int,@v_date)", con, tran))
+                            checkCmd.Parameters.AddWithValue("@v_action", "checkattendance");
+                            checkCmd.Parameters.AddWithValue("@v_id", model.EmpId);
+                            checkCmd.Parameters.AddWithValue("@v_date", DateTime.Parse(item.Key));
+                            string cursorName = (string)checkCmd.ExecuteScalar();
+
+                            if (string.IsNullOrEmpty(cursorName))
                             {
-                                checkCmd.Parameters.AddWithValue("@v_action", "checkattendance");
-                                checkCmd.Parameters.AddWithValue("@v_id", model.EmpId);
-                                checkCmd.Parameters.AddWithValue("@v_date", DateTime.Parse(item.Key));
-                                string cursorName = (string)checkCmd.ExecuteScalar();
-
-                                if (string.IsNullOrEmpty(cursorName))
-                                {
-                                    // If no cursor returned, move to the next record
-                                    continue;
-                                }
-
-                                // Fetch the results from the cursor
-                                using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\"", con, tran))
-                                {
-                                    count = Convert.ToInt32(fetchCmd.ExecuteScalar());
-                                }
-                            }
-
-
-                            if (count > 0)
-                            {
-                                skippedDates.Add(item.Key); // Already exists
+                                // If no cursor returned, move to the next record
                                 continue;
                             }
 
-                            // Insert only if not exists
-                            NpgsqlCommand cmd = new NpgsqlCommand(@"
+                            // Fetch the results from the cursor
+                            using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\"", con, tran))
+                            {
+                                count = Convert.ToInt32(fetchCmd.ExecuteScalar());
+                            }
+                        }
+
+
+                        if (count > 0)
+                        {
+                            skippedDates.Add(item.Key); // Already exists
+                            continue;
+                        }
+
+                        // Insert only if not exists
+                        NpgsqlCommand cmd = new NpgsqlCommand(@"
                             call sp_manageattendance(
                                 0,
                                 @v_projectmanager,
@@ -2493,19 +2666,19 @@ namespace RemoteSensingProject.Models.ProjectManager
                                 @v_action
                             );", con, tran);
 
-                            cmd.CommandType = System.Data.CommandType.Text;
+                        cmd.CommandType = System.Data.CommandType.Text;
 
-                            // ✅ Add parameters with explicit PostgreSQL types
-                            cmd.Parameters.Add("@v_action", NpgsqlDbType.Varchar).Value = "InsertAttendance";
-                            cmd.Parameters.Add("@v_projectmanager", NpgsqlDbType.Integer).Value = (int)model.projectManager;
-                            cmd.Parameters.Add("@v_empid", NpgsqlDbType.Integer).Value = (int)model.EmpId;
-                            cmd.Parameters.Add("@v_attendancedate", NpgsqlDbType.Timestamp).Value = Convert.ToDateTime(item.Key);  // DateTime or DateOnly
-                            cmd.Parameters.Add("@v_attendancestatus", NpgsqlDbType.Varchar).Value = item.Value;
-                            cmd.ExecuteNonQuery();
+                        // ✅ Add parameters with explicit PostgreSQL types
+                        cmd.Parameters.Add("@v_action", NpgsqlDbType.Varchar).Value = "InsertAttendance";
+                        cmd.Parameters.Add("@v_projectmanager", NpgsqlDbType.Integer).Value = (int)model.projectManager;
+                        cmd.Parameters.Add("@v_empid", NpgsqlDbType.Integer).Value = (int)model.EmpId;
+                        cmd.Parameters.Add("@v_attendancedate", NpgsqlDbType.Timestamp).Value = Convert.ToDateTime(item.Key);  // DateTime or DateOnly
+                        cmd.Parameters.Add("@v_attendancestatus", NpgsqlDbType.Varchar).Value = item.Value;
+                        cmd.ExecuteNonQuery();
 
-                            tran.Commit();
-                        }
+                        tran.Commit();
                     }
+                }
 
                 return (true, skippedDates, null);
             }
@@ -2626,7 +2799,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<AttendanceManage> GetAllAttendanceForProjectManager(int projectManager,int? limit = null,int? page = null)
+        public List<AttendanceManage> GetAllAttendanceForProjectManager(int projectManager, int? limit = null, int? page = null)
         {
             try
             {
@@ -2687,7 +2860,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<AllAttendance> GetAllAttendanceForPmByMonth(int year, int month, int projectManager,int?limit = null,int?page = null)
+        public List<AllAttendance> GetAllAttendanceForPmByMonth(int year, int month, int projectManager, int? limit = null, int? page = null)
         {
             try
             {
@@ -2708,7 +2881,8 @@ namespace RemoteSensingProject.Models.ProjectManager
 
                     string curcorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{curcorName}\";", con))
-                    using (var rd = fetchCmd.ExecuteReader()) { 
+                    using (var rd = fetchCmd.ExecuteReader())
+                    {
 
                         while (rd.Read())
                         {
@@ -2745,11 +2919,12 @@ namespace RemoteSensingProject.Models.ProjectManager
                             }
                         }
                     }
-                     using(var closeCmd = new NpgsqlCommand($"close \"{curcorName}\";", con,tran)) {
+                    using (var closeCmd = new NpgsqlCommand($"close \"{curcorName}\";", con, tran))
+                    {
                         closeCmd.ExecuteNonQuery();
-                     }
+                    }
                 }
-                
+
                 return attendanceDict.Values.ToList();
             }
             catch (Exception ex)
@@ -2761,7 +2936,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 if (con.State == ConnectionState.Open)
                     con.Close();
                 cmd.Dispose();
-                
+
             }
         }
 
@@ -2805,7 +2980,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.Parameters.AddWithValue("v_action", "Totalcountpa");
                     cmd.Parameters.AddWithValue("v_id", DBNull.Value);
                     cmd.Parameters.AddWithValue("v_year", Convert.ToInt32(DateTime.Now.Year));
-                    cmd.Parameters.AddWithValue("v_month", Convert.ToInt32(DateTime.Now.Month-1));
+                    cmd.Parameters.AddWithValue("v_month", Convert.ToInt32(DateTime.Now.Month - 1));
                     cmd.Parameters.AddWithValue("v_projectmanager", projectManager);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
@@ -2844,7 +3019,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<AttendanceManage> getAttendanceCountByMonth(int year, int month, int projectManager,int? limit = null,int? page = null)
+        public List<AttendanceManage> getAttendanceCountByMonth(int year, int month, int projectManager, int? limit = null, int? page = null)
         {
             try
             {
@@ -2881,7 +3056,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                             }
                         }
                     }
-                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
                     {
                         closeCmd.ExecuteNonQuery();
                     }

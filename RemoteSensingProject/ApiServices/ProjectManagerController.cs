@@ -68,6 +68,30 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+        [HttpGet]
+        [Route("api/getsubordinate")]
+        public IHttpActionResult GetSubordinateList()
+        {
+            try
+            {
+                var data = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
+                var selectprop = new[] { "Id", "EmployeeName" };
+                var newdata = CommonHelper.SelectProperties(data, selectprop);
+                if (newdata.Count > 0)
+                {
+                    return CommonHelper.Success(this, newdata, "Data fetched successfully", 200);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return CommonHelper.Error(this, ex.Message);
+            }
+        }
+
         [HttpPost]
         [Route("api/addProjectExpenses")]
         public IHttpActionResult AddExpenses()
@@ -162,7 +186,8 @@ namespace RemoteSensingProject.ApiServices
                     message = data.Any() ? "Data Found !" : "Data not found !",
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -530,11 +555,11 @@ namespace RemoteSensingProject.ApiServices
         #region Notice
         [HttpGet]
         [Route("api/getManagerNotice")]
-        public IHttpActionResult NoticeList(int managerId)
+        public IHttpActionResult NoticeList(int managerId, int? page = null, int? limit = null)
         {
             try
             {
-                var data = _adminServices.getNoticeList(managerId:managerId);
+                var data = _adminServices.getNoticeList(managerId: managerId, page: page, limit: limit);
                 if (!data.Any())
                 {
                     return BadRequest(new
@@ -609,10 +634,27 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getAllmeeting")]
-        public IHttpActionResult getAllmeeting(int managerId)
+        public IHttpActionResult getAllmeeting(int managerId, int? page, int? limit)
         {
-            var res = _managerService.getAllmeeting(managerId);
-            return Ok(new { status = true, message = "data retrieved", data = res });
+            try
+            {
+                var res = _managerService.getAllmeeting(id: managerId, limit, page);
+                
+                var selectprop = new[] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "AppStatus", "memberId", "CreaterId", "MeetingDate", "createdBy" };
+                var data = CommonHelper.SelectProperties(res, selectprop);
+                if (data.Count > 0)
+                {
+                    return CommonHelper.Success(this, data, "Data fetched successfully", 200, res[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return CommonHelper.Error(this, ex.Message);
+            }
         }
         [HttpPost]
         [Route("api/GetResponseFromMember")]
@@ -648,7 +690,7 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getProblemListByManager")]
-        public IHttpActionResult getProblemListByManager(int userId, int page, int limit)
+        public IHttpActionResult getProblemListByManager(int userId, int? page, int? limit)
         {
             var res = _adminServices.getProblemList(page, limit, null, userId);
 
@@ -668,6 +710,41 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var request = HttpContext.Current.Request;
+                var form = request.Form;
+                List<string> errors = new List<string>();
+                // 🔹 Validate EmpName
+                var empName = form["EmpName"];
+                if (string.IsNullOrWhiteSpace(empName))
+                    errors.Add("Employee Name is required.");
+
+                // 🔹 Validate Mobile Number
+                var mobile = form["mobileNo"];
+                if (string.IsNullOrWhiteSpace(mobile))
+                    errors.Add("Mobile Number is required.");
+                else if (!System.Text.RegularExpressions.Regex.IsMatch(mobile, @"^\d{10}$"))
+                    errors.Add("Mobile Number must be exactly 10 digits.");
+
+                // 🔹 Validate Gender (only Male, Female, or Other allowed)
+                var gender = form["gender"];
+                if (string.IsNullOrWhiteSpace(gender))
+                    errors.Add("Gender is required.");
+                else
+                {
+                    var allowedGenders = new[] { "male", "female", "other" };
+                    if (!allowedGenders.Contains(gender.Trim().ToLower()))
+                        errors.Add("Gender must be either 'Male', 'Female', or 'Other'.");
+                }
+
+                // 🔹 Validate Email
+                var email = form["email"];
+                if (string.IsNullOrWhiteSpace(email))
+                    errors.Add("Email is required.");
+                else if (!System.Text.RegularExpressions.Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                    errors.Add("Invalid email format.");
+
+                // 🔹 Return validation errors if any
+                if (errors.Count > 0)
+                    return CommonHelper.Error(this, string.Join(", ", errors), 500);
                 var formData = new OuterSource
                 {
                     EmpId = Convert.ToInt32(request.Form.Get("EmpId")),
@@ -697,11 +774,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/GetOuterSourceList")]
-        public IHttpActionResult GetOuterSourceListById(int userId, int?page, int?limit)
+        public IHttpActionResult GetOuterSourceListById(int userId, int? page, int? limit)
         {
             try
             {
-                var data = _managerService.selectAllOutSOurceList(userId, page, limit);
+                var data = _managerService.selectAllOutSOurceList(userId, limit, page);
                 var selectProperties = new[] { "Id", "EmpName", "mobileNo", "email", "joiningdate", "gender" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
@@ -717,7 +794,7 @@ namespace RemoteSensingProject.ApiServices
             {
                 return CommonHelper.Error(this, ex.Message);
             }
-            
+
         }
 
         [HttpPost]
@@ -727,6 +804,22 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var request = HttpContext.Current.Request;
+                var form = request.Form;
+                List<string> errors = new List<string>();
+
+                // 🔹 Required field validations
+                if (string.IsNullOrWhiteSpace(form["title"]))
+                    errors.Add("Task title is required.");
+
+                if (string.IsNullOrWhiteSpace(form["description"]))
+                    errors.Add("Task description is required.");
+
+                if (string.IsNullOrWhiteSpace(form["outSourceId"]))
+                    errors.Add("At least one OutSource is required.");
+
+                // 🔹 If any required field is missing
+                if (errors.Count > 0)
+                    return CommonHelper.Error(this, string.Join(", ", errors), 500);
                 var formData = new OutSourceTask
                 {
                     title = request.Form.Get("title"),
@@ -759,7 +852,7 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getTaskList")]
-        public IHttpActionResult getTaskList(int empId, int?page, int?limit)
+        public IHttpActionResult getTaskList(int empId, int? page, int? limit)
         {
             try
             {
@@ -840,6 +933,49 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var request = HttpContext.Current.Request;
+                var form = request.Form;
+                List<string> errors = new List<string>();
+
+                // 🔹 Validate type
+                var type = form["type"];
+                if (string.IsNullOrWhiteSpace(type))
+                    errors.Add("Type is required.");
+
+                // 🔹 Validate vrNo
+                var vrNo = form["vrNo"];
+                if (string.IsNullOrWhiteSpace(vrNo))
+                    errors.Add("Voucher Number is required.");
+
+                // 🔹 Validate date
+                var dateStr = form["date"];
+                DateTime date;
+                if (string.IsNullOrWhiteSpace(dateStr) || !DateTime.TryParse(dateStr, out date))
+                    errors.Add("Valid Date is required.");
+
+                // 🔹 Validate particulars
+                var particulars = form["particulars"];
+                if (string.IsNullOrWhiteSpace(particulars))
+                    errors.Add("Particulars are required.");
+
+                // 🔹 Validate items
+                var items = form["items"];
+                if (string.IsNullOrWhiteSpace(items))
+                    errors.Add("Items are required.");
+
+                // 🔹 Validate purpose
+                var purpose = form["purpose"];
+                if (string.IsNullOrWhiteSpace(purpose))
+                    errors.Add("Purpose is required.");
+
+                // 🔹 Validate amount
+                var amountStr = form["amount"];
+                decimal amount;
+                if (string.IsNullOrWhiteSpace(amountStr) || !decimal.TryParse(amountStr, out amount))
+                    errors.Add("Valid Amount is required.");
+
+                // 🔹 Return validation errors if any
+                if (errors.Count > 0)
+                    return CommonHelper.Error(this, string.Join(", ", errors), 500);
                 var formData = new Reimbursement
                 {
                     userId = Convert.ToInt32(request.Form.Get("userId")),
@@ -885,7 +1021,7 @@ namespace RemoteSensingProject.ApiServices
                 return Ok(new
                 {
                     status = res,
-                    StatusCode = res? 200 : 500,
+                    StatusCode = res ? 200 : 500,
                     message = res ? "Reinbursement submitted successfully !" : "Some issue found while processing your request !"
                 });
             }
@@ -902,12 +1038,12 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getReimbursementByUserId")]
-        public IHttpActionResult getReimbursement(int userId, int?page, int?limit)
+        public IHttpActionResult getReimbursement(int userId, int? page, int? limit)
         {
             try
             {
                 var data = _managerService.GetReimbursements(page, limit, null, userId, "getSpecificUserData");
-                var selectProperties = new[] { "EmpName", "type", "id", "amount", "userId", "apprstatus", "subStatus", "adminappr", "status", "chequeNum", "accountNewRequest", "chequeDate", "newRequest", "approveAmount"};
+                var selectProperties = new[] { "EmpName", "type", "id", "amount", "userId", "apprstatus", "subStatus", "adminappr", "status", "chequeNum", "accountNewRequest", "chequeDate", "newRequest", "approveAmount" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
                 {
@@ -928,12 +1064,12 @@ namespace RemoteSensingProject.ApiServices
         [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/ViewReinbursementBytype")]
-        public IHttpActionResult viewReinbursement(int userId, string type, int id, int?page=null, int?limit=null)
+        public IHttpActionResult viewReinbursement(int userId, string type, int id, int? page = null, int? limit = null)
         {
             try
             {
                 var data = _managerService.GetSpecificUserReimbursements(userId, type, id, page, limit);
-                var selectProperties = new[] { "id", "type", "vrNo", "date", "particulars", "items", "amount", "purpose", "status", "newRequest", "adminappr"};
+                var selectProperties = new[] { "id", "type", "vrNo", "date", "particulars", "items", "amount", "purpose", "status", "newRequest", "adminappr" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
                 {
@@ -959,6 +1095,51 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var request = HttpContext.Current.Request;
+                var form = request.Form;
+                List<string> errors = new List<string>();
+
+                // 🔹 Validate projectId
+                if (string.IsNullOrWhiteSpace(form["projectId"]) || !int.TryParse(form["projectId"], out int projectId))
+                    errors.Add("Valid Project ID is required.");
+
+                // 🔹 Validate dateOfDept
+                var dateOfDeptStr = form["dateOfDept"];
+                DateTime dateOfDept;
+                if (string.IsNullOrWhiteSpace(dateOfDeptStr) || !DateTime.TryParse(dateOfDeptStr, out dateOfDept))
+                    errors.Add("Valid Date of Departure is required.");
+
+                // 🔹 Validate place
+                var place = form["place"];
+                if (string.IsNullOrWhiteSpace(place))
+                    errors.Add("Place is required.");
+
+                // 🔹 Validate periodFrom
+                var periodFromStr = form["periodFrom"];
+                DateTime periodFrom;
+                if (string.IsNullOrWhiteSpace(periodFromStr) || !DateTime.TryParse(periodFromStr, out periodFrom))
+                    errors.Add("Valid Period From date is required.");
+
+                // 🔹 Validate periodTo
+                var periodToStr = form["periodTo"];
+                DateTime periodTo;
+                if (string.IsNullOrWhiteSpace(periodToStr) || !DateTime.TryParse(periodToStr, out periodTo))
+                    errors.Add("Valid Period To date is required.");
+
+                // 🔹 Validate returnDate
+                var returnDateStr = form["returnDate"];
+                DateTime returnDate;
+                if (string.IsNullOrWhiteSpace(returnDateStr) || !DateTime.TryParse(returnDateStr, out returnDate))
+                    errors.Add("Valid Return Date is required.");
+
+                // 🔹 Validate purpose
+                var purpose = form["purpose"];
+                if (string.IsNullOrWhiteSpace(purpose))
+                    errors.Add("Purpose is required.");
+
+                // 🔹 Return validation errors if any
+                if (errors.Count > 0)
+                    return CommonHelper.Error(this, string.Join(", ", errors), 500);
+
                 var formdata = new tourProposal
                 {
                     userId = Convert.ToInt32(request.Form.Get("userId")),
@@ -990,12 +1171,12 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/GetTourForUserId")]
-        public IHttpActionResult gettour(int userId, int?page, int?limit)
+        public IHttpActionResult gettour(int userId, int? page, int? limit)
         {
             try
             {
-                var data = _managerService.getTourList(userId: userId,page:page, limit: limit, type: "specificUser");
-                var selectProperties = new[] { "id", "projectName", "dateOfDept", "place", "periodFrom", "periodTo", "returnDate", "purpose", "newRequest", "adminappr", "projectCode"};
+                var data = _managerService.getTourList(userId: userId, page: page, limit: limit, type: "specificUser");
+                var selectProperties = new[] { "id", "projectName", "dateOfDept", "place", "periodFrom", "periodTo", "returnDate", "purpose", "newRequest", "adminappr", "projectCode" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
                 {
@@ -1063,7 +1244,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.GetHiringVehicles(id:id, type: "GetById");
+                var data = _managerService.GetHiringVehicles(id: id, type: "GetById");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1086,7 +1267,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.GetHiringVehicles(userId:userId, type: "projectManager");
+                var data = _managerService.GetHiringVehicles(userId: userId, type: "projectManager");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1188,34 +1369,34 @@ namespace RemoteSensingProject.ApiServices
         [HttpGet]
         [Route("api/ProjectManagerTourProposalReport")]
         public IHttpActionResult ProjectManagerTourProposalReport(int userId)
-            {
-                try
-                {
-                    var data = _managerService.ProjectManagertourreportProjects(userId);
-                    return Ok(new
-                    {
-                        status = data.Any(),
-                        StatuCode = data.Any() ? 200 : 500,
-                        data = data
-                    });
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new
-                    {
-                        status = false,
-                        StatusCode = 500,
-                        message = ex.Message
-                    });
-                } 
-        }
-        [HttpGet]
-        [Route("api/ProjectManagertourreportByProjects")]
-        public IHttpActionResult ProjectManagertourreportByProjects(int userId,int projectId)
         {
             try
             {
-                var data = _managerService.ProjectManagertourreportByProjects(userId,projectId);
+                var data = _managerService.ProjectManagertourreportProjects(userId);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatuCode = data.Any() ? 200 : 500,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/ProjectManagertourreportByProjects")]
+        public IHttpActionResult ProjectManagertourreportByProjects(int userId, int projectId)
+        {
+            try
+            {
+                var data = _managerService.ProjectManagertourreportByProjects(userId, projectId);
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1243,6 +1424,16 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var request = HttpContext.Current.Request;
+                // === Required Field Validation ===
+                if (string.IsNullOrWhiteSpace(request.Form.Get("title")))
+                    return BadRequest(new { status = false, StatusCode = 400, message = "Title is required." });
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("projectId")))
+                    return BadRequest(new { status = false, StatusCode = 400, message = "Project ID is required." });
+
+                if (string.IsNullOrWhiteSpace(request.Form.Get("description")))
+                    return BadRequest(new { status = false, StatusCode = 400, message = "Description is required." });
+
                 var formdata = new RaiseProblem
                 {
                     title = request.Form.Get("title").ToString(),
@@ -1251,15 +1442,17 @@ namespace RemoteSensingProject.ApiServices
                     id = Convert.ToInt32(request.Form.Get("userId"))
                 };
                 var file = request.Files["document"];
-                if (file.ContentLength>0)
-                {
-                    formdata.documentname = $"/ProjectContent/ProjectManager/raisedproblem{Guid.NewGuid()}{file.FileName}";
-                }
+                if (file != null)
+                    if (file.ContentLength > 0)
+                    {
+                        formdata.documentname = $"/ProjectContent/ProjectManager/raisedproblem{Guid.NewGuid()}{file.FileName}";
+                    }
                 bool res = _managerService.insertRaisedProblem(formdata);
                 if (res)
                 {
-                    if (file.ContentLength > 0)
-                        file.SaveAs(HttpContext.Current.Server.MapPath(formdata.documentname));
+                    if (file != null)
+                        if (file.ContentLength > 0)
+                            file.SaveAs(HttpContext.Current.Server.MapPath(formdata.documentname));
                 }
                 return Ok(new
                 {
@@ -1280,30 +1473,28 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getraisedproblem")]
-        public IHttpActionResult getRaisedProblem(int userId)
+        public IHttpActionResult getRaisedProblem(int userId, int? page, int? limit)
         {
             try
             {
-                var data = _managerService.getProblems(userId);
-                return Ok(new
+                var data = _managerService.getProblems(userId, limit, page);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    data = data
-                });
+                    return CommonHelper.Success(this, data, "Data fetched successfully", 200);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return Ok(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
         [HttpGet]
         [Route("api/deleteraisedproblem")]
-        public IHttpActionResult deleteraisedproblem(int id,int userId)
+        public IHttpActionResult deleteraisedproblem(int id, int userId)
         {
             try
             {
@@ -1312,7 +1503,7 @@ namespace RemoteSensingProject.ApiServices
                 {
                     status = res,
                     StatusCode = res ? 200 : 500,
-                    message = res?"Deleted Successfully":"Some issue occured"
+                    message = res ? "Deleted Successfully" : "Some issue occured"
                 });
             }
             catch (Exception ex)
@@ -1366,7 +1557,7 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getattendancebyIdofEmp")]
-        public IHttpActionResult GetAttendanceByIdOfEmp(int projectManager,int EmpId)
+        public IHttpActionResult GetAttendanceByIdOfEmp(int projectManager, int EmpId)
         {
             try
             {
@@ -1390,7 +1581,7 @@ namespace RemoteSensingProject.ApiServices
                     });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new
                 {
@@ -1427,11 +1618,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getrepoattendance")]
-        public IHttpActionResult getrepoattendance(int month, int year,int projectManager,int EmpId)
+        public IHttpActionResult getrepoattendance(int month, int year, int projectManager, int EmpId)
         {
             try
             {
-                var data = _managerService.getReportAttendance(month, year,projectManager,EmpId);
+                var data = _managerService.getReportAttendance(month, year, projectManager, EmpId);
                 if (data != null)
                 {
                     return Ok(new
@@ -1515,7 +1706,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.GetHiringVehicles(userId:userId, type: "projectManager");
+                var data = _managerService.GetHiringVehicles(userId: userId, type: "projectManager");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -1561,7 +1752,7 @@ namespace RemoteSensingProject.ApiServices
                     });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new
                 {
@@ -1597,7 +1788,7 @@ namespace RemoteSensingProject.ApiServices
                     });
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Ok(new
                 {
@@ -1667,7 +1858,7 @@ namespace RemoteSensingProject.ApiServices
                     projectId = Convert.ToInt32(request.Form.Get("projectId")),
                     aim = request.Form.Get("aim").ToString(),
                     date = request.Form.Get("date").ToString(),
-                    month_aim =  request.Form.Get("month_aim").ToString(),
+                    month_aim = request.Form.Get("month_aim").ToString(),
                     completeInMonth = request.Form.Get("completeInMonth").ToString(),
                     departBeneficiaries = request.Form.Get("departBeneficiaries").ToString()
                 };
@@ -1711,6 +1902,47 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var req = HttpContext.Current.Request;
+                var form = req.Form;
+                List<string> errors = new List<string>();
+
+                // 🔹 Validate ProjectId
+                if (string.IsNullOrWhiteSpace(form["ProjectId"]) || !int.TryParse(form["ProjectId"], out int projectId))
+                    errors.Add("Valid Project ID is required.");
+
+                // 🔹 Validate Unit
+                var unit = form["Unit"];
+                if (string.IsNullOrWhiteSpace(unit))
+                    errors.Add("Unit is required.");
+
+                // 🔹 Validate AnnualTarget
+                if (string.IsNullOrWhiteSpace(form["AnnualTarget"]) || !int.TryParse(form["AnnualTarget"], out int annualTarget))
+                    errors.Add("Valid Annual Target is required.");
+
+                // 🔹 Validate TargetUptoReviewMonth
+                if (string.IsNullOrWhiteSpace(form["TargetUptoReviewMonth"]) || !int.TryParse(form["TargetUptoReviewMonth"], out int targetUptoReviewMonth))
+                    errors.Add("Valid Target Upto Review Month is required.");
+
+                // 🔹 Validate AchievementDuringReviewMonth
+                if (string.IsNullOrWhiteSpace(form["AchievementDuringReviewMonth"]) || !int.TryParse(form["AchievementDuringReviewMonth"], out int achievementDuringReviewMonth))
+                    errors.Add("Valid Achievement During Review Month is required.");
+
+                // 🔹 Validate CumulativeAchievement
+                if (string.IsNullOrWhiteSpace(form["CumulativeAchievement"]) || !int.TryParse(form["CumulativeAchievement"], out int cumulativeAchievement))
+                    errors.Add("Valid Cumulative Achievement is required.");
+
+                // 🔹 Validate BenefitingDepartments
+                var benefitingDepartments = form["BenefitingDepartments"];
+                if (string.IsNullOrWhiteSpace(benefitingDepartments))
+                    errors.Add("Benefiting Departments field is required.");
+
+                // 🔹 Validate Remarks
+                var remarks = form["Remarks"];
+                if (string.IsNullOrWhiteSpace(remarks))
+                    errors.Add("Remarks field is required.");
+
+                // 🔹 If validation fails
+                if (errors.Count > 0)
+                    return CommonHelper.Error(this, string.Join(", ", errors), 500);
                 EmpReportModel emp = new EmpReportModel
                 {
                     PmId = Convert.ToInt32(req.Form.Get("PmId")),
@@ -1743,7 +1975,7 @@ namespace RemoteSensingProject.ApiServices
         }
 
         [HttpGet]
-        [Route("api/getEmpMonthlyReport")]   
+        [Route("api/getEmpMonthlyReport")]
         public IHttpActionResult getEmpMonthlyReport(int userId)
         {
             try
@@ -1754,8 +1986,8 @@ namespace RemoteSensingProject.ApiServices
                     return Ok(new
                     {
                         status = data.Any(),
-                        data = data,
-                        message = "Data Found!"
+                        message = "Data Found!",
+                        data = data
                     });
                 }
                 else

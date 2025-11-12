@@ -90,24 +90,19 @@ namespace RemoteSensingProject.Models.SubOrdinate
         {
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageSubordinateProjectProblem", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "insertProblem");
-                cmd.Parameters.AddWithValue("@Project_Id", raise.Project_Id);
-                cmd.Parameters.AddWithValue("@Title", raise.Title);
-                cmd.Parameters.AddWithValue("@Description", raise.Description);
-                cmd.Parameters.AddWithValue("@Attachment", raise.Attchment_Url);
+                NpgsqlCommand cmd = new NpgsqlCommand("call sp_managesubordinateprojectproblem(v_action=>@v_action,v_project_id=>@v_project_id,v_title=>@v_title,v_description=>@v_description,v_attachment=>@v_attachment)", con);
+                //cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@v_action", "insertProblem");
+                cmd.Parameters.AddWithValue("@v_project_id", raise.Project_Id);
+                cmd.Parameters.AddWithValue("@v_project_id", raise.Project_Id);
+                cmd.Parameters.AddWithValue("@v_title", raise.Title);
+                cmd.Parameters.AddWithValue("@v_description", raise.Description);
+                cmd.Parameters.AddWithValue("@v_attachment", raise.Attchment_Url??"");
                 con.Open();
-                int i = cmd.ExecuteNonQuery();
-                if (i > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }catch(Exception ex)
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
             }
@@ -164,14 +159,14 @@ namespace RemoteSensingProject.Models.SubOrdinate
 
         public bool AddOutSourceTask(OutSource_Task task)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("sp_manageOutSourceTask",con);
+            NpgsqlCommand cmd = new NpgsqlCommand("sp_manageOutSourceTask", con);
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@action", "insertOutsource");
             cmd.Parameters.AddWithValue("@response", task.Reason);
             cmd.Parameters.AddWithValue("@id", task.id);
             cmd.Parameters.AddWithValue("@empId", task.EmpId);
             con.Open();
-            int i=cmd.ExecuteNonQuery();
+            int i = cmd.ExecuteNonQuery();
             if (i > 0)
             {
                 return true;
@@ -188,7 +183,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
         #region DashboardCount
         public DashboardCount GetDashboardCounts(int userId)
         {
-            
+
             DashboardCount obj = null;
             try
             {
@@ -226,7 +221,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
                         return obj;
                     }
                 }
-               
+
             }
             catch (Exception ex)
             {
