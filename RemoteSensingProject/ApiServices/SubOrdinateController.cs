@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using DocumentFormat.OpenXml.Math;
 using Microsoft.AspNetCore.Hosting.Server;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
@@ -35,11 +36,11 @@ namespace RemoteSensingProject.ApiServices
         #region subordiinate
         [HttpGet]
         [Route("api/subAssignedProject")]
-        public IHttpActionResult assignedProject(int subId)
+        public IHttpActionResult assignedProject(int subId,int? page = null,int? limit = null)
         {
             try
             {
-                var data = _subOrdinate.getProjectBySubOrdinate(subId.ToString());
+                var data = _managerService.All_Project_List(userId:0,limit:limit,page:page,filterType: "SubordinateProject", id:subId);
                 return Ok(new
                 {
                     status = data.Any(),
