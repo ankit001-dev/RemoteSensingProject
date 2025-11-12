@@ -3441,6 +3441,41 @@ namespace RemoteSensingProject.Models.ProjectManager
         }
 
         #endregion
+
+
+        #region Manage Feedback
+        public bool InsertFeedback(FeedbackModel model)
+        {
+            try
+            {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_manage_feedback(@p_title, @p_feedback_type, @p_description, @p_user_id, @p_status);", con))
+                {
+                    cmd.CommandType = CommandType.Text;
+
+                    // Add parameters from the model
+                    cmd.Parameters.AddWithValue("@p_title", model.Title??"");
+                    cmd.Parameters.AddWithValue("@p_feedback_type", model.FeedbackType);
+                    cmd.Parameters.AddWithValue("@p_description", model.Description);
+                    cmd.Parameters.AddWithValue("@p_user_id", model.UserId);
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+            }
+        }
+
+        #endregion
     }
 
 }
