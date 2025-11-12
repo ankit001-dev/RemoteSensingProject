@@ -915,5 +915,33 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
+
+        public ActionResult Feedback()
+        {
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            return View();
+        }
+        [HttpPost]
+        public ActionResult InsertFeedback(FeedbackModel feed)
+        {
+            try
+            {
+                feed.UserId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+                bool res = _managerServices.InsertFeedback(feed);
+                return Json(new
+                {
+                    status = true,
+                    message = "Feedback added successfully"
+                });
+            }
+            catch
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "Server error occurred"
+                });
+            }
+        }
     }
 }

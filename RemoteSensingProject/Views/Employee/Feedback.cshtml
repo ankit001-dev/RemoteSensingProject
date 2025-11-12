@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "Feedback";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+}
+
+<h4 class="card-title fs-3 mb-3">Feedback Form</h4>
+<div class="col-md-10 grid-margin stretch-card mx-auto">
+    <div class="card">
+        <div class="card-body">
+
+            <form class="forms-sample" id="feedbackForm">
+
+                <div class="row">
+                    <!-- Feedback Title -->
+                    <div class="col-md-6 mb-3">
+                        <label for="feedbackTitle" class="form-label">Feedback Title</label>
+                        <input type="text" name="feedback.Title" required class="form-control form-control-sm" id="feedbackTitle" placeholder="Enter feedback title">
+                    </div>
+
+                    <!-- Feedback Type -->
+                    <div class="col-md-6 mb-3">
+                        <label for="feedbackType" class="form-label">Feedback Type</label>
+                        <select class="form-select form-select-sm" required name="feedback.FeedbackType" id="feedbackType">
+                            <option value="">Select Type</option>
+                            <option value="Bug">Bug / Error</option>
+                            <option value="Suggestion">Suggestion</option>
+                            <option value="FeatureRequest">Feature Request</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Feedback Description -->
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control form-control-sm" name="feedback.Description" id="description" rows="5" placeholder="Describe your feedback here..." required></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-4 d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary me-2">Submit Feedback</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#feedbackForm").on("submit", function (e) {
+            e.preventDefault();
+
+            // Create FormData object
+            var formData = new FormData(this);
+
+            $.ajax({
+                url: '/Employee/InsertFeedback',  // 🔹 Your controller or API endpoint
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function () {
+                    Swal.fire({
+                        title: 'Submitting...',
+                        text: 'Please wait while we submit your feedback.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                },
+                success: function (response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thank You!',
+                        text: 'Your feedback has been submitted successfully.',
+                        confirmButtonColor: '#3085d6'
+                    });
+
+                    // Reset the form
+                    $("#feedbackForm")[0].reset();
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Submission Failed!',
+                        text: xhr.responseText || 'Something went wrong while submitting your feedback.',
+                        confirmButtonColor: '#d33'
+                    });
+                }
+            });
+        });
+    });
+</script>
