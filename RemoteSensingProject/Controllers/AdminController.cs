@@ -320,7 +320,7 @@ namespace RemoteSensingProject.Controllers
                     var guid = Guid.NewGuid();
                     var FileExtension = Path.GetExtension(formData.Attachment.FileName);
                     var fileName = $"{guid}{FileExtension}";
-                    path = Path.Combine("/ProjectContent/Admin/ProjectDocs/", fileName);
+                    path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment/", fileName);
 
                     formData.Attachment_Url = path;
                 }
@@ -338,8 +338,12 @@ namespace RemoteSensingProject.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error",ex.Message);
-                throw ex;
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message,
+                    data = ex.ToString()
+                }, JsonRequestBehavior.AllowGet);
             }
         }
         [HttpPost]
