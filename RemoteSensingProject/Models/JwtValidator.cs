@@ -82,4 +82,44 @@ namespace RemoteSensingProject.Models
             }
         }
     }
+
+    public class RoleAuthorizeAttribute : AuthorizationFilterAttribute
+    {
+        private readonly string[] _roles;
+
+        public RoleAuthorizeAttribute(string roles)
+        {
+            _roles = roles.Split(',').Select(r => r.Trim()).ToArray();
+        }
+
+        public override void OnAuthorization(HttpActionContext actionContext)
+        {
+            var user = Thread.CurrentPrincipal as ClaimsPrincipal;
+
+            if (user == null || !user.Identity.IsAuthenticated)
+            {
+                actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized, "User not authenticated.");
+                return;
+            }
+
+            // ✅ Support both "role" and ClaimTypes.Role
+            var roles = user.Claims
+                .Where(c => c.Type == ClaimTypes.Role || c.Type == "role")
+                .Select(c => c.Value)
+                .ToList();
+
+            System.Diagnostics.Debug.WriteLine("User roles: " + string.Join(", ", roles));
+
+            // Check if user has at least one of the required roles
+            if (!_roles.Any(required => roles.Contains(required, StringComparer.OrdinalIgnoreCase)))
+            {
+                actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, "You do not have permission to perform this action.");
+                return;
+            }
+
+            base.OnAuthorization(actionContext);
+        }
+    }
+
+
 }

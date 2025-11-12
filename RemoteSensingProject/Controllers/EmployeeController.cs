@@ -104,6 +104,9 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult InsertProject(createProjectModel pm)
         {
+            string filePage = Server.MapPath("~/ProjectContent/ProjectManager/ProjectDocs/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             var managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
@@ -116,6 +119,7 @@ namespace RemoteSensingProject.Controllers
             {
                 return RedirectToAction("login","login");
             }
+
             if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
             {
                 pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
@@ -183,7 +187,7 @@ namespace RemoteSensingProject.Controllers
             userObj = _managerServices.getManagerDetails(managerName);
 
             List<ProjectList> _list = new List<ProjectList>();
-            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AdminProject");
+            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AssignedProject");
             return View();
         }
         public ActionResult GetAllProjectByManager()
@@ -356,6 +360,9 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult AddMeeting(AddMeeting_Model formData)
         {
+            string filePage = Server.MapPath("~/ProjectContent/ProjectManager/Meeting_Attachment/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             string path = null;
             if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
             {
@@ -384,7 +391,7 @@ namespace RemoteSensingProject.Controllers
                 var guid = Guid.NewGuid();
                 var FileExtension = Path.GetExtension(formData.Attachment.FileName);
                 var fileName = $"{guid}{FileExtension}";
-                path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
+                path = Path.Combine("/ProjectContent/ProjectManager/Meeting_Attachment", fileName);
 
                 formData.Attachment_Url = path;
             }
@@ -494,7 +501,7 @@ namespace RemoteSensingProject.Controllers
             var managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
-            ViewBag.ProjectProblemList = _adminServices.getProblemList(null, null, null, Convert.ToInt32(userObj.userId));
+            ViewBag.ProjectProblemList = _managerServices.getAllSubOrdinateProblem(userObj.userId);
               
             return View();
         }
