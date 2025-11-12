@@ -411,7 +411,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Raise_Problem> getSubOrdinateProblemforAdmin()
+        public List<Raise_Problem> getSubOrdinateProblemforAdmin(int? limit=null,int?page=null)
         {
             try
             {
@@ -423,12 +423,15 @@ namespace RemoteSensingProject.Models.ProjectManager
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "getAllSubOrdinateProblem");
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (var sdr = fetchCmd.ExecuteReader())
                     {
                         if (sdr.HasRows)
                         {
+                            bool firstRow = true;
                             while (sdr.Read())
                             {
                                 obj = new Raise_Problem();
@@ -441,6 +444,18 @@ namespace RemoteSensingProject.Models.ProjectManager
                                 obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
                                 obj.projectCode = sdr["projectCode"] != DBNull.Value ? sdr["projectCode"].ToString() : "N/A";
                                 problemList.Add(obj);
+
+                                if (firstRow)
+                                {
+                                    obj.Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        PageNumber = page ?? 0,
+                                        TotalPages = Convert.ToInt32(sdr["totalpages"] != DBNull.Value ? sdr["totalpages"] : 0),
+                                        TotalRecords = Convert.ToInt32(sdr["totalrecords"] != DBNull.Value ? sdr["totalrecords"] : 0),
+                                        PageSize = limit ?? 0
+                                    };
+                                    firstRow = false; // Optional: ensure pagination is only assigned once
+                                }
                             }
                         }
                     }

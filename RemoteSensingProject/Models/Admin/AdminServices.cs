@@ -1167,7 +1167,7 @@ namespace RemoteSensingProject.Models.Admin
         }
 
 
-        public List<ProjectExpenditure> ViewProjectExpenditure()
+        public List<ProjectExpenditure> ViewProjectExpenditure(int?limit=null,int?page=null)
         {
             try
             {
@@ -1180,6 +1180,8 @@ namespace RemoteSensingProject.Models.Admin
                     cmd.Parameters.AddWithValue("v_action", "viewProjectExpenditure");
                     cmd.Parameters.AddWithValue("v_projectmanager", DBNull.Value);
                     cmd.Parameters.AddWithValue("v_sid", 0);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
 
                     string cursorName = (string)cmd.ExecuteScalar();
 
@@ -1189,6 +1191,7 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         if (rd.HasRows)
                         {
+                            bool firstRow = true;
                             while (rd.Read())
                             {
                                 list.Add(new ProjectExpenditure
@@ -1200,6 +1203,17 @@ namespace RemoteSensingProject.Models.Admin
                                     expenditure = rd["ExpendedAmt"] != DBNull.Value ? Convert.ToDecimal(rd["ExpendedAmt"]) : 0,
                                     remaining = rd["remainingAmt"] != DBNull.Value ? Convert.ToDecimal(rd["remainingAmt"]) : 0
                                 });
+                                if (firstRow)
+                                {
+                                    list[0].Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        PageNumber = page ?? 0,
+                                        TotalPages = Convert.ToInt32(rd["totalpages"] != DBNull.Value ? rd["totalpages"] : 0),
+                                        TotalRecords = Convert.ToInt32(rd["totalrecords"] != DBNull.Value ? rd["totalrecords"] : 0),
+                                        PageSize = limit ?? 0
+                                    };
+                                    firstRow = false; // Optional: ensure pagination is only assigned once
+                                }
                             }
                         }
                         return list;
@@ -1544,7 +1558,7 @@ namespace RemoteSensingProject.Models.Admin
                             obj.MeetingTitle = sdr["MeetingTitle"].ToString();
                             obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
                             obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
-                            obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
+                            obj.MeetingDate = sdr["meetingTime"] != null?Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy"):null;
                             obj.summary = sdr["meetSummary"].ToString();
                             obj.Attachment_Url = sdr["reason"] != null ? sdr["reason"].ToString() : "";
                             _list.Add(obj);
@@ -2130,7 +2144,7 @@ namespace RemoteSensingProject.Models.Admin
         //#endregion
 
         #region /*tour*/
-        public List<tourProposalAll> getAllTourList(int?page, int?limit)
+        public List<tourProposalAll> getAllTourList(int?page=null, int?limit=null,string type = null,int?id=null)
         {
             try
             {
@@ -2142,8 +2156,8 @@ namespace RemoteSensingProject.Models.Admin
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAlltour");
                     cmd.Parameters.AddWithValue("v_projectmanager", 0);
-                    cmd.Parameters.AddWithValue("v_id", 0);
-                    cmd.Parameters.AddWithValue("v_type", "AllData");
+                    cmd.Parameters.AddWithValue("v_id", id.HasValue?id: 0);
+                    cmd.Parameters.AddWithValue("v_type",string.IsNullOrEmpty(type)? "AllData":type);
                     cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("v_page", page.HasValue ? (object)page.Value : DBNull.Value);
                     // Execute the function — it returns the cursor name

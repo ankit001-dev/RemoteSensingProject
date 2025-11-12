@@ -327,6 +327,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class ProjectExpenditure
         {
+            public PaginationInfo Pagination { get; set; }
             public string projectmanager { get; set; }
             public int id { get; set; }
             public string ProjectName  { get; set; }
