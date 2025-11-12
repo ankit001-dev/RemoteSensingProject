@@ -139,8 +139,6 @@ namespace RemoteSensingProject.ApiServices
                 model.pm.ProjectManager = form["ProjectManager"];
                 model.pm.ProjectDescription = form["ProjectDescription"];
                 model.pm.ProjectType = form["ProjectType"];
-                if (string.IsNullOrEmpty(form["letterNo"].ToString()))
-                    return CommonHelper.Error(this, "Letter no is required", 500);
                 model.pm.letterNo = form["letterNo"] ?? "0";
                 model.pm.createdBy = "admin";
 

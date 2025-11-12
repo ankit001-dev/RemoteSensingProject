@@ -879,7 +879,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Project_Budget> ProjectBudgetList(int Id, int? page, int? limit)
+        public List<Project_Budget> ProjectBudgetList(int Id, int? page=null, int? limit=null)
         {
 
             List<Project_Budget> list = new List<Project_Budget>();
@@ -904,7 +904,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     Id = Convert.ToInt32(rd["id"]),
                                     Project_Id = Convert.ToInt32(rd["project_id"]),
                                     ProjectHeads = rd["heads"].ToString(),
-                                    ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0)
+                                    ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0),
+                                    TotalAskAmount = rd["totalAskAmount"].ToString(),
+                                    ApproveAmount = rd["approveAmount"].ToString(),
                                 });
                             }
                         }
