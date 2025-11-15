@@ -84,6 +84,9 @@ namespace RemoteSensingProject.Controllers
             string path = null;
             if(formData.Attachment !=null && formData.Attachment.ContentLength > 0)
             {
+                string filePage = Server.MapPath("~/ProjectContent/SubOrdinate/ProblemDocs");
+                if (!Directory.Exists(filePage))
+                    Directory.CreateDirectory(filePage);
                 var guid = Guid.NewGuid();
                 var FileExtension = Path.GetExtension(formData.Attachment.FileName);
                 var fileName = $"{guid}{FileExtension}";
