@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 using static RemoteSensingProject.Models.Admin.main;
+using static RemoteSensingProject.Models.ApiCommon;
 
 
 namespace RemoteSensingProject.Models.Admin
@@ -360,7 +361,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public List<Employee_model> SelectEmployeeRecord(int? page = null, int? limit = null)
+        public List<Employee_model> SelectEmployeeRecord(int? page = null, int? limit = null,string searchTerm=null,int? devision = null)
         {
             List<Employee_model> empModel = new List<Employee_model>();
 
@@ -368,13 +369,15 @@ namespace RemoteSensingProject.Models.Admin
             {
                 con.Open();
 
-                using (var cmd = new NpgsqlCommand("SELECT * FROM fn_get_employees(@v_action,@v_id,@v_limit,@v_page);", con))
+                using (var cmd = new NpgsqlCommand("SELECT * FROM fn_get_employees(@v_action,@v_id,@v_limit,@v_page,@v_searchTerm,@v_division);", con))
                 {
                     cmd.CommandType = CommandType.Text; // Use text since function returns rows
                     cmd.Parameters.AddWithValue("@v_action", "SelectEmployees");
                     cmd.Parameters.AddWithValue("@v_id", 0);
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_searchTerm", string.IsNullOrEmpty(searchTerm) ? (object)DBNull.Value : searchTerm);
+                    cmd.Parameters.AddWithValue("@v_division", devision.HasValue ? (object)devision.Value : DBNull.Value);
 
                     using (var record = cmd.ExecuteReader())
                     {
@@ -670,18 +673,20 @@ namespace RemoteSensingProject.Models.Admin
         }
 
 
-        public List<Project_model> Project_List(int? page = null, int? limit = null)
+        public List<Project_model> Project_List(int? page = null, int? limit = null,string filterType = null,string searchTerm = null,string statusFilter = null,int?projectManager = null)
         {
             try
             {
                 List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_filterType,@v_limit,@v_page)", con);
+                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_filterType,@v_limit,@v_page,@v_searchTerm,@v_statusFilter)", con);
                 cmd.Parameters.AddWithValue("@action", "GetAllProject");
-                cmd.Parameters.AddWithValue("@v_projectManager", DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_filterType", DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_id", DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_projectManager", projectManager.HasValue?(object)projectManager :DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_filterType", string.IsNullOrEmpty(filterType) ? DBNull.Value : (object)filterType);
                 cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_searchTerm", string.IsNullOrEmpty(searchTerm) ? DBNull.Value : (object)searchTerm);
+                cmd.Parameters.AddWithValue("@v_statusFilter", string.IsNullOrEmpty(statusFilter) ? DBNull.Value : (object)statusFilter);
                 con.Open();
                 NpgsqlDataReader rd = cmd.ExecuteReader();
                 if (rd.HasRows)
@@ -2148,7 +2153,7 @@ namespace RemoteSensingProject.Models.Admin
         //#endregion
 
         #region /*tour*/
-        public List<tourProposalAll> getAllTourList(int? page = null, int? limit = null, string type = null, int? id = null)
+        public List<tourProposalAll> getAllTourList(int? page = null, int? limit = null, string type = null, int? id = null, int? managerFilter = null, int? projectFilter = null)
         {
             try
             {
@@ -2159,8 +2164,8 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAlltour");
-                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
-                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? id : 0);
+                    cmd.Parameters.AddWithValue("v_projectmanager", managerFilter.HasValue? managerFilter : 0);
+                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? id : projectFilter.HasValue?projectFilter:0);
                     cmd.Parameters.AddWithValue("v_type", string.IsNullOrEmpty(type) ? "AllData" : type);
                     cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("v_page", page.HasValue ? (object)page.Value : DBNull.Value);
@@ -2335,7 +2340,7 @@ namespace RemoteSensingProject.Models.Admin
         #endregion
 
         #region /* Hiring*/
-        public List<HiringVehicle1> HiringList(int? page = null, int? limit = null)
+        public List<HiringVehicle1> HiringList(int? page = null, int? limit = null, int? managerFilter = null, int? projectFilter = null)
         {
             try
             {
@@ -2346,8 +2351,8 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAllHiring");
-                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
-                    cmd.Parameters.AddWithValue("v_id", 0);
+                    cmd.Parameters.AddWithValue("v_projectmanager", managerFilter.HasValue?managerFilter:0);
+                    cmd.Parameters.AddWithValue("v_id", projectFilter.HasValue?projectFilter:0);
                     cmd.Parameters.AddWithValue("v_type", "AllData");
                     cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("v_page", page.HasValue ? (object)page.Value : DBNull.Value);

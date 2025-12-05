@@ -76,20 +76,20 @@
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="searchByProjectManager">
-                    <option selected value="">Serch by Project Manager</option>
+                    <option selected value="">Filter by Project Manager</option>
                     @foreach (var item in ViewBag.ManagerList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
                     {
-                        <option value="@item.EmployeeName">@item.EmployeeName</option>
+                        <option value="@item.Id">@item.EmployeeName</option>
                     }
                 </select>
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="filterProjectStatus">
                     <option selected value="">Project Status</option>
-                    <option>Work in Progress</option>
-                    <option>Not Started</option>
-                    <option>Delay</option>
-                    <option>Completed</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="delay">Delay</option>
+                    <option value="Complete">Completed</option>
                 </select>
             </div>
         </div>
@@ -158,11 +158,11 @@
                                         }
                                         else if (item.StartDate < DateTime.Now)
                                         {
-                                            <span class="badge bg-warning">Work in Progress</span>
+                                    <span class="badge bg-warning">Ongoing</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-primary">Not Started</span>
+                                            <span class="badge bg-primary">Upcoming</span>
                                         }
                                     </td>
 
@@ -511,18 +511,18 @@
 
 
 
-        $("#searchProjectBy").on("keyup", function () {
-            var table = $("#AllProjectList").DataTable();
-            table.column(2).search(this.value).draw()
-        });
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#AllProjectList").DataTable();
-            table.column(10).search(this.value).draw()
-        })
-        $("#searchByProjectManager").on("change", function () {
-            var table = $("#AllProjectList").DataTable();
-            table.column(3).search(this.value).draw()
-        })
+        //$("#searchProjectBy").on("keyup", function () {
+        //    var table = $("#AllProjectList").DataTable();
+        //    table.column(2).search(this.value).draw()
+        //});
+        //$("#filterProjectStatus").on("change", function () {
+        //    var table = $("#AllProjectList").DataTable();
+        //    table.column(10).search(this.value).draw()
+        //})
+        //$("#searchByProjectManager").on("change", function () {
+        //    var table = $("#AllProjectList").DataTable();
+        //    table.column(3).search(this.value).draw()
+        //})
 
         $('#AllProjectList').DataTable({
             deferRender: false,
@@ -793,6 +793,73 @@
 
     })
 
+    // Search by text
+    $('#searchProjectBy').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        const division = $("#filterProjectStatus").val();
+        if (division && division !== "null") url.searchParams.set("statusFilter", division);
+        else url.searchParams.delete("statusFilter");
+
+        const manager = $("#searchByProjectManager").val();
+        if (manager && manager !== "null") url.searchParams.set("projectManagerFilter", manager);
+        else url.searchParams.delete("projectManagerFilter");
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Filter by status
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        const manager = $("#searchByProjectManager").val();
+        if (manager) url.searchParams.set("projectManagerFilter", manager);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Filter by Project Manager
+    $("#searchByProjectManager").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("projectManagerFilter", $(this).val());
+        else url.searchParams.delete("projectManagerFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        const division = $("#filterProjectStatus").val();
+        if (division) url.searchParams.set("statusFilter", division);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Set values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
+        const manager = urlParams.get('projectManagerFilter');
+
+        if (search) $('#searchProjectBy').val(search);
+        if (division) $('#filterProjectStatus').val(division);
+        if (manager) $('#searchByProjectManager').val(manager);
+    });
 
 </script>
 

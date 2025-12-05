@@ -1,13 +1,15 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Newtonsoft.Json;
+using RemoteSensingProject.Models.Accounts;
+using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
-using RemoteSensingProject.Models.Admin;
 using static RemoteSensingProject.Models.Admin.main;
-using RemoteSensingProject.Models.ProjectManager;
-using RemoteSensingProject.Models.Accounts;
-using Newtonsoft.Json;
+using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -109,21 +111,14 @@ namespace RemoteSensingProject.Controllers
 
         #endregion
 
-        public ActionResult Employee_Registration(int? division)
+        public ActionResult Employee_Registration(int? division = null, string searchTerm=null)
         {
 
             ViewBag.division = _adminServices.ListDivison();
             ViewBag.designation = _adminServices.ListDesgination();
             List<Employee_model> empList = new List<Employee_model>();
-            if (division != null && division != 0)
-            {
-                empList = _adminServices.SelectEmployeeRecord().Where(e => e.Division == division).ToList<Employee_model>();
-
-            }
-            else
-            {
-                empList = _adminServices.SelectEmployeeRecord();
-            }
+            
+            empList = _adminServices.SelectEmployeeRecord(searchTerm: searchTerm, devision: division);
             ViewData["EmployeeList"] = empList;
             return View();
         }
@@ -247,40 +242,18 @@ namespace RemoteSensingProject.Controllers
                 status = res
             }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Project_List()
+        public ActionResult Project_List(string searchTerm = null,string statusFilter=null)
         {
-            ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.createdBy == "projectManager").ToList();
+            ViewBag.ProjectList = _adminServices.Project_List(filterType:"ManagerProject",searchTerm:searchTerm,statusFilter:statusFilter);
             return View();
         }
         #endregion
 
-        public ActionResult All_Projects(string req)
+        public ActionResult All_Projects(string searchTerm = null, string statusFilter = null,int? projectManagerFilter = null)
         {
             ViewBag.ManagerList = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            if (req == "completed")
-            {
-                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.CompletionDate < DateTime.Now && d.StartDate < DateTime.Now && d.completestatus == true).ToList();
-            }
-            else if (req == "delay")
-            {
-                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.completestatus == false && d.CompletionDate <= DateTime.Now).ToList();
-            }
-            else if (req == "ongoing")
-            {
-                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.StartDate < DateTime.Now && d.CompletionDate > DateTime.Now && d.completestatus == false).ToList();
-            }
-            else if (req == "Internal")
-            {
-                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.ProjectType == "Internal").ToList();
-            }
-            else if (req == "External")
-            {
-                ViewBag.ProjectList = _adminServices.Project_List().Where(d => d.ProjectType == "External").ToList();
-            }
-            else
-            {
-                ViewBag.ProjectList = _adminServices.Project_List();
-            }
+            
+                ViewBag.ProjectList = _adminServices.Project_List(searchTerm:searchTerm,statusFilter:statusFilter,projectManager:projectManagerFilter);
             return View();
         }
         public ActionResult Project_Request()
@@ -581,9 +554,9 @@ namespace RemoteSensingProject.Controllers
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ReimbursementRequest()
+        public ActionResult ReimbursementRequest(int? projectManagerFilter = null,string typeFilter = null)
         {
-            ViewData["ReimBurseData"] = _managerServices.GetReimbursements(type: "selectAll");
+            ViewData["ReimBurseData"] = _managerServices.GetReimbursements(managerId:projectManagerFilter,typeFilter:typeFilter,type: "selectAll");
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
@@ -608,9 +581,9 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
-        public ActionResult TravelRequest()
+        public ActionResult TravelRequest(int? managerFilter = null, int? projectFilter = null)
         {
-            var res = _adminServices.getAllTourList(null, null);
+            var res = _adminServices.getAllTourList(null, null, managerFilter: managerFilter, projectFilter: projectFilter);
             ViewData["allTourList"] = res;
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
@@ -639,11 +612,9 @@ namespace RemoteSensingProject.Controllers
             }
         }
 
-        public ActionResult HiringRequest()
+        public ActionResult HiringRequest(int? managerFilter = null,int? projectFilter = null)
         {
-            ViewData["hiringList"] = _adminServices.HiringList(null, null);
-            //var res1 = _managerServices.getProjectList(userid);
-            //ViewData["projectList"] = res1;
+            ViewData["hiringList"] = _adminServices.HiringList(null, null,managerFilter,projectFilter);
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();

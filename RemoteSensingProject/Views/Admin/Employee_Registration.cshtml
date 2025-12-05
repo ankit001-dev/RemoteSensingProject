@@ -18,12 +18,6 @@
     }
 </style>
 
-@*<div id="loader" class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-light bg-opacity-75" style="z-index: 9999;">
-    <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-</div>*@
-
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
@@ -484,10 +478,56 @@
         })
     })
     $("#filterDivision").on("change", function () {
-        location.href = "/admin/Employee_Registration?division="+ $(this).val();
-    })
-    $('#searchByEmployeeName').on('keyup', function () {
-        let table = $("#dataTableExample").DataTable();
-        table.columns(2).search(this.value).draw();
+        location.href = "/admin/Employee_Registration?division=" + $(this).val();
     });
+
+    //$('#searchByEmployeeName').on('keyup', function () {
+    //    let table = $("#dataTableExample").DataTable();
+    //    table.columns(2).search(this.value).draw();
+    //});
+    $('#searchByEmployeeName').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        const division = $("#filterDivision").val();
+        if (division && division !== "null") url.searchParams.set("division", division);
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader(); // 👈 Add here
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    $("#filterDivision").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("division", $(this).val());
+        else url.searchParams.delete("division");
+
+        const searchValue = $('#searchByEmployeeName').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        showLoader(); // 👈
+        window.location.href = url.toString();
+    });
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('division');
+
+        if (search) {
+            $('#searchByEmployeeName').val(search);
+        }
+
+        if (division) {
+            $('#filterDivision').val(division);
+        }
+    });
+    
 </script>

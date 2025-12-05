@@ -1615,14 +1615,14 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Reimbursement> GetReimbursements(int? page = null, int? limit = null, int? id = null, int? managerId = null, string type = null)
+        public List<Reimbursement> GetReimbursements(int? page = null, int? limit = null, int? id = null, int? managerId = null, string type = null,string typeFilter = null)
         {
             try
             {
                 con.Open();
                 List<Reimbursement> getlist = new List<Reimbursement>();
                 using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_manageReimbursement_cursor", con))
+                using (var cmd = new NpgsqlCommand("fn_managereimbursement_cursor", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAll");
@@ -1638,6 +1638,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     }
                     cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? limit : 0);
                     cmd.Parameters.AddWithValue("v_page", page.HasValue ? page : 0);
+                    cmd.Parameters.AddWithValue("v_typefilter", string.IsNullOrEmpty(typeFilter) ? DBNull.Value : (object)typeFilter);
 
                     string cursorName = (string)cmd.ExecuteScalar();
 

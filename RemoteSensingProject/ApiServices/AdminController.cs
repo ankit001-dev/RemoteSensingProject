@@ -18,6 +18,7 @@ using System.Net;
 using System.Web;
 using System.Web.Http;
 using static RemoteSensingProject.Models.Admin.main;
+using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.ApiServices
 {
@@ -171,11 +172,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/allEmployeeList")]
-        public IHttpActionResult All_EmpList(int? page, int? limit)
+        public IHttpActionResult All_EmpList(int? page=null, int? limit = null, string searchTerm = null,int?devision = null)
         {
             try
             {
-                var data = _adminServices.SelectEmployeeRecord(page, limit);
+                var data = _adminServices.SelectEmployeeRecord(page, limit,searchTerm,devision);
                 var selectProperties = new[] { "Id", "EmployeeCode", "EmployeeName", "DevisionName", "Email", "MobileNo", "EmployeeRole", "Division", "DesignationName", "Status", "ActiveStatus", "CreationDate", "Image_url" };
                 var filtered = CommonHelper.SelectProperties(data, selectProperties);
 
@@ -576,248 +577,6 @@ namespace RemoteSensingProject.ApiServices
                 return CommonHelper.Error(this, ex.Message);
             }
         }
-        //[HttpPost]
-        //[Route("api/adminCreateProject")]
-        //public IHttpActionResult CreateProject()
-        //{
-        //    List<string> savedFiles = new List<string>();
-        //    try
-        //    {
-        //        var request = HttpContext.Current.Request;
-        //        var form = request.Form;
-        //        var files = request.Files;
-
-        //        // ✅ Initialize main model
-        //        var model = new createProjectModel();
-        //        model.pm = new Project_model();
-
-        //        model.pm.Id = Convert.ToInt32(form["Id"] ?? "0");
-        //        model.pm.ProjectTitle = form["ProjectTitle"];
-        //        model.pm.ProjectManager = form["ProjectManager"];
-        //        model.pm.ProjectDescription = form["ProjectDescription"];
-        //        model.pm.ProjectType = form["ProjectType"];
-        //        if (!Boolean.TryParse(form["letterNo"], out var letterno))
-        //            return CommonHelper.Error(this, "Letter no is required", 500);
-        //        model.pm.letterNo = form["letterNo"] ?? "0";
-        //        model.pm.createdBy = "admin";
-
-        //        // Project Stages
-        //        if (!Boolean.TryParse(form["projectStage"], out var projectStages))
-        //            return CommonHelper.Error(this, "Project Stages is required", 500);
-        //        model.pm.ProjectStage = projectStages;
-
-        //        // ✅ Dates
-        //        if (!DateTime.TryParse(form["AssignDate"], out var assignDate))
-        //            return CommonHelper.Error(this, "Assign Date is required.", 500);
-        //        model.pm.AssignDate = assignDate;
-
-        //        if (!DateTime.TryParse(form["StartDate"], out var startDate))
-        //            return CommonHelper.Error(this, "Start Date is required.", 500);
-        //        model.pm.StartDate = startDate;
-
-        //        if (!DateTime.TryParse(form["CompletionDate"], out var compDate))
-        //            return CommonHelper.Error(this, "Completion Date is required.", 500);
-        //        model.pm.CompletionDate = compDate;
-
-        //        // ✅ Budget
-        //        if (!decimal.TryParse(form["ProjectBudget"], out var budget))
-        //            return CommonHelper.Error(this, "Invalid Project Budget", 500);
-        //        model.pm.ProjectBudget = budget;
-
-        //        // ✅ External Project Extra Fields
-        //        if (model.pm.ProjectType?.ToLower() == "external")
-        //        {
-        //            model.pm.ContactPerson = form["ContactPerson"];
-        //            model.pm.ProjectDepartment = form["ProjectDepartment"];
-        //            model.pm.Address = form["Address"];
-        //        }
-
-        //        // ✅ Subordinates (ID list)
-        //        if (!string.IsNullOrEmpty(form["SubOrdinate"]))
-        //        {
-        //            model.pm.SubOrdinate =
-        //                form["SubOrdinate"]
-        //                .Split(',')
-        //                .Select(int.Parse)
-        //                .ToArray();
-        //        }
-
-        //        // ✅ Parse budgets JSON
-        //        if (!string.IsNullOrEmpty(form["budgets"]))
-        //        {
-        //            model.budgets = JsonConvert.DeserializeObject<List<Project_Budget>>(form["budgets"]);
-        //        }
-
-        //        // ✅ Parse stages JSON
-        //        if (!string.IsNullOrEmpty(form["stages"]) && model.pm.ProjectStage)
-        //        {
-        //            model.stages = JsonConvert.DeserializeObject<List<Project_Statge>>(form["stages"]);
-        //        }
-
-        //        // ✅ Upload Project Document (single)
-        //        string filePage = HttpContext.Current.Server.MapPath("~/ProjectContent/Admin/ProjectDocs/");
-        //        if (!Directory.Exists(filePage))
-        //            Directory.CreateDirectory(filePage);
-        //        var projectFile = files["projectDocument"];
-        //        if (projectFile != null && projectFile.ContentLength > 0)
-        //        {
-        //            string fileName = DateTime.Now.ToString("ddMMyyyy") + "_" + Guid.NewGuid()
-        //                              + Path.GetExtension(projectFile.FileName);
-        //            string filePath = "/ProjectContent/Admin/ProjectDocs/" + fileName;
-
-        //            model.pm.projectDocumentUrl = filePath;
-        //            projectFile.SaveAs(HttpContext.Current.Server.MapPath(filePath));
-        //            savedFiles.Add(filePath);
-        //        }
-
-        //        // ✅ Upload Stage Documents (multiple)
-        //        if (model.stages != null && model.pm.ProjectStage)
-        //        {
-        //            for (int i = 0; i < model.stages.Count; i++)
-        //            {
-        //                var stageFile = files["StageDocument_" + i];
-        //                if (stageFile != null && stageFile.ContentLength > 0)
-        //                {
-        //                    string fileName = "STAGE_" + i + "_" + DateTime.Now.ToString("ddMMyyyy")
-        //                                      + "_" + Guid.NewGuid() + Path.GetExtension(stageFile.FileName);
-
-        //                    string filePath = "/ProjectContent/Admin/ProjectDocs/" + fileName;
-
-        //                    // ✅ Save file
-        //                    stageFile.SaveAs(HttpContext.Current.Server.MapPath(filePath));
-
-        //                    // ✅ Store URL in model
-        //                    model.stages[i].StageDocument_Url = filePath;
-        //                    savedFiles.Add(filePath);
-        //                }
-        //            }
-        //        }
-
-        //        // ✅ Save project in DB
-        //        bool result = _adminServices.addProject(model);
-
-        //        if (result)
-        //        {
-        //            return CommonHelper.Success(this, "Project created successfully!");
-        //        }
-        //        else
-        //        {
-        //            return CommonHelper.Error(this, "Something went wrong.", 500);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        foreach (var f in savedFiles)
-        //        {
-        //            if (File.Exists(f))
-        //                File.Delete(f);
-        //        }
-        //        return CommonHelper.Error(this, ex.Message, 500);
-
-        //    }
-        //}
-
-
-        //[HttpPost]
-        //[Route("api/adminCreateProject")]
-        //public IHttpActionResult CreateProject([FromBody]createProjectModel pm)
-        //{
-        //    try
-        //    {
-        //        var request = HttpContext.Current.Request;
-        //        var formData = new Project_model
-        //        {
-        //            Id = Convert.ToInt32(request.Form.Get("Id")),
-        //            ProjectTitle = request.Form.Get("ProjectTitle"),
-        //            AssignDate = Convert.ToDateTime(request.Form.Get("AssignDate")),
-        //            StartDate = Convert.ToDateTime(request.Form.Get("StartDate")),
-        //            CompletionDate = Convert.ToDateTime(request.Form.Get("CompletionDate")),
-        //            ProjectManager = request.Form.Get("ProjectManager"),
-        //            ProjectBudget = Convert.ToDecimal(request.Form.Get("ProjectBudget")),
-        //            ProjectDescription = request.Form.Get("ProjectDescription"),
-        //            projectDocumentUrl = request.Form.Get("projectDocumentUrl"),
-        //            ProjectType = request.Form.Get("ProjectType"),
-        //            ProjectStage = Convert.ToBoolean(request.Form.Get("ProjectStage")),
-        //            createdBy = request.Form.Get("createdBy")
-        //        };
-        //        if (request.Form["SubOrdinate"] != null)
-        //        {
-        //            formData.SubOrdinate = request.Form["SubOrdinate"].Split(',').Select(value => int.Parse(value.ToString())).ToArray();
-        //        }
-        //        if (formData.ProjectType.Equals("External"))
-        //        {
-        //            formData.ContactPerson = request.Form.Get("ContactPerson");
-        //            formData.ProjectDepartment = request.Form.Get("ProjectDepartment");
-        //            formData.Address = request.Form.Get("Address");
-        //        }
-        //        var file = request.Files["projectDocument"];
-        //        if (file != null && file.FileName != "")
-        //        {
-        //            formData.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-        //            formData.projectDocumentUrl = Path.Combine("/ProjectContent/Admin/ProjectDocs/", formData.projectDocumentUrl);
-        //        }
-        //        // Validations
-        //        List<string> validationErrors = new List<string>();
-        //        if (string.IsNullOrWhiteSpace(formData.ProjectTitle))
-        //            validationErrors.Add("Project Title is required.");
-
-        //        if (formData.AssignDate == null)
-        //            validationErrors.Add("Assign Date is required.");
-
-        //        if (formData.StartDate == null)
-        //            validationErrors.Add("Start Date is required.");
-
-        //        if (formData.CompletionDate == null)
-        //            validationErrors.Add("Completion Date is required.");
-
-        //        if (string.IsNullOrWhiteSpace(formData.ProjectManager))
-        //            validationErrors.Add("Project Manager is required.");
-
-        //        if (string.IsNullOrWhiteSpace(formData.ProjectBudget.ToString()))
-        //            validationErrors.Add("Project Budget is required.");
-
-
-        //        if (!decimal.TryParse(request.Form.Get("ProjectBudget"), out decimal projectBudget))
-        //            validationErrors.Add("Invalid Project Budget format.");
-
-        //        if (validationErrors.Any())
-        //        {
-        //            return BadRequest(new
-        //            {
-        //                status = false,
-        //                StatusCode = 500,
-        //                message = string.Join("\n", validationErrors)
-        //            });
-        //        }
-        //        else
-        //        {
-        //            bool res = _adminServices.createApiProject(formData);
-        //            if (res)
-        //            {
-        //                if (file != null && file.FileName != "")
-        //                {
-        //                    file.SaveAs(HttpContext.Current.Server.MapPath(formData.projectDocumentUrl));
-        //                }
-        //            }
-        //            return Ok(new
-        //            {
-        //                status = res,
-        //                StatusCode = res ? 200 : 500,
-        //                message = res ? "Project created successfully !" : "Some issue occured ! Please try after sometime."
-        //            });
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            status = false,
-        //            StatusCode = 500,
-        //            message = ex.Message,
-        //            data = ex
-        //        });
-        //    }
-        //}
 
         [HttpPost]
         [Route("api/adminAddBudgets")]
@@ -1061,203 +820,7 @@ namespace RemoteSensingProject.ApiServices
         }
         #endregion
 
-
         #region minute of meeting
-        //[HttpPost]
-        //[Route("api/adminCreateMeeting")]
-        //public IHttpActionResult CreateMeeting()
-        //{
-        //    try
-        //    {
-        //        var request = HttpContext.Current.Request;
-        //        List<string> validationErrors = new List<string>();
-        //        if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingType")))
-        //            validationErrors.Add("Meeting Type is required.");
-
-
-        //        if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTitle")))
-        //            validationErrors.Add("Meeting title is required.");
-
-        //        if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTime")))
-        //            validationErrors.Add("Meeting time is required.");
-
-        //        if (string.IsNullOrWhiteSpace(request.Form.Get("meetingMemberList")))
-        //            validationErrors.Add("Meeting member is required.");
-
-        //        if (string.IsNullOrWhiteSpace(request.Form.Get("keyPointList")))
-        //            validationErrors.Add("Key points is required.");
-
-        //        var formData = new AddMeeting_Model
-        //        {
-        //            // For Id, use TryParse to avoid invalid format error
-        //            Id = int.TryParse(request.Form.Get("Id"), out var id) ? id : 0,
-
-        //            // For MeetingType, MeetingLink, MeetingTitle, MeetingAddress, use null coalescing operator for string defaults
-        //            MeetingType = request.Form.Get("MeetingType") ?? string.Empty,
-        //            MeetingLink = request.Form.Get("MeetingLink") ?? string.Empty,
-        //            MeetingTitle = request.Form.Get("MeetingTitle") ?? string.Empty,
-        //            MeetingAddress = request.Form.Get("MeetingAddress") ?? string.Empty,
-
-        //            // For MeetingTime, use DateTime.TryParse to avoid invalid format error
-        //            MeetingTime = DateTime.TryParse(request.Form.Get("MeetingTime"), out var meetingTime) ? meetingTime : DateTime.MinValue,
-
-        //            // For Attachment_Url, use null coalescing operator to default to empty string if null
-        //            Attachment_Url = request.Form.Get("Attachment_Url") ?? string.Empty,
-
-        //            // For CreaterId, use TryParse to handle invalid formats
-        //            CreaterId = int.TryParse(request.Form.Get("CreaterId"), out var createrId) ? createrId : 0
-        //        };
-        //        string filePage = HttpContext.Current.Server.MapPath("~/ProjectContent/Admin/Meeting_Attachment/");
-        //        if (!Directory.Exists(filePage))
-        //            Directory.CreateDirectory(filePage);
-        //        var file = request.Files["Attachment"];
-        //        if (file != null && file.FileName != "")
-        //        {
-        //            formData.Attachment_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-        //            formData.Attachment_Url = Path.Combine("/ProjectContent/Admin/Meeting_Attachment/", formData.Attachment_Url);
-        //        }
-        //        else if (string.IsNullOrWhiteSpace(request.Form.Get("Attachment_Url")))
-        //            validationErrors.Add("Meeting attachment is required.");
-
-        //        if (request.Form["meetingMemberList"] != null)
-        //        {
-        //            formData.meetingMemberList = request.Form["meetingMemberList"] != null ? request.Form["meetingMemberList"].Split(',').Select(value => int.Parse(value.ToString())).ToList() : new List<int>();
-        //        }
-
-        //        if (request.Form["keyPointList"] != null)
-        //        {
-        //            formData.keyPointList = request.Form["keyPointList"].Split(',').ToList();
-        //        }
-
-        //        if (validationErrors.Any())
-        //        {
-        //            return BadRequest(new
-        //            {
-        //                status = false,
-        //                StatusCode = 500,
-        //                message = string.Join("\n", validationErrors)
-        //            });
-        //        }
-        //        bool res = _adminServices.insertMeeting(formData);
-        //        if (res)
-        //        {
-        //            if (file != null && file.FileName != "")
-        //            {
-        //                file.SaveAs(HttpContext.Current.Server.MapPath(formData.Attachment_Url));
-        //            }
-        //        }
-        //        return Ok(new
-        //        {
-        //            status = res,
-        //            StatusCode = res ? formData.Id > 0 ? 200 : 201 : 500,
-        //            message = res ? formData.Id > 0 ? "Meeting updated successfully" : "Meeting created successfully !" : "Some issue occured while processing request."
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            status = false,
-        //            StatusCode = 500,
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
-
-
-        //[HttpPut]
-        //[Route("api/updateadminMeeting")]
-        //public IHttpActionResult UpdateMeeting()
-        //{
-        //    try
-        //    {
-        //        var request = HttpContext.Current.Request;
-        //        List<string> validationErrors = new List<string>();
-        //        if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingType")))
-        //            validationErrors.Add("Meeting Type is required.");
-
-        //        if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTitle")))
-        //            validationErrors.Add("Meeting title is required.");
-
-        //        if (string.IsNullOrWhiteSpace(request.Form.Get("MeetingTime")))
-        //            validationErrors.Add("Meeting time is required.");
-
-        //        if (string.IsNullOrWhiteSpace(request.Form.Get("meetingMemberList")))
-        //            validationErrors.Add("Meeting member is required.");
-
-        //        if (string.IsNullOrWhiteSpace(request.Form.Get("keyPointList")))
-        //            validationErrors.Add("Key points is required.");
-
-        //        var formData = new AddMeeting_Model
-        //        {
-        //            Id = Convert.ToInt32(request.Form.Get("Id")),
-        //            MeetingType = request.Form.Get("MeetingType"),
-        //            MeetingLink = request.Form.Get("MeetingLink"),
-        //            MeetingAddress = request.Form.Get("MeetingAddress"),
-        //            MeetingTitle = request.Form.Get("MeetingTitle"),
-        //            MeetingTime = Convert.ToDateTime(request.Form.Get("MeetingTime")),
-        //            Attachment_Url = request.Form.Get("Attachment_Url")
-        //        };
-        //        var file = request.Files["Attachment"];
-        //        if (file != null && file.FileName != "")
-        //        {
-        //            formData.Attachment_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-        //            formData.Attachment_Url = Path.Combine("/ProjectContent/Admin/Meeting_Attachment/", formData.Attachment_Url);
-        //        }
-        //        else if (string.IsNullOrWhiteSpace(request.Form.Get("Attachment_Url")))
-        //            validationErrors.Add("Meeting attachment is required.");
-
-        //        if (request.Form["meetingMemberList"] != null)
-        //        {
-        //            formData.meetingMemberList = request.Form["meetingMemberList"].Split(',').Select(value => int.Parse(value.ToString())).ToList();
-        //        }
-
-        //        if (request.Form["keyPointList"] != null)
-        //        {
-        //            formData.keyPointList = request.Form["keyPointList"].Split(',').ToList();
-        //        }
-
-        //        if (request.Form["KeypointId"] != null)
-        //        {
-        //            formData.KeypointId = request.Form["KeypointId"].Split(',').ToList();
-        //        }
-
-        //        if (validationErrors.Any())
-        //        {
-        //            return BadRequest(new
-        //            {
-        //                status = false,
-        //                StatusCode = 500,
-        //                message = string.Join("\n", validationErrors)
-        //            });
-        //        }
-        //        bool res = _adminServices.UpdateMeeting(formData);
-        //        if (res)
-        //        {
-        //            if (file != null && file.FileName != "")
-        //            {
-        //                file.SaveAs(HttpContext.Current.Server.MapPath(formData.Attachment_Url));
-        //            }
-        //        }
-        //        return Ok(new
-        //        {
-        //            status = res,
-        //            StatusCode = res ? formData.Id>0?200:201 : 500,
-        //            message = res ? formData.Id > 0 ?"Meeting updated successfully": "Meeting created successfully !" : "Some issue occured while processing request."
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            status = false,
-        //            StatusCode = 500,
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
-
-
         [HttpGet]
         [Route("api/adminMeetingList")]
         public IHttpActionResult MeetingList(int? limit = null, int? page = null)
@@ -1281,33 +844,6 @@ namespace RemoteSensingProject.ApiServices
                 return CommonHelper.Error(this, ex.Message);
             }
         }
-
-        //[HttpGet]
-        //[Route("api/GetMeetingById")]
-        //public IHttpActionResult GetMeetingById(int Id)
-        //{
-        //    try
-        //    {
-        //        var data = _adminServices.getMeetingById(Id);
-        //        return Ok(new
-        //        {
-        //            status = true,
-        //            StatusCode = 200,
-        //            data = data
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            status = false,
-        //            StatusCode = 500,
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
-
-
         [HttpGet]
         [Route("api/GetMeetingMemberListById")]
         public IHttpActionResult GetMeetingMemberList(int meetId)
@@ -1509,9 +1045,7 @@ namespace RemoteSensingProject.ApiServices
             return Ok(new { status = true, message = "data retrieved", data = res });
         }
 
-
         #endregion
-
 
         #region Admin Generate Notice
         [HttpGet]
@@ -1856,11 +1390,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
-        private IHttpActionResult BadRequest(object value)
-        {
-            return Content(HttpStatusCode.BadRequest, value);
-        }
-
+        
         #region Report
         [HttpGet]
         [Route("api/ReimbursementReport")]
@@ -2060,6 +1590,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
         #region meeting by admin
         [HttpGet]
         [Route("api/getmeetingforadmin")]
@@ -2108,6 +1639,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
         #region Report for mobile app
         [HttpGet]
         [Route("api/allhiringreport")]
@@ -2176,6 +1708,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
         #region Graph
         [HttpGet]
         [Route("api/getphyfinGraphData")]
@@ -2202,6 +1735,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
         #region
         [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
@@ -2358,5 +1892,9 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+        private IHttpActionResult BadRequest(object value)
+        {
+            return Content(HttpStatusCode.BadRequest, value);
+        }
     }
 }
