@@ -347,4 +347,12 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string BenefitingDepartments { get; set; }
         public string Remarks { get; set; }
     }
+    public class FeedbackModel
+    {
+        public string Title { get; set; }
+        public string FeedbackType { get; set; }
+        public string Description { get; set; }
+        public int UserId { get; set; }
+        public string Status { get; set; }
+    }
 }

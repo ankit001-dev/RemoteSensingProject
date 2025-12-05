@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Npgsql;
 using NpgsqlTypes;
 using RemoteSensingProject.Models.MailService;
@@ -228,7 +229,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Project_model> All_Project_List(int userId, int? limit, int? page, string filterType, int? id = null)
+        public List<Project_model> All_Project_List(int userId, int? limit=null, int? page=null, string filterType=null, int? id = null)
         {
             try
             {
@@ -381,6 +382,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         if (sdr.HasRows)
                         {
+                            bool firstRow = true;
                             while (sdr.Read())
                             {
                                 obj = new Raise_Problem();
@@ -393,6 +395,18 @@ namespace RemoteSensingProject.Models.ProjectManager
                                 obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
                                 obj.projectCode = sdr["projectCode"] != DBNull.Value ? sdr["projectCode"].ToString() : "N/A";
                                 problemList.Add(obj);
+
+                                if (firstRow)
+                                {
+                                    obj.Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        PageNumber = page ?? 0,
+                                        TotalPages = Convert.ToInt32(sdr["totalpages"] != DBNull.Value ? sdr["totalpages"] : 0),
+                                        TotalRecords = Convert.ToInt32(sdr["totalrecords"] != DBNull.Value ? sdr["totalrecords"] : 0),
+                                        PageSize = limit ?? 0
+                                    };
+                                    firstRow = false; // Optional: ensure pagination is only assigned once
+                                }
                             }
                         }
                     }
@@ -3351,14 +3365,14 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
-                using (NpgsqlCommand cmd = new NpgsqlCommand(@"call sp_ManageEmpReport(@v_action,@v_pmid,Null,NUll,@v_unit,@v_annualtarget,@v_targetuptoreviewmonth,@v_achievementduringreviewmonth,@v_cumulativeachievement,@v_benefitingdepartments,@v_remarks,Null);", con))
+                using (NpgsqlCommand cmd = new NpgsqlCommand(@"call sp_ManageEmpReport(@v_action,@v_pmid,Null,@v_ProjectId,@v_unit,@v_annualtarget,@v_targetuptoreviewmonth,@v_achievementduringreviewmonth,@v_cumulativeachievement,@v_benefitingdepartments,@v_remarks,Null);", con))
                 {
                     cmd.CommandType = CommandType.Text;
 
                     cmd.Parameters.AddWithValue("@v_action", "insert");
 
                     // Add all model properties
-                    cmd.Parameters.AddWithValue("@ProjectId", model.ProjectId);
+                    cmd.Parameters.AddWithValue("@v_ProjectId", model.ProjectId);
                     cmd.Parameters.AddWithValue("@v_pmid", model.PmId);
                     cmd.Parameters.AddWithValue("@v_unit", model.Unit);
                     cmd.Parameters.AddWithValue("@v_annualtarget", model.AnnualTarget);
@@ -3441,6 +3455,89 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
+        #endregion
+
+
+        #region Manage Feedback
+        public bool InsertFeedback(FeedbackModel model)
+        {
+            try
+            {
+                using (NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_manage_feedback(@p_title, @p_feedback_type, @p_description, @p_userid,null::boolean,@p_action);", con))
+                {
+                    cmd.CommandType = CommandType.Text;
+
+                    // Add parameters from the model
+                    cmd.Parameters.AddWithValue("@p_title", model.Title??"");
+                    cmd.Parameters.AddWithValue("@p_feedback_type", model.FeedbackType);
+                    cmd.Parameters.AddWithValue("@p_description", model.Description);
+                    cmd.Parameters.AddWithValue("@p_userid", model.UserId);
+                    cmd.Parameters.AddWithValue("@p_action", "insertfeedback");
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+            }
+        }
+        public List<FeedbackModel> GetFeedbacks(int userid)
+        {
+            try
+            {
+                List<FeedbackModel> list = new List<FeedbackModel>();
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_getfeedbacks_cursor", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "getfeedbacks");
+                    cmd.Parameters.AddWithValue("@v_projectmanager", userid);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (NpgsqlDataReader res = fetchCmd.ExecuteReader())
+                    {
+                        if (res.HasRows)
+                        {
+                            while (res.Read())
+                            {
+                                list.Add(new FeedbackModel
+                                {
+                                    Title = res["title"] != DBNull.Value ? res["title"].ToString() : "",
+                                    FeedbackType = res["feedback_type"] != DBNull.Value ? res["feedback_type"].ToString() : "",
+                                    Description = res["description"] != DBNull.Value ? res["description"].ToString() : "",
+                                });
+                            }
+                        }
+                    }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\"", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
+                }
+
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+            }
+        }
         #endregion
     }
 
