@@ -1345,7 +1345,7 @@ namespace RemoteSensingProject.Models.Admin
                             (object)obj.MeetingAddress ?? DBNull.Value :
                             (object)obj.MeetingLink ?? DBNull.Value);
                         cmd.Parameters.AddWithValue("p_meetingtitle", obj.MeetingTitle ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("p_meetingtime", obj.MeetingTime.ToString() ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("p_meetingtime", obj.MeetingTime);
                         cmd.Parameters.AddWithValue("p_meetingdocument", obj.Attachment_Url ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("p_createdby", obj.CreaterId > 0 ? "projectmanager" : "admin");
                         cmd.Parameters.AddWithValue("p_createrid", obj.CreaterId > 0 ? obj.CreaterId : 0);

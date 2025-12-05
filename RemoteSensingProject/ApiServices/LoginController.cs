@@ -140,7 +140,9 @@ namespace RemoteSensingProject.ApiServices
                 model.pm.ProjectDescription = form["ProjectDescription"];
                 model.pm.ProjectType = form["ProjectType"];
                 model.pm.letterNo = form["letterNo"] ?? "0";
-                model.pm.createdBy = "admin";
+                if (!Boolean.TryParse(form["createdBy"], out var createdBy))
+                    return CommonHelper.Error(this, "Created By is required", 500);
+                model.pm.createdBy = form["createdBy"].ToString();
 
                 // Project Stages
                 if (!Boolean.TryParse(form["projectStage"], out var projectStages))

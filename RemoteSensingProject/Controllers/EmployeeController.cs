@@ -305,6 +305,9 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult InsertExpenses(List<ProjectExpenses> list)
         {
+            string filePage = Server.MapPath("~/ProjectContent/ProjectManager/HeadsSlip/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             if (list.Count > 0)
             {
                 bool res = false;
@@ -912,6 +915,35 @@ namespace RemoteSensingProject.Controllers
                 {
                     status = res,
                     message = "Some issue occurred!"
+                });
+            }
+        }
+
+        public ActionResult Feedback()
+        {
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["feedbacklist"] = _managerServices.GetFeedbacks(userid);
+            return View();
+        }
+        [HttpPost]
+        public ActionResult InsertFeedback(FeedbackModel feed)
+        {
+            try
+            {
+                feed.UserId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+                bool res = _managerServices.InsertFeedback(feed);
+                return Json(new
+                {
+                    status = res,
+                    message = "Feedback added successfully"
+                });
+            }
+            catch
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "Server error occurred"
                 });
             }
         }

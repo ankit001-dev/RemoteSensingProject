@@ -66,7 +66,6 @@
                                 <th>Role</th>
                                 <th>Division</th>
                                 <th>Designation</th>
-                                <th>Date</th>
                                 <th class="text-center">Active Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -84,7 +83,6 @@
                                         <td>@item.EmployeeRole</td>
                                         <td>@item.DevisionName</td>
                                         <td>@item.DesignationName</td>
-                                        <td>@item.CreationDate</td>
                                         <td class="text-center">
                                             <span class="form-check form-switch"><input type="checkbox" class="form-check-input activeSwitch"  data-id="@item.Id" checked="@item.ActiveStatus"></span>
                                         </td>
@@ -132,7 +130,8 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="employeemobno" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" name="MobileNo" required id="employeemobno" placeholder="Enter Mobile">
+                            <input type="text" class="form-control mobileval" name="MobileNo" required id="employeemobno" placeholder="Enter Mobile">
+                            <span class="mobileError text-danger"></span>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="employeeEmail" class="form-label">Email</label>
@@ -201,7 +200,7 @@
                         </div>
                        
                         <div class="mb-3 col-md-6">
-                            <label for="fileupload" class="form-label">Upload Images</label>
+                            <label for="fileupload" class="form-label">Upload Image</label>
                             <input class="form-control" required type="file" name="EmployeeImages" id="fileupload">
                         </div>
                     </div>
@@ -270,6 +269,17 @@
 
 
 <script>
+
+    $(function () {
+        $('.mobileval').on('input', function () {
+            let m = $(this).val().replace(/\D/g, '').slice(0, 10);
+            $(this).val(m);
+            $('.mobileError').text(
+                m.length < 10 ? 'Mobile number must be 10 digits.' :
+                    !/^[6-9]/.test(m) ? 'Mobile number must start with 6, 7, 8, or 9.' : ''
+            );
+        });
+    });
 
     function showLoading(action) {
         Swal.fire({
@@ -375,7 +385,7 @@
                     $(".empDivision").text(res.DevisionName)
                     $(".empDesignation").text(res.DesignationName)
                     $(".empgender").text(res.Gender)
-                    $(".empActiveStatus").html(res.ActiveStatus ? "<i class='fa-solid text-success fa-circle'></i> Active" : "<i class='fa-solid text-danger fa-circle'></i> Deactive")
+                    $(".empActiveStatus").html(res.ActiveStatus ? "<i class='fa-solid text-success fa-circle'></i> Active" : "<i class='fa-solid text-danger fa-circle'></i> Inactive")
                 }
                 showLoading(false)
 

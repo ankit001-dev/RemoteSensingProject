@@ -171,7 +171,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-        [AllowAnonymous]
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getFinancialReport")]
         public IHttpActionResult getFinancialReport(int projectId)
@@ -407,7 +407,7 @@ namespace RemoteSensingProject.ApiServices
         #region Assigned PRoject
         [HttpGet]
         [Route("api/managerAssignedProject")]
-        public IHttpActionResult AssignedPRoject(int userId, int page, int limit)
+        public IHttpActionResult AssignedPRoject(int userId, int? page, int? limit)
         {
             try
             {
@@ -639,7 +639,7 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 var res = _managerService.getAllmeeting(id: managerId, limit, page);
-                
+
                 var selectprop = new[] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "AppStatus", "memberId", "CreaterId", "MeetingDate", "createdBy" };
                 var data = CommonHelper.SelectProperties(res, selectprop);
                 if (data.Count > 0)
@@ -692,10 +692,23 @@ namespace RemoteSensingProject.ApiServices
         [Route("api/getProblemListByManager")]
         public IHttpActionResult getProblemListByManager(int userId, int? page, int? limit)
         {
-            var res = _adminServices.getProblemList(page, limit, null, userId);
+            try
+            {
+                var res = _managerService.getAllSubOrdinateProblem(userId.ToString(), page, limit);
+                if (res.Count > 0)
+                {
+                    return CommonHelper.Success(this, res, "Data fetched successfully", 200);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return CommonHelper.Error(this, ex.Message);
+            }
 
-
-            return Ok(new { status = true, message = "data retrieved", data = res });
         }
 
 
