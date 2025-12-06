@@ -1,12 +1,13 @@
-﻿using RemoteSensingProject.Models.Admin;
+﻿using Newtonsoft.Json;
+using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web.Mvc;
 using static RemoteSensingProject.Models.Admin.main;
-using Newtonsoft.Json;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -43,10 +44,10 @@ namespace RemoteSensingProject.Controllers
 
         }
         #region OutSource
-        public ActionResult OutSource()
+        public ActionResult OutSource(string searchTerm = null)
         {
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj);
+            ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj,searchTerm:searchTerm);
             return View();
         }
 
@@ -446,10 +447,10 @@ namespace RemoteSensingProject.Controllers
             var res = _adminServices.getKeypointResponse(id);
             return Json(res, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Meetings(string req)
+        public ActionResult Meetings(string searchTerm = null,string statusFilter = null)
         {
             var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            var res = req == "admin" ? _managerServices.getAllmeeting(int.Parse(userId.userId)).Where(d => d.createdBy == "admin").ToList() : req == "projectmanager" ? _managerServices.getAllmeeting(int.Parse(userId.userId)).Where(d => d.createdBy == "projectmanager").ToList() : _managerServices.getAllmeeting(int.Parse(userId.userId));
+            var res = _managerServices.getAllmeeting(int.Parse(userId.userId),searchTerm:searchTerm,statusFilter:statusFilter);
             return View(res);
         }
 
@@ -555,10 +556,10 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Reimbursement_Form()
+        public ActionResult Reimbursement_Form(string typeFilter = null)
         {
             int id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.GetReimbursements(null, null, null, id, "getSpecificUserData");
+            var res = _managerServices.GetReimbursements(null, null, null, id, "getSpecificUserData",typeFilter:typeFilter);
             ViewData["reimlist"] = res;
             return View();
         }

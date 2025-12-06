@@ -502,7 +502,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Raise_Problem> getSubOrdinateProblemforAdmin(int? limit = null, int? page = null)
+        public List<Raise_Problem> getSubOrdinateProblemforAdmin(int? limit = null, int? page = null,string searchTerm = null)
         {
             try
             {
@@ -513,9 +513,13 @@ namespace RemoteSensingProject.Models.ProjectManager
                 using (var cmd = new NpgsqlCommand("fn_manageproblems_cursor", con, tran))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
                     cmd.Parameters.AddWithValue("v_action", "getAllSubOrdinateProblem");
-                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_projectmanager", 0);  // default
+                    cmd.Parameters.AddWithValue("v_id", 0);              // default
+                    cmd.Parameters.AddWithValue("v_limit", limit ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_page", page ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_searchterm", string.IsNullOrEmpty(searchTerm) ? (object)DBNull.Value : searchTerm);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (var sdr = fetchCmd.ExecuteReader())
@@ -1117,7 +1121,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<OuterSource> selectAllOutSOurceList(int userId, int? limit = null, int? page = null)
+        public List<OuterSource> selectAllOutSOurceList(int userId, int? limit = null, int? page = null,string searchTerm = null)
         {
             try
             {
@@ -1131,6 +1135,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.Parameters.AddWithValue("@v_id", userId);
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_searchterm", string.IsNullOrEmpty(searchTerm) ? (object)DBNull.Value : (object)searchTerm);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (var rd = fetchCmd.ExecuteReader())
@@ -1215,7 +1220,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<Meeting_Model> getAllmeeting(int id, int? limit = null, int? page = null)
+        public List<Meeting_Model> getAllmeeting(int id, int? limit = null, int? page = null,string searchTerm = null,string statusFilter = null)
         {
             try
             {
@@ -1223,13 +1228,15 @@ namespace RemoteSensingProject.Models.ProjectManager
                 Meeting_Model obj = null;
                 con.Open();
                 using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand(@"select * from fn_get_meetings(@p_action,@p_id,@v_limit,@v_page);", con))
+                using (var cmd = new NpgsqlCommand(@"select * from fn_get_meetings(@p_action,@p_id,@v_limit,@v_page,@v_searchTerm,@v_statusFilter);", con))
                 {
                     cmd.CommandType = System.Data.CommandType.Text;
                     cmd.Parameters.AddWithValue("@p_action", "selectMeetingForProjectManager");
                     cmd.Parameters.AddWithValue("@p_id", id);
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_searchTerm", string.IsNullOrEmpty(searchTerm) ? DBNull.Value : (object)searchTerm);
+                    cmd.Parameters.AddWithValue("@v_statusFilter", string.IsNullOrEmpty(statusFilter) ? DBNull.Value : (object)statusFilter);
                     var sdr = cmd.ExecuteReader();
                     bool firstRow = true;
                     while (sdr.Read())
@@ -1629,14 +1636,14 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Reimbursement> GetReimbursements(int? page = null, int? limit = null, int? id = null, int? managerId = null, string type = null)
+        public List<Reimbursement> GetReimbursements(int? page = null, int? limit = null, int? id = null, int? managerId = null, string type = null,string typeFilter = null,string statusFilter = null)
         {
             try
             {
                 con.Open();
                 List<Reimbursement> getlist = new List<Reimbursement>();
                 using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_manageReimbursement_cursor", con))
+                using (var cmd = new NpgsqlCommand("fn_managereimbursement_cursor", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAll");
@@ -1652,6 +1659,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                     }
                     cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? limit : 0);
                     cmd.Parameters.AddWithValue("v_page", page.HasValue ? page : 0);
+                    cmd.Parameters.AddWithValue("v_typefilter", string.IsNullOrEmpty(typeFilter) ? DBNull.Value : (object)typeFilter);
+                    cmd.Parameters.AddWithValue("v_statusfilter", string.IsNullOrEmpty(statusFilter) ? DBNull.Value: (object)statusFilter);
 
                     string cursorName = (string)cmd.ExecuteScalar();
 

@@ -24,7 +24,7 @@
                     <option value="Work in Progress">Work in Progress</option>
                     <option value="Pending">Pending</option>
                     <option value="Completed">Completed</option>
-                    <option value="Delay">Delay</option>
+                    <option value="delay">Delay</option>
                 </select>
             </div>
         </div>
@@ -274,17 +274,48 @@
         })
     })
 
+    $('#searchProjectBy').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        const division = $("#filterProjectStatus").val();
+        if (division && division !== "null") url.searchParams.set("statusFilter", division);
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader(); // 👈 Add here
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        showLoader(); // 👈
+        window.location.href = url.toString();
+    });
+
     $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
 
-  
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
 
-        $("#searchProjectBy").on("input", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(2).search(this.value).draw()
-        });
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(6).search(this.value).draw();
-        })
+        if (search) {
+            $('#searchProjectBy').val(search);
+        }
+
+        if (division) {
+            $('#filterProjectStatus').val(division);
+        }
     });
 </script>

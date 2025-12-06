@@ -23,6 +23,9 @@ namespace RemoteSensingProject.Models
             public int TotalRecords { get; set; }
             public int TotalPages { get; set; }
         }
-
+        public class FilterTypes
+        {
+            public int? division { get; set; }
+        }
     }
 }

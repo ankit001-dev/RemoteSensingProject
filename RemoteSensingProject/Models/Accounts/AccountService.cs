@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using DocumentFormat.OpenXml.Math;
-using Npgsql;
 using static RemoteSensingProject.Models.Accounts.main;
 
 namespace RemoteSensingProject.Models.Accounts
@@ -178,7 +179,7 @@ namespace RemoteSensingProject.Models.Accounts
             }
         }
 
-        public List<tourProposal> getTourList(int? limit = null, int? page = null)
+        public List<tourProposal> getTourList(int? limit = null, int? page = null, int? managerFilter = null, int? projectFilter = null,string statusFilter = null)
         {
             try
             {
@@ -189,8 +190,11 @@ namespace RemoteSensingProject.Models.Accounts
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAlltourforAcc");
+                    cmd.Parameters.AddWithValue("v_projectmanager", managerFilter.HasValue ? managerFilter : 0);
+                    cmd.Parameters.AddWithValue("v_id", projectFilter.HasValue ? projectFilter : 0);
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_statusfilter", string.IsNullOrEmpty(statusFilter) ? DBNull.Value : (object)statusFilter);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (var res = fetchCmd.ExecuteReader())
