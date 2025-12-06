@@ -139,10 +139,10 @@
 
 <script>
     $(document).ready(function () {
-        $("#searchByEmployeeName").on("input", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(1).search($(this).val()).draw();
-        });
+        //$("#searchByEmployeeName").on("input", function () {
+        //    var table = $("#dataTableExample").DataTable();
+        //    table.column(1).search($(this).val()).draw();
+        //});
 
         $(function () {
             $('.mobileval').on('input', function () {
@@ -208,4 +208,28 @@
             }
         })
     })
+
+    $('#searchByEmployeeName').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader(); // 👈 Add here
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+
+        if (search) {
+            $('#searchByEmployeeName').val(search).focus();
+        }
+    });
 </script>

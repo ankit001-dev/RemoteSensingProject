@@ -856,7 +856,7 @@
         const division = urlParams.get('statusFilter');
         const manager = urlParams.get('projectManagerFilter');
 
-        if (search) $('#searchProjectBy').val(search);
+        if (search) $('#searchProjectBy').val(search).focus();
         if (division) $('#filterProjectStatus').val(division);
         if (manager) $('#searchByProjectManager').val(manager);
     });

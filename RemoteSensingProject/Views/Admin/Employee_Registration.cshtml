@@ -462,7 +462,7 @@
             data: { id: id },
             success: function (res) {
                 console.log(res)
-                if (res!=null) {
+                if (res != null) {
                     $("#employeeCode").val(res.EmployeeCode)
                     $("#employeeName").val(res.EmployeeName)
                     $("#employeeEmail").val(res.Email)
@@ -472,7 +472,7 @@
                     $("#employeeRole").val(res.EmployeeRole)
                     $(".employeeGender").each(function (i, d) {
                         if (d.value == res.Gender) {
-                            d.setAttribute("checked",true)
+                            d.setAttribute("checked", true)
                         }
                     })
                 }
@@ -486,15 +486,7 @@
                 })
             }
         })
-    })
-    $("#filterDivision").on("change", function () {
-        location.href = "/admin/Employee_Registration?division=" + $(this).val();
     });
-
-    //$('#searchByEmployeeName').on('keyup', function () {
-    //    let table = $("#dataTableExample").DataTable();
-    //    table.columns(2).search(this.value).draw();
-    //});
     $('#searchByEmployeeName').on('keyup', function () {
         let value = $(this).val().trim();
         const url = new URL(window.location.href);
@@ -532,7 +524,7 @@
         const division = urlParams.get('division');
 
         if (search) {
-            $('#searchByEmployeeName').val(search);
+            $('#searchByEmployeeName').val(search).focus();
         }
 
         if (division) {
