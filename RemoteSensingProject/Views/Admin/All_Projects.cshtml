@@ -169,19 +169,10 @@
                                     <td class="text-center">
                                         <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                             <li class="me-2">
-                                                @*<a href="/Admin/View_Weekly_Update?Id=@item.Id" data-title="View Weekly Update">
-                                                        <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                                    </a>*@
                                                 <a href="#" data-title="Report" class="monthlyReport" data-prjType="@item.ProjectType" data-prjId="@item.Id">
                                                     <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
                                                 </a>
                                             </li>
-
-                                            @*<li class="me-2">
-                                                <a href="/Admin/View_Project_Stage?Id=@item.Id" data-title="View Stages">
-                                                    <i class="link-icon text-info" data-feather="plus-circle"> </i>
-                                                </a>
-                                            </li>*@
                                             <li class="me-2">
                                                 <a href="/Admin/View_Expenses?Id=@item.Id" data-title="View Expenses">
                                                     <i class="link-icon text-danger" data-feather="file-plus"></i>
@@ -508,21 +499,6 @@
     })
 
     $(document).ready(function () {
-
-
-
-        //$("#searchProjectBy").on("keyup", function () {
-        //    var table = $("#AllProjectList").DataTable();
-        //    table.column(2).search(this.value).draw()
-        //});
-        //$("#filterProjectStatus").on("change", function () {
-        //    var table = $("#AllProjectList").DataTable();
-        //    table.column(10).search(this.value).draw()
-        //})
-        //$("#searchByProjectManager").on("change", function () {
-        //    var table = $("#AllProjectList").DataTable();
-        //    table.column(3).search(this.value).draw()
-        //})
 
         $('#AllProjectList').DataTable({
             deferRender: false,

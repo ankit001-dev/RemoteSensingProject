@@ -287,15 +287,7 @@
     })
 
     $(document).ready(function () {
-        $("#searchProjectBy").on("keyup", function () {
-            var table = $("#dataTableExamples").DataTable();
-            table.column(1).search(this.value).draw()
-        });
-
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#dataTableExamples").DataTable();
-            table.column(5).search(this.value).draw();
-        })
+        
         $('#dataTableExamples').DataTable({
             layout: {
                 topStart: {
@@ -303,6 +295,25 @@
                 }
             }
         });
+    });
+
+    // Filter by status
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+    // Set values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const division = urlParams.get('statusFilter');
+
+        if (division) $('#filterProjectStatus').val(division);
     });
 </script>
 

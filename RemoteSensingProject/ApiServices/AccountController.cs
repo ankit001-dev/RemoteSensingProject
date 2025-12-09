@@ -29,16 +29,16 @@ namespace RemoteSensingProject.ApiServices
 
         [Route("api/getProjectList")]
         [HttpGet]
-        public IHttpActionResult GetProjectList(int? page = null, int? limit = null)
+        public IHttpActionResult GetProjectList(int? page = null, int? limit = null,string searchTerm = null)
         {
-            var res = _mangerServices.All_Project_List(userId: 0, limit: limit, page: page, filterType: "AccountPending");
+            var res = _mangerServices.All_Project_List(userId: 0, limit: limit, page: page, filterType: "AccountPending",searchTerm:searchTerm);
             return Ok(new { status = true, data = res, message = "data retrieved" });
         }
         [Route("api/getProjectHistoryList")]
         [HttpGet]
-        public IHttpActionResult GetProjectHistoryList(int? page = null, int? limit = null)
+        public IHttpActionResult GetProjectHistoryList(int? page = null, int? limit = null,string searchTerm = null)
         {
-            var res = _mangerServices.All_Project_List(userId: 0, limit: limit, page: page, filterType: "ManagerProject").Where(e => e.ApproveStatus == true).ToList();
+            var res = _mangerServices.All_Project_List(userId: 0, limit: limit, page: page, filterType: "AccountApproved", searchTerm: searchTerm);
             return Ok(new { status = true, data = res, message = "data retrieved" });
         }
         [Route("api/ProjectBudgetList")]
@@ -299,11 +299,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getAccountReinbursement")]
-        public IHttpActionResult getAccountReinbursement()
+        public IHttpActionResult getAccountReinbursement( int? page = null , int? limit = null, int? projectMangerFilter = null)
         {
             try
             {
-                var data = _mangerServices.GetReimbursements(type: "selectApprovedReinbursement");
+                var data = _mangerServices.GetReimbursements(type: "selectApprovedReinbursement",managerId: projectMangerFilter,limit:limit,page:page);
                 var selectProperties = new[] { "EmpName", "type", "id", "amount", "userId", "apprstatus", "subStatus", "adminappr", "status", "chequeNum", "accountNewRequest", "chequeDate", "newRequest", "approveAmount" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)

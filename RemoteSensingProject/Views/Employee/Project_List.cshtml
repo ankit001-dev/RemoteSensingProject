@@ -9,20 +9,23 @@
     }
 </style>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
-        <div class="row align-items-center">
-            <div class="col-lg-3">
-                <h5>Project Lists</h5>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <select class="form-select form-select-lg" id="filterProjectStatus">
-                    <option value="" selected>Project Status</option>
-                    <option value="Work in Progress">Work in Progress</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Delay">Delay</option>
-                </select>
-            </div>
+    <div class="row align-items-center">
+        <div class="col-lg-3">
+            <h5>Project Lists</h5>
         </div>
+        <div class="col-lg-6 col-md-6">
+            <input type="text" id="searchProjectBy" name="searchByProjectName" placeholder="Search by project name" class="form-control">
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <select id="filterProjectStatus" class="form-select form-select-lg">
+                <option selected value="">Project Status</option>
+                <option value="Ongoing">Ongoing</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="delay">Delay</option>
+                <option value="Complete">Completed</option>
+            </select>
+        </div>
+    </div>
 </div>
 <div class="card">
     <div class="card-body">
@@ -74,12 +77,6 @@
 
 
                             </td>
-                            <!--<td class="text-center">
-                                <ul class="d-flex list-unstyled mb-0 justify-content-center">-->
-                                    @*<li class="me-2"><a href="#" class="viewProject" data-Id="@item.Id"><i class="link-icon" data-feather="eye"></i></a></li>*@
-                                    <!--<li class="me-2"><a href="#" data-title="Edit"><i class="link-icon" data-feather="edit"></i></a></li>
-                                </ul>
-                            </td>-->
                         </tr>
                         i++;
                     }
@@ -266,15 +263,46 @@
         })
     })
 
+    // Search by text
+    $('#searchProjectBy').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        const division = $("#filterProjectStatus").val();
+        if (division && division !== "null") url.searchParams.set("statusFilter", division);
+        else url.searchParams.delete("statusFilter");
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Filter by status
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Set values on page load
     $(document).ready(function () {
-        $("#searchProjectBy").on("input", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(1).search(this.value).draw()
-        });
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(7).search(this.value).draw();
-        })
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
+
+        if (search) $('#searchProjectBy').val(search).focus();
+        if (division) $('#filterProjectStatus').val(division);
     });
 </script>
 

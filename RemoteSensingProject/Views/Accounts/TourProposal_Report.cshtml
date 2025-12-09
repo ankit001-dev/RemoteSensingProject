@@ -65,7 +65,7 @@
                                 {
                                     if (proman.EmployeeRole == "projectManager")
                                     {
-                                        <option value="@proman.EmployeeName">@proman.EmployeeName</option>
+                                        <option value="@proman.Id">@proman.EmployeeName</option>
                                     }
                                 }
                             }
@@ -78,7 +78,7 @@
                             {
                                 foreach (var proj in projects)
                                 {
-                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                                    <option value="@proj.Id">@proj.ProjectTitle</option>
                                 }
                             }
                         </select>
@@ -127,7 +127,7 @@
                                 {
                                     <tr>
                                         <td>@i</td>
-                                        <td  data-id="@item.id"><a href="#" data-title="View Details" class="action">@item.projectManager</a></td>
+                                        <td data-id="@item.id"><a href="#" data-title="View Details" class="action">@item.projectManager</a></td>
                                         <td>@item.projectCode</td>
                                         <td>@item.projectName</td>
                                         <td>@item.purpose</td>
@@ -145,8 +145,8 @@
                                             { <span>@item.remark</span>}
                                         </td>
                                         @*<td class="text-center" data-id="@item.id">
-                                            <i class="fa-solid fa-eye action"></i>
-                                        </td>*@
+                                                <i class="fa-solid fa-eye action"></i>
+                                            </td>*@
                                         <td class="text-center">
                                             @{
                                                 if (item.newRequest == true && item.adminappr == false)
@@ -284,7 +284,7 @@
                         </div>
                     </div>
                 </div>
-               
+
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary py-1 rounded-0" id="printBtn">Download</button>
@@ -301,22 +301,6 @@
                     buttons: ['excel', 'pdf']
                 }
             }
-        })
-        //Filter
-        $("#Filter1").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#tableTour").DataTable()
-            table.column(1).search(filter).draw()
-        })
-        $("#Filter2").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#tableTour").DataTable()
-            table.column(3).search(filter).draw()
-        })
-        $("#Filter3").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#tableTour").DataTable()
-            table.column(11).search(filter).draw()
         })
 
         $(".action").on("click", function () {
@@ -473,6 +457,45 @@
                 });
 
         })
+    });
+</script>
+
+<script>
+    function applyFilters() {
+        const url = new URL(window.location.href);
+
+        const manager = $("#Filter1").val();
+        const project = $("#Filter2").val();
+        const status = $("#Filter3").val();
+
+        // Project Manager Filter
+        if (manager) url.searchParams.set("managerFilter", manager);
+        else url.searchParams.delete("managerFilter");
+
+        // Project Filter
+        if (project) url.searchParams.set("projectFilter", project);
+        else url.searchParams.delete("projectFilter");
+
+        // Status Filter
+        if (status) url.searchParams.set("statusFilter", status);
+        else url.searchParams.delete("statusFilter");
+
+        showLoader(); // optional loader
+        window.location.href = url.toString();
+    }
+
+    // Trigger filter on change
+    $("#Filter1").on("change", applyFilters);
+    $("#Filter2").on("change", applyFilters);
+    $("#Filter3").on("change", applyFilters);
+
+    // Restore dropdown values on load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        $("#Filter1").val(urlParams.get("managerFilter"));
+        $("#Filter2").val(urlParams.get("projectFilter"));
+        $("#Filter3").val(urlParams.get("statusFilter"));
     });
 </script>
 

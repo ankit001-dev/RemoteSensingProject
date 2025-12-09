@@ -154,12 +154,6 @@
 <script>
     $(document).ready(function () {
         $("#projectTable").DataTable();
-
-        $('#searchByProjectName').on('keyup', function () {
-            let table = $("#projectTable").DataTable();
-
-            table.columns(1).search($(this).val()).draw();
-        });
     })
 
     $(".completeTaskAction").click(function () {
@@ -315,5 +309,32 @@
                 }
             });
         });
+    });
+
+    // Search by Project Name Input
+    $("#searchByProjectName").on("keyup", function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+
+        if (value)
+            url.searchParams.set("searchTerm", value);
+        else
+            url.searchParams.delete("searchTerm");
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Restore value on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectSearch = urlParams.get("searchTerm");
+
+        if (projectSearch) {
+            $("#searchByProjectName").val(projectSearch).focus();
+        }
     });
 </script>

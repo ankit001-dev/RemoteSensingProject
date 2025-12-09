@@ -59,7 +59,7 @@
 
 
             <div class="col-sm-6">
-                <select class="form-select form-select-sm" id="filterByprojectType">
+                <select class="form-select form-select-sm" id="typeFilter">
                     <option value="" selected>Filter by request type</option>
                     <option value="contigency">Contigency</option>
                     <option value="pi_adjustment">P.I. Adjustment</option>
@@ -70,9 +70,9 @@
             <div class="col-sm-6">
                 <select class="form-select form-select-sm" id="fileterByProjectStatus">
                     <option value="" selected>Filter by status</option>
-                    <option>Approved</option>
-                    <option>Rejected</option>
-                    <option>Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="pending">Pending</option>
                 </select>
 
             </div>
@@ -259,7 +259,7 @@
 
 <script>
     $(document).ready(function () {
-       
+
 
         $("#reibursementReportTable").DataTable({
             layout: {
@@ -271,17 +271,6 @@
                 { width: "100px", targets: 0 }
             ],
         });
-
-
-        $("#filterByprojectType").on("change", function () {
-            let table = $("#reibursementReportTable").DataTable();
-            table.column(1).search($(this).val()).draw();
-        })
-
-        $("#fileterByProjectStatus").on("change", function () {
-            let table = $("#reibursementReportTable").DataTable();
-            table.column(3).search($(this).val()).draw();
-        })
 
         $("#printBtn").click(function () {
 
@@ -373,9 +362,9 @@
             $.ajax({
                 url: "/api/ViewReinbursementBytype",
                 type: "Get",
-                data: { "userId": userId, "type": type, id: Id, page: null, limit:null },
+                data: { "userId": userId, "type": type, id: Id, page: null, limit: null },
                 success: function (result) {
-                    if (result.status) {
+                    if (result) {
                         $("#apprAmttext").text(apprvAmt);
                         $("#chequeNumberText").text(chequeNum);
                         $("#chequeDatetext").text(chequeDate);
@@ -438,5 +427,36 @@
             const date = new Date(parsedTimestamp);
             return date.toLocaleDateString();
         }
-    })
+    });
+
+    function applyFilters() {
+        const url = new URL(window.location.href);
+
+        const type = $("#typeFilter").val();
+        const status = $("#fileterByProjectStatus").val();
+
+        // Type Filter
+        if (type) url.searchParams.set("typeFilter", type);
+        else url.searchParams.delete("typeFilter");
+
+        // Status Filter
+        if (status) url.searchParams.set("statusFilter", status);
+        else url.searchParams.delete("statusFilter");
+
+        showLoader();
+        window.location.href = url.toString();
+    }
+
+    // Attach events
+    $("#typeFilter").on("change", applyFilters);
+    $("#fileterByProjectStatus").on("change", applyFilters);
+
+
+    // Set filters on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        $("#typeFilter").val(urlParams.get("typeFilter"));
+        $("#fileterByProjectStatus").val(urlParams.get("statusFilter"));
+    }); 
 </script>
