@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using static RemoteSensingProject.Models.SubOrdinate.main;
+﻿using DocumentFormat.OpenXml.Math;
+using Google.Protobuf.WellKnownTypes;
 using Npgsql;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using static RemoteSensingProject.Models.SubOrdinate.main;
 
 namespace RemoteSensingProject.Models.SubOrdinate
 {
@@ -118,30 +120,54 @@ namespace RemoteSensingProject.Models.SubOrdinate
         #endregion Problem End 
 
         #region Outsource Start
-        public List<OutSource_Task> getOutSourceTask(int id)
+        public List<OutSource_Task> getOutSourceTask(int id,int? limit = null ,int? page = null, string searchTerm = null)
         {
             try
             {
                 List<OutSource_Task> taskList = new List<OutSource_Task>();
                 OutSource_Task task = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_manageOutSourceTask", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getTaskByOutSource");
-                cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageoutsource_cursor", con, tran))
                 {
-                    while (sdr.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "getTaskByOutSource");
+                    cmd.Parameters.AddWithValue("@v_id", id);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_searchterm", string.IsNullOrEmpty(searchTerm) ? DBNull.Value : (object)searchTerm);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var sdr = fetchCmd.ExecuteReader())
                     {
-                        task = new OutSource_Task();
-                        task.id = Convert.ToInt32(sdr["id"]);
-                        task.Title = sdr["title"].ToString();
-                        task.Description = sdr["description"].ToString();
-                        task.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
-                        task.Status = sdr["Status"].ToString();
-                        taskList.Add(task);
+                        bool firstRow = true;
+                        while (sdr.Read())
+                        {
+                            task = new OutSource_Task();
+                            task.id = Convert.ToInt32(sdr["id"]);
+                            task.Title = sdr["title"].ToString(); 
+                            task.Description = sdr["description"].ToString();
+                            task.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
+                            task.Status = sdr["Status"].ToString();
+                            taskList.Add(task);
+                        if (firstRow)
+                        {
+                            task.Pagination = new ApiCommon.PaginationInfo
+                            {
+                                PageNumber = page ?? 0,
+                                TotalPages = Convert.ToInt32(sdr["totalpages"] != DBNull.Value ? sdr["totalpages"] : 0),
+                                TotalRecords = Convert.ToInt32(sdr["totalrecords"] != DBNull.Value ? sdr["totalrecords"] : 0),
+                                PageSize = limit ?? 0
+                            };
+                            firstRow = false; // Optional: ensure pagination is only assigned once
+                        }
+                        }
                     }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return taskList;
             }

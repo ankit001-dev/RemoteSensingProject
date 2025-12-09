@@ -36,21 +36,16 @@
             <div class="col-lg-2">
                 <h5>All Project Lists</h5>
             </div>
-            @*<div class="col-lg-3 col-md-6">
-                    <select class="form-select form-select-lg">
-                        <option selected>Serch by Project Manager</option>
-                        <option value="1">Manager1</option>
-                        <option value="2">Manager2</option>
-                        <option value="3">Manager3</option>
-                    </select>
-                </div>*@
-            <div class="col-lg-3 col-md-3">
-                <select class="form-select form-select-lg" id="statusFilter">
+            <div class="col-lg-6 col-md-6">
+                <input type="text" id="searchProjectBy" name="searchByProjectName" placeholder="Search by project name" class="form-control">
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <select id="filterProjectStatus" class="form-select form-select-lg">
                     <option selected value="">Project Status</option>
-                    <option>Work in Progress</option>
-                    <option>Not Started</option>
-                    <option>Completed</option>
-                    <option>Delay</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="delay">Delay</option>
+                    <option value="Complete">Completed</option>
                 </select>
             </div>
         </div>
@@ -178,24 +173,6 @@
 <script>
     $(document).ready(function () {
         var table = $("#projectTable").DataTable();
-        $("#statusFilter").on("change", function () {
-            debugger
-            var projectStatus = $(this).val();
-            table.column(10).search(projectStatus).draw();
-        })
-
-        $('#searchByProjectName').on('keyup', function () {
-            table.columns(1).search($(this).val()).draw();
-        });
-  
-      
-    })
-
-    $(document).ready(function () {
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#projectTable").DataTable();
-            table.column(5).search(this.value).draw();
-        })
     })
 </script>
 
@@ -363,6 +340,46 @@
         })
     })
 
+    // Search by text
+    $('#searchProjectBy').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
 
+        const division = $("#filterProjectStatus").val();
+        if (division && division !== "null") url.searchParams.set("statusFilter", division);
+        else url.searchParams.delete("statusFilter");
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Filter by status
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Set values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
+
+        if (search) $('#searchProjectBy').val(search).focus();
+        if (division) $('#filterProjectStatus').val(division);
+    });
 
 </script>

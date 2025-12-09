@@ -246,12 +246,28 @@
         })
     })
 
+    // Search by text
+    $('#searchProjectBy').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Set values on page load
     $(document).ready(function () {
-        $("#searchProjectBy").on("input", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(3).search(this.value).draw()
-        });
-       
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
+        const manager = urlParams.get('projectManagerFilter');
+
+        if (search) $('#searchProjectBy').val(search).focus();
     });
 </script>
 

@@ -36,11 +36,11 @@ namespace RemoteSensingProject.ApiServices
         #region subordiinate
         [HttpGet]
         [Route("api/subAssignedProject")]
-        public IHttpActionResult assignedProject(int subId,int? page = null,int? limit = null)
+        public IHttpActionResult assignedProject(int subId,int? page = null,int? limit = null, string searchTerm = null, string statusFilter = null)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId:0,limit:limit,page:page,filterType: "SubordinateProject", id:subId);
+                var data = _managerService.All_Project_List(userId:0,limit:limit,page:page,filterType: "SubordinateProject", id:subId, searchTerm: searchTerm, statusFilter: statusFilter);
                 return Ok(new
                 {
                     status = data.Any(),
@@ -48,7 +48,8 @@ namespace RemoteSensingProject.ApiServices
                     message = data.Any() ? "Data found !" : "Data not found !",
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 return BadRequest(new
                 {

@@ -83,7 +83,7 @@
                                 {
                                     if (proman.EmployeeRole == "projectManager")
                                     {
-                                        <option value="@proman.EmployeeName">@proman.EmployeeName</option>
+                                        <option value="@proman.Id">@proman.EmployeeName</option>
                                     }
                                 }
                             }
@@ -96,7 +96,7 @@
                             {
                                 foreach (var proj in projects)
                                 {
-                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                                    <option value="@proj.Id">@proj.ProjectTitle</option>
                                 }
                             }
                         </select>
@@ -416,6 +416,43 @@
         const date = new Date(timestamp);
         return date.toLocaleDateString();
     }
+
+    function applyFilters() {
+        const url = new URL(window.location.href);
+
+        const manager = $("#Filter1").val();
+        const project = $("#Filter2").val();
+        const status = $("#Filter3").val();
+
+        // Project Manager Filter
+        if (manager) url.searchParams.set("managerFilter", manager);
+        else url.searchParams.delete("managerFilter");
+
+        // Project Filter
+        if (project) url.searchParams.set("projectFilter", project);
+        else url.searchParams.delete("projectFilter");
+
+        // Status Filter
+        if (status) url.searchParams.set("statusFilter", status);
+        else url.searchParams.delete("statusFilter");
+
+        showLoader(); // Optional loader
+        window.location.href = url.toString();
+    }
+
+    // Attach change events
+    $("#Filter1").on("change", applyFilters);
+    $("#Filter2").on("change", applyFilters);
+    $("#Filter3").on("change", applyFilters);
+
+    // Restore values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        $("#Filter1").val(urlParams.get("managerFilter"));
+        $("#Filter2").val(urlParams.get("projectFilter"));
+        $("#Filter3").val(urlParams.get("statusFilter"));
+    });
 
 </script>
 

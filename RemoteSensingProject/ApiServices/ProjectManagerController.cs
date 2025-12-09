@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Http;
+﻿using Antlr.Runtime.Tree;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Routing;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Web;
+using System.Web.Http;
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.ApiServices
@@ -407,11 +410,11 @@ namespace RemoteSensingProject.ApiServices
         #region Assigned PRoject
         [HttpGet]
         [Route("api/managerAssignedProject")]
-        public IHttpActionResult AssignedPRoject(int userId, int? page, int? limit)
+        public IHttpActionResult AssignedPRoject(int userId, int? page, int? limit,string searchTerm = null,string statusFilter = null)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId, page, limit, "AssignedProject");
+                var data = _managerService.All_Project_List(userId, page, limit, "AssignedProject",searchTerm:searchTerm,statusFilter:statusFilter);
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
@@ -433,11 +436,11 @@ namespace RemoteSensingProject.ApiServices
         #region Project
         [HttpGet]
         [Route("api/getManagerProject")]
-        public IHttpActionResult GetProjectList(int userId, int page, int limit)
+        public IHttpActionResult GetProjectList(int userId, int? page =null, int? limit = null,string searchTerm = null,string statusFilter = null)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId, limit, page, "ManagerProject");
+                var data = _managerService.All_Project_List(userId, limit, page, "ManagerProject",searchTerm:searchTerm,statusFilter:statusFilter);
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
@@ -529,11 +532,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getAllProjectList")]
-        public IHttpActionResult getAllProjectList(int userId, int? limit, int? page)
+        public IHttpActionResult getAllProjectList(int userId, int? limit = null, int? page = null,string searchTerm = null,string statusFilter = null)
         {
             try
             {
-                var data = _managerService.All_Project_List(userId, limit, page, null);
+                var data = _managerService.All_Project_List(userId, limit, page, null,searchTerm:searchTerm,statusFilter:statusFilter);
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
@@ -555,11 +558,11 @@ namespace RemoteSensingProject.ApiServices
         #region Notice
         [HttpGet]
         [Route("api/getManagerNotice")]
-        public IHttpActionResult NoticeList(int managerId, int? page = null, int? limit = null)
+        public IHttpActionResult NoticeList(int managerId, int? page = null, int? limit = null,string searchTerm = null)
         {
             try
             {
-                var data = _adminServices.getNoticeList(managerId: managerId, page: page, limit: limit);
+                var data = _adminServices.getNoticeList(managerId: managerId, page: page, limit: limit,searchTerm:searchTerm);
                 if (!data.Any())
                 {
                     return BadRequest(new
@@ -592,36 +595,25 @@ namespace RemoteSensingProject.ApiServices
         #region Manager Meeting
         [HttpGet]
         [Route("api/managerMeetingList")]
-        public IHttpActionResult managerMeeting(int managerId)
+        public IHttpActionResult managerMeeting(int managerId,int?page = null,int? limit = null, string searchTerm = null, string statusFilter = null)
         {
             try
             {
-                var data = _adminServices.getAllmeeting().Where(d => d.CreaterId == managerId).ToList();
-                if (data.Any())
+                var data = _managerService.getAllmeeting(managerId,limit,page, searchTerm: searchTerm, statusFilter: statusFilter);
+                var selectprop = new[] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "memberId", "CreaterId", "MeetingDate", "summary", "Attachment_Url" };
+                var newData = CommonHelper.SelectProperties(data, selectprop);
+                if (newData.Count > 0)
                 {
-                    return Ok(new
-                    {
-                        status = data.Any(),
-                        StatusCode = 200,
-                        message = "Data found",
-                        data = data
-                    });
+                    return CommonHelper.Success(this, newData, "Data fetched successfully", 200, data[0].Pagination);
                 }
-                return BadRequest(new
+                else
                 {
-                    status = false,
-                    StatusCode = 500,
-                    message = "Data Not found!"
-                });
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
 
@@ -634,11 +626,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getAllmeeting")]
-        public IHttpActionResult getAllmeeting(int managerId, int? page, int? limit)
+        public IHttpActionResult getAllmeeting(int managerId, int? page, int? limit, string searchTerm = null, string statusFilter = null)
         {
             try
             {
-                var res = _managerService.getAllmeeting(id: managerId, limit, page);
+                var res = _managerService.getAllmeeting(id: managerId, limit, page, searchTerm: searchTerm, statusFilter: statusFilter);
 
                 var selectprop = new[] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "AppStatus", "memberId", "CreaterId", "MeetingDate", "createdBy" };
                 var data = CommonHelper.SelectProperties(res, selectprop);
@@ -690,11 +682,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getProblemListByManager")]
-        public IHttpActionResult getProblemListByManager(int userId, int? page, int? limit)
+        public IHttpActionResult getProblemListByManager(int userId, int? page, int? limit,string searchTerm = null)
         {
             try
             {
-                var res = _managerService.getAllSubOrdinateProblem(userId.ToString(), page, limit);
+                var res = _managerService.getAllSubOrdinateProblem(userId.ToString(), page, limit,searchTerm:searchTerm);
                 if (res.Count > 0)
                 {
                     return CommonHelper.Success(this, res, "Data fetched successfully", 200);
@@ -787,11 +779,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/GetOuterSourceList")]
-        public IHttpActionResult GetOuterSourceListById(int userId, int? page, int? limit)
+        public IHttpActionResult GetOuterSourceListById(int userId, int? page, int? limit,string searchTerm = null)
         {
             try
             {
-                var data = _managerService.selectAllOutSOurceList(userId, limit, page);
+                var data = _managerService.selectAllOutSOurceList(userId, limit, page,searchTerm:searchTerm);
                 var selectProperties = new[] { "Id", "EmpName", "mobileNo", "email", "joiningdate", "gender" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
@@ -1051,11 +1043,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getReimbursementByUserId")]
-        public IHttpActionResult getReimbursement(int userId, int? page, int? limit)
+        public IHttpActionResult getReimbursement(int userId, int? page, int? limit,string typeFilter = null)
         {
             try
             {
-                var data = _managerService.GetReimbursements(page, limit, null, userId, "getSpecificUserData");
+                var data = _managerService.GetReimbursements(page, limit, null, userId, "getSpecificUserData",typeFilter:typeFilter);
                 var selectProperties = new[] { "EmpName", "type", "id", "amount", "userId", "apprstatus", "subStatus", "adminappr", "status", "chequeNum", "accountNewRequest", "chequeDate", "newRequest", "approveAmount" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
@@ -1184,11 +1176,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/GetTourForUserId")]
-        public IHttpActionResult gettour(int userId, int? page, int? limit)
+        public IHttpActionResult gettour(int userId, int? page, int? limit, int? projectFilter = null)
         {
             try
             {
-                var data = _managerService.getTourList(userId: userId, page: page, limit: limit, type: "specificUser");
+                var data = _managerService.getTourList(userId: userId, page: page, limit: limit, type: "specificUser",projectFilter:projectFilter);
                 var selectProperties = new[] { "id", "projectName", "dateOfDept", "place", "periodFrom", "periodTo", "returnDate", "purpose", "newRequest", "adminappr", "projectCode" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
@@ -1276,11 +1268,11 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getAllHiringList")]
-        public IHttpActionResult getAllHiringList(int userId)
+        public IHttpActionResult getAllHiringList(int userId,int?limit = null, int? page = null, int? projectFilter = null)
         {
             try
             {
-                var data = _managerService.GetHiringVehicles(userId: userId, type: "projectManager");
+                var data = _managerService.GetHiringVehicles(userId: userId, type: "projectManager",limit:limit,page:page,projectFilter:projectFilter);
                 return Ok(new
                 {
                     status = data.Any(),

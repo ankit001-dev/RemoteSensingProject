@@ -20,11 +20,11 @@
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="filterProjectStatus">
-                    <option value="" selected>Project Status</option>
-                    <option value="Work in Progress">Work in Progress</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Completed">Completed</option>
+                    <option selected value="">Project Status</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Upcoming">Upcoming</option>
                     <option value="delay">Delay</option>
+                    <option value="Complete">Completed</option>
                 </select>
             </div>
         </div>
@@ -311,7 +311,7 @@
         const division = urlParams.get('statusFilter');
 
         if (search) {
-            $('#searchProjectBy').val(search);
+            $('#searchProjectBy').val(search).focus();
         }
 
         if (division) {

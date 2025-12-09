@@ -25,18 +25,18 @@
                 <h5>Notice Lists</h5>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="text" id="searchbyProjecManager" placeholder="Search by Project Manager" class="form-control">
+                <input type="text" id="searchbyProjecManager" placeholder="Search by Project Name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="filterByProject">
-                    <option selected value=null>--Select Project--</option>
+                    <option selected value=null>--Select Employee--</option>
                     @if (ViewBag.ProjectList != null)
                     {
                         if (ViewBag.ProjectList.Count > 0)
                         {
                             foreach (var item in ViewBag.ProjectList)
                             {
-                                <option value="@item.Id">@item.ProjectTitle</option>
+                                <option value="@item.Id">@item.EmployeeName</option>
                             }
                         }
                     }
@@ -274,7 +274,7 @@
                                     {
                                         foreach (var item in ViewBag.ProjectList)
                                         {
-                                            <option value="@item.Id">@item.ProjectTitle</option>
+                                            <option value="@item.Id">@item.EmployeeName</option>
                                         }
                                     }
                                 }
@@ -601,9 +601,9 @@
         const projectValue = $(this).val();
 
         if (projectValue && projectValue !== "null")
-            url.searchParams.set("projectId", projectValue);
+            url.searchParams.set("projectManager", projectValue);
         else
-            url.searchParams.delete("projectId");
+            url.searchParams.delete("projectManager");
 
         const searchTerm = $("#searchbyProjecManager").val().trim();
         if (searchTerm)
@@ -621,7 +621,7 @@
         const searchTerm = urlParams.get("searchTerm");
         if (searchTerm) $("#searchbyProjecManager").val(searchTerm).focus();
 
-        const projectId = urlParams.get("projectId");
+        const projectId = urlParams.get("projectManager");
         if (projectId) $("#filterByProject").val(projectId);
     });
 

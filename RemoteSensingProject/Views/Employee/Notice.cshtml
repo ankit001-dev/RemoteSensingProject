@@ -417,10 +417,10 @@
 
 
 
-    $('#searchbyProjecManager').on('keyup', function () {
-        let table = $("#dataTableExample").DataTable();
-        table.columns(2).search(this.value).draw();
-    });
+    //$('#searchbyProjecManager').on('keyup', function () {
+    //    let table = $("#dataTableExample").DataTable();
+    //    table.columns(2).search(this.value).draw();
+    //});
 
     function shownotice(data) {
         var newTab = window.open();
@@ -429,4 +429,30 @@
         newTab.document.close();
         newTab.print();
     }
+
+    // Search by Project Manager (searchTerm)
+    $("#searchbyProjecManager").on("keyup", function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+
+        if (value)
+            url.searchParams.set("searchTerm", value);
+        else
+            url.searchParams.delete("searchTerm");
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Restore values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const searchTerm = urlParams.get("searchTerm");
+        if (searchTerm) $("#searchbyProjecManager").val(searchTerm).focus();
+
+    });
 </script>
