@@ -78,7 +78,7 @@
                             {
                                 foreach (var proj in projects)
                                 {
-                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                                    <option value="@proj.Id">@proj.ProjectTitle</option>
                                 }
                             }
                         </select>
@@ -394,6 +394,36 @@
         const date = new Date(timestamp);
         return date.toLocaleDateString();
     }
+
+    function applyFilters() {
+        const url = new URL(window.location.href);
+
+        const project = $("#Filter2").val();
+        const status = $("#Filter3").val();
+
+        // Project Filter
+        if (project) url.searchParams.set("projectFilter", project);
+        else url.searchParams.delete("projectFilter");
+
+        // Status Filter
+        if (status) url.searchParams.set("statusFilter", status);
+        else url.searchParams.delete("statusFilter");
+
+        showLoader(); // Optional loader
+        window.location.href = url.toString();
+    }
+
+    // Attach change events
+    $("#Filter2").on("change", applyFilters);
+    $("#Filter3").on("change", applyFilters);
+
+    // Restore values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        $("#Filter2").val(urlParams.get("projectFilter"));
+        $("#Filter3").val(urlParams.get("statusFilter"));
+    });
 
 </script>
 

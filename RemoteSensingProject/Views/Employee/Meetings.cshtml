@@ -10,7 +10,7 @@
                 <div class="t-header"><h4 class="mb-2 text-primary"><a href="#">Meeting Lists</a></h4></div>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="search" id="searchByMeetingName" placeholder="Search by meeting name" class="form-control">
+                <input type="text" id="searchByMeetingName" placeholder="Search by meeting name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="meetingStatus">
@@ -460,7 +460,7 @@
         const searchMeeting = urlParams.get("searchTerm");
         const statusFilter = urlParams.get("statusFilter");
 
-        if (searchMeeting) $("#searchByMeetingName").val(searchMeeting);
+        if (searchMeeting) $("#searchByMeetingName").val(searchMeeting).focus();
         if (statusFilter) $("#meetingStatus").val(statusFilter);
     });
 </script>

@@ -2173,10 +2173,11 @@ namespace RemoteSensingProject.Models.Admin
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAlltour");
                     cmd.Parameters.AddWithValue("v_projectmanager", managerFilter.HasValue? managerFilter : 0);
-                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? id : projectFilter.HasValue?projectFilter:0);
+                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? id :0);
                     cmd.Parameters.AddWithValue("v_type", string.IsNullOrEmpty(type) ? "AllData" : type);
                     cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_projectid", projectFilter.HasValue ? projectFilter : 0);
                     // Execute the function — it returns the cursor name
                     string cursorName = (string)cmd.ExecuteScalar();
 
@@ -2360,7 +2361,7 @@ namespace RemoteSensingProject.Models.Admin
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAllHiring");
                     cmd.Parameters.AddWithValue("v_projectmanager", managerFilter.HasValue?managerFilter:0);
-                    cmd.Parameters.AddWithValue("v_id", projectFilter.HasValue?projectFilter:0);
+                    cmd.Parameters.AddWithValue("v_projectid", projectFilter.HasValue?projectFilter:0);
                     cmd.Parameters.AddWithValue("v_type", "AllData");
                     cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("v_page", page.HasValue ? (object)page.Value : DBNull.Value);
@@ -2871,7 +2872,7 @@ namespace RemoteSensingProject.Models.Admin
         #endregion
 
         #region Raised Problem
-        public List<RaisedProblem> getProblemList(int? page = null, int? limit = null, int? id = null, int? managerId = null)
+        public List<RaisedProblem> getProblemList(int? page = null, int? limit = null, int? id = null, int? managerId = null,string searchTerm = null)
         {
             try
             {
@@ -2886,6 +2887,7 @@ namespace RemoteSensingProject.Models.Admin
                     cmd.Parameters.AddWithValue("v_id", id.HasValue ? id : 0);
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_searchterm", string.IsNullOrEmpty(searchTerm) ? (object)DBNull.Value : searchTerm);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\"", con, tran))
                     using (var res = fetchCmd.ExecuteReader())

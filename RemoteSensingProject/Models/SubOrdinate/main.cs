@@ -89,6 +89,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
             public string Status { get; set; }
             public int EmpId { get; set; }
             public string Reason { get; set; }
+            public PaginationInfo Pagination { get; set; }
 
         }
     }

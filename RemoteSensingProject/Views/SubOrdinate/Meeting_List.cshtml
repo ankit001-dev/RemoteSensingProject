@@ -16,8 +16,8 @@
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="meetingStatus">
                     <option selected value="">Meeting Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="complete">Complete</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Complete">Complete</option>
                 </select>
             </div>
         </div>
@@ -37,9 +37,9 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Date</th>
                                 <th>Title</th>
                                 <th>Meet Mode</th>
+                                <th>Date</th>
                                 <th>Meet Address</th>
                                 <th>Meeting Status</th>
                                 <th>Action</th>
@@ -74,9 +74,6 @@
                                                     <li class="me-2"><a href="#" data-title="Accept" data-id="@item.Id" class="acceptMeetingBtn"><i class="fa-regular fa-circle-check text-success"> </i></a></li>
                                                     <li class="me-2"><a href="#" data-id="@item.Id" class="rejectMeetingBtn" data-title="Reject"><i class="fa-regular fa-circle-xmark text-danger"> </i></a></li>
                                                 }
-                                                @*<li class="me-2"><i onclick="showAllConclusion(@item.Id)" role="button" class="fa-solid text-primary fa-eye"></i></li>*@
-
-
                                             </ul>
 
                                         </td>
@@ -412,15 +409,6 @@
         })
     }
 
-    $("#meetingStatus").on("change", function () {
-        let table = $("#dataTableExample").DataTable();
-        table.columns(5).search(this.value).draw();
-    })
-    $('#searchByMeetingName').on('keyup', function () {
-        let table = $("#dataTableExample").DataTable();
-        table.columns(2).search(this.value).draw();
-    });
-
     $(document).ready(function () {
         document.getElementById('AllMemmberDetails').addEventListener('hide.bs.modal', function () {
             $('#AllConclusionModal').modal('show');
@@ -430,3 +418,46 @@
     })
 </script>
 
+<script>
+    function applyMeetingFilters() {
+        const url = new URL(window.location.href);
+
+        const meetingName = $("#searchByMeetingName").val().trim();
+        const meetingStatus = $("#meetingStatus").val();
+
+        // Set or remove meeting name search
+        if (meetingName) url.searchParams.set("searchTerm", meetingName);
+        else url.searchParams.delete("searchTerm");
+
+        // Set or remove status filter
+        if (meetingStatus) url.searchParams.set("statusFilter", meetingStatus);
+        else url.searchParams.delete("statusFilter");
+
+        showLoader(); // optional loader function
+        window.location.href = url.toString();
+    }
+
+    // Search on typing
+    $("#searchByMeetingName").on("keyup", function () {
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            applyMeetingFilters();
+        }, 500);  // debounce
+    });
+
+    // Meeting status change
+    $("#meetingStatus").on("change", function () {
+        applyMeetingFilters();
+    });
+
+    // Restore values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const searchMeeting = urlParams.get("searchTerm");
+        const statusFilter = urlParams.get("statusFilter");
+
+        if (searchMeeting) $("#searchByMeetingName").val(searchMeeting).focus();
+        if (statusFilter) $("#meetingStatus").val(statusFilter);
+    });
+</script>
