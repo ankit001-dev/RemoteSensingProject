@@ -34,37 +34,13 @@ namespace RemoteSensingProject.Controllers
             return View(dcount);
         }
         #region Assigned Project
-        public ActionResult Assigned_Project(string req)
+        public ActionResult Assigned_Project(string searchTerm = null, string statusFilter = null)
         {
             var managerName = User.Identity.Name;
             int userId = Convert.ToInt32(_managerServices.getManagerDetails(managerName).userId);
 
             List<Models.SubOrdinate.main.ProjectList> _list = new List<Models.SubOrdinate.main.ProjectList>();
-            if (req == "Internal")
-            {
-                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId).Where(d=>d.ProjectType=="Internal").ToList();
-            }
-            else if (req == "External")
-            {
-                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId).Where(d => d.ProjectType == req).ToList();
-            }
-            else if (req == "completed")
-            {
-                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId).Where(d => d.completestatus == true && d.CompletionDate<DateTime.Now).ToList();
-            }
-            else if (req == "ongoing")
-            {
-                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId).Where(d => d.completestatus == false && d.CompletionDate>DateTime.Now).ToList();
-            }
-            else if(req == "pending")
-            {
-                ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId).Where(d => d.StartDate>DateTime.Now).ToList();
-            }
-            else
-            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId);
-
-
-
+            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId,searchTerm:searchTerm,statusFilter:statusFilter);
             return View();
         }
         public ActionResult GetProjecDatatById(int Id)
@@ -104,10 +80,10 @@ namespace RemoteSensingProject.Controllers
         }
 
         #endregion End Problem
-        public ActionResult Meeting_List(string req)
+        public ActionResult Meeting_List(string searchTerm = null, string statusFilter = null)
         {
             var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            var res = req=="admin"? _managerServices.getAllmeeting(int.Parse(userId.userId)).Where(d=>d.createdBy=="admin").ToList():req=="projectmanager"? _managerServices.getAllmeeting(int.Parse(userId.userId)).Where(d=>d.createdBy=="projectManager").ToList(): _managerServices.getAllmeeting(int.Parse(userId.userId));
+            var res = _managerServices.getAllmeeting(int.Parse(userId.userId),searchTerm:searchTerm,statusFilter:statusFilter);
             return View(res);
         }
         public ActionResult GetConclusions(int id)

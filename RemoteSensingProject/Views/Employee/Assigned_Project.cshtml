@@ -34,15 +34,15 @@
                 <h5>Assigned Project Lists</h5>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="text" id="searchByProjectName" name="searchByProjectName" placeholder="Search by project name" class="form-control">
+                <input type="text" id="searchProjectBy" name="searchByProjectName" placeholder="Search by project name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
-                <select id="statusFilter"class="form-select form-select-lg">
+                <select id="filterProjectStatus" class="form-select form-select-lg">
                     <option selected value="">Project Status</option>
-                    <option value="Work in Progress">Work in Progress</option>
-                    <option value="Not Started">Not Started</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Delay">Delay</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="delay">Delay</option>
+                    <option value="Complete">Completed</option>
                 </select>
             </div>
         </div>
@@ -125,12 +125,6 @@
 
                         <td class="text-center">
                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                @*<li class="me-2">
-                                    <a href="#" class="viewProject" title="View" data-id="@item.Id">
-                                        <i class="link-icon" data-feather="eye"></i>
-                                    </a>
-
-                                </li>*@
                                 <li class="me-2">
                                     <a href="@(item.ProjectType.Equals("Internal") ? $"/Employee/Weekly_Update_Project?Id={item.Id}" : item.ProjectType.Equals("External") ? $"/Employee/monthly_extr_ProjectStatue?Id={item.Id}" : "")" data-title="Monthly Update">
                                         <i class="link-icon" data-feather="calendar" style="color:orangered"></i>
@@ -178,24 +172,6 @@
 <script>
     $(document).ready(function () {
         var table = $("#projectTable").DataTable();
-        $("#statusFilter").on("change", function () {
-            var projectStatus = $(this).val();
-            table.column(5).search(projectStatus).draw();
-        })
-
-        $('#searchByProjectName').on('keyup', function () {
-            let table = $("#projectTable").DataTable();
-
-            table.columns(1).search($(this).val()).draw();
-        });
-      
-    })
-
-    $(document).ready(function () {
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#projectTable").DataTable();
-            table.column(5).search(this.value).draw();
-        })
     })
 </script>
 
@@ -363,7 +339,47 @@
         })
     })
 
+    // Search by text
+    $('#searchProjectBy').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
 
+        const division = $("#filterProjectStatus").val();
+        if (division && division !== "null") url.searchParams.set("statusFilter", division);
+        else url.searchParams.delete("statusFilter");
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Filter by status
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Set values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
+
+        if (search) $('#searchProjectBy').val(search).focus();
+        if (division) $('#filterProjectStatus').val(division);
+    });
 
 </script>
 

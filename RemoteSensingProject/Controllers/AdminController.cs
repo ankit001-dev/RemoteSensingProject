@@ -499,11 +499,11 @@ namespace RemoteSensingProject.Controllers
             return Json(res);
         }
 
-        public ActionResult Notice_List(int? projectId,string searchTerm = null)
+        public ActionResult Notice_List(int? projectManager,string searchTerm = null)
         {
             dynamic noticeList = null;
-            noticeList = _adminServices.getNoticeList(id:projectId,searchTerm:searchTerm);
-            ViewBag.ProjectList = _adminServices.Project_List();
+            noticeList = _adminServices.getNoticeList(id: projectManager, searchTerm:searchTerm);
+            ViewBag.ProjectList = _adminServices.SelectEmployeeRecord();
 
             ViewData["NoticeList"] = noticeList;
 
@@ -655,35 +655,6 @@ namespace RemoteSensingProject.Controllers
             ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
-
-        //public ActionResult AddBudget()
-        //{
-        //    ViewData["budgetList"] = _adminServices.getBudgetList();
-        //    return View();
-        //}
-        //[HttpPost]
-        //public ActionResult AddBudget(BudgetForm data)
-        //{
-        //    var res = _adminServices.InsertBuget(data);
-        //    if (res)
-        //    {
-        //        return Json(new
-        //        {
-        //            status = res,
-        //            message = "Added Successfully"
-        //        });
-        //    }
-        //    else
-        //    {
-        //        return Json(new
-        //        {
-        //            status = res,
-        //            message = "Some error occured"
-        //        });
-        //    }
-        //}
-
-
 
         public ActionResult RaisedProblem()
         {
