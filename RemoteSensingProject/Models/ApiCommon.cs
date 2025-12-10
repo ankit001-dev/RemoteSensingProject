@@ -27,5 +27,10 @@ namespace RemoteSensingProject.Models
         {
             public int? division { get; set; }
         }
+        public class ColumnMapping
+        {
+            public string Header { get; set; }
+            public string PropertyName { get; set; }
+        }
     }
 }
