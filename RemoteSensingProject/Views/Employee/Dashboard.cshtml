@@ -4,45 +4,6 @@
     var data = ViewData["emplist"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
 }
 
-
-<!--<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-4 grid-margin stretch-card">
-
-                <div class="card uniform-card w-100 rounded-0 w-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-0" style="text-decoration: none;">Other's</h6>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 col-md-12 col-xl-7">
-                                <a href="/employee/OutSource">
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Outsource :  </span> @Model.OutSource</span></p>
-                                    </div>
-                                </a>
-                                <a href="/Employee/Notice">
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Notice : </span> @Model.TotalNotice</span></p>
-                                    </div>
-                                </a>
-                                <a href="/Employee/SubOrdinateProblemList">
-                                    <div class="d-flex align-items-baseline py-1">
-                                        <p class="text-success"><span><span class="text-dark">Project Problem : </span> @Model.ProjectProblem</span></p>
-                                    </div>
-                                </a>
-                            </div>
-                            <div class="col-6 col-md-12 col-xl-5">
-                                <img src="~/assets/gif/success.gif" height="70" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-
-        </div>
-    </div>
-</div>-->
 <style>
     .uniform-card {
         /*        height: 200px;
@@ -193,17 +154,17 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/employee/all_project_report?req=completed">
+                                        <a href="/employee/all_project_report?statusFilter=completed">
                                             <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@Model.TotaCompleteProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/employee/all_project_report?req=delay">
+                                        <a href="/employee/all_project_report?statusFilter=delay">
                                             <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @Model.TotalDelayProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/employee/all_project_report?req=ongoing">
+                                        <a href="/employee/all_project_report?statusFilter=ongoing">
                                             <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @Model.TotalOngoingProject</span></p>
                                         </a>
                                     </div>
