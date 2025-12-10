@@ -528,10 +528,10 @@ namespace RemoteSensingProject.Controllers
                 message = res ? "Problem solved successfully !" : "Some issue occured.  Try after sometime."
             });
         }
-        public ActionResult All_Project_Report(string req)
+        public ActionResult All_Project_Report(string searchTerm = null, string statusFilter = null)
         {
             var userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId),null,null,req,null);
+            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId),null,null,null,null,searchTerm:searchTerm,statusFilter:statusFilter);
                 return View();
         }
 
