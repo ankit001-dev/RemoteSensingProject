@@ -888,34 +888,46 @@ namespace RemoteSensingProject.Controllers
             var data = _managerServices.ConvertExcelFileOfAll(month, year, userObj);
             return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReportOfAll.xlsx");
         }
-        public ActionResult EmpMonthlyReport()
+        public ActionResult EmpMonthlyReport(int?month=null,int?year=null)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             ViewData["projectList"] = _managerServices.All_Project_List(userid, null, null, null);
-            ViewData["ReportList"] = _managerServices.GetEmpReport(userid);
+            ViewData["ReportList"] = _managerServices.GetEmpReport(userid,month:month,year:year);
             return View();
         }
         [HttpPost]
         public ActionResult InsertEmpReport(EmpReportModel model)
         {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            model.PmId = userid;
-            bool res = _managerServices.InsertEmpReport(model);
+            try
+            {
+                string message = "";
+                int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+                model.PmId = userid;
+                bool res = _managerServices.InsertEmpReport(model, out message);
 
-            if (res)
-            {
-                return Json(new
+                if (res)
                 {
-                    status = res,
-                    message = "Report inserted successfully!"
-                });
+                    return Json(new
+                    {
+                        status = res,
+                        message = "Report inserted successfully!"
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        status = res,
+                        message = message
+                    });
+                }
             }
-            else
+            catch (Exception ex)
             {
                 return Json(new
                 {
-                    status = res,
-                    message = "Some issue occurred!"
+                    status = false,
+                    message = "Server error occurred: " + ex.Message
                 });
             }
         }

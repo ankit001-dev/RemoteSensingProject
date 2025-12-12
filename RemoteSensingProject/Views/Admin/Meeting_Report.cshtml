@@ -251,44 +251,6 @@
         }); document.getElementById('customModalTwo').addEventListener('hide.bs.modal', function () {
             $('#AllConclusionModal').modal('show');
         });
-
-        //setTimeout(() => {
-
-        //    $('#meetingTable').DataTable({
-        //        layout: {
-        //            topStart: {
-        //                buttons: ['excel', 'pdf']
-        //            }
-        //        }
-        //    });
-        //}, 1000)
-
-        //$.ajax({
-        //    url: '/Admin/GetAllMeeting',
-        //    type: 'GET',
-        //    success: function (res) {
-        //        $('#meetingTable tbody').empty();
-        //        var rows = '';
-        //        $.each(res.empList, function (index, item) {
-        //            rows += `<tr>
-        //           <td>${index + 1}</td>
-        //           <td><a href="#" data-title="View Details"><span onclick="showAllConclusion(${item.Id})" role="button" >${item.MeetingTitle}</span></a></td>
-        //           <td>${item.MeetingType}</td>
-        //           <td>${item.MeetingDate}</td>
-        //       <td>
-        //             <span class="${item.CompleteStatus == 0 ? 'badge badge-pending' : 'badge badge-completed'}">
-        //               ${item.CompleteStatus == 0 ? 'Pending' : 'Completed'}
-        //             </span>
-        //           </td>
-                   
-        //           </tr>`;
-        //        });
-        //        $('#meetingTable tbody').append(rows);
-        //    },
-        //    error: function (xhr, error) {
-        //        console.log("An error accured", error);
-        //    }
-        //})
     })
 
     function loadMeetings() {
