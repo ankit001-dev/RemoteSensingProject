@@ -1,0 +1,205 @@
+﻿
+@{
+    ViewBag.Title = "ContactUs";
+    Layout = null;
+}
+
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&amp;display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" />
+<link href="~/assets/css/SweatAlert.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/assets/vendors/core/core.css">
+
+<link rel="stylesheet" href="~/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+
+<link rel="stylesheet" href="~/assets/fonts/feather-font/css/iconfont.css">
+
+<link rel="stylesheet" href="~/assets/css/style.css">
+<link href="~/assets/vendors/select2/select2.min.css" rel="stylesheet" />
+<link rel="shortcut icon" href="../images/favicon.png" />
+<link href="~/assets/datatable/datatables.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/assets/Summernotes/summernote.min.css">
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+
+<style>
+    .bg-gradient-custom {
+        background: linear-gradient(to bottom right, #f3e8ff, #a2c8f2, #a2e1f0);
+    }
+
+    .bg-gradient-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        height: 100%; /* Ensures full height */
+    }
+
+    .btn-gradient {
+        background: linear-gradient(to right, #6a0dad, #007bff, #00bcd4);
+        color: white !important;
+        font-weight: 600;
+    }
+
+        .btn-gradient:hover {
+            background: linear-gradient(to right, #5e0ca3, #006f99, #00a1c2);
+        }
+</style>
+
+<div class="bg-gradient-custom py-2">
+    <div class="container">
+
+        <div class="text-center mb-1">
+            <h1 class="fw-bold text-dark">Get in Touch</h1>
+            <p class="text-muted">We would love to hear from you!</p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+
+            <!-- Contact Info -->
+            <div class="col-lg-5 d-flex">
+                <div class="bg-gradient-card p-4 w-100">
+
+                    <h3 class="text-primary fw-bold mb-4">Contact Information</h3>
+
+                    <!-- Address -->
+                    <div class="d-flex mb-4">
+                        <div class="bg-light p-3 rounded-3 me-3">
+                            <i class="fa-solid fa-location-dot fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-semibold">Address</h6>
+                            <p class="text-muted mb-0">
+                                H 138, Infinity Business Park, Sector - 63, Noida,<br>
+                                Uttar Pradesh 201301
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="d-flex mb-4">
+                        <div class="bg-light p-3 rounded-3 me-3">
+                            <i class="fa-solid fa-envelope fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-semibold">Mail Us</h6>
+                            <a href="mailto:sales@macreel.co.in" class="text-primary">
+                                sales@macreel.co.in
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="d-flex mb-4">
+                        <div class="bg-light p-3 rounded-3 me-3">
+                            <i class="fa-solid fa-phone fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-semibold">Call Us</h6>
+                            <a href="tel:+918368648746" class="text-primary">(+91) 8368648746</a>
+                        </div>
+                    </div>
+
+                    <!-- Website -->
+                    <div class="d-flex">
+                        <div class="bg-light p-3 rounded-3 me-3">
+                            <i class="fa-solid fa-globe fs-4 text-primary"></i>
+                        </div>
+                        <div>
+                            <h6 class="fw-semibold">Website</h6>
+                            <a href="https://macreel.co.in" target="_blank" class="text-primary">
+                                macreel.co.in
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Form -->
+            <div class="col-lg-7 d-flex">
+                <div class="bg-gradient-card p-4 w-100">
+
+                    <h3 class="text-primary fw-bold mb-4">Send us a Message</h3>
+
+                    @using (Html.BeginForm("SendMessage", "Contact", FormMethod.Post))
+                    {
+                        <div class="mb-3">
+                            @Html.Label("Enter your name", null, new { @class = "form-label" })
+                            @Html.TextBox("Name", null, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Your Name",
+                                required = "required"
+                            })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.Label("Your Email", null, new { @class = "form-label" })
+                            @Html.TextBox("Email", null, new
+                            {
+                                type = "email",
+                                @class = "form-control",
+                                placeholder = "Your Email",
+                                required = "required"
+                            })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.Label("Phone", null, new { @class = "form-label" })
+                            @Html.TextBox("number", null, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Your Phone Number",
+                                required = "required"
+                            })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.Label("Message", null, new { @class = "form-label" })
+                            @Html.TextArea("Message", null, new
+                            {
+                                @class = "form-control",
+                                rows = 4,
+                                placeholder = "Your Message",
+                                required = "required"
+                            })
+                        </div>
+
+                        <button type="submit" class="btn btn-gradient w-100 py-2">
+                            Send Message
+                        </button>
+                    }
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function () {
+
+        $("form").on("submit", function (e) {
+            e.preventDefault(); // stop form submission for demo
+
+            Swal.fire({
+                title: "Message Sent!",
+                text: "Your message has been submitted successfully.",
+                icon: "success",
+                confirmButtonText: "OK",
+                confirmButtonColor: "#3085d6"
+            });
+
+            // If you want the form to submit after alert closes:
+            // e.currentTarget.submit();
+        });
+
+    });
+</script>
