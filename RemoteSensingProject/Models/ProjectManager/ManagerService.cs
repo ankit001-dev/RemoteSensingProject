@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IdentityModel;
 using System.IO;
 using System.Linq;
+using System.Web.Services.Description;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Office2010.Excel;
@@ -1435,7 +1436,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<OutSourceTask> taskList(int empId, int? limit = null, int? page = null)
+        public List<OutSourceTask> taskList(int empId, int? limit = null, int? page = null,string searchTerm = null)
         {
             try
             {
@@ -1449,6 +1450,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.Parameters.AddWithValue("@v_id", empId);
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_searchterm", string.IsNullOrEmpty(searchTerm) ? DBNull.Value : (object)searchTerm);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (var rd = fetchCmd.ExecuteReader())
@@ -1691,7 +1693,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     accountNewRequest = Convert.ToBoolean(res["accountNewRequest"]),
                                     chequeDate = res["chequeDate"] != DBNull.Value ? Convert.ToDateTime(res["chequeDate"]).ToString("dd/MM/yyyy") : "",
                                     newRequest = Convert.ToBoolean(res["newStatus"]),
-                                    approveAmount = Convert.ToDecimal(res["apprAmt"] != DBNull.Value ? res["apprAmt"] : 0)
+                                    approveAmount = Convert.ToDecimal(res["apprAmt"] != DBNull.Value ? res["apprAmt"] : 0),
+                                    remark = res["remark"].ToString(),
+                                    statusLabel = !Convert.ToBoolean(res["newStatus"]) && Convert.ToBoolean(res["Apprstatus"]) ? "Approved": !Convert.ToBoolean(res["newStatus"]) && !Convert.ToBoolean(res["Apprstatus"])? "Rejected" : !Convert.ToBoolean(res["newStatus"]) && !Convert.ToBoolean(res["Apprstatus"]) ? "Pending":""
                                 };
 
                                 if (firstRow)
@@ -3381,8 +3385,9 @@ namespace RemoteSensingProject.Models.ProjectManager
         }
 
         #region Employee Monthly Report
-        public bool InsertEmpReport(EmpReportModel model)
+        public bool InsertEmpReport(EmpReportModel model,out string message)
         {
+            message = string.Empty;
             try
             {
                 using (NpgsqlCommand cmd = new NpgsqlCommand(@"call sp_ManageEmpReport(@v_action,@v_pmid,Null,@v_ProjectId,@v_unit,@v_annualtarget,@v_targetuptoreviewmonth,@v_achievementduringreviewmonth,@v_cumulativeachievement,@v_benefitingdepartments,@v_remarks,Null);", con))
@@ -3407,6 +3412,11 @@ namespace RemoteSensingProject.Models.ProjectManager
                     return true;
                 }
             }
+            catch(SqlException sqlex)
+            {
+                message = sqlex.Message;
+                return false;
+            }
             catch (Exception ex)
             {
                 throw ex;
@@ -3417,7 +3427,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     con.Close();
             }
         }
-        public List<EmpReportModel> GetEmpReport(int userid, int? limit = null, int? page = null, int? id = null)
+        public List<EmpReportModel> GetEmpReport(int userid, int? limit = null, int? page = null, int? id = null,int?month=null,int?year=null)
         {
             try
             {
@@ -3432,6 +3442,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.Parameters.AddWithValue("@v_id", id.HasValue ? (object)id.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_month", month.HasValue ? (object)month.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_year", year.HasValue ? (object)year.Value : DBNull.Value);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (NpgsqlDataReader res = fetchCmd.ExecuteReader())
@@ -3450,7 +3462,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     AchievementDuringReviewMonth = res["AchievementDuringReviewMonth"] != DBNull.Value ? Convert.ToInt32(res["AchievementDuringReviewMonth"]) : 0,
                                     CumulativeAchievement = res["CumulativeAchievement"] != DBNull.Value ? Convert.ToInt32(res["CumulativeAchievement"]) : 0,
                                     BenefitingDepartments = res["BenefitingDepartments"] != DBNull.Value ? res["BenefitingDepartments"].ToString() : "",
-                                    Remarks = res["Remarks"] != DBNull.Value ? res["Remarks"].ToString() : ""
+                                    Remarks = res["Remarks"] != DBNull.Value ? res["Remarks"].ToString() : "",
+                                    CreatedAt = Convert.ToDateTime(res["CreatedAt"]).ToString("dd-mm-yyyy")
                                 });
                             }
                         }
