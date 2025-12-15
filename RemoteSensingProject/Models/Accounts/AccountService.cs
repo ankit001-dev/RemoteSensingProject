@@ -207,6 +207,7 @@ namespace RemoteSensingProject.Models.Accounts
                                 getlist.Add(new tourProposal
                                 {
                                     id = Convert.ToInt32(res["id"]),
+                                    projectId = Convert.ToInt32(res["projectId"]),
                                     projectManager = Convert.ToString(res["name"]),
                                     projectName = Convert.ToString(res["title"]),
                                     dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
@@ -218,7 +219,13 @@ namespace RemoteSensingProject.Models.Accounts
                                     newRequest = Convert.ToBoolean(res["newRequest"]),
                                     adminappr = Convert.ToBoolean(res["adminappr"]),
                                     remark = res["remark"].ToString(),
-                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
+                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A",
+                                    statusLabel =
+        Convert.ToBoolean(res["newRequest"]) == true && Convert.ToBoolean(res["adminappr"]) == false
+            ? "Pending"
+        : Convert.ToBoolean(res["newRequest"]) == false && Convert.ToBoolean(res["adminappr"]) == true
+            ? "Approved"
+        : "Rejected"
                                 });
                                 if (firstRow)
                                 {

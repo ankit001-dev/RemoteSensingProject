@@ -13,6 +13,40 @@
     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Monthly Report</button>
 </nav>
 
+<div class="row mb-3">
+    <div class="col-lg-4">
+        <label for="filterYear" class="form-label">Year</label>
+        <select class="form-select form-select-sm" id="filterYear">
+            @for (int j = DateTime.Now.Year; j >= 2020; j--)
+            {
+                <option value="@j">@j</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-4">
+        <label for="filterMonth" class="form-label">Month</label>
+        <select class="form-select form-select-sm" id="filterMonth">
+            <!-- Options will be added dynamically -->
+            @{
+                DateTime start = new DateTime(DateTime.Now.Year, 1, 1); // January of current year
+                int currentMonth = DateTime.Now.Month;
+
+                for (int k = 1; k <= 12; k++)
+                {
+                    <option value="@start.Month">
+                        @start.ToString("MMMM")
+                    </option>
+                    ;
+
+                    start = start.AddMonths(1);
+                }
+            }
+        </select>
+    </div>
+
+</div>
+
+
 <div class="row mx-0">
     <div class="col-sm-12">
         <div class="table-responsive">
@@ -59,7 +93,7 @@
                                             }
                                         }
                                     </td>
-                                    
+
                                 </tr>
                                 i++;
                             }
@@ -206,5 +240,59 @@
 
     });
 </script>
+
+<script>
+    function applyDateFilters() {
+        const url = new URL(window.location.href);
+
+        const month = $("#filterMonth").val();
+        const year = $("#filterYear").val();
+
+        // Month Filter
+        if (month) url.searchParams.set("month", month);
+        else url.searchParams.delete("month");
+
+        // Year Filter
+        if (year) url.searchParams.set("year", year);
+        else url.searchParams.delete("year");
+
+        showLoader(); // optional
+        window.location.href = url.toString();
+    }
+
+    // Trigger filter on change
+    $("#filterMonth").on("change", applyDateFilters);
+    $("#filterYear").on("change", applyDateFilters);
+
+    // Restore dropdown values on load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        let month = urlParams.get("month");
+        let year = urlParams.get("year");
+
+        // Get current month (1–12) and year
+        const currentMonth = new Date().getMonth() + 1;
+        const currentYear = new Date().getFullYear();
+
+        // If month not found → set current month
+        if (!month) {
+            month = currentMonth;
+            $("#filterMonth").val(currentMonth);
+        } else {
+            $("#filterMonth").val(month);
+        }
+
+        // If year not found → set current year
+        if (!year) {
+            year = currentYear;
+            $("#filterYear").val(currentYear);
+        } else {
+            $("#filterYear").val(year);
+        }
+    });
+
+</script>
+
 
 

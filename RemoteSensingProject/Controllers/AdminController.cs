@@ -697,11 +697,11 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpGet]
-        public ActionResult EmployeeReportMon(int id)
+        public ActionResult EmployeeReportMon(int id,int?month=null,int?year=null)
         {
             try
             {
-                var data = _managerServices.GetEmpReport(id);
+                var data = _managerServices.GetEmpReport(id,month:month,year:year);
                 return Json(new
                 {
                     status = data != null ? true : false,

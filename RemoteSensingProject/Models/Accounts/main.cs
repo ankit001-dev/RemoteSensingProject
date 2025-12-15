@@ -114,6 +114,7 @@ namespace RemoteSensingProject.Models.Accounts
         }
         public class tourProposal
         {
+            public string statusLabel { get; set; }
             public PaginationInfo Pagination { get; set; }
             public string projectCode { get; set; }
             public string remark { get; set; }

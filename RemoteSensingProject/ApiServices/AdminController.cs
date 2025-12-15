@@ -23,7 +23,7 @@ using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize]
+    [JwtAuthorize(Roles = "admin")]
     public class AdminController : ApiController
     {
         private readonly AdminServices _adminServices;

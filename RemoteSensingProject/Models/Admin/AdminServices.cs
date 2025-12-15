@@ -707,7 +707,7 @@ namespace RemoteSensingProject.Models.Admin
                             ProjectDescription = rd["description"].ToString(),
                             projectDocumentUrl = rd["ProjectDocument"].ToString(),
                             ProjectType = rd["projectType"].ToString(),
-                            physicalcomplete = Convert.ToDecimal(rd["completionPercentage"]),
+                            physicalcomplete = Math.Round(Convert.ToDecimal(rd["completionPercentage"]),2),
                             overallPercentage = Convert.ToDecimal(rd["overallPercentage"]),
                             ProjectStage = Convert.ToBoolean(rd["stage"]),
                             CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
@@ -717,6 +717,22 @@ namespace RemoteSensingProject.Models.Admin
                             createdBy = rd["createdBy"].ToString(),
                             projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
                         };
+                        if (project.ProjectStatus || project.physicalcomplete == 100)
+                        {
+                            project.projectStatusLabel = "Completed";
+                        }
+                        else if (project.CompletionDate < DateTime.Now)
+                        {
+                            project.projectStatusLabel = "Delay";
+                        }
+                        else if (project.StartDate < DateTime.Now)
+                        {
+                            project.projectStatusLabel = "Ongoing";
+                        }
+                        else
+                        {
+                            project.projectStatusLabel = "Upcoming";
+                        }
                         if (firstRow)
                         {
                             project.Pagination = new ApiCommon.PaginationInfo
@@ -1574,6 +1590,7 @@ namespace RemoteSensingProject.Models.Admin
                             obj.summary = sdr["meetSummary"].ToString();
                             obj.Attachment_Url = sdr["reason"] != null ? sdr["reason"].ToString() : "";
                             obj.createdBy = sdr["createdBy"].ToString();
+                            obj.statusLabel = Convert.ToInt32(sdr["completeStatus"]) == 0 ? "Pending" :"Completed";
                             _list.Add(obj);
                             if (firstRow)
                             {
@@ -2632,6 +2649,7 @@ namespace RemoteSensingProject.Models.Admin
                                 list.Add(new HiringVehicle1
                                 {
                                     id = (int)res["id"],
+                                    projectId = (int)res["projectId"],
                                     projectName = Convert.ToString(res["title"]),
                                     projectManager = Convert.ToString(res["name"]),
                                     headName = Convert.ToString(res["heads"]),
@@ -2650,6 +2668,12 @@ namespace RemoteSensingProject.Models.Admin
                                     adminappr = Convert.ToBoolean(res["adminappr"]),
                                     remark = res["remark"].ToString(),
                                     projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A",
+                                    statusLabel =
+        Convert.ToBoolean(res["newRequest"]) == true && Convert.ToBoolean(res["adminappr"]) == false
+            ? "Pending"
+        : Convert.ToBoolean(res["newRequest"]) == false && Convert.ToBoolean(res["adminappr"]) == true
+            ? "Approved"
+        : "Rejected"
                                 });
                                 if (firstRow)
                                 {

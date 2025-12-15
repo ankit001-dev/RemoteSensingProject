@@ -16,20 +16,22 @@ namespace RemoteSensingProject.Models
 
     public class JwtAuthorizeAttribute : AuthorizationFilterAttribute
     {
+        public string Roles { get; set; }   // <── Add this
+
         private readonly string _secretKey = System.Configuration.ConfigurationManager.AppSettings["JwtSecretKey"];
         private readonly string _issuer = System.Configuration.ConfigurationManager.AppSettings["JwtIssuer"];
         private readonly string _audience = System.Configuration.ConfigurationManager.AppSettings["JwtAudience"];
 
         public override void OnAuthorization(HttpActionContext actionContext)
         {
-            // Check if the action OR controller has AllowAnonymous
+            // AllowAnonymous logic…
             bool skipAuthorization = actionContext.ActionDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().Any()
                                      || actionContext.ControllerContext.ControllerDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().Any();
 
             if (skipAuthorization)
-                return; // Skip JWT validation for login API or any AllowAnonymous API
+                return;
 
-            // JWT validation logic here
+            // JWT validation…
             var authHeader = actionContext.Request.Headers.Authorization;
             if (authHeader == null || authHeader.Scheme != "Bearer" || string.IsNullOrEmpty(authHeader.Parameter))
             {
@@ -47,8 +49,25 @@ namespace RemoteSensingProject.Models
 
             // Attach principal
             Thread.CurrentPrincipal = principal;
-            if (actionContext.RequestContext.Principal != null)
-                actionContext.RequestContext.Principal = principal;
+            actionContext.RequestContext.Principal = principal;
+
+            // ❗ NEW: Role check inside JWT attribute
+            if (!string.IsNullOrEmpty(Roles))
+            {
+                var requiredRoles = Roles.Split(',').Select(r => r.Trim()).ToList();
+
+                var userRoles = principal.Claims
+                    .Where(c => c.Type == ClaimTypes.Role || c.Type == "role")
+                    .Select(c => c.Value)
+                    .ToList();
+
+                if (!requiredRoles.Any(r => userRoles.Contains(r, StringComparer.OrdinalIgnoreCase)))
+                {
+                    actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden,
+                        "You do not have permission to perform this action.");
+                    return;
+                }
+            }
 
             base.OnAuthorization(actionContext);
         }
@@ -82,6 +101,7 @@ namespace RemoteSensingProject.Models
             }
         }
     }
+
 
     public class RoleAuthorizeAttribute : AuthorizationFilterAttribute
     {

@@ -13,6 +13,15 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
+        public ActionResult ContactUs()
+        {
+            return View();
+        }
+        public ActionResult Privacy_Policy()
+        {
+            return View();
+        }
+
         #region checklogin
 
         [HttpPost]
