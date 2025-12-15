@@ -1,21 +1,30 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.LoginManager;
+using RemoteSensingProject.Models.MailService;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net.PeerToPeer;
+using System.Runtime.Caching;
+using System.Security.Policy;
 using System.Web;
 using System.Web.Mvc;
-using static RemoteSensingProject.Models.LoginManager.main;
-using RemoteSensingProject.Models.LoginManager;
 using System.Web.Security;
-using RemoteSensingProject.Models;
+using static RemoteSensingProject.Models.LoginManager.main;
 
 namespace RemoteSensingProject.Controllers
 {
     public class LoginController : Controller
     {
         private readonly LoginServices _loginServices;
+        private ObjectCache _cache = MemoryCache.Default;
+        private mail _mail; 
         public LoginController()
         {
-            _loginServices = new LoginServices();   
+            _loginServices = new LoginServices();
+            _mail = new mail();
         }
         // GET: Login
         public ActionResult Login()
@@ -64,15 +73,140 @@ namespace RemoteSensingProject.Controllers
             }
         }
 
-
-
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
             return RedirectToAction("login");
         }
 
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult SendOtp(Credentials userData)
+        {
+            try {
+                var otp = new Random().Next(100000, 999999).ToString();
 
+                var emp = _loginServices.ValidateUserFromEmail(userData.Email);
+
+                if (emp.userId <= 0)
+                {
+                    return Json(new
+                    {
+                        status = false,
+                        message = "User does not exist."
+                    });
+                }
+                bool flag = _mail.SendOtpMail(userData.Email, otp);
+
+                if (!flag)
+                {
+                    return Json(new
+                    {
+                        status = false,
+                        message = "Error occured while sending mail. Try again later!"
+                    });
+                }
+
+                string cacheKey = "otp_" + userData.Email;
+                CacheItemPolicy policy = new CacheItemPolicy
+                {
+                    AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(10)
+                };
+                _cache.Set(cacheKey, otp, policy);
+                return Json(new
+                {
+                    status = true,
+                    message = "OTP sent successfully !",
+                    otp = otp
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "Server error occured"
+                });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult VerifyOtp(string email, string otp)
+        {
+            try { 
+                string cacheKey = "OTP_" + email;
+                var cacheOtp = _cache.Get(cacheKey) as string;
+                if (cacheOtp == null)
+                {
+                    return Json(new
+                    {
+                        status = false,
+                        message = "OTP expired or not found"
+                    });
+                }
+                if (cacheOtp == otp)
+                {
+                    _cache.Remove(cacheKey);
+                    return Json(new
+                    {
+                        status = true,
+                        message = "OTP verified successfully"
+                    });
+                }
+                return Json(new
+                {
+                    status = false,
+                    message = "Invalid OTP"
+                });
+            }
+            catch
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "Server error occured"
+                });
+            }
+        }
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
+        [HttpPut]
+        public ActionResult ChangePassword(Credentials userdata)
+        {
+            try
+            {
+                if (userdata.newPassword.Equals(userdata.confirmPassword))
+                {
+                    var res = _loginServices.ChangePassword(userdata);
+                    return Json(new
+                    {
+                        status = res,
+                        message = "Password changed successfully."
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        status = false,
+                        message = "Password not matched"
+                    });
+                }
+            }
+            catch
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "Server error occured"
+                });
+            }
+        }
 
         #region exportHtmlToPdf
 
