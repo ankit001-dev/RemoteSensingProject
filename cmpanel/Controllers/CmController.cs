@@ -8,5 +8,13 @@ namespace cmpanel.Controllers
         {
             return View();
         }
+        public ActionResult ProjectList()
+        {
+            return View();
+        }
+        public ActionResult projectDetails()
+        {
+            return View();
+        }
     }
 }

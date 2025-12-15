@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "All Projects";
+    Layout = "~/Views/Shared/_CmLayout.cshtml";
+}
+
+@section Styles {
+    <style>
+        body {
+            background: #f4f6f9;
+        }
+
+        .project-table th {
+            background: #029e9d;
+            color: white;
+            text-align: center;
+        }
+
+        .project-table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="mb-3">All Project Lists</h5>
+
+        <div class="table-responsive">
+            <table class="table table-bordered project-table">
+                <thead>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>Project Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Remote Sensing Project</td>
+                        <td><span class="badge bg-warning">Ongoing</span></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>GIS Mapping Project</td>
+                        <td><span class="badge bg-success">Completed</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

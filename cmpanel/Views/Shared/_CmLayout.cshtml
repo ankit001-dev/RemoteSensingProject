@@ -1,0 +1,189 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- BOOTSTRAP CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .main-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 17%;
+            background:white;
+            color: black;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 70px;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.25); /* light grey-white */
+            color:black
+        }
+
+        .sidebar-title {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .sidebar-toggler {
+            cursor: pointer;
+            font-size: 22px;
+            padding-left: 12px;
+        }
+
+        .sidebar-body {
+            padding: 15px;
+        
+          
+        }
+        .link-title{
+            color:black;
+        }
+
+
+        .nav-link {
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .nav-link:hover {
+            background: #334155;
+            color: #fff;
+        }
+
+        .sidebar.collapsed .link-title,
+        .sidebar.collapsed .sidebar-title {
+            display: none;
+        }
+
+        .sidebar.collapsed .collapse {
+            display: none !important;
+        }
+
+        /* ===== PAGE CONTENT ===== */
+        .page-wrapper {
+            flex: 1;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+        .nav-item i{
+            color:black;
+        }
+
+      
+    </style>
+
+    @RenderSection("Styles", false)
+</head>
+
+<body>
+
+<div class="main-wrapper">
+
+    <!-- ========== SIDEBAR ========== -->
+    <div class="sidebar" id="sidebar">
+
+        <div class="sidebar-header">
+            <span class="sidebar-title">Remote Sensing</span>
+            <span class="sidebar-toggler" id="toggleIcon" onclick="toggleSidebar()">☰</span>
+        </div>
+       
+
+        <div class="sidebar-body">
+            <ul class="nav flex-column">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/Dashboard">
+                        <i data-feather="home"></i>
+                        <span class="link-title">Dashboard</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/Assigned_Project">
+                        <i data-feather="user"></i>
+                        <span class="link-title">Assigned Projects</span>
+                    </a>
+                </li>
+
+                <!-- COLLAPSE MENU -->
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#projectMenu">
+                        <i data-feather="folder"></i>
+                        <span class="link-title">Projects</span>
+                    </a>
+
+                    <div class="collapse" id="projectMenu">
+                        <ul class="nav flex-column ms-4">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Employee/Add_Project">Add Project</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Employee/Project_List">Project List</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+
+    <!-- ========== CONTENT ========== -->
+    <div class="page-wrapper">
+        @RenderBody()
+    </div>
+
+</div>
+
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    feather.replace();
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const icon = document.getElementById("toggleIcon");
+
+        sidebar.classList.toggle("collapsed");
+
+        if (sidebar.classList.contains("collapsed")) {
+            icon.innerHTML = "✖";   
+        } else {
+            icon.innerHTML = "☰"; 
+        }
+    }
+</script>
+
+@RenderSection("Scripts", false)
+
+</body>
+</html>
