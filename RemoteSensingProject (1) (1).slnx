@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="cmpanel/cmpanel.csproj" Id="dfc01dce-77d5-4da9-bae1-ac873c1188f1" />
   <Project Path="RemoteSensingProject/RemoteSensingProject (1) (1).csproj" Id="cc32a7fd-784d-4264-8526-f802b19c82d0">
     <BuildType Project="Debug" />
   </Project>
