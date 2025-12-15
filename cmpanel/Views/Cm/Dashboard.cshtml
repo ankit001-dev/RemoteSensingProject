@@ -25,6 +25,15 @@
             font-size: 20px;
             color: #fff;
         }
+
+        .chart-card {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+            .chart-card canvas {
+                max-height: 160px;
+            }
     </style>
 }
 
@@ -32,9 +41,9 @@
 
     <h4 class="mb-4" style="font-size:16px;">Dashboard</h4>
 
-    <div class="row g-4">
+    <!-- DASHBOARD CARDS -->
+    <div class="row g-4 mb-4">
 
-        <!-- CARD 1 -->
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
             <a href="/Cm/ProjectList" class="text-decoration-none text-dark">
                 <div class="card dashboard-card h-100">
@@ -51,7 +60,6 @@
             </a>
         </div>
 
-        <!-- CARD 2 -->
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
             <a href="/Cm/ProjectList" class="text-decoration-none text-dark">
                 <div class="card dashboard-card h-100">
@@ -68,7 +76,6 @@
             </a>
         </div>
 
-        <!-- CARD 3 -->
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
             <a href="/Cm/ProjectList" class="text-decoration-none text-dark">
                 <div class="card dashboard-card h-100">
@@ -85,7 +92,6 @@
             </a>
         </div>
 
-        <!-- CARD 4 -->
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
             <a href="/Cm/ProjectList" class="text-decoration-none text-dark">
                 <div class="card dashboard-card h-100">
@@ -104,7 +110,83 @@
 
     </div>
 
+
+
+    <!-- SMALL GRAPHS (3 IN ONE ROW) -->
+    <div class="row g-4">
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="card chart-card">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Monthly Progress</h6>
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="card chart-card">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Status Distribution</h6>
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="card chart-card">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">Yearly Overview</h6>
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script>
+        new Chart(document.getElementById('lineChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+                datasets: [{
+                    data: [2,5,4,6,3,7],
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13,110,253,0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
 
+        new Chart(document.getElementById('pieChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed','Ongoing','Pending'],
+                datasets: [{
+                    data: [12,10,2],
+                    backgroundColor: ['#198754','#ffc107','#dc3545']
+                }]
+            },
+            options: { plugins: { legend: { position: 'bottom' } } }
+        });
+
+        new Chart(document.getElementById('barChart'), {
+            type: 'bar',
+            data: {
+                labels: ['2019','2020','2021','2022','2023'],
+                datasets: [{
+                    data: [8,12,15,18,24],
+                    backgroundColor: '#6f42c1'
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
+    </script>
+}
