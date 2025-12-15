@@ -16,7 +16,7 @@ using RemoteSensingProject.Models.SubOrdinate;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize]
+    [JwtAuthorize(Roles = "subOrdinate")]
     public class SubOrdinateController : ApiController
     {
 

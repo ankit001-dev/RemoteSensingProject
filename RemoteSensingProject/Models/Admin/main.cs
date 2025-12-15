@@ -89,6 +89,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class Project_model
         {        
+            public string projectStatusLabel { get; set; }
             public string projectCode { get; set; }
             public bool completestatus { get; set; }
             //public string projectType { get; set; }
@@ -182,6 +183,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class Meeting_Model
         {
+            public string statusLabel { get; set; }
             public string createdBy { get; set; }
             public int Id { get; set; }
             public string MeetingType { get; set; }
@@ -387,6 +389,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class HiringVehicle1
         {
+            public string statusLabel { get; set; } 
             public string employeecode { get; set; }
             public string projectCode { get; set; }
             public string remark { get; set; }

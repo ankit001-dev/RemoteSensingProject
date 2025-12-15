@@ -212,6 +212,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class Reimbursement
     {
+        public string statusLabel { get; set; }
         public bool apprstatus { get; set; }
         public bool submitstatus { get; set; }
         public string remark { get; set; }
@@ -346,6 +347,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         // Departments Benefiting & Remarks
         public string BenefitingDepartments { get; set; }
         public string Remarks { get; set; }
+        public string CreatedAt { get; set; }
     }
     public class FeedbackModel
     {

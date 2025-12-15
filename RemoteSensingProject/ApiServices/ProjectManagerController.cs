@@ -17,7 +17,7 @@ using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize]
+    [JwtAuthorize(Roles = "projectManager")]
     public class ProjectManagerController : ApiController
     {
         private readonly AdminServices _adminServices;
@@ -414,7 +414,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.All_Project_List(userId, page, limit, "AssignedProject",searchTerm:searchTerm,statusFilter:statusFilter);
+                var data = _managerService.All_Project_List(userId: userId, limit:limit, page: page, "AssignedProject",searchTerm:searchTerm,statusFilter:statusFilter);
                 var selectProperties = new[] { "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl", "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
@@ -857,11 +857,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getTaskList")]
-        public IHttpActionResult getTaskList(int empId, int? page, int? limit)
+        public IHttpActionResult getTaskList(int empId, int? page, int? limit,string searchTerm = null)
         {
             try
             {
-                var data = _managerService.taskList(empId);
+                var data = _managerService.taskList(empId,searchTerm:searchTerm);
                 var selectProperties = new[] { "Id", "title", "description", "completeStatus" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
@@ -1960,12 +1960,13 @@ namespace RemoteSensingProject.ApiServices
                     BenefitingDepartments = req.Form.Get("BenefitingDepartments").ToString(),
                     Remarks = req.Form.Get("Remarks").ToString()
                 };
-                bool res = _managerService.InsertEmpReport(emp);
+                string message;
+                bool res = _managerService.InsertEmpReport(emp,out message);
                 return Ok(new
                 {
                     status = res,
                     StatusCode = res ? 200 : 500,
-                    message = res ? "Added Successfully!" : "Some error Occured"
+                    message = res ? "Added Successfully!" : message
                 });
             }
             catch
