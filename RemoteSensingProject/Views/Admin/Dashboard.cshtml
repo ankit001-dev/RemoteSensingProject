@@ -899,6 +899,7 @@
 
 <script>
     $(document).ready(function () {
+        debugger
         var bgdata = @Html.Raw(Json.Encode(ViewData["budgetGraph"]));
         console.log("bgdata", bgdata[0].remaining);
         Chart.defaults.font.size = 13;
