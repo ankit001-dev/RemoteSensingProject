@@ -8,5 +8,13 @@ namespace cmpanel.Controllers
         {
             return View();
         }
+        public IActionResult forgotPassword()
+        {
+            return View();
+        }
+        public IActionResult changePassword()
+        {
+            return View();
+        }
     }
 }
