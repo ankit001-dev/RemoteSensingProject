@@ -23,7 +23,7 @@ using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize(Roles = "admin")]
+    [JwtAuthorize(Roles = "admin,accounts")]
     public class AdminController : ApiController
     {
         private readonly AdminServices _adminServices;
@@ -1642,6 +1642,7 @@ namespace RemoteSensingProject.ApiServices
         #endregion
 
         #region Report for mobile app
+        [JwtAuthorize(Roles = "admin,accounts")]
         [HttpGet]
         [Route("api/allhiringreport")]
         public IHttpActionResult AllHiringReport(int?limit=null,int?page=null, int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
@@ -1663,6 +1664,7 @@ namespace RemoteSensingProject.ApiServices
                 return CommonHelper.Error(this, ex.Message);
             }
         }
+        [JwtAuthorize(Roles ="admin,accounts")]
         [HttpGet]
         [Route("api/alltourproposalreport")]
         public IHttpActionResult AllTourproposalReport(int?limit=null,int? page=null, int? managerFilter = null, int? projectFilter = null, string statusFilter = null)

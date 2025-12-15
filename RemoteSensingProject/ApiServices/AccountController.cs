@@ -15,7 +15,7 @@ using static RemoteSensingProject.Models.Accounts.main;
 
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize]
+    [JwtAuthorize(Roles ="account,admin")]
     public class AccountController : ApiController
     {
         // GET: Account

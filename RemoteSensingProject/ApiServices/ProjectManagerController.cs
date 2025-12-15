@@ -593,6 +593,7 @@ namespace RemoteSensingProject.ApiServices
         #endregion
 
         #region Manager Meeting
+        [JwtAuthorize(Roles = "subOrdinate,projectManager")]
         [HttpGet]
         [Route("api/managerMeetingList")]
         public IHttpActionResult managerMeeting(int managerId,int?page = null,int? limit = null, string searchTerm = null, string statusFilter = null)
@@ -861,7 +862,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerService.taskList(empId,searchTerm:searchTerm);
+                var data = _managerService.taskList(empId,searchTerm:searchTerm,page:page,limit:limit);
                 var selectProperties = new[] { "Id", "title", "description", "completeStatus" };
                 var filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
