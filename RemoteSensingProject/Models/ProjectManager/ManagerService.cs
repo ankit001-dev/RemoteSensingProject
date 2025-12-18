@@ -1083,7 +1083,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             {
                 string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
                 Random rnd = new Random();
-                var userName = os.EmpName.Substring(0, 5) + "@" + os.mobileNo.ToString().PadLeft(4, '0').Substring(os.mobileNo.ToString().Length - 4);
+                // var userName = os.EmpName.Substring(0, 5) + "@" + os.mobileNo.ToString().PadLeft(4, '0').Substring(os.mobileNo.ToString().Length - 4);
                 string userpassword = "";
                 if (os.Id == 0)
                 {
@@ -1096,7 +1096,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.CommandType = CommandType.Text;
                 cmd.Parameters.Add("@p_action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "createOutSource";
                 cmd.Parameters.Add("@p_empid", NpgsqlTypes.NpgsqlDbType.Integer).Value = os.EmpId;
-                cmd.Parameters.Add("@p_outcode", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userName;
+                cmd.Parameters.Add("@p_outcode", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.email;
                 cmd.Parameters.Add("@p_emp_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.EmpName;
                 cmd.Parameters.Add("@p_emp_mobile", NpgsqlTypes.NpgsqlDbType.Bigint).Value = Convert.ToInt64(os.mobileNo);
                 cmd.Parameters.Add("@p_emp_email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.email;
@@ -1108,7 +1108,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.ExecuteNonQuery();
                 mail _mail = new mail();
                 string subject = "Login Credential";
-                string message = $"<p>Your user id : <b>{userName}</b></p><br><p>Password : <b>{userpassword}</b></p>";
+                string message = $"<p>Your user id : <b>{os.email}</b></p><br><p>Password : <b>{userpassword}</b></p>";
                 _mail.SendMail(os.EmpName, os.email, subject, message);
 
                 return true;
