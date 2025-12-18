@@ -30,6 +30,9 @@
     <link href="~/assets/datatable/datatables.min.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <style>
+        * {
+            user-select: none !important;
+        }
         a::before {
             content: none !important;
             display: none !important;
@@ -354,6 +357,12 @@
                                         <a class="text-body ms-0" href="/login/Logout">
                                             <i class="me-2 icon-md" data-feather="log-out"></i>
                                             <span>Log Out</span>
+                                        </a>
+                                    </li>
+                                    <li class="dropdown-item py-2">
+                                        <a class="text-body ms-0" href="/login/ChangePassword">
+                                            <i class="me-2 icon-md" data-feather="user"></i>
+                                            <span>Change Password</span>
                                         </a>
                                     </li>
                                 </ul>

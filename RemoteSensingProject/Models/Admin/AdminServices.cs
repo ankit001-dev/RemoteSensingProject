@@ -264,9 +264,9 @@ namespace RemoteSensingProject.Models.Admin
                     // Generate username
                     string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
                     Random rnd = new Random();
-                    string userName = emp.EmployeeName.Substring(0, Math.Min(5, emp.EmployeeName.Length))
-                                        + "@" + emp.MobileNo.ToString().PadLeft(4, '0')
-                                        .Substring(emp.MobileNo.ToString().Length - 4);
+                    //string userName = emp.EmployeeName.Substring(0, Math.Min(5, emp.EmployeeName.Length))
+                    //                    + "@" + emp.MobileNo.ToString().PadLeft(4, '0')
+                    //                    .Substring(emp.MobileNo.ToString().Length - 4);
 
                     // Generate password only for new employees
                     string userPassword = "";
@@ -289,7 +289,7 @@ namespace RemoteSensingProject.Models.Admin
                     cmd.Parameters.AddWithValue("p_email", emp.Email ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("p_gender", emp.Gender ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("p_role", emp.EmployeeRole ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_username", userName ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("p_username", emp.Email ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("p_password", userPassword ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("p_devision", emp.Division);
                     cmd.Parameters.AddWithValue("p_designation", emp.Designation);
@@ -309,7 +309,7 @@ namespace RemoteSensingProject.Models.Admin
                     if (emp.Id == 0)
                     {
                         string subject = "Login Credential";
-                        string message = $"<p>Your user id: <b>{userName}</b></p><br><p>Password: <b>{userPassword}</b></p>";
+                        string message = $"<p>Your user id: <b>{emp.Email}</b></p><br><p>Password: <b>{userPassword}</b></p>";
                         _mail.SendMail(emp.EmployeeName, emp.Email, subject, message);
                     }
 
