@@ -1,15 +1,9 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿using DocumentFormat.OpenXml.Drawing;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.MailService;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net.PeerToPeer;
 using System.Runtime.Caching;
-using System.Security.Policy;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using static RemoteSensingProject.Models.LoginManager.main;
@@ -137,7 +131,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult VerifyOtp(string email, string otp)
         {
             try { 
-                string cacheKey = "OTP_" + email;
+                string cacheKey = "otp_" + email;
                 var cacheOtp = _cache.Get(cacheKey) as string;
                 if (cacheOtp == null)
                 {
@@ -176,13 +170,74 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [HttpPut]
+        public ActionResult ResetPassword(Credentials userdata)
+        {
+            try
+            {
+                //userdata.Email = User.Identity.Name;
+                if (userdata.newPassword.Equals(userdata.confirmPassword))
+                {
+                    var res = _loginServices.ChangePassword(userdata);
+                    if (res)
+                    {
+                        bool flag = _mail.SendPasswordChangedMail(userdata.Email, userdata.newPassword);
+
+                        if (!flag)
+                        {
+                            return Json(new
+                            {
+                                status = false,
+                                message = "Error occured while sending mail. Try again later!"
+                            });
+                        }
+                    }
+                    return Json(new
+                    {
+                        status = res,
+                        message = "Password changed successfully."
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        status = false,
+                        message = "Password not matched"
+                    });
+                }
+            }
+            catch
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "Server error occured"
+                });
+            }
+        }
+        [HttpPut]
         public ActionResult ChangePassword(Credentials userdata)
         {
             try
             {
+                userdata.Email = User.Identity.Name;
                 if (userdata.newPassword.Equals(userdata.confirmPassword))
                 {
+                    bool ch = _loginServices.ValidateUserFromEmailPassword(userdata.Email, userdata.oldPassword);
                     var res = _loginServices.ChangePassword(userdata);
+                    if (res)
+                    {
+                        bool flag = _mail.SendPasswordChangedMail(userdata.Email, userdata.newPassword);
+
+                        if (!flag)
+                        {
+                            return Json(new
+                            {
+                                status = false,
+                                message = "Error occured while sending mail. Try again later!"
+                            });
+                        }
+                    }
                     return Json(new
                     {
                         status = res,
