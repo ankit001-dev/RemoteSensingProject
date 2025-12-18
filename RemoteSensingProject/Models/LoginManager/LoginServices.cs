@@ -81,6 +81,7 @@ namespace RemoteSensingProject.Models.LoginManager
                 new Claim(JwtRegisteredClaimNames.Sub, cr.username),
                 new Claim("role", cr.role),
                 new Claim("userId", cr.userId.ToString()),
+                //new Claim("email",cr.Email.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -115,11 +116,44 @@ namespace RemoteSensingProject.Models.LoginManager
                             cr.userId = rd["userid"] != DBNull.Value ? Convert.ToInt32(rd["userid"]) : 0;
                             cr.username = rd["username"].ToString();
                             cr.role = rd["userrole"].ToString();
-                            cr.Email = rd["email"] != DBNull.Value ? rd["email"].ToString() : "";
+                            cr.Email = rd["username"] != DBNull.Value ? rd["username"].ToString() : "";
                         }
                     }
                 }
                 return cr;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error during user validation: " + ex.Message, ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+            }
+        }
+
+        public bool ValidateUserFromEmailPassword(string Email,string oldpassword)
+        {
+            try
+            {
+                Credentials cr = new Credentials();
+                using (var cmd = new NpgsqlCommand("SELECT * FROM sp_manageloginmaster(@action, @userid, @username, @password)", con))
+                {
+                    cmd.Parameters.AddWithValue("@action", "checkoldpassword");
+                    cmd.Parameters.AddWithValue("@userid", 0);
+                    cmd.Parameters.AddWithValue("@username", Email);
+                    cmd.Parameters.AddWithValue("@password", oldpassword);
+                    con.Open();
+                    using (var rd = cmd.ExecuteReader())
+                    {
+                        if (rd.HasRows)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
             catch (Exception ex)
             {
