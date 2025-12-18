@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
@@ -9,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using static RemoteSensingProject.Models.Admin.main;
-using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -194,6 +192,12 @@ namespace RemoteSensingProject.Controllers
                 data = data
             }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Project_Detail(int projectId)
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult InsertProject(createProjectModel pm)
         {
@@ -384,10 +388,6 @@ namespace RemoteSensingProject.Controllers
         {
             var res = _adminServices.getKeypointResponse(id);
             return Json(res, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult Project_Detail()
-        {
-            return View();
         }
         public ActionResult View_Weekly_Update(int Id)
         {
