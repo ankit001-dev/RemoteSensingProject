@@ -644,7 +644,6 @@ namespace RemoteSensingProject.Controllers
             ViewData["projectlist"] = res;
             var res1 = _managerServices.GetHiringVehicles(userId: userid, type: "projectManager",projectFilter:projectFilter);
             ViewData["hiringList"] = res1;
-            ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
         [HttpPost]
