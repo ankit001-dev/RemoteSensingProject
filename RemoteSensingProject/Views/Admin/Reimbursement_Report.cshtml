@@ -200,7 +200,6 @@
                         <th>Approved Amt.</th>
                         <th>Remark</th>
                         <th>Status</th>
-                        @*<th>Action</th>*@
                     </tr>
                 </thead>
                 <tbody>
@@ -237,11 +236,6 @@
                                     }
 
                                 </td>
-                                @*<td data-id="@item.id" class="text-center">
-                                    <a href="#" class="viewSanctionreciept" data-userId="@item.userId" data-type="@item.type" data-id="@item.id" data-chequeNum="@item.chequeNum" data-chequeDate="@item.chequeDate" data-apprAmt="@item.approveAmount">
-                                        <i class="fa-solid fa-eye text-success"></i>
-                                    </a>
-                                </td>*@
                             </tr>
 
                             i++;
@@ -263,21 +257,6 @@
             }
         });
 
-
-        //$("#filterByProjectManager").on("change", function () {
-        //    let table = $("#reibursementReportTable").DataTable();
-        //    table.column(1).search($(this).val()).draw();
-        //})
-
-        //$("#filterByprojectType").on("change", function () {
-        //    let table = $("#reibursementReportTable").DataTable();
-        //    table.column(2).search($(this).val()).draw();
-        //})
-
-        //$("#fileterByProjectStatus").on("change", function () {
-        //    let table = $("#reibursementReportTable").DataTable();
-        //    table.column(4).search($(this).val()).draw();
-        //})
         $("#printBtn").click(function () {
 
             Swal.fire({
@@ -344,7 +323,7 @@
                     console.error("Error:", error)
                 });
 
-        })
+            })
         $(".viewSanctionreciept").click(function () {
             Swal.fire({
                 title: "Please wait !",
@@ -367,7 +346,9 @@
                 type: "Get",
                 data: { "userId": userId, "type": type, id: id },
                 success: function (result) {
-                    if (result.status) {
+                    console.log(result)
+                    if (result.Status) {
+                        
                         $("#viewReinburseRecieptListBody").empty();
 
                         Swal.close();
@@ -380,6 +361,7 @@
                         let newRequest = false;
 
                         $.each(result.data, function (i, d) {
+                            debugger
                             element += `
    <tr>
    <td>${i + 1}</td>
