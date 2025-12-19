@@ -767,6 +767,24 @@
                     console.log(`Duplicate or empty key skipped: ${d.name}`);
                 }
             });
+
+            let projectType = $('input[name="pm.pm.ProjectType"]:checked').val();
+            if (projectType === "External") {
+
+                let departmentName = $('.stageListItem input#venue').val();
+                let contactPerson = $('.stageListItem input#person').eq(0).val();
+                let address = $('.stageListItem input#person').eq(1).val();
+
+                if (departmentName) {
+                    formData.append("pm.pm.ProjectDepartment", departmentName);
+                }
+                if (contactPerson) {
+                    formData.append("pm.pm.ContactPerson", contactPerson);
+                }
+                if (address) {
+                    formData.append("pm.pm.Address", address);
+                }
+            }
             //let arrData = $(this).serializeArray();
 
             //// Add regular form data to formData object

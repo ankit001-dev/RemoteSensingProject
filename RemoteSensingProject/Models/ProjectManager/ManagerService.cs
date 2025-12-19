@@ -506,7 +506,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Raise_Problem> getSubOrdinateProblemforAdmin(int? limit = null, int? page = null,string searchTerm = null)
+        public List<Raise_Problem> getSubOrdinateProblemforAdmin(int? limit = null, int? page = null,string searchTerm = null,int?id= null)
         {
             try
             {
@@ -520,7 +520,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 
                     cmd.Parameters.AddWithValue("v_action", "getAllSubOrdinateProblem");
                     cmd.Parameters.AddWithValue("v_projectmanager", 0);  // default
-                    cmd.Parameters.AddWithValue("v_id", 0);              // default
+                    cmd.Parameters.AddWithValue("v_id", id??0);              // default
                     cmd.Parameters.AddWithValue("v_limit", limit ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("v_page", page ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("v_searchterm", string.IsNullOrEmpty(searchTerm) ? (object)DBNull.Value : searchTerm);
