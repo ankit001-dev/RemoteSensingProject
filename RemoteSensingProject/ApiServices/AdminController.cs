@@ -142,7 +142,8 @@ namespace RemoteSensingProject.ApiServices
                 }
                 else
                 {
-                    bool res = _adminServices.AddEmployees(empData);
+                    string mess = null;
+                    bool res = _adminServices.AddEmployees(empData,out mess);
                     if (res)
                     {
                         if (file != null && file.FileName != "")
@@ -154,7 +155,7 @@ namespace RemoteSensingProject.ApiServices
                     {
                         status = res,
                         StatusCode = res ? 200 : 500,
-                        message = res ? "Employee registration completed successfully !" : "Some issue occured while processing with your request. Please try after sometime."
+                        message = res ? "Employee registration completed successfully !" : mess
                     });
                 }
             }
@@ -280,7 +281,8 @@ namespace RemoteSensingProject.ApiServices
                 }
                 else
                 {
-                    bool res = _adminServices.AddEmployees(empData);
+                    string mess = null;
+                    bool res = _adminServices.AddEmployees(empData,out mess);
                     if (res)
                     {
                         if (file != null && file.FileName != "")
@@ -292,7 +294,7 @@ namespace RemoteSensingProject.ApiServices
                     {
                         status = res,
                         StatusCode = res ? 200 : 500,
-                        message = res ? "Employee profile updation completed successfully !" : "Some issue occured while processing with your request. Please try after sometime."
+                        message = res ? "Employee profile updation completed successfully !" : mess
                     });
                 }
             }

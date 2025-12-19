@@ -194,7 +194,7 @@
             <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header d-flex">
-                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Project Details</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="viewProjectModalBody">
@@ -516,6 +516,7 @@
 
 
     $(".monthlyReport").click(function () {
+        debugger
         let prjType = $(this).attr("data-prjType");
         let prjId = $(this).attr("data-prjId");
         if (prjType === "External") {
@@ -583,6 +584,7 @@
 
 
     function loadExternalProjectDetail(prjId) {
+        debugger
         $.ajax({
             url: "/api/getFinancialReport",
             type: "get",
@@ -614,6 +616,13 @@
                     })
 
                     $("#viewMonthlyReportExternalPrj").modal("show")
+                }
+                else {
+                    Swal.fire({
+                        title: 'Warning',
+                        text: 'Data not found !',
+                        icon: 'warning'
+                    });
                 }
             },
             error: function () {
