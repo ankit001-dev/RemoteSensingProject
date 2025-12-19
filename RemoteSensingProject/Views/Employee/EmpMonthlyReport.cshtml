@@ -81,17 +81,9 @@
                                     <td>@item.CumulativeAchievement</td>
                                     <td>@item.BenefitingDepartments</td>
                                     <td>
-                                        @if (!string.IsNullOrEmpty(item.Remarks))
-                                        {
-                                            if (item.Remarks.Length <= 10)
-                                            {
-                                                <span>@item.Remarks</span>
-                                            }
-                                            else
-                                            {
-                                                <span>@item.Remarks.Substring(0, 10)...</span>
-                                            }
-                                        }
+                                        <a href="#" class="viewRemark" data-remark="@item.Remarks">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
                                     </td>
 
                                 </tr>
@@ -238,7 +230,14 @@
             });
         });
 
+
+        $(".viewRemark").click(function () {
+            let data = $(this).data("remark");
+            alert(data);
+        })
     });
+
+
 </script>
 
 <script>
