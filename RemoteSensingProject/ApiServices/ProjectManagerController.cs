@@ -911,11 +911,21 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                bool res = _managerService.updateTaskStatus(taskId);
+                bool res = false;
+                string message = "Some issue occured !";
+                try
+                {
+                    res = _managerService.updateTaskStatus(taskId);
+                }
+                catch (Exception ex)
+                {
+                    message = ex.Message;
+                }
                 return Ok(new
                 {
                     status = res,
-                    message = res ? "Task updated successfully !" : "Some issue occured !"
+                    message = res ? "Task updated successfully !" : message
+
                 });
             }
             catch (Exception ex)

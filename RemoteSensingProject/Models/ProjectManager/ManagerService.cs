@@ -955,6 +955,9 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
+                using (con)
+                {
+                    con.Open();
                 using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
             @v_id,
             @v_stageid,
@@ -982,32 +985,29 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.Parameters.Add("@v_updatestatus", NpgsqlTypes.NpgsqlDbType.Varchar).Value = (object)obj.Status ?? DBNull.Value;
                     cmd.Parameters.Add("@v_status", NpgsqlTypes.NpgsqlDbType.Smallint).Value = 1;
                     cmd.Parameters.Add("@v_project_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
-                    cmd.Parameters.Add("@v_completionstatus", NpgsqlTypes.NpgsqlDbType.Integer).Value = 0;
+                    cmd.Parameters.Add("@v_completionstatus", NpgsqlTypes.NpgsqlDbType.Boolean).Value = false;
                     cmd.Parameters.Add("@v_action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "insertStageStatus";
-
-                    con.Open();
                     cmd.ExecuteNonQuery();
                 }
 
                 // ✅ If completed, update completion status
-                if (obj.Status?.ToLower() == "completed")
-                {
-                    using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
-                0, @stageId, NULL, NULL, NULL, NULL, NULL, 1, @projectId, @completionStatus, @action, NULL
-            );", con))
-                    {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.Add("@stageId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Stage_Id;
-                        cmd.Parameters.Add("@projectId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
-                        cmd.Parameters.Add("@completionStatus", NpgsqlTypes.NpgsqlDbType.Integer).Value = 1;
-                        cmd.Parameters.Add("@action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "updateStageCompetionStatus";
-
-                        con.Open();
-                        cmd.ExecuteNonQuery();
-                    }
-                }
+            //    if (obj.Status?.ToLower() == "completed")
+            //    {
+            //        using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
+            //    0, @stageId, NULL, NULL, NULL, NULL, NULL, 1, @projectId, @completionStatus, @action, NULL
+            //);", con))
+            //        {
+            //            cmd.CommandType = CommandType.Text;
+            //            cmd.Parameters.Add("@stageId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Stage_Id;
+            //            cmd.Parameters.Add("@projectId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
+            //            cmd.Parameters.Add("@completionStatus", NpgsqlTypes.NpgsqlDbType.Boolean).Value = true;
+            //            cmd.Parameters.Add("@action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "updateStageCompetionStatus";
+            //            cmd.ExecuteNonQuery();
+            //        }
+            //    }
 
                 return true;
+            }
             }
             catch (Exception ex)
             {
@@ -2479,7 +2479,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<RaiseProblem> getProblems(int userId, int? limit = null, int? page = null)
+        public List<RaiseProblem> getProblems(int userId, int? limit = null, int? page = null)  
         {
             try
             {
