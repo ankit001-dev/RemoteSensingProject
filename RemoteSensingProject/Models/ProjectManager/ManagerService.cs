@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Globalization;
-using System.IdentityModel;
 using System.IO;
 using System.Linq;
-using System.Web.Services.Description;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Npgsql;
 using NpgsqlTypes;
 using RemoteSensingProject.Models.MailService;
@@ -437,53 +432,59 @@ namespace RemoteSensingProject.Models.ProjectManager
         }
         public List<Raise_Problem> getAllSubOrdinateProblemById(string projectManager, int id)
         {
+            List<Raise_Problem> problemList = new List<Raise_Problem>();
+
+            con.Open();
+             var transaction = con.BeginTransaction();
+
             try
             {
-                con.Open();
-                List<Raise_Problem> problemList = new List<Raise_Problem>();
-                Raise_Problem obj = null;
-                var cmd = new NpgsqlCommand("fn_manageproblems_cursor", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@v_action", "getAllProblemListByManagerById");
-                cmd.Parameters.AddWithValue("@v_projectmanager", projectManager);
-                cmd.Parameters.AddWithValue("@v_id", id);
-                string cursorName = (string)cmd.ExecuteScalar();
-                using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con))
+                 var cmd = new NpgsqlCommand(
+                    @"SELECT fn_manageproblems_cursor(
+                @v_action,
+                @v_projectmanager,
+                @v_id,
+            );", con, transaction);
 
-                using (var sdr = fetchCmd.ExecuteReader())
+                cmd.Parameters.AddWithValue("v_action", "getAllProblemListByManagerById");
+                cmd.Parameters.AddWithValue("v_projectmanager", Convert.ToInt32(projectManager));
+                cmd.Parameters.AddWithValue("v_id", id);
+
+                string cursorName = (string)cmd.ExecuteScalar();
+
+                 var fetchCmd = new NpgsqlCommand(
+                    $"FETCH ALL FROM \"{cursorName}\";", con, transaction);
+
+                 var sdr = fetchCmd.ExecuteReader();
+
+                while (sdr.Read())
                 {
-                    if (sdr.HasRows)
+                    problemList.Add(new Raise_Problem
                     {
-                        while (sdr.Read())
-                        {
-                            obj = new Raise_Problem();
-                            obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
-                            obj.ProjectName = sdr["ProjectName"].ToString();
-                            obj.Title = sdr["Title"].ToString();
-                            obj.Description = sdr["Description"].ToString();
-                            obj.Attchment_Url = sdr["Attachment"].ToString();
-                            obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
-                            obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
-                            problemList.Add(obj);
-                        }
-                    }
+                        ProblemId = Convert.ToInt32(sdr["problemId"]),
+                        ProjectName = sdr["ProjectName"].ToString(),
+                        Title = sdr["Title"].ToString(),
+                        Description = sdr["Description"].ToString(),
+                        Attchment_Url = sdr["Attachment"].ToString(),
+                        CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy"),
+                        newRequest = Convert.ToBoolean(sdr["newRequest"])
+                    });
                 }
 
+                transaction.Commit();
                 return problemList;
-
             }
             catch (Exception ex)
             {
-                throw new Exception("An error accured", ex);
+                transaction.Rollback();
+                throw new Exception("An error occurred", ex);
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
+                con.Close();
             }
-
         }
+
         public bool CompleteSelectedProblem(int probId)
         {
             try
@@ -3411,11 +3412,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.ExecuteNonQuery();
                     return true;
                 }
-            }
-            catch(SqlException sqlex)
-            {
-                message = sqlex.Message;
-                return false;
             }
             catch (Exception ex)
             {
