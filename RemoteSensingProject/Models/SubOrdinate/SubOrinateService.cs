@@ -185,23 +185,15 @@ namespace RemoteSensingProject.Models.SubOrdinate
 
         public bool AddOutSourceTask(OutSource_Task task)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("sp_manageOutSourceTask", con);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@action", "insertOutsource");
-            cmd.Parameters.AddWithValue("@response", task.Reason);
-            cmd.Parameters.AddWithValue("@id", task.id);
-            cmd.Parameters.AddWithValue("@empId", task.EmpId);
+            NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, @v_id, @v_empid, NULL, NULL,@v_response , null::smallint, NULL, NULL, NULL)", con);
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.Parameters.AddWithValue("@v_action", "insertOutsource");
+            cmd.Parameters.AddWithValue("@v_response", task.Reason);
+            cmd.Parameters.AddWithValue("@v_id", task.id);
+            cmd.Parameters.AddWithValue("@v_empId", task.EmpId);
             con.Open();
-            int i = cmd.ExecuteNonQuery();
-            if (i > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            cmd.ExecuteNonQuery();
+            return true;
         }
 
         #endregion Outsource End

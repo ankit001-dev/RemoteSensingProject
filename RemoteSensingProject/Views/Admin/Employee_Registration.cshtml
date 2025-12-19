@@ -315,10 +315,10 @@
             contentType:false,
             data: formData,
             success: function (res) {
-                if (res) {
+                if (res.status) {
                     Swal.fire({
                         title: "success",
-                        text: $("#employeeInpId").val()!=""?"Employee Updated Successfully":"Employee Added Successfully",
+                        text: $("#employeeInpId").val()!=""?"Employee Updated Successfully":res.message,
                         icon: "success",
                         didClose: () => {
                             location.reload();
@@ -327,7 +327,7 @@
                 } else {
                     Swal.fire({
                         title: "error",
-                        text: "something went wrong",
+                        text: res.message,
                         icon: "error"
                     })
                 }
@@ -387,6 +387,7 @@
                     $(".empgender").text(res.Gender)
                     $(".empActiveStatus").html(res.ActiveStatus ? "<i class='fa-solid text-success fa-circle'></i> Active" : "<i class='fa-solid text-danger fa-circle'></i> Inactive")
                 }
+
                 showLoading(false)
 
             }, error: function (xhr) {
@@ -447,6 +448,7 @@
 
     $("#addEmployeeBtn").click(function () {
         $(".actionType").text("Add")
+        document.getElementById("employeeRole").disabled = false;
         document.querySelector(".addEmployeeform").reset();
     })
 
@@ -476,6 +478,7 @@
                         }
                     })
                 }
+                document.getElementById("employeeRole").disabled = true;
                 showLoading(false)
 
             }, error: function (xhr) {
