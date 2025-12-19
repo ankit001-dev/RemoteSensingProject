@@ -435,48 +435,49 @@ namespace RemoteSensingProject.Models.ProjectManager
             List<Raise_Problem> problemList = new List<Raise_Problem>();
 
             con.Open();
-             var transaction = con.BeginTransaction();
 
             try
             {
-                 var cmd = new NpgsqlCommand(
-                    @"SELECT fn_manageproblems_cursor(
-                @v_action,
-                @v_projectmanager,
-                @v_id,
-            );", con, transaction);
-
-                cmd.Parameters.AddWithValue("v_action", "getAllProblemListByManagerById");
-                cmd.Parameters.AddWithValue("v_projectmanager", Convert.ToInt32(projectManager));
-                cmd.Parameters.AddWithValue("v_id", id);
-
-                string cursorName = (string)cmd.ExecuteScalar();
-
-                 var fetchCmd = new NpgsqlCommand(
-                    $"FETCH ALL FROM \"{cursorName}\";", con, transaction);
-
-                 var sdr = fetchCmd.ExecuteReader();
-
-                while (sdr.Read())
+                var transaction = con.BeginTransaction();
+                using (var cmd = new NpgsqlCommand(@"SELECT * FROM  fn_manageproblems_cursor(@v_action,@v_projectmanager,@v_id);", con, transaction))
                 {
-                    problemList.Add(new Raise_Problem
-                    {
-                        ProblemId = Convert.ToInt32(sdr["problemId"]),
-                        ProjectName = sdr["ProjectName"].ToString(),
-                        Title = sdr["Title"].ToString(),
-                        Description = sdr["Description"].ToString(),
-                        Attchment_Url = sdr["Attachment"].ToString(),
-                        CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy"),
-                        newRequest = Convert.ToBoolean(sdr["newRequest"])
-                    });
-                }
 
-                transaction.Commit();
-                return problemList;
+                    cmd.Parameters.AddWithValue("v_action", "getAllProblemListByManagerById");
+                    cmd.Parameters.AddWithValue("v_projectmanager", Convert.ToInt32(projectManager));
+                    cmd.Parameters.AddWithValue("v_id", id);
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, transaction))
+
+                    using (var sdr = fetchCmd.ExecuteReader())
+                    {
+
+                        while (sdr.Read())
+                        {
+                            problemList.Add(new Raise_Problem
+                            {
+                                ProblemId = Convert.ToInt32(sdr["problemId"]),
+                                ProjectName = sdr["ProjectName"].ToString(),
+                                Title = sdr["Title"].ToString(),
+                                Description = sdr["Description"].ToString(),
+                                Attchment_Url = sdr["Attachment"].ToString(),
+                                CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy"),
+                                newRequest = Convert.ToBoolean(sdr["newRequest"])
+                            });
+
+                        }
+                    }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\"", con, transaction))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
+                    return problemList;
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
                 throw new Exception("An error occurred", ex);
             }
             finally
