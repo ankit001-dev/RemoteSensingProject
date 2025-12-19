@@ -136,8 +136,7 @@
                         text: "Notice Added Successfully",
                         icon: "success",
                         didClose: () => {
-                            document.querySelector(".noticeForm").reset();
-                            $("#summernote").summernote('code', '');
+                            location.reload();
                         }
                     })
                 } else {
