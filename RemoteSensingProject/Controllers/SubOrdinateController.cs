@@ -34,13 +34,26 @@ namespace RemoteSensingProject.Controllers
             return View(dcount);
         }
         #region Assigned Project
-        public ActionResult Assigned_Project(string searchTerm = null, string statusFilter = null)
+        public ActionResult Assigned_Project(string searchTerm = null, string statusFilter = null,string filterType= null)
         {
             var managerName = User.Identity.Name;
             int userId = Convert.ToInt32(_managerServices.getManagerDetails(managerName).userId);
 
             List<Models.SubOrdinate.main.ProjectList> _list = new List<Models.SubOrdinate.main.ProjectList>();
-            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(0, null, null, "AssignedProject", id: userId,searchTerm:searchTerm,statusFilter:statusFilter);
+            var data = _managerServices.All_Project_List(
+                0, null, null, "SubordinateProject",
+                id: userId,
+                searchTerm: searchTerm,
+                statusFilter: statusFilter);
+
+            if (!string.IsNullOrEmpty(filterType))
+            {
+                data = data
+                    .Where(d => d.ProjectType.ToLower() == filterType.ToLower())
+                    .ToList();
+            }
+
+            ViewData["AssignedProjectList"] = data;
             return View();
         }
         public ActionResult GetProjecDatatById(int Id)
@@ -83,7 +96,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Meeting_List(string searchTerm = null, string statusFilter = null)
         {
             var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            var res = _managerServices.getAllmeeting(int.Parse(userId.userId),searchTerm:searchTerm,statusFilter:statusFilter);
+            var res = _subOrdinate.getAllSubordinatemeeting(int.Parse(userId.userId),searchTerm:searchTerm,statusFilter:statusFilter);
             return View(res);
         }
         public ActionResult GetConclusions(int id)
