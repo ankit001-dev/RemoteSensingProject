@@ -4,6 +4,7 @@ using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 
 namespace RemoteSensingProject.Models.SubOrdinate
@@ -240,6 +241,68 @@ namespace RemoteSensingProject.Models.SubOrdinate
                     }
                 }
 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        #endregion
+
+        #region Get Meeting 
+        public List<Admin.main.Meeting_Model> getAllSubordinatemeeting(int id, int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null)
+        {
+            try
+            {
+                List<Admin.main.Meeting_Model> _list = new List<Admin.main.Meeting_Model>();
+                Admin.main.Meeting_Model obj = null;
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand(@"select * from fn_get_meetings(@p_action,@p_id,@v_limit,@v_page,@v_type,@v_searchTerm,@v_statusFilter);", con))
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.Parameters.AddWithValue("@p_action", "selectsubordinatemeetings");
+                    cmd.Parameters.AddWithValue("@p_id", id);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_type", (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_searchTerm", string.IsNullOrEmpty(searchTerm) ? DBNull.Value : (object)searchTerm);
+                    cmd.Parameters.AddWithValue("@v_statusFilter", string.IsNullOrEmpty(statusFilter) ? DBNull.Value : (object)statusFilter);
+                    var sdr = cmd.ExecuteReader();
+                    bool firstRow = true;
+                    while (sdr.Read())
+                    {
+                        obj = new Admin.main.Meeting_Model();
+                        obj.Id = Convert.ToInt32(sdr["id"]);
+                        obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
+                        obj.MeetingType = sdr["meetingType"].ToString();
+                        obj.MeetingLink = sdr["meetingLink"].ToString();
+                        obj.MeetingTitle = sdr["MeetingTitle"].ToString();
+                        obj.AppStatus = sdr["appStatus"] != DBNull.Value ? (int)sdr["appStatus"] : 0;
+                        obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
+                        obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
+                        obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy hh:mm tt");
+                        obj.createdBy = sdr["createdBy"].ToString();
+                        _list.Add(obj);
+
+                        if (firstRow)
+                        {
+                            obj.Pagination = new ApiCommon.PaginationInfo
+                            {
+                                PageNumber = page ?? 0,
+                                TotalPages = Convert.ToInt32(sdr["totalpages"] != DBNull.Value ? sdr["totalpages"] : 0),
+                                TotalRecords = Convert.ToInt32(sdr["totalrecords"] != DBNull.Value ? sdr["totalrecords"] : 0),
+                                PageSize = limit ?? 0
+                            };
+                            firstRow = false; // Optional: ensure pagination is only assigned once
+                        }
+                    }
+                }
+                return _list;
             }
             catch (Exception ex)
             {

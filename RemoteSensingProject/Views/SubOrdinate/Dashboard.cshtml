@@ -8,18 +8,6 @@
     DateTime currentDate = DateTime.Now;
 }
 
-
-@*<div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
-        <div>
-            <h4 class="mb-3 mb-md-0">Welcome to Travelin Dashboard</h4>
-        </div>
-    </div>*@
-@*<style>
-        .card-body {
-            padding: 1rem 0.5rem;
-        }
-    </style>*@
-
 <style>
     .uniform-card {
         /*        height: 200px;
@@ -172,12 +160,12 @@
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/SubOrdinate/Assigned_Project?req=Internal">
+                                        <a href="/SubOrdinate/Assigned_Project?filterType=Internal">
                                             <p class="text-success w-100"><span><span class="text-dark">Internal Project's :  </span> @data.InternalProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/SubOrdinate/Assigned_Project?req=External">
+                                        <a href="/SubOrdinate/Assigned_Project?filterType=External">
                                             <p class="text-success w-100"><span><span class="text-dark">External Project's :  </span> @data.ExternalProject</span></p>
                                         </a>
                                     </div>
@@ -203,17 +191,17 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/SubOrdinate/Assigned_Project?req=completed">
+                                        <a href="/SubOrdinate/Assigned_Project?statusFilter=Completed">
                                             <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@data.CompletedProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/SubOrdinate/Assigned_Project?req=pending">
-                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @data.PendingProject</span></p>
+                                        <a href="/SubOrdinate/Assigned_Project?statusFilter=Upcoming">
+                                            <p class="text-success w-100"><span><span class="text-dark">Upcoming Project :  </span> @data.PendingProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/SubOrdinate/Assigned_Project?req=ongoing">
+                                        <a href="/SubOrdinate/Assigned_Project?statusFilter=Ongoing">
                                             <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @data.OngoingProject</span></p>
                                         </a>
                                     </div>
