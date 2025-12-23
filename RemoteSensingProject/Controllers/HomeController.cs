@@ -22,6 +22,11 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
+        public ActionResult Help_menu()
+        {
+            return View();
+        }
+
         #region checklogin
 
         [HttpPost]

@@ -148,7 +148,7 @@
             };
 
                                 int currentMonth = DateTime.Now.Month;
-                                int previousMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+                                int previousMonth = currentMonth == 1 ? 12 : currentMonth;
 
                                 for (int i = 1; i <= months.Length; i++)
                                 {
@@ -324,10 +324,6 @@
         debugger
         let id = $(this).parent().data("empid");
         let today = new Date();
-        console.log(today.getFullYear())
-        console.log(today.getMonth() - 1)
-        $("#yearFilter").val(today.getFullYear());
-        $("#monthFilter").val(today.getMonth());
 
         $.ajax({
             url: '/employee/GetAttendanceListByEmpId',
@@ -343,7 +339,6 @@
                     });
                     return;
                 }
-                console.log('Attendance List', res);
                 $("#employeeNameDisplayatttend").text(res[0].EmpName);
                 $("#employeeNameDisplayatttend").attr('data-id', res[0].EmpId);
                 $("#pres").text(res[0].present)

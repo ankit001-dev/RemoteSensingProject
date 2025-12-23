@@ -3,10 +3,12 @@ using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Reflection;
+using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Controllers
@@ -54,13 +56,22 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult CreateOutSource(OuterSource os)
         {
-            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-            os.EmpId = Convert.ToInt32(userObj);
-            bool res = _managerServices.insertOutSource(os);
+            bool res = false;
+            string message = "Some issue occured !";
+            try
+            {
+                var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+                os.EmpId = Convert.ToInt32(userObj);
+                 res = _managerServices.insertOutSource(os);
+            }
+            catch(Exception ex)
+            {
+                message = ex.Message;
+            }
             return Json(new
             {
                 status = res,
-                message = res ? "Outsource created succesfully !" : "Some issue occured !"
+                message = res ? "Outsource created succesfully !" : message
             });
         }
         #endregion
@@ -96,11 +107,20 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult UpdateTaskStatus(int taskId)
         {
-            bool res = _managerServices.updateTaskStatus(taskId);
+            bool res = false;
+            string message = "Some issue occured !";
+            try
+            {
+                res = _managerServices.updateTaskStatus(taskId);
+            }
+            catch(Exception ex)
+            {
+                message = ex.Message;
+            }
             return Json(new
             {
                 status = res,
-                message = res ? "Task updated successfully !" : "Some issue occured !"
+                message = res ? "Task updated successfully !" : message
             });
         }
         public ActionResult InsertProject(createProjectModel pm)
@@ -624,7 +644,6 @@ namespace RemoteSensingProject.Controllers
             ViewData["projectlist"] = res;
             var res1 = _managerServices.GetHiringVehicles(userId: userid, type: "projectManager",projectFilter:projectFilter);
             ViewData["hiringList"] = res1;
-            ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
         [HttpPost]
@@ -719,13 +738,21 @@ namespace RemoteSensingProject.Controllers
             dt.id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             if (dt.document.ContentLength > 0)
             {
-                dt.documentname = $"/ProjectContent/ProjectManager/raisedproblem{Guid.NewGuid()}{dt.document.FileName}";
+                dt.documentname = $"/ProjectContent/ProjectManager/raisedproblem/{Guid.NewGuid()}{dt.document.FileName}";
             }
             bool res = _managerServices.insertRaisedProblem(dt);
             if (res)
             {
-                if (dt.document.ContentLength > 0)
-                    dt.document.SaveAs(Server.MapPath(dt.documentname));
+                if (dt.document != null && dt.document.ContentLength > 0)
+                {
+                    string fullPath = Server.MapPath(dt.documentname);
+                    string dir = Path.GetDirectoryName(fullPath);
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+                    dt.document.SaveAs(fullPath);
+                }
                 return Json(new
                 {
                     status = res,
@@ -737,6 +764,18 @@ namespace RemoteSensingProject.Controllers
                 status = res,
                 message = "Some issue occured !"
             });
+        }
+
+        [HttpGet]
+        public ActionResult GetRaiseProblemById(int id)
+        {
+            int managerId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var data = _adminServices.getProblemList(managerId: managerId, id: id);
+            return Json(new
+            {
+                status = true,
+                data
+            }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public ActionResult DeleteRaiseProblem(int id)

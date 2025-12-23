@@ -30,11 +30,11 @@
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="filterByProject">
                     <option selected value=null>--Select Employee--</option>
-                    @if (ViewBag.ProjectList != null)
+                    @if (ViewBag.EmployeeList != null)
                     {
-                        if (ViewBag.ProjectList.Count > 0)
+                        if (ViewBag.EmployeeList.Count > 0)
                         {
-                            foreach (var item in ViewBag.ProjectList)
+                            foreach (var item in ViewBag.EmployeeList)
                             {
                                 <option value="@item.Id">@item.EmployeeName</option>
                             }
@@ -158,7 +158,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex">
-                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Detail</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -274,7 +274,7 @@
                                     {
                                         foreach (var item in ViewBag.ProjectList)
                                         {
-                                            <option value="@item.Id">@item.EmployeeName</option>
+                                            <option value="@item.Id">@item.ProjectTitle</option>
                                         }
                                     }
                                 }
@@ -297,9 +297,6 @@
                         </div>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -499,7 +496,9 @@
         getProjectManagerData(pId)
     })
 
-    function updateNotice(data,id,pId) {
+    function updateNotice(data, id, pId) {
+        debugger
+
         $("#selectProject").val(pId)
         getProjectManagerData(pId)
         $("#noticeId").val(id)

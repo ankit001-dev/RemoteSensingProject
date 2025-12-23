@@ -16,11 +16,15 @@
 
     <!-- Main css -->
     <link rel="stylesheet" href="~/loginAssets/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .main {
             padding: 10px 0;
+        }
+        * {
+            user-select: none !important;
         }
     </style>
 </head>
@@ -48,12 +52,24 @@
                                 <input type="text" name="username" id="username" placeholder="Your UserName" autocomplete="off" />
                             </div>
                             <div class="form-group">
-                                <label for="your_pass"><i class="zmdi zmdi-lock"></i></label>
-                                <input type="password" name="password" id="password" placeholder="Password" />
+                                <div class="input-group" style="display:flex;">
+                                    <input type="password"
+                                           class="form-control"
+                                           id="password"
+                                           placeholder="Password"
+                                           name="password">
+
+                                    <span class="input-group-text toggle-password" style="cursor:pointer;" data-target="#password">
+                                        <i class="bi bi-eye"></i>
+                                    </span>
+                                </div>
                             </div>
-                            <div class="form-group">
+
+
+                            <div class="form-group" style="display:flex; justify-content:space-between;">
                                 <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
                                 <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
+                                <a href="/Login/ForgotPassword" class="text-end">Forgot Password ?</a>
                             </div>
                             <div class="form-group form-button">
                                 <input type="submit" name="signin" id="btnlogin" class="form-submit" value="Log in" />
@@ -184,9 +200,25 @@
                 alert("Geolocation is not supported by this browser.");
             }
 
-            
+
         };
     </script>
+    <script>
+        $(".toggle-password").on("click", function () {
+            debugger
+            const input = $($(this).data("target"));
+            const icon = $(this).find("i");
+
+            if (input.attr("type") === "password") {
+                input.attr("type", "text");
+                icon.removeClass("bi-eye").addClass("bi-eye-slash");
+            } else {
+                input.attr("type", "password");
+                icon.removeClass("bi-eye-slash").addClass("bi-eye");
+            }
+        });
+    </script>
+
 
 </body>
 

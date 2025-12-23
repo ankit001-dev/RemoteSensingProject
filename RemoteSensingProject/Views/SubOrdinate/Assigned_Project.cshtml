@@ -84,18 +84,6 @@
                                                 <span class="badge bg-primary">Upcoming</span>
                                             }
 
-                                            @*@if (item.completestatus == true)
-        {
-            <span class="badge bg-success">Completed</span>
-        }
-        else if (item.completestatus == false && item.CompletionDate > currentDate)
-        {
-            <span class="badge bg-warning text-dark">Ongoing</span>
-        }
-        else
-        {
-            <span class="badge bg-secondary">Upcoming</span>
-        }*@
                                         </td>
                                         <td class="text-center">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
@@ -122,7 +110,7 @@
             <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header d-flex">
-                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Detail</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="viewProjectModalBody">
@@ -164,9 +152,6 @@
                         <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Problem</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

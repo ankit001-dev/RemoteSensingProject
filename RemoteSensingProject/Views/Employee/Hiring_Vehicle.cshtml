@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
 
 }
@@ -35,11 +34,11 @@
                     <div class="col-sm-4">
                         <select id="projectFilter" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
-                            @if (projects != null)
+                            @if (data1 != null)
                             {
-                                foreach (var proj in projects)
+                                foreach (var item in data1)
                                 {
-                                    <option value="@proj.Id">@proj.ProjectTitle</option>
+                                    <option value="@item.Id">@item.ProjectTitle</option>
                                 }
                             }
                         </select>

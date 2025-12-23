@@ -1,6 +1,4 @@
-﻿using Antlr.Runtime.Tree;
-using DocumentFormat.OpenXml.Spreadsheet;
-using RemoteSensingProject.Models;
+﻿using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
@@ -8,9 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Web.Http;
 using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.ApiCommon;

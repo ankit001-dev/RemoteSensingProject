@@ -138,7 +138,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex">
-                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Detail</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -344,7 +344,7 @@
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Completion Date</label>
          <br />
-         <span>${d.CompletionDate}</span>
+         <span>${d.CompletionDatestring}</span>
      </div>
      <hr />
  </div>
@@ -423,12 +423,40 @@
     //});
 
     function shownotice(data) {
-        var newTab = window.open();
-        let htmlContent = "" + data + ""
-        newTab.document.write(htmlContent);
-        newTab.document.close();
-        newTab.print();
+        // Create hidden iframe
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.right = '0';
+        iframe.style.bottom = '0';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = '0';
+
+        document.body.appendChild(iframe);
+
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(`
+        <html>
+        <head>
+            <title>Print</title>
+        </head>
+        <body>
+            ${data}
+        </body>
+        </html>
+    `);
+        doc.close();
+
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+
+        // Remove iframe after print dialog is closed (Print OR Cancel)
+        iframe.contentWindow.onafterprint = function () {
+            document.body.removeChild(iframe);
+        };
     }
+
 
     // Search by Project Manager (searchTerm)
     $("#searchbyProjecManager").on("keyup", function () {

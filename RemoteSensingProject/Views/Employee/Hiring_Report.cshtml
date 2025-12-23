@@ -292,7 +292,7 @@
                     Swal.showLoading();
                 }
             })
-            var formContent = document.getElementById("formToPrint").outerHTML;
+            var formContent = document.getElementById("formToDownload").outerHTML;
 
             var style = `<link href="${window.location.origin}/assets/css/hiringVehicleStyle.css" rel="stylesheet" type="text/css"/>
 <link href="${window.location.origin}/assets/css/style.css" rel="stylesheet" type="text/css"/>
@@ -306,46 +306,46 @@
                 },
                 body: JSON.stringify({ HtmlText: htmlContentToPdf })
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Failed to generate PDF");
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to generate PDF");
+                }
+
+                const contentDisposition = response.headers.get("Content-Disposition");
+                let fileName = "Generated.pdf";
+
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                    if (match && match[1]) {
+                        fileName = match[1];
                     }
+                }
 
-                    const contentDisposition = response.headers.get("Content-Disposition");
-                    let fileName = "Generated.pdf";
-
-                    if (contentDisposition) {
-                        const match = contentDisposition.match(/filename="?([^"]+)"?/);
-                        if (match && match[1]) {
-                            fileName = match[1];
-                        }
-                    }
-
-                    return response.blob().then(blob => ({ blob, fileName }));
+                return response.blob().then(blob => ({ blob, fileName }));
+            })
+            .then(({ blob, fileName }) => {
+                Swal.fire({
+                    title: "Successfully !",
+                    text: "Reinbursement pdf generated successfully.",
+                    icon: "success"
                 })
-                .then(({ blob, fileName }) => {
-                    Swal.fire({
-                        title: "Successfully !",
-                        text: "Reinbursement pdf generated successfully.",
-                        icon: "success"
-                    })
-                    const link = document.createElement("a");
-                    const url = URL.createObjectURL(blob);
-                    link.href = url;
-                    link.download = fileName;
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
-                    URL.revokeObjectURL(url);
+                const link = document.createElement("a");
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: "Sorry !",
+                    text: "Some issue occured while processing your request.",
+                    icon: "error"
                 })
-                .catch(error => {
-                    Swal.fire({
-                        title: "Sorry !",
-                        text: "Some issue occured while processing your request.",
-                        icon: "error"
-                    })
-                    console.error("Error:", error)
-                });
+                console.error("Error:", error)
+            });
 
         })
     });
