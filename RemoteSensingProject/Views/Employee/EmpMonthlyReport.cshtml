@@ -81,17 +81,9 @@
                                     <td>@item.CumulativeAchievement</td>
                                     <td>@item.BenefitingDepartments</td>
                                     <td>
-                                        @if (!string.IsNullOrEmpty(item.Remarks))
-                                        {
-                                            if (item.Remarks.Length <= 10)
-                                            {
-                                                <span>@item.Remarks</span>
-                                            }
-                                            else
-                                            {
-                                                <span>@item.Remarks.Substring(0, 10)...</span>
-                                            }
-                                        }
+                                        <a href="#" class="viewRemark" data-remark="@item.Remarks">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
                                     </td>
 
                                 </tr>
@@ -190,6 +182,18 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="viewRemarkModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="viewRemarkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="viewRemarkModalLabel">Remark Details</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="remarkModalBody">
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     $(document).ready(function () {
@@ -238,7 +242,27 @@
             });
         });
 
+
+        $(".viewRemark").click(function () {
+            let data = $(this).data("remark");
+
+            if (data && data.trim() !== "") {
+
+                $("#remarkModalBody").text(data);
+                $("#viewRemarkModal").modal("show");
+
+            } else {
+                Swal.fire({
+                    title: "Sorry!",
+                    text: "Remark is not available.",
+                    icon: "warning"
+                });
+            }
+        });
+
     });
+
+
 </script>
 
 <script>

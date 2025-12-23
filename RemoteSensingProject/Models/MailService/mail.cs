@@ -16,7 +16,7 @@ namespace RemoteSensingProject.Models.MailService
                 mail.Subject = subject;
                 var userName = name != null ? name : email;
                 mail.Body = $"" +
-                        $"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"max-width: 600px; margin: auto; background-color: #f9f9f9; border: 1px solid #ddd;\">\r\n        <tr>\r\n            <td style=\"background-color: #0044cc; color: #fff; padding: 10px; text-align: center;\">\r\n                <h1 style=\"margin: 0;\">Remote Sensing</h1>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td style=\"padding: 20px; background-color: #fff;\">\r\n                <p style=\"margin: 0 0 10px 0;\">Hello {userName},</p>\r\n                <p style=\"margin: 0 0 10px 0;\">We hope this message finds you well.\r\n {message}.</p>\r\n<p style=\"margin: 0 0 10px 0;\">For more information, please visit our website <img src=\"https://macreel.co.in/img/logo5.png\" width=\"60\">\r\n or contact us at sales@macreel.co.in.</p>\r\n                <p style=\"margin: 0 0 10px 0;\">Thank you for your attention!</p>\r\n                <p style=\"margin: 0;\">Best regards,<br>\r\n                RemoteSensing<br>\r\n                </p>\r\n                   </tr>\r\n    </table>" +
+                        $"<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"max-width: 600px; margin: auto; background-color: #f9f9f9; border: 1px solid #ddd;\">\r\n        <tr>\r\n            <td style=\"background-color: #0044cc; color: #fff; padding: 10px; text-align: center;\">\r\n                <h1 style=\"margin: 0;\">Remote Sensing</h1>\r\n            </td>\r\n        </tr>\r\n        <tr>\r\n            <td style=\"padding: 20px; background-color: #fff;\">\r\n                <p style=\"margin: 0 0 10px 0;\">Hello {userName},</p>\r\n                <p style=\"margin: 0 0 10px 0;\">We hope this message finds you well.\r\n {message}.</p>\r\n<p style=\"margin: 0 0 10px 0;\">For more information, please visit our website <img src=\"https://macreel.co.in/assets/macreel-Infosoft.png\" width=\"60\">\r\n or contact us at sales@macreel.co.in.</p>\r\n                <p style=\"margin: 0 0 10px 0;\">Thank you for your attention!</p>\r\n                <p style=\"margin: 0;\">Best regards,<br>\r\n                RemoteSensing<br>\r\n                </p>\r\n                   </tr>\r\n    </table>" +
                         $"";
                 mail.IsBodyHtml = true;
                 SmtpClient smtp = new SmtpClient();
@@ -42,51 +42,34 @@ namespace RemoteSensingProject.Models.MailService
             string subject = "Your OTP Code";
 
             string body = $@"
-    <table width='100%' style='max-width:600px;margin:auto;border:1px solid #ddd;'>
-        <tr style='background:#0044cc;color:#fff;text-align:center;'>
-            <td><h2>Remote Sensing</h2></td>
-        </tr>
-        <tr>
-            <td style='padding:20px;'>
-                <p>Hello,</p>
-                <p>Your One-Time Password (OTP) is:</p>
-                <h2 style='color:#0044cc'>{otp}</h2>
-                <p>This OTP is valid for 5 minutes.</p>
-                <p>If you did not request this, please ignore this email.</p>
-                <br/>
-                <p>Regards,<br/>Remote Sensing Team</p>
-            </td>
-        </tr>
-    </table>";
+<p>Your One-Time Password (OTP) is:</p>
 
-            return SendMail("",userEmail, subject, body);
+<h2 style='color:#0044cc; margin:10px 0;'>{otp}</h2>
+
+<p>This OTP is valid for <b>5 minutes</b>.</p>
+
+<p>If you did not request this, please ignore this email.</p>";
+
+            return SendMail("", userEmail, subject, body);
         }
+
 
         public bool SendPasswordChangedMail(string userEmail, string newPassword)
         {
-            string subject = "Your New Password";
+            string subject = "Your Password Has Been Changed";
 
             string body = $@"
-    <table width='100%' style='max-width:600px;margin:auto;border:1px solid #ddd;'>
-        <tr style='background:#0044cc;color:#fff;text-align:center;'>
-            <td><h2>Remote Sensing</h2></td>
-        </tr>
-        <tr>
-            <td style='padding:20px;'>
-                <p>Hello,</p>
-                <p>Your password has been changed successfully.</p>
-                <p><strong>New Password:</strong></p>
-                <h3 style='color:#0044cc'>{newPassword}</h3>
-                <p>Please change this password after logging in.</p>
-                <p>If you did not request this change, contact support immediately.</p>
-                <br/>
-                <p>Regards,<br/>Remote Sensing Team</p>
-            </td>
-        </tr>
-    </table>";
+<p>Your password has been changed successfully.</p>
 
-            return SendMail("",userEmail, subject, body);
+<p><strong>New Password:</strong></p>
+
+<h3 style='color:#0044cc; margin:10px 0;'>{newPassword}</h3>
+
+<p>If you did not request this change, contact support immediately.</p>";
+
+            return SendMail("", userEmail, subject, body);
         }
+
 
     }
 }

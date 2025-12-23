@@ -1,10 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
-using Grpc.Core;
-using Newtonsoft.Json;
-using RemoteSensingProject.Models;
+﻿using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
@@ -15,11 +9,10 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Permissions;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Http;
 using static RemoteSensingProject.Models.Admin.main;
-using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.ApiServices
 {
@@ -37,7 +30,19 @@ namespace RemoteSensingProject.ApiServices
             _managerservice = new ManagerService();
             _accountService = new AccountService();
         }
+        private string getRole()
+        {
+            var identity = (ClaimsIdentity)System.Web.HttpContext.Current.User.Identity;
+            var role = identity.Claims
+                .FirstOrDefault(c =>
+                    c.Type == ClaimTypes.Role ||
+                    c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                ?.Value;
 
+            return string.IsNullOrEmpty(role)
+                ? "Role claim not found in token"
+                : role;
+        }
         #region ExpenditureAmt
         [HttpGet]
         [Route("api/ViewExpenditureAmtData")]
@@ -142,7 +147,8 @@ namespace RemoteSensingProject.ApiServices
                 }
                 else
                 {
-                    bool res = _adminServices.AddEmployees(empData);
+                    string mess = null;
+                    bool res = _adminServices.AddEmployees(empData,out mess);
                     if (res)
                     {
                         if (file != null && file.FileName != "")
@@ -154,7 +160,7 @@ namespace RemoteSensingProject.ApiServices
                     {
                         status = res,
                         StatusCode = res ? 200 : 500,
-                        message = res ? "Employee registration completed successfully !" : "Some issue occured while processing with your request. Please try after sometime."
+                        message = res ? "Employee registration completed successfully !" : mess
                     });
                 }
             }
@@ -280,7 +286,8 @@ namespace RemoteSensingProject.ApiServices
                 }
                 else
                 {
-                    bool res = _adminServices.AddEmployees(empData);
+                    string mess = null;
+                    bool res = _adminServices.AddEmployees(empData,out mess);
                     if (res)
                     {
                         if (file != null && file.FileName != "")
@@ -292,7 +299,7 @@ namespace RemoteSensingProject.ApiServices
                     {
                         status = res,
                         StatusCode = res ? 200 : 500,
-                        message = res ? "Employee profile updation completed successfully !" : "Some issue occured while processing with your request. Please try after sometime."
+                        message = res ? "Employee profile updation completed successfully !" : mess
                     });
                 }
             }
@@ -1543,11 +1550,21 @@ namespace RemoteSensingProject.ApiServices
         [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getRaisedProblemById")]
-        public IHttpActionResult getRaisedProblemById(int id)
+        public IHttpActionResult getRaisedProblemById(int id, int? managerId = 0)
         {
             try
             {
-                var data = _adminServices.getProblemList(null, null, id, null);
+                string role = getRole();
+                if (role.Equals("projectManager"))
+                {
+                    var identity = (ClaimsIdentity)System.Web.HttpContext.Current.User.Identity;
+                    int userId = int.Parse(identity.Claims
+                .FirstOrDefault(c =>
+                    c.Type == "userId")
+                ?.Value);
+                    managerId = userId;
+                }
+                var data = _adminServices.getProblemList(managerId: managerId, id: id);
                 return Ok(new
                 {
                     status = data.Any(),

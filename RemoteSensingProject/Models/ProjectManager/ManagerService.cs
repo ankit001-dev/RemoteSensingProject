@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Globalization;
-using System.IdentityModel;
 using System.IO;
 using System.Linq;
-using System.Web.Services.Description;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using Npgsql;
 using NpgsqlTypes;
 using RemoteSensingProject.Models.MailService;
@@ -437,53 +432,60 @@ namespace RemoteSensingProject.Models.ProjectManager
         }
         public List<Raise_Problem> getAllSubOrdinateProblemById(string projectManager, int id)
         {
+            List<Raise_Problem> problemList = new List<Raise_Problem>();
+
+            con.Open();
+
             try
             {
-                con.Open();
-                List<Raise_Problem> problemList = new List<Raise_Problem>();
-                Raise_Problem obj = null;
-                var cmd = new NpgsqlCommand("fn_manageproblems_cursor", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@v_action", "getAllProblemListByManagerById");
-                cmd.Parameters.AddWithValue("@v_projectmanager", projectManager);
-                cmd.Parameters.AddWithValue("@v_id", id);
-                string cursorName = (string)cmd.ExecuteScalar();
-                using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con))
-
-                using (var sdr = fetchCmd.ExecuteReader())
+                var transaction = con.BeginTransaction();
+                using (var cmd = new NpgsqlCommand(@"SELECT * FROM  fn_manageproblems_cursor(@v_action,@v_projectmanager,@v_id);", con, transaction))
                 {
-                    if (sdr.HasRows)
+
+                    cmd.Parameters.AddWithValue("v_action", "getAllProblemListByManagerById");
+                    cmd.Parameters.AddWithValue("v_projectmanager", Convert.ToInt32(projectManager));
+                    cmd.Parameters.AddWithValue("v_id", id);
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+
+                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, transaction))
+
+                    using (var sdr = fetchCmd.ExecuteReader())
                     {
+
                         while (sdr.Read())
                         {
-                            obj = new Raise_Problem();
-                            obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
-                            obj.ProjectName = sdr["ProjectName"].ToString();
-                            obj.Title = sdr["Title"].ToString();
-                            obj.Description = sdr["Description"].ToString();
-                            obj.Attchment_Url = sdr["Attachment"].ToString();
-                            obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
-                            obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
-                            problemList.Add(obj);
+                            problemList.Add(new Raise_Problem
+                            {
+                                ProblemId = Convert.ToInt32(sdr["problemId"]),
+                                ProjectName = sdr["ProjectName"].ToString(),
+                                Title = sdr["Title"].ToString(),
+                                Description = sdr["Description"].ToString(),
+                                Attchment_Url = sdr["Attachment"].ToString(),
+                                CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy"),
+                                newRequest = Convert.ToBoolean(sdr["newRequest"])
+                            });
+
                         }
                     }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\"", con, transaction))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
                 }
-
-                return problemList;
-
+                    return problemList;
             }
             catch (Exception ex)
             {
-                throw new Exception("An error accured", ex);
+                throw new Exception("An error occurred", ex);
             }
             finally
             {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
+                con.Close();
             }
-
         }
+
         public bool CompleteSelectedProblem(int probId)
         {
             try
@@ -506,7 +508,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<Raise_Problem> getSubOrdinateProblemforAdmin(int? limit = null, int? page = null,string searchTerm = null)
+        public List<Raise_Problem> getSubOrdinateProblemforAdmin(int? limit = null, int? page = null,string searchTerm = null,int?id= null)
         {
             try
             {
@@ -520,7 +522,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 
                     cmd.Parameters.AddWithValue("v_action", "getAllSubOrdinateProblem");
                     cmd.Parameters.AddWithValue("v_projectmanager", 0);  // default
-                    cmd.Parameters.AddWithValue("v_id", 0);              // default
+                    cmd.Parameters.AddWithValue("v_id", id??0);              // default
                     cmd.Parameters.AddWithValue("v_limit", limit ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("v_page", page ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("v_searchterm", string.IsNullOrEmpty(searchTerm) ? (object)DBNull.Value : searchTerm);
@@ -955,6 +957,9 @@ namespace RemoteSensingProject.Models.ProjectManager
         {
             try
             {
+                using (con)
+                {
+                    con.Open();
                 using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
             @v_id,
             @v_stageid,
@@ -982,32 +987,29 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.Parameters.Add("@v_updatestatus", NpgsqlTypes.NpgsqlDbType.Varchar).Value = (object)obj.Status ?? DBNull.Value;
                     cmd.Parameters.Add("@v_status", NpgsqlTypes.NpgsqlDbType.Smallint).Value = 1;
                     cmd.Parameters.Add("@v_project_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
-                    cmd.Parameters.Add("@v_completionstatus", NpgsqlTypes.NpgsqlDbType.Integer).Value = 0;
+                    cmd.Parameters.Add("@v_completionstatus", NpgsqlTypes.NpgsqlDbType.Boolean).Value = false;
                     cmd.Parameters.Add("@v_action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "insertStageStatus";
-
-                    con.Open();
                     cmd.ExecuteNonQuery();
                 }
 
                 // ✅ If completed, update completion status
-                if (obj.Status?.ToLower() == "completed")
-                {
-                    using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
-                0, @stageId, NULL, NULL, NULL, NULL, NULL, 1, @projectId, @completionStatus, @action, NULL
-            );", con))
-                    {
-                        cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.Add("@stageId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Stage_Id;
-                        cmd.Parameters.Add("@projectId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
-                        cmd.Parameters.Add("@completionStatus", NpgsqlTypes.NpgsqlDbType.Integer).Value = 1;
-                        cmd.Parameters.Add("@action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "updateStageCompetionStatus";
-
-                        con.Open();
-                        cmd.ExecuteNonQuery();
-                    }
-                }
+            //    if (obj.Status?.ToLower() == "completed")
+            //    {
+            //        using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
+            //    0, @stageId, NULL, NULL, NULL, NULL, NULL, 1, @projectId, @completionStatus, @action, NULL
+            //);", con))
+            //        {
+            //            cmd.CommandType = CommandType.Text;
+            //            cmd.Parameters.Add("@stageId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Stage_Id;
+            //            cmd.Parameters.Add("@projectId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
+            //            cmd.Parameters.Add("@completionStatus", NpgsqlTypes.NpgsqlDbType.Boolean).Value = true;
+            //            cmd.Parameters.Add("@action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "updateStageCompetionStatus";
+            //            cmd.ExecuteNonQuery();
+            //        }
+            //    }
 
                 return true;
+            }
             }
             catch (Exception ex)
             {
@@ -1083,7 +1085,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             {
                 string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
                 Random rnd = new Random();
-                var userName = os.EmpName.Substring(0, 5) + "@" + os.mobileNo.ToString().PadLeft(4, '0').Substring(os.mobileNo.ToString().Length - 4);
+                // var userName = os.EmpName.Substring(0, 5) + "@" + os.mobileNo.ToString().PadLeft(4, '0').Substring(os.mobileNo.ToString().Length - 4);
                 string userpassword = "";
                 if (os.Id == 0)
                 {
@@ -1096,7 +1098,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.CommandType = CommandType.Text;
                 cmd.Parameters.Add("@p_action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "createOutSource";
                 cmd.Parameters.Add("@p_empid", NpgsqlTypes.NpgsqlDbType.Integer).Value = os.EmpId;
-                cmd.Parameters.Add("@p_outcode", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userName;
+                cmd.Parameters.Add("@p_outcode", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.email;
                 cmd.Parameters.Add("@p_emp_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.EmpName;
                 cmd.Parameters.Add("@p_emp_mobile", NpgsqlTypes.NpgsqlDbType.Bigint).Value = Convert.ToInt64(os.mobileNo);
                 cmd.Parameters.Add("@p_emp_email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.email;
@@ -1108,7 +1110,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.ExecuteNonQuery();
                 mail _mail = new mail();
                 string subject = "Login Credential";
-                string message = $"<p>Your user id : <b>{userName}</b></p><br><p>Password : <b>{userpassword}</b></p>";
+                string message = $"<p>Your user id : <b>{os.email}</b></p><br><p>Password : <b>{userpassword}</b></p>";
                 _mail.SendMail(os.EmpName, os.email, subject, message);
 
                 return true;
@@ -2479,7 +2481,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Dispose();
             }
         }
-        public List<RaiseProblem> getProblems(int userId, int? limit = null, int? page = null)
+        public List<RaiseProblem> getProblems(int userId, int? limit = null, int? page = null)  
         {
             try
             {
@@ -3411,11 +3413,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.ExecuteNonQuery();
                     return true;
                 }
-            }
-            catch(SqlException sqlex)
-            {
-                message = sqlex.Message;
-                return false;
             }
             catch (Exception ex)
             {

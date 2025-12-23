@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
@@ -9,7 +8,6 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using static RemoteSensingProject.Models.Admin.main;
-using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -138,7 +136,7 @@ namespace RemoteSensingProject.Controllers
             }
 
 
-            bool res = _adminServices.AddEmployees(emp);
+            bool res = _adminServices.AddEmployees(emp,out string message);
 
 
             if (res && emp.EmployeeImages != null)
@@ -147,7 +145,11 @@ namespace RemoteSensingProject.Controllers
                 emp.EmployeeImages.SaveAs(Server.MapPath(path));
 
             }
-            return Json(res);
+            return Json(new
+            {
+                status = res,
+                message = message
+            });
 
         }
         [HttpGet]
@@ -194,6 +196,12 @@ namespace RemoteSensingProject.Controllers
                 data = data
             }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Project_Detail(int projectId)
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult InsertProject(createProjectModel pm)
         {
@@ -385,10 +393,6 @@ namespace RemoteSensingProject.Controllers
             var res = _adminServices.getKeypointResponse(id);
             return Json(res, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Project_Detail()
-        {
-            return View();
-        }
         public ActionResult View_Weekly_Update(int Id)
         {
             ManagerService ms = new ManagerService();
@@ -503,8 +507,8 @@ namespace RemoteSensingProject.Controllers
         {
             dynamic noticeList = null;
             noticeList = _adminServices.getNoticeList(id: projectManager, searchTerm:searchTerm);
-            ViewBag.ProjectList = _adminServices.SelectEmployeeRecord();
-
+            ViewBag.ProjectList = _adminServices.Project_List();
+            ViewBag.EmployeeList = _adminServices.SelectEmployeeRecord();
             ViewData["NoticeList"] = noticeList;
 
             return View();
@@ -541,7 +545,7 @@ namespace RemoteSensingProject.Controllers
         [HttpGet]
         public ActionResult getsubproblembyid(int id)
         {
-            var data = _adminServices.getAllSubOrdinateProblemByIdforadmin(id);
+            var data = _managerServices.getSubOrdinateProblemforAdmin(id:id);
             return Json(data, JsonRequestBehavior.AllowGet);
         }
 

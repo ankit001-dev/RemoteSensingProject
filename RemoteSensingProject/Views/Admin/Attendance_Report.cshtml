@@ -18,7 +18,6 @@
         <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
         <li class="breadcrumb-item active" aria-current="page">/Employee Registration</li>
     </ol>
-    @*<button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Employee</button>*@
 </nav>
 
 
@@ -36,7 +35,6 @@
                                 <th>Role</th>
                                 <th>Division</th>
                                 <th>Designation</th>
-                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,7 +50,6 @@
                                         <td>@item.EmployeeRole</td>
                                         <td>@item.DevisionName</td>
                                         <td>@item.DesignationName</td>
-                                        <td>@item.CreationDate</td>
                                     </tr>
                                     count++;
                                 }
@@ -295,10 +292,10 @@
                 allowOutsideClick: false,
                 didOpen: () => { Swal.showLoading(); }
             });
-
+            debugger
             var id = $("#employeeNameDisplayatttend").attr("data-id");
-            var month = $("#monthFilter").val();
-            var year = $("#yearFilter").val();
+            var month = $("#monthFilterTable").val();
+            var year = $("#yearFilterTable").val();
 
             // ✅ Get attendance using your async function
             var data = await GetEmployeeAttandanceData(id, month, year);
@@ -388,8 +385,9 @@
             });
 
             let id = $("#employeeNameDisplayatttend").attr('data-id');
-            let month = $(this).val();
-            let year = $("#yearFilter").val();
+            // ✅ ALWAYS read from specific dropdown
+            let month = $("#monthFilterTable").val();
+            let year = $("#yearFilterTable").val();
 
             // ✅ Call your async function
             let data = await GetEmployeeAttandanceData(id, month, year);
