@@ -20,6 +20,13 @@ namespace RemoteSensingProject.Models.LoginManager
             public string confirmPassword { get; set; }
             public string newPassword { get; set; }
             public string oldPassword { get; set; }
+            public string otp { get; set; }
         }
-    }   
+        public class VerifyOtpRequest
+        {
+            public string Email { get; set; }
+            public string Otp { get; set; }
+        }
+
+    }
 }

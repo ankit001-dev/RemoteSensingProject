@@ -455,12 +455,12 @@ namespace RemoteSensingProject.Models.Admin
                                 MobileNo = record["mobile"] != DBNull.Value ? Convert.ToInt64(record["mobile"]) : 0,
                                 EmployeeRole = record["role"] != DBNull.Value ? record["role"].ToString().Trim() : "",
                                 Division = record["devision"] != DBNull.Value ? Convert.ToInt32(record["devision"]) : 0,
-                                Designation = record["designation"] != DBNull.Value ? Convert.ToInt32(record["devision"]) : 0,
+                                Designation = record["designation"] != DBNull.Value ? Convert.ToInt32(record["designation"]) : 0,
                                 DesignationName = record["designationname"]?.ToString(),
                                 Gender = record["gender"]?.ToString(),
                                 Status = record["status"] != DBNull.Value && Convert.ToBoolean(record["status"]),
                                 Image_url = record["profile"] != DBNull.Value ? record["profile"].ToString() : null,
-                                ActiveStatus = Convert.ToBoolean(record["activeStatus"])
+                                ActiveStatus = Convert.ToBoolean(record["activeStatus"]),
                             };
                         }
                     }
@@ -2112,69 +2112,6 @@ namespace RemoteSensingProject.Models.Admin
         }
 
         #endregion
-
-        //#region Budget
-
-        //public bool InsertBuget(BudgetForm data)
-        //{
-        //    try
-        //    {
-        //        cmd = new NpgsqlCommand("sp_manageBudgets", con);
-        //        cmd.CommandType = CommandType.StoredProcedure;
-        //        cmd.Parameters.AddWithValue("@budget", data.budget);
-        //        cmd.Parameters.AddWithValue("@action", "insert");
-        //        con.Open();
-        //       return cmd.ExecuteNonQuery()> 0;
-        //    }
-        //    catch
-        //    {
-        //        return false;
-        //    }
-        //    finally
-        //    {
-        //        if(con.State == ConnectionState.Open)
-        //        con.Close();
-        //        cmd.Dispose();
-        //    }
-        //}
-
-        //public List<BudgetForm> getBudgetList()
-        //{
-        //    try
-        //    {
-        //        cmd = new NpgsqlCommand("sp_manageBudgets", con);
-        //        cmd.CommandType = CommandType.StoredProcedure;
-        //        cmd.Parameters.AddWithValue("@action", "selectAll");
-        //        con.Open();
-        //        List<BudgetForm> budgetList = new List<BudgetForm>();
-        //        var res = cmd.ExecuteReader();
-        //        if (res.HasRows)
-        //        {
-        //            while (res.Read())
-        //            {
-        //                budgetList.Add(new BudgetForm
-        //                {
-        //                    sn = (int)res["id"],
-        //                    addedDate = Convert.ToString(res["createdAt"]),
-        //                    budget = (decimal)res["budget"]
-        //                });
-        //            }
-        //        }
-        //        return budgetList;
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //    finally
-        //    {
-        //        if (con.State == ConnectionState.Open)
-        //            con.Close();
-        //        cmd.Dispose();
-        //    }
-        //}
-
-        //#endregion
 
         #region /*tour*/
         public List<tourProposalAll> getAllTourList(int? page = null, int? limit = null, string type = null, int? id = null, int? managerFilter = null, int? projectFilter = null)
