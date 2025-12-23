@@ -202,7 +202,7 @@ namespace RemoteSensingProject.ApiServices
                 return CommonHelper.Error(this, ex.Message);
             }
         }
-
+        [JwtAuthorize(Roles = "admin,projectManager,accounts,subOrdinate")]
         [HttpPut]
         [Route("api/updateEmployeeData")]
         public IHttpActionResult Update_Employee()
@@ -314,7 +314,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-
+        [JwtAuthorize(Roles = "admin,projectManager,accounts,subOrdinate")]
         [HttpGet]
         [Route("api/getEmployeeById")]
         public IHttpActionResult Get_EmployeeById(int Id)

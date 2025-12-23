@@ -39,7 +39,7 @@ namespace RemoteSensingProject.Models.Admin
             public bool PresentStatus { get; set; }
             public int AppStatus { get; set; }
             public string Reason { get; set; }
-
+            public string Password { get; set; }    
             public PaginationInfo Pagination { get; set; }
         }
         public class SubProblem

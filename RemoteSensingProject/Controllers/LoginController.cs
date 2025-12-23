@@ -129,9 +129,10 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult VerifyOtp(string email, string otp)
         {
-            try { 
+            try {
                 string cacheKey = "otp_" + email;
                 var cacheOtp = _cache.Get(cacheKey) as string;
+
                 if (cacheOtp == null)
                 {
                     return Json(new
@@ -140,15 +141,22 @@ namespace RemoteSensingProject.Controllers
                         message = "OTP expired or not found"
                     });
                 }
+
                 if (cacheOtp == otp)
                 {
-                    _cache.Remove(cacheKey);
+                    string verifiedKey = "otp_verified_" + email;
+                    _cache.Set(verifiedKey, true, new CacheItemPolicy
+                    {
+                        AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(10)
+                    });
+
                     return Json(new
                     {
                         status = true,
                         message = "OTP verified successfully"
                     });
                 }
+
                 return Json(new
                 {
                     status = false,
@@ -173,30 +181,7 @@ namespace RemoteSensingProject.Controllers
         {
             try
             {
-                //userdata.Email = User.Identity.Name;
-                if (userdata.newPassword.Equals(userdata.confirmPassword))
-                {
-                    var res = _loginServices.ChangePassword(userdata);
-                    if (res)
-                    {
-                        bool flag = _mail.SendPasswordChangedMail(userdata.Email, userdata.newPassword);
-
-                        if (!flag)
-                        {
-                            return Json(new
-                            {
-                                status = false,
-                                message = "Error occured while sending mail. Try again later!"
-                            });
-                        }
-                    }
-                    return Json(new
-                    {
-                        status = res,
-                        message = "Password changed successfully."
-                    });
-                }
-                else
+                if (!userdata.newPassword.Equals(userdata.confirmPassword))
                 {
                     return Json(new
                     {
@@ -204,6 +189,42 @@ namespace RemoteSensingProject.Controllers
                         message = "Password not matched"
                     });
                 }
+
+                // 2️⃣ Check OTP verified
+                string verifiedKey = "otp_verified_" + userdata.Email;
+                var isVerified = _cache.Get(verifiedKey) as bool?;
+
+                if (isVerified != true)
+                {
+                    return Json(new
+                    {
+                        status = false,
+                        message = "OTP not verified or expired"
+                    });
+                }
+
+                var res = _loginServices.ChangePassword(userdata);
+                if (res)
+                {
+                    bool flag = _mail.SendPasswordChangedMail(userdata.Email, userdata.newPassword);
+                    if (!flag)
+                    {
+                        return Json(new
+                        {
+                            status = false,
+                            message = "Error occurred while sending mail. Try again later!"
+                        });
+                    }
+
+                    _cache.Remove("otp_" + userdata.Email);
+                    _cache.Remove(verifiedKey);
+                }
+
+                return Json(new
+                {
+                    status = res,
+                    message = "Password changed successfully."
+                });
             }
             catch
             {
