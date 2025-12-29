@@ -121,7 +121,6 @@ namespace RemoteSensingProject.Models
         #region Excel Generator
         public static byte[] CreateExcel<T>(List<ColumnMapping> columns, IEnumerable<T> data, string sheetName)
         {
-            ExcelPackage.License.SetNonCommercialPersonal("RemoteSensing");
             using (var package = new ExcelPackage())
             {
                 var ws = package.Workbook.Worksheets.Add(sheetName);

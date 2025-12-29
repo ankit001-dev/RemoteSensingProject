@@ -1,4 +1,5 @@
-﻿using RemoteSensingProject.Models;
+﻿using OfficeOpenXml;
+using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
@@ -43,6 +44,62 @@ namespace RemoteSensingProject.ApiServices
                 ? "Role claim not found in token"
                 : role;
         }
+
+
+    //    [AllowAnonymous]
+    //    [HttpPost]
+    //    public IHttpActionResult AddDataInBulk()
+    //    {
+    //        var httpRequest = HttpContext.Current.Request;
+
+    //        if (httpRequest.Files.Count == 0)
+    //            return BadRequest("No file uploaded");
+    //        var file = httpRequest.Files[0];
+
+    //        createProjectModel cpm = new createProjectModel();
+    //        List<Project_model> pmList = new List<Project_model>();
+
+    //        using (var package = new ExcelPackage(file.InputStream))
+    //        {
+    //            var worksheet = package.Workbook.Worksheets[0]; // first sheet
+
+    //            int rowCount = worksheet.Dimension.Rows;
+    //            int colCount = worksheet.Dimension.Columns;
+    //            for(int row = 2; row <= rowCount; row++)
+    //            {
+    //                string projectTitle = worksheet.Cells[row, 1].Text.Trim();
+    //                if (!string.IsNullOrWhiteSpace(projectTitle))
+    //                {
+    //                    Project_model pm = new Project_model
+    //                    {
+    //                        ProjectTitle = projectTitle,
+    //                        ProjectDescription = worksheet.Cells[row, 1].Text.Trim(),
+    //                        StartDate = string.IsNullOrWhiteSpace(worksheet.Cells[row, 2].Text)
+    //? (DateTime?)null
+    //: Convert.ToDateTime(worksheet.Cells[row, 2].Text),
+
+    //                        AssignDate = string.IsNullOrWhiteSpace(worksheet.Cells[row, 2].Text)
+    //? (DateTime?)null
+    //: Convert.ToDateTime(worksheet.Cells[row, 2].Text),
+
+    //                        CompletionDate = string.IsNullOrWhiteSpace(worksheet.Cells[row, 3].Text)
+    //? (DateTime?)null
+    //: Convert.ToDateTime(worksheet.Cells[row, 3].Text),
+    //                        ProjectManager = worksheet.Cells[row, 4].Text.Trim(),
+    //                        letterNo = worksheet.Cells[row, 5].Text.Trim(),
+    //                        ProjectBudget = decimal.TryParse(worksheet.Cells[row, 6].Text, out decimal budget) ? budget : 0,
+    //                        ProjectType = worksheet.Cells[row, 7].Text.Trim(),
+    //                        ProjectStage = worksheet.Cells[row, 8].Text.Trim().Equals("Yes"),
+    //                        createdBy = "projectManager"
+    //                    };
+    //                    pmList.Add(pm);
+    //                }
+                    
+    //            }
+    //        }
+
+    //        return Ok(pmList);
+    //    }
         #region ExpenditureAmt
         [HttpGet]
         [Route("api/ViewExpenditureAmtData")]
