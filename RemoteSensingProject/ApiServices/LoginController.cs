@@ -253,7 +253,7 @@ namespace RemoteSensingProject.ApiServices
 
         // ================= CHANGE PASSWORD =================
         [System.Web.Mvc.AllowAnonymous]
-        [HttpPut]
+        [HttpPost]
         [Route("api/change-password")]
         public IHttpActionResult ChangePassword([FromBody] Credentials userdata)
         {
