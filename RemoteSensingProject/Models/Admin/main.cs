@@ -99,9 +99,9 @@ namespace RemoteSensingProject.Models.Admin
             public decimal overallPercentage { get; set; }
             public string ProjectTitle { get; set; }
             public DateTime CurrentDate => DateTime.Now;
-            public DateTime AssignDate { get; set; }
-            public DateTime StartDate { get; set; }
-            public DateTime CompletionDate { get; set; }
+            public DateTime? AssignDate { get; set; }
+            public DateTime? StartDate { get; set; }
+            public DateTime? CompletionDate { get; set; }
             public string ProjectManager { get; set; }
             public string CompletionDatestring { get; set; }
             public string AssignDateString { get; set; }

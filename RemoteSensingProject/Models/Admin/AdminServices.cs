@@ -532,7 +532,7 @@ namespace RemoteSensingProject.Models.Admin
                 var projectParams = new Dictionary<string, object>
                 {
                     ["p_action"] = "insertProject",
-                    ["p_letterno"] = int.TryParse(pm.pm.letterNo, out int letterNo) ? letterNo : 0,
+                    ["p_letterno"] = pm.pm.letterNo,
                     ["p_title"] = pm.pm.ProjectTitle,
                     ["p_assigndate"] = pm.pm.AssignDate,
                     ["p_startdate"] = pm.pm.StartDate,
@@ -671,6 +671,32 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
+        private DateTime? GetDateSafe(IDataReader rd, string column)
+        {
+            var value = rd[column];
+
+            if (value == null || value == DBNull.Value)
+                return null;
+
+            // PostgreSQL timestamptz
+            if (value is DateTimeOffset dto)
+                return dto.DateTime;
+
+            // Normal DateTime
+            if (value is DateTime dt)
+                return dt;
+
+            // Numeric (epoch / oa date)
+            if (double.TryParse(value.ToString(), out double num))
+                return DateTime.FromOADate(num);
+
+            // String date
+            if (DateTime.TryParse(value.ToString(), out DateTime parsed))
+                return parsed;
+
+            return null;
+        }
+
 
         public List<Project_model> Project_List(int? page = null, int? limit = null,string filterType = null,string searchTerm = null,string statusFilter = null,int?projectManager = null)
         {
@@ -697,25 +723,25 @@ namespace RemoteSensingProject.Models.Admin
                         {
                             Id = Convert.ToInt32(rd["id"]),
                             ProjectTitle = rd["title"].ToString(),
-                            AssignDate = Convert.ToDateTime(rd["assignDate"]),
-                            CompletionDate = Convert.ToDateTime(rd["completionDate"]),
-                            StartDate = Convert.ToDateTime(rd["startDate"]),
+                            AssignDate = GetDateSafe(rd, "assignDate"),
+                            CompletionDate = GetDateSafe(rd, "completionDate"),
+                            StartDate = GetDateSafe(rd, "startDate"),
                             ProjectManager = rd["name"].ToString(),
                             Percentage = rd["financialStatusPercentage"] != DBNull.Value ? rd["financialStatusPercentage"].ToString() : "",
-                            ProjectBudget = Convert.ToDecimal(rd["budget"]),
+                            ProjectBudget = Convert.ToDecimal(rd["budget"] != DBNull.Value ? rd["budget"] : 0),
                             ProjectDescription = rd["description"].ToString(),
                             projectDocumentUrl = rd["ProjectDocument"].ToString(),
                             ProjectType = rd["projectType"].ToString(),
                             physicalcomplete = Math.Round(Convert.ToDecimal(rd["completionPercentage"]),2),
                             overallPercentage = Convert.ToDecimal(rd["overallPercentage"]),
                             ProjectStage = Convert.ToBoolean(rd["stage"]),
-                            CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy"),
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
-                            AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
-                            StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
                             createdBy = rd["createdBy"].ToString(),
                             projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
                         };
+                        project.CompletionDatestring = project.CompletionDate?.ToString("dd-MM-yyyy") ?? "N/A";
+                        project.AssignDateString = project.AssignDate?.ToString("dd-MM-yyyy") ?? "N/A";
+                        project.StartDateString = project.StartDate?.ToString("dd-MM-yyyy") ?? "N/A";
                         if (project.ProjectStatus || project.physicalcomplete == 100)
                         {
                             project.projectStatusLabel = "Completed";
@@ -819,12 +845,9 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         pm.Id = Convert.ToInt32(rd["id"]);
                         pm.ProjectTitle = rd["title"].ToString();
-                        pm.AssignDate = Convert.ToDateTime(rd["assignDate"]);
-                        pm.AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy");
-                        pm.CompletionDate = Convert.ToDateTime(rd["completionDate"]);
-                        pm.CompletionDatestring = Convert.ToDateTime(rd["completionDate"]).ToString("dd-MM-yyyy");
-                        pm.StartDate = Convert.ToDateTime(rd["startDate"]);
-                        pm.StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy");
+                        pm.AssignDate = GetDateSafe(rd, "assignDate");
+                        pm.CompletionDate = GetDateSafe(rd, "completionDate");
+                        pm.StartDate = GetDateSafe(rd, "startDate");
                         pm.ProjectManager = rd["name"].ToString();
                         pm.ProjectBudget = Convert.ToDecimal(rd["budget"]);
                         pm.ProjectDescription = rd["description"].ToString();
@@ -848,6 +871,10 @@ namespace RemoteSensingProject.Models.Admin
                                 EmpCode = rd["subCode"].ToString()
                             });
                         }
+
+                        pm.CompletionDatestring = pm.CompletionDate?.ToString("dd-MM-yyyy") ?? "N/A";
+                        pm.AssignDateString = pm.AssignDate?.ToString("dd-MM-yyyy") ?? "N/A";
+                        pm.StartDateString = pm.StartDate?.ToString("dd-MM-yyyy") ?? "N/A";
                     }
 
                     rd.Close();

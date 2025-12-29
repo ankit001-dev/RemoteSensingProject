@@ -129,9 +129,9 @@
                                         </a>
                                     </td>
                                     <td>@item.ProjectManager</td>
-                                    <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
-                                    <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
-                                    <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
+                                    <td>@item.AssignDateString</td>
+                                    <td>@item.StartDateString</td>
+                                    <td>@item.CompletionDatestring</td>
                                     <td>
                                         <div class="progress-bar">
                                             <div class="progress" style="width:@item.physicalcomplete%; color:black;">@item.physicalcomplete%</div>
@@ -427,7 +427,7 @@
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Assign Date</label>
          <br />
-         <span>${convertToDate(res.data.pm.AssignDate)}</span>
+         <span>${res.data.pm.AssignDateString}</span>
      </div>
 
      <hr />
@@ -436,12 +436,12 @@
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Start Date</label>
          <br />
-         <span>${convertToDate(res.data.pm.StartDate)}</span>
+         <span>${res.data.pm.StartDateString}</span>
      </div>
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Completion Date</label>
          <br />
-         <span>${convertToDate(res.data.pm.CompletionDate)}</span>
+         <span>${res.data.pm.CompletionDatestring}</span>
      </div>
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Project Type</label>
