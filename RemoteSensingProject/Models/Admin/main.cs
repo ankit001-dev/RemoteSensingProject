@@ -42,6 +42,12 @@ namespace RemoteSensingProject.Models.Admin
             public string Password { get; set; }    
             public PaginationInfo Pagination { get; set; }
         }
+        public class BudgetHeadModel
+        {
+            public int Id { get; set; }
+            public string BudgetHead { get; set; }
+            //public bool Status { get; set; }
+        }
         public class SubProblem
         {
             public bool newRequest { get; set; }
