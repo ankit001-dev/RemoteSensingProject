@@ -3114,5 +3114,64 @@ namespace RemoteSensingProject.Models.Admin
             }
 
         }
+
+        public List<BudgetHeadModel> GetBudgetHeads()
+        {
+            try
+            {
+                //List<EmpReportModel> budgetlist = new List<EmpReportModel>();
+                List<BudgetHeadModel> budgetlist = new List<BudgetHeadModel>();
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageempreport_cursor", con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("v_action", "getbudgetHeads");
+                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
+                    cmd.Parameters.AddWithValue("v_id", 0);
+                    cmd.Parameters.AddWithValue("v_limit", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_page", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_year", DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_month", DBNull.Value);
+
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (NpgsqlDataReader res = fetchCmd.ExecuteReader())
+                    {
+                        while (res.Read())
+                        {
+                            budgetlist.Add(new BudgetHeadModel
+                            {
+                                Id = res["id"] == DBNull.Value ? 0 : Convert.ToInt32(res["id"]),
+                                BudgetHead = res["budgethead"] == DBNull.Value
+                                    ? null
+                                    : res["budgethead"].ToString()
+                            });
+                        }
+                    }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\"", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
+                }
+
+                return budgetlist;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+
+                if (cmd != null)
+                    cmd.Dispose();
+            }
+        }
+
     }
 }
