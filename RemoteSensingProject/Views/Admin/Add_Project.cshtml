@@ -108,7 +108,7 @@
 
                         <div class="col-lg-4 mb-3">
                             <div class="d-flex justify-content-between">
-                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="0"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
+                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
                             </div>
                             <input type="text" class="form-control form-control-sm" required name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
                             <span id="budgetValidate" class="text-danger"></span>
@@ -247,12 +247,12 @@
 
 
 <script>
-    //$(document).ready(function () {
-    //    $("select").select2({
-    //        placeholder: "Select an option",
-    //    });
+    $(document).ready(function () {
+        $("select").select2({
+            placeholder: "Select an option",
+        });
 
-    //})
+    });
     $(document).ready(function () {
 
         $("input[name='pm.pm.ProjectStage']").click(function () {
@@ -477,7 +477,9 @@
 
             $("#budgetContainerBox").show();
 
-            let count = parseInt($(this).attr("data-count")) || 0;
+            /* let count = parseInt($(this).attr("data-count")) || 0;*/
+
+            let count = $(".budgetList").length;
 
             let row = `
         <div class="row budgetList">
@@ -888,15 +890,21 @@
             let formData = new FormData();
             let arrData = $(this).serializeArray();
 
-            // Loop through the serialized form data and append it to FormData
             arrData.forEach(function (d) {
-                // Check if the key already exists in the formData
-                if (!formData.has(d.name) && d.value.trim() !== "") {
+                if (d.value !== null && d.value !== "") {
                     formData.append(d.name, d.value);
-                } else {
-                    console.log(`Duplicate or empty key skipped: ${d.name}`);
                 }
             });
+
+            // Loop through the serialized form data and append it to FormData
+            //arrData.forEach(function (d) {
+            //    // Check if the key already exists in the formData
+            //    if (!formData.has(d.name) && d.value.trim() !== "") {
+            //        formData.append(d.name, d.value);
+            //    } else {
+            //        console.log(`Duplicate or empty key skipped: ${d.name}`);
+            //    }
+            //});
 
             let projectType = $('input[name="pm.pm.ProjectType"]:checked').val();
             if (projectType === "External") {
