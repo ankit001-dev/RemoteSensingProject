@@ -531,7 +531,7 @@ namespace RemoteSensingProject.Models.Admin
                 // 1️⃣ Insert main project
                 var projectParams = new Dictionary<string, object>
                 {
-                    ["p_action"] = "insertProject",
+                    ["p_action"] = pm.pm.Id <=0? "insertProject": "updateProject",
                     ["p_letterno"] = pm.pm.letterNo,
                     ["p_title"] = pm.pm.ProjectTitle,
                     ["p_assigndate"] = pm.pm.AssignDate,
@@ -546,7 +546,8 @@ namespace RemoteSensingProject.Models.Admin
                     ["p_createdby"] = pm.pm.createdBy,
                     ["p_status"] = true,
                     ["p_approvestatus"] = true,
-                    ["p_projectcode"] = pm.projectCode
+                    ["p_projectcode"] = pm.projectCode,
+                    ["p_id"] = pm.pm.Id
                 };
 
                 int projectId = ExecuteProjectAction(projectParams, tran);
@@ -561,7 +562,7 @@ namespace RemoteSensingProject.Models.Admin
                             var budgetParams = new Dictionary<string, object>
                             {
                                 ["p_action"] = "insertProjectBudget",
-                                ["p_project_id"] = projectId,
+                                ["p_project_id"] = pm.pm.Id > 0 ?pm.pm.Id:projectId,
                                 ["p_heads"] = item.ProjectHeads,
                                 ["p_headsamount"] = item.ProjectAmount
                             };
@@ -578,8 +579,9 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         var stageParams = new Dictionary<string, object>
                         {
-                            ["p_action"] = "insertProjectStage",
-                            ["p_project_id"] = projectId,
+                            ["p_action"] = item.Id<=0? "insertProjectStage": "updateprojectStage",
+                            ["p_project_id"] = pm.pm.Id > 0 ? pm.pm.Id : projectId,
+                            ["p_id"] = item.Id,
                             ["p_keypoint"] = item.KeyPoint,
                             ["p_completiondate"] = item.CompletionDate,
                             ["p_stagedocument"] = item.Document_Url
@@ -595,8 +597,8 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         var subParams = new Dictionary<string, object>
                         {
-                            ["p_action"] = "insertSubOrdinate",
-                            ["p_project_id"] = projectId,
+                            ["p_action"] = pm.pm.Id<=0?"insertSubOrdinate":"updateSubOrdinate",
+                            ["p_project_id"] = pm.pm.Id > 0 ? pm.pm.Id : projectId,
                             ["p_id"] = subId,
                             ["p_projectmanager"] = int.TryParse(pm.pm.ProjectManager, out int SubProjectManager) ? SubProjectManager : 0
                         };
@@ -605,12 +607,12 @@ namespace RemoteSensingProject.Models.Admin
                 }
 
                 // 5️⃣ Insert External project details
-                if (pm.pm.ProjectType.Equals("External") && projectId > 0)
+                if (pm.pm.ProjectType.Equals("External") && (projectId > 0 || pm.pm.Id > 0))
                 {
                     var extParams = new Dictionary<string, object>
                     {
-                        ["p_action"] = "insertExternalProject",
-                        ["p_project_id"] = projectId,
+                        ["p_action"] = pm.pm.Id<=0?"insertExternalProject":"updateExternalProject",
+                        ["p_project_id"] = pm.pm.Id > 0 ? pm.pm.Id : projectId,
                         ["p_departmentname"] = pm.pm.ProjectDepartment,
                         ["p_contactperson"] = pm.pm.ContactPerson,
                         ["p_address"] = pm.pm.Address
