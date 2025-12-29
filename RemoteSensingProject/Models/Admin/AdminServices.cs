@@ -577,13 +577,13 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     foreach (var item in pm.budgets)
                     {
-                        if (!string.IsNullOrWhiteSpace(item.ProjectHeads))
+                        if (item.HeadId>0)
                         {
                             var budgetParams = new Dictionary<string, object>
                             {
                                 ["p_action"] = "insertProjectBudget",
                                 ["p_project_id"] = pm.pm.Id > 0 ?pm.pm.Id:projectId,
-                                ["p_heads"] = item.ProjectHeads,
+                                ["p_heads"] = item.HeadId.ToString(),
                                 ["p_headsamount"] = item.ProjectAmount
                             };
                             ExecuteProjectAction(budgetParams, tran);

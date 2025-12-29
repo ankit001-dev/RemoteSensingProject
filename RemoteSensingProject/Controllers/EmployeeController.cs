@@ -100,7 +100,8 @@ namespace RemoteSensingProject.Controllers
         {
             var data = _adminServices.SelectEmployeeRecord();
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
-
+            ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
+            ViewData["Designations"] = _adminServices.ListDesgination();
             return View();
         }
 
