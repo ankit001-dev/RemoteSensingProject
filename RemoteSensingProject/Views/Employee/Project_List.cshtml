@@ -43,6 +43,7 @@
                         <th class="pt-0">Start Date</th>
                         <th class="pt-0">Completion Date</th>
                         <th class="pt-0">Status</th>
+                        <th class="pt-0 text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -74,8 +75,11 @@
                                 {
                                     <span class="badge bg-primary">Pending</span>
                                 }
-
-
+                            </td>
+                            <td>
+                                <a href="#" class="edit-project" data-id="@item.Id">
+                                    <i class="link-icon" data-feather="edit"></i>
+                                </a>
                             </td>
                         </tr>
                         i++;
@@ -305,4 +309,16 @@
         if (division) $('#filterProjectStatus').val(division);
     });
 </script>
+
+<script>
+    $(document).on("click", ".edit-project", function (e) {
+        e.preventDefault();
+
+        var projectId = $(this).data("id");
+
+        // Redirect to AddProject page with query string
+        window.location.href = "/Employee/Add_Project?id=" + projectId;
+    });
+</script>
+
 

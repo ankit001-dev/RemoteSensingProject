@@ -206,7 +206,7 @@ namespace RemoteSensingProject.ApiServices
 
         // ================= RESET PASSWORD =================
         [System.Web.Mvc.AllowAnonymous]
-        [HttpPut]
+        [HttpPost]
         [Route("api/reset-password")]
         public IHttpActionResult ResetPassword([FromBody] Credentials userdata)
         {

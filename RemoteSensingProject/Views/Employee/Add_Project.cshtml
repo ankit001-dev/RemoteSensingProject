@@ -14,7 +14,7 @@
 
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item active" aria-current="page">Add Project</li>
+        <li class="breadcrumb-item active" id="pageTitle" aria-current="page">Add Project</li>
     </ol>
     <a href="/employee/Project_List" class="btn btn-primary"><i class="link-icon" data-feather="arrow-left"></i> Back To List</a>
 </nav>
@@ -30,25 +30,25 @@
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Assign Date</label>
-                            <div class="input-group date datepicker datePickerExample">
-                                <input type="text" class="form-control form-control-sm" name="pm.pm.AssignDate" required>
-                                <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
+                            <div class="input-group date">
+                                <input type="date" class="form-control form-control-sm" name="pm.pm.AssignDate" required>
+                                @*<span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>*@
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="subtitle" class="form-label">Start Date</label>
-                            <div class="input-group date datepicker datePickerExample">
-                                <input type="text" class="form-control form-control-sm" name="pm.pm.StartDate" required>
-                                <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
+                            <div class="input-group date">
+                                <input type="date" class="form-control form-control-sm" name="pm.pm.StartDate" required>
+                                @*<span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>*@
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Completion Date</label>
-                            <div class="input-group date datepicker datePickerExample">
-                                <input type="text" class="form-control form-control-sm" name="pm.pm.CompletionDate" required>
-                                <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
+                            <div class="input-group date">
+                                <input type="date" class="form-control form-control-sm" name="pm.pm.CompletionDate" required>
+                                @*<span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>*@
                             </div>
                         </div>
 
@@ -286,8 +286,7 @@
     });
 
     $(document).ready(function () {
-
-        // 🔹 Add new head on click
+        // Add Budget Heads
         $("#addBudgetItem").click(function (e) {
             e.preventDefault();
 
@@ -301,156 +300,316 @@
 
             let count = parseInt($(this).attr("data-count")) || 0;
 
-            // ✅ First-time click fix:
-            // Agar already ek static head (first) hai aur count == 0, to nayi row na banaye
-            if (count === 0 && $(".budgetList").length > 0) {
-                $(this).attr("data-count", 1); // increment internally, but don't create
-                updateMiscAmount();
-                return;
+            if (count === 0) {
+                // First click: create one head row + misc
+                let headRow = `
+                <div class="row budgetList">
+                    <div class="col-lg-5 mb-3">
+                        <label class="form-label">Heads</label>
+                        <input type="text" class="form-control form-control-sm" 
+                            name="pm.budgets[0].ProjectHeads" placeholder="Enter Key Point">
+                    </div>
+                    <div class="col-lg-5 mb-3">
+                        <label class="form-label">Amount</label>
+                        <input type="number" class="form-control form-control-sm amnt" 
+                            name="pm.budgets[0].ProjectAmount" placeholder="Enter amount" min="0">
+                    </div>
+                    <div class="col-lg-2 text-center mb-3">
+                        <a href="#" class="deleteCurrntRow">
+                            <i class="fa-solid fa-trash text-danger fs-4" style="cursor:pointer;"></i>
+                        </a>
+                    </div>
+                </div>`;
+
+                let miscRow = `
+                <div class="row" id="miscList">
+                    <div class="col-lg-5 mb-3">
+                        <label class="form-label">Miscellaneous</label>
+                        <input type="text" class="form-control form-control-sm" 
+                            name="pm.budgets[1].ProjectHeads" value="Miscellaneous" readonly>
+                    </div>
+                    <div class="col-lg-5 mb-3">
+                        <label class="form-label">Amount</label>
+                        <input type="number" class="form-control form-control-sm" id="misAmount" 
+                            name="pm.budgets[1].ProjectAmount" readonly>
+                    </div>
+                </div>`;
+
+                $("#budgetContainerBox").append(headRow + miscRow);
+                $(this).attr("data-count", 1);
+            } else {
+                // Add new head row
+                let ele = `
+                <div class="row budgetList">
+                    <div class="col-lg-5 mb-3">
+                        <label class="form-label">Heads</label>
+                        <input type="text" class="form-control form-control-sm" 
+                            name="pm.budgets[${count + 1}].ProjectHeads" placeholder="Enter Key Point">
+                    </div>
+                    <div class="col-lg-5 mb-3">
+                        <label class="form-label">Amount</label>
+                        <input type="number" class="form-control form-control-sm amnt" 
+                            name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount" min="0">
+                    </div>
+                    <div class="col-lg-2 text-center mb-3">
+                        <a href="#" class="deleteCurrntRow">
+                            <i class="fa-solid fa-trash text-danger fs-4" style="cursor:pointer;"></i>
+                        </a>
+                    </div>
+                </div>`;
+                $("#miscList").before(ele);
+                $(this).attr("data-count", count + 1);
             }
-
-            // 🔹 New head row template
-            let ele = `
-        <div class="row budgetList">
-            <div class="col-lg-5 mb-3">
-                <label class="form-label">Heads</label>
-                <input type="text" class="form-control form-control-sm" 
-                    name="pm.budgets[${count + 1}].ProjectHeads" placeholder="Enter Key Point">
-            </div>
-            <div class="col-lg-5 mb-3">
-                <label class="form-label">Amount</label>
-                <input type="number" class="form-control form-control-sm amnt" 
-                    name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
-            </div>
-            <div class="col-lg-2 text-center mb-3" style="line-height:6;">
-                <a href="#" class="deleteCurrntRow">
-                    <i class="fa-solid fa-trash text-danger fs-4" style="cursor:pointer;"></i>
-                </a>
-            </div>
-        </div>`;
-
-            $("#miscList").before(ele);
-            $(this).attr("data-count", count + 1);
 
             updateMiscAmount();
         });
 
-        // 🔹 Delete a head
+        // Delete row
         $("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
             e.preventDefault();
-            let count = parseInt($("#addBudgetItem").attr("data-count")) || 0;
-            if (count > 0) count--;
+            let count = parseInt($("#addBudgetItem").attr("data-count")) || 1;
+            if (count > 1) count--;
             $("#addBudgetItem").attr("data-count", count);
             $(this).closest(".row.budgetList").remove();
             updateMiscAmount();
         });
 
-        // 🔹 On any input change
+        // Update misc amount and prevent exceeding budget
         $(document).on("input", "#budgetAmount, .amnt", function () {
-            updateMiscAmount($(this)); // pass current input
-        });
-
-        // 🔹 Function: Update Miscellaneous (remaining)
-        function updateMiscAmount(changedInput = null) {
             let budgetAmt = parseFloat($("#budgetAmount").val()) || 0;
             let totalHeads = 0;
+            let exceeded = false;
 
             $(".amnt").each(function () {
-                let val = parseFloat($(this).val());
-                if (!isNaN(val)) totalHeads += val;
+                let val = parseFloat($(this).val()) || 0;
+                totalHeads += val;
             });
 
-            // ⚠️ Check exceed
             if (totalHeads > budgetAmt) {
+                exceeded = true;
                 Swal.fire("Error!", "Total of all heads cannot exceed Project Budget!", "error");
-
-                // 🧹 Clear the field which exceeded
-                if (changedInput) $(changedInput).val('');
-
-                // Recalculate
+                $(this).val('');
                 totalHeads = 0;
                 $(".amnt").each(function () {
-                    let val = parseFloat($(this).val());
-                    if (!isNaN(val)) totalHeads += val;
+                    let val = parseFloat($(this).val()) || 0;
+                    totalHeads += val;
                 });
             }
 
-            // ✅ Update Misc amount
             let remaining = budgetAmt - totalHeads;
             if (remaining < 0) remaining = 0;
-
             $("#misAmount").val(remaining.toFixed(2));
-        }
+        });
     });
+
 
 </script>
 
 <script>
     $("#createProjectForm").on("submit", function (e) {
         e.preventDefault();
-        debugger
-        Swal.fire({
-            title: "Please wait !",
-            text: "Processing your request ....",
-            timer: 100000,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        });
 
         let formData = new FormData(this);
-        let file = $("#projectDocumentFile")[0].files[0];
-        if (file) {
-            formData.append("pm.pm.projectDocument", file); 
-        }
-        $.each($(".stagesImages"), function (i, d) {
-            file = $(d)[0].files[0];
-            if (file) {
-                formData.append(`pm.stages[${d}].Stage_Document`, file);
-            }
+
+        // Project file
+        let projFile = $("#projectDocumentFile")[0].files[0];
+        if (projFile) formData.append("pm.pm.projectDocument", projFile);
+
+        // Stages files
+        $.each($(".stagesImages"), function (index, el) {
+            let file = el.files[0];
+            if (file) formData.append(`stages[${index}].Stage_Document`, file);
         });
 
+        // Budgets
+        $(".budgetList").each(function (index) {
+            let head = $(this).find("input[name$='ProjectHeads']").val();
+            let amount = $(this).find("input[name$='ProjectAmount']").val();
+            formData.append(`budgets[${index}].ProjectHeads`, head);
+            formData.append(`budgets[${index}].ProjectAmount`, amount);
+        });
+
+        // Misc
+        let miscHead = $("#miscList input[name$='ProjectHeads']").val();
+        let miscAmount = $("#misAmount").val();
+        formData.append(`budgets[${$(".budgetList").length}].ProjectHeads`, miscHead);
+        formData.append(`budgets[${$(".budgetList").length}].ProjectAmount`, miscAmount);
 
         $.ajax({
             url: "/Employee/InsertProject",
-            type: "post",
+            type: "POST",
             data: formData,
             processData: false,
             contentType: false,
             success: function (res) {
-                if (res.status) {
-                    Swal.fire({
-                        title: "Successfully !",
-                        text: "Project created successfully !",
-                        icon: "success",
-                        didClose: () => {
-                            location.reload(true);
-                        }
-                    })
-                }
-                else {
-                    Swal.fire({
-                        title: "Sorry !",
-                        text: "Some issue occured while processing your request ! Please try after sometime.",
-                        icon: "warning"
-                    })
-                }
-            },
-            error: function (xhr, status, error) {
-                console.log("Error Details:");
-                console.log("XHR Object: ", xhr);
-                console.log("Status: ", status);
-                console.log("Error Message: ", error);
-                console.log("Response Text: ", xhr.responseText);
-                console.log("HTTP Status Code: ", xhr.status);
-                Swal.fire({
-                    title: "Server issue !",
-                    text: "Server is busy ! Try after sometime.",
-                    icon: "error"
-                })
+                if (res.status) Swal.fire("Success!", "Project created!", "success").then(() => location.reload());
+                else Swal.fire("Error!", "Something went wrong!", "error");
             }
-        })
-    })
+        });
+    });
+
+</script>
+
+<!-- Update Project -->
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const projectId = urlParams.get("id");
+
+    $.ajax({
+        url: "/Employee/GetProjecDatatById",
+        type: "get",
+        data: { Id: projectId },
+        success: function (res) {
+            console.log(res);
+            if (res.status) {
+
+                bindProjectData(res.data);
+                bindSubOrdinate(res.data);
+                bindBudgets(res.data);
+                bindStages(res.data);
+
+                setTimeout(function () {
+                    
+                }, 300);
+
+                $("#pageTitle").text("Update Project");
+                $("#createProjectForm button[type='submit']").text("Update");
+            }
+        },
+        error: function (res) {
+
+        },
+        complete: function (res) {
+
+        }
+    });
+
+
+    function bindProjectData(response) {
+
+        function convertDDMMYYYYtoYYYYMMDD(dateStr) {
+            if (!dateStr) return "";
+
+            const parts = dateStr.split("-");
+            if (parts.length !== 3) return "";
+
+            const day = parts[0].padStart(2, "0");
+            const month = parts[1].padStart(2, "0");
+            const year = parts[2];
+
+            return `${year}-${month}-${day}`;
+        }
+
+        const pm = response.pm;
+
+        // Text inputs
+        $("input[name='pm.pm.ProjectTitle']").val(pm.ProjectTitle);
+        $("input[name='pm.pm.ProjectBudget']").val(pm.ProjectBudget);
+        $("input[name='pm.pm.ProjectDepartment']").val(pm.ProjectDepartment);
+        $("input[name='pm.pm.ContactPerson']").val(pm.ContactPerson);
+        $("input[name='pm.pm.Address']").val(pm.Address);
+
+        //Dates Binding
+        $("input[name='pm.pm.AssignDate']").val(convertDDMMYYYYtoYYYYMMDD(pm.AssignDateString));
+        $("input[name='pm.pm.StartDate']").val(convertDDMMYYYYtoYYYYMMDD(pm.StartDateString));
+        $("input[name='pm.pm.CompletionDate']").val(convertDDMMYYYYtoYYYYMMDD(pm.CompletionDatestring));
+
+        // Textarea
+        $("textarea[name='pm.pm.ProjectDescription']").val(pm.ProjectDescription);
+
+        // Radio: Project Type
+        $("input[name='pm.pm.ProjectType'][value='" + pm.ProjectType + "']").prop("checked", true);
+
+        // Radio: Stage
+        $("input[name='pm.pm.ProjectStage'][value='" + pm.ProjectStage + "']").prop("checked", true);
+
+        // Show sections conditionally
+        if (pm.ProjectStage === true) {
+            $("#stageItemContainer").show();
+        }
+
+        if (pm.ProjectType === "External") {
+            $("#projectTypeDetailContainer").show();
+        }
+    }
+
+    function bindSubOrdinate(response) {
+        const ids = response.SubOrdinate.map(x => x.Id);
+        $("select[name='pm.pm.SubOrdinate']").val(ids).trigger("change");
+    }
+
+    function bindBudgets(response) {
+        if (!response.budgets || response.budgets.length === 0) return;
+
+        $("#budgetContainerBox").show();
+        $("#budgetContainerBox .budgetList").remove(); // Remove old dynamic rows
+
+        let count = 0;
+
+        response.budgets.forEach(function (b) {
+            if (b.ProjectHeads === "Miscellaneous") {
+                $("#misAmount").val(b.ProjectAmount); // set misc amount
+            } else {
+                let ele = `
+            <div class="row budgetList">
+                <div class="col-lg-5 mb-3">
+                    <label class="form-label">Heads</label>
+                    <input type="text" class="form-control form-control-sm"
+                           name="pm.budgets[${count}].ProjectHeads"
+                           value="${b.ProjectHeads}">
+                </div>
+                <div class="col-lg-5 mb-3">
+                    <label class="form-label">Amount</label>
+                    <input type="number" class="form-control form-control-sm amnt"
+                           name="pm.budgets[${count}].ProjectAmount"
+                           value="${b.ProjectAmount}">
+                </div>
+                <div class="col-lg-2 text-center mb-3" style="line-height:6;">
+                    <a href="#" class="deleteCurrntRow">
+                        <i class="fa-solid fa-trash text-danger fs-4" style="cursor:pointer;"></i>
+                    </a>
+                </div>
+            </div>`;
+
+                $("#miscList").before(ele);
+                count++;
+            }
+        });
+
+        $("#addBudgetItem").attr("data-count", count); // update count
+        updateMiscAmount(); // recalc remaining misc
+    }
+
+
+
+
+    function bindStages(response) {
+
+        if (!response.stages || response.stages.length === 0) return;
+
+        $("#stageItemContainer").show();
+
+        response.stages.forEach(function (stage, index) {
+
+            let html = `
+        <div class="row stageListItem">
+            <div class="col-lg-4 mb-3">
+                <label class="form-label">Key Point</label>
+                <input type="text" class="form-control form-control-sm"
+                       name="pm.stages[${index}].KeyPoint"
+                       value="${stage.KeyPoint}">
+            </div>
+
+            <div class="col-lg-4 mb-3">
+                <label class="form-label">Completion Date</label>
+                <input type="text" class="form-control form-control-sm"
+                       name="pm.stages[${index}].CompletionDatestring"
+                       value="${stage.CompletionDatestring}">
+            </div>
+        </div>`;
+
+            $("#stageItemContainer fieldset").append(html);
+        });
+    }
+
 </script>

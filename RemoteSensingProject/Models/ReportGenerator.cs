@@ -12,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using static RemoteSensingProject.Models.ApiCommon;
 
@@ -186,7 +187,11 @@ namespace RemoteSensingProject.Models
             //QuestPDF.Settings. = true;
 
             // Register Hindi-capable font (update the path!)
-            FontManager.RegisterFont(File.OpenRead("wwwroot/fonts/NotoSansDevanagari-Regular.ttf"));
+            var fontPath = HttpContext.Current.Server.MapPath(
+    "~/assets/NotoSansDevanagari-Regular.ttf"
+);
+
+            FontManager.RegisterFont(File.OpenRead(fontPath));
 
             var document = Document.Create(container =>
             {
@@ -237,30 +242,31 @@ namespace RemoteSensingProject.Models
 
                         string[] headers =
                         {
-                    "क्र.सं.",
-                    "मद / परियोजना का नाम",
-                    "इकाई",
-                    "वार्षिक",
-                    "आलोच्य मासांत तक",
-                    "आलोच्य माह में",
-                    "आलोच्य मासांत तक संचिति",
-                    "प्रदेश सरकार के लाभान्वित विभाग",
-                    "अनुभूति / टिप्पणी"
-                };
+        "क्र.सं.",
+        "मद / परियोजना का नाम",
+        "इकाई",
+        "वार्षिक",
+        "आलोच्य मासांत तक",
+        "आलोच्य माह में",
+        "आलोच्य मासांत तक संचिति",
+        "प्रदेश सरकार के लाभान्वित विभाग",
+        "अनुभूति / टिप्पणी"
+    };
 
-                        foreach (var h in headers)
+                        // ✅ HEADER — defined ONCE
+                        table.Header(header =>
                         {
-                            table.Header(header =>
+                            foreach (var h in headers)
                             {
                                 header.Cell()
-                                      .Border(1)
-                                      .Background(Colors.Grey.Lighten3)
-                                      .Padding(5)
-                                      .AlignCenter()
-                                      .Text(h)
-                                      .SemiBold();
-                            });
-                        }
+                                    .Border(1)
+                                    .Background(Colors.Grey.Lighten3)
+                                    .Padding(5)
+                                    .AlignCenter()
+                                    .Text(h)
+                                    .SemiBold();
+                            }
+                        });
 
                         int sr = 1;
 
@@ -308,8 +314,28 @@ namespace RemoteSensingProject.Models
         {
             var response = _request.CreateResponse(HttpStatusCode.OK);
             response.Content = new ByteArrayContent(_bytes);
+
+            string contentType;
+
+            var extension = Path.GetExtension(_fileName)?.ToLower();
+
+            switch (extension)
+            {
+                case ".pdf":
+                    contentType = "application/pdf";
+                    break;
+
+                case ".xlsx":
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    break;
+
+                default:
+                    contentType = "application/octet-stream"; // fallback
+                    break;
+            }
+
             response.Content.Headers.ContentType =
-                new MediaTypeHeaderValue("application/pdf");
+                new MediaTypeHeaderValue(contentType);
 
             response.Content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")
@@ -319,6 +345,7 @@ namespace RemoteSensingProject.Models
 
             return Task.FromResult(response);
         }
+
     }
     #endregion
 }

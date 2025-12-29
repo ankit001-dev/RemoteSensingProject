@@ -551,9 +551,9 @@ namespace RemoteSensingProject.ApiServices
         #region Employee Monthly Reports
         [HttpGet]
         [Route("api/report/EmployeeMonthlyreportpdf")]
-        public IHttpActionResult EmployeeMonthlyReportPdf(int id)
+        public IHttpActionResult EmployeeMonthlyReportPdf(int id,int month,int year)
         {
-            var data = _managerservice.GetEmpReport(id);
+            var data = _managerservice.GetEmpReport(userid:id,month:month,year:year);
             byte[] pdfBytes = ReportGenerator.CreateMonthlyReviewPdf(data, "EmployeeMonthly Report");
 
             return new PdfResult(pdfBytes, "EmployeeMonthlyReport.pdf", Request);
