@@ -164,7 +164,7 @@
                                 </div>-->
                                 <div class="col-lg-5 mb-3">
                                     <label class="form-label">Heads</label>
-                                    <select class="form-select form-select-sm"
+                                    <select class="form-select form-select-sm no-select2 budgetHeadSelect"
                                             name="pm.budgets[0].ProjectHeads">
                                         @Html.Raw(budgetOptions)
                                     </select>
@@ -251,6 +251,10 @@
         $("select").select2({
             placeholder: "Select an option",
         });
+
+
+        // Disable Select2 only on this select
+        $("select.no-select2").select2('destroy');
 
     });
     $(document).ready(function () {
@@ -515,6 +519,8 @@
             $(this).attr("data-count", count + 1);
 
             updateMiscAmount();
+            updateBudgetOptions();
+
         });
 
         // 🔹 Delete Budget Head
@@ -583,10 +589,14 @@
 
     $(document).ready(function () {
         // Initialize Select2
-        //$("select").select2({
-        //    placeholder: "Select an option",
-        //    allowClear: true
-        //});
+        $("select").select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+
+
+        // Disable Select2 only on this select
+        $("select.no-select2").select2('destroy');
 
         $('#assignDate, #startDate, #completeDate').on('change blur', function () {
             $(this).valid();
@@ -1054,6 +1064,5 @@
         });
     });
 
-
-
 </script>
+
