@@ -253,6 +253,7 @@ namespace RemoteSensingProject.Controllers
                 status = res
             }, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult Project_List(string searchTerm = null,string statusFilter=null)
         {
             ViewBag.ProjectList = _adminServices.Project_List(filterType:"ManagerProject",searchTerm:searchTerm,statusFilter:statusFilter);
