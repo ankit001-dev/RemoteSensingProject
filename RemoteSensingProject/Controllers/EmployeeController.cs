@@ -100,7 +100,8 @@ namespace RemoteSensingProject.Controllers
         {
             var data = _adminServices.SelectEmployeeRecord();
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
-
+            ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
+            ViewData["Designations"] = _adminServices.ListDesgination();
             return View();
         }
 
@@ -181,7 +182,8 @@ namespace RemoteSensingProject.Controllers
             }
             return Json(new
             {
-                status = res
+                status = res,
+                message = pm.pm.Id>0 ?"Project Updated Successfully":"Project Created Successfully"
             }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Project_List(string searchTerm = null, string statusFilter = null)
