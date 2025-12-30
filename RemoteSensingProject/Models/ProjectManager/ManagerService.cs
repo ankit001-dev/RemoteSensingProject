@@ -1094,18 +1094,20 @@ namespace RemoteSensingProject.Models.ProjectManager
                         userpassword += validChars[rnd.Next(validChars.Length)];
                     }
                 }
-                cmd = new NpgsqlCommand("CALL sp_manageoutsource(@p_action, NULL::int, @p_empid, @p_outcode, @p_emp_name, @p_emp_mobile, @p_emp_email, @p_joiningdate, @p_emp_gender, @p_password,NULL::boolean)", con);
+                cmd = new NpgsqlCommand("CALL sp_manageoutsource(@p_action, NULL::int, @p_empid,@p_designationid, @p_outcode, @p_emp_name, @p_emp_mobile, @p_emp_email, @p_joiningdate, @p_emp_gender, @p_password,NULL::boolean)", con);
                 cmd.CommandType = CommandType.Text;
                 cmd.Parameters.Add("@p_action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "createOutSource";
                 cmd.Parameters.Add("@p_empid", NpgsqlTypes.NpgsqlDbType.Integer).Value = os.EmpId;
+                cmd.Parameters.Add("@p_designationid", NpgsqlTypes.NpgsqlDbType.Integer).Value = os.designationid;
                 cmd.Parameters.Add("@p_outcode", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.email;
                 cmd.Parameters.Add("@p_emp_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.EmpName;
                 cmd.Parameters.Add("@p_emp_mobile", NpgsqlTypes.NpgsqlDbType.Bigint).Value = Convert.ToInt64(os.mobileNo);
                 cmd.Parameters.Add("@p_emp_email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.email;
                 cmd.Parameters.Add("@p_joiningdate", NpgsqlTypes.NpgsqlDbType.Timestamp)
-              .Value = Convert.ToDateTime(os.joiningdate);
+               .Value = Convert.ToDateTime(os.joiningdate);
                 cmd.Parameters.Add("@p_emp_gender", NpgsqlTypes.NpgsqlDbType.Varchar).Value = os.gender;
                 cmd.Parameters.Add("@p_password", NpgsqlTypes.NpgsqlDbType.Varchar).Value = userpassword;
+               
                 con.Open();
                 cmd.ExecuteNonQuery();
                 mail _mail = new mail();
@@ -1158,7 +1160,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     mobileNo = Convert.ToInt64(rd["emp_mobile"]),
                                     email = rd["emp_email"].ToString(),
                                     joiningdate = rd["joiningdate"].ToString(),
-                                    gender = rd["emp_gender"].ToString()
+                                    gender = rd["emp_gender"].ToString(),
+                                    designationname = rd["designationname"].ToString()
+                                    
                                 };
                                 if (firstRow)
                                 {
