@@ -529,25 +529,7 @@ namespace RemoteSensingProject.Models.Admin
                 pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
 
                 // 1️⃣ Insert main project
-                //var projectParams = new Dictionary<string, object>
-                //{
-                //    ["p_action"] = "insertProject",
-                //    ["p_letterno"] = pm.pm.letterNo,
-                //    ["p_title"] = pm.pm.ProjectTitle,
-                //    ["p_assigndate"] = pm.pm.AssignDate,
-                //    ["p_startdate"] = pm.pm.StartDate,
-                //    ["p_completiondate"] = pm.pm.CompletionDate,
-                //    ["p_projectmanager"] = int.TryParse(pm.pm.ProjectManager, out int ProjectManager) ? ProjectManager : 0, 
-                //    ["p_budget"] = pm.pm.ProjectBudget,
-                //    ["p_description"] = pm.pm.ProjectDescription,
-                //    ["p_projectdocument"] = pm.pm.projectDocumentUrl,
-                //    ["p_projecttype"] = pm.pm.ProjectType,
-                //    ["p_stage"] = pm.pm.ProjectStage,
-                //    ["p_createdby"] = pm.pm.createdBy,
-                //    ["p_status"] = true,
-                //    ["p_approvestatus"] = true,
-                //    ["p_projectcode"] = pm.projectCode
-                //};
+                
                 var projectParams = new Dictionary<string, object>
                 {
                     ["p_action"] = pm.pm.Id <=0? "insertProject": "updateProject",
@@ -582,14 +564,32 @@ namespace RemoteSensingProject.Models.Admin
                         {
                             var budgetParams = new Dictionary<string, object>
                             {
-                                ["p_action"] = "insertProjectBudget",
+                                ["p_action"] = item.Id<=0 ?"insertProjectBudget":"updateprojectBudget",
                                 ["p_project_id"] = pm.pm.Id > 0 ?pm.pm.Id:projectId,
                                 ["p_heads"] = item.HeadId.ToString(),
-                                ["p_headsamount"] = item.ProjectAmount
+                                ["p_headsamount"] = item.ProjectAmount,
+                                ["p_projectmanager"] = item.Id
                             };
                             ExecuteProjectAction(budgetParams, tran);
                         }
                         
+                    }
+                }
+
+                //Insert Human Resources
+                if (pm.hr != null && pm.hr.Count > 0 && pm.pm.hrCount > 0)
+                {
+                    foreach (var item in pm.hr)
+                    {
+                        var hrparams = new Dictionary<string, object>
+                        {
+                            ["p_action"] = item.id <= 0 ? "insertHumanResources" : "updateHumanResources",
+                            ["p_project_id"] = pm.pm.Id > 0 ? pm.pm.Id : projectId,
+                            ["p_id"] = item.designationId,
+                            ["p_hrcount"] = item.designationCount,
+                            ["p_projectmanager"] = item.id
+                        };
+                        ExecuteProjectAction(hrparams, tran);
                     }
                 }
 
@@ -608,21 +608,6 @@ namespace RemoteSensingProject.Models.Admin
                             ["p_stagedocument"] = item.Document_Url
                         };
                         ExecuteProjectAction(stageParams, tran);
-                    }
-                }
-
-                if (pm.hr !=null && pm.hr.Count>0 && pm.pm.hrCount > 0)
-                {
-                    foreach(var item in pm.hr)
-                    {
-                        var hrparams = new Dictionary<string, object>
-                        {
-                            ["p_action"] = item.id <= 0 ? "insertHumanResources" : "updateHumanResources",
-                            ["p_project_id"] = pm.pm.Id > 0 ? pm.pm.Id : projectId,
-                            ["p_id"] = item.designationId,
-                            ["p_hrcount"] = item.designationCount
-                        };
-                        ExecuteProjectAction(hrparams, tran);
                     }
                 }
 
@@ -882,6 +867,7 @@ namespace RemoteSensingProject.Models.Admin
                     while (rd.Read())
                     {
                         pm.Id = Convert.ToInt32(rd["id"]);
+                        pm.hrCount = Convert.ToInt32(rd["hrcount"]);
                         pm.ProjectTitle = rd["title"].ToString();
                         pm.AssignDate = GetDateSafe(rd, "assignDate");
                         pm.CompletionDate = GetDateSafe(rd, "completionDate");
