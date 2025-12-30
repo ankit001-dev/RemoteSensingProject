@@ -485,6 +485,46 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        #region DesginationList
+        [RoleAuthorize("admin,projectManager")]
+        [HttpGet]
+        [Route("api/DesginationList")]
+        public IHttpActionResult DesginationList()
+        {
+            try
+            {
+                var data = _adminServices.ListDesgination();
+                if (data != null && data.Count > 0)
+                {
+                    return Ok(new
+                    {
+                        status = true,
+                        StatusCode = 200,
+                        message = "All desgination fetched !",
+                        data = data
+                    });
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        message = "Some issue found while processing request."
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message,
+                    data = ex
+                });
+            }
+        }
+        #endregion
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);
