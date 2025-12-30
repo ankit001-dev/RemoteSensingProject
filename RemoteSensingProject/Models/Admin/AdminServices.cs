@@ -566,7 +566,8 @@ namespace RemoteSensingProject.Models.Admin
                     ["p_status"] = true,
                     ["p_approvestatus"] = true,
                     ["p_projectcode"] = pm.projectCode,
-                    ["p_id"] = pm.pm.Id
+                    ["p_id"] = pm.pm.Id,
+                    ["p_hrcount"] = pm.pm.hrCount
                 };
 
 
@@ -610,8 +611,23 @@ namespace RemoteSensingProject.Models.Admin
                     }
                 }
 
-                // 4️⃣ Insert subordinates
-                if (pm.pm.SubOrdinate != null && pm.pm.SubOrdinate.Length > 0)
+                if (pm.hr !=null && pm.hr.Count>0 && pm.pm.hrCount > 0)
+                {
+                    foreach(var item in pm.hr)
+                    {
+                        var hrparams = new Dictionary<string, object>
+                        {
+                            ["p_action"] = item.id <= 0 ? "insertHumanResources" : "updateHumanResources",
+                            ["p_project_id"] = pm.pm.Id > 0 ? pm.pm.Id : projectId,
+                            ["p_id"] = item.designationId,
+                            ["p_hrcount"] = item.designationCount
+                        };
+                        ExecuteProjectAction(hrparams, tran);
+                    }
+                }
+
+                    // 4️⃣ Insert subordinates
+                    if (pm.pm.SubOrdinate != null && pm.pm.SubOrdinate.Length > 0)
                 {
                     foreach (var subId in pm.pm.SubOrdinate)
                     {
@@ -661,7 +677,7 @@ namespace RemoteSensingProject.Models.Admin
         private int ExecuteProjectAction(Dictionary<string, object> parameters, NpgsqlTransaction tran)
         {
             using (var cmd = new NpgsqlCommand(
-                "CALL sp_adminaddproject(:p_action, :p_letterno, :p_id, :p_title, :p_assigndate, :p_startdate, :p_completiondate, :p_projectmanager, :p_subordinate, :p_budget, :p_description, :p_projectdocument, :p_projecttype, :p_stage, :p_projectcode, :p_approvestatus, :p_createdby, :p_status, :p_heads, :p_headsamount, :p_keypoint, :p_stagedocument, :p_departmentname, :p_contactperson, :p_address , :p_project_id)", con, tran))
+                "CALL sp_adminaddproject(:p_action, :p_letterno, :p_id, :p_title, :p_assigndate, :p_startdate, :p_completiondate, :p_projectmanager, :p_subordinate, :p_budget, :p_description, :p_projectdocument, :p_projecttype, :p_stage, :p_projectcode, :p_approvestatus, :p_createdby, :p_status, :p_heads, :p_headsamount, :p_keypoint, :p_stagedocument, :p_departmentname, :p_contactperson, :p_address , :p_hrcount , :p_project_id)", con, tran))
             {
                 cmd.CommandType = CommandType.Text;
 
@@ -669,7 +685,7 @@ namespace RemoteSensingProject.Models.Admin
                 var allParams = new List<string>
         {
             "p_action","p_letterno","p_id","p_title","p_assigndate","p_startdate","p_completiondate","p_projectmanager","p_subordinate","p_budget",
-            "p_description","p_projectdocument","p_projecttype","p_stage","p_projectcode","p_approvestatus","p_createdby","p_status", "p_heads", "p_headsamount", "p_keypoint","p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_project_id"
+            "p_description","p_projectdocument","p_projecttype","p_stage","p_projectcode","p_approvestatus","p_createdby","p_status", "p_heads", "p_headsamount", "p_keypoint","p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_hrcount" , "p_project_id"
         };
 
                 // Assign provided params or default DBNull
@@ -905,6 +921,7 @@ namespace RemoteSensingProject.Models.Admin
                 cpm.SubOrdinate = subList;
                 cpm.budgets = ProjectBudgetList(id);
                 cpm.stages = ProjectStagesList(id);
+                cpm.hr = ProjectHumanResourcesList(id);
                 return cpm;
             }
             catch (Exception ex)
@@ -1139,6 +1156,45 @@ namespace RemoteSensingProject.Models.Admin
                             Status = rd["StagesStatus"].ToString(),
                             Document_Url = rd["stageDocument"].ToString(),
                             completionStatus = Convert.ToInt32(rd["completionStatus"])
+                        });
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
+        public List<HumanResources> ProjectHumanResourcesList(int Id)
+        {
+            try
+            {
+                List<HumanResources> list = new List<HumanResources>();
+                cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
+                cmd.Parameters.AddWithValue("@action", "GetProjectHumanResources");
+                cmd.Parameters.AddWithValue("@v_id", Id);
+                cmd.Parameters.AddWithValue("@v_limit", DBNull.Value);
+                cmd.Parameters.AddWithValue("@v_page", DBNull.Value);
+                if (con.State == ConnectionState.Closed)
+                    con.Open();
+                NpgsqlDataReader rd = cmd.ExecuteReader();
+                if (rd.HasRows)
+                {
+                    while (rd.Read())
+                    {
+                        list.Add(new HumanResources
+                        {
+                            id = Convert.ToInt32(rd["id"]),
+                            designationId = Convert.ToInt32(rd["project_id"]),
+                            designationCount = Convert.ToInt32(rd["approveAmount"]),
+                            designationName = rd["stageDocument"].ToString()
                         });
                     }
                 }
