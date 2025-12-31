@@ -529,7 +529,6 @@ namespace RemoteSensingProject.Models.Admin
                 if(pm.pm.Id>0)
                 pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
 
-                // 1️⃣ Insert main project
                 
                 var projectParams = new Dictionary<string, object>
                 {
@@ -663,7 +662,36 @@ namespace RemoteSensingProject.Models.Admin
         private int ExecuteProjectAction(Dictionary<string, object> parameters, NpgsqlTransaction tran)
         {
             using (var cmd = new NpgsqlCommand(
-                "CALL sp_adminaddproject(:p_action, :p_letterno, :p_id, :p_title, :p_assigndate, :p_startdate, :p_completiondate, :p_projectmanager, :p_subordinate, :p_budget, :p_description, :p_projectdocument, :p_projecttype, :p_stage, :p_projectcode, :p_approvestatus, :p_createdby, :p_status, :p_heads, :p_headsamount, :p_keypoint, :p_stagedocument, :p_departmentname, :p_contactperson, :p_address , :p_hrcount , :p_project_id)", con, tran))
+@"CALL sp_adminaddproject(
+    @p_action,
+    @p_letterno,
+    @p_id,
+    @p_title,
+    @p_assigndate,
+    @p_startdate,
+    @p_completiondate,
+    @p_projectmanager,
+    @p_subordinate,
+    @p_budget,
+    @p_description,
+    @p_projectdocument,
+    @p_projecttype,
+    @p_stage,
+    @p_projectcode,
+    @p_approvestatus,
+    @p_createdby,
+    @p_status,
+    @p_heads,
+    @p_headsamount,
+    @p_keypoint,
+    @p_stagedocument,
+    @p_departmentname,
+    @p_contactperson,
+    @p_address,
+    @p_hrcount,
+    @p_project_id
+)", con, tran)) 
+
             {
                 cmd.CommandType = CommandType.Text;
 
@@ -1098,7 +1126,9 @@ namespace RemoteSensingProject.Models.Admin
                             ProjectHeads = rd["heads"].ToString(),
                             TotalAskAmount = rd["totalAskAmount"].ToString(),
                             ApproveAmount = rd["approveAmount"].ToString(),
-                            ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0)
+                            ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0),
+                            budgetheadsname = rd["budgethead"].ToString(),
+
                         });
                     }
                 }
