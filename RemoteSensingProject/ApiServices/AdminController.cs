@@ -17,7 +17,7 @@ using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize(Roles = "admin,accounts")]
+    //[JwtAuthorize(Roles = "admin,accounts")]
     public class AdminController : ApiController
     {
         private readonly AdminServices _adminServices;
@@ -1754,6 +1754,36 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("api/getbudgetheads")]
+        public IHttpActionResult GetBudgetHeads()
+        {
+            try
+            {
+                List<BudgetHeadModel> data = _adminServices.GetBudgetHeads();
+
+                return Ok(new
+                {
+                    status = true,
+                    message = "Budget heads fetched successfully",
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new
+                {
+                    status = false,
+                    message = "Something went wrong",
+                    error = ex.Message
+                });
+            }
+        }
+
+
+
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);
