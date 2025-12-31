@@ -528,26 +528,7 @@ namespace RemoteSensingProject.Models.Admin
                 Random rand = new Random();
                 pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
 
-                // 1️⃣ Insert main project
-                //var projectParams = new Dictionary<string, object>
-                //{
-                //    ["p_action"] = "insertProject",
-                //    ["p_letterno"] = pm.pm.letterNo,
-                //    ["p_title"] = pm.pm.ProjectTitle,
-                //    ["p_assigndate"] = pm.pm.AssignDate,
-                //    ["p_startdate"] = pm.pm.StartDate,
-                //    ["p_completiondate"] = pm.pm.CompletionDate,
-                //    ["p_projectmanager"] = int.TryParse(pm.pm.ProjectManager, out int ProjectManager) ? ProjectManager : 0, 
-                //    ["p_budget"] = pm.pm.ProjectBudget,
-                //    ["p_description"] = pm.pm.ProjectDescription,
-                //    ["p_projectdocument"] = pm.pm.projectDocumentUrl,
-                //    ["p_projecttype"] = pm.pm.ProjectType,
-                //    ["p_stage"] = pm.pm.ProjectStage,
-                //    ["p_createdby"] = pm.pm.createdBy,
-                //    ["p_status"] = true,
-                //    ["p_approvestatus"] = true,
-                //    ["p_projectcode"] = pm.projectCode
-                //};
+                
                 var projectParams = new Dictionary<string, object>
                 {
                     ["p_action"] = pm.pm.Id <=0? "insertProject": "updateProject",

@@ -184,7 +184,8 @@ namespace RemoteSensingProject.Controllers
             ViewBag.projectManager = data.Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
             List<BudgetHeadModel> budgetHeads = _adminServices.GetBudgetHeads();
-        
+            ViewData["Designations"] = _adminServices.ListDesgination();
+
             ViewData["BudgetHeads"] = budgetHeads;
 
             return View();

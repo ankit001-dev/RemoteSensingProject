@@ -3,7 +3,7 @@
     ViewBag.Title = "Add_Project";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
 
-    
+
     var budgetHeads = ViewData["BudgetHeads"] as List<RemoteSensingProject.Models.Admin.main.BudgetHeadModel>;
     string budgetOptions = "<option value=''>-- Select Budget Head --</option>";
 
@@ -15,6 +15,9 @@
         }
     }
 
+    var designations = ViewData["Designations"]
+      as List<RemoteSensingProject.Models.Admin.main.CommonResponse>
+      ?? new List<RemoteSensingProject.Models.Admin.main.CommonResponse>();
 
 }
 
@@ -119,16 +122,40 @@
                             <input type="file" class="form-control form-control-sm" required name="" id="projectDocumentFile">
                         </div>
                     </div>
+
                     <div class="row">
+
+
+                        <div class="col-lg-4 mb-3">
+                            <div class="d-flex justify-content-between">
+                                <label for="humanResourcesCount" class="form-label">Human Resources</label>
+                                <label class="form-label" id="addHRItem" data-count="1">
+                                    <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Designations</a>
+                                </label>
+                            </div>
+                            <input type="number" class="form-control form-control-sm"
+                                   name="humanResourcesCount" id="humanResourcesCount"
+                                   placeholder="Enter total HR count" required min="0">
+                        </div>
+
+
+                        <div class="col-lg-12 mb-3" id="humanResourcesContainer" style="display:none;">
+                            <fieldset>
+                                <legend style="font-size:15px;">
+                                    Human Resources Details
+                                </legend>
+                                <div id="hrRows"></div>
+                            </fieldset>
+                        </div>
 
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Project Type</label>
                             <br />
                             <label for="projectType" class="form-label">
-                                <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="Internal" checked /><span>Internal</span>
+                                <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="Internal" checked /><span>Internal (Non Salary Head from Government of U.P.)</span>
                             </label>
                             <label for="stage" class="form-label ms-2">
-                                <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="External" /> <span>External</span>
+                                <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="External" /> <span>Externally Funded Project</span>
                             </label>
                         </div>
 
@@ -215,6 +242,7 @@
                             </div>
                         </fieldset>
                     </div>
+
                     <div id="stageItemContainer" style="display:none;">
                         <fieldset>
                             <legend style="font-size:15px;">
@@ -241,10 +269,244 @@
     </div>
 </div>
 
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- jQuery Validation -->
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+ @*Optional (additional rules like accept, filesize etc.)*@ 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
+
+
 <script>
     var budgetOptions = `@Html.Raw(budgetOptions)`;
 </script>
 
+<script>
+    const designations = @Html.Raw(
+        System.Text.Json.JsonSerializer.Serialize(
+            designations.Select(d => new {
+                id = d.id,        // ⚠️ property name match karo
+                name = d.name
+            })
+        )
+    );
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+
+
+        // HR Count input validation
+        $("#humanResourcesCount").on("input", function () {
+            const hrCount = parseInt($(this).val()) || 0;
+            updateHRDisplay(hrCount);
+            updateOtherCount();
+        });
+
+        // Add Designation button click
+        $("#addHRItem").click(function (e) {
+            e.preventDefault();
+            addHRRow();
+        });
+
+        // Add new HR row function
+        function addHRRow() {
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+
+            if (isNaN(totalHR) || totalHR <= 0) {
+                Swal.fire("Warning!", "Please enter a valid Human Resources count first.", "warning");
+                return;
+            }
+
+            // Show HR container if hidden
+            $("#humanResourcesContainer").show();
+
+            // Check if it's the first row
+            let count = $("#hrRows .hrRow").length;
+
+            if (count === 0) {
+                // First click: create default 2 rows
+                let row1 = generateHRRow(false);
+                let row2 = generateHRRow(true, totalHR);
+                $("#hrRows").append(row1 + row2);
+            } else {
+                // Add new designation row
+                let newRow = generateHRRow(false);
+                $("#hrRows").append(newRow);
+            }
+
+            // Update other count
+            updateOtherCount();
+        }
+
+        // Generate HR row HTML
+        function generateHRRow(isOther = false, value = 0) {
+            if (isOther) {
+                return `
+                <div class="row hrRow mb-2 align-items-center">
+                    <div class="col-lg-6">
+                        <input type="text" class="form-control form-control-sm hr-other" value="Other" readonly>
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="number" class="form-control form-control-sm hr-count" value="${value}" readonly>
+                    </div>
+                    <div class="col-lg-2"></div>
+                </div>`;
+            } else {
+                return `
+                <div class="row hrRow mb-2 align-items-center">
+                    <div class="col-lg-6">
+                     <select class="form-control form-control-sm hr-designation-select">
+                         <option value="">Select Designation</option>
+                          ${designations.map(d =>
+                    `<option value="${d.id}">${d.name}</option>`
+                ).join('')}
+                   </select>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="number" class="form-control form-control-sm hr-count" placeholder="Count" min="0">
+                    </div>
+                    <div class="col-lg-2 text-center">
+                        <a href="#" class="deleteHRRow"><i class="fa-solid fa-trash text-danger fs-4"></i></a>
+                    </div>
+                </div>`;
+            }
+        }
+
+        // Delete HR row
+        $("#humanResourcesContainer").on("click", ".deleteHRRow", function (e) {
+            e.preventDefault();
+            $(this).closest(".hrRow").remove();
+            updateOtherCount();
+
+            // Hide container if no rows left
+            if ($("#hrRows .hrRow").length === 0) {
+                $("#humanResourcesContainer").hide();
+            }
+        });
+
+        // HR count input validation
+        $(document).on("input", ".hr-count", function () {
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+            let sum = 0;
+
+            // Sum of all designation counts except Other
+            $("#hrRows .hrRow").each(function () {
+                if (!$(this).find(".hr-other").length) {
+                    let val = parseInt($(this).find(".hr-count").val()) || 0;
+                    sum += val;
+                }
+            });
+
+            if (sum > totalHR) {
+                Swal.fire("Warning!", "Total count cannot exceed Human Resources count.", "warning");
+                $(this).val(0);
+                sum = 0;
+
+                // Recalculate sum after reset
+                $("#hrRows .hrRow").each(function () {
+                    if (!$(this).find(".hr-other").length) {
+                        let val = parseInt($(this).find(".hr-count").val()) || 0;
+                        sum += val;
+                    }
+                });
+            }
+
+            updateOtherCount();
+        });
+
+        // Update Other count
+        function updateOtherCount() {
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+            let sum = 0;
+
+            // Calculate sum of all designation counts
+            $("#hrRows .hrRow").each(function () {
+                if (!$(this).find(".hr-other").length) {
+                    let val = parseInt($(this).find(".hr-count").val()) || 0;
+                    sum += val;
+                }
+            });
+
+            let remaining = totalHR - sum;
+            if (remaining < 0) remaining = 0;
+
+            // Update Other row value
+            $("#hrRows .hrRow").each(function () {
+                let otherInput = $(this).find(".hr-other");
+                if (otherInput.length) {
+                    $(this).find(".hr-count").val(remaining);
+                }
+            });
+        }
+
+        // Update HR display based on count
+        function updateHRDisplay(hrCount) {
+            if (hrCount > 0) {
+                $("#humanResourcesContainer").show();
+
+                // Check if we need to add initial rows
+                if ($("#hrRows .hrRow").length === 0) {
+                    $("#addHRItem").click();
+                } else {
+                    updateOtherCount();
+                }
+            } else {
+                // Clear all HR rows if count is 0
+                $("#hrRows").empty();
+                $("#humanResourcesContainer").hide();
+            }
+        }
+
+        // Form submission - Collect HR data
+        $("#createProjectForm").on("submit", function (e) {
+            e.preventDefault();
+
+            let hrData = [];
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+            let sum = 0;
+
+            // Collect HR details
+            $("#hrRows .hrRow").each(function () {
+                const designationSelect = $(this).find(".hr-designation-select");
+                const otherInput = $(this).find(".hr-other");
+                const countInput = $(this).find(".hr-count");
+
+                let designation = "";
+                let count = parseInt(countInput.val()) || 0;
+
+                if (designationSelect.length && designationSelect.val()) {
+                    designation = designationSelect.find("option:selected").text();
+                } else if (otherInput.length) {
+                    designation = otherInput.val();
+                }
+
+                if (designation && count > 0) {
+                    hrData.push({
+                        designation: designation,
+                        count: count
+                    });
+                    sum += count;
+                }
+            });
+
+            // Validate total count
+            if (sum !== totalHR) {
+                Swal.fire("Error!", `Total HR count (${sum}) must match Human Resources count (${totalHR}).`, "error");
+                return false;
+            }
+
+            // Continue with form submission
+            console.log("HR Data:", hrData);
+            // Add your form submission logic here
+        });
+    });
+</script>
 
 <script>
     $(document).ready(function () {
@@ -514,7 +776,7 @@
 
             $("#budgetContainerBox fieldset").append(row);
 
-          
+
 
             $(this).attr("data-count", count + 1);
 
@@ -659,6 +921,30 @@
 
 
         // Custom validation method for date comparison
+        //$.validator.addMethod("dateGreaterThanMultiple", function (value, element, params) {
+        //    debugger;
+        //    if (!value) return true;
+
+        //    const current = parseDate(value);
+        //    if (!current) return false;
+
+        //    let isValid = true;
+
+        //    params.forEach(function (selector) {
+        //        const compareVal = $(selector).val();
+        //        if (compareVal) {
+        //            const compareDate = parseDate(compareVal);
+        //            if (!compareDate || current <= compareDate) {
+        //                isValid = false;
+        //            }
+        //        }
+        //    });
+
+        //    return isValid;
+        //}, "Date must be greater than previous dates");
+
+
+        // Line 512 se 540 tak ka code - sirf yeh 3 methods update karen
         $.validator.addMethod("dateGreaterThanMultiple", function (value, element, params) {
             debugger;
             if (!value) return true;
@@ -672,7 +958,8 @@
                 const compareVal = $(selector).val();
                 if (compareVal) {
                     const compareDate = parseDate(compareVal);
-                    if (!compareDate || current <= compareDate) {
+                    // CHANGE HERE: <= se < kar diya
+                    if (!compareDate || current < compareDate) {
                         isValid = false;
                     }
                 }
@@ -680,6 +967,32 @@
 
             return isValid;
         }, "Date must be greater than previous dates");
+
+        //$.validator.addMethod("dateLessThan", function (value, element, selector) {
+        //    debugger
+        //    const compareVal = $(selector).val();
+        //    if (!value || !compareVal) return true;
+
+        //    const d1 = parseDate(value);
+        //    const d2 = parseDate(compareVal);
+        //    if (!d1 || !d2) return true;
+
+        //    // CHANGE HERE: <= se < kar diya
+        //    return d1 < d2;
+        //});
+
+        //$.validator.addMethod("dateGreaterThan", function (value, element, selector) {
+        //    debugger
+        //    const compareVal = $(selector).val();
+        //    if (!value || !compareVal) return true;
+
+        //    const d1 = parseDate(value);
+        //    const d2 = parseDate(compareVal);
+        //    if (!d1 || !d2) return true;
+
+        //    // CHANGE HERE: >= se > kar diya
+        //    return d1 > d2;
+        //});
 
         $.validator.addMethod("dateLessThan", function (value, element, selector) {
             debugger
@@ -690,7 +1003,7 @@
             const d2 = parseDate(compareVal);
             if (!d1 || !d2) return true;
 
-            return d1 < d2;
+            return d1 <= d2;
         });
 
         $.validator.addMethod("dateGreaterThan", function (value, element, selector) {
@@ -702,8 +1015,9 @@
             const d2 = parseDate(compareVal);
             if (!d1 || !d2) return true;
 
-            return d1 > d2;
+            return d1 >= d2;
         });
+
 
         // Custom validation method for future date
         $.validator.addMethod("notPastDate", function (value, element) {
@@ -741,7 +1055,7 @@
                 "pm.pm.StartDate": {
                     required: true,
                     dateGreaterThan: "#assignDate",
-                    dateLessThan: "#completionDate"
+                    dateLessThan: "#completeDate"
                 },
 
                 "pm.pm.CompletionDate": {
@@ -784,6 +1098,27 @@
                 }
             },
             messages: {
+                //"pm.pm.ProjectTitle": {
+                //    required: "Please enter project title",
+                //    minlength: "Title must be at least 3 characters long",
+                //    maxlength: "Title cannot exceed 200 characters"
+                //},
+                //"pm.pm.AssignDate": {
+                //    required: "Please select assign date",
+                //    dateLessThan: "Assign date must be before Start date"
+                //},
+
+                //"pm.pm.StartDate": {
+                //    required: "Please select start date",
+                //    dateGreaterThan: "Start date must be after Assign date",
+                //    dateLessThan: "Start date must be before Completion date"
+                //},
+                //"pm.pm.CompletionDate": {
+                //    required: "Please select completion date",
+                //    date: "Please enter a valid date",
+                //    dateGreaterThanMultiple: "Completion date must be after Assign Date and Start Date"
+                //},
+
                 "pm.pm.ProjectTitle": {
                     required: "Please enter project title",
                     minlength: "Title must be at least 3 characters long",
@@ -791,19 +1126,23 @@
                 },
                 "pm.pm.AssignDate": {
                     required: "Please select assign date",
-                    dateLessThan: "Assign date must be before Start date"
+                    // CHANGE MESSAGE HERE
+                    dateLessThan: "Assign date must be before Start date (same dates allowed)"
                 },
-
                 "pm.pm.StartDate": {
                     required: "Please select start date",
-                    dateGreaterThan: "Start date must be after Assign date",
-                    dateLessThan: "Start date must be before Completion date"
+                    // CHANGE MESSAGE HERE
+                    dateGreaterThan: "Start date must be after Assign date (same dates allowed)",
+                    // CHANGE MESSAGE HERE
+                    dateLessThan: "Start date must be before Completion date (same dates allowed)"
                 },
                 "pm.pm.CompletionDate": {
                     required: "Please select completion date",
                     date: "Please enter a valid date",
-                    dateGreaterThanMultiple: "Completion date must be after Assign Date and Start Date"
+                    // CHANGE MESSAGE HERE
+                    dateGreaterThanMultiple: "Completion date must be after or same as Assign Date and Start Date"
                 },
+
                 "pm.pm.ProjectManager": {
                     required: "Please select a project manager"
                 },
@@ -868,6 +1207,19 @@
                 $("#addStageIcon").attr("data-count", 1);
             }
         });
+
+        //$('#assignDate, #startDate, #completeDate').on('change blur keyup', function () {
+        //    $("#assignDate").valid();
+        //    $("#startDate").valid();
+        //    $("#completeDate").valid();
+        //});
+        $('#assignDate, #startDate, #completeDate').on('change blur', function () {
+            $("#assignDate").valid();
+            $("#startDate").valid();
+            $("#completeDate").valid();
+        });
+
+
 
         // Add validation for dynamically added budget items
         $(document).on('input', '.amnt', function () {
@@ -1063,6 +1415,5 @@
             });
         });
     });
-
 </script>
 
