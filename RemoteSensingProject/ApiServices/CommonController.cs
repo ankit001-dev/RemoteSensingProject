@@ -78,6 +78,10 @@ namespace RemoteSensingProject.ApiServices
                 if (!decimal.TryParse(form["ProjectBudget"], out var budget))
                     return CommonHelper.Error(this, "Invalid Project Budget", 500);
                 model.pm.ProjectBudget = budget;
+                // ✅ HRcount
+                if (!int.TryParse(form["hrcount"], out var hr))
+                    return CommonHelper.Error(this, "Invalid Human resources count", 500);
+                model.pm.hrCount = hr;
 
                 // ✅ External Project Extra Fields
                 if (model.pm.ProjectType?.ToLower() == "external")
@@ -110,6 +114,22 @@ namespace RemoteSensingProject.ApiServices
                         {
                             return CommonHelper.Error(this,
                                 $"Total of all ProjectAmounts ({totalBudgetAmount}) cannot exceed the main ProjectBudget ({model.pm.ProjectBudget}).",
+                                400);
+                        }
+                    }
+                }
+                if (!string.IsNullOrEmpty(form["hrcount"]))
+                {
+                    model.hr = JsonConvert.DeserializeObject<List<HumanResources>>(form["hr"]);
+
+                    // ✅ Validate sum of ProjectAmount ≤ ProjectBudget
+                    if (model.hr != null && model.hr.Any())
+                    {
+                        decimal totalhrCount = model.hr.Sum(b => b.designationCount);
+                        if (totalhrCount > model.pm.hrCount)
+                        {
+                            return CommonHelper.Error(this,
+                                $"Total of all Human Resources ({totalhrCount}) cannot exceed the Human Resources count ({model.pm.hrCount}).",
                                 400);
                         }
                     }
@@ -165,7 +185,7 @@ namespace RemoteSensingProject.ApiServices
 
                 if (result)
                 {
-                    return CommonHelper.Success(this, "Project created successfully!");
+                    return CommonHelper.Success(this,model.pm.Id<=0? "Project created successfully!": "Project updated successfully!");
                 }
                 else
                 {
@@ -521,6 +541,46 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = 500,
                     message = ex.Message,
                     data = ex
+                });
+            }
+        }
+        #endregion
+
+        #region Attendance
+        [RoleAuthorize("admin,projectManager")]
+        [HttpGet]
+        [Route("api/getattendancebyIdofEmp")]
+        public IHttpActionResult GetAttendanceByIdOfEmp(int projectManager, int EmpId)
+        {
+            try
+            {
+                var data = _managerservice.GetAllAttendanceForProjectManager(projectManager, EmpId);
+                if (data != null)
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        data = data,
+                        message = "Data found!"
+                    });
+                }
+                else
+                {
+                    return Ok(new
+                    {
+                        status = data.Any(),
+                        data = data,
+                        message = "Data not found!"
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
                 });
             }
         }

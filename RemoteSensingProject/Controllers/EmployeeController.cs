@@ -3,12 +3,9 @@ using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Controllers
@@ -999,6 +996,33 @@ namespace RemoteSensingProject.Controllers
                     status = false,
                     message = "Server error occurred"
                 });
+            }
+        }
+        [HttpPost]
+        public JsonResult UpdateProjectStatus(UpdateProjectStatus upd)
+        {
+            try
+            {
+                bool res = _managerServices.InsertProjectStatus(upd);
+
+                return Json(new { status = res, message = res? "Project status updated successfully":"Some error occured" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public JsonResult LastProjectStatusPrencentage(int projectid)
+        {
+            try
+            {
+                var data = _managerServices.LastProjectStatus(projectid);
+                return Json(new { status = data.Count > 0 ? true : false, message = data.Count > 0 ? "data recived" : "data not found" ,data = data},JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
             }
         }
     }

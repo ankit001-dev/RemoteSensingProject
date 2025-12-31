@@ -33,32 +33,29 @@
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Assign Date</label>
-                            <div class="input-group date">
+                            <div>
                                 <input type="date" class="form-control form-control-sm" name="pm.pm.AssignDate" id="assignDate" required>
-                                @*<span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>*@
                             </div>
                         </div>
                         <div class="col-lg-4 mb-3">
                             <label for="subtitle" class="form-label">Start Date</label>
-                            <div class="input-group date">
+                            <div>
                                 <input type="date" class="form-control form-control-sm" name="pm.pm.StartDate" id="startDate" required>
-                                @*<span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>*@
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Completion Date</label>
-                            <div class="input-group date">
+                            <div>
                                 <input type="date" class="form-control form-control-sm" name="pm.pm.CompletionDate" id="completionDate" required>
-                                @*<span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>*@
                             </div>
                         </div>
 
 
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Sub-Ordinate</label>
-                            <select class="form-control form-control-sm" name="pm.pm.SubOrdinate" multiple required>
+                            <select class="form-control form-control-sm select2-validated" name="pm.pm.SubOrdinate" multiple required>
                                 <option value="">Select an Option</option>
                                 @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
                                 {
@@ -624,9 +621,182 @@
 </script>
 
 <script>
+
+    // Current date ya future date
+    $.validator.addMethod("todayOrAfter", function (value, element) {
+        if (!value) return true;
+
+        let selectedDate = new Date(value);
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return selectedDate >= today;
+    }, "Date cannot be in the past.");
+
+    // StartDate >= AssignDate
+    $.validator.addMethod("afterOrEqual", function (value, element, param) {
+        let startDate = new Date(value);
+        let compareDate = new Date($(param).val());
+
+        if (!value || !$(param).val()) return true;
+
+        return startDate >= compareDate;
+    }, "Date must be after or equal.");
+
+    // CompletionDate > StartDate
+    $.validator.addMethod("after", function (value, element, param) {
+        let completionDate = new Date(value);
+        let startDate = new Date($(param).val());
+
+        if (!value || !$(param).val()) return true;
+
+        return completionDate > startDate;
+    }, "Date must be after start date.");
+
+
+    $("#createProjectForm").validate({
+        ignore: [],
+
+        errorElement: "span",
+        errorClass: "text-danger small",
+
+        rules: {
+            "pm.pm.ProjectTitle": {
+                required: true,
+                minlength: 3
+            },
+            "pm.pm.AssignDate": {
+                required: true,
+                todayOrAfter: true
+            },
+            "pm.pm.StartDate": {
+                required: true,
+                todayOrAfter: true,
+                afterOrEqual: "#assignDate"
+            },
+            "pm.pm.CompletionDate": {
+                required: true,
+                after: "#startDate"
+            },
+            "pm.pm.SubOrdinate": {
+                required: true,
+                minimumOne: true
+            },
+            "pm.pm.hrCount": {
+                required: true,
+                number: true,
+                min: 0
+            },
+            "pm.pm.ProjectBudget": {
+                required: true
+            },
+            "pm.pm.ProjectType": {
+                required: true
+            },
+            "pm.pm.ProjectStage": {
+                required: true
+            },
+            "pm.pm.ProjectDescription": {
+                required: true,
+                minlength: 10
+            }
+        },
+
+        messages: {
+            "pm.pm.ProjectTitle": {
+                required: "Project title is required.",
+                minlength: "Project title must be at least 3 characters."
+            },
+            "pm.pm.AssignDate": {
+                required: "Please select assign date.",
+                todayOrAfter: "Assign date cannot be before today."
+            },
+            "pm.pm.StartDate": {
+                required: "Please select start date.",
+                todayOrAfter: "Start date cannot be before today.",
+                afterOrEqual: "Start date cannot be before assign date."
+            },
+            "pm.pm.CompletionDate": {
+                required: "Please select completion date.",
+                after: "Completion date must be after start date."
+            },
+            "pm.pm.SubOrdinate": {
+                required: "Please select at least one sub-ordinate."
+            },
+            "pm.pm.hrCount": {
+                required: "Please enter human resource count.",
+                number: "Please enter a valid number.",
+                min: "HR count cannot be negative."
+            },
+            "pm.pm.ProjectBudget": {
+                required: "Please enter project budget."
+            },
+            "pm.pm.ProjectType": {
+                required: "Please select project type."
+            },
+            "pm.pm.ProjectStage": {
+                required: "Please select project stage."
+            },
+            "pm.pm.ProjectDescription": {
+                required: "Project description is required.",
+                minlength: "Description must be at least 10 characters."
+            }
+        },
+
+        errorPlacement: function (error, element) {
+
+            // Radio buttons
+            if (element.attr("type") === "radio") {
+                error.insertAfter(element.closest(".col-lg-4"));
+            }
+            // Multi-select
+            else if (element.is("select[multiple]")) {
+                error.insertAfter(element);
+            }
+            else {
+                error.insertAfter(element);
+            }
+        },
+
+        highlight: function (element) {
+            $(element).addClass("is-invalid");
+        },
+
+        unhighlight: function (element) {
+            $(element).removeClass("is-invalid");
+        },
+
+        submitHandler: function (form) {
+            Swal.fire({
+                icon: "success",
+                title: "Validation Passed",
+                text: "Form is ready to submit!"
+            });
+
+            // form.submit(); // enable when ready
+        }
+    });
+
+    // Custom validation method for select2 multiple
+    $.validator.addMethod("minimumOne", function (value, element) {
+        return $(element).val() && $(element).val().length > 0;
+    }, "Please select at least one option");
+
+    // Add validation for Select2 fields
+    $('.select2-validated').on('change', function () {
+        $(this).valid();
+    });
+
+    // Add validation for radio buttons
+    $('input[type="radio"]').on('change', function () {
+        $(this).valid();
+    });
+
     $("#createProjectForm").on("submit", function (e) {
         e.preventDefault();
-        debugger
+        if (!$(this).valid()) {
+            return;
+        }
         let formData = new FormData(this);
 
         /* ===============================
@@ -681,16 +851,6 @@
             formData.append(`pm.budgets[${index}].HeadId`, headId);
             formData.append(`pm.budgets[${index}].ProjectAmount`, amount);
         });
-
-        //if (hasInvalidBudget) {
-        //    Swal.close();
-        //    Swal.fire(
-        //        "Error!",
-        //        "Please select Budget Head and enter Amount for all rows.",
-        //        "error"
-        //    );
-        //    return;
-        //}
 
         /* ===============================
            🔹 Project Id (Create / Update)
@@ -1034,124 +1194,3 @@
     });
 
 </script>
-
-<!-- 2️⃣ jQuery Validation Plugin -->
-
-<!-- 4️⃣ Your custom validation script -->
-<script>
-    $(document).ready(function () {
-
-        if (!$.validator) {
-            console.error("jQuery Validation Plugin is not loaded!");
-            return;
-        }
-        
-        // Custom method to validate dates
-        $.validator.addMethod("afterOrEqual", function (value, element, params) {
-            if (!value) return true; // ignore empty
-            var compareTo = $(params).val();
-            return !compareTo || value >= compareTo;
-        }, "Date must be equal to or after the specified date.");
-
-        // Initialize validation
-        $("#createProjectForm").validate({
-            ignore: [],
-            rules: {
-                "pm.pm.ProjectTitle": { required: true, minlength: 3 },
-                "pm.pm.AssignDate": { required: true, date: true, min: new Date().toISOString().split("T")[0] },
-                "pm.pm.StartDate": { required: true, date: true, afterOrEqual: "#assignDate" },
-                "pm.pm.CompletionDate": { required: true, date: true, afterOrEqual: "#startDate" },
-                "pm.pm.SubOrdinate": { required: true },
-                "pm.pm.hrCount": { required: true, number: true, min: 0 },
-                "pm.pm.ProjectBudget": { required: true },
-                "pm.pm.ProjectType": { required: true },
-                "pm.pm.ProjectStage": { required: true },
-                "pm.pm.ProjectDescription": { required: true, minlength: 10 }
-            },
-            messages: {
-                "pm.pm.ProjectTitle": "Please enter the project title.",
-                "pm.pm.AssignDate": "Please select an assign date.",
-                "pm.pm.StartDate": "Start Date cannot be before Assign Date.",
-                "pm.pm.CompletionDate": "Completion Date cannot be before Start Date.",
-                "pm.pm.SubOrdinate": "Please select at least one sub-ordinate.",
-                "pm.pm.hrCount": "Please enter valid number of human resources.",
-                "pm.pm.ProjectBudget": "Please enter project budget.",
-                "pm.pm.ProjectType": "Please select project type.",
-                "pm.pm.ProjectStage": "Please select project stage.",
-                "pm.pm.ProjectDescription": "Please enter project description."
-            },
-            submitHandler: function (form) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Validation Passed',
-                    text: 'Form is ready to submit!'
-                });
-                // form.submit(); // Uncomment to actually submit
-            }
-        });
-    });
-</script>
-
-
-
-@*<script>
-        $(document).ready(function () {
-
-            const today = new Date().toISOString().split("T")[0];
-
-            // ❌ Past dates disable
-            $("#assignDate").attr("min", today);
-            $("#startDate").attr("min", today);
-            $("#completionDate").attr("min", today);
-
-            // 🔹 Assign Date change
-            $("#assignDate").on("change", function () {
-                let assignDate = $(this).val();
-
-                // Start Date cannot be before Assign Date
-                $("#startDate").attr("min", assignDate);
-
-                let startDate = $("#startDate").val();
-                if (startDate && startDate < assignDate) {
-                    Swal.fire("Invalid Date", "Start Date cannot be earlier than Assign Date.", "warning");
-                    $("#startDate").val("");
-                }
-
-                // Completion Date also depends on Start Date
-                $("#completionDate").attr("min", assignDate);
-            });
-
-            // 🔹 Start Date change
-            $("#startDate").on("change", function () {
-                let startDate = $(this).val();
-                let assignDate = $("#assignDate").val();
-
-                if (assignDate && startDate < assignDate) {
-                    Swal.fire("Invalid Date", "Start Date must be equal to or after Assign Date.", "error");
-                    $(this).val("");
-                    return;
-                }
-
-                // Completion Date must be >= Start Date
-                $("#completionDate").attr("min", startDate);
-
-                let completionDate = $("#completionDate").val();
-                if (completionDate && completionDate < startDate) {
-                    Swal.fire("Invalid Date", "Completion Date cannot be earlier than Start Date.", "warning");
-                    $("#completionDate").val("");
-                }
-            });
-
-            // 🔹 Completion Date change
-            $("#completionDate").on("change", function () {
-                let completionDate = $(this).val();
-                let startDate = $("#startDate").val();
-
-                if (startDate && completionDate < startDate) {
-                    Swal.fire("Invalid Date", "Completion Date must be equal to or after Start Date.", "error");
-                    $(this).val("");
-                }
-            });
-
-        });
-    </script>*@
