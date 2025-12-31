@@ -50,6 +50,7 @@ namespace RemoteSensingProject.Controllers
         {
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj,searchTerm:searchTerm);
+            ViewData["Designations"] = _adminServices.ListDesgination();
             return View();
         }
 

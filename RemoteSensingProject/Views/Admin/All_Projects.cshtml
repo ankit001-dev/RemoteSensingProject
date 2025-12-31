@@ -358,6 +358,63 @@
                 console.log(res);
                 if (res.status) {
 
+                    let hrSection = "";
+
+                    if (res.data.hr && res.data.hr.length > 0) {
+
+                        let hrItems = "";
+
+                        $.each(res.data.hr, function (i, h) {
+                            hrItems += `
+            <div class="col-sm-4 mb-2">
+                <div class="border p-2 rounded">
+                    <label class="fw-bold">${h.designationName}</label><br/>
+                    <span>Count : ${h.designationCount}</span>
+                </div>
+            </div>
+        `
+                        });
+
+                        hrSection = `
+        <div class="row mt-3">
+            <label class="form-label fw-bolder">Human Resources</label>
+            ${hrItems}
+        </div>
+    `
+  }
+
+                    //--------------------------------
+
+                    let budgethead = "";
+
+                    if (res.data.budgets && res.data.budgets.length > 0) {
+
+                        let budgetsItems = "";
+
+                        $.each(res.data.budgets, function (i, h) {
+                            console.log("my data "+ h)
+                            budgetsItems += `
+            <div class="col-sm-4 mb-2">
+                <div class="border p-2 rounded">
+                    <label class="fw-bold">${h.budgetheadsname}</label><br/>
+                    <span>Amount : ${h.ProjectAmount}</span>
+                </div>
+            </div>
+        `;
+                        });
+
+                        budgethead = `
+        <div class="row mt-3">
+            <label class="form-label fw-bolder">Budget Head</label>
+            ${budgetsItems}
+        </div>
+        <hr/>
+    `;
+                    }
+
+
+                    //--------------------------------
+
                     let stages = `<div class="stageSection">`;
                     if (res.data.pm.ProjectStage) {
                         if (res.data.stages.length > 0) {
@@ -473,10 +530,14 @@
  </div>
  ${res.data.pm.ProjectStage ? stages : ""}
 
-     <div class="row">
+ <div class="row">
          <label class="form-label fw-bolder">Description</label>
          <p>${res.data.pm.ProjectDescription}</p>
-     </div>` ;
+ </div>
+ ${hrSection}; 
+ ${budgethead}` ;
+
+  
 
                     function convertToDate(timestamp) {
                         const parsedTimestamp = parseInt(timestamp.match(/\d+/)[0], 10);

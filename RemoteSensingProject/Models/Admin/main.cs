@@ -94,6 +94,7 @@ namespace RemoteSensingProject.Models.Admin
             public List<Project_Subordination> SubOrdinate { get; set; }
             public List<HumanResources> hr { get; set; }
         }
+
         public class HumanResources
         {
             public int id { get; set; }
@@ -167,6 +168,7 @@ namespace RemoteSensingProject.Models.Admin
             public string CompletionDatestring { get; set; }
             public string TotalAskAmount { get; set; }
             public string ApproveAmount { get; set; }
+            public  string budgetheadsname { get; set; }
 
         }
         public class Project_Subordination
