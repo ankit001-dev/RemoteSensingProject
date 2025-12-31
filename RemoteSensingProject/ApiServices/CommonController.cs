@@ -360,7 +360,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
-        [HttpPut]
+        [HttpPost]
         [Route("api/updateEmployeeData")]
         public IHttpActionResult Update_Employee()
         {
