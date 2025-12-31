@@ -368,8 +368,10 @@
                             hrItems += `
             <div class="col-sm-4 mb-2">
                 <div class="border p-2 rounded">
-                    <label class="fw-bold">${h.designationName}</label><br/>
-                    <span>Count : ${h.designationCount}</span>
+
+                   
+                    <span>Designation Name : ${h.designationName}</span><br/>
+                    <span>Designation Count : ${h.designationCount}</span>
                 </div>
             </div>
         `
@@ -396,8 +398,9 @@
                             budgetsItems += `
             <div class="col-sm-4 mb-2">
                 <div class="border p-2 rounded">
-                    <label class="fw-bold">${h.budgetheadsname}</label><br/>
-                    <span>Amount : ${h.ProjectAmount}</span>
+                   
+                     <span class="fw-bold">heads Name : ${h.budgetheadsname}</span><br/>
+                    <span>heads Amount : ${h.ProjectAmount}</span>
                 </div>
             </div>
         `;
@@ -426,11 +429,13 @@
         <br />
         <span>${d.KeyPoint}</span>
     </div>
+
     <div class="col-sm-4 mb-2">
         <label class="form-label fw-bolder">Pdf Document</label>
         <br />
        <a href="${d.Document_Url}"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
     </div>
+
     <div class="col-sm-4 mb-2">
         <label class="form-label fw-bolder">Completion Date</label>
         <br />
@@ -534,7 +539,7 @@
          <label class="form-label fw-bolder">Description</label>
          <p>${res.data.pm.ProjectDescription}</p>
  </div>
- ${hrSection}; 
+ ${hrSection}
  ${budgethead}` ;
 
   
