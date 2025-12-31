@@ -635,30 +635,6 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        //[HttpGet]
-        //[Route("api/GetadminProjectDetailById")]
-        //public IHttpActionResult GetProjectById(int Id)
-        //{
-        //    try
-        //    {
-        //        var data = _adminServices.GetProjectById(Id);
-        //        return Ok(new
-        //        {
-        //            status = true,
-        //            data = data
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            status = false,
-        //            StatusCode = 500,
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
-
         [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/GetProjectBudgets")]
@@ -1085,46 +1061,6 @@ namespace RemoteSensingProject.ApiServices
             catch (Exception ex)
             {
                 return CommonHelper.Error(this, ex.Message);
-            }
-        }
-        #endregion
-
-        #region DesginationList
-        [HttpGet]
-        [Route("api/DesginationList")]
-        public IHttpActionResult DesginationList()
-        {
-            try
-            {
-                var data = _adminServices.ListDesgination();
-                if (data != null && data.Count > 0)
-                {
-                    return Ok(new
-                    {
-                        status = true,
-                        StatusCode = 200,
-                        message = "All desgination fetched !",
-                        data = data
-                    });
-                }
-                else
-                {
-                    return BadRequest(new
-                    {
-                        StatusCode = HttpStatusCode.BadRequest,
-                        message = "Some issue found while processing request."
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message,
-                    data = ex
-                });
             }
         }
         #endregion

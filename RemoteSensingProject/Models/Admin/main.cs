@@ -92,9 +92,18 @@ namespace RemoteSensingProject.Models.Admin
             public List<Project_Budget> budgets { get; set; }
             public List<Project_Statge> stages { get; set; }
             public List<Project_Subordination> SubOrdinate { get; set; }
+            public List<HumanResources> hr { get; set; }
+        }
+        public class HumanResources
+        {
+            public int id { get; set; }
+            public int designationId { get; set; }
+            public int designationCount { get; set; }
+            public string designationName { get; set; }
         }
         public class Project_model
         {        
+            public int hrCount { get; set; }
             public string projectStatusLabel { get; set; }
             public string projectCode { get; set; }
             public bool completestatus { get; set; }
