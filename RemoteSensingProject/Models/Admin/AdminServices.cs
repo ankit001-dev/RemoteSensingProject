@@ -526,14 +526,14 @@ namespace RemoteSensingProject.Models.Admin
 
                 // Generate Project Code
                 Random rand = new Random();
+                if(pm.pm.Id>0)
                 pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
 
                 
                 var projectParams = new Dictionary<string, object>
                 {
                     ["p_action"] = pm.pm.Id <=0? "insertProject": "updateProject",
-                    //["p_letterno"] = pm.pm.letterNo,
-                    ["p_letterno"] = int.TryParse(pm.pm.letterNo, out int letterNo) ? letterNo : 0,
+                    ["p_letterno"] = Convert.ToInt32(pm.pm.letterNo),
                     ["p_title"] = pm.pm.ProjectTitle,
                     ["p_assigndate"] = pm.pm.AssignDate,
                     ["p_startdate"] = pm.pm.StartDate,

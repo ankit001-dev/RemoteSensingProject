@@ -359,4 +359,11 @@ namespace RemoteSensingProject.Models.ProjectManager
         public int UserId { get; set; }
         public string Status { get; set; }
     }
+    public class UpdateProjectStatus
+    {
+        public bool projectStatus { get; set; }
+        public string remark { get; set; }
+        public string CompletionPrecentage { get; set; }
+        public int projectId { get; set; }
+    }
 }

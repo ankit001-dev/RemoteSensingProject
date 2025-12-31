@@ -992,22 +992,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                     cmd.ExecuteNonQuery();
                 }
 
-                // ✅ If completed, update completion status
-            //    if (obj.Status?.ToLower() == "completed")
-            //    {
-            //        using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
-            //    0, @stageId, NULL, NULL, NULL, NULL, NULL, 1, @projectId, @completionStatus, @action, NULL
-            //);", con))
-            //        {
-            //            cmd.CommandType = CommandType.Text;
-            //            cmd.Parameters.Add("@stageId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Stage_Id;
-            //            cmd.Parameters.Add("@projectId", NpgsqlTypes.NpgsqlDbType.Integer).Value = obj.Project_Id;
-            //            cmd.Parameters.Add("@completionStatus", NpgsqlTypes.NpgsqlDbType.Boolean).Value = true;
-            //            cmd.Parameters.Add("@action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "updateStageCompetionStatus";
-            //            cmd.ExecuteNonQuery();
-            //        }
-            //    }
-
                 return true;
             }
             }
@@ -3573,6 +3557,112 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
         #endregion
+
+        public bool InsertProjectStatus(UpdateProjectStatus obj)
+        {
+            try
+            {
+                using (con)
+                {
+                    con.Open();
+                    using (var cmd = new NpgsqlCommand(@"CALL public.sp_managestagestatus(
+            NULL,
+            NULL,
+            @v_comment,
+            @v_completionprecentage,
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            @v_project_id,
+            @v_completionstatus,
+            @v_action,
+            NULL
+        );", con))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        // 🔹 Explicitly specify types to avoid "unknown"
+                        cmd.Parameters.Add("@v_project_id", NpgsqlTypes.NpgsqlDbType.Integer)
+                               .Value = obj.projectId;
+
+                        cmd.Parameters.Add("@v_completionstatus", NpgsqlTypes.NpgsqlDbType.Boolean)
+                                       .Value = obj.projectStatus;
+                        cmd.Parameters.Add("@v_completionprecentage", NpgsqlTypes.NpgsqlDbType.Varchar)
+                                        .Value = (object)obj.CompletionPrecentage ?? DBNull.Value;
+
+                        cmd.Parameters.Add("@v_comment", NpgsqlTypes.NpgsqlDbType.Text)
+                                       .Value = (object)obj.remark ?? DBNull.Value;
+
+                        cmd.Parameters.Add("@v_action", NpgsqlTypes.NpgsqlDbType.Varchar)
+                                       .Value = "updateProjectStatus";
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error inserting stage status", ex);
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+            }
+        }
+
+        public List<UpdateProjectStatus> LastProjectStatus(int projectId)
+        {
+            try
+            {
+                con.Open();
+                List<UpdateProjectStatus> list = new List<UpdateProjectStatus>();
+                Project_model pm = new Project_model();
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageprojectsubstances_cursor", con, tran))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_action", "selectlaststatusofproject");
+                    cmd.Parameters.AddWithValue("v_project_id", projectId);
+                    cmd.Parameters.AddWithValue("v_id", 0);
+                    cmd.Parameters.AddWithValue("v_limit", 0);
+                    cmd.Parameters.AddWithValue("v_page", 0);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var rd = fetchCmd.ExecuteReader())
+                    {
+                        if (rd.HasRows)
+                        {
+                            while (rd.Read())
+                            {
+                                list.Add(new UpdateProjectStatus
+                                {
+                                    CompletionPrecentage = rd["completepercentage"].ToString()
+                                });
+                            }
+                        }
+                    }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
+                cmd.Dispose();
+            }
+        }
     }
 
 }
