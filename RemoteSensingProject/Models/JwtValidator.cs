@@ -72,7 +72,7 @@ namespace RemoteSensingProject.Models
             base.OnAuthorization(actionContext);
         }
 
-        private bool ValidateToken(string token, out ClaimsPrincipal principal)
+        public bool ValidateToken(string token, out ClaimsPrincipal principal)
         {
             principal = null;
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -100,8 +100,78 @@ namespace RemoteSensingProject.Models
                 return false;
             }
         }
-    }
+        public int ValidateTokenIgnoreExpiry(string token, out ClaimsPrincipal principal)
+        {
+            principal = null;
 
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_secretKey);
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+
+                ValidateIssuer = true,
+                ValidIssuer = _issuer,
+
+                ValidateAudience = true,
+                ValidAudience = _audience,
+
+                ValidateLifetime = false, // expiry manually check karenge
+                ClockSkew = TimeSpan.Zero
+            };
+
+            try
+            {
+                principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+                var jwtToken = validatedToken as JwtSecurityToken;
+                if (jwtToken == null)
+                    return 0;
+
+                var expClaim = jwtToken.Claims
+                    .FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value;
+
+                if (expClaim == null || !long.TryParse(expClaim, out long exp))
+                    return 0;
+
+                var expiryDate = DateTimeOffset
+                    .FromUnixTimeSeconds(exp)
+                    .UtcDateTime;
+
+                if (expiryDate < DateTime.UtcNow)
+                    return 1; // expired
+
+                return 2; // valid & not expired
+            }
+            catch
+            {
+                return 0; // invalid
+            }
+        }
+
+
+        public bool IsTokenExpired(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            var expClaim = jwtToken.Claims
+                .FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)
+                ?.Value;
+
+            if (expClaim == null)
+                return true;
+
+            var expiryDate = DateTimeOffset
+                .FromUnixTimeSeconds(long.Parse(expClaim))
+                .UtcDateTime;
+
+            return expiryDate < DateTime.UtcNow;
+        }
+
+    }
 
     public class RoleAuthorizeAttribute : AuthorizationFilterAttribute
     {
@@ -140,6 +210,5 @@ namespace RemoteSensingProject.Models
             base.OnAuthorization(actionContext);
         }
     }
-
 
 }

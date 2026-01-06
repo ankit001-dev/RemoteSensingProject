@@ -192,6 +192,8 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string joiningdate { get; set; }
         public int Id { get; set; }
         public int EmpId { get; set; }
+        public int designationid { get; set; }
+        public string designationname { get; set; }
         public string EmpName { get; set; }
         public long mobileNo { get; set; } 
         public string gender { get; set; }
@@ -356,5 +358,12 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string Description { get; set; }
         public int UserId { get; set; }
         public string Status { get; set; }
+    }
+    public class UpdateProjectStatus
+    {
+        public bool projectStatus { get; set; }
+        public string remark { get; set; }
+        public string CompletionPrecentage { get; set; }
+        public int projectId { get; set; }
     }
 }

@@ -183,6 +183,10 @@ namespace RemoteSensingProject.Controllers
             var data = _adminServices.SelectEmployeeRecord();
             ViewBag.projectManager = data.Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
+            List<BudgetHeadModel> budgetHeads = _adminServices.GetBudgetHeads();
+            ViewData["Designations"] = _adminServices.ListDesgination();
+
+            ViewData["BudgetHeads"] = budgetHeads;
 
             return View();
         }
@@ -250,6 +254,7 @@ namespace RemoteSensingProject.Controllers
                 status = res
             }, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult Project_List(string searchTerm = null,string statusFilter=null)
         {
             ViewBag.ProjectList = _adminServices.Project_List(filterType:"ManagerProject",searchTerm:searchTerm,statusFilter:statusFilter);
@@ -721,5 +726,25 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
+
+        //public ActionResult GetBudgetHeads()
+        //{
+        //    try
+        //    {
+        //        // 🔹 Service call
+        //        List<BudgetHeadModel> budgetHeads = _adminServices.GetBudgetHeads();
+
+        //        // 🔹 ViewData me bind
+        //        ViewData["BudgetHeads"] = budgetHeads;
+
+        //        return View();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ViewData["Error"] = ex.Message;
+        //        return View();
+        //    }
+        //}
+
     }
 }

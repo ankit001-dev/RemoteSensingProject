@@ -17,7 +17,7 @@ using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize(Roles = "admin,accounts")]
+    //[JwtAuthorize(Roles = "admin,accounts")]
     public class AdminController : ApiController
     {
         private readonly AdminServices _adminServices;
@@ -258,158 +258,7 @@ namespace RemoteSensingProject.ApiServices
             {
                 return CommonHelper.Error(this, ex.Message);
             }
-        }
-        [JwtAuthorize(Roles = "admin,projectManager,accounts,subOrdinate")]
-        [HttpPut]
-        [Route("api/updateEmployeeData")]
-        public IHttpActionResult Update_Employee()
-        {
-            try
-            {
-                var request = HttpContext.Current.Request;
-                var empData = new Employee_model
-                {
-                    Id = Convert.ToInt32(request.Form.Get("Id")),
-                    EmployeeCode = request.Form.Get("EmployeeCode"),
-                    EmployeeName = request.Form.Get("EmployeeName"),
-                    MobileNo = Convert.ToInt64(request.Form.Get("MobileNo")),
-                    Email = request.Form.Get("Email"),
-                    EmployeeRole = request.Form.Get("EmployeeRole"),
-                    Division = Convert.ToInt32(request.Form.Get("Division")),
-                    Designation = Convert.ToInt32(request.Form.Get("Designation")),
-                    Gender = request.Form.Get("Gender"),
-                    Image_url = request.Form.Get("Image_url")
-                };
-                var file = request.Files["EmployeeImages"];
-                if (file != null && file.FileName != "")
-                {
-                    empData.Image_url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    empData.Image_url = "/ProjectContent/Admin/Employee_Images/" + empData.Image_url;
-                }
-                else if (string.IsNullOrEmpty(empData.Image_url))
-                {
-                    return BadRequest(new
-                    {
-                        status = false,
-                        StatusCode = 404,
-                        message = "Employee image is not found. Try with employee image profile."
-                    });
-                }
-
-                List<string> validationErrors = new List<string>();
-
-                if (empData.Id <= 0)
-                    validationErrors.Add("Invalid request.");
-
-                if (string.IsNullOrWhiteSpace(empData.EmployeeCode))
-                    validationErrors.Add("Employee Code is required.");
-
-                if (string.IsNullOrWhiteSpace(empData.EmployeeName))
-                    validationErrors.Add("Employee Name is required.");
-
-                if (empData.MobileNo == 0 || empData.MobileNo.ToString().Length != 10)
-                    validationErrors.Add("A valid 10-digit Mobile Number is required.");
-
-                if (string.IsNullOrWhiteSpace(empData.Email) || !empData.Email.Contains("@"))
-                    validationErrors.Add("A valid Email address is required.");
-
-                if (string.IsNullOrWhiteSpace(empData.EmployeeRole))
-                    validationErrors.Add("Employee Role is required.");
-
-                if (empData.Division <= 0)
-                    validationErrors.Add("Division must be selected.");
-
-                if (empData.Designation <= 0)
-                    validationErrors.Add("Designation must be selected.");
-
-                if (string.IsNullOrWhiteSpace(empData.Gender) ||
-                    !(empData.Gender.Equals("Male", StringComparison.OrdinalIgnoreCase) ||
-                      empData.Gender.Equals("Female", StringComparison.OrdinalIgnoreCase) ||
-                      empData.Gender.Equals("Other", StringComparison.OrdinalIgnoreCase)))
-                    validationErrors.Add("Gender must be Male, Female, or Other.");
-
-                if (string.IsNullOrWhiteSpace(empData.Image_url))
-                    validationErrors.Add("Employee Image not found !");
-
-                if (validationErrors.Any())
-                {
-                    return BadRequest(new
-                    {
-                        status = false,
-                        StatusCode = 500,
-                        message = string.Join("\n", validationErrors)
-                    });
-
-                }
-                else
-                {
-                    string mess = null;
-                    bool res = _adminServices.AddEmployees(empData,out mess);
-                    if (res)
-                    {
-                        if (file != null && file.FileName != "")
-                        {
-                            file.SaveAs(HttpContext.Current.Server.MapPath(empData.Image_url));
-                        }
-                    }
-                    return Ok(new
-                    {
-                        status = res,
-                        StatusCode = res ? 200 : 500,
-                        message = res ? "Employee profile updation completed successfully !" : mess
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message,
-                    data = ex
-                });
-            }
-        }
-        [JwtAuthorize(Roles = "admin,projectManager,accounts,subOrdinate")]
-        [HttpGet]
-        [Route("api/getEmployeeById")]
-        public IHttpActionResult Get_EmployeeById(int Id)
-        {
-            try
-            {
-                var data = _adminServices.SelectEmployeeRecordById(Id);
-                if (data != null && data.Id > 0)
-                {
-                    return Ok(new
-                    {
-                        status = true,
-                        StatusCode = 200,
-                        message = "Data found !",
-                        data = data
-                    });
-                }
-                else
-                {
-                    return BadRequest(new
-                    {
-                        status = false,
-                        StatusCode = 404,
-                        message = "Data not found "
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message,
-                    data = ex
-                });
-            }
-        }
+        }        
 
         [HttpDelete]
         [Route("api/removeEmployee")]
@@ -785,30 +634,6 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-
-        //[HttpGet]
-        //[Route("api/GetadminProjectDetailById")]
-        //public IHttpActionResult GetProjectById(int Id)
-        //{
-        //    try
-        //    {
-        //        var data = _adminServices.GetProjectById(Id);
-        //        return Ok(new
-        //        {
-        //            status = true,
-        //            data = data
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(new
-        //        {
-        //            status = false,
-        //            StatusCode = 500,
-        //            message = ex.Message
-        //        });
-        //    }
-        //}
 
         [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
@@ -1236,46 +1061,6 @@ namespace RemoteSensingProject.ApiServices
             catch (Exception ex)
             {
                 return CommonHelper.Error(this, ex.Message);
-            }
-        }
-        #endregion
-
-        #region DesginationList
-        [HttpGet]
-        [Route("api/DesginationList")]
-        public IHttpActionResult DesginationList()
-        {
-            try
-            {
-                var data = _adminServices.ListDesgination();
-                if (data != null && data.Count > 0)
-                {
-                    return Ok(new
-                    {
-                        status = true,
-                        StatusCode = 200,
-                        message = "All desgination fetched !",
-                        data = data
-                    });
-                }
-                else
-                {
-                    return BadRequest(new
-                    {
-                        StatusCode = HttpStatusCode.BadRequest,
-                        message = "Some issue found while processing request."
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message,
-                    data = ex
-                });
             }
         }
         #endregion
@@ -1969,6 +1754,36 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("api/getbudgetheads")]
+        public IHttpActionResult GetBudgetHeads()
+        {
+            try
+            {
+                List<BudgetHeadModel> data = _adminServices.GetBudgetHeads();
+
+                return Ok(new
+                {
+                    status = true,
+                    message = "Budget heads fetched successfully",
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Content(HttpStatusCode.InternalServerError, new
+                {
+                    status = false,
+                    message = "Something went wrong",
+                    error = ex.Message
+                });
+            }
+        }
+
+
+
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);

@@ -81,7 +81,6 @@ namespace RemoteSensingProject.Models.LoginManager
                 new Claim(JwtRegisteredClaimNames.Sub, cr.username),
                 new Claim("role", cr.role),
                 new Claim("userId", cr.userId.ToString()),
-                //new Claim("email",cr.Email.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
