@@ -461,6 +461,7 @@ namespace RemoteSensingProject.Models.Admin
                                 Status = record["status"] != DBNull.Value && Convert.ToBoolean(record["status"]),
                                 Image_url = record["profile"] != DBNull.Value ? record["profile"].ToString() : null,
                                 ActiveStatus = Convert.ToBoolean(record["activeStatus"]),
+                                updationStatus = Convert.ToBoolean(record["updatestatus"]),
                             };
                         }
                     }
@@ -896,7 +897,7 @@ namespace RemoteSensingProject.Models.Admin
                     while (rd.Read())
                     {
                         pm.Id = Convert.ToInt32(rd["id"]);
-                        pm.hrCount = Convert.ToInt32(rd["hrcount"]);
+                        pm.hrCount = rd["hrcount"] != DBNull.Value ?  Convert.ToInt32(rd["hrcount"]):0;
                         pm.ProjectTitle = rd["title"].ToString();
                         pm.AssignDate = GetDateSafe(rd, "assignDate");
                         pm.CompletionDate = GetDateSafe(rd, "completionDate");
@@ -1507,12 +1508,13 @@ namespace RemoteSensingProject.Models.Admin
                         {
                             if (member == 0) continue;
 
-                            using (var cmd = new NpgsqlCommand("CALL public.sp_managemeeting(p_employee => @p_employee, p_meeting => @p_meeting, p_action => @p_action)", con, transaction))
+                            using (var cmd = new NpgsqlCommand("CALL public.sp_managemeeting(p_employee => @p_employee, p_meeting => @p_meeting,p_appstatus => @p_appstatus, p_action => @p_action)", con, transaction))
                             {
                                 cmd.CommandType = CommandType.Text;
 
                                 cmd.Parameters.AddWithValue("@p_employee", NpgsqlTypes.NpgsqlDbType.Integer, member);
                                 cmd.Parameters.AddWithValue("@p_meeting", NpgsqlTypes.NpgsqlDbType.Integer, meetingId);
+                                cmd.Parameters.AddWithValue("@p_appstatus", NpgsqlTypes.NpgsqlDbType.Integer, obj.CreaterId > 0 ? 1:0);
                                 cmd.Parameters.AddWithValue("@p_action", NpgsqlTypes.NpgsqlDbType.Varchar, "addMeetingMember");
 
                                 cmd.ExecuteNonQuery();

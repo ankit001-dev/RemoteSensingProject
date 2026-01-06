@@ -1,17 +1,16 @@
-﻿using Newtonsoft.Json;
-using RemoteSensingProject.Models;
+﻿using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.MailService;
 using System;
-using System.Collections.Generic;
-using System.IO;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
-using System.Web;
+using System.Net.PeerToPeer;
 using System.Runtime.Caching;
+using System.Security.Claims;
+using System.Web;
 using System.Web.Http;
-using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.LoginManager.main;
 
 namespace RemoteSensingProject.ApiServices
@@ -23,11 +22,13 @@ namespace RemoteSensingProject.ApiServices
         private readonly AdminServices _adminServices;
         private readonly ObjectCache _cache = MemoryCache.Default;
         private readonly mail _mail;
+        private readonly JwtAuthorizeAttribute authgaurd;
         public LoginController()
         {
             _loginService = new LoginServices();
             _adminServices = new AdminServices();
             _mail = new mail();
+            authgaurd = new JwtAuthorizeAttribute();
         }
         #region Login Api
         [System.Web.Mvc.AllowAnonymous]
@@ -90,6 +91,62 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [System.Web.Mvc.AllowAnonymous]
+        [HttpGet]
+        [Route("api/refresh-token")]
+        public IHttpActionResult RefreshToken(string token)
+        {
+            ClaimsPrincipal principal;
+
+            int status = authgaurd.ValidateTokenIgnoreExpiry(token, out principal);
+
+            // ❌ Invalid token
+            if (status == 0)
+            {
+                return Ok(new
+                {
+                    status = "invalid"
+                });
+            }
+
+            // ✅ Valid & NOT expired
+            if (status == 2)
+            {
+                return Ok(new
+                {
+                    status = "stillvalid",
+                });
+            }
+
+            // 🔄 Valid BUT expired → generate new token
+            var identity = principal.Identity as ClaimsIdentity;
+
+            Credentials cred = new Credentials
+            {
+                role = identity.Claims
+                    .FirstOrDefault(c =>
+                        c.Type == ClaimTypes.Role ||
+                        c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                    ?.Value,
+
+                username = identity.Claims
+                    .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)
+                    ?.Value,
+
+                userId = int.Parse(identity.Claims
+                    .FirstOrDefault(c => c.Type == "userId")
+                    ?.Value)
+            };
+
+            string newToken = _loginService.GenerateToken(cred);
+
+            return Ok(new
+            {
+                status = "newtoken",
+                token = newToken
+            });
+        }
+
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);
@@ -252,14 +309,14 @@ namespace RemoteSensingProject.ApiServices
         }
 
         // ================= CHANGE PASSWORD =================
-        [System.Web.Mvc.AllowAnonymous]
+        [RoleAuthorize("projectManager,subOrdinate,outSource,account")]
         [HttpPost]
         [Route("api/change-password")]
         public IHttpActionResult ChangePassword([FromBody] Credentials userdata)
         {
             try
             {
-                userdata.Email = User.Identity.Name;
+                userdata.Email = userdata.Email;
 
                 if (!userdata.newPassword.Equals(userdata.confirmPassword))
                 {
