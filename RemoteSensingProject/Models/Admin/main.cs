@@ -41,6 +41,13 @@ namespace RemoteSensingProject.Models.Admin
             public string Reason { get; set; }
             public string Password { get; set; }    
             public PaginationInfo Pagination { get; set; }
+            public bool updationStatus { get; set; }
+        }
+        public class BudgetHeadModel
+        {
+            public int Id { get; set; }
+            public string BudgetHead { get; set; }
+            //public bool Status { get; set; }
         }
         public class SubProblem
         {
@@ -86,9 +93,19 @@ namespace RemoteSensingProject.Models.Admin
             public List<Project_Budget> budgets { get; set; }
             public List<Project_Statge> stages { get; set; }
             public List<Project_Subordination> SubOrdinate { get; set; }
+            public List<HumanResources> hr { get; set; }
+        }
+
+        public class HumanResources
+        {
+            public int id { get; set; }
+            public int designationId { get; set; }
+            public int designationCount { get; set; }
+            public string designationName { get; set; }
         }
         public class Project_model
         {        
+            public int hrCount { get; set; }
             public string projectStatusLabel { get; set; }
             public string projectCode { get; set; }
             public bool completestatus { get; set; }
@@ -152,6 +169,7 @@ namespace RemoteSensingProject.Models.Admin
             public string CompletionDatestring { get; set; }
             public string TotalAskAmount { get; set; }
             public string ApproveAmount { get; set; }
+            public  string budgetheadsname { get; set; }
 
         }
         public class Project_Subordination

@@ -1,6 +1,4 @@
-﻿using Antlr.Runtime.Tree;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Routing;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
@@ -625,54 +623,7 @@ namespace RemoteSensingProject.ApiServices
             var res = _managerService.getConclusionForMeeting(meetingId, userId);
             return Ok(new { status = true, message = "data retrieved", data = res });
         }
-        [HttpGet]
-        [Route("api/getAllmeeting")]
-        public IHttpActionResult getAllmeeting(int managerId, int? page, int? limit, string searchTerm = null, string statusFilter = null)
-        {
-            try
-            {
-                var res = _managerService.getAllmeeting(id: managerId, limit, page, searchTerm: searchTerm, statusFilter: statusFilter);
-
-                var selectprop = new[] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "AppStatus", "memberId", "CreaterId", "MeetingDate", "createdBy" };
-                var data = CommonHelper.SelectProperties(res, selectprop);
-                if (data.Count > 0)
-                {
-                    return CommonHelper.Success(this, data, "Data fetched successfully", 200, res[0].Pagination);
-                }
-                else
-                {
-                    return CommonHelper.NoData(this);
-                }
-            }
-            catch (Exception ex)
-            {
-                return CommonHelper.Error(this, ex.Message);
-            }
-        }
-        [HttpPost]
-        [Route("api/GetResponseFromMember")]
-        public IHttpActionResult GetResponseFromMember()
-        {
-            var httpRequest = HttpContext.Current.Request;
-            getMemberResponse mr = new getMemberResponse
-            {
-                ApprovedStatus = Convert.ToInt32(httpRequest.Form.Get("approveStatus")),
-                reason = httpRequest.Form.Get("reason"),
-                MeetingId = Convert.ToInt32(httpRequest.Form.Get("meetingId")),
-                MemberId = Convert.ToInt32(httpRequest.Form.Get("memberId"))
-            };
-            var res = _managerService.GetResponseFromMember(mr);
-            if (res)
-            {
-                return Ok(new { status = true, message = "Response Send Successfully", statusCode = 200 });
-
-            }
-            else
-            {
-
-                return Ok(new { status = true, message = "something went wrong", statusCode = 500 });
-            }
-        }
+        
         [HttpGet]
         [Route("api/getProjectStatusForDashboard")]
         public IHttpActionResult getProjectstatus(string userId)
@@ -757,7 +708,9 @@ namespace RemoteSensingProject.ApiServices
                     EmpName = request.Form.Get("EmpName"),
                     mobileNo = Convert.ToInt64(request.Form.Get("mobileNo")),
                     gender = request.Form.Get("gender"),
-                    email = request.Form.Get("email")
+                    email = request.Form.Get("email"),
+                    joiningdate = request.Form.Get("joiningdate"),
+                    designationid = Convert.ToInt32(request.Form.Get("designationId")),
                 };
                 bool res = _managerService.insertOutSource(formData);
                 return Ok(new
@@ -905,7 +858,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("api/UpdateTaskStatus")]
         public IHttpActionResult UpdateTAskStatus(int taskId)
         {
@@ -1571,42 +1524,7 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-        [HttpGet]
-        [Route("api/getattendancebyIdofEmp")]
-        public IHttpActionResult GetAttendanceByIdOfEmp(int projectManager, int EmpId)
-        {
-            try
-            {
-                var data = _managerService.GetAllAttendanceForProjectManager(projectManager, EmpId);
-                if (data != null)
-                {
-                    return Ok(new
-                    {
-                        status = data.Any(),
-                        data = data,
-                        message = "Data found!"
-                    });
-                }
-                else
-                {
-                    return Ok(new
-                    {
-                        status = data.Any(),
-                        data = data,
-                        message = "Data not found!"
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Ok(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
-            }
-        }
+        
         [HttpGet]
         [Route("api/ApproveAttendance")]
         public IHttpActionResult ApproveAttendance(int id, bool status, string remark)
@@ -2025,6 +1943,38 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = 500,
                     message = ex.Message
                 });
+            }
+        }
+        #endregion
+
+        #region Udate Project Status
+        [HttpPost]
+        [Route("api/updateprojectstatus")]
+        public IHttpActionResult UpdateProjectStatus(UpdateProjectStatus upd)
+        {
+            try
+            {
+                bool res = _managerService.InsertProjectStatus(upd);
+
+                return Ok(new { status = res, message = res ? "Project status updated successfully" : "Some error occured" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { status = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        [Route("api/getlastprecentage")]
+        public IHttpActionResult LastProjectPrecentage(int projectid)
+        {
+            try
+            {
+                var data = _managerService.LastProjectStatus(projectid);
+                return Ok(new { status = data.Count > 0 ? true : false, message = data.Count > 0 ? "data recived" : "data not found", data = data });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { status = false, message = ex.Message });
             }
         }
         #endregion

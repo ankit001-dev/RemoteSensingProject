@@ -75,8 +75,7 @@ namespace RemoteSensingProject.ApiServices
                 {
                     Project_Id = Convert.ToInt32(request.Form.Get("Project_Id")),
                     Title = request.Form.Get("title"),
-                    Description = request.Form.Get("Description"),
-                    Attchment_Url = request.Form.Get("Attchment_Url")
+                    Description = request.Form.Get("Description")
                 };
                 var file = request.Files["Attachment"];
                 if (file != null && file.FileName != "")
@@ -84,7 +83,7 @@ namespace RemoteSensingProject.ApiServices
                     data.Attchment_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     data.Attchment_Url = Path.Combine("/ProjectContent/SubOrdinate/ProblemDocs", data.Attchment_Url);
                 }
-                else if (string.IsNullOrEmpty(data.Attchment_Url))
+                else 
                 {
                     return BadRequest(new
                     {
@@ -94,12 +93,24 @@ namespace RemoteSensingProject.ApiServices
                     });
                 }
 
-                bool status = _subOrdinate.InsertSubOrdinateProblem(data);
+                bool status = _subOrdinate.InsertSubOrdinateProblem(data);  
                 if (status)
                 {
                     if (file != null && file.FileName != "")
                     {
-                        file.SaveAs(HttpContext.Current.Server.MapPath(data.Attchment_Url));
+                        string fullPath = HttpContext.Current.Server.MapPath(data.Attchment_Url);
+
+                        // Directory ka path nikaalo
+                        string directoryPath = Path.GetDirectoryName(fullPath);
+
+                        // ✅ Agar directory exist nahi karti to create karo
+                        if (!Directory.Exists(directoryPath))
+                        {
+                            Directory.CreateDirectory(directoryPath);
+                        }
+
+                        // ✅ File save karo
+                        file.SaveAs(fullPath);
                     }
                 }
                 if (status)

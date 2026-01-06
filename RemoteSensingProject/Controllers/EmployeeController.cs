@@ -3,12 +3,9 @@ using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Controllers
@@ -50,6 +47,7 @@ namespace RemoteSensingProject.Controllers
         {
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj,searchTerm:searchTerm);
+            ViewData["Designations"] = _adminServices.ListDesgination();
             return View();
         }
 
@@ -100,7 +98,8 @@ namespace RemoteSensingProject.Controllers
         {
             var data = _adminServices.SelectEmployeeRecord();
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
-
+            ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
+            ViewData["Designations"] = _adminServices.ListDesgination();
             return View();
         }
 
@@ -181,7 +180,8 @@ namespace RemoteSensingProject.Controllers
             }
             return Json(new
             {
-                status = res
+                status = res,
+                message = pm.pm.Id>0 ?"Project Updated Successfully":"Project Created Successfully"
             }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Project_List(string searchTerm = null, string statusFilter = null)
@@ -997,6 +997,33 @@ namespace RemoteSensingProject.Controllers
                     status = false,
                     message = "Server error occurred"
                 });
+            }
+        }
+        [HttpPost]
+        public JsonResult UpdateProjectStatus(UpdateProjectStatus upd)
+        {
+            try
+            {
+                bool res = _managerServices.InsertProjectStatus(upd);
+
+                return Json(new { status = res, message = res? "Project status updated successfully":"Some error occured" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public JsonResult LastProjectStatusPrencentage(int projectid)
+        {
+            try
+            {
+                var data = _managerServices.LastProjectStatus(projectid);
+                return Json(new { status = data.Count > 0 ? true : false, message = data.Count > 0 ? "data recived" : "data not found" ,data = data},JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
             }
         }
     }

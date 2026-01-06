@@ -19,6 +19,8 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult Privacy_Policy()
         {
+            Response.Cache.SetCacheability(HttpCacheability.Public);
+            Response.Cache.SetMaxAge(TimeSpan.FromDays(1));
             return View();
         }
 

@@ -133,7 +133,10 @@
                                                     </a>
                                                 </li>
                                                 <li class="me-2">
-                                                    <a href="/Employee/Update_Project_Stage?Id=@item.Id" data-title="Update Stages">
+                                                    <a href="javascript:void(0);"
+                                                       class="updateStageBtn"
+                                                       data-id="@item.Id"
+                                                       data-projectstage="@item.ProjectStage">
                                                         <i class="link-icon text-info" data-feather="plus-circle"></i>
                                                     </a>
                                                 </li>
@@ -168,6 +171,43 @@
                 </div>
             </div>
         </div>
+
+        <!--Update project Stage status MOdal-->
+        <div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header text-center text-light">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                        <h5 class="modal-title float-start" id="exampleModalLabel">Update Project Status</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form class="forms-sample" id="statusForm">
+                            <input type="hidden" id="projectId" name="projectId" />
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="projectStatus">
+                                    <option value="">Select Status</option>
+                                    <option value="true">Completed</option>
+                                    <option value="false">Pending</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="completion" class="form-label">Completion in %</label>
+                                <input type="number" class="form-control" id="completion" name="CompletionPrecentage" placeholder="Enter Completion Percentage" min="0" max="100">
+                            </div>
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Remark</label>
+                                <textarea class="form-control form-control-sm" name="remark" id="remark" rows="3" placeholder="Enter Remark"></textarea>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Status</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <script>
@@ -176,9 +216,118 @@
     })
 </script>
 
+<script>
+    $(document).on("click", ".updateStageBtn", function () {
+
+        var projectStage = $(this).data("projectstage");
+        var id = $(this).data("id");
+
+        var $completionInput = $("#completion"); // your percentage input
+
+        // Always set default min=0, max=100
+        $completionInput.attr("min", 0);
+        $completionInput.attr("max", 100);
+        $completionInput.val(''); // clear previous value
+        $("#percentageAlert").remove(); // remove old alert
+
+        if (projectStage === true || projectStage === "True") {
+            window.location.href = "/Employee/Update_Project_Stage?Id=" + id;
+        } else {
+            $("#projectId").val(id); // hidden field
+
+            $.ajax({
+                url: '/Employee/LastProjectStatusPrencentage',
+                type: 'get',
+                data: { projectid: id },
+                success: function (response) {
+
+                    if (response.status && response.data.length > 0) {
+                        // Get the highest last completed percentage
+                        var lastPercentage = Math.max(...response.data.map(d => d.CompletionPrecentage));
+
+                        // Show alert inside modal
+                        $("#addslider .modal-body").prepend(
+                            `<div class="alert alert-warning" id="percentageAlert">
+                            You already have <strong>${lastPercentage}%</strong> completed. Enter a higher percentage.
+                        </div>`
+                        );
+
+                        // Set min to lastPercentage (cannot go lower than it)
+                        $completionInput.attr("min", lastPercentage);
+                        $completionInput.val(lastPercentage); // optional: prefill
+                    }
+
+                    // Show modal
+                    $("#addslider").modal("show");
+                },
+                error: function () {
+                    alert("Something went wrong while fetching data.");
+                }
+            });
+        }
+    });
+
+
+    $("#statusForm").on("submit", function (e) {
+        e.preventDefault();
+
+        var $completionInput = $("#completion");
+        var val = parseFloat($completionInput.val());
+        var min = parseFloat($completionInput.attr("min") || 0);
+        var max = parseFloat($completionInput.attr("max") || 100);
+
+        if (isNaN(val)) {
+            Swal.fire("Warning","Please enter a valid percentage","warning");
+            return false;
+        }
+
+        if (val < min) {
+            Swal.fire("Warning","You must enter a value higher than " + min + "%","warning");
+            return false;
+        }
+
+        if (val > max) {
+            Swal.fire("Warning","You cannot enter more than " + max + "%","warning");
+            return false;
+        }
+
+        // Submit via AJAX
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: "/Employee/UpdateProjectStatus",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                Swal.fire({
+                    title: "Please wait...",
+                    text: "Updating project status",
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire("Success", res.message, "success").then(() => {
+                        $("#addslider").modal("hide");
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire("Error", res.message, "error");
+                }
+            },
+            error: function () {
+                Swal.fire("Error", "Something went wrong!", "error");
+            }
+        });
+    });
+
+</script>
 
 <script>
-    $(document).on("click",".viewProject", function () {
+    $(document).on("click", ".viewProject", function () {
         let id = $(this).attr("data-Id");
         debugger
         Swal.fire({

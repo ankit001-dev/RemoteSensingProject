@@ -2,6 +2,23 @@
 @{
     ViewBag.Title = "Add_Project";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+
+
+    var budgetHeads = ViewData["BudgetHeads"] as List<RemoteSensingProject.Models.Admin.main.BudgetHeadModel>;
+    string budgetOptions = "<option value=''>-- Select Budget Head --</option>";
+
+    if (budgetHeads != null)
+    {
+        foreach (var h in budgetHeads)
+        {
+            budgetOptions += $"<option value='{h.Id}'>{h.BudgetHead}</option>";
+        }
+    }
+
+    var designations = ViewData["Designations"]
+      as List<RemoteSensingProject.Models.Admin.main.CommonResponse>
+      ?? new List<RemoteSensingProject.Models.Admin.main.CommonResponse>();
+
 }
 
 
@@ -94,7 +111,7 @@
 
                         <div class="col-lg-4 mb-3">
                             <div class="d-flex justify-content-between">
-                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="0"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
+                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
                             </div>
                             <input type="text" class="form-control form-control-sm" required name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
                             <span id="budgetValidate" class="text-danger"></span>
@@ -102,19 +119,43 @@
 
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Project Document</label>
-                            <input type="file" class="form-control form-control-sm" required name="" id="projectDocumentFile">
+                            <input type="file" class="form-control form-control-sm" name="" id="projectDocumentFile">
                         </div>
                     </div>
+
                     <div class="row">
+
+
+                        <div class="col-lg-4 mb-3">
+                            <div class="d-flex justify-content-between">
+                                <label for="humanResourcesCount" class="form-label">Human Resources</label>
+                                <label class="form-label" id="addHRItem" data-count="1">
+                                    <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Designations</a>
+                                </label>
+                            </div>
+                            <input type="number" class="form-control form-control-sm"
+                                   name="humanResourcesCount" id="humanResourcesCount"
+                                   placeholder="Enter total HR count" required min="0">
+                        </div>
+
+
+                        <div class="col-lg-12 mb-3" id="humanResourcesContainer" style="display:none;">
+                            <fieldset>
+                                <legend style="font-size:15px;">
+                                    Human Resources Details
+                                </legend>
+                                <div id="hrRows"></div>
+                            </fieldset>
+                        </div>
 
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Project Type</label>
                             <br />
                             <label for="projectType" class="form-label">
-                                <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="Internal" checked /><span>Internal</span>
+                                <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="Internal" checked /><span>Internal (Non Salary Head from Government of U.P.)</span>
                             </label>
                             <label for="stage" class="form-label ms-2">
-                                <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="External" /> <span>External</span>
+                                <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="External" /> <span>Externally Funded Project</span>
                             </label>
                         </div>
 
@@ -137,28 +178,46 @@
 
 
                             <div class="row budgetList">
+
+                                <!--<div class="col-lg-5 mb-3">
+                                <label for="title" class="form-label">Heads</label>-->
+                                @*<input type="text" class="form-control form-control-sm" name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point">*@
+                                <!--<select class="form-select form-select-sm"
+                                            name="pm.budgets[0].ProjectHeads">
+                                        <option value="">-- Select Budget Head --</option>
+
+                                    </select>
+
+                                </div>-->
                                 <div class="col-lg-5 mb-3">
-                                    <label for="title" class="form-label">Heads</label>
-                                    <input type="text" class="form-control form-control-sm" name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point">
+                                    <label class="form-label">Heads</label>
+                                    <select class="form-select form-select-sm no-select2 budgetHeadSelect"
+                                            name="pm.budgets[0].HeadId">
+                                        @Html.Raw(budgetOptions)
+                                    </select>
+
                                 </div>
+
                                 <div class="col-lg-5 mb-3">
                                     <label for="title" class="form-label">Amount</label>
                                     <input type="number" class="form-control form-control-s amnt" name="pm.budgets[0].ProjectAmount" placeholder="Enter amount...">
                                     <span id="_person" class="ms-2 text-danger"></span>
                                 </div>
                             </div>
-                            <div class="row" id="miscList">
-                                <div class="col-lg-5 mb-3">
-                                    <label for="title" class="form-label">
-                                        Miscellaneous
-                                    </label>
-                                    <input type="text" class="form-control form-control-sm" name="pm.budgets[1].ProjectHeads" readonly id="" value="Miscellaneous" placeholder="Enter Key Point">
-                                </div>
-                                <div class="col-lg-5 mb-3">
-                                    <label for="misAmount" class="form-label">Amount</label>
-                                    <input type="number" readonly class="form-control form-control-sm" id="misAmount" name="pm.budgets[1].ProjectAmount" placeholder="Enter amount">
-                                </div>
-                            </div>
+
+                            @*<div class="row" id="miscList">
+                                    <div class="col-lg-5 mb-3">
+                                        <label for="title" class="form-label">
+                                            Miscellaneous
+                                        </label>
+                                        <input type="text" class="form-control form-control-sm" name="pm.budgets[1].ProjectHeads" readonly id="" value="Miscellaneous" placeholder="Enter Key Point">
+                                    </div>
+                                    <div class="col-lg-5 mb-3">
+                                        <label for="misAmount" class="form-label">Amount</label>
+                                        <input type="number" readonly class="form-control form-control-sm" id="misAmount" name="pm.budgets[1].ProjectAmount" placeholder="Enter amount">
+                                    </div>
+                                </div>*@
+
                         </fieldset>
                     </div>
                     <div id="projectTypeDetailContainer" style="display:none;">
@@ -183,6 +242,7 @@
                             </div>
                         </fieldset>
                     </div>
+
                     <div id="stageItemContainer" style="display:none;">
                         <fieldset>
                             <legend style="font-size:15px;">
@@ -208,13 +268,257 @@
         </div>
     </div>
 </div>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- jQuery Validation -->
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+ @*Optional (additional rules like accept, filesize etc.)*@ 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
+
+
+<script>
+    var budgetOptions = `@Html.Raw(budgetOptions)`;
+</script>
+
+<script>
+    const designations = @Html.Raw(
+        System.Text.Json.JsonSerializer.Serialize(
+            designations.Select(d => new {
+                id = d.id,        // ⚠️ property name match karo
+                name = d.name
+            })
+        )
+    );
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+
+
+        // HR Count input validation
+        $("#humanResourcesCount").on("input", function () {
+            const hrCount = parseInt($(this).val()) || 0;
+            updateHRDisplay(hrCount);
+            updateOtherCount();
+        });
+
+        // Add Designation button click
+        $("#addHRItem").click(function (e) {
+            e.preventDefault();
+            addHRRow();
+        });
+
+        // Add new HR row function
+        function addHRRow() {
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+
+            if (isNaN(totalHR) || totalHR <= 0) {
+                Swal.fire("Warning!", "Please enter a valid Human Resources count first.", "warning");
+                return;
+            }
+
+            // Show HR container if hidden
+            $("#humanResourcesContainer").show();
+
+            // Check if it's the first row
+            let count = $("#hrRows .hrRow").length;
+
+            if (count === 0) {
+                // First click: create default 2 rows
+                let row1 = generateHRRow(false);
+                let row2 = generateHRRow(true, totalHR);
+                $("#hrRows").append(row1 + row2);
+            } else {
+                // Add new designation row
+                let newRow = generateHRRow(false);
+                $("#hrRows").append(newRow);
+            }
+
+            // Update other count
+            updateOtherCount();
+        }
+
+        // Generate HR row HTML
+        function generateHRRow(isOther = false, value = 0) {
+            if (isOther) {
+                return `
+                <div class="row hrRow mb-2 align-items-center">
+                    <div class="col-lg-6">
+                        <input type="text" class="form-control form-control-sm hr-other" value="Other" readonly>
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="number" class="form-control form-control-sm hr-count" value="${value}" readonly>
+                    </div>
+                    <div class="col-lg-2"></div>
+                </div>`;
+            } else {
+                return `
+                <div class="row hrRow mb-2 align-items-center">
+                    <div class="col-lg-6">
+                     <select class="form-control form-control-sm hr-designation-select">
+                         <option value="">Select Designation</option>
+                          ${designations.map(d =>
+                    `<option value="${d.id}">${d.name}</option>`
+                ).join('')}
+                   </select>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="number" class="form-control form-control-sm hr-count" placeholder="Count" min="0">
+                    </div>
+                    <div class="col-lg-2 text-center">
+                        <a href="#" class="deleteHRRow"><i class="fa-solid fa-trash text-danger fs-4"></i></a>
+                    </div>
+                </div>`;
+            }
+        }
+
+        // Delete HR row
+        $("#humanResourcesContainer").on("click", ".deleteHRRow", function (e) {
+            e.preventDefault();
+            $(this).closest(".hrRow").remove();
+            updateOtherCount();
+
+            // Hide container if no rows left
+            if ($("#hrRows .hrRow").length === 0) {
+                $("#humanResourcesContainer").hide();
+            }
+        });
+
+        // HR count input validation
+        $(document).on("input", ".hr-count", function () {
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+            let sum = 0;
+
+            // Sum of all designation counts except Other
+            $("#hrRows .hrRow").each(function () {
+                if (!$(this).find(".hr-other").length) {
+                    let val = parseInt($(this).find(".hr-count").val()) || 0;
+                    sum += val;
+                }
+            });
+
+            if (sum > totalHR) {
+                Swal.fire("Warning!", "Total count cannot exceed Human Resources count.", "warning");
+                $(this).val(0);
+                sum = 0;
+
+                // Recalculate sum after reset
+                $("#hrRows .hrRow").each(function () {
+                    if (!$(this).find(".hr-other").length) {
+                        let val = parseInt($(this).find(".hr-count").val()) || 0;
+                        sum += val;
+                    }
+                });
+            }
+
+            updateOtherCount();
+        });
+
+        // Update Other count
+        function updateOtherCount() {
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+            let sum = 0;
+
+            // Calculate sum of all designation counts
+            $("#hrRows .hrRow").each(function () {
+                if (!$(this).find(".hr-other").length) {
+                    let val = parseInt($(this).find(".hr-count").val()) || 0;
+                    sum += val;
+                }
+            });
+
+            let remaining = totalHR - sum;
+            if (remaining < 0) remaining = 0;
+
+            // Update Other row value
+            $("#hrRows .hrRow").each(function () {
+                let otherInput = $(this).find(".hr-other");
+                if (otherInput.length) {
+                    $(this).find(".hr-count").val(remaining);
+                }
+            });
+        }
+
+        // Update HR display based on count
+        function updateHRDisplay(hrCount) {
+            if (hrCount > 0) {
+                $("#humanResourcesContainer").show();
+
+                // Check if we need to add initial rows
+                if ($("#hrRows .hrRow").length === 0) {
+                    $("#addHRItem").click();
+                } else {
+                    updateOtherCount();
+                }
+            } else {
+                // Clear all HR rows if count is 0
+                $("#hrRows").empty();
+                $("#humanResourcesContainer").hide();
+            }
+        }
+
+        // Form submission - Collect HR data
+        $("#createProjectForm").on("submit", function (e) {
+            e.preventDefault();
+
+            let hrData = [];
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+            let sum = 0;
+
+            // Collect HR details
+            $("#hrRows .hrRow").each(function () {
+                const designationSelect = $(this).find(".hr-designation-select");
+                const otherInput = $(this).find(".hr-other");
+                const countInput = $(this).find(".hr-count");
+
+                let designation = "";
+                let count = parseInt(countInput.val()) || 0;
+
+                if (designationSelect.length && designationSelect.val()) {
+                    designation = designationSelect.find("option:selected").text();
+                } else if (otherInput.length) {
+                    designation = otherInput.val();
+                }
+
+                if (designation && count > 0) {
+                    hrData.push({
+                        designation: designation,
+                        count: count
+                    });
+                    sum += count;
+                }
+            });
+
+            // Validate total count
+            if (sum !== totalHR) {
+                Swal.fire("Error!", `Total HR count (${sum}) must match Human Resources count (${totalHR}).`, "error");
+                return false;
+            }
+
+            // Continue with form submission
+            console.log("HR Data:", hrData);
+            // Add your form submission logic here
+        });
+    });
+</script>
+
 <script>
     $(document).ready(function () {
         $("select").select2({
             placeholder: "Select an option",
         });
 
-    })
+
+        // Disable Select2 only on this select
+        $("select.no-select2").select2('destroy');
+
+    });
     $(document).ready(function () {
 
         $("input[name='pm.pm.ProjectStage']").click(function () {
@@ -277,121 +581,79 @@
                 $("#projectTypeDetailContainer").hide();
             }
         });
-        //managing budget section
-        //$("#addBudgetItem").click(function () {
-        //    debugger
-        //    let budgetAmt = parseInt($("#budgetAmount").val())
-        //    let ammt = parseInt($('#budgetContainerBox').find('.amnt').val())
-        //    if ($("#budgetContainerBox").find('.amnt').empty()) {
-        //        $("#misAmount").val(budgetAmt)
-        //    }
-        //    else {
-        //        $('#misAmount').val(budgetAmt - parseInt($('#budgetContainerBox').find('.amnt').val()));
-        //    }
-        //    if (budgetAmt != null && budgetAmt > 0) {
-        //        let count = parseInt($(this).attr("data-count"));
-        //        $("#budgetContainerBox").show();
-        //        if (count > 0) {
-        //            let ele = `<div class="row budgetList">
-        //                <div class="col-lg-5 mb-3">
-        //                    <label for="title" class="form-label">Heads</label>
-        //                    <input type="text" class="form-control form-control-sm" name="pm.budgets[${count + 1}].ProjectHeads" id="venue" placeholder="Enter Key Point">
-        //                </div>
-        //                <div class="col-lg-5 mb-3">
-        //                    <label for="title" class="form-label">Amount</label>
-        //                    <input type="number" class="form-control form-control-sm amnt"  name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
-        //                </div>
-        //                <div class="col-lg-2 text-center mb-3" style="line-height:6;">
-        //                    <a href="#" class="deleteCurrntRow">
-        //                        <i class="fa-solid fa-trash text-danger fs-4" style="cursor: pointer;"></i>
-        //                    </a>
-        //                </div>
 
-        //            </div>`;
-        //            $("#miscList").before(ele);
-        //        }
-        //        count++;
-        //        $(this).attr("data-count", count)
-        //    }
-        //    else {
-        //        Swal.fire("Sorry !", "Budget amount is invalid", "warning")
-        //    }
-        //});
-        //$("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
-        //    e.preventDefault();
-        //    let i = $("#budgetContainerBox #addBudgetItem").attr("data-count");
-        //    if (i > 0)
-        //        i--;
-        //    $("#budgetContainerBox #addBudgetItem").attr("data-count", i);
-        //    $(this).closest(".row.budgetList").remove();
-        //});
     });
+
 
     $(document).ready(function () {
 
         // 🔹 Add Budget Head
-        $("#addBudgetItem").click(function (e) {
+        $("#addBudgetItem").on("click", function (e) {
             e.preventDefault();
 
             let budgetAmt = parseFloat($("#budgetAmount").val());
-
             if (isNaN(budgetAmt) || budgetAmt <= 0) {
-                Swal.fire("Sorry!", "Please enter a valid Project Budget first.", "warning");
+                Swal.fire("Warning!", "Please enter Project Budget first", "warning");
                 return;
             }
 
             $("#budgetContainerBox").show();
 
-            let count = parseInt($(this).attr("data-count")) || 0;
+            /* let count = parseInt($(this).attr("data-count")) || 0;*/
 
-            // ✅ Pehli baar click par sirf ek hi row add ho
-            // (pehle se koi head nahi hona chahiye)
-            if (count === 0 && $(".budgetList").length > 1) {
-                // Already initial head hai, to new na banao
-                return;
-            }
+            let count = $(".budgetList").length;
 
-            // ✅ Dynamic new row template
-            let ele = `
-                    <div class="row budgetList">
-                        <div class="col-lg-5 mb-3">
-                            <label for="title" class="form-label">Heads</label>
-                            <input type="text" class="form-control form-control-sm" name="pm.budgets[${count + 1}].ProjectHeads" placeholder="Enter Key Point">
-                        </div>
-                        <div class="col-lg-5 mb-3">
-                            <label for="title" class="form-label">Amount</label>
-                            <input type="number" class="form-control form-control-sm amnt" name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
-                        </div>
-                        <div class="col-lg-2 text-center mb-3" style="line-height:6;">
-                            <a href="#" class="deleteCurrntRow">
-                                <i class="fa-solid fa-trash text-danger fs-4" style="cursor: pointer;"></i>
-                            </a>
-                        </div>
-                    </div>`;
+            let row = `
+        <div class="row budgetList">
 
-            // ✅ Sirf tab add kare jab ek extra row chahiye (avoid duplicate)
-            if (count > 0 || $(".budgetList").length === 0) {
-                $("#miscList").before(ele);
-            }
+            <div class="col-lg-5 mb-3">
+                <label class="form-label">Heads</label>
+                <select class="form-select form-select-sm"
+                        name="pm.budgets[${count}].HeadId">
+                    ${budgetOptions}
+                </select>
+            </div>
+
+            <div class="col-lg-5 mb-3">
+                <label class="form-label">Amount</label>
+                <input type="number"
+                       class="form-control form-control-sm amnt"
+                       name="pm.budgets[${count}].ProjectAmount"
+                       placeholder="Enter amount...">
+            </div>
+
+            <div class="col-lg-2 text-center mb-3" style="line-height:6;">
+                <a href="#" class="deleteCurrntRow">
+                    <i class="fa-solid fa-trash text-danger fs-4"></i>
+                </a>
+            </div>
+
+        </div>`;
+
+            $("#budgetContainerBox fieldset").append(row);
+
+
 
             $(this).attr("data-count", count + 1);
 
             updateMiscAmount();
+            updateBudgetOptions();
+
         });
 
-        // 🔹 Delete a head
+        // 🔹 Delete Budget Head
         $("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
             e.preventDefault();
             $(this).closest(".budgetList").remove();
             updateMiscAmount();
         });
 
-        // 🔹 When budget or head amount changes
+        // 🔹 Recalculate when amount changes
         $(document).on("input", "#budgetAmount, .amnt", function () {
-            updateMiscAmount($(this)); // Pass current field for reset if exceeded
+            updateMiscAmount($(this));
         });
 
-        // 🔹 Function to recalc remaining amount (Miscellaneous)
+        // 🔹 Calculation logic
         function updateMiscAmount(changedInput = null) {
             let budgetAmt = parseFloat($("#budgetAmount").val()) || 0;
             let totalHeads = 0;
@@ -401,33 +663,27 @@
                 if (!isNaN(val)) totalHeads += val;
             });
 
-            // ✅ Check for exceed
             if (totalHeads > budgetAmt) {
                 Swal.fire("Warning!", "Total of all heads cannot exceed Project Budget!", "error");
 
-                // 🧹 Clear the field that caused exceed
                 if (changedInput) {
                     $(changedInput).val('');
                 }
 
-                // Recalculate after clearing
                 totalHeads = 0;
                 $(".amnt").each(function () {
                     let val = parseFloat($(this).val());
                     if (!isNaN(val)) totalHeads += val;
                 });
             }
-
-            let remaining = budgetAmt - totalHeads;
-            if (remaining < 0) remaining = 0;
-
-            $("#misAmount").val(remaining);
         }
+
     });
+
 
     $(document).ready(function () {
         $("#budgetAmount").on("keyup", function () {
-            $("#misAmount").val($(this).val())
+            //$("#misAmount").val($(this).val())
         })
         $("#budgetContainerBox").find(".amnt").on("keyup", function () {
             debugger
@@ -435,15 +691,15 @@
             let am = parseInt($(this).val());
             if (am > amm) {
                 $("#_person").text("Amount is not more than Budget Amount");
-                $("#misAmount").val(0);
+                //$("#misAmount").val(0);
             }
             else if (am < amm) {
                 $("#_person").text("");
-                $("#misAmount").val(amm - am);
+                //$("#misAmount").val(amm - am);
             }
             else if ($(this).empty()) {
                 $("#_person").text("");
-                $("#misAmount").val(amm);
+                //$("#misAmount").val(amm);
             }
 
         });
@@ -455,6 +711,10 @@
             placeholder: "Select an option",
             allowClear: true
         });
+
+
+        // Disable Select2 only on this select
+        $("select.no-select2").select2('destroy');
 
         $('#assignDate, #startDate, #completeDate').on('change blur', function () {
             $(this).valid();
@@ -516,7 +776,9 @@
         });
 
 
-        // Custom validation method for date comparison
+
+
+        // Line 512 se 540 tak ka code - sirf yeh 3 methods update karen
         $.validator.addMethod("dateGreaterThanMultiple", function (value, element, params) {
             debugger;
             if (!value) return true;
@@ -530,7 +792,8 @@
                 const compareVal = $(selector).val();
                 if (compareVal) {
                     const compareDate = parseDate(compareVal);
-                    if (!compareDate || current <= compareDate) {
+                    // CHANGE HERE: <= se < kar diya
+                    if (!compareDate || current < compareDate) {
                         isValid = false;
                     }
                 }
@@ -538,6 +801,8 @@
 
             return isValid;
         }, "Date must be greater than previous dates");
+
+      
 
         $.validator.addMethod("dateLessThan", function (value, element, selector) {
             debugger
@@ -548,7 +813,7 @@
             const d2 = parseDate(compareVal);
             if (!d1 || !d2) return true;
 
-            return d1 < d2;
+            return d1 <= d2;
         });
 
         $.validator.addMethod("dateGreaterThan", function (value, element, selector) {
@@ -560,8 +825,9 @@
             const d2 = parseDate(compareVal);
             if (!d1 || !d2) return true;
 
-            return d1 > d2;
+            return d1 >= d2;
         });
+
 
         // Custom validation method for future date
         $.validator.addMethod("notPastDate", function (value, element) {
@@ -599,7 +865,7 @@
                 "pm.pm.StartDate": {
                     required: true,
                     dateGreaterThan: "#assignDate",
-                    dateLessThan: "#completionDate"
+                    dateLessThan: "#completeDate"
                 },
 
                 "pm.pm.CompletionDate": {
@@ -642,6 +908,8 @@
                 }
             },
             messages: {
+                
+
                 "pm.pm.ProjectTitle": {
                     required: "Please enter project title",
                     minlength: "Title must be at least 3 characters long",
@@ -649,19 +917,23 @@
                 },
                 "pm.pm.AssignDate": {
                     required: "Please select assign date",
-                    dateLessThan: "Assign date must be before Start date"
+                    // CHANGE MESSAGE HERE
+                    dateLessThan: "Assign date must be before Start date (same dates allowed)"
                 },
-
                 "pm.pm.StartDate": {
                     required: "Please select start date",
-                    dateGreaterThan: "Start date must be after Assign date",
-                    dateLessThan: "Start date must be before Completion date"
+                    // CHANGE MESSAGE HERE
+                    dateGreaterThan: "Start date must be after Assign date (same dates allowed)",
+                    // CHANGE MESSAGE HERE
+                    dateLessThan: "Start date must be before Completion date (same dates allowed)"
                 },
                 "pm.pm.CompletionDate": {
                     required: "Please select completion date",
                     date: "Please enter a valid date",
-                    dateGreaterThanMultiple: "Completion date must be after Assign Date and Start Date"
+                    // CHANGE MESSAGE HERE
+                    dateGreaterThanMultiple: "Completion date must be after or same as Assign Date and Start Date"
                 },
+
                 "pm.pm.ProjectManager": {
                     required: "Please select a project manager"
                 },
@@ -727,6 +999,14 @@
             }
         });
 
+        $('#assignDate, #startDate, #completeDate').on('change blur', function () {
+            $("#assignDate").valid();
+            $("#startDate").valid();
+            $("#completeDate").valid();
+        });
+
+
+
         // Add validation for dynamically added budget items
         $(document).on('input', '.amnt', function () {
             $(this).valid();
@@ -758,16 +1038,13 @@
             let formData = new FormData();
             let arrData = $(this).serializeArray();
 
-            // Loop through the serialized form data and append it to FormData
             arrData.forEach(function (d) {
-                // Check if the key already exists in the formData
-                if (!formData.has(d.name) && d.value.trim() !== "") {
+                if (d.value !== null && d.value !== "") {
                     formData.append(d.name, d.value);
-                } else {
-                    console.log(`Duplicate or empty key skipped: ${d.name}`);
                 }
             });
 
+       
             let projectType = $('input[name="pm.pm.ProjectType"]:checked').val();
             if (projectType === "External") {
 
@@ -785,12 +1062,7 @@
                     formData.append("pm.pm.Address", address);
                 }
             }
-            //let arrData = $(this).serializeArray();
-
-            //// Add regular form data to formData object
-            //arrData.forEach(function (d) {
-            //    formData.append(d.name, d.value); 
-            //});
+         
 
             // Check if the project document file exists and append if not already added
             let file = $("#projectDocumentFile")[0].files[0];
@@ -800,6 +1072,18 @@
                     formData.append("pm.pm.projectDocument", file);
                 }
             }
+
+            $("#hrRows .hrRow").each(function (i) {
+                let designationId = $(this).find(".hr-designation-select").val();
+                let count = $(this).find(".hr-count").val();
+
+                if (designationId && count > 0) {
+                    formData.append(`pm.hr[${i}].designationId`, designationId);
+                    formData.append(`pm.hr[${i}].designationCount`, count);
+                }
+            });
+            formData.append("pm.pm.hrCount", $("#humanResourcesCount").val());
+
 
             // Loop through stages images and add them
             $.each($(".stagesImages"), function (i, d) {
@@ -812,6 +1096,7 @@
                         formData.append(stageKey, file);
                     }
                 }
+
             });
             // Send the data via AJAX
             $.ajax({
@@ -856,11 +1141,7 @@
 
     });
 
-    // Your existing budget management logic remains the same
-    // (Keep your existing budget and stage management code)
 
-
-    
 </script>
 
 <!-- Additional validation for budget section -->
@@ -881,7 +1162,7 @@
             if (isNaN(budgetAmt) || budgetAmt <= 0) {
                 Swal.fire("Error!", "Please enter a valid project budget first.", "error");
                 return;
-            } 
+            }
 
 
             // Rest of your budget addition logic...
@@ -915,7 +1196,5 @@
             });
         });
     });
-
-
-
 </script>
+
