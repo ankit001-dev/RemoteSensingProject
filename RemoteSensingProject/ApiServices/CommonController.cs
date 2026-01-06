@@ -359,7 +359,34 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [RoleAuthorize("projectManager,subOrdinate")]
+        [HttpPost]
+        [Route("api/GetResponseFromMember")]
+        public IHttpActionResult GetResponseFromMember()
+        {
+            var httpRequest = HttpContext.Current.Request;
+            getMemberResponse mr = new getMemberResponse
+            {
+                ApprovedStatus = Convert.ToInt32(httpRequest.Form.Get("approveStatus")),
+                reason = httpRequest.Form.Get("reason"),
+                MeetingId = Convert.ToInt32(httpRequest.Form.Get("meetingId")),
+                MemberId = Convert.ToInt32(httpRequest.Form.Get("memberId"))
+            };
+            var res = _managerservice.GetResponseFromMember(mr);
+            if (res)
+            {
+                return Ok(new { status = true, message = "Response Send Successfully", statusCode = 200 });
+
+            }
+            else
+            {
+
+                return Ok(new { status = true, message = "something went wrong", statusCode = 500 });
+            }
+        }
         #endregion
+
+        #region Update Employee
         [HttpPost]
         [Route("api/updateEmployeeData")]
         public IHttpActionResult Update_Employee()
@@ -505,6 +532,8 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        #endregion
+
         #region DesginationList
         [RoleAuthorize("admin,projectManager")]
         [HttpGet]
@@ -585,6 +614,35 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
+        #region Get Meeting
+        [RoleAuthorize("projectManager,subOrdinate")]
+        [HttpGet]
+        [Route("api/getAllmeeting")]
+        public IHttpActionResult getAllmeeting(int managerId, int? page, int? limit, string searchTerm = null, string statusFilter = null)
+        {
+            try
+            {
+                var res = _managerservice.getAllmeeting(id: managerId, limit, page, searchTerm: searchTerm, statusFilter: statusFilter);
+
+                var selectprop = new[] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "AppStatus", "memberId", "CreaterId", "MeetingDate", "createdBy" };
+                var data = CommonHelper.SelectProperties(res, selectprop);
+                if (data.Count > 0)
+                {
+                    return CommonHelper.Success(this, data, "Data fetched successfully", 200, res[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return CommonHelper.Error(this, ex.Message);
+            }
+        }
+        #endregion
+
         private IHttpActionResult BadRequest(object value)
         {
             return Content(HttpStatusCode.BadRequest, value);

@@ -623,54 +623,7 @@ namespace RemoteSensingProject.ApiServices
             var res = _managerService.getConclusionForMeeting(meetingId, userId);
             return Ok(new { status = true, message = "data retrieved", data = res });
         }
-        [HttpGet]
-        [Route("api/getAllmeeting")]
-        public IHttpActionResult getAllmeeting(int managerId, int? page, int? limit, string searchTerm = null, string statusFilter = null)
-        {
-            try
-            {
-                var res = _managerService.getAllmeeting(id: managerId, limit, page, searchTerm: searchTerm, statusFilter: statusFilter);
-
-                var selectprop = new[] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "AppStatus", "memberId", "CreaterId", "MeetingDate", "createdBy" };
-                var data = CommonHelper.SelectProperties(res, selectprop);
-                if (data.Count > 0)
-                {
-                    return CommonHelper.Success(this, data, "Data fetched successfully", 200, res[0].Pagination);
-                }
-                else
-                {
-                    return CommonHelper.NoData(this);
-                }
-            }
-            catch (Exception ex)
-            {
-                return CommonHelper.Error(this, ex.Message);
-            }
-        }
-        [HttpPost]
-        [Route("api/GetResponseFromMember")]
-        public IHttpActionResult GetResponseFromMember()
-        {
-            var httpRequest = HttpContext.Current.Request;
-            getMemberResponse mr = new getMemberResponse
-            {
-                ApprovedStatus = Convert.ToInt32(httpRequest.Form.Get("approveStatus")),
-                reason = httpRequest.Form.Get("reason"),
-                MeetingId = Convert.ToInt32(httpRequest.Form.Get("meetingId")),
-                MemberId = Convert.ToInt32(httpRequest.Form.Get("memberId"))
-            };
-            var res = _managerService.GetResponseFromMember(mr);
-            if (res)
-            {
-                return Ok(new { status = true, message = "Response Send Successfully", statusCode = 200 });
-
-            }
-            else
-            {
-
-                return Ok(new { status = true, message = "something went wrong", statusCode = 500 });
-            }
-        }
+        
         [HttpGet]
         [Route("api/getProjectStatusForDashboard")]
         public IHttpActionResult getProjectstatus(string userId)
@@ -755,7 +708,9 @@ namespace RemoteSensingProject.ApiServices
                     EmpName = request.Form.Get("EmpName"),
                     mobileNo = Convert.ToInt64(request.Form.Get("mobileNo")),
                     gender = request.Form.Get("gender"),
-                    email = request.Form.Get("email")
+                    email = request.Form.Get("email"),
+                    joiningdate = request.Form.Get("joiningdate"),
+                    designationid = Convert.ToInt32(request.Form.Get("designationId")),
                 };
                 bool res = _managerService.insertOutSource(formData);
                 return Ok(new
@@ -903,7 +858,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("api/UpdateTaskStatus")]
         public IHttpActionResult UpdateTAskStatus(int taskId)
         {
