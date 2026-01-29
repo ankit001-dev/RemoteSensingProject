@@ -27,42 +27,6 @@
         color: white !important;
         justify-content: center;
     }
-
-    .dt-button {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-        border-radius: 4px !important;
-        border: none !important;
-        cursor: pointer !important;
-        margin-right: 5px !important;
-        display: inline-block !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-        .dt-button.buttons-excel {
-            background-color: #3b9f42 !important; /* Excel-like green */
-            color: white !important;
-        }
-
-            .dt-button.buttons-excel:hover {
-                background-color: #2a7c2f !important; /* Darker green on hover */
-            }
-
-        /* PDF button (Red) */
-        .dt-button.buttons-pdf {
-            background-color: #e74c3c !important; /* PDF-like red */
-            color: white !important;
-        }
-
-            .dt-button.buttons-pdf:hover {
-                background-color: #c0392b !important; /* Darker red on hover */
-            }
-
-    /* Additional styling for the buttons wrapper */
-    .dataTables_wrapper .dt-buttons {
-        margin-bottom: 10px !important;
-    }
 </style>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <form class="forms-sample">
@@ -103,6 +67,10 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <div>
+                    <a id="expenceExcelBtn" href="#"><button class="btn btn-success">Excel</button></a>
+                    <a id="expencePdfBtn" href="#"><button class="btn btn-danger">Pdf</button></a>
+                </div>
                 <div class="table-responsive">
                     <table class="table" id="expensesDatatable">
                         <thead>
@@ -146,6 +114,7 @@
 
     let isApplyDataTable = false;
     function getExpenses(hId, pId) {
+        bindReportUrl(pId, hId);
         $.ajax({
             url: "/api/getProjectExpencesList",
             type: "GET",
@@ -171,13 +140,7 @@
                         $tbody.append(row);
                     });
                 } 
-                 elem.DataTable({
-                     layout: {
-                         topStart: {
-                             buttons: ['excel', 'pdf']
-                         }
-                     }
-                })
+                elem.DataTable();
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);
@@ -190,6 +153,17 @@
         });
     }
 
+
+    function bindReportUrl(projectId, headId) {
+        let queryString = `&projectId=${encodeURIComponent(projectId)}&headId=${encodeURIComponent(headId)}`;
+        $("#expenceExcelBtn").attr("href",
+            `/employee/DownloadExpencesReport?type=excel${queryString}`
+        )
+
+        $("#expencePdfBtn").attr("href",
+            `/employee/DownloadExpencesReport?type=pdf${queryString}`)
+
+    }
 </script>
 
 <script>

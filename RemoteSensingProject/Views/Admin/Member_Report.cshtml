@@ -1,13 +1,8 @@
-﻿
-@{
-    ViewBag.Title = "Member_Report";
-    Layout = "~/Views/Shared/_adminLayout.cshtml";
-}
-
-
-@{
+﻿@{
     ViewBag.Title = "Employee_Registration";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    string searchTerm = Request.QueryString["searchTerm"];
+    string divisionId = Request.QueryString["division"];
 }
 
 <style>
@@ -19,43 +14,6 @@
 
     .link-icon {
         height: 16px;
-    }
-    /* Custom button styling */
-    .dt-button {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-        border-radius: 4px !important;
-        border: none !important;
-        cursor: pointer !important;
-        margin-right: 5px !important;
-        display: inline-block !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-        /* Excel button (Green) */
-        .dt-button.buttons-excel {
-            background-color: #3b9f42 !important; /* Excel-like green */
-            color: white !important;
-        }
-
-            .dt-button.buttons-excel:hover {
-                background-color: #2a7c2f !important; /* Darker green on hover */
-            }
-
-        /* PDF button (Red) */
-        .dt-button.buttons-pdf {
-            background-color: #e74c3c !important; /* PDF-like red */
-            color: white !important;
-        }
-
-            .dt-button.buttons-pdf:hover {
-                background-color: #c0392b !important; /* Darker red on hover */
-            }
-
-    /* Additional styling for the buttons wrapper */
-    .dataTables_wrapper .dt-buttons {
-        margin-bottom: 10px !important;
     }
 </style>
 
@@ -85,6 +43,10 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <div class="d-flex">
+                    <a href="/admin/DownloadEmployeeReport?type=excel&searchTerm=@searchTerm&devision=@divisionId"><button type="button" class="btn btn-success">Excel</button></a>
+                    <a href="/admin/DownloadEmployeeReport?type=pdf&searchTerm=@searchTerm&devision=@divisionId"><button type="button" class="btn btn-danger">Pdf</button></a>
+                </div>
                 <div class="table-responsive">
                     <table id="dataTableExamples" class="table table-striped">
                         <thead>
@@ -346,25 +308,6 @@
         })
     })
 
-
-    $(document).ready(function () {
-        //$("#filterByEmployeeName").on("input", function () {
-        //    var table = $("#dataTableExamples").DataTable();
-        //    table.column(3).search($(this).val()).draw();
-        //})
-        //$("#fileterByEmployeeDiv").on("change", function () {
-        //    var table = $("#dataTableExamples").DataTable();
-        //    table.column(4).search($(this).val()).draw();
-        //})
-
-        $('#dataTableExamples').DataTable({
-            layout: {
-                topStart: {
-                    buttons: ['excel', 'pdf']
-                }
-            }
-        });
-    });
 
     $('#searchByEmployeeName').on('keyup', function () {
         let value = $(this).val().trim();

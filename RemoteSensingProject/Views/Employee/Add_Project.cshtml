@@ -185,6 +185,7 @@
                 return;
             }
 
+
             $("#humanResourcesContainer").show();
             let count = $("#hrRows .hrRow").length;
 
@@ -205,8 +206,9 @@
 
         function generateHRRow(isOther = false, value = 0) {
             // Find "Other" designation
+            debugger
             const otherDesignation = designations.find(
-                d => d.name.toLowerCase() === 'other'
+                d => d.name.toLowerCase() == 'other'
             );
             const otherId = otherDesignation ? otherDesignation.id : 0;
 
@@ -1083,7 +1085,7 @@
         response.budgets.forEach(function (b, index) {
             let options = `<option value="">Select Budget Head</option>`;
             allBudgetHeads.forEach(h => {
-                options += `<option value="${h.Id}" ${h.Id == b.ProjectHeads ? "selected" : ""}>${h.BudgetHead}</option>`;
+                options += `<option value="${h.Id}" ${h.Id == b.HeadId ? "selected" : ""}>${h.BudgetHead}</option>`;
             });
 
             let $row = $(`
@@ -1169,28 +1171,31 @@
     const urlParams = new URLSearchParams(window.location.search);
     const projectId = urlParams.get("id");
 
-    $.ajax({
-        url: "/Employee/GetProjecDatatById",
-        type: "get",
-        data: { Id: projectId },
-        success: function (res) {
-            console.log(res);
-            if (res.status) {
+    if (projectId != null && projectUD != '') {
+        $.ajax({
+            url: "/Employee/GetProjecDatatById",
+            type: "get",
+            data: { Id: projectId },
+            success: function (res) {
+                console.log(res);
+                if (res.status) {
 
-                bindProjectData(res.data);
-                bindSubOrdinate(res.data);
-                bindBudgets(res.data);
-                bindStages(res.data);
-                $("#pageTitle").text("Update Project");
-                $("#createProjectForm button[type='submit']").text("Update");
+                    bindProjectData(res.data);
+                    bindSubOrdinate(res.data);
+                    bindBudgets(res.data);
+                    bindStages(res.data);
+                    $("#pageTitle").text("Update Project");
+                    $("#createProjectForm button[type='submit']").text("Update");
+                }
+            },
+            error: function (res) {
+
+            },
+            complete: function (res) {
+
             }
-        },
-        error: function (res) {
+        });
+    }
 
-        },
-        complete: function (res) {
-
-        }
-    });
 
 </script>

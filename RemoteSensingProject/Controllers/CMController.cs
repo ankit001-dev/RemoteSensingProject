@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
+// for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
+// RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+// RemoteSensingProject.Controllers.CMController
 using System.Web.Mvc;
 
-namespace RemoteSensingProject.Controllers
+public class CMController : Controller
 {
-    public class CMController : Controller
-    {
-        // GET: CM
-        public ActionResult Dashboard()
-        {
-            return View();
-        }
-    }
+	public ActionResult Dashboard()
+	{
+		return View();
+	}
+
+	public ActionResult ProjectList()
+	{
+		return View();
+	}
 }

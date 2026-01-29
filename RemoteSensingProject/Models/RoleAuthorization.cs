@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -39,7 +39,7 @@ namespace RemoteSensingProject.Models
         {
             throw new NotImplementedException();
         }
-       
+
         public override string[] GetRolesForUser(string username)
         {
             try
@@ -74,11 +74,11 @@ namespace RemoteSensingProject.Models
                     throw new NotImplementedException();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
-           
+
         }
 
         public override string[] GetUsersInRole(string roleName)

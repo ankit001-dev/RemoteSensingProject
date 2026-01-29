@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["ProjectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     int i = 1;
+    string searchTerm = Request.QueryString["searchTerm"];
+    string statusFilter = Request.QueryString["statusFilter"];
 }
 
 <style>
@@ -29,41 +31,7 @@
         color: white !important;
         justify-content: center;
     }
-    .dt-button {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-        border-radius: 4px !important;
-        border: none !important;
-        cursor: pointer !important;
-        margin-right: 5px !important;
-        display: inline-block !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-        .dt-button.buttons-excel {
-            background-color: #3b9f42 !important; /* Excel-like green */
-            color: white !important;
-        }
-
-            .dt-button.buttons-excel:hover {
-                background-color: #2a7c2f !important; /* Darker green on hover */
-            }
-
-        /* PDF button (Red) */
-        .dt-button.buttons-pdf {
-            background-color: #e74c3c !important; /* PDF-like red */
-            color: white !important;
-        }
-
-            .dt-button.buttons-pdf:hover {
-                background-color: #c0392b !important; /* Darker red on hover */
-            }
-
-    /* Additional styling for the buttons wrapper */
-    .dataTables_wrapper .dt-buttons {
-        margin-bottom: 10px !important;
-    }
+   
 </style>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <form class="forms-sample">
@@ -90,6 +58,10 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <div>
+                    <a href="/employee/ProjectReport?type=excel&searchTerm=@searchTerm&statusFilter=@statusFilter"><button class="btn btn-success">Excel</button></a>
+                    <a href="/employee/ProjectReport?type=pdf&searchTerm=@searchTerm&statusFilter=@statusFilter"><button class="btn btn-danger">Pdf</button></a>
+                </div>
                 <div class="table-responsive">
                     <table class="table" id="AlProjectReport">
                         <thead>
@@ -97,6 +69,7 @@
                                 <th>Sr. No.</th>
                                 <th>Project Code</th>
                                 <th>Project Name</th>
+                                <th>Division</th>
                                 <th>Assign Date</th>
                                 <th>Start Date</th>
                                 <th>Completion Date</th>
@@ -114,6 +87,7 @@
                                         <td>@i</td>
                                         <td>@item.projectCode</td>
                                         <td>@item.ProjectTitle</td>
+                                        <td>@item.devisionName</td>
                                         <td>@item.AssignDateString</td>
                                         <td>@item.StartDateString</td>
                                         <td>@item.CompletionDatestring</td>
@@ -167,13 +141,7 @@
 
 <script>
     $(document).ready(function () {
-        $("#AlProjectReport").DataTable({
-            layout: {
-                topStart: {
-                    buttons: ['excel', 'pdf']
-                }
-            }
-        });
+        $("#AlProjectReport").DataTable();
     });
 
     // Search by text

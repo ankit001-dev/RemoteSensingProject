@@ -404,7 +404,6 @@
     }
 
 </script>  
-
 <script>
 
     $("#availbilityOfFund").change(function () {
@@ -419,12 +418,21 @@
             type: 'get',
             data: { projectId: prId },
             success: function (res) {
-                $("#availbilityOfFund").empty();
-                let option = `<option selected value="">Select Head</option>`;
-                $.each(res.data, function (i, d) {
-                    option += `<option value="${d.Id}" data-availabelFund="${d.ProjectAmount - d.ApproveAmount}">${d.ProjectHeads}</option>`;
-                })
+                    $("#availbilityOfFund").empty();
+                if (res.status) {
+                    let option = `<option selected value="">Select Head</option>`;
+                    $.each(res.data, function (i, d) {
+                        option += `<option value="${d.Id}" data-availabelFund="${d.ProjectAmount - d.ApproveAmount}">${d.ProjectHeads}</option>`;
+                    })
                     $("#availbilityOfFund").append(option);
+                } else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: "This project haven't any budget heads, First updat the project.",
+                        icon: "info"
+                    })
+                }
+                
             },
             error: function (xhr) {
                 Swal.fire({
