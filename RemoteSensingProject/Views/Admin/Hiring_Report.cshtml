@@ -6,6 +6,9 @@
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
+    string managerId = Request.QueryString["managerFilter"];
+    string projectId = Request.QueryString["projectFilter"];
+    string statusFilter = Request.QueryString["statusFilter"];
 }
 <link href="~/assets/css/hiringVehicleStyle.css" rel="stylesheet" />
 <style>
@@ -26,49 +29,6 @@
     }
 </style>
 
-<!--Style button DataTable-->
-<style>
-    .dt-button {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-        border-radius: 4px !important;
-        border: none !important;
-        cursor: pointer !important;
-        margin-right: 5px !important;
-        display: inline-block !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-        .dt-button.buttons-excel {
-            background-color: #3b9f42 !important; /* Excel-like green */
-            color: white !important;
-        }
-
-            .dt-button.buttons-excel:hover {
-                background-color: #2a7c2f !important; /* Darker green on hover */
-            }
-
-        /* PDF button (Red) */
-        .dt-button.buttons-pdf {
-            background-color: #e74c3c !important; /* PDF-like red */
-            color: white !important;
-        }
-
-            .dt-button.buttons-pdf:hover {
-                background-color: #c0392b !important; /* Darker red on hover */
-            }
-
-    /* Additional styling for the buttons wrapper */
-    .dataTables_wrapper .dt-buttons {
-        margin-bottom: 10px !important;
-    }
-
-    .dt-search {
-        float: right;
-        margin-bottom: 5px !important;
-    }
-</style>
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -117,7 +77,12 @@
 <div class="row mx-0 px-0">
     <div class="col-sm-12">
         <div class="card ">
+           
             <div class="card-body">
+                <div>
+                    <a href="/admin/DownloadHiringVehicleReport?type=excel&managerFilter=@managerId&projectFilter=@projectId&statusFilter=@statusFilter"><button class="btn btn-success">Excel</button></a>
+                    <a href="/admin/DownloadHiringVehicleReport?type=pdf&managerFilter=@managerId&projectFilter=@projectId&statusFilter=@statusFilter"><button class="btn btn-danger">Pdf</button></a>
+                </div>
                 <table class="table" id="tableHiring">
                     <thead>
                         <tr>
@@ -282,30 +247,7 @@
 <script>
 
     $(document).ready(function () {
-        $("#tableHiring").DataTable({
-            layout: {
-                topStart: {
-                    buttons: ['excel', 'pdf']
-                }
-            }
-        })
-        ////Filter
-        //$("#Filter1").on("change", function () {
-        //    let filter = $(this).val();
-        //    console.log(filter)
-        //    let table = $("#tableHiring").DataTable()
-        //    table.column(1).search(filter).draw()
-        //})
-        //$("#Filter2").on("change", function () {
-        //    let filter = $(this).val();
-        //    let table = $("#tableHiring").DataTable()
-        //    table.column(2).search(filter).draw()
-        //})
-        //$("#Filter3").on("change", function () {
-        //    let filter = $(this).val();
-        //    let table = $("#tableHiring").DataTable()
-        //    table.column(11).search(filter).draw()
-        //})
+        $("#tableHiring").DataTable()
         $("#printBtn").click(function () {
 
             Swal.fire({

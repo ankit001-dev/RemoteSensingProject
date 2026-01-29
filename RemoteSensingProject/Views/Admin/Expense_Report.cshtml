@@ -27,41 +27,7 @@
         color: white !important;
         justify-content: center;
     }
-    .dt-button {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-        border-radius: 4px !important;
-        border: none !important;
-        cursor: pointer !important;
-        margin-right: 5px !important;
-        display: inline-block !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-    .dt-button.buttons-excel {
-        background-color: #3b9f42 !important; /* Excel-like green */
-        color: white !important;
-    }
-
-    .dt-button.buttons-excel:hover {
-        background-color: #2a7c2f !important; /* Darker green on hover */
-    }
-
-        /* PDF button (Red) */
-     .dt-button.buttons-pdf {
-         background-color: #e74c3c !important; /* PDF-like red */
-         color: white !important;
-     }
-
-            .dt-button.buttons-pdf:hover {
-                background-color: #c0392b !important; /* Darker red on hover */
-            }
-
-    /* Additional styling for the buttons wrapper */
-    .dataTables_wrapper .dt-buttons {
-        margin-bottom: 10px !important;
-    }
+    
     .dt-search{
         float:right;
         margin-bottom:5px !important;
@@ -106,6 +72,10 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <div class="d-flex">
+                    <a id="excelDownloadBtn" href="/admin/DownloadExpencesReport?type=excel"><button class="btn btn-success">Excel</button></a>
+                    <a id="pdfDownloadBtn" href="/admin/DownloadExpencesReport?type=pdf"><button class="btn btn-danger">Pdf</button></a>
+                </div>
                 <div class="table-responsive">
                     <table id="ExpenceTable">
                         <thead>
@@ -138,7 +108,7 @@
             var selectedValue = $(this).val();
             var expenseDetailsDiv = $('#expenseDetails');
             const projectId = $('#projectName').val();
-            debugger;
+            updateDownloadLinks();
             if (selectedValue) {
                 expenseDetailsDiv.removeAttr('hidden');
                 getExpenses(selectedValue, projectId);
@@ -147,8 +117,28 @@
             }
         });
 
+
     })
- 
+
+    function updateDownloadLinks() {
+        const projectId = $('#projectName').val() || '';
+        const headId = $('#expenseDropdown').val() || '';
+
+        const queryString =
+            `&projectId=${encodeURIComponent(projectId)}` +
+            `&headId=${encodeURIComponent(headId)}`; 
+
+        $("#excelDownloadBtn").attr(
+            "href",
+            `/admin/DownloadExpencesReport?type=excel${queryString}`
+        );
+
+        $("#pdfDownloadBtn").attr(
+            "href",
+            `/admin/DownloadExpencesReport?type=pdf${queryString}`
+        );
+    }
+
     let isApplyDataTable = false;
     function getExpenses(hId, pId) {
         $.ajax({
@@ -182,13 +172,6 @@
                         $tbody.append(row);
                     });
                 } 
-                $table.DataTable({
-                     layout: {
-                         topStart: {
-                             buttons: ['excel', 'pdf']
-                         }
-                     }
-                })
             },
             error: function (xhr) {
                 console.error("Error:", xhr.responseText);

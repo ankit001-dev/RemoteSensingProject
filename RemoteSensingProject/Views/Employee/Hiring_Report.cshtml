@@ -6,7 +6,8 @@
     var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
-
+    string projectId = Request.QueryString["projectFilter"];
+    string statusFilter = Request.QueryString["statusFilter"];
 }
 <link href="~/assets/css/hiringVehicleStyle.css" rel="stylesheet" />
 <style>
@@ -25,46 +26,7 @@
     .modal-dialog {
         margin-top: 15vh; /* You can adjust this value */
     }
-    .dt-button {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-        border-radius: 4px !important;
-        border: none !important;
-        cursor: pointer !important;
-        margin-right: 5px !important;
-        display: inline-block !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-        .dt-button.buttons-excel {
-            background-color: #3b9f42 !important; /* Excel-like green */
-            color: white !important;
-        }
-
-            .dt-button.buttons-excel:hover {
-                background-color: #2a7c2f !important; /* Darker green on hover */
-            }
-
-        /* PDF button (Red) */
-        .dt-button.buttons-pdf {
-            background-color: #e74c3c !important; /* PDF-like red */
-            color: white !important;
-        }
-
-            .dt-button.buttons-pdf:hover {
-                background-color: #c0392b !important; /* Darker red on hover */
-            }
-
-    /* Additional styling for the buttons wrapper */
-    .dataTables_wrapper .dt-buttons {
-        margin-bottom: 10px !important;
-    }
-
-    .dt-search {
-        float: right;
-        margin-bottom: 5px !important;
-    }
+   
 </style>
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
@@ -100,6 +62,10 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
+                <div>
+                    <a href="/employee/DownloadHiringVehicleReport?type=excel&projectFilter=@projectId&statusFilter=@statusFilter"><button class="btn btn-success">Excel</button></a>
+                    <a href="/employee/DownloadHiringVehicleReport?type=pdf&projectFilter=@projectId&statusFilter=@statusFilter"><button class="btn btn-danger">Pdf</button></a>
+                </div>
                 <table class="table" id="tableHiring">
                     <thead>
                         <tr>
@@ -263,13 +229,7 @@
 <script>
 
     $(document).ready(function () {
-        $("#tableHiring").DataTable({
-            layout: {
-                topStart: {
-                    buttons: ['excel', 'pdf']
-                }
-            }
-        })
+        $("#tableHiring").DataTable()
         //Filter
         $("#Filter2").on("change", function () {
             let filter = $(this).val();

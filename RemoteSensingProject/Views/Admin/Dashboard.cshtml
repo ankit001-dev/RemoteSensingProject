@@ -130,7 +130,7 @@
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline">
-                                        <a href="/Admin/ViewExpenditureAmount?req=expenditure">
+                                        <a href="/Admin/ViewExpenditureAmount?statusFilter=expenditure">
                                             <p class="text-success w-100 py-0">
                                                 <span>
                                                     <span class="text-dark">Expenditure : </span> ₹
@@ -140,7 +140,7 @@
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline">
-                                        <a href="/Admin/ViewExpenditureAmount?req=remaining">
+                                        <a href="/Admin/ViewExpenditureAmount?statusFilter=remaining">
                                             <p class="text-success w-100 py-0">
                                                 <span>
                                                     <span class="text-dark">Remaining : </span>₹
@@ -173,12 +173,12 @@
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/All_Projects?req=Internal">
+                                        <a href="/Admin/All_Projects?statusFilter=Internal">
                                             <p class="text-success w-100"><span><span class="text-dark">Internal Project's :  </span> @data.TotalInternalProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/All_Projects?req=External">
+                                        <a href="/Admin/All_Projects?statusFilter=External">
                                             <p class="text-success w-100"><span><span class="text-dark">External Project's :  </span> @data.TotalExternalProject</span></p>
                                         </a>
                                     </div>
@@ -204,17 +204,17 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/All_Projects?req=completed">
+                                        <a href="/admin/All_Projects?statusFilter=Complete">
                                             <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@data.TotalCompleteProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/All_Projects?req=Delay">
+                                        <a href="/admin/All_Projects?statusFilter=delay">
                                             <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @data.TotalDelayproject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/All_Projects?req=ongoing">
+                                        <a href="/admin/All_Projects?statusFilter=Ongoing">
                                             <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @data.TotalOngoingProject</span></p>
                                         </a>
                                     </div>
@@ -245,12 +245,12 @@
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/Meeting_Report?req=admin">
+                                        <a href="/Admin/Meeting_Report?statusFilter=admin">
                                             <p class="text-success w-100"><span><span class="text-dark">Admin :  </span> @data.TotalAdminMeetings</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/Meeting_Report?req=projectmanager">
+                                        <a href="/Admin/Meeting_Report?statusFilter=projectmanager">
                                             <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @data.TotalProjectManagerMeetings</span></p>
                                         </a>
                                     </div>
@@ -312,7 +312,7 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/reimbursement_report?req=approved">
+                                        <a href="/admin/reimbursement_report?statusFilter=approved">
                                             <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalReinbursementapprovedRequest</span></p>
                                         </a>
                                     </div>
@@ -322,7 +322,7 @@
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/reimbursement_report?req=rejected">
+                                        <a href="/admin/reimbursement_report?statusFilter=rejected">
                                             <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalReinbursementRejectRequest</span></p>
                                         </a>
                                     </div>
@@ -348,7 +348,7 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/TourProposal_Report?req=approved">
+                                        <a href="/admin/TourProposal_Report?statusFilter=approved">
                                             <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalTourProposalApprReque</span></p>
                                         </a>
                                     </div>
@@ -358,7 +358,7 @@
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/TourProposal_Report?req=rejected">
+                                        <a href="/admin/TourProposal_Report?statusFilter=rejected">
                                             <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalTourProposalRejectReque</span></p>
                                         </a>
                                     </div>
@@ -384,7 +384,7 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/hiring_report?req=approved">
+                                        <a href="/admin/hiring_report?statusFilter=approved">
                                             <p class="text-success w-100"><span><span class="text-dark">Approved  :  </span> @data.totalApproveHiringVehicle</span></p>
                                         </a>
                                     </div>
@@ -394,7 +394,7 @@
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/hiring_report?req=rejected">
+                                        <a href="/admin/hiring_report?statusFilter=rejected">
                                             <p class="text-success w-100"><span><span class="text-dark">Rejected  :  </span> @data.totalRejectHiringVehicle</span></p>
                                         </a>
                                     </div>
@@ -1066,9 +1066,9 @@
                     if (clickedLabel === 'Total') {
                         window.location.href = '/Admin/All_Projects';  // Redirect to the page for total projects
                     } else if (clickedLabel === 'Internal') {
-                        window.location.href = '/Admin/All_Projects?req=Internal';  // Redirect to the page for internal projects
+                        window.location.href = '/Admin/All_Projects?statusFilter=Internal';  // Redirect to the page for internal projects
                     } else if (clickedLabel === 'External') {
-                        window.location.href = '/Admin/All_Projects?req=External';  // Redirect to the page for external projects
+                        window.location.href = '/Admin/All_Projects?statusFilter=External';  // Redirect to the page for external projects
                     }
                 }
             }

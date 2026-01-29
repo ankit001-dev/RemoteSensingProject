@@ -1,3 +1,257 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c1fb5f313b06636a94ea66d8f0116100ce9b81d5a1f695e9a2d2a1366aea3116
-size 7620
+﻿﻿@{
+    ViewBag.Title = "Support";
+    Layout = null;
+
+    if (User.IsInRole("Admin"))
+    {
+        Layout = "~/Views/Shared/_adminLayout.cshtml";
+    }
+    else if (User.IsInRole("subOrdinate"))
+    {
+        Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
+    }
+    else if (User.IsInRole("accounts"))
+    {
+        Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    }
+    else if (User.IsInRole("projectManager"))
+    {
+        Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    }
+}
+<style>
+    .contact-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .contact-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+    .contact-card h2 {
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 30px;
+        text-align: center;
+        font-weight: 600;
+    }
+    .card-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 20px;
+    }
+
+        .card-icon.tech {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-icon.management {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+    .contact-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+    }
+
+        .contact-info:last-of-type {
+            border-bottom: none;
+        }
+
+        .contact-info svg {
+            font-size: 1.3rem;
+            color: #667eea;
+            width: 30px;
+            text-align: center;
+            margin-right: 15px;
+        }
+
+        .contact-info.management i {
+            color: #f5576c;
+        }
+
+    .contact-info-content h3 {
+        font-size: 0.85rem;
+        color: #999;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+
+    .contact-info-content p {
+        font-size: 1rem;
+        color: #333;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .download-section {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+        .download-section h3 {
+            text-align: center;
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+    .download-buttons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        justify-items: center;
+    }
+
+    .download-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px 30px;
+        border-radius: 10px;
+        border: none;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        text-decoration: none;
+        color: white;
+    }
+
+    .download-btn-android {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .download-btn-ios {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .download-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .download-btn i {
+        font-size: 1.5rem;
+    }
+</style>
+<div class="container">
+    <div class="header">
+        <h1>Support Team</h1>
+        <p>Get in touch with our dedicated team members</p>
+    </div>
+
+    <div class="row d-flex justify-content-between">
+        <!-- Tech Head Card -->
+        <div class="col-sm-4 contact-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-icon tech">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                    <h2 class="text-center">Tech Head</h2>
+
+                    <div class="contact-info">
+                        <i class="link-icon" data-feather="user"></i>
+                        <div class="contact-info-content">
+                            <h3>Name</h3>
+                            <p>Priyanka Maindolia</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info">
+                        <i class="link-icon" data-feather="inbox"></i>
+                        <div class="contact-info-content">
+                            <h3>Email</h3>
+                            <p>priyanka@macreel.co.in</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info">
+                        <i class="link-icon" data-feather="phone-call"></i>
+                        <div class="contact-info-content">
+                            <h3>Contact Number</h3>
+                            <p>+91 836864 8746</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+
+        <!-- Management Head Card -->
+        <div class="col-sm-4 contact-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-icon management">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+                    <h2 class="text-center">Management Head</h2>
+
+                    <div class="contact-info">
+                        <i class="link-icon" data-feather="user"></i>
+                        <div class="contact-info-content">
+                            <h3>Name</h3>
+                            <p>Mr. Sushil Chandra</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info">
+                        <i class="link-icon" data-feather="inbox"></i>
+                        <div class="contact-info-content">
+                            <h3>Email</h3>
+                            <p>schandra.77653@gov.in</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-info">
+                        <i class="link-icon" data-feather="phone-call"></i>
+                        <div class="contact-info-content">
+                            <h3>Contact Number</h3>
+                            <p>+91 94504 54522</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="col-sm-3">
+            <div class="card">
+                <div class="card-body  download-section">
+                    <h3 class="text-center">Download App</h3>
+                    <div class="download-buttons">
+                        <a href="https://play.google.com/store/apps/details?id=com.remotesensing&hl=en" class="download-btn download-btn-android">
+                            <i class="fab fa-android"></i>
+                            <span>Android APK</span>
+                        </a>
+                        <a href="https://apps.apple.com/in/app/remote-sensing/id6753871132" class="download-btn download-btn-ios">
+                            <i class="fab fa-apple"></i>
+                            <span>iOS APK</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- Download Section -->
+

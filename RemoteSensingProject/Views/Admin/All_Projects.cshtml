@@ -99,6 +99,10 @@
     <div class="col-md-12 p-0 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <div>
+                    <a href="/admin/ProjectReport?type=Excel"><button class="btn btn-success">Excel</button></a>
+                    <a href="/admin/ProjectReport?type=pdf"><button class="btn btn-danger">Pdf</button></a>
+</div>
                 <div class="table-responsive">
                     <table class="table" id="AllProjectList">
                         <thead>
@@ -107,6 +111,7 @@
                                 <th>Project Code</th>
                                 <th>Project Name</th>
                                 <th>Project Manager</th>
+                                <th>Division</th>
                                 <th>Assign Date</th>
                                 <th>Start Date</th>
                                 <th>Completion Date</th>
@@ -129,6 +134,7 @@
                                         </a>
                                     </td>
                                     <td>@item.ProjectManager</td>
+                                    <td>@item.devisionName</td>
                                     <td>@item.AssignDateString</td>
                                     <td>@item.StartDateString</td>
                                     <td>@item.CompletionDatestring</td>
@@ -358,84 +364,22 @@
                 console.log(res);
                 if (res.status) {
 
-                    let hrSection = "";
-
-                    if (res.data.hr && res.data.hr.length > 0) {
-
-                        let hrItems = "";
-
-                        $.each(res.data.hr, function (i, h) {
-                            hrItems += `
-            <div class="col-sm-4 mb-2">
-                <div class="border p-2 rounded">
-
-                   
-                    <span>Designation Name : ${h.designationName}</span><br/>
-                    <span>Designation Count : ${h.designationCount}</span>
-                </div>
-            </div>
-        `
-                        });
-
-                        hrSection = `
-        <div class="row mt-3">
-            <label class="form-label fw-bolder">Human Resources</label>
-            ${hrItems}
-        </div>
-    `
-  }
-
-                    //--------------------------------
-
-                    let budgethead = "";
-
-                    if (res.data.budgets && res.data.budgets.length > 0) {
-
-                        let budgetsItems = "";
-
-                        $.each(res.data.budgets, function (i, h) {
-                            console.log("my data "+ h)
-                            budgetsItems += `
-            <div class="col-sm-4 mb-2">
-                <div class="border p-2 rounded">
-                   
-                     <span class="fw-bold">heads Name : ${h.budgetheadsname}</span><br/>
-                    <span>heads Amount : ${h.ProjectAmount}</span>
-                </div>
-            </div>
-        `;
-                        });
-
-                        budgethead = `
-        <div class="row mt-3">
-            <label class="form-label fw-bolder">Budget Head</label>
-            ${budgetsItems}
-        </div>
-        <hr/>
-    `;
-                    }
-
-
-                    //--------------------------------
-
                     let stages = `<div class="stageSection">`;
                     if (res.data.pm.ProjectStage) {
                         if (res.data.stages.length > 0) {
                             $.each(res.data.stages, function (i, d) {
-                                stages += `<label class="form-label"><a href="stage2">Stage ${i + 1}</a></label>
+                                stages += `<label class="form-label"><a href="stage2" data-title="Stage">Stage ${i + 1}</a></label>
 <div class="row">
     <div class="col-sm-4 mb-2">
         <label class="form-label fw-bolder">Key</label>
         <br />
         <span>${d.KeyPoint}</span>
     </div>
-
     <div class="col-sm-4 mb-2">
         <label class="form-label fw-bolder">Pdf Document</label>
         <br />
        <a href="${d.Document_Url}"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
     </div>
-
     <div class="col-sm-4 mb-2">
         <label class="form-label fw-bolder">Completion Date</label>
         <br />
@@ -450,23 +394,23 @@
                     let ExternalProject = ""
                     if (res.data.pm.ProjectType === "External") {
                         ExternalProject = `<div class="row">
-    <div class="col-sm-4 mb-2">
-        <label class="form-label fw-bolder">Department Name</label>
-        <br />
-        <span>${res.data.pm.ProjectDepartment}</span>
-    </div>
-    <div class="col-sm-4 mb-2">
-        <label class="form-label fw-bolder">Contact Person</label>
-        <br />
-        <span>${res.data.pm.ContactPerson}</span>
-    </div>
-    <div class="col-sm-4 mb-2">
-        <label class="form-label fw-bolder">Address</label>
-        <br />
-        <span>${res.data.pm.Address}</span>
-    </div>
-    <hr />
-</div>`;
+                            <div class="col-sm-4 mb-2">
+                                <label class="form-label fw-bolder">Department Name</label>
+                                <br />
+                                <span>${res.data.pm.ProjectDepartment}</span>
+                            </div>
+                            <div class="col-sm-4 mb-2">
+                                <label class="form-label fw-bolder">Contact Person</label>
+                                <br />
+                                <span>${res.data.pm.ContactPerson}</span>
+                            </div>
+                            <div class="col-sm-4 mb-2">
+                                <label class="form-label fw-bolder">Address</label>
+                                <br />
+                                <span>${res.data.pm.Address}</span>
+                            </div>
+                            <hr />
+                        </div>`;
                     }
 
                     let subOrdinates = "";
@@ -487,14 +431,20 @@
          <span>${res.data.pm.ProjectManager}</span>
      </div>
      <div class="col-sm-4 mb-2">
-         <label class="form-label fw-bolder">Assign Date</label>
+         <label class="form-label fw-bolder">Division</label>
          <br />
-         <span>${res.data.pm.AssignDateString}</span>
+         <span>${res.data.pm.devisionName}</span>
      </div>
 
      <hr />
  </div>
  <div class="row">
+     <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Assign Date</label>
+        <br />
+        <span>${res.data.pm.AssignDateString}</span>
+    </div>
+
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Start Date</label>
          <br />
@@ -505,16 +455,16 @@
          <br />
          <span>${res.data.pm.CompletionDatestring}</span>
      </div>
-     <div class="col-sm-4 mb-2">
-         <label class="form-label fw-bolder">Project Type</label>
-         <br />
-         <span>${res.data.pm.ProjectType}</span>
-     </div>
-
      <hr />
  </div>
  ${res.data.pm.ProjectType === "External" ? ExternalProject : ""}
  <div class="row">
+     <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Project Type</label>
+        <br />
+        <span>${res.data.pm.ProjectType === "External" ? "Externally Funded Project" : "Internal (Non Salary Head from Government of U.P.)"}</span>
+    </div>
+
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Budget</label>
          <br />
@@ -526,23 +476,20 @@
              ${subOrdinates}
          </ul>
      </div>
-     <div class="col-sm-4 mb-2">
-         <label class="form-label fw-bolder">Stage</label>
-         <br />
-         <span>${res.data.pm.ProjectStage ? "Yes" : "No"}</span>
-     </div>
+ 
      <hr />
  </div>
  ${res.data.pm.ProjectStage ? stages : ""}
-
- <div class="row">
+ 
+     <div class="row">
+         <div class="col-sm-4 mb-2">
+        <label class="form-label fw-bolder">Stage</label>
+        <br />
+        <span>${res.data.pm.ProjectStage ? "Yes" : "No"}</span>
+    </div>
          <label class="form-label fw-bolder">Description</label>
          <p>${res.data.pm.ProjectDescription}</p>
- </div>
- ${hrSection}
- ${budgethead}` ;
-
-  
+     </div>` ;
 
                     function convertToDate(timestamp) {
                         const parsedTimestamp = parseInt(timestamp.match(/\d+/)[0], 10);
@@ -568,11 +515,6 @@
 
         $('#AllProjectList').DataTable({
             deferRender: false,
-            layout: {
-                topStart: {
-                    buttons: ['excel', 'pdf']
-                }
-            },
             drawCallback: function () {
                 feather.replace();
             }

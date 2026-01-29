@@ -1,3 +1,174 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:37bd654c5d8c998c657a0a3c3bf10827c773814554a1aab51e899c1ce7950158
-size 4604
+﻿
+@{
+    ViewBag.Title = "ProjectList";
+    Layout = "~/Views/Shared/_cmDashboard.cshtml";
+    string type = HttpContext.Current.Request.QueryString["type"];
+}
+<link href="~/assets/datatable/datatables.css" rel="stylesheet" />
+<style>
+    .card-body {
+        overflow: hidden;
+    }
+
+    /* 🔥 THIS WRAPPER CONTROLS SCROLL */
+    .table-scroll {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table.dataTable thead th {
+        background: #029e9d;
+        color: #fff;
+        text-align: center;
+    }
+
+    #projectTable td {
+        text-align: center;
+        vertical-align: middle;
+        white-space: normal; /* text wrap allowed */
+    }
+
+    #projectTable th,
+    #projectTable td {
+        font-size: 11px;
+    }
+
+    .design {
+        width: 50px;
+    }
+</style>
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="d-flex justify-content-between">
+
+            <h5 class="mb-3 fw-bold">All Project Lists</h5>
+            <select class="form-select-sm" id="filterByYear">
+                <option value="value">Filter by year</option>
+                @{
+                    for (int i = DateTime.Now.Year; i >= 2020; i--)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <hr />
+
+        <!-- 🔥 ONLY THIS WRAPPER -->
+        <div class="table-scroll">
+            <table id="projectTable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>SN.</th>
+                        <th>Project Name</th>
+                        <th>Start Year</th>
+                        <th>End Date</th>
+                        <th>Remark</th>
+
+                    </tr>
+                </thead>
+
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+<script src="~/assets/datatable/datatables.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+<script>
+       let projectTable;
+
+    $(document).ready(function () {
+        projectTable = $('#projectTable').DataTable({
+            processing: true,
+            paging: true,
+            searching: true,
+            ordering: true,
+            destroy: true
+        });
+
+        LoadTableData(null);
+    });
+
+        function LoadTableData(year) {
+        Swal.fire({
+            title: "Please wait !",
+            text: "Fetching data....",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        const type = "@type";
+
+        $.ajax({
+            url: `/api/GetCMDashboard`,
+            type: "get",
+            data: { startYear: year, statusFilter: type },
+            success: function (res) {
+                Swal.close();
+                projectTable.clear();
+
+                if (res.status && res.data.length > 0) {
+                    res.data.forEach((i, index) => {
+                        projectTable.row.add([
+                            index + 1,
+                            i.ProjectTitile,
+                            i.StartYear,
+                            parseMvcDate(i.EndDate),
+                            i.Remark
+                        ]);
+                    });
+
+                    projectTable.draw();
+                } else {
+                    Swal.fire("Sorry!", "Data is not available...", "info");
+                }
+            },
+            error: function () {
+                Swal.close();
+            }
+        });
+    }
+
+             function parseMvcDate(value) {
+        if (!value) return "";
+
+        let datePart = "";
+
+        // /Date(1711843200000)/
+        if (value.includes("Date(")) {
+            const timestamp = Number(value.match(/\d+/)[0]);
+            const d = new Date(timestamp);
+            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+        }
+
+        // ISO: 2025-03-31T00:00:00
+        if (value.includes("T")) {
+            datePart = value.split("T")[0];
+        }
+        // SQL: 2025-03-31 00:00:00
+        else if (value.includes(" ")) {
+            datePart = value.split(" ")[0];
+        }
+        // Already date only
+        else {
+            datePart = value;
+        }
+
+        const [yyyy, mm, dd] = datePart.split("-");
+        return `${dd}/${mm}/${yyyy}`;
+    }
+
+
+    $("#filterByYear").on("change", function(){
+        let data = $(this).val()
+        LoadTableData(data)
+    })
+</script>

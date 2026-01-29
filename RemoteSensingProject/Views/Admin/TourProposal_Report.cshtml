@@ -5,46 +5,14 @@
     var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.Accounts.main.tourProposal>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
+    string managerId = Request.QueryString["managerFilter"];
+    string projectId = Request.QueryString["projectFilter"];
+    string statusFiilter = Request.QueryString["statusFilter"];
 }
 <link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
 <!--Style button DataTable-->
 <style>
-    .dt-button {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-        border-radius: 4px !important;
-        border: none !important;
-        cursor: pointer !important;
-        margin-right: 5px !important;
-        display: inline-block !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-        .dt-button.buttons-excel {
-            background-color: #3b9f42 !important; /* Excel-like green */
-            color: white !important;
-        }
-
-            .dt-button.buttons-excel:hover {
-                background-color: #2a7c2f !important; /* Darker green on hover */
-            }
-
-        /* PDF button (Red) */
-        .dt-button.buttons-pdf {
-            background-color: #e74c3c !important; /* PDF-like red */
-            color: white !important;
-        }
-
-            .dt-button.buttons-pdf:hover {
-                background-color: #c0392b !important; /* Darker red on hover */
-            }
-
-    /* Additional styling for the buttons wrapper */
-    .dataTables_wrapper .dt-buttons {
-        margin-bottom: 10px !important;
-    }
-
+   
     .dt-search {
         float: right;
         margin-bottom: 5px !important;
@@ -100,6 +68,10 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <div class="d-flex">
+                    <a href="/admin/DownloadTourProposalReport?type=excel&managerFilter=@managerId&projectFilter=@projectId&statusFilter=@statusFiilter"><button class="btn btn-success">Excel</button></a>
+                    <a href="/admin/DownloadTourProposalReport?type=pdf&managerFilter=@managerId&projectFilter=@projectId&statusFilter=@statusFiilter"><button class="btn btn-danger">Pdf</button></a>
+                </div>
                 <div class="table-responsive">
                     <table id="tableTour" class="table">
                         <thead>
@@ -291,13 +263,7 @@
 
 <script>
     $(document).ready(function () {
-        $("#tableTour").DataTable({
-            layout: {
-                topStart: {
-                    buttons: ['excel', 'pdf']
-                }
-            }
-        })
+        $("#tableTour").DataTable()
 
         debugger
         $(".action").on("click", function () {

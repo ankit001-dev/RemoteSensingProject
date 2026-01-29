@@ -1,3272 +1,3651 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Office2010.Excel;
+// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
+// for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
+// RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+// RemoteSensingProject.Models.Admin.AdminServices
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Npgsql;
 using NpgsqlTypes;
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.MailService;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web.UI.WebControls;
-using static RemoteSensingProject.Models.Admin.main;
-using static RemoteSensingProject.Models.ApiCommon;
-
 
 namespace RemoteSensingProject.Models.Admin
 {
-    public class AdminServices : DataFactory
-    {
+	public class AdminServices : DataFactory
+	{
+		private mail _mail = new mail();
+
+		public bool InsertDesignation(main.CommonResponse cr)
+		{
+			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0013: Expected O, but got Unknown
+			//IL_00c7: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00cc: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00d3: Expected O, but got Unknown
+			//IL_00d4: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00df: Expected O, but got Unknown
+			//IL_00e5: Expected O, but got Unknown
+			try
+			{
+				NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("v_id", (cr.id == 0) ? DBNull.Value : ((object)cr.id));
+					cmd.Parameters.AddWithValue("v_designationname", ((object)cr.name) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("v_status", (object)true);
+					cmd.Parameters.AddWithValue("v_devisionname", (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("v_action", (object)((cr.id > 0) ? "UpdateDesignation" : "InsertDesignation"));
+					NpgsqlParameterCollection parameters = cmd.Parameters;
+					NpgsqlParameter val = new NpgsqlParameter("v_rc", (NpgsqlDbType)23);
+					((DbParameter)val).Direction = ParameterDirection.InputOutput;
+					((DbParameter)val).Value = DBNull.Value;
+					parameters.Add(val);
+					((DbConnection)(object)con).Open();
+					((DbCommand)(object)cmd).ExecuteNonQuery();
+					return true;
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+			}
+		}
+
+		public bool InsertDivison(main.CommonResponse cr)
+		{
+			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0013: Expected O, but got Unknown
+			//IL_00c7: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00cc: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00d3: Expected O, but got Unknown
+			//IL_00d4: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00df: Expected O, but got Unknown
+			//IL_00e5: Expected O, but got Unknown
+			try
+			{
+				NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("v_id", (cr.id == 0) ? DBNull.Value : ((object)cr.id));
+					cmd.Parameters.AddWithValue("v_designationname", (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("v_status", (object)true);
+					cmd.Parameters.AddWithValue("v_devisionname", ((object)cr.name) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("v_action", (object)((cr.id > 0) ? "UpdateDevision" : "InsertDevision"));
+					NpgsqlParameterCollection parameters = cmd.Parameters;
+					NpgsqlParameter val = new NpgsqlParameter("v_rc", (NpgsqlDbType)23);
+					((DbParameter)val).Direction = ParameterDirection.InputOutput;
+					((DbParameter)val).Value = DBNull.Value;
+					parameters.Add(val);
+					((DbConnection)(object)con).Open();
+					((DbCommand)(object)cmd).ExecuteNonQuery();
+					return true;
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.CommonResponse> ListDivison()
+		{
+			//IL_0013: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0019: Expected O, but got Unknown
+			try
+			{
+				List<main.CommonResponse> list = new List<main.CommonResponse>();
+				NpgsqlCommand cmd = new NpgsqlCommand("select * FROM fn_get_employee_category(@action)", con);
+				try
+				{
+					cmd.Parameters.AddWithValue("@action", (object)"GetAllDevision");
+					((DbConnection)(object)con).Open();
+					NpgsqlDataReader rd = cmd.ExecuteReader();
+					if (((DbDataReader)(object)rd).HasRows)
+					{
+						while (((DbDataReader)(object)rd).Read())
+						{
+							list.Add(new main.CommonResponse
+							{
+								id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+								name = ((DbDataReader)(object)rd)["name"].ToString()
+							});
+						}
+						((DbDataReader)(object)rd).Close();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.CommonResponse> ListDesgination()
+		{
+			//IL_0014: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001e: Expected O, but got Unknown
+			try
+			{
+				List<main.CommonResponse> list = new List<main.CommonResponse>();
+				cmd = new NpgsqlCommand("select * FROM fn_get_employee_category(@action)", con);
+				cmd.Parameters.AddWithValue("@action", (object)"GetAllDesignation");
+				((DbConnection)(object)con).Open();
+				NpgsqlDataReader rd = cmd.ExecuteReader();
+				if (((DbDataReader)(object)rd).HasRows)
+				{
+					while (((DbDataReader)(object)rd).Read())
+					{
+						list.Add(new main.CommonResponse
+						{
+							id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+							name = ((DbDataReader)(object)rd)["name"].ToString()
+						});
+					}
+					((DbDataReader)(object)rd).Close();
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public bool removeDivison(int Id)
+		{
+			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0013: Expected O, but got Unknown
+			//IL_00a3: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00a8: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00af: Expected O, but got Unknown
+			//IL_00b0: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00bb: Expected O, but got Unknown
+			//IL_00c1: Expected O, but got Unknown
+			try
+			{
+				NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("v_id", (Id == 0) ? DBNull.Value : ((object)Id));
+					cmd.Parameters.AddWithValue("v_designationname", (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("v_status", (object)false);
+					cmd.Parameters.AddWithValue("v_devisionname", (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("v_action", (object)"deleteDevision");
+					NpgsqlParameterCollection parameters = cmd.Parameters;
+					NpgsqlParameter val = new NpgsqlParameter("v_rc", (NpgsqlDbType)23);
+					((DbParameter)val).Direction = ParameterDirection.InputOutput;
+					((DbParameter)val).Value = DBNull.Value;
+					parameters.Add(val);
+					((DbConnection)(object)con).Open();
+					((DbCommand)(object)cmd).ExecuteNonQuery();
+					return true;
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public bool removeDesgination(int Id)
+		{
+			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0013: Expected O, but got Unknown
+			//IL_00a3: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00a8: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00af: Expected O, but got Unknown
+			//IL_00b0: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00bb: Expected O, but got Unknown
+			//IL_00c1: Expected O, but got Unknown
+			try
+			{
+				NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("v_id", (Id == 0) ? DBNull.Value : ((object)Id));
+					cmd.Parameters.AddWithValue("v_designationname", (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("v_status", (object)false);
+					cmd.Parameters.AddWithValue("v_devisionname", (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("v_action", (object)"deleteDesignation");
+					NpgsqlParameterCollection parameters = cmd.Parameters;
+					NpgsqlParameter val = new NpgsqlParameter("v_rc", (NpgsqlDbType)23);
+					((DbParameter)val).Direction = ParameterDirection.InputOutput;
+					((DbParameter)val).Value = DBNull.Value;
+					parameters.Add(val);
+					((DbConnection)(object)con).Open();
+					((DbCommand)(object)cmd).ExecuteNonQuery();
+					return true;
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public bool AddEmployees(main.Employee_model emp, out string mess)
+		{
+			//IL_0016: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001b: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001d: Expected O, but got Unknown
+			//IL_001e: Expected O, but got Unknown
+			//IL_0239: Unknown result type (might be due to invalid IL or missing references)
+			//IL_023e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0245: Expected O, but got Unknown
+			//IL_0246: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0251: Expected O, but got Unknown
+			//IL_0257: Expected O, but got Unknown
+			mess = "";
+			NpgsqlCommand cmd = null;
+			try
+			{
+				NpgsqlCommand val = new NpgsqlCommand("CALL sp_adminemployees(:p_id, :p_employeecode, :p_name, :p_mobile, :p_email, :p_gender, :p_role, :p_username, :p_password, :p_devision, :p_designation, :p_profile, :p_action, :p_rc)", con);
+				cmd = val;
+				NpgsqlCommand val2 = val;
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+					Random rnd = new Random();
+					string userPassword = "";
+					if (emp.Id == 0)
+					{
+						for (int i = 0; i < 8; i++)
+						{
+							userPassword += validChars[rnd.Next(validChars.Length)];
+						}
+					}
+					string actionType = ((emp.Id > 0) ? "UpdateEmployees" : "InsertEmployees");
+					cmd.Parameters.AddWithValue("p_id", (emp.Id == 0) ? DBNull.Value : ((object)emp.Id));
+					cmd.Parameters.AddWithValue("p_employeecode", ((object)emp.EmployeeCode) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_name", ((object)emp.EmployeeName) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_mobile", (object)emp.MobileNo);
+					cmd.Parameters.AddWithValue("p_email", ((object)emp.Email) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_gender", ((object)emp.Gender) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_role", ((object)emp.EmployeeRole) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_username", ((object)emp.Email) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_password", ((object)userPassword) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_devision", (object)emp.Division);
+					cmd.Parameters.AddWithValue("p_designation", (object)emp.Designation);
+					cmd.Parameters.AddWithValue("p_profile", ((object)emp.Image_url) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_action", (object)actionType);
+					NpgsqlParameterCollection parameters = cmd.Parameters;
+					NpgsqlParameter val3 = new NpgsqlParameter("p_rc", (NpgsqlDbType)23);
+					((DbParameter)val3).Direction = ParameterDirection.InputOutput;
+					((DbParameter)val3).Value = DBNull.Value;
+					parameters.Add(val3);
+					((DbConnection)(object)con).Open();
+					((DbCommand)(object)cmd).ExecuteNonQuery();
+					if (emp.Id == 0)
+					{
+						string subject = "Login Credential";
+						string message = "<p>Your user id: <b>" + emp.Email + "</b></p><br><p>Password: <b>" + userPassword + "</b></p>";
+						_mail.SendMail(emp.EmployeeName, emp.Email, subject, message);
+					}
+					mess = "Employee Added Successfully";
+					return true;
+				}
+				finally
+				{
+					((IDisposable)val2)?.Dispose();
+				}
+			}
+			catch (Exception ex)
+			{
+				mess = ex.Message;
+				return false;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd)?.Dispose();
+			}
+		}
+
+		public bool RemoveEmployees(int id)
+		{
+			//IL_0004: Unknown result type (might be due to invalid IL or missing references)
+			//IL_000a: Expected O, but got Unknown
+			NpgsqlCommand cmd = null;
+			try
+			{
+				cmd = new NpgsqlCommand();
+				cmd.Connection = con;
+				((DbCommand)(object)cmd).CommandType = CommandType.Text;
+				((DbCommand)(object)cmd).CommandText = "CALL sp_adminemployees(p_id => @p_id, p_action => @p_action)";
+				cmd.Parameters.AddWithValue("p_action", (object)"DeleteEmployees");
+				cmd.Parameters.AddWithValue("p_id", (object)id);
+				((DbConnection)(object)con).Open();
+				((DbCommand)(object)cmd).ExecuteNonQuery();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.Employee_model> SelectEmployeeRecord(int? page = null, int? limit = null, string searchTerm = null, int? devision = null)
+		{
+			//IL_001f: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0025: Expected O, but got Unknown
+			List<main.Employee_model> empModel = new List<main.Employee_model>();
+			try
+			{
+				((DbConnection)(object)con).Open();
+				NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM fn_get_employees(@v_action,@v_id,@v_limit,@v_page,@v_searchTerm,@v_division);", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("@v_action", (object)"SelectEmployees");
+					cmd.Parameters.AddWithValue("@v_id", (object)0);
+					cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+					cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+					cmd.Parameters.AddWithValue("@v_searchTerm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+					cmd.Parameters.AddWithValue("@v_division", devision.HasValue ? ((object)devision.Value) : DBNull.Value);
+					NpgsqlDataReader record = cmd.ExecuteReader();
+					try
+					{
+						bool firstRow = true;
+						while (((DbDataReader)(object)record).Read())
+						{
+							main.Employee_model employee = new main.Employee_model
+							{
+								Id = Convert.ToInt32(((DbDataReader)(object)record)["id"]),
+								EmployeeCode = ((DbDataReader)(object)record)["employeecode"]?.ToString(),
+								EmployeeName = ((DbDataReader)(object)record)["name"]?.ToString(),
+								DevisionName = ((DbDataReader)(object)record)["devisionname"]?.ToString(),
+								Email = ((DbDataReader)(object)record)["email"]?.ToString(),
+								MobileNo = ((((DbDataReader)(object)record)["mobile"] != DBNull.Value) ? Convert.ToInt64(((DbDataReader)(object)record)["mobile"]) : 0),
+								EmployeeRole = ((((DbDataReader)(object)record)["role"] != DBNull.Value) ? ((DbDataReader)(object)record)["role"].ToString().Trim() : ""),
+								Division = ((((DbDataReader)(object)record)["devision"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)record)["devision"]) : 0),
+								DesignationName = ((DbDataReader)(object)record)["designationname"]?.ToString(),
+								Status = (((DbDataReader)(object)record)["status"] != DBNull.Value && Convert.ToBoolean(((DbDataReader)(object)record)["status"])),
+								Image_url = ((((DbDataReader)(object)record)["profile"] != DBNull.Value) ? ((DbDataReader)(object)record)["profile"].ToString() : null),
+								ActiveStatus = Convert.ToBoolean(((DbDataReader)(object)record)["activestatus"])
+							};
+							if (firstRow)
+							{
+								employee.Pagination = new ApiCommon.PaginationInfo
+								{
+									PageNumber = page.GetValueOrDefault(),
+									TotalPages = Convert.ToInt32((((DbDataReader)(object)record)["totalpages"] != DBNull.Value) ? ((DbDataReader)(object)record)["totalpages"] : ((object)0)),
+									TotalRecords = Convert.ToInt32((((DbDataReader)(object)record)["totalrecords"] != DBNull.Value) ? ((DbDataReader)(object)record)["totalrecords"] : ((object)0)),
+									PageSize = limit.GetValueOrDefault()
+								};
+								firstRow = false;
+							}
+							empModel.Add(employee);
+						}
+					}
+					finally
+					{
+						((IDisposable)record)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				return empModel;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("Error while fetching employee records", innerException);
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+			}
+		}
+
+		public main.Employee_model SelectEmployeeRecordById(int id)
+		{
+			//IL_001f: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0025: Expected O, but got Unknown
+			try
+			{
+				main.Employee_model empModel = new main.Employee_model();
+				((DbConnection)(object)con).Open();
+				NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM fn_get_employees(@v_action,@v_id);", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("@v_action", (object)"SelectEmployeesById");
+					cmd.Parameters.AddWithValue("@v_id", (object)id);
+					NpgsqlDataReader record = cmd.ExecuteReader();
+					try
+					{
+						while (((DbDataReader)(object)record).Read())
+						{
+							empModel = new main.Employee_model
+							{
+								Id = Convert.ToInt32(((DbDataReader)(object)record)["id"]),
+								EmployeeCode = ((DbDataReader)(object)record)["employeecode"]?.ToString(),
+								EmployeeName = ((DbDataReader)(object)record)["name"]?.ToString(),
+								DevisionName = ((DbDataReader)(object)record)["devisionname"]?.ToString(),
+								Email = ((DbDataReader)(object)record)["email"]?.ToString(),
+								MobileNo = ((((DbDataReader)(object)record)["mobile"] != DBNull.Value) ? Convert.ToInt64(((DbDataReader)(object)record)["mobile"]) : 0),
+								EmployeeRole = ((((DbDataReader)(object)record)["role"] != DBNull.Value) ? ((DbDataReader)(object)record)["role"].ToString().Trim() : ""),
+								Division = ((((DbDataReader)(object)record)["devision"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)record)["devision"]) : 0),
+								Designation = ((((DbDataReader)(object)record)["designation"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)record)["designation"]) : 0),
+								DesignationName = ((DbDataReader)(object)record)["designationname"]?.ToString(),
+								Gender = ((DbDataReader)(object)record)["gender"]?.ToString(),
+								Status = (((DbDataReader)(object)record)["status"] != DBNull.Value && Convert.ToBoolean(((DbDataReader)(object)record)["status"])),
+								Image_url = ((((DbDataReader)(object)record)["profile"] != DBNull.Value) ? ((DbDataReader)(object)record)["profile"].ToString() : null),
+								ActiveStatus = Convert.ToBoolean(((DbDataReader)(object)record)["activeStatus"]),
+								updationStatus = Convert.ToBoolean(((DbDataReader)(object)record)["updatestatus"])
+							};
+						}
+					}
+					finally
+					{
+						((IDisposable)record)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				return empModel;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public bool ChangeActieStatus(int id)
+		{
+			//IL_0003: Unknown result type (might be due to invalid IL or missing references)
+			//IL_000d: Expected O, but got Unknown
+			try
+			{
+				cmd = new NpgsqlCommand();
+				cmd.Connection = con;
+				((DbCommand)(object)cmd).CommandType = CommandType.Text;
+				((DbCommand)(object)cmd).CommandText = "CALL sp_adminemployees(p_id => @p_id, p_action => @p_action)";
+				cmd.Parameters.AddWithValue("p_action", (object)"ChangeActiveStatus");
+				cmd.Parameters.AddWithValue("p_id", (object)id);
+				((DbConnection)(object)con).Open();
+				((DbCommand)(object)cmd).ExecuteNonQuery();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public bool addProject(main.createProjectModel pm)
+		{
+			NpgsqlTransaction tran = null;
+			NpgsqlCommand cmd = null;
+			try
+			{
+				((DbConnection)(object)con).Open();
+				tran = con.BeginTransaction();
+				Random rand = new Random();
+				if (pm.pm.Id > 0)
+				{
+					pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
+				}
+				int ProjectManager;
+				Dictionary<string, object> projectParams = new Dictionary<string, object>
+				{
+					["p_action"] = ((pm.pm.Id <= 0) ? "insertProject" : "updateProject"),
+					["p_letterno"] = Convert.ToInt32(pm.pm.letterNo),
+					["p_title"] = pm.pm.ProjectTitle,
+					["p_assigndate"] = pm.pm.AssignDate,
+					["p_startdate"] = pm.pm.StartDate,
+					["p_completiondate"] = pm.pm.CompletionDate,
+					["p_projectmanager"] = (int.TryParse(pm.pm.ProjectManager, out ProjectManager) ? ProjectManager : 0),
+					["p_budget"] = Convert.ToDouble(pm.pm.ProjectBudget),
+					["p_description"] = pm.pm.ProjectDescription ?? string.Empty,
+					["p_projectdocument"] = pm.pm.projectDocumentUrl ?? string.Empty,
+					["p_projecttype"] = pm.pm.ProjectType ?? string.Empty,
+					["p_stage"] = pm.pm.ProjectStage,
+					["p_createdby"] = pm.pm.createdBy ?? string.Empty,
+					["p_status"] = true,
+					["p_approvestatus"] = true,
+					["p_projectcode"] = pm.projectCode,
+					["p_id"] = pm.pm.Id,
+					["p_hrcount"] = pm.pm.hrCount
+				};
+				int projectId = ExecuteProjectAction(projectParams, tran);
+				if (pm.budgets != null && pm.budgets.Count > 0)
+				{
+					foreach (main.Project_Budget item in pm.budgets)
+					{
+						if (item.HeadId > 0)
+						{
+							Dictionary<string, object> budgetParams = new Dictionary<string, object>
+							{
+								["p_action"] = ((item.Id <= 0) ? "insertProjectBudget" : "updateprojectBudget"),
+								["p_project_id"] = ((pm.pm.Id > 0) ? pm.pm.Id : projectId),
+								["p_heads"] = item.HeadId.ToString(),
+								["p_headsamount"] = item.ProjectAmount,
+								["p_projectmanager"] = item.Id
+							};
+							ExecuteProjectAction(budgetParams, tran);
+						}
+					}
+				}
+				if (pm.hr != null && pm.hr.Count > 0 && pm.pm.hrCount > 0)
+				{
+					foreach (main.HumanResources item2 in pm.hr)
+					{
+						Dictionary<string, object> hrparams = new Dictionary<string, object>
+						{
+							["p_action"] = ((item2.id <= 0) ? "insertHumanResources" : "updateHumanResources"),
+							["p_project_id"] = ((pm.pm.Id > 0) ? pm.pm.Id : projectId),
+							["p_id"] = item2.designationId,
+							["p_hrcount"] = item2.designationCount,
+							["p_projectmanager"] = item2.id
+						};
+						ExecuteProjectAction(hrparams, tran);
+					}
+				}
+				if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
+				{
+					foreach (main.Project_Statge item3 in pm.stages)
+					{
+						Dictionary<string, object> stageParams = new Dictionary<string, object>
+						{
+							["p_action"] = ((item3.Id <= 0) ? "insertProjectStage" : "updateprojectStage"),
+							["p_project_id"] = ((pm.pm.Id > 0) ? pm.pm.Id : projectId),
+							["p_id"] = item3.Id,
+							["p_keypoint"] = item3.KeyPoint,
+							["p_completiondate"] = item3.CompletionDate,
+							["p_stagedocument"] = item3.Document_Url
+						};
+						ExecuteProjectAction(stageParams, tran);
+					}
+				}
+				if (pm.pm.SubOrdinate != null && pm.pm.SubOrdinate.Length != 0)
+				{
+					int[] subOrdinate = pm.pm.SubOrdinate;
+					foreach (int subId in subOrdinate)
+					{
+						int SubProjectManager;
+						Dictionary<string, object> subParams = new Dictionary<string, object>
+						{
+							["p_action"] = ((pm.pm.Id <= 0) ? "insertSubOrdinate" : "updateSubOrdinate"),
+							["p_project_id"] = ((pm.pm.Id > 0) ? pm.pm.Id : projectId),
+							["p_id"] = subId,
+							["p_projectmanager"] = (int.TryParse(pm.pm.ProjectManager, out SubProjectManager) ? SubProjectManager : 0)
+						};
+						ExecuteProjectAction(subParams, tran);
+					}
+				}
+				if (pm.pm.ProjectType.Equals("External") && (projectId > 0 || pm.pm.Id > 0))
+				{
+					Dictionary<string, object> extParams = new Dictionary<string, object>
+					{
+						["p_action"] = ((pm.pm.Id <= 0) ? "insertExternalProject" : "updateExternalProject"),
+						["p_project_id"] = ((pm.pm.Id > 0) ? pm.pm.Id : projectId),
+						["p_departmentname"] = pm.pm.ProjectDepartment,
+						["p_contactperson"] = pm.pm.ContactPerson,
+						["p_address"] = pm.pm.Address
+					};
+					ExecuteProjectAction(extParams, tran);
+				}
+				((DbTransaction)(object)tran).Commit();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				((DbTransaction)(object)tran)?.Rollback();
+				Console.WriteLine("❌ Error: " + ex.Message);
+				return false;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd)?.Dispose();
+			}
+		}
+
+		private int ExecuteProjectAction(Dictionary<string, object> parameters, NpgsqlTransaction tran)
+		{
+			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0013: Expected O, but got Unknown
+			NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_adminaddproject(\r\n    @p_action,\r\n    @p_letterno,\r\n    @p_id,\r\n    @p_title,\r\n    @p_assigndate,\r\n    @p_startdate,\r\n    @p_completiondate,\r\n    @p_projectmanager,\r\n    @p_subordinate,\r\n    @p_budget,\r\n    @p_description,\r\n    @p_projectdocument,\r\n    @p_projecttype,\r\n    @p_stage,\r\n    @p_projectcode,\r\n    @p_approvestatus,\r\n    @p_createdby,\r\n    @p_status,\r\n    @p_heads,\r\n    @p_headsamount,\r\n    @p_keypoint,\r\n    @p_stagedocument,\r\n    @p_departmentname,\r\n    @p_contactperson,\r\n    @p_address,\r\n    @p_hrcount,\r\n    @p_project_id\r\n)", con, tran);
+			try
+			{
+				((DbCommand)(object)cmd).CommandType = CommandType.Text;
+				List<string> allParams = new List<string>
+			{
+				"p_action", "p_letterno", "p_id", "p_title", "p_assigndate", "p_startdate", "p_completiondate", "p_projectmanager", "p_subordinate", "p_budget",
+				"p_description", "p_projectdocument", "p_projecttype", "p_stage", "p_projectcode", "p_approvestatus", "p_createdby", "p_status", "p_heads", "p_headsamount",
+				"p_keypoint", "p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_hrcount", "p_project_id"
+			};
+				foreach (string paramName in allParams)
+				{
+					if (parameters.ContainsKey(paramName))
+					{
+						cmd.Parameters.AddWithValue(paramName, parameters[paramName] ?? DBNull.Value);
+					}
+					else if (paramName == "p_project_id" || paramName == "ref")
+					{
+						((DbParameter)(object)cmd.Parameters.AddWithValue(paramName, (object)0)).Direction = ParameterDirection.InputOutput;
+					}
+					else
+					{
+						cmd.Parameters.AddWithValue(paramName, (object)DBNull.Value);
+					}
+				}
+				((DbCommand)(object)cmd).ExecuteNonQuery();
+				if (((DbParameterCollection)(object)cmd.Parameters).Contains("p_project_id") && ((DbParameter)(object)cmd.Parameters["p_project_id"]).Value != DBNull.Value)
+				{
+					return Convert.ToInt32(((DbParameter)(object)cmd.Parameters["p_project_id"]).Value);
+				}
+				return 0;
+			}
+			finally
+			{
+				((IDisposable)cmd)?.Dispose();
+			}
+		}
+
+		private DateTime? GetDateSafe(IDataReader rd, string column)
+		{
+			object value = rd[column];
+			if (value == null || value == DBNull.Value)
+			{
+				return null;
+			}
+			if (value is DateTimeOffset dto)
+			{
+				return dto.DateTime;
+			}
+			if (value is DateTime dt)
+			{
+				return dt;
+			}
+			if (double.TryParse(value.ToString(), out var num))
+			{
+				return DateTime.FromOADate(num);
+			}
+			if (DateTime.TryParse(value.ToString(), out var parsed))
+			{
+				return parsed;
+			}
+			return null;
+		}
+
+		public List<main.Project_model> Project_List(int? page = null, int? limit = null, string filterType = null, string searchTerm = null, string statusFilter = null, int? projectManager = null)
+		{
+			//IL_0014: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001e: Expected O, but got Unknown
+			try
+			{
+				List<main.Project_model> list = new List<main.Project_model>();
+				cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_filterType,@v_limit,@v_page,@v_searchTerm,@v_statusFilter)", con);
+				cmd.Parameters.AddWithValue("@action", (object)"GetAllProject");
+				cmd.Parameters.AddWithValue("@v_id", (object)DBNull.Value);
+				cmd.Parameters.AddWithValue("@v_projectManager", projectManager.HasValue ? ((object)projectManager) : DBNull.Value);
+				cmd.Parameters.AddWithValue("@v_filterType", (object)(string.IsNullOrEmpty(filterType) ? ((IConvertible)DBNull.Value) : ((IConvertible)filterType)));
+				cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+				cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+				cmd.Parameters.AddWithValue("@v_searchTerm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+				cmd.Parameters.AddWithValue("@v_statusFilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
+				((DbConnection)(object)con).Open();
+				NpgsqlDataReader rd = cmd.ExecuteReader();
+				if (((DbDataReader)(object)rd).HasRows)
+				{
+					bool firstRow = true;
+					while (((DbDataReader)(object)rd).Read())
+					{
+						main.Project_model project = new main.Project_model
+						{
+							Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+							ProjectTitle = ((DbDataReader)(object)rd)["title"].ToString(),
+							AssignDate = GetDateSafe((IDataReader)rd, "assignDate"),
+							CompletionDate = GetDateSafe((IDataReader)rd, "completionDate"),
+							StartDate = GetDateSafe((IDataReader)rd, "startDate"),
+							ProjectManager = ((DbDataReader)(object)rd)["name"].ToString(),
+							Percentage = ((((DbDataReader)(object)rd)["financialStatusPercentage"] != DBNull.Value) ? ((DbDataReader)(object)rd)["financialStatusPercentage"].ToString() : ""),
+							ProjectBudget = Convert.ToDecimal((((DbDataReader)(object)rd)["budget"] != DBNull.Value) ? ((DbDataReader)(object)rd)["budget"] : ((object)0)),
+							ProjectDescription = ((DbDataReader)(object)rd)["description"].ToString(),
+							projectDocumentUrl = ((DbDataReader)(object)rd)["ProjectDocument"].ToString(),
+							ProjectType = ((DbDataReader)(object)rd)["projectType"].ToString(),
+							physicalcomplete = Math.Round(Convert.ToDecimal(((DbDataReader)(object)rd)["completionPercentage"]), 2),
+							overallPercentage = Convert.ToDecimal(((DbDataReader)(object)rd)["overallPercentage"]),
+							ProjectStage = Convert.ToBoolean(((DbDataReader)(object)rd)["stage"]),
+							ProjectStatus = Convert.ToBoolean(((DbDataReader)(object)rd)["CompleteStatus"]),
+							createdBy = ((DbDataReader)(object)rd)["createdBy"].ToString(),
+							projectCode = ((((DbDataReader)(object)rd)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)rd)["projectCode"].ToString() : "N/A"),
+							devisionName = ((DbDataReader)(object)rd)["devisionname"].ToString()
+						};
+						project.CompletionDatestring = project.CompletionDate?.ToString("dd-MM-yyyy") ?? "N/A";
+						project.AssignDateString = project.AssignDate?.ToString("dd-MM-yyyy") ?? "N/A";
+						project.StartDateString = project.StartDate?.ToString("dd-MM-yyyy") ?? "N/A";
+						if (project.ProjectStatus || project.physicalcomplete == 100m)
+						{
+							project.projectStatusLabel = "Completed";
+						}
+						else if (project.CompletionDate < DateTime.Now)
+						{
+							project.projectStatusLabel = "Delay";
+						}
+						else if (project.StartDate < DateTime.Now)
+						{
+							project.projectStatusLabel = "Ongoing";
+						}
+						else
+						{
+							project.projectStatusLabel = "Upcoming";
+						}
+						if (firstRow)
+						{
+							project.Pagination = new ApiCommon.PaginationInfo
+							{
+								PageNumber = page.GetValueOrDefault(),
+								TotalPages = Convert.ToInt32((((DbDataReader)(object)rd)["totalpages"] != DBNull.Value) ? ((DbDataReader)(object)rd)["totalpages"] : ((object)0)),
+								TotalRecords = Convert.ToInt32((((DbDataReader)(object)rd)["totalrecords"] != DBNull.Value) ? ((DbDataReader)(object)rd)["totalrecords"] : ((object)0)),
+								PageSize = limit.GetValueOrDefault()
+							};
+							firstRow = false;
+						}
+						list.Add(project);
+					}
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.Project_model> getHeadByProject(int projectId, int? page = null, int? limit = null)
+		{
+			//IL_0021: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0027: Expected O, but got Unknown
+			try
+			{
+				List<main.Project_model> _headList = new List<main.Project_model>();
+				((DbConnection)(object)con).Open();
+				main.Project_model obj = null;
+				NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@v_action,@v_id,@v_limit ,@v_page)", con);
+				cmd.Parameters.AddWithValue("@v_action", (object)"getHeadByProject");
+				cmd.Parameters.AddWithValue("@v_id", (object)projectId);
+				cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+				cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+				NpgsqlDataReader sdr = cmd.ExecuteReader();
+				if (((DbDataReader)(object)sdr).HasRows)
+				{
+					while (((DbDataReader)(object)sdr).Read())
+					{
+						obj = new main.Project_model();
+						obj.Id = Convert.ToInt32(((DbDataReader)(object)sdr)["id"]);
+						obj.heads = ((DbDataReader)(object)sdr)["title"].ToString();
+						_headList.Add(obj);
+					}
+				}
+				return _headList;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error accured", innerException);
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public main.createProjectModel GetProjectById(int id)
+		{
+			//IL_0014: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001e: Expected O, but got Unknown
+			try
+			{
+				main.createProjectModel cpm = new main.createProjectModel();
+				cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_limit,@v_page)", con);
+				cmd.Parameters.AddWithValue("@action", (object)"GetProjectById");
+				cmd.Parameters.AddWithValue("@v_id", (object)id);
+				cmd.Parameters.AddWithValue("@v_limit", (object)DBNull.Value);
+				cmd.Parameters.AddWithValue("@v_page", (object)DBNull.Value);
+				((DbConnection)(object)con).Open();
+				NpgsqlDataReader rd = cmd.ExecuteReader();
+				List<main.Project_Subordination> subList = new List<main.Project_Subordination>();
+				main.Project_model pm = new main.Project_model();
+				if (((DbDataReader)(object)rd).HasRows)
+				{
+					while (((DbDataReader)(object)rd).Read())
+					{
+						pm.Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]);
+						pm.hrCount = ((((DbDataReader)(object)rd)["hrcount"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)rd)["hrcount"]) : 0);
+						pm.ProjectTitle = ((DbDataReader)(object)rd)["title"].ToString();
+						pm.AssignDate = GetDateSafe((IDataReader)rd, "assignDate");
+						pm.CompletionDate = GetDateSafe((IDataReader)rd, "completionDate");
+						pm.StartDate = GetDateSafe((IDataReader)rd, "startDate");
+						pm.ProjectManager = ((DbDataReader)(object)rd)["name"].ToString();
+						pm.ProjectBudget = Convert.ToDecimal(((DbDataReader)(object)rd)["budget"]);
+						pm.ProjectDescription = ((DbDataReader)(object)rd)["description"].ToString();
+						pm.projectDocumentUrl = ((DbDataReader)(object)rd)["ProjectDocument"].ToString();
+						pm.ProjectType = ((DbDataReader)(object)rd)["projectType"].ToString();
+						pm.ProjectStage = Convert.ToBoolean(((DbDataReader)(object)rd)["stage"]);
+						pm.ProjectStatus = Convert.ToBoolean(((DbDataReader)(object)rd)["CompleteStatus"]);
+						pm.projectCode = ((((DbDataReader)(object)rd)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)rd)["projectCode"].ToString() : "N/A");
+						pm.devisionName = ((DbDataReader)(object)rd)["devisionname"].ToString();
+						if (pm.ProjectType.Equals("External"))
+						{
+							pm.Address = ((DbDataReader)(object)rd)["address"].ToString();
+							pm.ProjectDepartment = ((DbDataReader)(object)rd)["departmentname"].ToString();
+							pm.ContactPerson = ((DbDataReader)(object)rd)["contactperson"].ToString();
+						}
+						if (((DbDataReader)(object)rd)["SubordinateLinkId"] != DBNull.Value)
+						{
+							subList.Add(new main.Project_Subordination
+							{
+								Id = Convert.ToInt32(((DbDataReader)(object)rd)["SubordinateLinkId"]),
+								Name = ((DbDataReader)(object)rd)["subName"].ToString(),
+								EmpCode = ((DbDataReader)(object)rd)["subCode"].ToString()
+							});
+						}
+						pm.CompletionDatestring = pm.CompletionDate?.ToString("dd-MM-yyyy") ?? "N/A";
+						pm.AssignDateString = pm.AssignDate?.ToString("dd-MM-yyyy") ?? "N/A";
+						pm.StartDateString = pm.StartDate?.ToString("dd-MM-yyyy") ?? "N/A";
+					}
+					((DbDataReader)(object)rd).Close();
+				}
+				cpm.pm = pm;
+				cpm.SubOrdinate = subList;
+				cpm.budgets = ProjectBudgetList(id);
+				cpm.stages = ProjectStagesList(id);
+				cpm.hr = ProjectHumanResourcesList(id);
+				return cpm;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public bool createApiProject(main.Project_model pm)
+		{
+			NpgsqlTransaction tran = null;
+			NpgsqlCommand cmd = null;
+			try
+			{
+				((DbConnection)(object)con).Open();
+				tran = con.BeginTransaction();
+				Random rand = new Random();
+				pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
+				int letterNo;
+				int ProjectManager;
+				Dictionary<string, object> projectParams = new Dictionary<string, object>
+				{
+					["p_action"] = ((pm.Id > 0) ? "updateProject" : "insertProject"),
+					["p_letterno"] = (int.TryParse(pm.letterNo, out letterNo) ? letterNo : 0),
+					["p_title"] = pm.ProjectTitle,
+					["p_assigndate"] = pm.AssignDate,
+					["p_startdate"] = pm.StartDate,
+					["p_completiondate"] = pm.CompletionDate,
+					["p_projectmanager"] = (int.TryParse(pm.ProjectManager, out ProjectManager) ? ProjectManager : 0),
+					["p_budget"] = pm.ProjectBudget,
+					["p_description"] = pm.ProjectDescription,
+					["p_projectdocument"] = pm.projectDocumentUrl,
+					["p_projecttype"] = pm.ProjectType,
+					["p_stage"] = pm.ProjectStage,
+					["p_createdby"] = "admin",
+					["p_status"] = true,
+					["p_approvestatus"] = true,
+					["p_projectcode"] = pm.projectCode
+				};
+				int projectId = ExecuteProjectAction(projectParams, tran);
+				if (pm.SubOrdinate != null && pm.SubOrdinate.Length != 0)
+				{
+					int[] subOrdinate = pm.SubOrdinate;
+					foreach (int subId in subOrdinate)
+					{
+						int SubProjectManager;
+						Dictionary<string, object> subParams = new Dictionary<string, object>
+						{
+							["p_action"] = "insertSubOrdinate",
+							["p_project_id"] = projectId,
+							["p_id"] = subId,
+							["p_projectmanager"] = (int.TryParse(pm.ProjectManager, out SubProjectManager) ? SubProjectManager : 0)
+						};
+						ExecuteProjectAction(subParams, tran);
+					}
+				}
+				if (pm.ProjectType.Equals("External") && projectId > 0)
+				{
+					Dictionary<string, object> extParams = new Dictionary<string, object>
+					{
+						["p_action"] = ((pm.Id > 0) ? "updateExternalProject" : "insertExternalProject"),
+						["p_project_id"] = projectId,
+						["p_departmentname"] = pm.ProjectDepartment,
+						["p_contactperson"] = pm.ContactPerson,
+						["p_address"] = pm.Address
+					};
+					ExecuteProjectAction(extParams, tran);
+				}
+				((DbTransaction)(object)tran).Commit();
+				return true;
+			}
+			catch (Exception)
+			{
+				((DbTransaction)(object)tran).Rollback();
+				return false;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public bool insertProjectStages(main.Project_Statge stg)
+		{
+			NpgsqlTransaction tran = null;
+			NpgsqlCommand cmd = null;
+			try
+			{
+				((DbConnection)(object)con).Open();
+				tran = con.BeginTransaction();
+				Dictionary<string, object> stageParams = new Dictionary<string, object>
+				{
+					["p_action"] = "insertProjectStage",
+					["p_project_id"] = stg.Project_Id,
+					["p_keypoint"] = stg.KeyPoint,
+					["p_completiondate"] = stg.CompletionDate,
+					["p_stagedocument"] = stg.Document_Url
+				};
+				ExecuteProjectAction(stageParams, tran);
+				((DbTransaction)(object)tran).Commit();
+				return true;
+			}
+			catch (Exception)
+			{
+				((DbTransaction)(object)tran).Rollback();
+				return false;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public bool insertProjectBudgets(main.Project_Budget bdg)
+		{
+			NpgsqlTransaction tran = null;
+			NpgsqlCommand cmd = null;
+			try
+			{
+				((DbConnection)(object)con).Open();
+				tran = con.BeginTransaction();
+				Dictionary<string, object> budgetParams = new Dictionary<string, object>
+				{
+					["p_action"] = ((bdg.Id > 0) ? "updateProjectBudget" : "insertProjectBudget"),
+					["p_project_id"] = bdg.Project_Id,
+					["p_heads"] = bdg.ProjectHeads,
+					["p_headsamount"] = bdg.ProjectAmount
+				};
+				ExecuteProjectAction(budgetParams, tran);
+				((DbTransaction)(object)tran).Commit();
+				return true;
+			}
+			catch (Exception)
+			{
+				((DbTransaction)(object)tran).Rollback();
+				return false;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.Project_Budget> ProjectBudgetList(int Id)
+		{
+			//IL_0014: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001e: Expected O, but got Unknown
+			try
+			{
+				List<main.Project_Budget> list = new List<main.Project_Budget>();
+				cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
+				cmd.Parameters.AddWithValue("@action", (object)"GetBudgetByProjectId");
+				cmd.Parameters.AddWithValue("@v_id", (object)Id);
+				cmd.Parameters.AddWithValue("@v_limit", (object)DBNull.Value);
+				cmd.Parameters.AddWithValue("@v_page", (object)DBNull.Value);
+				if (((DbConnection)(object)con).State == ConnectionState.Closed)
+				{
+					((DbConnection)(object)con).Open();
+				}
+				NpgsqlDataReader rd = cmd.ExecuteReader();
+				if (((DbDataReader)(object)rd).HasRows)
+				{
+					while (((DbDataReader)(object)rd).Read())
+					{
+						list.Add(new main.Project_Budget
+						{
+							Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+							Project_Id = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
+							ProjectHeads = ((DbDataReader)(object)rd)["heads"].ToString(),
+							HeadId = Convert.ToInt32((((DbDataReader)(object)rd)["budgethead"] != DBNull.Value) ? ((DbDataReader)(object)rd)["budgethead"] : ((object)0)),
+							TotalAskAmount = ((DbDataReader)(object)rd)["totalAskAmount"].ToString(),
+							ApproveAmount = ((DbDataReader)(object)rd)["approveAmount"].ToString(),
+							ProjectAmount = Convert.ToDecimal((((DbDataReader)(object)rd)["headsAmount"] != DBNull.Value) ? ((DbDataReader)(object)rd)["headsAmount"] : ((object)0))
+						});
+					}
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.Project_Statge> ProjectStagesList(int Id)
+		{
+			//IL_0014: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001e: Expected O, but got Unknown
+			try
+			{
+				List<main.Project_Statge> list = new List<main.Project_Statge>();
+				cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
+				cmd.Parameters.AddWithValue("@action", (object)"GetProjectStageByProjectId");
+				cmd.Parameters.AddWithValue("@v_id", (object)Id);
+				cmd.Parameters.AddWithValue("@v_limit", (object)DBNull.Value);
+				cmd.Parameters.AddWithValue("@v_page", (object)DBNull.Value);
+				if (((DbConnection)(object)con).State == ConnectionState.Closed)
+				{
+					((DbConnection)(object)con).Open();
+				}
+				NpgsqlDataReader rd = cmd.ExecuteReader();
+				if (((DbDataReader)(object)rd).HasRows)
+				{
+					while (((DbDataReader)(object)rd).Read())
+					{
+						list.Add(new main.Project_Statge
+						{
+							Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+							Project_Id = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
+							KeyPoint = ((DbDataReader)(object)rd)["keyPoint"].ToString(),
+							CompletionDate = Convert.ToDateTime(((DbDataReader)(object)rd)["completeDate"]),
+							CompletionDatestring = Convert.ToDateTime(((DbDataReader)(object)rd)["completeDate"]).ToString("dd-MM-yyyy"),
+							Status = ((DbDataReader)(object)rd)["StagesStatus"].ToString(),
+							Document_Url = ((DbDataReader)(object)rd)["stageDocument"].ToString(),
+							completionStatus = Convert.ToInt32(((DbDataReader)(object)rd)["completionStatus"])
+						});
+					}
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.HumanResources> ProjectHumanResourcesList(int Id)
+		{
+			//IL_0014: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001e: Expected O, but got Unknown
+			try
+			{
+				List<main.HumanResources> list = new List<main.HumanResources>();
+				cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
+				cmd.Parameters.AddWithValue("@action", (object)"GetProjectHumanResources");
+				cmd.Parameters.AddWithValue("@v_id", (object)Id);
+				cmd.Parameters.AddWithValue("@v_limit", (object)DBNull.Value);
+				cmd.Parameters.AddWithValue("@v_page", (object)DBNull.Value);
+				if (((DbConnection)(object)con).State == ConnectionState.Closed)
+				{
+					((DbConnection)(object)con).Open();
+				}
+				NpgsqlDataReader rd = cmd.ExecuteReader();
+				if (((DbDataReader)(object)rd).HasRows)
+				{
+					while (((DbDataReader)(object)rd).Read())
+					{
+						list.Add(new main.HumanResources
+						{
+							id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+							designationId = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
+							designationCount = Convert.ToInt32(((DbDataReader)(object)rd)["approveAmount"]),
+							designationName = ((DbDataReader)(object)rd)["stageDocument"].ToString()
+						});
+					}
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public main.DashboardCount DashboardCount()
+		{
+			//IL_0027: Unknown result type (might be due to invalid IL or missing references)
+			//IL_002d: Expected O, but got Unknown
+			//IL_009d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00a4: Expected O, but got Unknown
+			//IL_03c2: Unknown result type (might be due to invalid IL or missing references)
+			//IL_03c9: Expected O, but got Unknown
+			main.DashboardCount obj = null;
+			try
+			{
+				((DbConnection)(object)con).Open();
+				NpgsqlTransaction tran = con.BeginTransaction();
+				try
+				{
+					NpgsqlCommand cmd = new NpgsqlCommand("fn_managedashboard_cursor", con);
+					try
+					{
+						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+						cmd.Parameters.AddWithValue("v_action", (object)"AdminDashboardCount");
+						cmd.Parameters.AddWithValue("v_projectmanager", (object)0);
+						cmd.Parameters.AddWithValue("v_sid", (object)0);
+						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+						NpgsqlCommand fetchCmd = new NpgsqlCommand("FETCH ALL FROM \"" + cursorName + "\";", con, tran);
+						try
+						{
+							NpgsqlDataReader sdr = fetchCmd.ExecuteReader();
+							try
+							{
+								if (((DbDataReader)(object)sdr).HasRows)
+								{
+									((DbDataReader)(object)sdr).Read();
+									obj = new main.DashboardCount
+									{
+										TotalEmployee = ((DbDataReader)(object)sdr)["TotalEmployee"].ToString(),
+										TotalProjectManager = ((DbDataReader)(object)sdr)["TotalProjectManager"].ToString(),
+										TotalSubOrdinate = ((DbDataReader)(object)sdr)["TotalSubOrdinate"].ToString(),
+										TotalAccounts = ((DbDataReader)(object)sdr)["TotalAccounts"].ToString(),
+										TotalProject = ((DbDataReader)(object)sdr)["TotalProject"].ToString(),
+										TotalInternalProject = ((DbDataReader)(object)sdr)["TotalInternalProject"].ToString(),
+										TotalExternalProject = ((DbDataReader)(object)sdr)["TotalExternalProject"].ToString(),
+										TotalDelayproject = ((DbDataReader)(object)sdr)["TotalDelayproject"].ToString(),
+										TotalCompleteProject = ((DbDataReader)(object)sdr)["TotalCompleteProject"].ToString(),
+										TotalOngoingProject = ((DbDataReader)(object)sdr)["TotalOngoingProject"].ToString(),
+										TotalMeetings = ((DbDataReader)(object)sdr)["TotalMeetings"].ToString(),
+										TotalAdminMeetings = ((DbDataReader)(object)sdr)["TotalAdminMeetings"].ToString(),
+										TotalProjectManagerMeetings = ((DbDataReader)(object)sdr)["TotalProjectManagerMeetings"].ToString(),
+										TotalReinbursementReq = ((DbDataReader)(object)sdr)["TotalReinbursementReq"].ToString(),
+										TotalTourProposalReq = ((DbDataReader)(object)sdr)["TotalTourProposalReq"].ToString(),
+										totalVehicleHiringRequest = ((DbDataReader)(object)sdr)["totalVehicleHiringRequest"].ToString(),
+										totalReinbursementPendingRequest = ((DbDataReader)(object)sdr)["totalReinbursementPendingRequest"].ToString(),
+										totalReinbursementapprovedRequest = ((DbDataReader)(object)sdr)["totalReinbursementapprovedRequest"].ToString(),
+										totalReinbursementRejectRequest = ((DbDataReader)(object)sdr)["totalReinbursementRejectRequest"].ToString(),
+										totalTourProposalApprReque = ((DbDataReader)(object)sdr)["totalTourProposalApprReque"].ToString(),
+										totalTourProposalRejectReque = ((DbDataReader)(object)sdr)["totalTourProposalRejectReque"].ToString(),
+										totaTourProposalPendingReque = ((DbDataReader)(object)sdr)["totalTourProposalRejectReque"].ToString(),
+										totalPendingHiringVehicle = ((DbDataReader)(object)sdr)["totalPendingHiringVehicle"].ToString(),
+										totalApproveHiringVehicle = ((DbDataReader)(object)sdr)["totalApproveHiringVehicle"].ToString(),
+										totalRejectHiringVehicle = ((DbDataReader)(object)sdr)["totalRejectHiringVehicle"].ToString(),
+										TotalBudget = Convert.ToDecimal((((DbDataReader)(object)sdr)["totalBudgets"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["totalBudgets"] : ((object)0)),
+										PendingBudget = Convert.ToDecimal((((DbDataReader)(object)sdr)["pendingBudget"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["pendingBudget"] : ((object)0))
+									};
+								}
+							}
+							finally
+							{
+								((IDisposable)sdr)?.Dispose();
+							}
+						}
+						finally
+						{
+							((IDisposable)fetchCmd)?.Dispose();
+						}
+						NpgsqlCommand closeCmd = new NpgsqlCommand("CLOSE \"" + cursorName + "\";", con, tran);
+						try
+						{
+							((DbCommand)(object)closeCmd).ExecuteNonQuery();
+						}
+						finally
+						{
+							((IDisposable)closeCmd)?.Dispose();
+						}
+						((DbTransaction)(object)tran).Commit();
+					}
+					finally
+					{
+						((IDisposable)cmd)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)tran)?.Dispose();
+				}
+				return obj;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("Error while fetching dashboard data", innerException);
+			}
+			finally
+			{
+				((DbConnection)(object)con).Close();
+			}
+		}
+
+		public List<main.ProjectExpenditure> ViewProjectExpenditure(int? limit = null, int? page = null)
+		{
+			//IL_002b: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0031: Expected O, but got Unknown
+			//IL_00fa: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0101: Expected O, but got Unknown
+			try
+			{
+				List<main.ProjectExpenditure> list = new List<main.ProjectExpenditure>();
+				((DbConnection)(object)con).Open();
+				NpgsqlTransaction tran = con.BeginTransaction();
+				try
+				{
+					NpgsqlCommand cmd = new NpgsqlCommand("fn_managedashboard_cursor", con);
+					try
+					{
+						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+						cmd.Parameters.AddWithValue("v_action", (object)"viewProjectExpenditure");
+						cmd.Parameters.AddWithValue("v_projectmanager", (object)DBNull.Value);
+						cmd.Parameters.AddWithValue("v_sid", (object)0);
+						cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+						cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+						NpgsqlCommand fetchCmd = new NpgsqlCommand("FETCH ALL FROM \"" + cursorName + "\";", con, tran);
+						try
+						{
+							NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+							try
+							{
+								if (((DbDataReader)(object)rd).HasRows)
+								{
+									bool firstRow = true;
+									while (((DbDataReader)(object)rd).Read())
+									{
+										list.Add(new main.ProjectExpenditure
+										{
+											id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+											ProjectName = ((DbDataReader)(object)rd)["title"].ToString(),
+											projectmanager = ((DbDataReader)(object)rd)["name"].ToString(),
+											ProjectBudget = Convert.ToDecimal(((DbDataReader)(object)rd)["budget"]),
+											expenditure = ((((DbDataReader)(object)rd)["ExpendedAmt"] != DBNull.Value) ? Convert.ToDecimal(((DbDataReader)(object)rd)["ExpendedAmt"]) : 0m),
+											remaining = ((((DbDataReader)(object)rd)["remainingAmt"] != DBNull.Value) ? Convert.ToDecimal(((DbDataReader)(object)rd)["remainingAmt"]) : 0m)
+										});
+										if (firstRow)
+										{
+											list[0].Pagination = new ApiCommon.PaginationInfo
+											{
+												PageNumber = page.GetValueOrDefault(),
+												TotalPages = Convert.ToInt32((((DbDataReader)(object)rd)["totalpages"] != DBNull.Value) ? ((DbDataReader)(object)rd)["totalpages"] : ((object)0)),
+												TotalRecords = Convert.ToInt32((((DbDataReader)(object)rd)["totalrecords"] != DBNull.Value) ? ((DbDataReader)(object)rd)["totalrecords"] : ((object)0)),
+												PageSize = limit.GetValueOrDefault()
+											};
+											firstRow = false;
+										}
+									}
+								}
+								return list;
+							}
+							finally
+							{
+								((IDisposable)rd)?.Dispose();
+							}
+						}
+						finally
+						{
+							((IDisposable)fetchCmd)?.Dispose();
+						}
+					}
+					finally
+					{
+						((IDisposable)cmd)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)tran)?.Dispose();
+				}
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.DashboardCount> getAllProjectCompletion()
+		{
+			//IL_0015: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001b: Expected O, but got Unknown
+			try
+			{
+				List<main.DashboardCount> list = new List<main.DashboardCount>();
+				main.DashboardCount obj = null;
+				NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageDashboard", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@action", (object)"getOverallProjectCompletion");
+				((DbConnection)(object)con).Open();
+				NpgsqlDataReader sdr = cmd.ExecuteReader();
+				if (((DbDataReader)(object)sdr).HasRows)
+				{
+					while (((DbDataReader)(object)sdr).Read())
+					{
+						obj = new main.DashboardCount();
+						obj.Title = ((DbDataReader)(object)sdr)["title"].ToString();
+						obj.OverallCompletionPercentage = ((DbDataReader)(object)sdr)["overallCompletion"].ToString();
+						obj.ProjectManager = ((DbDataReader)(object)sdr)["ProjectManager"].ToString();
+						list.Add(obj);
+					}
+				}
+				return list;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error accured", innerException);
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.Employee_model> BindEmployee()
+		{
+			//IL_0021: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0027: Expected O, but got Unknown
+			List<main.Employee_model> empList = new List<main.Employee_model>();
+			main.Employee_model empObj = null;
+			try
+			{
+				((DbConnection)(object)con).Open();
+				NpgsqlCommand cmd = new NpgsqlCommand("SELECT * from fn_get_employees(@v_action, @v_id);", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("@v_action", (object)"SelectEmployees");
+					cmd.Parameters.AddWithValue("@v_id", (object)DBNull.Value);
+					NpgsqlDataReader reader = cmd.ExecuteReader();
+					try
+					{
+						while (((DbDataReader)(object)reader).Read())
+						{
+							empObj = new main.Employee_model();
+							empObj.Id = Convert.ToInt32(((DbDataReader)(object)reader)["id"]);
+							empObj.EmployeeName = ((DbDataReader)(object)reader)["name"].ToString();
+							empObj.EmployeeRole = ((DbDataReader)(object)reader)["role"].ToString();
+							empList.Add(empObj);
+						}
+					}
+					finally
+					{
+						((IDisposable)reader)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Error fetching meeting members: " + ex.Message, ex);
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+			}
+			return empList;
+		}
+
+		public bool insertMeeting(main.AddMeeting_Model obj)
+		{
+			//IL_0029: Unknown result type (might be due to invalid IL or missing references)
+			//IL_002f: Expected O, but got Unknown
+			//IL_01cd: Unknown result type (might be due to invalid IL or missing references)
+			//IL_01d2: Unknown result type (might be due to invalid IL or missing references)
+			//IL_01d9: Expected O, but got Unknown
+			//IL_01da: Unknown result type (might be due to invalid IL or missing references)
+			//IL_01f7: Expected O, but got Unknown
+			//IL_01f9: Expected O, but got Unknown
+			//IL_0280: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0287: Expected O, but got Unknown
+			//IL_03cd: Unknown result type (might be due to invalid IL or missing references)
+			//IL_03d4: Expected O, but got Unknown
+			((DbConnection)(object)con).Open();
+			NpgsqlTransaction transaction = con.BeginTransaction();
+			try
+			{
+				int meetingId = 0;
+				NpgsqlCommand cmd = new NpgsqlCommand("CALL public.sp_managemeeting(@p_id, @p_meetingtype, @p_meetinglink, @p_meetingtitle, @p_meetingtime, @p_meetingdocument, @p_createdby, NULL, @p_createrid, NULL, 0, 0, 0, NULL, NULL, @p_meetingid, 0, @p_action)", con, transaction);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("p_id", (object)obj.Id);
+					cmd.Parameters.AddWithValue("p_meetingtype", ((object)obj.MeetingType) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_meetinglink", (obj.MeetingType?.ToLower() == "offline") ? (((object)obj.MeetingAddress) ?? ((object)DBNull.Value)) : (((object)obj.MeetingLink) ?? ((object)DBNull.Value)));
+					cmd.Parameters.AddWithValue("p_meetingtitle", ((object)obj.MeetingTitle) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_meetingtime", (object)obj.MeetingTime);
+					cmd.Parameters.AddWithValue("p_meetingdocument", ((object)obj.Attachment_Url) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_createdby", (object)((obj.CreaterId > 0) ? "projectmanager" : "admin"));
+					cmd.Parameters.AddWithValue("p_createrid", (object)((obj.CreaterId > 0) ? obj.CreaterId : new int?(0)));
+					cmd.Parameters.AddWithValue("p_action", (object)((obj.Id > 0) ? "updateMeeting" : "insertMeeting"));
+					NpgsqlParameter val = new NpgsqlParameter("p_meetingid", (NpgsqlDbType)9);
+					((DbParameter)val).Direction = ParameterDirection.InputOutput;
+					((DbParameter)val).Value = ((obj.Id > 0) ? obj.Id : 0);
+					NpgsqlParameter meetingIdParam = val;
+					cmd.Parameters.Add(meetingIdParam);
+					((DbCommand)(object)cmd).ExecuteNonQuery();
+					meetingId = Convert.ToInt32(((DbParameter)(object)meetingIdParam).Value);
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				if (obj.meetingMemberList != null && obj.meetingMemberList.Any())
+				{
+					foreach (int member in obj.meetingMemberList)
+					{
+						if (member != 0)
+						{
+							NpgsqlCommand cmd2 = new NpgsqlCommand("CALL public.sp_managemeeting(p_employee => @p_employee, p_meeting => @p_meeting,p_appstatus => @p_appstatus, p_action => @p_action)", con, transaction);
+							try
+							{
+								((DbCommand)(object)cmd2).CommandType = CommandType.Text;
+								cmd2.Parameters.AddWithValue("@p_employee", (NpgsqlDbType)9, (object)member);
+								cmd2.Parameters.AddWithValue("@p_meeting", (NpgsqlDbType)9, (object)meetingId);
+								cmd2.Parameters.AddWithValue("@p_appstatus", (NpgsqlDbType)9, (object)((obj.CreaterId > 0) ? 1 : 0));
+								cmd2.Parameters.AddWithValue("@p_action", (NpgsqlDbType)22, (object)"addMeetingMember");
+								((DbCommand)(object)cmd2).ExecuteNonQuery();
+							}
+							finally
+							{
+								((IDisposable)cmd2)?.Dispose();
+							}
+						}
+					}
+				}
+				if (obj.keyPointList != null && obj.keyPointList.Any() && obj.keyPointList != null && obj.keyPointList.Count > 0)
+				{
+					foreach (string key in obj.keyPointList)
+					{
+						if (!string.IsNullOrWhiteSpace(key))
+						{
+							NpgsqlCommand cmd3 = new NpgsqlCommand("CALL public.sp_managemeeting(p_keypoint => @p_keypoint, p_meeting => @p_meeting, p_action => @p_action)", con, transaction);
+							try
+							{
+								((DbCommand)(object)cmd3).CommandType = CommandType.Text;
+								cmd3.Parameters.AddWithValue("@p_keypoint", (object)key);
+								cmd3.Parameters.AddWithValue("@p_meeting", (object)meetingId);
+								cmd3.Parameters.AddWithValue("@p_action", (object)"AddMeetingKeyPoint");
+								((DbCommand)(object)cmd3).ExecuteNonQuery();
+							}
+							finally
+							{
+								((IDisposable)cmd3)?.Dispose();
+							}
+						}
+					}
+				}
+				((DbTransaction)(object)transaction).Commit();
+				return true;
+			}
+			catch (Exception innerException)
+			{
+				((DbTransaction)(object)transaction).Rollback();
+				throw new Exception("Error while inserting/updating meeting", innerException);
+			}
+			finally
+			{
+				((IDisposable)transaction)?.Dispose();
+			}
+		}
+
+		public bool UpdateMeeting(main.AddMeeting_Model obj)
+		{
+			//IL_0027: Unknown result type (might be due to invalid IL or missing references)
+			//IL_002d: Expected O, but got Unknown
+			//IL_01bb: Unknown result type (might be due to invalid IL or missing references)
+			//IL_01c2: Expected O, but got Unknown
+			//IL_02d8: Unknown result type (might be due to invalid IL or missing references)
+			//IL_02df: Expected O, but got Unknown
+			((DbConnection)(object)con).Open();
+			NpgsqlTransaction transaction = con.BeginTransaction();
+			try
+			{
+				NpgsqlCommand cmd = new NpgsqlCommand("\r\n                    CALL public.sp_managemeeting(\r\n                        p_id => @p_id,\r\n                        p_meetingtype => @p_meetingtype,\r\n                        p_meetinglink => @p_meetinglink,\r\n                        p_meetingtitle => @p_meetingtitle,\r\n                        p_meetingtime => @p_meetingtime,\r\n                        p_meetingdocument => @p_meetingdocument,\r\n                        p_createdby => NULL,\r\n                        p_updateddate => NULL,\r\n                        p_createrid => NULL,\r\n                        p_conclusionid => NULL,\r\n                        p_employee => 0,\r\n                        p_meeting => 0,\r\n                        p_appstatus => 0,\r\n                        p_keypoint => NULL,\r\n                        p_reason => NULL,\r\n                        p_meetingid => NULL,\r\n                        p_status => 0,\r\n                        p_action => @p_action\r\n                    );", con, transaction);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("@p_id", (NpgsqlDbType)9, (object)obj.Id);
+					cmd.Parameters.AddWithValue("@p_meetingtype", (NpgsqlDbType)22, ((object)obj.MeetingType) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("@p_meetinglink", (NpgsqlDbType)19, (object)((obj.MeetingType?.ToLower() == "offline") ? (obj.MeetingAddress ?? "") : (obj.MeetingLink ?? "")));
+					cmd.Parameters.AddWithValue("@p_meetingtitle", (NpgsqlDbType)22, ((object)obj.MeetingTitle) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("@p_meetingtime", (NpgsqlDbType)22, ((object)obj.MeetingTime.ToString()) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("@p_meetingdocument", (NpgsqlDbType)19, ((object)obj.Attachment_Url) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("@p_action", (NpgsqlDbType)22, (object)"updateMeeting");
+					((DbCommand)(object)cmd).ExecuteNonQuery();
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				if (obj.meetingMemberList != null && obj.meetingMemberList.Count > 0)
+				{
+					foreach (int memberId in obj.meetingMemberList)
+					{
+						if (memberId != 0)
+						{
+							NpgsqlCommand cmdMember = new NpgsqlCommand("\r\n                                CALL public.sp_managemeeting(\r\n                                    p_employee => @p_employee,\r\n                                    p_meeting => @p_meeting,\r\n                                    p_id => 0,\r\n                                    p_meetingtype => NULL,\r\n                                    p_meetinglink => NULL,\r\n                                    p_meetingtitle => NULL,\r\n                                    p_meetingtime => NULL,\r\n                                    p_meetingdocument => NULL,\r\n                                    p_createdby => NULL,\r\n                                    p_updateddate => NULL,\r\n                                    p_createrid => NULL,\r\n                                    p_conclusionid => NULL,\r\n                                    p_appstatus => 0,\r\n                                    p_keypoint => NULL,\r\n                                    p_reason => NULL,\r\n                                    p_meetingid => 0,\r\n                                    p_status => 0,\r\n                                    p_action => @p_action\r\n                                );", con, transaction);
+							try
+							{
+								((DbCommand)(object)cmdMember).CommandType = CommandType.Text;
+								cmdMember.Parameters.AddWithValue("@p_employee", (NpgsqlDbType)9, (object)memberId);
+								cmdMember.Parameters.AddWithValue("@p_meeting", (NpgsqlDbType)9, (object)obj.Id);
+								cmdMember.Parameters.AddWithValue("@p_action", (NpgsqlDbType)22, (object)"updateMember");
+								((DbCommand)(object)cmdMember).ExecuteNonQuery();
+							}
+							finally
+							{
+								((IDisposable)cmdMember)?.Dispose();
+							}
+						}
+					}
+				}
+				if (obj.KeypointId != null && obj.keyPointList != null)
+				{
+					for (int j = 0; j < obj.KeypointId.Count; j++)
+					{
+						if (!string.IsNullOrWhiteSpace(obj.KeypointId[j]?.ToString()) && !string.IsNullOrWhiteSpace(obj.keyPointList[j]?.ToString()))
+						{
+							NpgsqlCommand cmdKey = new NpgsqlCommand("\r\n                                CALL public.sp_managemeeting(\r\n                                    p_meeting => @p_meeting,\r\n                                    p_keypoint => @p_keypoint,\r\n                                    p_action => @p_action,\r\n                                    p_id => @p_id\r\n                                );", con, transaction);
+							try
+							{
+								((DbCommand)(object)cmdKey).CommandType = CommandType.Text;
+								cmdKey.Parameters.AddWithValue("@p_meeting", (NpgsqlDbType)9, (object)obj.Id);
+								cmdKey.Parameters.AddWithValue("@p_id", (NpgsqlDbType)9, (object)Convert.ToInt32(obj.KeypointId[j]));
+								cmdKey.Parameters.AddWithValue("@p_keypoint", (NpgsqlDbType)22, (object)obj.keyPointList[j]);
+								cmdKey.Parameters.AddWithValue("@p_action", (NpgsqlDbType)22, (object)"updateKeyPoint");
+								((DbCommand)(object)cmdKey).ExecuteNonQuery();
+							}
+							finally
+							{
+								((IDisposable)cmdKey)?.Dispose();
+							}
+						}
+					}
+				}
+				((DbTransaction)(object)transaction).Commit();
+				return true;
+			}
+			catch (Exception innerException)
+			{
+				((DbTransaction)(object)transaction).Rollback();
+				throw new Exception("An error occurred while updating the meeting.", innerException);
+			}
+			finally
+			{
+				((IDisposable)transaction)?.Dispose();
+			}
+		}
+
+		public List<main.Meeting_Model> getAllmeeting(int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null, string meetingMode = null)
+		{
+			//IL_0021: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0027: Expected O, but got Unknown
+			try
+			{
+				((DbConnection)(object)con).Open();
+				List<main.Meeting_Model> _list = new List<main.Meeting_Model>();
+				main.Meeting_Model obj = null;
+				NpgsqlCommand cmd = new NpgsqlCommand("SELECT * from fn_get_meetings(@p_action,@p_id,@v_limit,@v_page,@v_type,@v_searchTerm,@v_statusFilter,@v_meetingMode);", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("@p_action", (object)"getAllmeeting");
+					cmd.Parameters.AddWithValue("@p_id", (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+					cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+					cmd.Parameters.AddWithValue("@v_type", (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("@v_searchTerm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+					cmd.Parameters.AddWithValue("@v_statusFilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
+					cmd.Parameters.AddWithValue("@v_meetingMode", (object)(string.IsNullOrEmpty(meetingMode) ? ((IConvertible)DBNull.Value) : ((IConvertible)meetingMode)));
+					NpgsqlDataReader sdr = cmd.ExecuteReader();
+					try
+					{
+						bool firstRow = true;
+						while (((DbDataReader)(object)sdr).Read())
+						{
+							obj = new main.Meeting_Model();
+							obj.Id = Convert.ToInt32(((DbDataReader)(object)sdr)["id"]);
+							obj.CompleteStatus = Convert.ToInt32(((DbDataReader)(object)sdr)["completeStatus"]);
+							obj.MeetingType = ((DbDataReader)(object)sdr)["meetingType"].ToString();
+							obj.MeetingLink = ((DbDataReader)(object)sdr)["meetingLink"].ToString();
+							obj.MeetingTitle = ((DbDataReader)(object)sdr)["MeetingTitle"].ToString();
+							obj.memberId = ((((DbDataReader)(object)sdr)["memberId"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["memberId"].ToString().Split(',').ToList() : new List<string>());
+							obj.CreaterId = ((((DbDataReader)(object)sdr)["createrId"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)sdr)["createrId"]) : 0);
+							obj.MeetingDate = ((((DbDataReader)(object)sdr)["meetingTime"] != DBNull.Value && DateTime.TryParse(((DbDataReader)(object)sdr)["meetingTime"].ToString(), out var mt)) ? mt.ToString("dd-MM-yyyy") : string.Empty);
+							obj.summary = ((DbDataReader)(object)sdr)["meetSummary"].ToString();
+							obj.Attachment_Url = ((((DbDataReader)(object)sdr)["reason"] != null) ? ((DbDataReader)(object)sdr)["reason"].ToString() : "");
+							obj.createdBy = ((DbDataReader)(object)sdr)["createdBy"].ToString();
+							obj.statusLabel = ((Convert.ToInt32(((DbDataReader)(object)sdr)["completeStatus"]) == 0) ? "Pending" : "Completed");
+							_list.Add(obj);
+							if (firstRow)
+							{
+								obj.Pagination = new ApiCommon.PaginationInfo
+								{
+									PageNumber = page.GetValueOrDefault(),
+									TotalPages = Convert.ToInt32((((DbDataReader)(object)sdr)["totalpages"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["totalpages"] : ((object)0)),
+									TotalRecords = Convert.ToInt32((((DbDataReader)(object)sdr)["totalrecords"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["totalrecords"] : ((object)0)),
+									PageSize = limit.GetValueOrDefault()
+								};
+								firstRow = false;
+							}
+						}
+					}
+					finally
+					{
+						((IDisposable)sdr)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				return _list;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error accured", innerException);
+			}
+			finally
+			{
+				((DbConnection)(object)con).Close();
+			}
+		}
+
+		public main.Meeting_Model getMeetingById(int id)
+		{
+			//IL_001f: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0025: Expected O, but got Unknown
+			main.Meeting_Model obj = new main.Meeting_Model();
+			try
+			{
+				((DbConnection)(object)con).Open();
+				NpgsqlCommand cmd = new NpgsqlCommand("SELECT * from fn_get_meetings(@p_action,@p_id);", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("@p_action", (object)"getMeetingById");
+					cmd.Parameters.AddWithValue("@p_id", (object)id);
+					NpgsqlDataReader sdr = cmd.ExecuteReader();
+					try
+					{
+						if (((DbDataReader)(object)sdr).Read())
+						{
+							obj.Id = Convert.ToInt32(((DbDataReader)(object)sdr)["id"]);
+							obj.MeetingType = ((DbDataReader)(object)sdr)["meetingType"].ToString();
+							obj.MeetingLink = ((DbDataReader)(object)sdr)["meetingLink"].ToString();
+							obj.MeetingTitle = ((DbDataReader)(object)sdr)["meetingTitle"].ToString();
+							obj.MeetingTime = Convert.ToDateTime(((DbDataReader)(object)sdr)["meetingTime"]);
+							obj.MeetingTimeString = Convert.ToDateTime(((DbDataReader)(object)sdr)["meetingTime"]).ToString("yyyy-MM-ddTHH:mm");
+							obj.memberId = ((((DbDataReader)(object)sdr)["empId"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["empId"].ToString().Split(',').ToList() : new List<string>());
+							obj.Attachment_Url = ((((DbDataReader)(object)sdr)["reason"] != null) ? ((DbDataReader)(object)sdr)["reason"].ToString() : "");
+						}
+						if (((DbDataReader)(object)sdr)["meetingKey"] != null)
+						{
+							List<main.KeyPoint> keyDict = new List<main.KeyPoint>();
+							string[] array = ((DbDataReader)(object)sdr)["meetingKey"].ToString().Split(',');
+							foreach (string key in array)
+							{
+								if (!string.IsNullOrEmpty(key))
+								{
+									keyDict.Add(new main.KeyPoint
+									{
+										Id = int.Parse(key.Split(':')[0]),
+										keyPoint = key.Split(':')[1]
+									});
+								}
+							}
+							obj.MeetingKeyPointDict = keyDict;
+						}
+					}
+					finally
+					{
+						((IDisposable)sdr)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error occurred while fetching meeting details", innerException);
+			}
+			finally
+			{
+				((DbConnection)(object)con).Close();
+				((Component)(object)base.cmd).Dispose();
+			}
+			return obj;
+		}
+
+		public List<main.Employee_model> GetMeetingMemberList(int id)
+		{
+			//IL_0030: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0036: Expected O, but got Unknown
+			try
+			{
+				((DbConnection)(object)con).Open();
+				List<main.Employee_model> empModel = new List<main.Employee_model>();
+				((DbParameterCollection)(object)base.cmd.Parameters).Clear();
+				NpgsqlCommand cmd = new NpgsqlCommand("SELECT * from fn_get_meetings(@p_action,@p_id);", con);
+				try
+				{
+					cmd.Parameters.AddWithValue("@p_id", (object)id);
+					cmd.Parameters.AddWithValue("@p_action", (object)"getMeetingMemberById");
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					NpgsqlDataReader res = cmd.ExecuteReader();
+					try
+					{
+						if (((DbDataReader)(object)res).HasRows)
+						{
+							while (((DbDataReader)(object)res).Read())
+							{
+								empModel.Add(new main.Employee_model
+								{
+									Id = (int)((DbDataReader)(object)res)["id"],
+									EmployeeCode = ((DbDataReader)(object)res)["employeeCode"].ToString(),
+									EmployeeName = ((DbDataReader)(object)res)["name"].ToString(),
+									EmployeeRole = ((DbDataReader)(object)res)["role"].ToString(),
+									MobileNo = Convert.ToInt64((((DbDataReader)(object)res)["mobile"] != DBNull.Value) ? ((DbDataReader)(object)res)["mobile"] : ((object)0)),
+									Email = ((DbDataReader)(object)res)["email"].ToString(),
+									meetingId = Convert.ToInt32((((DbDataReader)(object)res)["meetingId"] != DBNull.Value) ? ((DbDataReader)(object)res)["meetingId"] : ((object)0))
+								});
+							}
+						}
+					}
+					finally
+					{
+						((IDisposable)res)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				return empModel;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error accured", innerException);
+			}
+			finally
+			{
+				((DbConnection)(object)con).Close();
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public bool AddMeetingResponse(main.MeetingConclusion mc)
+		{
+			//IL_0028: Unknown result type (might be due to invalid IL or missing references)
+			//IL_002e: Expected O, but got Unknown
+			//IL_0140: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0145: Unknown result type (might be due to invalid IL or missing references)
+			//IL_014c: Expected O, but got Unknown
+			//IL_014d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0159: Expected O, but got Unknown
+			//IL_015b: Expected O, but got Unknown
+			//IL_0235: Unknown result type (might be due to invalid IL or missing references)
+			//IL_023c: Expected O, but got Unknown
+			//IL_030a: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0311: Expected O, but got Unknown
+			//IL_0420: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0427: Expected O, but got Unknown
+			((DbConnection)(object)con).Open();
+			NpgsqlTransaction transaction = con.BeginTransaction();
+			try
+			{
+				int conclusionId = 0;
+				NpgsqlCommand cmd = new NpgsqlCommand("\r\n            CALL public.sp_meetingconslusion(\r\n                @v_id::integer,\r\n                @v_meeting::integer,\r\n                @v_conclusion::text,\r\n                @v_nextfollow::varchar,\r\n                @v_memberid::integer,\r\n                @v_response::text,\r\n                @v_followupstatus::boolean,\r\n                @v_keyid::integer,\r\n                @v_conclusionid::integer,\r\n                @v_summary::text,\r\n                @v_action::varchar,\r\n                @v_rc::refcursor\r\n            )", con, transaction);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("v_id", (object)0);
+					cmd.Parameters.AddWithValue("v_meeting", (object)Convert.ToInt32(mc.Meeting));
+					cmd.Parameters.AddWithValue("v_conclusion", ((object)mc.Conclusion) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("v_nextfollow", ((object)mc.NextFollowUpDate?.ToString("yyyy-MM-dd")) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("v_memberid", (object)0);
+					cmd.Parameters.AddWithValue("v_response", (object)DBNull.Value);
+					cmd.Parameters.AddWithValue("v_followupstatus", (NpgsqlDbType)2, (object)(mc.FollowUpStatus ? true : false));
+					cmd.Parameters.AddWithValue("v_keyid", (object)0);
+					NpgsqlParameter val = new NpgsqlParameter("v_conclusionid", (NpgsqlDbType)9);
+					((DbParameter)val).Direction = ParameterDirection.InputOutput;
+					((DbParameter)val).Value = conclusionId;
+					NpgsqlParameter conclusionParam = val;
+					cmd.Parameters.Add(conclusionParam);
+					cmd.Parameters.AddWithValue("v_summary", ((object)mc.summary) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("v_action", (object)"insertConclusion");
+					cmd.Parameters.AddWithValue("v_rc", (object)DBNull.Value);
+					((DbCommand)(object)cmd).ExecuteNonQuery();
+					conclusionId = (int)((DbParameter)(object)conclusionParam).Value;
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				if (mc.MemberId != null && mc.MemberId.Count > 0)
+				{
+					foreach (string memberId in mc.MemberId)
+					{
+						if (!string.IsNullOrEmpty(memberId))
+						{
+							NpgsqlCommand memberCmd = new NpgsqlCommand("\r\n                        CALL public.sp_meetingconslusion(\r\n                            @v_id::integer,\r\n                            0::integer,\r\n                            NULL::text,\r\n                            NULL::varchar,\r\n                            @v_memberid::integer,\r\n                            NULL::text,\r\n                            false::boolean,\r\n                            0::integer,\r\n                            @v_conclusionid::integer,\r\n                            NULL::text,\r\n                            @v_action::varchar,\r\n                            NULL::refcursor\r\n                        )", con, transaction);
+							((DbCommand)(object)memberCmd).CommandType = CommandType.Text;
+							memberCmd.Parameters.AddWithValue("v_id", (object)conclusionId);
+							memberCmd.Parameters.AddWithValue("v_memberid", (object)Convert.ToInt32(memberId));
+							memberCmd.Parameters.AddWithValue("v_conclusionid", (object)conclusionId);
+							memberCmd.Parameters.AddWithValue("v_action", (object)"updateMeetingMemberPresence");
+							((DbCommand)(object)memberCmd).ExecuteNonQuery();
+						}
+					}
+				}
+				if (mc.KeyPointId != null && mc.KeyPointId.Count > 0)
+				{
+					for (int i = 0; i < mc.KeyPointId.Count; i++)
+					{
+						NpgsqlCommand keyCmd = new NpgsqlCommand("\r\n                    CALL public.sp_meetingconslusion(\r\n                        @v_id::integer,\r\n                        0::integer,\r\n                        NULL::text,\r\n                        NULL::varchar,\r\n                        0::integer,\r\n                        @v_response::text,\r\n                        false::boolean,\r\n                        @v_keyid::integer,\r\n                        @v_conclusionid::integer,\r\n                        NULL::text,\r\n                        @v_action::varchar,\r\n                        NULL::refcursor\r\n                    )", con, transaction);
+						((DbCommand)(object)keyCmd).CommandType = CommandType.Text;
+						keyCmd.Parameters.AddWithValue("v_id", (object)conclusionId);
+						keyCmd.Parameters.AddWithValue("v_keyid", (object)mc.KeyPointId[i]);
+						keyCmd.Parameters.AddWithValue("v_response", ((object)mc.KeyResponse[i]) ?? ((object)DBNull.Value));
+						keyCmd.Parameters.AddWithValue("v_conclusionid", (object)conclusionId);
+						keyCmd.Parameters.AddWithValue("v_action", (object)"isertKeypointResponse");
+						((DbCommand)(object)keyCmd).ExecuteNonQuery();
+					}
+				}
+				if (mc.MeetingMemberList != null && mc.FollowUpStatus)
+				{
+					foreach (int individualMember in mc.MeetingMemberList)
+					{
+						if (individualMember != 0)
+						{
+							NpgsqlCommand memberCmd2 = new NpgsqlCommand("\r\n                        CALL sp_ManageMeeting(\r\n                           p_action=> @v_action::varchar,\r\n                           p_employee=> @v_employee::integer,\r\n                           p_meeting=> @v_meeting::integer\r\n                        )", con, transaction);
+							((DbCommand)(object)memberCmd2).CommandType = CommandType.Text;
+							memberCmd2.Parameters.AddWithValue("@v_action", (object)"addMeetingMember");
+							memberCmd2.Parameters.AddWithValue("@v_employee", (object)individualMember);
+							memberCmd2.Parameters.AddWithValue("@v_meeting", (object)mc.Meeting);
+							((DbCommand)(object)memberCmd2).ExecuteNonQuery();
+						}
+					}
+				}
+				((DbTransaction)(object)transaction).Commit();
+				return true;
+			}
+			catch (Exception innerException)
+			{
+				((DbTransaction)(object)transaction).Rollback();
+				throw new Exception("An error occurred while adding meeting response.", innerException);
+			}
+			finally
+			{
+				((DbConnection)(object)con).Close();
+			}
+		}
+
+		public List<main.MeetingConclusion> getConclusion(int id)
+		{
+			//IL_0030: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0036: Expected O, but got Unknown
+			try
+			{
+				List<main.MeetingConclusion> meetingc = new List<main.MeetingConclusion>();
+				((DbConnection)(object)con).Open();
+				((DbParameterCollection)(object)base.cmd.Parameters).Clear();
+				NpgsqlCommand cmd = new NpgsqlCommand("select * from fn_get_meetings(@p_action,@p_id);", con);
+				try
+				{
+					cmd.Parameters.AddWithValue("@p_action", (object)"selectConclusion");
+					cmd.Parameters.AddWithValue("@p_id", (object)id);
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					NpgsqlDataReader rdr = cmd.ExecuteReader();
+					try
+					{
+						if (((DbDataReader)(object)rdr).HasRows)
+						{
+							while (((DbDataReader)(object)rdr).Read())
+							{
+								meetingc.Add(new main.MeetingConclusion
+								{
+									Id = Convert.ToInt32(((DbDataReader)(object)rdr)["id"]),
+									Meeting = id,
+									MeetingDate = ((((DbDataReader)(object)rdr)["meetingTime"] != DBNull.Value) ? Convert.ToDateTime(((DbDataReader)(object)rdr)["meetingTime"]).ToString("dd-MM-yyyy hh:mm tt") : "N/A"),
+									Conclusion = ((DbDataReader)(object)rdr)["conclusion"].ToString(),
+									NextFollow = ((((DbDataReader)(object)rdr)["nextFollow"] != DBNull.Value) ? Convert.ToDateTime(((DbDataReader)(object)rdr)["nextFollow"]).ToString("dd-MM-yyyy") : "N/A"),
+									mode = ((DbDataReader)(object)rdr)["meetingType"].ToString(),
+									address = ((DbDataReader)(object)rdr)["meetingLink"].ToString()
+								});
+							}
+						}
+					}
+					finally
+					{
+						((IDisposable)rdr)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				return meetingc;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error accured", innerException);
+			}
+			finally
+			{
+				((DbConnection)(object)con).Close();
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.Employee_model> getPresentMember(int id)
+		{
+			//IL_0030: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0036: Expected O, but got Unknown
+			try
+			{
+				((DbConnection)(object)con).Open();
+				List<main.Employee_model> meetingc = new List<main.Employee_model>();
+				((DbParameterCollection)(object)base.cmd.Parameters).Clear();
+				NpgsqlCommand cmd = new NpgsqlCommand("select * from fn_get_meetings(@p_action,@p_id);", con);
+				try
+				{
+					cmd.Parameters.AddWithValue("@p_action", (object)"selectPresentMember");
+					cmd.Parameters.AddWithValue("@p_id", (object)id);
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					NpgsqlDataReader rdr = cmd.ExecuteReader();
+					try
+					{
+						if (((DbDataReader)(object)rdr).HasRows)
+						{
+							while (((DbDataReader)(object)rdr).Read())
+							{
+								meetingc.Add(new main.Employee_model
+								{
+									EmployeeName = ((DbDataReader)(object)rdr)["name"].ToString(),
+									Image_url = ((DbDataReader)(object)rdr)["profile"].ToString(),
+									EmployeeRole = ((DbDataReader)(object)rdr)["role"].ToString(),
+									PresentStatus = (bool)((DbDataReader)(object)rdr)["completeStatus"]
+								});
+							}
+						}
+					}
+					finally
+					{
+						((IDisposable)rdr)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				return meetingc;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error accured", innerException);
+			}
+			finally
+			{
+				((DbConnection)(object)con).Close();
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.KeyPointResponse> getKeypointResponse(int id)
+		{
+			//IL_0030: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0036: Expected O, but got Unknown
+			try
+			{
+				((DbParameterCollection)(object)base.cmd.Parameters).Clear();
+				List<main.KeyPointResponse> md = new List<main.KeyPointResponse>();
+				((DbConnection)(object)con).Open();
+				NpgsqlCommand cmd = new NpgsqlCommand("select * from fn_get_meetings(@p_action,@p_id)", con);
+				try
+				{
+					cmd.Parameters.AddWithValue("@p_action", (object)"KeyPointResponse");
+					cmd.Parameters.AddWithValue("@p_id", (object)id);
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					NpgsqlDataReader rdr = cmd.ExecuteReader();
+					try
+					{
+						if (((DbDataReader)(object)rdr).HasRows)
+						{
+							while (((DbDataReader)(object)rdr).Read())
+							{
+								md.Add(new main.KeyPointResponse
+								{
+									KeyPoint = ((DbDataReader)(object)rdr)["keypoint"].ToString(),
+									Response = ((DbDataReader)(object)rdr)["response"].ToString()
+								});
+							}
+						}
+					}
+					finally
+					{
+						((IDisposable)rdr)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				return md;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error accured", innerException);
+			}
+			finally
+			{
+				((DbConnection)(object)con).Close();
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public bool InsertNotice(main.Generate_Notice gn)
+		{
+			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0018: Expected O, but got Unknown
+			try
+			{
+				cmd = new NpgsqlCommand("CALL sp_managenotice(@v_id, @v_projectid, @v_noticedocs, @v_noticedesc, NULL, @v_action)", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.Text;
+				cmd.Parameters.AddWithValue("@v_action", (object)((gn.Id > 0) ? "UpdateNotice" : "InsertNotice"));
+				cmd.Parameters.AddWithValue("@v_projectId", (object)gn.ProjectId);
+				cmd.Parameters.AddWithValue("v_id", (object)gn.Id);
+				cmd.Parameters.AddWithValue("v_noticeDocs", ((object)gn.Attachment_Url) ?? ((object)DBNull.Value));
+				cmd.Parameters.AddWithValue("v_noticedesc", (object)gn.Notice);
+				((DbConnection)(object)con).Open();
+				((DbCommand)(object)cmd).ExecuteNonQuery();
+				return true;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.Generate_Notice> getNoticeList(int? limit = null, int? page = null, int? id = null, int? managerId = null, string searchTerm = null)
+		{
+			//IL_002c: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0032: Expected O, but got Unknown
+			//IL_014d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0154: Expected O, but got Unknown
+			//IL_0355: Unknown result type (might be due to invalid IL or missing references)
+			//IL_035c: Expected O, but got Unknown
+			try
+			{
+				((DbConnection)(object)con).Open();
+				List<main.Generate_Notice> noticeList = new List<main.Generate_Notice>();
+				NpgsqlTransaction tran = con.BeginTransaction();
+				try
+				{
+					NpgsqlCommand cmd = new NpgsqlCommand("fn_manageNotice_cursor", con, tran);
+					try
+					{
+						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+						cmd.Parameters.AddWithValue("v_action", (object)"SelectNotice");
+						cmd.Parameters.AddWithValue("v_projectmanager", managerId.HasValue ? ((object)managerId.Value) : ((object)0));
+						cmd.Parameters.AddWithValue("v_id", id.HasValue ? ((object)id.Value) : ((object)0));
+						cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+						cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+						cmd.Parameters.AddWithValue("v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+						NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+						try
+						{
+							NpgsqlDataReader res = fetchCmd.ExecuteReader();
+							try
+							{
+								while (((DbDataReader)(object)res).Read())
+								{
+									bool firstRow = true;
+									noticeList.Add(new main.Generate_Notice
+									{
+										Id = (int)((DbDataReader)(object)res)["id"],
+										ProjectId = (int)((DbDataReader)(object)res)["project_id"],
+										ProjectManagerId = (int)((DbDataReader)(object)res)["empid"],
+										Attachment_Url = ((((DbDataReader)(object)res)["NoticeDocument"] == null) ? null : ((DbDataReader)(object)res)["NoticeDocument"].ToString()),
+										Notice = ((DbDataReader)(object)res)["noticeDescription"].ToString(),
+										ProjectManagerImage = ((DbDataReader)(object)res)["profile"].ToString(),
+										ProjectManager = ((DbDataReader)(object)res)["name"].ToString(),
+										ProjectName = ((DbDataReader)(object)res)["title"].ToString(),
+										noticeDate = Convert.ToDateTime(((DbDataReader)(object)res)["noticeDate"]).ToString("dd-MM-yyyy")
+									});
+									if (firstRow)
+									{
+										noticeList[0].Pagination = new ApiCommon.PaginationInfo
+										{
+											PageNumber = page.GetValueOrDefault(),
+											TotalPages = Convert.ToInt32((((DbDataReader)(object)res)["totalpages"] != DBNull.Value) ? ((DbDataReader)(object)res)["totalpages"] : ((object)0)),
+											TotalRecords = Convert.ToInt32((((DbDataReader)(object)res)["totalrecords"] != DBNull.Value) ? ((DbDataReader)(object)res)["totalrecords"] : ((object)0)),
+											PageSize = limit.GetValueOrDefault()
+										};
+										firstRow = false;
+									}
+								}
+							}
+							finally
+							{
+								((IDisposable)res)?.Dispose();
+							}
+						}
+						finally
+						{
+							((IDisposable)fetchCmd)?.Dispose();
+						}
+						NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
+						try
+						{
+							((DbCommand)(object)closeCmd).ExecuteNonQuery();
+						}
+						finally
+						{
+							((IDisposable)closeCmd)?.Dispose();
+						}
+						((DbTransaction)(object)tran).Commit();
+					}
+					finally
+					{
+						((IDisposable)cmd)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)tran)?.Dispose();
+				}
+				return noticeList;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.tourProposalAll> getAllTourList(int? page = null, int? limit = null, string type = null, int? id = null, int? managerFilter = null, int? projectFilter = null)
+		{
+			//IL_002b: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0031: Expected O, but got Unknown
+			//IL_0169: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0170: Expected O, but got Unknown
+			//IL_035c: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0363: Expected O, but got Unknown
+			try
+			{
+				List<main.tourProposalAll> getlist = new List<main.tourProposalAll>();
+				((DbConnection)(object)con).Open();
+				NpgsqlTransaction tran = con.BeginTransaction();
+				try
+				{
+					NpgsqlCommand cmd = new NpgsqlCommand("fn_manageTourProposal_cursor", con);
+					try
+					{
+						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+						cmd.Parameters.AddWithValue("v_action", (object)"selectAlltour");
+						cmd.Parameters.AddWithValue("v_projectmanager", (object)(managerFilter ?? new int?(0)));
+						cmd.Parameters.AddWithValue("v_id", (object)(id ?? new int?(0)));
+						cmd.Parameters.AddWithValue("v_type", (object)(string.IsNullOrEmpty(type) ? "AllData" : type));
+						cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+						cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+						cmd.Parameters.AddWithValue("v_projectid", (object)(projectFilter ?? new int?(0)));
+						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+						NpgsqlCommand fetchCmd = new NpgsqlCommand("FETCH ALL FROM \"" + cursorName + "\";", con, tran);
+						try
+						{
+							NpgsqlDataReader res = fetchCmd.ExecuteReader();
+							try
+							{
+								if (((DbDataReader)(object)res).HasRows)
+								{
+									bool firstRow = true;
+									while (((DbDataReader)(object)res).Read())
+									{
+										main.tourProposalAll tourData = new main.tourProposalAll
+										{
+											id = Convert.ToInt32(((DbDataReader)(object)res)["id"]),
+											projectName = ((DbDataReader)(object)res)["title"].ToString(),
+											projectManager = ((DbDataReader)(object)res)["name"].ToString(),
+											dateOfDept = Convert.ToDateTime(((DbDataReader)(object)res)["dateOfDept"]),
+											place = ((DbDataReader)(object)res)["place"].ToString(),
+											periodFrom = Convert.ToDateTime(((DbDataReader)(object)res)["periodFrom"]),
+											periodTo = Convert.ToDateTime(((DbDataReader)(object)res)["periodTo"]),
+											returnDate = Convert.ToDateTime(((DbDataReader)(object)res)["returnDate"]),
+											purpose = ((DbDataReader)(object)res)["purpose"].ToString(),
+											projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A")
+										};
+										if (firstRow)
+										{
+											tourData.Pagination = new ApiCommon.PaginationInfo
+											{
+												TotalPages = Convert.ToInt32(((DbDataReader)(object)res)["totalpages"]),
+												TotalRecords = Convert.ToInt32(((DbDataReader)(object)res)["totalrecords"]),
+												PageNumber = page.GetValueOrDefault(),
+												PageSize = limit.GetValueOrDefault()
+											};
+											firstRow = false;
+										}
+										getlist.Add(tourData);
+									}
+								}
+							}
+							finally
+							{
+								((IDisposable)res)?.Dispose();
+							}
+						}
+						finally
+						{
+							((IDisposable)fetchCmd)?.Dispose();
+						}
+						NpgsqlCommand closeCmd = new NpgsqlCommand("CLOSE \"" + cursorName + "\";", con, tran);
+						try
+						{
+							((DbCommand)(object)closeCmd).ExecuteNonQuery();
+						}
+						finally
+						{
+							((IDisposable)closeCmd)?.Dispose();
+						}
+						((DbTransaction)(object)tran).Commit();
+					}
+					finally
+					{
+						((IDisposable)cmd)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)tran)?.Dispose();
+				}
+				return getlist;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public bool Tourapproval(int id, bool status, string remark)
+		{
+			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0013: Expected O, but got Unknown
+			try
+			{
+				NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_Tourproposal(v_remark=>@v_remark,v_id=>@v_id,v_adminappr=>@v_adminappr, v_action=>@v_action)", con);
+				cmd.Parameters.AddWithValue("@v_action", (object)"approval");
+				cmd.Parameters.AddWithValue("@v_adminappr", (object)status);
+				cmd.Parameters.AddWithValue("@v_id", (object)id);
+				cmd.Parameters.AddWithValue("@v_remark", (object)(status ? "" : remark));
+				((DbConnection)(object)con).Open();
+				((DbCommand)(object)cmd).ExecuteNonQuery();
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public bool ReimbursementApproval(bool status, int id, string type, string remark)
+		{
+			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0018: Expected O, but got Unknown
+			try
+			{
+				cmd = new NpgsqlCommand("call sp_reimbursement(p_action=>@p_action,p_admin_appr=>@p_admin_appr,p_id=>@p_id,p_type=>@p_type,p_remark=>@p_remark)", con);
+				cmd.Parameters.AddWithValue("@p_action", (object)"approval");
+				cmd.Parameters.AddWithValue("@p_admin_appr", (object)status);
+				cmd.Parameters.AddWithValue("@p_id", (object)id);
+				cmd.Parameters.AddWithValue("@p_type", (object)type);
+				cmd.Parameters.AddWithValue("@p_remark", (object)(status ? "" : remark));
+				((DbConnection)(object)con).Open();
+				((DbCommand)(object)cmd).ExecuteNonQuery();
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.AdminReimbursement> GetSpecificUserReimbursements(int id, string type)
+		{
+			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0018: Expected O, but got Unknown
+			try
+			{
+				cmd = new NpgsqlCommand("sp_Reimbursement", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@action", (object)"GetAllSubmittedData");
+				cmd.Parameters.AddWithValue("@userId", (object)id);
+				cmd.Parameters.AddWithValue("@type", (object)type);
+				((DbConnection)(object)con).Open();
+				List<main.AdminReimbursement> getlist = new List<main.AdminReimbursement>();
+				NpgsqlDataReader res = cmd.ExecuteReader();
+				if (((DbDataReader)(object)res).HasRows)
+				{
+					while (((DbDataReader)(object)res).Read())
+					{
+						getlist.Add(new main.AdminReimbursement
+						{
+							id = (int)((DbDataReader)(object)res)["id"],
+							type = (string)((DbDataReader)(object)res)["type"],
+							vrNo = (string)((DbDataReader)(object)res)["vrNo"],
+							date = Convert.ToDateTime(((DbDataReader)(object)res)["date"]),
+							particulars = (string)((DbDataReader)(object)res)["particulars"],
+							items = (string)((DbDataReader)(object)res)["items"],
+							amount = Convert.ToDecimal(((DbDataReader)(object)res)["amount"]),
+							purpose = (string)((DbDataReader)(object)res)["purpose"],
+							status = Convert.ToBoolean(((DbDataReader)(object)res)["status"]),
+							newRequest = (bool)((DbDataReader)(object)res)["newRequest"],
+							adminappr = (bool)((DbDataReader)(object)res)["admin_appr"]
+						});
+					}
+				}
+				return getlist;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.HiringVehicle1> HiringList(int? page = null, int? limit = null, int? managerFilter = null, int? projectFilter = null)
+		{
+			//IL_002b: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0031: Expected O, but got Unknown
+			//IL_0134: Unknown result type (might be due to invalid IL or missing references)
+			//IL_013b: Expected O, but got Unknown
+			//IL_03e7: Unknown result type (might be due to invalid IL or missing references)
+			//IL_03ee: Expected O, but got Unknown
+			try
+			{
+				((DbConnection)(object)con).Open();
+				List<main.HiringVehicle1> list = new List<main.HiringVehicle1>();
+				NpgsqlTransaction tran = con.BeginTransaction();
+				try
+				{
+					NpgsqlCommand cmd = new NpgsqlCommand("fn_manageHiringVehicle_cursor", con);
+					try
+					{
+						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+						cmd.Parameters.AddWithValue("v_action", (object)"selectAllHiring");
+						cmd.Parameters.AddWithValue("v_projectmanager", (object)(managerFilter ?? new int?(0)));
+						cmd.Parameters.AddWithValue("v_projectid", (object)(projectFilter ?? new int?(0)));
+						cmd.Parameters.AddWithValue("v_type", (object)"AllData");
+						cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+						cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+						NpgsqlCommand fetchCmd = new NpgsqlCommand("FETCH ALL FROM \"" + cursorName + "\";", con, tran);
+						try
+						{
+							NpgsqlDataReader res = fetchCmd.ExecuteReader();
+							try
+							{
+								if (((DbDataReader)(object)res).HasRows)
+								{
+									bool firstRow = true;
+									while (((DbDataReader)(object)res).Read())
+									{
+										main.HiringVehicle1 hiringVehicle = new main.HiringVehicle1
+										{
+											id = (int)((DbDataReader)(object)res)["id"],
+											projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
+											projectManager = Convert.ToString(((DbDataReader)(object)res)["name"]),
+											headName = Convert.ToString(((DbDataReader)(object)res)["heads"]),
+											amount = Convert.ToDecimal(((DbDataReader)(object)res)["amount"]),
+											dateFrom = Convert.ToDateTime(((DbDataReader)(object)res)["dateFrom"]),
+											dateTo = Convert.ToDateTime(((DbDataReader)(object)res)["dateTo"]),
+											proposedPlace = ((DbDataReader)(object)res)["proposedPlace"].ToString(),
+											purposeOfVisit = ((DbDataReader)(object)res)["purposeOfVisit"].ToString(),
+											totalDaysNight = ((DbDataReader)(object)res)["totalDaysNight"].ToString(),
+											totalPlainHills = ((DbDataReader)(object)res)["totalPlainHills"].ToString(),
+											taxi = ((DbDataReader)(object)res)["taxi"].ToString(),
+											BookAgainstCentre = ((DbDataReader)(object)res)["BookAgainstCentre"].ToString(),
+											availbilityOfFund = ((DbDataReader)(object)res)["availbilityOfFund"].ToString(),
+											note = ((DbDataReader)(object)res)["note"].ToString(),
+											newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
+											adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"]),
+											projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A")
+										};
+										if (firstRow)
+										{
+											hiringVehicle.Pagination = new ApiCommon.PaginationInfo
+											{
+												TotalPages = Convert.ToInt32(((DbDataReader)(object)res)["totalpages"]),
+												TotalRecords = Convert.ToInt32(((DbDataReader)(object)res)["totalrecords"]),
+												PageNumber = page.GetValueOrDefault(),
+												PageSize = limit.GetValueOrDefault()
+											};
+											firstRow = false;
+										}
+										list.Add(hiringVehicle);
+									}
+								}
+							}
+							finally
+							{
+								((IDisposable)res)?.Dispose();
+							}
+						}
+						finally
+						{
+							((IDisposable)fetchCmd)?.Dispose();
+						}
+						NpgsqlCommand closeCmd = new NpgsqlCommand("CLOSE \"" + cursorName + "\";", con, tran);
+						try
+						{
+							((DbCommand)(object)closeCmd).ExecuteNonQuery();
+						}
+						finally
+						{
+							((IDisposable)closeCmd)?.Dispose();
+						}
+						((DbTransaction)(object)tran).Commit();
+					}
+					finally
+					{
+						((IDisposable)cmd)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)tran)?.Dispose();
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public async Task<string> GetCityStateAsync(string latitude, string longitude)
+		{
+			try
+			{
+				string url = "https://nominatim.openstreetmap.org/reverse?lat=" + latitude + "&lon=" + longitude + "&format=json";
+				HttpClient client = new HttpClient();
+				try
+				{
+					client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+					((HttpHeaders)client.DefaultRequestHeaders).Add("Accept-Language", "en");
+					JObject json = JObject.Parse(await client.GetStringAsync(url).ConfigureAwait(continueOnCapturedContext: false));
+					JToken obj = json["address"];
+					object obj2 = ((obj == null) ? null : ((object)obj[(object)"city"])?.ToString());
+					if (obj2 == null)
+					{
+						JToken obj3 = json["address"];
+						obj2 = ((obj3 == null) ? null : ((object)obj3[(object)"town"])?.ToString());
+						if (obj2 == null)
+						{
+							JToken obj4 = json["address"];
+							obj2 = ((obj4 == null) ? null : ((object)obj4[(object)"village"])?.ToString());
+							if (obj2 == null)
+							{
+								JToken obj5 = json["address"];
+								obj2 = ((obj5 == null) ? null : ((object)obj5[(object)"hamlet"])?.ToString()) ?? "";
+							}
+						}
+					}
+					string city = (string)obj2;
+					JToken obj6 = json["address"];
+					string state = ((obj6 == null) ? null : ((object)obj6[(object)"state"])?.ToString()) ?? "";
+					return (city + ", " + state).Trim(',', ' ');
+				}
+				finally
+				{
+					((IDisposable)client)?.Dispose();
+				}
+			}
+			catch (Exception ex)
+			{
+				Exception ex2 = ex;
+				throw ex2;
+			}
+		}
+
+		public bool HiringApproval(int id, bool status, string remark, string location)
+		{
+			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0018: Expected O, but got Unknown
+			try
+			{
+				cmd = new NpgsqlCommand("CALL sp_HiringVehicle(v_id=>@v_id,v_adminappr=>@v_adminappr,v_remark => @v_remark, v_address=>@v_address,v_action=>@v_action )", con);
+				cmd.Parameters.AddWithValue("@v_action", (object)"approval");
+				cmd.Parameters.AddWithValue("@v_adminappr", (object)status);
+				cmd.Parameters.AddWithValue("@v_id", (object)id);
+				cmd.Parameters.AddWithValue("@v_remark", (object)(status ? "" : remark));
+				cmd.Parameters.AddWithValue("@v_address", (object)location);
+				((DbConnection)(object)con).Open();
+				((DbCommand)(object)cmd).ExecuteNonQuery();
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.BudgetForGraph> BudgetForGraph()
+		{
+			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0018: Expected O, but got Unknown
+			try
+			{
+				cmd = new NpgsqlCommand("sp_ManageDashboard", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@action", (object)"BudgetGraph");
+				List<main.BudgetForGraph> list = new List<main.BudgetForGraph>();
+				((DbConnection)(object)con).Open();
+				NpgsqlDataReader res = cmd.ExecuteReader();
+				if (((DbDataReader)(object)res).HasRows)
+				{
+					while (((DbDataReader)(object)res).Read())
+					{
+						list.Add(new main.BudgetForGraph
+						{
+							budget = Convert.ToDecimal(((DbDataReader)(object)res)["budget"]),
+							month = Convert.ToString(((DbDataReader)(object)res)["months"])
+						});
+					}
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.HiringVehicle1> HiringReort(int? limit = null, int? page = null, int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
+		{
+			//IL_002b: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0031: Expected O, but got Unknown
+			//IL_0141: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0148: Expected O, but got Unknown
+			//IL_04c4: Unknown result type (might be due to invalid IL or missing references)
+			//IL_04cb: Expected O, but got Unknown
+			try
+			{
+				((DbConnection)(object)con).Open();
+				List<main.HiringVehicle1> list = new List<main.HiringVehicle1>();
+				NpgsqlTransaction tran = con.BeginTransaction();
+				try
+				{
+					NpgsqlCommand cmd = new NpgsqlCommand("fn_managehiringvehicle_cursor", con);
+					try
+					{
+						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+						cmd.Parameters.AddWithValue("@v_action", (object)"selectAllHiringReport");
+						cmd.Parameters.AddWithValue("v_projectmanager", (object)(managerFilter ?? new int?(0)));
+						cmd.Parameters.AddWithValue("v_id", (object)(projectFilter ?? new int?(0)));
+						cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+						cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+						cmd.Parameters.AddWithValue("v_statusfilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
+						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+						NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+						try
+						{
+							NpgsqlDataReader res = fetchCmd.ExecuteReader();
+							try
+							{
+								if (((DbDataReader)(object)res).HasRows)
+								{
+									bool firstRow = true;
+									while (((DbDataReader)(object)res).Read())
+									{
+										list.Add(new main.HiringVehicle1
+										{
+											id = (int)((DbDataReader)(object)res)["id"],
+											projectId = (int)((DbDataReader)(object)res)["projectId"],
+											projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
+											projectManager = Convert.ToString(((DbDataReader)(object)res)["name"]),
+											headName = Convert.ToString(((DbDataReader)(object)res)["heads"]),
+											amount = Convert.ToDecimal(((DbDataReader)(object)res)["amount"]),
+											dateFrom = Convert.ToDateTime(((DbDataReader)(object)res)["dateFrom"]),
+											dateTo = Convert.ToDateTime(((DbDataReader)(object)res)["dateTo"]),
+											proposedPlace = ((DbDataReader)(object)res)["proposedPlace"].ToString(),
+											purposeOfVisit = ((DbDataReader)(object)res)["purposeOfVisit"].ToString(),
+											totalDaysNight = ((DbDataReader)(object)res)["totalDaysNight"].ToString(),
+											totalPlainHills = ((DbDataReader)(object)res)["totalPlainHills"].ToString(),
+											taxi = ((DbDataReader)(object)res)["taxi"].ToString(),
+											BookAgainstCentre = ((DbDataReader)(object)res)["BookAgainstCentre"].ToString(),
+											availbilityOfFund = ((DbDataReader)(object)res)["availbilityOfFund"].ToString(),
+											note = ((DbDataReader)(object)res)["note"].ToString(),
+											newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
+											adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"]),
+											remark = ((DbDataReader)(object)res)["remark"].ToString(),
+											projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A"),
+											statusLabel = ((Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]) && !Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"])) ? "Pending" : ((!Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]) && Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"])) ? "Approved" : "Rejected"))
+										});
+										if (firstRow)
+										{
+											list[0].Pagination = new ApiCommon.PaginationInfo
+											{
+												PageNumber = page.GetValueOrDefault(),
+												TotalPages = Convert.ToInt32((((DbDataReader)(object)res)["totalpages"] != DBNull.Value) ? ((DbDataReader)(object)res)["totalpages"] : ((object)0)),
+												TotalRecords = Convert.ToInt32((((DbDataReader)(object)res)["totalrecords"] != DBNull.Value) ? ((DbDataReader)(object)res)["totalrecords"] : ((object)0)),
+												PageSize = limit.GetValueOrDefault()
+											};
+											firstRow = false;
+										}
+									}
+								}
+							}
+							finally
+							{
+								((IDisposable)res)?.Dispose();
+							}
+						}
+						finally
+						{
+							((IDisposable)fetchCmd)?.Dispose();
+						}
+						NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
+						try
+						{
+							((DbCommand)(object)closeCmd).ExecuteNonQuery();
+						}
+						finally
+						{
+							((IDisposable)closeCmd)?.Dispose();
+						}
+						((DbTransaction)(object)tran).Commit();
+					}
+					finally
+					{
+						((IDisposable)cmd)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)tran)?.Dispose();
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.HiringVehicle1> hiringreportprojects()
+		{
+			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0018: Expected O, but got Unknown
+			try
+			{
+				cmd = new NpgsqlCommand("sp_HiringVehicle", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@action", (object)"selecthiringreportprojects");
+				((DbConnection)(object)con).Open();
+				List<main.HiringVehicle1> list = new List<main.HiringVehicle1>();
+				NpgsqlDataReader res = cmd.ExecuteReader();
+				if (((DbDataReader)(object)res).HasRows)
+				{
+					while (((DbDataReader)(object)res).Read())
+					{
+						list.Add(new main.HiringVehicle1
+						{
+							id = Convert.ToInt32(((DbDataReader)(object)res)["projectId"]),
+							projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
+							employeecode = ((DbDataReader)(object)res)["empcode"].ToString(),
+							projectManager = ((DbDataReader)(object)res)["empname"].ToString()
+						});
+					}
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.HiringVehicle1> hiringreportbyproject(int projectid)
+		{
+			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0018: Expected O, but got Unknown
+			try
+			{
+				cmd = new NpgsqlCommand("sp_HiringVehicle", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@action", (object)"selecthiringreportbyproject");
+				cmd.Parameters.AddWithValue("@projectId", (object)projectid);
+				((DbConnection)(object)con).Open();
+				List<main.HiringVehicle1> list = new List<main.HiringVehicle1>();
+				NpgsqlDataReader res = cmd.ExecuteReader();
+				if (((DbDataReader)(object)res).HasRows)
+				{
+					while (((DbDataReader)(object)res).Read())
+					{
+						list.Add(new main.HiringVehicle1
+						{
+							id = (int)((DbDataReader)(object)res)["id"],
+							projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
+							projectManager = Convert.ToString(((DbDataReader)(object)res)["name"]),
+							headName = Convert.ToString(((DbDataReader)(object)res)["heads"]),
+							amount = Convert.ToDecimal(((DbDataReader)(object)res)["amount"]),
+							dateFrom = Convert.ToDateTime(((DbDataReader)(object)res)["dateFrom"]),
+							dateTo = Convert.ToDateTime(((DbDataReader)(object)res)["dateTo"]),
+							proposedPlace = ((DbDataReader)(object)res)["proposedPlace"].ToString(),
+							purposeOfVisit = ((DbDataReader)(object)res)["purposeOfVisit"].ToString(),
+							totalDaysNight = ((DbDataReader)(object)res)["totalDaysNight"].ToString(),
+							totalPlainHills = ((DbDataReader)(object)res)["totalPlainHills"].ToString(),
+							taxi = ((DbDataReader)(object)res)["taxi"].ToString(),
+							BookAgainstCentre = ((DbDataReader)(object)res)["BookAgainstCentre"].ToString(),
+							availbilityOfFund = ((DbDataReader)(object)res)["availbilityOfFund"].ToString(),
+							note = ((DbDataReader)(object)res)["note"].ToString(),
+							newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
+							adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"])
+						});
+					}
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.tourProposalrepo> TourReportProject()
+		{
+			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0018: Expected O, but got Unknown
+			try
+			{
+				cmd = new NpgsqlCommand("sp_Tourproposal", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@action", (object)"selecttourproject");
+				((DbConnection)(object)con).Open();
+				List<main.tourProposalrepo> getlist = new List<main.tourProposalrepo>();
+				NpgsqlDataReader res = cmd.ExecuteReader();
+				if (((DbDataReader)(object)res).HasRows)
+				{
+					while (((DbDataReader)(object)res).Read())
+					{
+						getlist.Add(new main.tourProposalrepo
+						{
+							id = Convert.ToInt32(((DbDataReader)(object)res)["projectId"]),
+							projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
+							employeecode = ((DbDataReader)(object)res)["empcode"].ToString(),
+							projectManager = ((DbDataReader)(object)res)["empname"].ToString()
+						});
+					}
+				}
+				return getlist;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.tourProposalrepo> tourproposalbyproject(int projectid)
+		{
+			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0018: Expected O, but got Unknown
+			try
+			{
+				cmd = new NpgsqlCommand("sp_Tourproposal", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@action", (object)"selecttourproposalbyproject");
+				cmd.Parameters.AddWithValue("@projectId", (object)projectid);
+				((DbConnection)(object)con).Open();
+				List<main.tourProposalrepo> list = new List<main.tourProposalrepo>();
+				NpgsqlDataReader res = cmd.ExecuteReader();
+				if (((DbDataReader)(object)res).HasRows)
+				{
+					while (((DbDataReader)(object)res).Read())
+					{
+						list.Add(new main.tourProposalrepo
+						{
+							id = Convert.ToInt32(((DbDataReader)(object)res)["projectId"]),
+							projectManager = Convert.ToString(((DbDataReader)(object)res)["name"]),
+							projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
+							dateOfDept = Convert.ToDateTime(((DbDataReader)(object)res)["dateOfDept"]),
+							place = Convert.ToString(((DbDataReader)(object)res)["place"]),
+							periodFrom = Convert.ToDateTime(((DbDataReader)(object)res)["periodFrom"]),
+							periodTo = Convert.ToDateTime(((DbDataReader)(object)res)["periodTo"]),
+							returnDate = Convert.ToDateTime(((DbDataReader)(object)res)["returnDate"]),
+							purpose = Convert.ToString(((DbDataReader)(object)res)["purpose"]),
+							newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
+							adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"])
+						});
+					}
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)cmd).Dispose();
+			}
+		}
+
+		public List<main.RaisedProblem> getProblemList(int? page = null, int? limit = null, int? id = null, int? managerId = null, string searchTerm = null)
+		{
+			//IL_002c: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0032: Expected O, but got Unknown
+			//IL_0142: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0149: Expected O, but got Unknown
+			//IL_036f: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0376: Expected O, but got Unknown
+			try
+			{
+				List<main.RaisedProblem> list = new List<main.RaisedProblem>();
+				((DbConnection)(object)con).Open();
+				NpgsqlTransaction tran = con.BeginTransaction();
+				try
+				{
+					NpgsqlCommand cmd = new NpgsqlCommand("fn_manageproblems_cursor", con, tran);
+					try
+					{
+						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+						cmd.Parameters.AddWithValue("v_action", (object)"selectProblemsforAdmin");
+						cmd.Parameters.AddWithValue("v_projectmanager", (object)(managerId ?? new int?(0)));
+						cmd.Parameters.AddWithValue("v_id", (object)(id ?? new int?(0)));
+						cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+						cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+						cmd.Parameters.AddWithValue("@v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+						NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\"", con, tran);
+						try
+						{
+							NpgsqlDataReader res = fetchCmd.ExecuteReader();
+							try
+							{
+								if (((DbDataReader)(object)res).HasRows)
+								{
+									bool firstRow = true;
+									while (((DbDataReader)(object)res).Read())
+									{
+										list.Add(new main.RaisedProblem
+										{
+											id = Convert.ToInt32(((DbDataReader)(object)res)["id"]),
+											title = ((DbDataReader)(object)res)["title"].ToString(),
+											description = ((DbDataReader)(object)res)["description"].ToString(),
+											adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"]),
+											newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
+											documentname = ((DbDataReader)(object)res)["document"].ToString(),
+											projectname = ((DbDataReader)(object)res)["projectName"].ToString(),
+											projectManager = ((DbDataReader)(object)res)["projectManager"].ToString(),
+											createdAt = Convert.ToDateTime(((DbDataReader)(object)res)["createdAt"]),
+											projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A")
+										});
+										if (firstRow)
+										{
+											list[0].Pagination = new ApiCommon.PaginationInfo
+											{
+												PageNumber = page.GetValueOrDefault(),
+												TotalPages = Convert.ToInt32((((DbDataReader)(object)res)["totalpages"] != DBNull.Value) ? ((DbDataReader)(object)res)["totalpages"] : ((object)0)),
+												TotalRecords = Convert.ToInt32((((DbDataReader)(object)res)["totalrecords"] != DBNull.Value) ? ((DbDataReader)(object)res)["totalrecords"] : ((object)0)),
+												PageSize = limit.GetValueOrDefault()
+											};
+											firstRow = false;
+										}
+									}
+								}
+							}
+							finally
+							{
+								((IDisposable)res)?.Dispose();
+							}
+						}
+						finally
+						{
+							((IDisposable)fetchCmd)?.Dispose();
+						}
+						NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
+						try
+						{
+							((DbCommand)(object)closeCmd).ExecuteNonQuery();
+						}
+						finally
+						{
+							((IDisposable)closeCmd)?.Dispose();
+						}
+						((DbTransaction)(object)tran).Commit();
+					}
+					finally
+					{
+						((IDisposable)cmd)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)tran)?.Dispose();
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.RaisedProblem> getproblembyId(int id)
+		{
+			//IL_002c: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0032: Expected O, but got Unknown
+			//IL_00a2: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00a9: Expected O, but got Unknown
+			//IL_01de: Unknown result type (might be due to invalid IL or missing references)
+			//IL_01e5: Expected O, but got Unknown
+			try
+			{
+				List<main.RaisedProblem> list = new List<main.RaisedProblem>();
+				((DbConnection)(object)con).Open();
+				NpgsqlTransaction tran = con.BeginTransaction();
+				try
+				{
+					NpgsqlCommand cmd = new NpgsqlCommand("fn_manageproblems_cursor", con, tran);
+					try
+					{
+						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+						cmd.Parameters.AddWithValue("@v_action", (object)"selectProblemsforAdminById");
+						cmd.Parameters.AddWithValue("@v_projectmanager", (object)0);
+						cmd.Parameters.AddWithValue("@v_id", (object)id);
+						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+						NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\"", con, tran);
+						try
+						{
+							NpgsqlDataReader res = fetchCmd.ExecuteReader();
+							try
+							{
+								if (((DbDataReader)(object)res).HasRows)
+								{
+									while (((DbDataReader)(object)res).Read())
+									{
+										list.Add(new main.RaisedProblem
+										{
+											id = Convert.ToInt32(((DbDataReader)(object)res)["id"]),
+											title = ((DbDataReader)(object)res)["title"].ToString(),
+											description = ((DbDataReader)(object)res)["description"].ToString(),
+											adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"]),
+											newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
+											documentname = ((DbDataReader)(object)res)["document"].ToString(),
+											projectname = ((DbDataReader)(object)res)["projectName"].ToString(),
+											projectManager = ((DbDataReader)(object)res)["projectManager"].ToString()
+										});
+									}
+								}
+							}
+							finally
+							{
+								((IDisposable)res)?.Dispose();
+							}
+						}
+						finally
+						{
+							((IDisposable)fetchCmd)?.Dispose();
+						}
+						NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+						try
+						{
+							((DbCommand)(object)closeCmd).ExecuteNonQuery();
+						}
+						finally
+						{
+							((IDisposable)closeCmd)?.Dispose();
+						}
+						((DbTransaction)(object)tran).Commit();
+					}
+					finally
+					{
+						((IDisposable)cmd)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)tran)?.Dispose();
+				}
+				return list;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.Meeting_Model> getAllmeetingforAdmin()
+		{
+			//IL_0015: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001b: Expected O, but got Unknown
+			try
+			{
+				List<main.Meeting_Model> _list = new List<main.Meeting_Model>();
+				main.Meeting_Model obj = null;
+				NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@action", (object)"getAllmeetingofadmin");
+				((DbConnection)(object)con).Open();
+				NpgsqlDataReader sdr = cmd.ExecuteReader();
+				while (((DbDataReader)(object)sdr).Read())
+				{
+					obj = new main.Meeting_Model();
+					obj.Id = Convert.ToInt32(((DbDataReader)(object)sdr)["id"]);
+					obj.CompleteStatus = Convert.ToInt32(((DbDataReader)(object)sdr)["completeStatus"]);
+					obj.MeetingType = ((DbDataReader)(object)sdr)["meetingType"].ToString();
+					obj.MeetingLink = ((DbDataReader)(object)sdr)["meetingLink"].ToString();
+					obj.MeetingTitle = ((DbDataReader)(object)sdr)["MeetingTitle"].ToString();
+					obj.memberId = ((((DbDataReader)(object)sdr)["memberId"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["memberId"].ToString().Split(',').ToList() : new List<string>());
+					obj.CreaterId = ((((DbDataReader)(object)sdr)["createrId"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)sdr)["createrId"]) : 0);
+					obj.MeetingDate = Convert.ToDateTime(((DbDataReader)(object)sdr)["meetingTime"]).ToString("dd-MM-yyyy");
+					obj.summary = ((DbDataReader)(object)sdr)["meetSummary"].ToString();
+					_list.Add(obj);
+					obj.createdBy = ((DbDataReader)(object)sdr)["createdBy"].ToString();
+				}
+				((DbDataReader)(object)sdr).Close();
+				return _list;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error accured", innerException);
+			}
+			finally
+			{
+				((DbConnection)(object)con).Close();
+			}
+		}
+
+		public List<main.Meeting_Model> getAllmeetingforprojectmanager()
+		{
+			//IL_0015: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001b: Expected O, but got Unknown
+			try
+			{
+				List<main.Meeting_Model> _list = new List<main.Meeting_Model>();
+				main.Meeting_Model obj = null;
+				NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@action", (object)"getAllmeetingofprojectmanager");
+				((DbConnection)(object)con).Open();
+				NpgsqlDataReader sdr = cmd.ExecuteReader();
+				while (((DbDataReader)(object)sdr).Read())
+				{
+					obj = new main.Meeting_Model();
+					obj.Id = Convert.ToInt32(((DbDataReader)(object)sdr)["id"]);
+					obj.CompleteStatus = Convert.ToInt32(((DbDataReader)(object)sdr)["completeStatus"]);
+					obj.MeetingType = ((DbDataReader)(object)sdr)["meetingType"].ToString();
+					obj.MeetingLink = ((DbDataReader)(object)sdr)["meetingLink"].ToString();
+					obj.MeetingTitle = ((DbDataReader)(object)sdr)["MeetingTitle"].ToString();
+					obj.memberId = ((((DbDataReader)(object)sdr)["memberId"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["memberId"].ToString().Split(',').ToList() : new List<string>());
+					obj.CreaterId = ((((DbDataReader)(object)sdr)["createrId"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)sdr)["createrId"]) : 0);
+					obj.MeetingDate = Convert.ToDateTime(((DbDataReader)(object)sdr)["meetingTime"]).ToString("dd-MM-yyyy");
+					obj.summary = ((DbDataReader)(object)sdr)["meetSummary"].ToString();
+					_list.Add(obj);
+					obj.createdBy = ((DbDataReader)(object)sdr)["createdBy"].ToString();
+				}
+				((DbDataReader)(object)sdr).Close();
+				return _list;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error accured", innerException);
+			}
+			finally
+			{
+				((DbConnection)(object)con).Close();
+			}
+		}
+
+		public List<main.SubProblem> getAllSubOrdinateProblemByIdforadmin(int id)
+		{
+			//IL_0015: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001b: Expected O, but got Unknown
+			try
+			{
+				List<main.SubProblem> problemList = new List<main.SubProblem>();
+				main.SubProblem obj = null;
+				NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageSubordinateProjectProblem", con);
+				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@action", (object)"getallproblembyidforadmin");
+				cmd.Parameters.AddWithValue("@id", (object)id);
+				((DbConnection)(object)con).Open();
+				NpgsqlDataReader sdr = cmd.ExecuteReader();
+				if (((DbDataReader)(object)sdr).HasRows)
+				{
+					while (((DbDataReader)(object)sdr).Read())
+					{
+						obj = new main.SubProblem();
+						obj.ProblemId = Convert.ToInt32(((DbDataReader)(object)sdr)["problemId"]);
+						obj.ProjectName = ((DbDataReader)(object)sdr)["ProjectName"].ToString();
+						obj.Title = ((DbDataReader)(object)sdr)["Title"].ToString();
+						obj.Description = ((DbDataReader)(object)sdr)["Description"].ToString();
+						obj.Attchment_Url = ((DbDataReader)(object)sdr)["Attachment"].ToString();
+						obj.CreatedDate = Convert.ToDateTime(((DbDataReader)(object)sdr)["CreatedDate"]).ToString("dd-MM-yyyy");
+						obj.newRequest = Convert.ToBoolean(((DbDataReader)(object)sdr)["newRequest"]);
+						problemList.Add(obj);
+					}
+				}
+				return problemList;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error accured", innerException);
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				((Component)(object)base.cmd).Dispose();
+			}
+		}
+
+		public List<main.BudgetHeadModel> GetBudgetHeads()
+		{
+			//IL_002b: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0031: Expected O, but got Unknown
+			//IL_00f9: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0100: Expected O, but got Unknown
+			//IL_01b9: Unknown result type (might be due to invalid IL or missing references)
+			//IL_01c0: Expected O, but got Unknown
+			try
+			{
+				List<main.BudgetHeadModel> budgetlist = new List<main.BudgetHeadModel>();
+				((DbConnection)(object)con).Open();
+				NpgsqlTransaction tran = con.BeginTransaction();
+				try
+				{
+					NpgsqlCommand cmd = new NpgsqlCommand("fn_manageempreport_cursor", con);
+					try
+					{
+						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+						cmd.Parameters.AddWithValue("v_action", (object)"getbudgetHeads");
+						cmd.Parameters.AddWithValue("v_projectmanager", (object)0);
+						cmd.Parameters.AddWithValue("v_id", (object)0);
+						cmd.Parameters.AddWithValue("v_limit", (object)DBNull.Value);
+						cmd.Parameters.AddWithValue("v_page", (object)DBNull.Value);
+						cmd.Parameters.AddWithValue("v_year", (object)DBNull.Value);
+						cmd.Parameters.AddWithValue("v_month", (object)DBNull.Value);
+						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+						NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+						try
+						{
+							NpgsqlDataReader res = fetchCmd.ExecuteReader();
+							try
+							{
+								while (((DbDataReader)(object)res).Read())
+								{
+									budgetlist.Add(new main.BudgetHeadModel
+									{
+										Id = ((((DbDataReader)(object)res)["id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["id"]) : 0),
+										BudgetHead = ((((DbDataReader)(object)res)["budgethead"] == DBNull.Value) ? null : ((DbDataReader)(object)res)["budgethead"].ToString())
+									});
+								}
+							}
+							finally
+							{
+								((IDisposable)res)?.Dispose();
+							}
+						}
+						finally
+						{
+							((IDisposable)fetchCmd)?.Dispose();
+						}
+						NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+						try
+						{
+							((DbCommand)(object)closeCmd).ExecuteNonQuery();
+						}
+						finally
+						{
+							((IDisposable)closeCmd)?.Dispose();
+						}
+						((DbTransaction)(object)tran).Commit();
+					}
+					finally
+					{
+						((IDisposable)cmd)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)tran)?.Dispose();
+				}
+				return budgetlist;
+			}
+			catch (Exception innerException)
+			{
+				throw new Exception("An error occurred", innerException);
+			}
+			finally
+			{
+				if (((DbConnection)(object)con).State == ConnectionState.Open)
+				{
+					((DbConnection)(object)con).Close();
+				}
+				if (base.cmd != null)
+				{
+					((Component)(object)base.cmd).Dispose();
+				}
+			}
+		}
+
+		public bool InsertCmDashboardProject(main.CMDashboardData cm)
+		{
+			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0013: Expected O, but got Unknown
+			try
+			{
+				NpgsqlCommand cmd = new NpgsqlCommand("call sp_manage_cm_dashboard(@p_action, @p_id, @p_project_name, @p_start_year, @p_end_date, @p_remark, @p_budget, @p_status, @p_projectStatus)", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					cmd.Parameters.AddWithValue("p_action", (object)cm.db_action);
+					NpgsqlParameterCollection parameters = cmd.Parameters;
+					int? id = cm.Id;
+					parameters.AddWithValue("p_id", id.HasValue ? ((object)id.GetValueOrDefault()) : DBNull.Value);
+					cmd.Parameters.AddWithValue("p_project_name", ((object)cm.ProjectTitile) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_start_year", (object)cm.StartYear);
+					NpgsqlParameterCollection parameters2 = cmd.Parameters;
+					DateTime? endDate = cm.EndDate;
+					parameters2.AddWithValue("p_end_date", endDate.HasValue ? ((object)endDate.GetValueOrDefault()) : DBNull.Value);
+					cmd.Parameters.AddWithValue("p_remark", ((object)cm.Remark) ?? ((object)DBNull.Value));
+					NpgsqlParameterCollection parameters3 = cmd.Parameters;
+					decimal? budget = cm.Budget;
+					parameters3.AddWithValue("p_budget", budget.HasValue ? ((object)budget.GetValueOrDefault()) : DBNull.Value);
+					cmd.Parameters.AddWithValue("p_projectStatus", ((object)cm.projectStatus) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_status", (object)true);
+					((DbConnection)(object)con).Open();
+					((DbCommand)(object)cmd).ExecuteNonQuery();
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
+		public List<main.CMDashboardData> GetCmDashboardList(int? id = null, bool? status = true, int? startYear = null, string statusFilter = null)
+		{
+			//IL_0013: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0019: Expected O, but got Unknown
+			List<main.CMDashboardData> list = new List<main.CMDashboardData>();
+			try
+			{
+				NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM fn_get_cm_dashboard(@p_id, @p_status, @p_start_year, @p_project_status)", con);
+				try
+				{
+					((DbCommand)(object)cmd).CommandType = CommandType.Text;
+					NpgsqlParameterCollection parameters = cmd.Parameters;
+					int? num = id;
+					parameters.AddWithValue("@p_id", num.HasValue ? ((object)num.GetValueOrDefault()) : DBNull.Value);
+					NpgsqlParameterCollection parameters2 = cmd.Parameters;
+					bool? flag = status;
+					parameters2.AddWithValue("@p_status", flag.HasValue ? ((object)(flag == true)) : DBNull.Value);
+					NpgsqlParameterCollection parameters3 = cmd.Parameters;
+					num = startYear;
+					parameters3.AddWithValue("@p_start_year", num.HasValue ? ((object)num.GetValueOrDefault()) : DBNull.Value);
+					cmd.Parameters.AddWithValue("@p_project_status", ((object)statusFilter) ?? ((object)DBNull.Value));
+					((DbConnection)(object)con).Open();
+					NpgsqlDataReader rd = cmd.ExecuteReader();
+					try
+					{
+						while (((DbDataReader)(object)rd).Read())
+						{
+							list.Add(new main.CMDashboardData
+							{
+								Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+								ProjectTitile = ((DbDataReader)(object)rd)["project_name"]?.ToString(),
+								StartYear = Convert.ToInt32(((DbDataReader)(object)rd)["start_year"]),
+								EndDate = ((((DbDataReader)(object)rd)["end_date"] == DBNull.Value) ? ((DateTime?)null) : new DateTime?(Convert.ToDateTime(((DbDataReader)(object)rd)["end_date"]))),
+								Remark = ((DbDataReader)(object)rd)["remark"]?.ToString(),
+								Budget = ((((DbDataReader)(object)rd)["budget"] == DBNull.Value) ? ((decimal?)null) : new decimal?(Convert.ToDecimal(((DbDataReader)(object)rd)["budget"]))),
+								projectStatus = ((DbDataReader)(object)rd)["projectStatus"].ToString()
+							});
+						}
+					}
+					finally
+					{
+						((IDisposable)rd)?.Dispose();
+					}
+				}
+				finally
+				{
+					((IDisposable)cmd)?.Dispose();
+				}
+			}
+			catch
+			{
+			}
+			return list;
+		}
+	}
 
-        #region Employee Category
-        mail _mail = new mail();
-
-
-        public bool InsertDesignation(CommonResponse cr)
-        {
-            try
-            {
-                using (var cmd = new NpgsqlCommand(
-                    "CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con))
-                {
-                    cmd.CommandType = CommandType.Text; // must be Text for CALL
-
-                    cmd.Parameters.AddWithValue("v_id", cr.id == 0 ? (object)DBNull.Value : cr.id);
-                    cmd.Parameters.AddWithValue("v_designationname", cr.name ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_status", true);
-                    cmd.Parameters.AddWithValue("v_devisionname", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_action", cr.id > 0 ? "UpdateDesignation" : "InsertDesignation");
-                    cmd.Parameters.Add(new NpgsqlParameter("v_rc", NpgsqlDbType.Refcursor)
-                    {
-                        Direction = ParameterDirection.InputOutput,
-                        Value = DBNull.Value
-                    });
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-            }
-        }
-
-
-
-        public bool InsertDivison(CommonResponse cr)
-        {
-            try
-            {
-                using (var cmd = new NpgsqlCommand(
-                    "CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con))
-                {
-                    cmd.CommandType = CommandType.Text; // must be Text for CALL
-
-                    cmd.Parameters.AddWithValue("v_id", cr.id == 0 ? (object)DBNull.Value : cr.id);
-                    cmd.Parameters.AddWithValue("v_designationname", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_status", true);
-                    cmd.Parameters.AddWithValue("v_devisionname", cr.name ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_action", cr.id > 0 ? "UpdateDevision" : "InsertDevision");
-                    cmd.Parameters.Add(new NpgsqlParameter("v_rc", NpgsqlDbType.Refcursor)
-                    {
-                        Direction = ParameterDirection.InputOutput,
-                        Value = DBNull.Value
-                    });
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public List<CommonResponse> ListDivison()
-        {
-            try
-            {
-                List<CommonResponse> list = new List<CommonResponse>();
-                using (var cmd = new NpgsqlCommand("select * FROM fn_get_employee_category(@action)", con))
-                {
-                    cmd.Parameters.AddWithValue("@action", "GetAllDevision");
-                    con.Open();
-                    NpgsqlDataReader rd = cmd.ExecuteReader();
-                    if (rd.HasRows)
-                    {
-                        while (rd.Read())
-                        {
-                            list.Add(new CommonResponse
-                            {
-                                id = Convert.ToInt32(rd["id"]),
-                                name = rd["name"].ToString()
-                            });
-                        }
-                        rd.Close();
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-        public List<CommonResponse> ListDesgination()
-        {
-            try
-            {
-                List<CommonResponse> list = new List<CommonResponse>();
-                cmd = new NpgsqlCommand("select * FROM fn_get_employee_category(@action)", con);
-                cmd.Parameters.AddWithValue("@action", "GetAllDesignation");
-                con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        list.Add(new CommonResponse
-                        {
-                            id = Convert.ToInt32(rd["id"]),
-                            name = rd["name"].ToString()
-                        });
-                    }
-                    rd.Close();
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-
-
-        public bool removeDivison(int Id)
-        {
-            try
-            {
-                using (var cmd = new NpgsqlCommand(
-                    "CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con))
-                {
-                    cmd.CommandType = CommandType.Text; // must be Text for CALL
-
-                    cmd.Parameters.AddWithValue("v_id", Id == 0 ? (object)DBNull.Value : Id);
-                    cmd.Parameters.AddWithValue("v_designationname", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_status", false);
-                    cmd.Parameters.AddWithValue("v_devisionname", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_action", "deleteDevision");
-                    cmd.Parameters.Add(new NpgsqlParameter("v_rc", NpgsqlDbType.Refcursor)
-                    {
-                        Direction = ParameterDirection.InputOutput,
-                        Value = DBNull.Value
-                    });
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-        public bool removeDesgination(int Id)
-        {
-
-            try
-            {
-                using (var cmd = new NpgsqlCommand(
-                    "CALL sp_manageemployeecategory(:v_id, :v_designationname, :v_status, :v_devisionname, :v_action, :v_rc)", con))
-                {
-                    cmd.CommandType = CommandType.Text; // must be Text for CALL
-
-                    cmd.Parameters.AddWithValue("v_id", Id == 0 ? (object)DBNull.Value : Id);
-                    cmd.Parameters.AddWithValue("v_designationname", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_status", false);
-                    cmd.Parameters.AddWithValue("v_devisionname", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_action", "deleteDesignation");
-                    cmd.Parameters.Add(new NpgsqlParameter("v_rc", NpgsqlDbType.Refcursor)
-                    {
-                        Direction = ParameterDirection.InputOutput,
-                        Value = DBNull.Value
-                    });
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-        #endregion
-
-        #region add Employee
-        public bool AddEmployees(Employee_model emp,out string mess)
-        {
-            mess = "";
-            NpgsqlCommand cmd = null;
-            try
-            {
-                using (cmd = new NpgsqlCommand(
-                    "CALL sp_adminemployees(:p_id, :p_employeecode, :p_name, :p_mobile, :p_email, :p_gender, :p_role, :p_username, :p_password, :p_devision, :p_designation, :p_profile, :p_action, :p_rc)",
-                    con))
-                {
-                    cmd.CommandType = CommandType.Text;
-
-                    // Generate username
-                    string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-                    Random rnd = new Random();
-                    string userPassword = "";
-                    if (emp.Id == 0)
-                    {
-                        for (int i = 0; i < 8; i++)
-                        {
-                            userPassword += validChars[rnd.Next(validChars.Length)];
-                        }
-                    }
-
-                    string actionType = emp.Id > 0 ? "UpdateEmployees" : "InsertEmployees";
-
-                    cmd.Parameters.AddWithValue("p_id", emp.Id == 0 ? (object)DBNull.Value : emp.Id);
-                    cmd.Parameters.AddWithValue("p_employeecode", emp.EmployeeCode ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_name", emp.EmployeeName ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_mobile", emp.MobileNo);
-                    cmd.Parameters.AddWithValue("p_email", emp.Email ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_gender", emp.Gender ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_role", emp.EmployeeRole ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_username", emp.Email ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_password", userPassword ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_devision", emp.Division);
-                    cmd.Parameters.AddWithValue("p_designation", emp.Designation);
-                    cmd.Parameters.AddWithValue("p_profile", emp.Image_url ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("p_action", actionType);
-
-                    cmd.Parameters.Add(new NpgsqlParameter("p_rc", NpgsqlDbType.Refcursor)
-                    {
-                        Direction = ParameterDirection.InputOutput,
-                        Value = DBNull.Value
-                    });
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-
-                    // Send mail only for insert
-                    if (emp.Id == 0)
-                    {
-                        string subject = "Login Credential";
-                        string message = $"<p>Your user id: <b>{emp.Email}</b></p><br><p>Password: <b>{userPassword}</b></p>";
-                        _mail.SendMail(emp.EmployeeName, emp.Email, subject, message);
-                    }
-                    mess = "Employee Added Successfully";
-                    return true;
-                }
-            }
-            catch(Exception sqlex)
-            {
-                mess = sqlex.Message;
-                return false;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-
-                if (cmd != null)
-                    cmd.Dispose();
-            }
-        }
-
-        public bool RemoveEmployees(int id)
-        {
-            NpgsqlCommand cmd = null;
-            try
-            {
-                cmd = new NpgsqlCommand();
-                cmd.Connection = con;
-                cmd.CommandType = CommandType.Text;
-
-                cmd.CommandText = "CALL sp_adminemployees(p_id => @p_id, p_action => @p_action)";
-
-                // Set procedure parameters
-                cmd.Parameters.AddWithValue("p_action", "DeleteEmployees");
-                cmd.Parameters.AddWithValue("p_id", id);
-
-                con.Open();
-                cmd.ExecuteNonQuery();
-                return true; // if no exception, assume success
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public List<Employee_model> SelectEmployeeRecord(int? page = null, int? limit = null,string searchTerm=null,int? devision = null)
-        {
-            List<Employee_model> empModel = new List<Employee_model>();
-
-            try
-            {
-                con.Open();
-
-                using (var cmd = new NpgsqlCommand("SELECT * FROM fn_get_employees(@v_action,@v_id,@v_limit,@v_page,@v_searchTerm,@v_division);", con))
-                {
-                    cmd.CommandType = CommandType.Text; // Use text since function returns rows
-                    cmd.Parameters.AddWithValue("@v_action", "SelectEmployees");
-                    cmd.Parameters.AddWithValue("@v_id", 0);
-                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_searchTerm", string.IsNullOrEmpty(searchTerm) ? (object)DBNull.Value : searchTerm);
-                    cmd.Parameters.AddWithValue("@v_division", devision.HasValue ? (object)devision.Value : DBNull.Value);
-
-                    using (var record = cmd.ExecuteReader())
-                    {
-                        bool firstRow = true;
-                        while (record.Read())
-                        {
-                            var employee = new Employee_model
-                            {
-                                Id = Convert.ToInt32(record["id"]),
-                                EmployeeCode = record["employeecode"]?.ToString(),
-                                EmployeeName = record["name"]?.ToString(),
-                                DevisionName = record["devisionname"]?.ToString(),
-                                Email = record["email"]?.ToString(),
-                                MobileNo = record["mobile"] != DBNull.Value ? Convert.ToInt64(record["mobile"]) : 0,
-                                EmployeeRole = record["role"] != DBNull.Value ? record["role"].ToString().Trim() : "",
-                                Division = record["devision"] != DBNull.Value ? Convert.ToInt32(record["devision"]) : 0,
-                                DesignationName = record["designationname"]?.ToString(),
-                                Status = record["status"] != DBNull.Value && Convert.ToBoolean(record["status"]),
-                                Image_url = record["profile"] != DBNull.Value ? record["profile"].ToString() : null,
-                                ActiveStatus = Convert.ToBoolean(record["activestatus"])
-                            };
-
-                            // Assign pagination info only for the first row
-                            if (firstRow)
-                            {
-                                employee.Pagination = new ApiCommon.PaginationInfo
-                                {
-                                    PageNumber = page ?? 0,
-                                    TotalPages = Convert.ToInt32(record["totalpages"] != DBNull.Value ? record["totalpages"] : 0),
-                                    TotalRecords = Convert.ToInt32(record["totalrecords"] != DBNull.Value ? record["totalrecords"] : 0),
-                                    PageSize = limit ?? 0
-                                };
-                                firstRow = false; // Optional: ensure pagination is only assigned once
-                            }
-
-                            empModel.Add(employee);
-
-                        }
-                    }
-                }
-
-                return empModel;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while fetching employee records", ex);
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-            }
-        }
-
-
-        public Employee_model SelectEmployeeRecordById(int id)
-        {
-            try
-            {
-                Employee_model empModel = new Employee_model();
-                con.Open();
-
-                using (var cmd = new NpgsqlCommand("SELECT * FROM fn_get_employees(@v_action,@v_id);", con))
-                {
-                    cmd.CommandType = CommandType.Text; // Use text since function returns rows
-                    cmd.Parameters.AddWithValue("@v_action", "SelectEmployeesById");
-                    cmd.Parameters.AddWithValue("@v_id", id);
-
-                    using (var record = cmd.ExecuteReader())
-                    {
-                        while (record.Read())
-                        {
-                            empModel = new Employee_model
-                            {
-                                Id = Convert.ToInt32(record["id"]),
-                                EmployeeCode = record["employeecode"]?.ToString(),
-                                EmployeeName = record["name"]?.ToString(),
-                                DevisionName = record["devisionname"]?.ToString(),
-                                Email = record["email"]?.ToString(),
-                                MobileNo = record["mobile"] != DBNull.Value ? Convert.ToInt64(record["mobile"]) : 0,
-                                EmployeeRole = record["role"] != DBNull.Value ? record["role"].ToString().Trim() : "",
-                                Division = record["devision"] != DBNull.Value ? Convert.ToInt32(record["devision"]) : 0,
-                                Designation = record["designation"] != DBNull.Value ? Convert.ToInt32(record["designation"]) : 0,
-                                DesignationName = record["designationname"]?.ToString(),
-                                Gender = record["gender"]?.ToString(),
-                                Status = record["status"] != DBNull.Value && Convert.ToBoolean(record["status"]),
-                                Image_url = record["profile"] != DBNull.Value ? record["profile"].ToString() : null,
-                                ActiveStatus = Convert.ToBoolean(record["activeStatus"]),
-                                updationStatus = Convert.ToBoolean(record["updatestatus"]),
-                            };
-                        }
-                    }
-                }
-
-                return empModel;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public bool ChangeActieStatus(int id)
-        {
-            try
-            {
-                cmd = new NpgsqlCommand();
-                cmd.Connection = con;
-                cmd.CommandType = CommandType.Text;
-
-                cmd.CommandText = "CALL sp_adminemployees(p_id => @p_id, p_action => @p_action)";
-
-                // Set procedure parameters
-                cmd.Parameters.AddWithValue("p_action", "ChangeActiveStatus");
-                cmd.Parameters.AddWithValue("p_id", id);
-
-                con.Open();
-                cmd.ExecuteNonQuery();
-                return true; // if no exception, assume success
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-        #endregion
-
-
-
-        #region Create Project
-        public bool addProject(createProjectModel pm)
-        {
-            NpgsqlTransaction tran = null;
-            NpgsqlCommand cmd = null;
-
-            try
-            {
-                con.Open();
-                tran = con.BeginTransaction();
-
-                // Generate Project Code
-                Random rand = new Random();
-                if(pm.pm.Id>0)
-                pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
-
-                
-                var projectParams = new Dictionary<string, object>
-                {
-                    ["p_action"] = pm.pm.Id <=0? "insertProject": "updateProject",
-                    ["p_letterno"] = Convert.ToInt32(pm.pm.letterNo),
-                    ["p_title"] = pm.pm.ProjectTitle,
-                    ["p_assigndate"] = pm.pm.AssignDate,
-                    ["p_startdate"] = pm.pm.StartDate,
-                    ["p_completiondate"] = pm.pm.CompletionDate,
-                    ["p_projectmanager"] = int.TryParse(pm.pm.ProjectManager, out int ProjectManager) ? ProjectManager : 0,
-                    ["p_budget"] = Convert.ToDouble(pm.pm.ProjectBudget),  // double precision
-                    ["p_description"] = pm.pm.ProjectDescription ?? string.Empty,
-                    ["p_projectdocument"] = pm.pm.projectDocumentUrl ?? string.Empty,
-                    ["p_projecttype"] = pm.pm.ProjectType ?? string.Empty,
-                    ["p_stage"] = pm.pm.ProjectStage,
-                    ["p_createdby"] = pm.pm.createdBy ?? string.Empty,
-                    ["p_status"] = true,
-                    ["p_approvestatus"] = true,
-                    ["p_projectcode"] = pm.projectCode,
-                    ["p_id"] = pm.pm.Id,
-                    ["p_hrcount"] = pm.pm.hrCount
-                };
-
-
-                int projectId = ExecuteProjectAction(projectParams, tran);
-
-                // 2️⃣ Insert budgets
-                if (pm.budgets != null && pm.budgets.Count > 0)
-                {
-                    foreach (var item in pm.budgets)
-                    {
-                        if (item.HeadId>0)
-                        {
-                            var budgetParams = new Dictionary<string, object>
-                            {
-                                ["p_action"] = item.Id<=0 ?"insertProjectBudget":"updateprojectBudget",
-                                ["p_project_id"] = pm.pm.Id > 0 ?pm.pm.Id:projectId,
-                                ["p_heads"] = item.HeadId.ToString(),
-                                ["p_headsamount"] = item.ProjectAmount,
-                                ["p_projectmanager"] = item.Id
-                            };
-                            ExecuteProjectAction(budgetParams, tran);
-                        }
-                        
-                    }
-                }
-
-                //Insert Human Resources
-                if (pm.hr != null && pm.hr.Count > 0 && pm.pm.hrCount > 0)
-                {
-                    foreach (var item in pm.hr)
-                    {
-                        var hrparams = new Dictionary<string, object>
-                        {
-                            ["p_action"] = item.id <= 0 ? "insertHumanResources" : "updateHumanResources",
-                            ["p_project_id"] = pm.pm.Id > 0 ? pm.pm.Id : projectId,
-                            ["p_id"] = item.designationId,
-                            ["p_hrcount"] = item.designationCount,
-                            ["p_projectmanager"] = item.id
-                        };
-                        ExecuteProjectAction(hrparams, tran);
-                    }
-                }
-
-                // 3️⃣ Insert stages
-                if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
-                {
-                    foreach (var item in pm.stages)
-                    {
-                        var stageParams = new Dictionary<string, object>
-                        {
-                            ["p_action"] = item.Id<=0? "insertProjectStage": "updateprojectStage",
-                            ["p_project_id"] = pm.pm.Id > 0 ? pm.pm.Id : projectId,
-                            ["p_id"] = item.Id,
-                            ["p_keypoint"] = item.KeyPoint,
-                            ["p_completiondate"] = item.CompletionDate,
-                            ["p_stagedocument"] = item.Document_Url
-                        };
-                        ExecuteProjectAction(stageParams, tran);
-                    }
-                }
-
-                    // 4️⃣ Insert subordinates
-                    if (pm.pm.SubOrdinate != null && pm.pm.SubOrdinate.Length > 0)
-                {
-                    foreach (var subId in pm.pm.SubOrdinate)
-                    {
-                        var subParams = new Dictionary<string, object>
-                        {
-                            ["p_action"] = pm.pm.Id<=0?"insertSubOrdinate":"updateSubOrdinate",
-                            ["p_project_id"] = pm.pm.Id > 0 ? pm.pm.Id : projectId,
-                            ["p_id"] = subId,
-                            ["p_projectmanager"] = int.TryParse(pm.pm.ProjectManager, out int SubProjectManager) ? SubProjectManager : 0
-                        };
-                        ExecuteProjectAction(subParams, tran);
-                    }
-                }
-
-                // 5️⃣ Insert External project details
-                if (pm.pm.ProjectType.Equals("External") && (projectId > 0 || pm.pm.Id > 0))
-                {
-                    var extParams = new Dictionary<string, object>
-                    {
-                        ["p_action"] = pm.pm.Id<=0?"insertExternalProject":"updateExternalProject",
-                        ["p_project_id"] = pm.pm.Id > 0 ? pm.pm.Id : projectId,
-                        ["p_departmentname"] = pm.pm.ProjectDepartment,
-                        ["p_contactperson"] = pm.pm.ContactPerson,
-                        ["p_address"] = pm.pm.Address
-                    };
-                    ExecuteProjectAction(extParams, tran);
-                }
-
-                tran.Commit();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                tran?.Rollback();
-                Console.WriteLine("❌ Error: " + ex.Message);
-                return false;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd?.Dispose();
-            }
-        }
-
-
-        private int ExecuteProjectAction(Dictionary<string, object> parameters, NpgsqlTransaction tran)
-        {
-            using (var cmd = new NpgsqlCommand(
-@"CALL sp_adminaddproject(
-    @p_action,
-    @p_letterno,
-    @p_id,
-    @p_title,
-    @p_assigndate,
-    @p_startdate,
-    @p_completiondate,
-    @p_projectmanager,
-    @p_subordinate,
-    @p_budget,
-    @p_description,
-    @p_projectdocument,
-    @p_projecttype,
-    @p_stage,
-    @p_projectcode,
-    @p_approvestatus,
-    @p_createdby,
-    @p_status,
-    @p_heads,
-    @p_headsamount,
-    @p_keypoint,
-    @p_stagedocument,
-    @p_departmentname,
-    @p_contactperson,
-    @p_address,
-    @p_hrcount,
-    @p_project_id
-)", con, tran)) 
-
-            {
-                cmd.CommandType = CommandType.Text;
-
-                // Define all parameters with defaults
-                var allParams = new List<string>
-        {
-            "p_action","p_letterno","p_id","p_title","p_assigndate","p_startdate","p_completiondate","p_projectmanager","p_subordinate","p_budget",
-            "p_description","p_projectdocument","p_projecttype","p_stage","p_projectcode","p_approvestatus","p_createdby","p_status", "p_heads", "p_headsamount", "p_keypoint","p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_hrcount" , "p_project_id"
-        };
-
-                // Assign provided params or default DBNull
-                foreach (var paramName in allParams)
-                {
-                    if (parameters.ContainsKey(paramName))
-                        cmd.Parameters.AddWithValue(paramName, parameters[paramName] ?? (object)DBNull.Value);
-                    else if (paramName == "p_project_id" || paramName == "ref")
-                        cmd.Parameters.AddWithValue(paramName, 0).Direction = ParameterDirection.InputOutput;
-                    else
-                        cmd.Parameters.AddWithValue(paramName, DBNull.Value);
-                }
-
-                cmd.ExecuteNonQuery();
-
-                // Return project id if available
-                if (cmd.Parameters.Contains("p_project_id") && cmd.Parameters["p_project_id"].Value != DBNull.Value)
-                    return Convert.ToInt32(cmd.Parameters["p_project_id"].Value);
-                else
-                    return 0;
-            }
-        }
-
-        private DateTime? GetDateSafe(IDataReader rd, string column)
-        {
-            var value = rd[column];
-
-            if (value == null || value == DBNull.Value)
-                return null;
-
-            // PostgreSQL timestamptz
-            if (value is DateTimeOffset dto)
-                return dto.DateTime;
-
-            // Normal DateTime
-            if (value is DateTime dt)
-                return dt;
-
-            // Numeric (epoch / oa date)
-            if (double.TryParse(value.ToString(), out double num))
-                return DateTime.FromOADate(num);
-
-            // String date
-            if (DateTime.TryParse(value.ToString(), out DateTime parsed))
-                return parsed;
-
-            return null;
-        }
-
-
-        public List<Project_model> Project_List(int? page = null, int? limit = null,string filterType = null,string searchTerm = null,string statusFilter = null,int?projectManager = null)
-        {
-            try
-            {
-                List<Project_model> list = new List<Project_model>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_filterType,@v_limit,@v_page,@v_searchTerm,@v_statusFilter)", con);
-                cmd.Parameters.AddWithValue("@action", "GetAllProject");
-                cmd.Parameters.AddWithValue("@v_id", DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_projectManager", projectManager.HasValue?(object)projectManager :DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_filterType", string.IsNullOrEmpty(filterType) ? DBNull.Value : (object)filterType);
-                cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_searchTerm", string.IsNullOrEmpty(searchTerm) ? DBNull.Value : (object)searchTerm);
-                cmd.Parameters.AddWithValue("@v_statusFilter", string.IsNullOrEmpty(statusFilter) ? DBNull.Value : (object)statusFilter);
-                con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
-                {
-                    bool firstRow = true;
-                    while (rd.Read())
-                    {
-                        var project = new Project_model
-                        {
-                            Id = Convert.ToInt32(rd["id"]),
-                            ProjectTitle = rd["title"].ToString(),
-                            AssignDate = GetDateSafe(rd, "assignDate"),
-                            CompletionDate = GetDateSafe(rd, "completionDate"),
-                            StartDate = GetDateSafe(rd, "startDate"),
-                            ProjectManager = rd["name"].ToString(),
-                            Percentage = rd["financialStatusPercentage"] != DBNull.Value ? rd["financialStatusPercentage"].ToString() : "",
-                            ProjectBudget = Convert.ToDecimal(rd["budget"] != DBNull.Value ? rd["budget"] : 0),
-                            ProjectDescription = rd["description"].ToString(),
-                            projectDocumentUrl = rd["ProjectDocument"].ToString(),
-                            ProjectType = rd["projectType"].ToString(),
-                            physicalcomplete = Math.Round(Convert.ToDecimal(rd["completionPercentage"]),2),
-                            overallPercentage = Convert.ToDecimal(rd["overallPercentage"]),
-                            ProjectStage = Convert.ToBoolean(rd["stage"]),
-                            ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
-                            createdBy = rd["createdBy"].ToString(),
-                            projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
-                        };
-                        project.CompletionDatestring = project.CompletionDate?.ToString("dd-MM-yyyy") ?? "N/A";
-                        project.AssignDateString = project.AssignDate?.ToString("dd-MM-yyyy") ?? "N/A";
-                        project.StartDateString = project.StartDate?.ToString("dd-MM-yyyy") ?? "N/A";
-                        if (project.ProjectStatus || project.physicalcomplete == 100)
-                        {
-                            project.projectStatusLabel = "Completed";
-                        }
-                        else if (project.CompletionDate < DateTime.Now)
-                        {
-                            project.projectStatusLabel = "Delay";
-                        }
-                        else if (project.StartDate < DateTime.Now)
-                        {
-                            project.projectStatusLabel = "Ongoing";
-                        }
-                        else
-                        {
-                            project.projectStatusLabel = "Upcoming";
-                        }
-                        if (firstRow)
-                        {
-                            project.Pagination = new ApiCommon.PaginationInfo
-                            {
-                                PageNumber = page ?? 0,
-                                TotalPages = Convert.ToInt32(rd["totalpages"] != DBNull.Value ? rd["totalpages"] : 0),
-                                TotalRecords = Convert.ToInt32(rd["totalrecords"] != DBNull.Value ? rd["totalrecords"] : 0),
-                                PageSize = limit ?? 0
-                            };
-                            firstRow = false; // Optional: ensure pagination is only assigned once
-                        }
-
-                        list.Add(project);
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-        public List<Project_model> getHeadByProject(int projectId, int? page = null, int? limit = null)
-        {
-            try
-            {
-                List<Project_model> _headList = new List<Project_model>();
-                con.Open();
-                Project_model obj = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@v_action,@v_id,@v_limit ,@v_page)", con);
-                cmd.Parameters.AddWithValue("@v_action", "getHeadByProject");
-                cmd.Parameters.AddWithValue("@v_id", projectId);
-                cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
-                {
-                    while (sdr.Read())
-                    {
-                        obj = new Project_model();
-                        obj.Id = Convert.ToInt32(sdr["id"]);
-                        obj.heads = sdr["title"].ToString();
-                        _headList.Add(obj);
-                    }
-                }
-                return _headList;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public createProjectModel GetProjectById(int id)
-        {
-            try
-            {
-                createProjectModel cpm = new createProjectModel();
-
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_limit,@v_page)", con);
-                cmd.Parameters.AddWithValue("@action", "GetProjectById");
-                cmd.Parameters.AddWithValue("@v_id", id);
-                cmd.Parameters.AddWithValue("@v_limit", DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", DBNull.Value);
-                con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                List<Project_Subordination> subList = new List<Project_Subordination>();
-                Project_model pm = new Project_model();
-                if (rd.HasRows)
-                {
-
-                    while (rd.Read())
-                    {
-                        pm.Id = Convert.ToInt32(rd["id"]);
-                        pm.hrCount = rd["hrcount"] != DBNull.Value ?  Convert.ToInt32(rd["hrcount"]):0;
-                        pm.ProjectTitle = rd["title"].ToString();
-                        pm.AssignDate = GetDateSafe(rd, "assignDate");
-                        pm.CompletionDate = GetDateSafe(rd, "completionDate");
-                        pm.StartDate = GetDateSafe(rd, "startDate");
-                        pm.ProjectManager = rd["name"].ToString();
-                        pm.ProjectBudget = Convert.ToDecimal(rd["budget"]);
-                        pm.ProjectDescription = rd["description"].ToString();
-                        pm.projectDocumentUrl = rd["ProjectDocument"].ToString();
-                        pm.ProjectType = rd["projectType"].ToString();
-                        pm.ProjectStage = Convert.ToBoolean(rd["stage"]);
-                        pm.ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]);
-                        pm.projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A";
-                        if (pm.ProjectType.Equals("External"))
-                        {
-                            pm.Address = rd["address"].ToString();
-                            pm.ProjectDepartment = rd["departmentname"].ToString();
-                            pm.ContactPerson = rd["contactperson"].ToString();
-                        }
-                        if (rd["SubordinateLinkId"] != DBNull.Value)
-                        {
-                            subList.Add(new Project_Subordination
-                            {
-                                Id = Convert.ToInt32(rd["SubordinateLinkId"]),
-                                Name = rd["subName"].ToString(),
-                                EmpCode = rd["subCode"].ToString()
-                            });
-                        }
-
-                        pm.CompletionDatestring = pm.CompletionDate?.ToString("dd-MM-yyyy") ?? "N/A";
-                        pm.AssignDateString = pm.AssignDate?.ToString("dd-MM-yyyy") ?? "N/A";
-                        pm.StartDateString = pm.StartDate?.ToString("dd-MM-yyyy") ?? "N/A";
-                    }
-
-                    rd.Close();
-                }
-                cpm.pm = pm;
-                cpm.SubOrdinate = subList;
-                cpm.budgets = ProjectBudgetList(id);
-                cpm.stages = ProjectStagesList(id);
-                cpm.hr = ProjectHumanResourcesList(id);
-                return cpm;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-
-        #endregion
-
-        #region Api Create Project
-        public bool createApiProject(Project_model pm)
-        {
-            NpgsqlTransaction tran = null;
-            NpgsqlCommand cmd = null;
-            try
-            {
-                con.Open();
-                tran = con.BeginTransaction();
-
-                // Generate Project Code
-                Random rand = new Random();
-                pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
-
-                // 1️⃣ Insert main project
-                var projectParams = new Dictionary<string, object>
-                {
-                    ["p_action"] = pm.Id > 0 ? "updateProject" : "insertProject",
-                    ["p_letterno"] = int.TryParse(pm.letterNo, out int letterNo) ? letterNo : 0,
-                    ["p_title"] = pm.ProjectTitle,
-                    ["p_assigndate"] = pm.AssignDate,
-                    ["p_startdate"] = pm.StartDate,
-                    ["p_completiondate"] = pm.CompletionDate,
-                    ["p_projectmanager"] = int.TryParse(pm.ProjectManager, out int ProjectManager) ? ProjectManager : 0,
-                    ["p_budget"] = pm.ProjectBudget,
-                    ["p_description"] = pm.ProjectDescription,
-                    ["p_projectdocument"] = pm.projectDocumentUrl,
-                    ["p_projecttype"] = pm.ProjectType,
-                    ["p_stage"] = pm.ProjectStage,
-                    ["p_createdby"] = "admin",
-                    ["p_status"] = true,
-                    ["p_approvestatus"] = true,
-                    ["p_projectcode"] = pm.projectCode
-                };
-
-                int projectId = ExecuteProjectAction(projectParams, tran);
-
-                if (pm.SubOrdinate != null && pm.SubOrdinate.Length > 0)
-                {
-                    foreach (var subId in pm.SubOrdinate)
-                    {
-                        var subParams = new Dictionary<string, object>
-                        {
-                            ["p_action"] = "insertSubOrdinate",
-                            ["p_project_id"] = projectId,
-                            ["p_id"] = subId,
-                            ["p_projectmanager"] = int.TryParse(pm.ProjectManager, out int SubProjectManager) ? SubProjectManager : 0
-                        };
-                        ExecuteProjectAction(subParams, tran);
-                    }
-                }
-
-                // 5️⃣ Insert External project details
-                if (pm.ProjectType.Equals("External") && projectId > 0)
-                {
-                    var extParams = new Dictionary<string, object>
-                    {
-                        ["p_action"] = pm.Id > 0 ? "updateExternalProject" : "insertExternalProject",
-                        ["p_project_id"] = projectId,
-                        ["p_departmentname"] = pm.ProjectDepartment,
-                        ["p_contactperson"] = pm.ContactPerson,
-                        ["p_address"] = pm.Address
-                    };
-                    ExecuteProjectAction(extParams, tran);
-                }
-                tran.Commit();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                tran.Rollback();
-                return false;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public bool insertProjectStages(Project_Statge stg)
-        {
-            NpgsqlTransaction tran = null;
-            NpgsqlCommand cmd = null;
-            try
-            {
-                con.Open();
-                tran = con.BeginTransaction();
-                var stageParams = new Dictionary<string, object>
-                {
-                    ["p_action"] = "insertProjectStage",
-                    ["p_project_id"] = stg.Project_Id,
-                    ["p_keypoint"] = stg.KeyPoint,
-                    ["p_completiondate"] = stg.CompletionDate,
-                    ["p_stagedocument"] = stg.Document_Url
-                };
-                ExecuteProjectAction(stageParams, tran);
-                tran.Commit();
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-                tran.Rollback();
-                return false;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public bool insertProjectBudgets(Project_Budget bdg)
-        {
-            NpgsqlTransaction tran = null;
-            NpgsqlCommand cmd = null;
-            try
-            {
-                con.Open();
-                tran = con.BeginTransaction();
-                var budgetParams = new Dictionary<string, object>
-                {
-                    ["p_action"] = bdg.Id > 0 ? "updateProjectBudget" : "insertProjectBudget",
-                    ["p_project_id"] = bdg.Project_Id,
-                    ["p_heads"] = bdg.ProjectHeads,
-                    ["p_headsamount"] = bdg.ProjectAmount
-                };
-                ExecuteProjectAction(budgetParams, tran);
-                tran.Commit();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                tran.Rollback();
-                return false;
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public List<Project_Budget> ProjectBudgetList(int Id)
-        {
-            try
-            {
-                List<Project_Budget> list = new List<Project_Budget>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
-                cmd.Parameters.AddWithValue("@action", "GetBudgetByProjectId");
-                cmd.Parameters.AddWithValue("@v_id", Id);
-                cmd.Parameters.AddWithValue("@v_limit", DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", DBNull.Value);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        list.Add(new Project_Budget
-                        {
-                            Id = Convert.ToInt32(rd["id"]),
-                            Project_Id = Convert.ToInt32(rd["project_id"]),
-                            ProjectHeads = rd["heads"].ToString(),
-                            TotalAskAmount = rd["totalAskAmount"].ToString(),
-                            ApproveAmount = rd["approveAmount"].ToString(),
-                            ProjectAmount = Convert.ToDecimal(rd["headsAmount"] != DBNull.Value ? rd["headsAmount"] : 0),
-                            budgetheadsname = rd["budgethead"].ToString(),
-
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public List<Project_Statge> ProjectStagesList(int Id)
-        {
-            try
-            {
-                List<Project_Statge> list = new List<Project_Statge>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
-                cmd.Parameters.AddWithValue("@action", "GetProjectStageByProjectId");
-                cmd.Parameters.AddWithValue("@v_id", Id);
-                cmd.Parameters.AddWithValue("@v_limit", DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", DBNull.Value);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        list.Add(new Project_Statge
-                        {
-                            Id = Convert.ToInt32(rd["id"]),
-                            Project_Id = Convert.ToInt32(rd["project_id"]),
-                            KeyPoint = rd["keyPoint"].ToString(),
-                            CompletionDate = Convert.ToDateTime(rd["completeDate"]),
-                            CompletionDatestring = Convert.ToDateTime(rd["completeDate"]).ToString("dd-MM-yyyy"),
-                            Status = rd["StagesStatus"].ToString(),
-                            Document_Url = rd["stageDocument"].ToString(),
-                            completionStatus = Convert.ToInt32(rd["completionStatus"])
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-        public List<HumanResources> ProjectHumanResourcesList(int Id)
-        {
-            try
-            {
-                List<HumanResources> list = new List<HumanResources>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
-                cmd.Parameters.AddWithValue("@action", "GetProjectHumanResources");
-                cmd.Parameters.AddWithValue("@v_id", Id);
-                cmd.Parameters.AddWithValue("@v_limit", DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", DBNull.Value);
-                if (con.State == ConnectionState.Closed)
-                    con.Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (rd.HasRows)
-                {
-                    while (rd.Read())
-                    {
-                        list.Add(new HumanResources
-                        {
-                            id = Convert.ToInt32(rd["id"]),
-                            designationId = Convert.ToInt32(rd["project_id"]),
-                            designationCount = Convert.ToInt32(rd["approveAmount"]),
-                            designationName = rd["stageDocument"].ToString()
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-        #endregion
-
-        #region /* Admin Dashboard Count */
-        public DashboardCount DashboardCount()
-        {
-            DashboardCount obj = null;
-            try
-            {
-                con.Open();
-                using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_managedashboard_cursor", con))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("v_action", "AdminDashboardCount");
-                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
-                    cmd.Parameters.AddWithValue("v_sid", 0);
-                    // Execute the function — it returns the cursor name
-                    string cursorName = (string)cmd.ExecuteScalar();
-                    // Now fetch the data from the cursor
-                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
-                    using (var sdr = fetchCmd.ExecuteReader())
-                    {
-                        if (sdr.HasRows)
-                        {
-                            sdr.Read();
-                            obj = new DashboardCount
-                            {
-                                TotalEmployee = sdr["TotalEmployee"].ToString(),
-                                TotalProjectManager = sdr["TotalProjectManager"].ToString(),
-                                TotalSubOrdinate = sdr["TotalSubOrdinate"].ToString(),
-                                TotalAccounts = sdr["TotalAccounts"].ToString(),
-                                TotalProject = sdr["TotalProject"].ToString(),
-                                TotalInternalProject = sdr["TotalInternalProject"].ToString(),
-                                TotalExternalProject = sdr["TotalExternalProject"].ToString(),
-                                TotalDelayproject = sdr["TotalDelayproject"].ToString(),
-                                TotalCompleteProject = sdr["TotalCompleteProject"].ToString(),
-                                TotalOngoingProject = sdr["TotalOngoingProject"].ToString(),
-                                TotalMeetings = sdr["TotalMeetings"].ToString(),
-                                TotalAdminMeetings = sdr["TotalAdminMeetings"].ToString(),
-                                TotalProjectManagerMeetings = sdr["TotalProjectManagerMeetings"].ToString(),
-                                TotalReinbursementReq = sdr["TotalReinbursementReq"].ToString(),
-                                TotalTourProposalReq = sdr["TotalTourProposalReq"].ToString(),
-                                totalVehicleHiringRequest = sdr["totalVehicleHiringRequest"].ToString(),
-                                totalReinbursementPendingRequest = sdr["totalReinbursementPendingRequest"].ToString(),
-                                totalReinbursementapprovedRequest = sdr["totalReinbursementapprovedRequest"].ToString(),
-                                totalReinbursementRejectRequest = sdr["totalReinbursementRejectRequest"].ToString(),
-                                totalTourProposalApprReque = sdr["totalTourProposalApprReque"].ToString(),
-                                totalTourProposalRejectReque = sdr["totalTourProposalRejectReque"].ToString(),
-                                totaTourProposalPendingReque = sdr["totalTourProposalRejectReque"].ToString(),
-                                totalPendingHiringVehicle = sdr["totalPendingHiringVehicle"].ToString(),
-                                totalApproveHiringVehicle = sdr["totalApproveHiringVehicle"].ToString(),
-                                totalRejectHiringVehicle = sdr["totalRejectHiringVehicle"].ToString(),
-                                TotalBudget = Convert.ToDecimal(sdr["totalBudgets"] != DBNull.Value ? sdr["totalBudgets"] : 0),
-                                PendingBudget = Convert.ToDecimal(sdr["pendingBudget"] != DBNull.Value ? sdr["pendingBudget"] : 0),
-                                //expenditure = Convert.ToDecimal(sdr["AppStatus"] != DBNull.Value ? sdr["AppStatus"] : 0)
-                            };
-                        }
-                    }
-
-                    // Close the cursor explicitly
-                    using (var closeCmd = new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
-                    {
-                        closeCmd.ExecuteNonQuery();
-                    }
-
-                    tran.Commit();
-                }
-
-                return obj;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error while fetching dashboard data", ex);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-
-
-        public List<ProjectExpenditure> ViewProjectExpenditure(int? limit = null, int? page = null)
-        {
-            try
-            {
-                List<ProjectExpenditure> list = new List<ProjectExpenditure>();
-                con.Open();
-                using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_managedashboard_cursor", con))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("v_action", "viewProjectExpenditure");
-                    cmd.Parameters.AddWithValue("v_projectmanager", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_sid", 0);
-                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-
-                    string cursorName = (string)cmd.ExecuteScalar();
-
-                    // Now fetch the data from the cursor
-                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
-                    using (var rd = fetchCmd.ExecuteReader())
-                    {
-                        if (rd.HasRows)
-                        {
-                            bool firstRow = true;
-                            while (rd.Read())
-                            {
-                                list.Add(new ProjectExpenditure
-                                {
-                                    id = Convert.ToInt32(rd["id"]),
-                                    ProjectName = rd["title"].ToString(),
-                                    projectmanager = rd["name"].ToString(),
-                                    ProjectBudget = Convert.ToDecimal(rd["budget"]),
-                                    expenditure = rd["ExpendedAmt"] != DBNull.Value ? Convert.ToDecimal(rd["ExpendedAmt"]) : 0,
-                                    remaining = rd["remainingAmt"] != DBNull.Value ? Convert.ToDecimal(rd["remainingAmt"]) : 0
-                                });
-                                if (firstRow)
-                                {
-                                    list[0].Pagination = new ApiCommon.PaginationInfo
-                                    {
-                                        PageNumber = page ?? 0,
-                                        TotalPages = Convert.ToInt32(rd["totalpages"] != DBNull.Value ? rd["totalpages"] : 0),
-                                        TotalRecords = Convert.ToInt32(rd["totalrecords"] != DBNull.Value ? rd["totalrecords"] : 0),
-                                        PageSize = limit ?? 0
-                                    };
-                                    firstRow = false; // Optional: ensure pagination is only assigned once
-                                }
-                            }
-                        }
-                        return list;
-                    }
-
-                    // Close the cursor explicitly
-                    using (var closeCmd = new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
-                    {
-                        closeCmd.ExecuteNonQuery();
-                    }
-
-                    tran.Commit();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-        public List<DashboardCount> getAllProjectCompletion()
-        {
-            try
-            {
-                List<DashboardCount> list = new List<DashboardCount>();
-                DashboardCount obj = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageDashboard", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getOverallProjectCompletion");
-                con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
-                {
-                    while (sdr.Read())
-                    {
-                        obj = new DashboardCount();
-                        obj.Title = sdr["title"].ToString();
-                        obj.OverallCompletionPercentage = sdr["overallCompletion"].ToString();
-                        obj.ProjectManager = sdr["ProjectManager"].ToString();
-                        list.Add(obj);
-                    }
-                }
-
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-        #endregion /* End */
-
-        #region Meeting 
-        public List<Employee_model> BindEmployee()
-        {
-            List<Employee_model> empList = new List<Employee_model>();
-            Employee_model empObj = null;
-
-            try
-            {
-                con.Open();
-                using (var cmd = new NpgsqlCommand("SELECT * from fn_get_employees(@v_action, @v_id);", con))
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("@v_action", "SelectEmployees");
-                    cmd.Parameters.AddWithValue("@v_id", DBNull.Value);
-
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            empObj = new Employee_model();
-                            empObj.Id = Convert.ToInt32(reader["id"]);
-                            empObj.EmployeeName = reader["name"].ToString();
-                            empObj.EmployeeRole = reader["role"].ToString();
-
-                            empList.Add(empObj);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error fetching meeting members: " + ex.Message, ex);
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-            }
-
-            return empList;
-        }
-
-        public bool insertMeeting(AddMeeting_Model obj)
-        {
-            con.Open();
-            using (var transaction = con.BeginTransaction())
-            {
-                try
-                {
-                    int meetingId = 0;
-
-                    using (var cmd = new NpgsqlCommand("CALL public.sp_managemeeting(@p_id, @p_meetingtype, @p_meetinglink, @p_meetingtitle, @p_meetingtime, @p_meetingdocument, @p_createdby, NULL, @p_createrid, NULL, 0, 0, 0, NULL, NULL, @p_meetingid, 0, @p_action)", con, transaction))
-                    {
-                        cmd.CommandType = CommandType.Text;
-
-                        // --- Insert or Update Meeting ---
-                        cmd.Parameters.AddWithValue("p_id", obj.Id);
-                        cmd.Parameters.AddWithValue("p_meetingtype", obj.MeetingType ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("p_meetinglink",
-                            obj.MeetingType?.ToLower() == "offline" ?
-                            (object)obj.MeetingAddress ?? DBNull.Value :
-                            (object)obj.MeetingLink ?? DBNull.Value);
-                        cmd.Parameters.AddWithValue("p_meetingtitle", obj.MeetingTitle ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("p_meetingtime", obj.MeetingTime);
-                        cmd.Parameters.AddWithValue("p_meetingdocument", obj.Attachment_Url ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("p_createdby", obj.CreaterId > 0 ? "projectmanager" : "admin");
-                        cmd.Parameters.AddWithValue("p_createrid", obj.CreaterId > 0 ? obj.CreaterId : 0);
-                        cmd.Parameters.AddWithValue("p_action", obj.Id > 0 ? "updateMeeting" : "insertMeeting");
-
-                        // INOUT parameter for meeting id
-                        var meetingIdParam = new NpgsqlParameter("p_meetingid", NpgsqlTypes.NpgsqlDbType.Integer)
-                        {
-                            Direction = ParameterDirection.InputOutput,
-                            Value = obj.Id > 0 ? obj.Id : 0
-                        };
-                        cmd.Parameters.Add(meetingIdParam);
-
-                        cmd.ExecuteNonQuery();
-                        meetingId = Convert.ToInt32(meetingIdParam.Value);
-                    }
-
-                    // --- Add Members ---
-                    if (obj.meetingMemberList != null && obj.meetingMemberList.Any())
-                    {
-                        foreach (var member in obj.meetingMemberList)
-                        {
-                            if (member == 0) continue;
-
-                            using (var cmd = new NpgsqlCommand("CALL public.sp_managemeeting(p_employee => @p_employee, p_meeting => @p_meeting,p_appstatus => @p_appstatus, p_action => @p_action)", con, transaction))
-                            {
-                                cmd.CommandType = CommandType.Text;
-
-                                cmd.Parameters.AddWithValue("@p_employee", NpgsqlTypes.NpgsqlDbType.Integer, member);
-                                cmd.Parameters.AddWithValue("@p_meeting", NpgsqlTypes.NpgsqlDbType.Integer, meetingId);
-                                cmd.Parameters.AddWithValue("@p_appstatus", NpgsqlTypes.NpgsqlDbType.Integer, obj.CreaterId > 0 ? 1:0);
-                                cmd.Parameters.AddWithValue("@p_action", NpgsqlTypes.NpgsqlDbType.Varchar, "addMeetingMember");
-
-                                cmd.ExecuteNonQuery();
-                            }
-                        }
-                    }
-
-                    // --- Add Key Points ---
-                    if (obj.keyPointList != null && obj.keyPointList.Any())
-                        if (obj.keyPointList != null && obj.keyPointList.Count > 0)
-                        {
-                            foreach (var key in obj.keyPointList)
-                            {
-                                if (string.IsNullOrWhiteSpace(key)) continue;
-
-                                using (var cmd = new NpgsqlCommand("CALL public.sp_managemeeting(p_keypoint => @p_keypoint, p_meeting => @p_meeting, p_action => @p_action)", con, transaction))
-                                {
-                                    cmd.CommandType = CommandType.Text;
-
-                                    cmd.Parameters.AddWithValue("@p_keypoint", key);
-                                    cmd.Parameters.AddWithValue("@p_meeting", meetingId);
-                                    cmd.Parameters.AddWithValue("@p_action", "AddMeetingKeyPoint");
-
-                                    cmd.ExecuteNonQuery();
-                                }
-                            }
-                        }
-
-                    transaction.Commit();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw new Exception("Error while inserting/updating meeting", ex);
-                }
-            }
-        }
-
-        public bool UpdateMeeting(AddMeeting_Model obj)
-        {
-            con.Open();
-            using (var transaction = con.BeginTransaction())
-            {
-                try
-                {
-                    // === Update Main Meeting ===
-                    using (var cmd = new NpgsqlCommand(@"
-                    CALL public.sp_managemeeting(
-                        p_id => @p_id,
-                        p_meetingtype => @p_meetingtype,
-                        p_meetinglink => @p_meetinglink,
-                        p_meetingtitle => @p_meetingtitle,
-                        p_meetingtime => @p_meetingtime,
-                        p_meetingdocument => @p_meetingdocument,
-                        p_createdby => NULL,
-                        p_updateddate => NULL,
-                        p_createrid => NULL,
-                        p_conclusionid => NULL,
-                        p_employee => 0,
-                        p_meeting => 0,
-                        p_appstatus => 0,
-                        p_keypoint => NULL,
-                        p_reason => NULL,
-                        p_meetingid => NULL,
-                        p_status => 0,
-                        p_action => @p_action
-                    );", con, transaction))
-                    {
-                        cmd.CommandType = CommandType.Text;
-
-                        cmd.Parameters.AddWithValue("@p_id", NpgsqlTypes.NpgsqlDbType.Integer, obj.Id);
-                        cmd.Parameters.AddWithValue("@p_meetingtype", NpgsqlTypes.NpgsqlDbType.Varchar, obj.MeetingType ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@p_meetinglink", NpgsqlTypes.NpgsqlDbType.Text,
-                            obj.MeetingType?.ToLower() == "offline" ? obj.MeetingAddress ?? "" : obj.MeetingLink ?? "");
-                        cmd.Parameters.AddWithValue("@p_meetingtitle", NpgsqlTypes.NpgsqlDbType.Varchar, obj.MeetingTitle ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@p_meetingtime", NpgsqlTypes.NpgsqlDbType.Varchar, obj.MeetingTime.ToString() ?? (object)DBNull.Value);
-                        cmd.Parameters.AddWithValue("@p_meetingdocument", NpgsqlTypes.NpgsqlDbType.Text, (object)obj.Attachment_Url ?? DBNull.Value);
-                        cmd.Parameters.AddWithValue("@p_action", NpgsqlTypes.NpgsqlDbType.Varchar, "updateMeeting");
-
-                        cmd.ExecuteNonQuery();
-                    }
-
-                    // === Update Members ===
-                    if (obj.meetingMemberList != null && obj.meetingMemberList.Count > 0)
-                    {
-                        foreach (var memberId in obj.meetingMemberList)
-                        {
-                            if (memberId != 0)
-                            {
-                                using (var cmdMember = new NpgsqlCommand(@"
-                                CALL public.sp_managemeeting(
-                                    p_employee => @p_employee,
-                                    p_meeting => @p_meeting,
-                                    p_id => 0,
-                                    p_meetingtype => NULL,
-                                    p_meetinglink => NULL,
-                                    p_meetingtitle => NULL,
-                                    p_meetingtime => NULL,
-                                    p_meetingdocument => NULL,
-                                    p_createdby => NULL,
-                                    p_updateddate => NULL,
-                                    p_createrid => NULL,
-                                    p_conclusionid => NULL,
-                                    p_appstatus => 0,
-                                    p_keypoint => NULL,
-                                    p_reason => NULL,
-                                    p_meetingid => 0,
-                                    p_status => 0,
-                                    p_action => @p_action
-                                );", con, transaction))
-                                {
-                                    cmdMember.CommandType = CommandType.Text;
-                                    cmdMember.Parameters.AddWithValue("@p_employee", NpgsqlTypes.NpgsqlDbType.Integer, memberId);
-                                    cmdMember.Parameters.AddWithValue("@p_meeting", NpgsqlTypes.NpgsqlDbType.Integer, obj.Id);
-                                    cmdMember.Parameters.AddWithValue("@p_action", NpgsqlTypes.NpgsqlDbType.Varchar, "updateMember");
-                                    cmdMember.ExecuteNonQuery();
-                                }
-                            }
-                        }
-                    }
-
-                    // === Update Keypoints ===
-                    if (obj.KeypointId != null && obj.keyPointList != null)
-                    {
-                        for (int j = 0; j < obj.KeypointId.Count; j++)
-                        {
-                            if (!string.IsNullOrWhiteSpace(obj.KeypointId[j]?.ToString()) &&
-                                !string.IsNullOrWhiteSpace(obj.keyPointList[j]?.ToString()))
-                            {
-                                using (var cmdKey = new NpgsqlCommand(@"
-                                CALL public.sp_managemeeting(
-                                    p_meeting => @p_meeting,
-                                    p_keypoint => @p_keypoint,
-                                    p_action => @p_action,
-                                    p_id => @p_id
-                                );", con, transaction))
-                                {
-                                    cmdKey.CommandType = CommandType.Text;
-                                    cmdKey.Parameters.AddWithValue("@p_meeting", NpgsqlTypes.NpgsqlDbType.Integer, obj.Id);
-                                    cmdKey.Parameters.AddWithValue("@p_id", NpgsqlTypes.NpgsqlDbType.Integer, Convert.ToInt32(obj.KeypointId[j]));
-                                    cmdKey.Parameters.AddWithValue("@p_keypoint", NpgsqlTypes.NpgsqlDbType.Varchar, obj.keyPointList[j]);
-                                    cmdKey.Parameters.AddWithValue("@p_action", NpgsqlTypes.NpgsqlDbType.Varchar, "updateKeyPoint");
-                                    cmdKey.ExecuteNonQuery();
-                                }
-                            }
-                        }
-                    }
-
-                    transaction.Commit();
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    transaction.Rollback();
-                    throw new Exception("An error occurred while updating the meeting.", ex);
-                }
-            }
-        }
-
-        public List<Meeting_Model> getAllmeeting(int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null, string meetingMode = null)
-        {
-            try
-            {
-                con.Open();
-                List<Meeting_Model> _list = new List<Meeting_Model>();
-                Meeting_Model obj = null;
-                using (var cmd = new NpgsqlCommand("SELECT * from fn_get_meetings(@p_action,@p_id,@v_limit,@v_page,@v_type,@v_searchTerm,@v_statusFilter,@v_meetingMode);", con))
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("@p_action", "getAllmeeting");
-                    cmd.Parameters.AddWithValue("@p_id", (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_type",(object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_searchTerm", string.IsNullOrEmpty(searchTerm) ? DBNull.Value : (object)searchTerm);
-                    cmd.Parameters.AddWithValue("@v_statusFilter", string.IsNullOrEmpty(statusFilter) ? DBNull.Value : (object)statusFilter);
-                    cmd.Parameters.AddWithValue("@v_meetingMode", string.IsNullOrEmpty(meetingMode) ? DBNull.Value : (object)meetingMode);
-
-                    using (var sdr = cmd.ExecuteReader())
-                    {
-                        bool firstRow = true;
-                        while (sdr.Read())
-                        {
-                            obj = new Meeting_Model();
-                            obj.Id = Convert.ToInt32(sdr["id"]);
-                            obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
-                            obj.MeetingType = sdr["meetingType"].ToString();
-                            obj.MeetingLink = sdr["meetingLink"].ToString();
-                            obj.MeetingTitle = sdr["MeetingTitle"].ToString();
-                            obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
-                            obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
-                            obj.MeetingDate = sdr["meetingTime"] != DBNull.Value && DateTime.TryParse(sdr["meetingTime"].ToString(), out DateTime mt)
-    ? mt.ToString("dd-MM-yyyy")
-    : string.Empty;
-                            obj.summary = sdr["meetSummary"].ToString();
-                            obj.Attachment_Url = sdr["reason"] != null ? sdr["reason"].ToString() : "";
-                            obj.createdBy = sdr["createdBy"].ToString();
-                            obj.statusLabel = Convert.ToInt32(sdr["completeStatus"]) == 0 ? "Pending" :"Completed";
-                            _list.Add(obj);
-                            if (firstRow)
-                            {
-                                obj.Pagination = new ApiCommon.PaginationInfo
-                                {
-                                    PageNumber = page ?? 0,
-                                    TotalPages = Convert.ToInt32(sdr["totalpages"] != DBNull.Value ? sdr["totalpages"] : 0),
-                                    TotalRecords = Convert.ToInt32(sdr["totalrecords"] != DBNull.Value ? sdr["totalrecords"] : 0),
-                                    PageSize = limit ?? 0
-                                };
-                                firstRow = false; // Optional: ensure pagination is only assigned once
-                            }
-                        }
-                    }
-                }
-                return _list;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-
-        public Meeting_Model getMeetingById(int id)
-        {
-            Meeting_Model obj = new Meeting_Model();
-            try
-            {
-                con.Open();
-                // Get meeting details
-                using (var cmd = new NpgsqlCommand("SELECT * from fn_get_meetings(@p_action,@p_id);", con))
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.AddWithValue("@p_action", "getMeetingById");
-                    cmd.Parameters.AddWithValue("@p_id", id);
-
-                    using (var sdr = cmd.ExecuteReader())
-                    {
-                        if (sdr.Read())
-                        {
-                            obj.Id = Convert.ToInt32(sdr["id"]);
-                            obj.MeetingType = sdr["meetingType"].ToString();
-                            obj.MeetingLink = sdr["meetingLink"].ToString();
-                            obj.MeetingTitle = sdr["meetingTitle"].ToString();
-                            obj.MeetingTime = Convert.ToDateTime(sdr["meetingTime"]);
-                            obj.MeetingTimeString = Convert.ToDateTime(sdr["meetingTime"]).ToString("yyyy-MM-ddTHH:mm");
-                            obj.memberId = sdr["empId"] != DBNull.Value ? sdr["empId"].ToString().Split(',').ToList() : new List<string>();
-                            obj.Attachment_Url = sdr["reason"] != null ? sdr["reason"].ToString() : "";
-
-                        }
-                        if (sdr["meetingKey"] != null)
-                        {
-                            List<KeyPoint> keyDict = new List<KeyPoint>();
-                            foreach (var key in sdr["meetingKey"].ToString().Split(','))
-                            {
-                                if (!string.IsNullOrEmpty(key))
-                                {
-
-                                    keyDict.Add(new KeyPoint { Id = int.Parse(key.Split(':')[0]), keyPoint = key.Split(':')[1] });
-                                }
-                            }
-                            obj.MeetingKeyPointDict = keyDict;
-                        }
-                    }
-                }
-
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred while fetching meeting details", ex);
-            }
-            finally
-            {
-                con.Close();
-                cmd.Dispose();
-            }
-            return obj;
-        }
-
-        public List<Employee_model> GetMeetingMemberList(int id)
-        {
-            try
-            {
-
-                con.Open();
-                List<Employee_model> empModel = new List<Employee_model>();
-                cmd.Parameters.Clear();
-                using (var cmd = new NpgsqlCommand("SELECT * from fn_get_meetings(@p_action,@p_id);", con))
-                {
-                    cmd.Parameters.AddWithValue("@p_id", id);
-                    cmd.Parameters.AddWithValue("@p_action", "getMeetingMemberById");
-                    cmd.CommandType = CommandType.Text;
-                    using (var res = cmd.ExecuteReader())
-                    {
-                        if (res.HasRows)
-                        {
-                            while (res.Read())
-                            {
-                                empModel.Add(new Employee_model
-                                {
-                                    Id = (int)res["id"],
-                                    EmployeeCode = res["employeeCode"].ToString(),
-                                    EmployeeName = res["name"].ToString(),
-                                    EmployeeRole = res["role"].ToString(),
-                                    MobileNo = (long)res["mobile"],
-                                    Email = res["email"].ToString(),
-                                    meetingId = (int)res["meetingId"]
-                                });
-
-                            }
-                        }
-                    }
-                }
-
-                return empModel;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public bool AddMeetingResponse(MeetingConclusion mc)
-        {
-            con.Open();
-            var transaction = con.BeginTransaction();
-            try
-            {
-                // Step 1: Insert Conclusion
-                int conclusionId = 0; // INOUT parameter
-
-                using (var cmd = new NpgsqlCommand(@"
-            CALL public.sp_meetingconslusion(
-                @v_id::integer,
-                @v_meeting::integer,
-                @v_conclusion::text,
-                @v_nextfollow::varchar,
-                @v_memberid::integer,
-                @v_response::text,
-                @v_followupstatus::boolean,
-                @v_keyid::integer,
-                @v_conclusionid::integer,
-                @v_summary::text,
-                @v_action::varchar,
-                @v_rc::refcursor
-            )", con, transaction))
-                {
-                    cmd.CommandType = CommandType.Text;
-
-                    // Procedure parameters
-                    cmd.Parameters.AddWithValue("v_id", 0);
-                    cmd.Parameters.AddWithValue("v_meeting", Convert.ToInt32(mc.Meeting));
-                    cmd.Parameters.AddWithValue("v_conclusion", mc.Conclusion ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_nextfollow", mc.NextFollowUpDate?.ToString("yyyy-MM-dd") ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_memberid", 0);
-                    cmd.Parameters.AddWithValue("v_response", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_followupstatus", NpgsqlTypes.NpgsqlDbType.Boolean, mc.FollowUpStatus ? true : false);
-                    cmd.Parameters.AddWithValue("v_keyid", 0);
-
-                    var conclusionParam = new NpgsqlParameter("v_conclusionid", NpgsqlTypes.NpgsqlDbType.Integer)
-                    {
-                        Direction = ParameterDirection.InputOutput,
-                        Value = conclusionId
-                    };
-                    cmd.Parameters.Add(conclusionParam);
-
-                    cmd.Parameters.AddWithValue("v_summary", mc.summary ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_action", "insertConclusion");
-                    cmd.Parameters.AddWithValue("v_rc", DBNull.Value);
-
-                    cmd.ExecuteNonQuery();
-
-                    conclusionId = (int)conclusionParam.Value;
-                }
-
-                // Step 2: Update Member Presence
-                if (mc.MemberId != null && mc.MemberId.Count > 0)
-                {
-                    foreach (var memberId in mc.MemberId)
-                    {
-                        if (!string.IsNullOrEmpty(memberId))
-                        {
-                            var memberCmd = new NpgsqlCommand(@"
-                        CALL public.sp_meetingconslusion(
-                            @v_id::integer,
-                            0::integer,
-                            NULL::text,
-                            NULL::varchar,
-                            @v_memberid::integer,
-                            NULL::text,
-                            false::boolean,
-                            0::integer,
-                            @v_conclusionid::integer,
-                            NULL::text,
-                            @v_action::varchar,
-                            NULL::refcursor
-                        )", con, transaction);
-                            memberCmd.CommandType = CommandType.Text;
-
-                            memberCmd.Parameters.AddWithValue("v_id", conclusionId);
-                            memberCmd.Parameters.AddWithValue("v_memberid", Convert.ToInt32(memberId));
-                            memberCmd.Parameters.AddWithValue("v_conclusionid", conclusionId);
-                            memberCmd.Parameters.AddWithValue("v_action", "updateMeetingMemberPresence");
-
-                            memberCmd.ExecuteNonQuery();
-                        }
-                    }
-                }
-
-                // Step 3: Insert Keypoint Responses
-                if (mc.KeyPointId != null && mc.KeyPointId.Count > 0)
-                {
-                    for (int i = 0; i < mc.KeyPointId.Count; i++)
-                    {
-                        var keyCmd = new NpgsqlCommand(@"
-                    CALL public.sp_meetingconslusion(
-                        @v_id::integer,
-                        0::integer,
-                        NULL::text,
-                        NULL::varchar,
-                        0::integer,
-                        @v_response::text,
-                        false::boolean,
-                        @v_keyid::integer,
-                        @v_conclusionid::integer,
-                        NULL::text,
-                        @v_action::varchar,
-                        NULL::refcursor
-                    )", con, transaction);
-                        keyCmd.CommandType = CommandType.Text;
-
-                        keyCmd.Parameters.AddWithValue("v_id", conclusionId);
-                        keyCmd.Parameters.AddWithValue("v_keyid", mc.KeyPointId[i]);
-                        keyCmd.Parameters.AddWithValue("v_response", mc.KeyResponse[i] ?? (object)DBNull.Value);
-                        keyCmd.Parameters.AddWithValue("v_conclusionid", conclusionId);
-                        keyCmd.Parameters.AddWithValue("v_action", "isertKeypointResponse");
-
-                        keyCmd.ExecuteNonQuery();
-                    }
-                }
-
-                // Step 4: Add Meeting Members if FollowUpStatus is true
-                if (mc.MeetingMemberList != null && mc.FollowUpStatus)
-                {
-                    foreach (var individualMember in mc.MeetingMemberList)
-                    {
-                        if (individualMember != 0)
-                        {
-                            var memberCmd = new NpgsqlCommand(@"
-                        CALL sp_ManageMeeting(
-                           p_action=> @v_action::varchar,
-                           p_employee=> @v_employee::integer,
-                           p_meeting=> @v_meeting::integer
-                        )", con, transaction);
-                            memberCmd.CommandType = CommandType.Text;
-
-                            memberCmd.Parameters.AddWithValue("@v_action", "addMeetingMember");
-                            memberCmd.Parameters.AddWithValue("@v_employee", individualMember);
-                            memberCmd.Parameters.AddWithValue("@v_meeting", mc.Meeting);
-
-                            memberCmd.ExecuteNonQuery();
-                        }
-                    }
-                }
-
-                transaction.Commit();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw new Exception("An error occurred while adding meeting response.", ex);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-        public List<MeetingConclusion> getConclusion(int id)
-        {
-            try
-            {
-                List<MeetingConclusion> meetingc = new List<MeetingConclusion>();
-                con.Open();
-                cmd.Parameters.Clear();
-                using (var cmd = new NpgsqlCommand("select * from fn_get_meetings(@p_action,@p_id);", con))
-                {
-                    cmd.Parameters.AddWithValue("@p_action", "selectConclusion");
-                    cmd.Parameters.AddWithValue("@p_id", id);
-                    cmd.CommandType = CommandType.Text;
-                    using (var rdr = cmd.ExecuteReader())
-                    {
-                        if (rdr.HasRows)
-                        {
-                            while (rdr.Read())
-                            {
-                                meetingc.Add(new MeetingConclusion
-                                {
-                                    Id = Convert.ToInt32(rdr["id"]),
-                                    Meeting = id,
-                                    MeetingDate = rdr["meetingTime"] != DBNull.Value ? Convert.ToDateTime(rdr["meetingTime"]).ToString("dd-MM-yyyy hh:mm tt") : "N/A",
-                                    Conclusion = rdr["conclusion"].ToString(),
-                                    NextFollow = rdr["nextFollow"] != DBNull.Value ? Convert.ToDateTime(rdr["nextFollow"]).ToString("dd-MM-yyyy") : "N/A",
-                                    mode = rdr["meetingType"].ToString(),
-                                    address = rdr["meetingLink"].ToString()
-                                });
-                            }
-                        }
-                    }
-                }
-
-                return meetingc;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public List<Employee_model> getPresentMember(int id)
-        {
-            try
-            {
-                con.Open();
-                List<Employee_model> meetingc = new List<Employee_model>();
-                cmd.Parameters.Clear();
-                using (var cmd = new NpgsqlCommand(@"select * from fn_get_meetings(@p_action,@p_id);", con))
-                {
-                    cmd.Parameters.AddWithValue("@p_action", "selectPresentMember");
-                    cmd.Parameters.AddWithValue("@p_id", id);
-                    cmd.CommandType = CommandType.Text;
-
-                    using (var rdr = cmd.ExecuteReader())
-                    {
-                        if (rdr.HasRows)
-                        {
-                            while (rdr.Read())
-                            {
-                                meetingc.Add(new Employee_model
-                                {
-                                    EmployeeName = rdr["name"].ToString(),
-                                    Image_url = rdr["profile"].ToString(),
-                                    EmployeeRole = rdr["role"].ToString(),
-                                    PresentStatus = (bool)rdr["completeStatus"]
-
-                                });
-                            }
-                        }
-                    }
-                }
-                return meetingc;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public List<KeyPointResponse> getKeypointResponse(int id)
-        {
-            try
-            {
-                cmd.Parameters.Clear();
-                List<KeyPointResponse> md = new List<KeyPointResponse>();
-                con.Open();
-                using (var cmd = new NpgsqlCommand(@"select * from fn_get_meetings(@p_action,@p_id)", con))
-                {
-                    cmd.Parameters.AddWithValue("@p_action", "KeyPointResponse");
-                    cmd.Parameters.AddWithValue("@p_id", id);
-                    cmd.CommandType = CommandType.Text;
-                    using (var rdr = cmd.ExecuteReader())
-                    {
-                        if (rdr.HasRows)
-                        {
-                            while (rdr.Read())
-                            {
-                                md.Add(new KeyPointResponse
-                                {
-                                    KeyPoint = rdr["keypoint"].ToString(),
-                                    Response = rdr["response"].ToString()
-
-                                });
-                            }
-                        }
-                    }
-                }
-                return md;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        #endregion End
-
-        #region notice
-
-        public bool InsertNotice(Generate_Notice gn)
-        {
-            try
-            {
-                cmd = new NpgsqlCommand("CALL sp_managenotice(@v_id, @v_projectid, @v_noticedocs, @v_noticedesc, NULL, @v_action)", con);
-                cmd.CommandType = CommandType.Text;
-                cmd.Parameters.AddWithValue("@v_action", gn.Id > 0 ? "UpdateNotice" : "InsertNotice");
-                cmd.Parameters.AddWithValue("@v_projectId", gn.ProjectId);
-                cmd.Parameters.AddWithValue("v_id", gn.Id);
-                cmd.Parameters.AddWithValue("v_noticeDocs", gn.Attachment_Url ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("v_noticedesc", gn.Notice);
-                con.Open();
-                cmd.ExecuteNonQuery();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public List<Generate_Notice> getNoticeList(int? limit = null, int? page = null, int? id = null, int? managerId = null,string searchTerm = null)
-        {
-            try
-            {
-                con.Open();
-                List<Generate_Notice> noticeList = new List<Generate_Notice>();
-                using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_manageNotice_cursor", con, tran))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("v_action", "SelectNotice");
-                    cmd.Parameters.AddWithValue("v_projectmanager", managerId.HasValue ? (object)managerId.Value : 0);
-                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? (object)id.Value : 0);
-                    cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_searchterm", string.IsNullOrEmpty(searchTerm) ? (object)DBNull.Value : searchTerm);
-
-                    string cursorName = (string)cmd.ExecuteScalar();
-                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
-                    using (var res = fetchCmd.ExecuteReader())
-                    {
-                        while (res.Read())
-                        {
-                            bool firstRow = true;
-                            noticeList.Add(new Generate_Notice
-                            {
-                                Id = (int)res["id"],
-                                ProjectId = (int)res["project_id"],
-                                ProjectManagerId = (int)res["empid"],
-                                Attachment_Url = res["NoticeDocument"] == null ? null : res["NoticeDocument"].ToString(),
-                                Notice = res["noticeDescription"].ToString(),
-                                ProjectManagerImage = res["profile"].ToString(),
-                                ProjectManager = res["name"].ToString(),
-                                ProjectName = res["title"].ToString(),
-                                noticeDate = Convert.ToDateTime(res["noticeDate"]).ToString("dd-MM-yyyy")
-
-                            });
-                            if (firstRow)
-                            {
-                                noticeList[0].Pagination = new ApiCommon.PaginationInfo
-                                {
-                                    PageNumber = page ?? 0,
-                                    TotalPages = Convert.ToInt32(res["totalpages"] != DBNull.Value ? res["totalpages"] : 0),
-                                    TotalRecords = Convert.ToInt32(res["totalrecords"] != DBNull.Value ? res["totalrecords"] : 0),
-                                    PageSize = limit ?? 0
-                                };
-                                firstRow = false; // Optional: ensure pagination is only assigned once
-                            }
-                        }
-                    }
-                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
-                    {
-                        closeCmd.ExecuteNonQuery();
-                    }
-                    tran.Commit();
-                }
-                return noticeList;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == System.Data.ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        #endregion
-
-        #region /*tour*/
-        public List<tourProposalAll> getAllTourList(int? page = null, int? limit = null, string type = null, int? id = null, int? managerFilter = null, int? projectFilter = null)
-        {
-            try
-            {
-                List<tourProposalAll> getlist = new List<tourProposalAll>();
-                con.Open();
-                using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_manageTourProposal_cursor", con))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("v_action", "selectAlltour");
-                    cmd.Parameters.AddWithValue("v_projectmanager", managerFilter.HasValue? managerFilter : 0);
-                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? id :0);
-                    cmd.Parameters.AddWithValue("v_type", string.IsNullOrEmpty(type) ? "AllData" : type);
-                    cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_projectid", projectFilter.HasValue ? projectFilter : 0);
-                    // Execute the function — it returns the cursor name
-                    string cursorName = (string)cmd.ExecuteScalar();
-
-                    // Now fetch the data from the cursor
-                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
-                    using (var res = fetchCmd.ExecuteReader())
-                    {
-                        if (res.HasRows)
-                        {
-                            bool firstRow = true;
-                            while (res.Read())
-                            {
-                                var tourData = new tourProposalAll
-                                {
-                                    id = Convert.ToInt32(res["id"]),
-                                    projectName = res["title"].ToString(),
-                                    projectManager = res["name"].ToString(),
-                                    dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
-                                    place = res["place"].ToString(),
-                                    periodFrom = Convert.ToDateTime(res["periodFrom"]),
-                                    periodTo = Convert.ToDateTime(res["periodTo"]),
-                                    returnDate = Convert.ToDateTime(res["returnDate"]),
-                                    purpose = res["purpose"].ToString(),
-                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
-                                };
-                                if (firstRow)
-                                {
-                                    tourData.Pagination = new ApiCommon.PaginationInfo
-                                    {
-                                        TotalPages = Convert.ToInt32(res["totalpages"]),
-                                        TotalRecords = Convert.ToInt32(res["totalrecords"]),
-                                        PageNumber = page ?? 0,
-                                        PageSize = limit ?? 0
-                                    };
-                                    firstRow = false;
-                                }
-                                getlist.Add(tourData);
-                            }
-                        }
-                    }
-                    // Close the cursor explicitly
-                    using (var closeCmd = new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
-                    {
-                        closeCmd.ExecuteNonQuery();
-                    }
-                    tran.Commit();
-                }
-                return getlist;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-
-        public bool Tourapproval(int id, bool status, string remark)
-        {
-            try
-            {
-                NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_Tourproposal(v_remark=>@v_remark,v_id=>@v_id,v_adminappr=>@v_adminappr, v_action=>@v_action)", con);
-                cmd.Parameters.AddWithValue("@v_action", "approval");
-                cmd.Parameters.AddWithValue("@v_adminappr", status);
-                cmd.Parameters.AddWithValue("@v_id", id);
-                cmd.Parameters.AddWithValue("@v_remark", status ? "" : remark);
-                con.Open();
-                cmd.ExecuteNonQuery();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-        #endregion
-
-        #region /*Reimbursement request approval*/
-        public bool ReimbursementApproval(bool status, int id, string type, string remark)
-        {
-            try
-            {
-                cmd = new NpgsqlCommand("call sp_reimbursement(p_action=>@p_action,p_admin_appr=>@p_admin_appr,p_id=>@p_id,p_type=>@p_type,p_remark=>@p_remark)", con);
-                cmd.Parameters.AddWithValue("@p_action", "approval");
-                cmd.Parameters.AddWithValue("@p_admin_appr", status);
-                cmd.Parameters.AddWithValue("@p_id", id);
-                cmd.Parameters.AddWithValue("@p_type", type);
-                cmd.Parameters.AddWithValue("@p_remark", status ? "" : remark);
-                con.Open();
-                cmd.ExecuteNonQuery();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-
-        public List<AdminReimbursement> GetSpecificUserReimbursements(int id, string type)
-        {
-            try
-            {
-                cmd = new NpgsqlCommand("sp_Reimbursement", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "GetAllSubmittedData");
-                cmd.Parameters.AddWithValue("@userId", id);
-                cmd.Parameters.AddWithValue("@type", type);
-                con.Open();
-                List<AdminReimbursement> getlist = new List<AdminReimbursement>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
-                {
-                    while (res.Read())
-                    {
-                        getlist.Add(new AdminReimbursement
-                        {
-                            id = (int)res["id"],
-                            type = (string)res["type"],
-                            vrNo = (string)res["vrNo"],
-                            date = Convert.ToDateTime(res["date"]),
-                            particulars = (string)res["particulars"],
-                            items = (string)res["items"],
-                            amount = Convert.ToDecimal(res["amount"]),
-                            purpose = (string)res["purpose"],
-                            status = Convert.ToBoolean(res["status"]),
-                            newRequest = (bool)res["newRequest"],
-                            adminappr = (bool)res["admin_appr"]
-                        });
-                    }
-                }
-                return getlist;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-
-        #endregion
-
-        #region /* Hiring*/
-        public List<HiringVehicle1> HiringList(int? page = null, int? limit = null, int? managerFilter = null, int? projectFilter = null)
-        {
-            try
-            {
-                con.Open();
-                List<HiringVehicle1> list = new List<HiringVehicle1>();
-                using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_manageHiringVehicle_cursor", con))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("v_action", "selectAllHiring");
-                    cmd.Parameters.AddWithValue("v_projectmanager", managerFilter.HasValue?managerFilter:0);
-                    cmd.Parameters.AddWithValue("v_projectid", projectFilter.HasValue?projectFilter:0);
-                    cmd.Parameters.AddWithValue("v_type", "AllData");
-                    cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-
-                    string cursorName = (string)cmd.ExecuteScalar();
-
-                    using (var fetchCmd = new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
-
-                    using (var res = fetchCmd.ExecuteReader())
-                    {
-                        if (res.HasRows)
-                        {
-                            bool firstRow = true;
-                            while (res.Read())
-                            {
-                                var hiringVehicle = new HiringVehicle1
-                                {
-                                    id = (int)res["id"],
-                                    projectName = Convert.ToString(res["title"]),
-                                    projectManager = Convert.ToString(res["name"]),
-                                    headName = Convert.ToString(res["heads"]),
-                                    amount = Convert.ToDecimal(res["amount"]),
-                                    dateFrom = Convert.ToDateTime(res["dateFrom"]),
-                                    dateTo = Convert.ToDateTime(res["dateTo"]),
-                                    proposedPlace = res["proposedPlace"].ToString(),
-                                    purposeOfVisit = res["purposeOfVisit"].ToString(),
-                                    totalDaysNight = res["totalDaysNight"].ToString(),
-                                    totalPlainHills = res["totalPlainHills"].ToString(),
-                                    taxi = res["taxi"].ToString(),
-                                    BookAgainstCentre = res["BookAgainstCentre"].ToString(),
-                                    availbilityOfFund = res["availbilityOfFund"].ToString(),
-                                    note = res["note"].ToString(),
-                                    newRequest = Convert.ToBoolean(res["newRequest"]),
-                                    adminappr = Convert.ToBoolean(res["adminappr"]),
-                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
-                                };
-                                if (firstRow)
-                                {
-                                    hiringVehicle.Pagination = new ApiCommon.PaginationInfo
-                                    {
-                                        TotalPages = Convert.ToInt32(res["totalpages"]),
-                                        TotalRecords = Convert.ToInt32(res["totalrecords"]),
-                                        PageNumber = page ?? 0,
-                                        PageSize = limit ?? 0
-                                    };
-                                    firstRow = false;
-                                }
-
-                                list.Add(hiringVehicle);
-                            }
-                        }
-                    }
-                    // Close the cursor explicitly
-                    using (var closeCmd = new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
-                    {
-                        closeCmd.ExecuteNonQuery();
-                    }
-                    tran.Commit();
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-        //public async Task<(string latitude, string longitude)> GetLatLongAsync()
-        //{
-        //    try
-        //    {
-        //        using (var client = new HttpClient())
-        //        {
-        //            string url = "https://ipinfo.io/json";
-        //            HttpResponseMessage response = await client.GetAsync(url);
-        //            response.EnsureSuccessStatusCode();
-
-        //            string responseBody = await response.Content.ReadAsStringAsync();
-        //            var jsonData = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(responseBody);
-
-        //            string loc = jsonData.loc; 
-        //            string[] coordinates = loc.Split(',');
-
-        //            string latitude = coordinates[0];
-        //            string longitude = coordinates[1];
-
-        //            return (latitude, longitude);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-        public async Task<string> GetCityStateAsync(string latitude, string longitude)
-        {
-            try
-            {
-                string url = $"https://nominatim.openstreetmap.org/reverse?lat={latitude}&lon={longitude}&format=json";
-
-                using (HttpClient client = new HttpClient())
-                {
-                    client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
-                    client.DefaultRequestHeaders.Add("Accept-Language", "en");
-
-                    var response = await client.GetStringAsync(url).ConfigureAwait(false);
-                    JObject json = JObject.Parse(response);
-
-                    string city = json["address"]?["city"]?.ToString()
-                                ?? json["address"]?["town"]?.ToString()
-                                ?? json["address"]?["village"]?.ToString()
-                                ?? json["address"]?["hamlet"]?.ToString()
-                                ?? "";
-
-                    string state = json["address"]?["state"]?.ToString() ?? "";
-
-                    return $"{city}, {state}".Trim(new char[] { ',', ' ' });
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-
-
-
-        public bool HiringApproval(int id, bool status, string remark, string location)
-        {
-            try
-            {
-                //var location = getlocationasync();
-                cmd = new NpgsqlCommand("CALL sp_HiringVehicle(v_id=>@v_id,v_adminappr=>@v_adminappr,v_remark => @v_remark, v_address=>@v_address,v_action=>@v_action )", con);
-                cmd.Parameters.AddWithValue("@v_action", "approval");
-                cmd.Parameters.AddWithValue("@v_adminappr", status);
-                cmd.Parameters.AddWithValue("@v_id", id);
-                cmd.Parameters.AddWithValue("@v_remark", status ? "" : remark);
-                cmd.Parameters.AddWithValue("@v_address", location);
-                con.Open();
-                cmd.ExecuteNonQuery();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-        #endregion
-
-        #region Graph Data
-        public List<BudgetForGraph> BudgetForGraph()
-        {
-            try
-            {
-                cmd = new NpgsqlCommand("sp_ManageDashboard", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "BudgetGraph");
-                List<BudgetForGraph> list = new List<BudgetForGraph>();
-                con.Open();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
-                {
-                    while (res.Read())
-                    {
-                        list.Add(new BudgetForGraph
-                        {
-                            budget = Convert.ToDecimal(res["budget"]),
-                            month = Convert.ToString(res["months"])
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-
-        //public List<BudgetForGraph> PhysicalForGraph()
-        //{
-        //    try
-        //    {
-        //        cmd = new NpgsqlCommand("sp_ManageDashboard", con);
-        //        cmd.CommandType = CommandType.StoredProcedure;
-        //        cmd.Parameters.AddWithValue("@action", "BudgetGraph");
-        //        List<BudgetForGraph> list = new List<BudgetForGraph>();
-        //        con.Open();
-        //        var res = cmd.ExecuteReader();
-        //        if (res.HasRows)
-        //        {
-        //            while (res.Read())
-        //            {
-        //                list.Add(new BudgetForGraph
-        //                {
-        //                    budget = Convert.ToDecimal(res["budget"]),
-        //                    month = Convert.ToString(res["months"])
-        //                });
-        //            }
-        //        }
-        //        return list;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //    finally
-        //    {
-        //        if (con.State == ConnectionState.Open)
-        //        {
-        //            con.Close();
-        //        }
-        //        cmd.Dispose();
-        //    }
-        //}
-        #endregion
-
-        #region All Reports
-        public List<HiringVehicle1> HiringReort(int? limit = null, int? page = null, int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
-        {
-            try
-            {
-                con.Open();
-                List<HiringVehicle1> list = new List<HiringVehicle1>();
-                using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_managehiringvehicle_cursor", con))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@v_action", "selectAllHiringReport");
-                    cmd.Parameters.AddWithValue("v_projectmanager", managerFilter.HasValue ? managerFilter : 0);
-                    cmd.Parameters.AddWithValue("v_id", projectFilter.HasValue ? projectFilter : 0);
-                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_statusfilter", string.IsNullOrEmpty(statusFilter) ? DBNull.Value : (object)statusFilter);
-                    string cursorName = (string)cmd.ExecuteScalar();
-                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
-                    using (var res = fetchCmd.ExecuteReader())
-                    {
-                        if (res.HasRows)
-                        {
-                            bool firstRow = true;
-                            while (res.Read())
-                            {
-                                list.Add(new HiringVehicle1
-                                {
-                                    id = (int)res["id"],
-                                    projectId = (int)res["projectId"],
-                                    projectName = Convert.ToString(res["title"]),
-                                    projectManager = Convert.ToString(res["name"]),
-                                    headName = Convert.ToString(res["heads"]),
-                                    amount = Convert.ToDecimal(res["amount"]),
-                                    dateFrom = Convert.ToDateTime(res["dateFrom"]),
-                                    dateTo = Convert.ToDateTime(res["dateTo"]),
-                                    proposedPlace = res["proposedPlace"].ToString(),
-                                    purposeOfVisit = res["purposeOfVisit"].ToString(),
-                                    totalDaysNight = res["totalDaysNight"].ToString(),
-                                    totalPlainHills = res["totalPlainHills"].ToString(),
-                                    taxi = res["taxi"].ToString(),
-                                    BookAgainstCentre = res["BookAgainstCentre"].ToString(),
-                                    availbilityOfFund = res["availbilityOfFund"].ToString(),
-                                    note = res["note"].ToString(),
-                                    newRequest = Convert.ToBoolean(res["newRequest"]),
-                                    adminappr = Convert.ToBoolean(res["adminappr"]),
-                                    remark = res["remark"].ToString(),
-                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A",
-                                    statusLabel =
-        Convert.ToBoolean(res["newRequest"]) == true && Convert.ToBoolean(res["adminappr"]) == false
-            ? "Pending"
-        : Convert.ToBoolean(res["newRequest"]) == false && Convert.ToBoolean(res["adminappr"]) == true
-            ? "Approved"
-        : "Rejected"
-                                });
-                                if (firstRow)
-                                {
-                                    list[0].Pagination = new ApiCommon.PaginationInfo
-                                    {
-                                        PageNumber = page ?? 0,
-                                        TotalPages = Convert.ToInt32(res["totalpages"] != DBNull.Value ? res["totalpages"] : 0),
-                                        TotalRecords = Convert.ToInt32(res["totalrecords"] != DBNull.Value ? res["totalrecords"] : 0),
-                                        PageSize = limit ?? 0
-                                    };
-                                    firstRow = false; // Optional: ensure pagination is only assigned once
-                                }
-                            }
-                        }
-                    }
-                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
-                    {
-                        closeCmd.ExecuteNonQuery();
-                    }
-                    tran.Commit();
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-
-        #region /* Hiring Report for App */
-        public List<HiringVehicle1> hiringreportprojects()
-        {
-            try
-            {
-                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selecthiringreportprojects");
-                con.Open();
-                List<HiringVehicle1> list = new List<HiringVehicle1>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
-                {
-                    while (res.Read())
-                    {
-                        list.Add(new HiringVehicle1
-                        {
-                            id = Convert.ToInt32(res["projectId"]),
-                            projectName = Convert.ToString(res["title"]),
-                            employeecode = res["empcode"].ToString(),
-                            projectManager = res["empname"].ToString()
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-
-        public List<HiringVehicle1> hiringreportbyproject(int projectid)
-        {
-            try
-            {
-                cmd = new NpgsqlCommand("sp_HiringVehicle", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selecthiringreportbyproject");
-                cmd.Parameters.AddWithValue("@projectId", projectid);
-                con.Open();
-                List<HiringVehicle1> list = new List<HiringVehicle1>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
-                {
-                    while (res.Read())
-                    {
-                        list.Add(new HiringVehicle1
-                        {
-                            id = (int)res["id"],
-                            projectName = Convert.ToString(res["title"]),
-                            projectManager = Convert.ToString(res["name"]),
-                            headName = Convert.ToString(res["heads"]),
-                            amount = Convert.ToDecimal(res["amount"]),
-                            dateFrom = Convert.ToDateTime(res["dateFrom"]),
-                            dateTo = Convert.ToDateTime(res["dateTo"]),
-                            proposedPlace = res["proposedPlace"].ToString(),
-                            purposeOfVisit = res["purposeOfVisit"].ToString(),
-                            totalDaysNight = res["totalDaysNight"].ToString(),
-                            totalPlainHills = res["totalPlainHills"].ToString(),
-                            taxi = res["taxi"].ToString(),
-                            BookAgainstCentre = res["BookAgainstCentre"].ToString(),
-                            availbilityOfFund = res["availbilityOfFund"].ToString(),
-                            note = res["note"].ToString(),
-                            newRequest = Convert.ToBoolean(res["newRequest"]),
-                            adminappr = Convert.ToBoolean(res["adminappr"]),
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-        #endregion
-
-        #region /*Tour Report for App */
-        public List<tourProposalrepo> TourReportProject()
-        {
-            try
-            {
-                cmd = new NpgsqlCommand("sp_Tourproposal", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selecttourproject");
-                con.Open();
-                List<tourProposalrepo> getlist = new List<tourProposalrepo>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
-                {
-                    while (res.Read())
-                    {
-                        getlist.Add(new tourProposalrepo
-                        {
-                            id = Convert.ToInt32(res["projectId"]),
-                            projectName = Convert.ToString(res["title"]),
-                            employeecode = res["empcode"].ToString(),
-                            projectManager = res["empname"].ToString()
-                        });
-                    }
-                }
-                return getlist;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-
-        public List<tourProposalrepo> tourproposalbyproject(int projectid)
-        {
-            try
-            {
-                cmd = new NpgsqlCommand("sp_Tourproposal", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "selecttourproposalbyproject");
-                cmd.Parameters.AddWithValue("@projectId", projectid);
-                con.Open();
-                List<tourProposalrepo> list = new List<tourProposalrepo>();
-                var res = cmd.ExecuteReader();
-                if (res.HasRows)
-                {
-                    while (res.Read())
-                    {
-                        list.Add(new tourProposalrepo
-                        {
-                            id = Convert.ToInt32(res["projectId"]),
-                            projectManager = Convert.ToString(res["name"]),
-                            projectName = Convert.ToString(res["title"]),
-                            dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
-                            place = Convert.ToString(res["place"]),
-                            periodFrom = Convert.ToDateTime(res["periodFrom"]),
-                            periodTo = Convert.ToDateTime(res["periodTo"]),
-                            returnDate = Convert.ToDateTime(res["returnDate"]),
-                            purpose = Convert.ToString(res["purpose"]),
-                            newRequest = Convert.ToBoolean(res["newRequest"]),
-                            adminappr = Convert.ToBoolean(res["adminappr"])
-                        });
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                {
-                    con.Close();
-                }
-                cmd.Dispose();
-            }
-        }
-        #endregion
-
-        #endregion
-
-        #region Raised Problem
-        public List<RaisedProblem> getProblemList(int? page = null, int? limit = null, int? id = null, int? managerId = null,string searchTerm = null)
-        {
-            try
-            {
-                List<RaisedProblem> list = new List<RaisedProblem>();
-                con.Open();
-                using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_manageproblems_cursor", con, tran))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("v_action", "selectProblemsforAdmin");
-                    cmd.Parameters.AddWithValue("v_projectmanager", managerId.HasValue ? managerId : 0);
-                    cmd.Parameters.AddWithValue("v_id", id.HasValue ? id : 0);
-                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
-                    cmd.Parameters.AddWithValue("@v_searchterm", string.IsNullOrEmpty(searchTerm) ? (object)DBNull.Value : searchTerm);
-                    string cursorName = (string)cmd.ExecuteScalar();
-                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\"", con, tran))
-                    using (var res = fetchCmd.ExecuteReader())
-                    {
-                        if (res.HasRows)
-                        {
-                            bool firstRow = true;
-                            while (res.Read())
-                            {
-                                list.Add(new RaisedProblem
-                                {
-                                    id = Convert.ToInt32(res["id"]),
-                                    title = res["title"].ToString(),
-                                    description = res["description"].ToString(),
-                                    adminappr = Convert.ToBoolean(res["adminappr"]),
-                                    newRequest = Convert.ToBoolean(res["newRequest"]),
-                                    documentname = res["document"].ToString(),
-                                    projectname = res["projectName"].ToString(),
-                                    projectManager = res["projectManager"].ToString(),
-                                    createdAt = Convert.ToDateTime(res["createdAt"]),
-                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A",
-                                });
-                                if (firstRow)
-                                {
-                                    list[0].Pagination = new ApiCommon.PaginationInfo
-                                    {
-                                        PageNumber = page ?? 0,
-                                        TotalPages = Convert.ToInt32(res["totalpages"] != DBNull.Value ? res["totalpages"] : 0),
-                                        TotalRecords = Convert.ToInt32(res["totalrecords"] != DBNull.Value ? res["totalrecords"] : 0),
-                                        PageSize = limit ?? 0
-                                    };
-                                    firstRow = false; // Optional: ensure pagination is only assigned once
-                                }
-                            }
-                        }
-                    }
-                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
-                    {
-                        closeCmd.ExecuteNonQuery();
-                    }
-                    tran.Commit();
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        public List<RaisedProblem> getproblembyId(int id)
-        {
-            try
-            {
-                List<RaisedProblem> list = new List<RaisedProblem>();
-                con.Open();
-                using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_manageproblems_cursor", con, tran))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@v_action", "selectProblemsforAdminById");
-                    cmd.Parameters.AddWithValue("@v_projectmanager", 0);
-                    cmd.Parameters.AddWithValue("@v_id", id);
-                    string cursorName = (string)cmd.ExecuteScalar();
-                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\"", con, tran))
-                    using (var res = fetchCmd.ExecuteReader())
-                    {
-                        if (res.HasRows)
-                        {
-                            while (res.Read())
-                            {
-                                list.Add(new RaisedProblem
-                                {
-                                    id = Convert.ToInt32(res["id"]),
-                                    title = res["title"].ToString(),
-                                    description = res["description"].ToString(),
-                                    adminappr = Convert.ToBoolean(res["adminappr"]),
-                                    newRequest = Convert.ToBoolean(res["newRequest"]),
-                                    documentname = res["document"].ToString(),
-                                    projectname = res["projectName"].ToString(),
-                                    projectManager = res["projectManager"].ToString()
-                                });
-                            }
-                        }
-                    }
-                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\"", con, tran))
-                    {
-                        closeCmd.ExecuteNonQuery();
-                    }
-                    tran.Commit();
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-        }
-
-        #endregion
-
-        #region get meeting list
-        public List<Meeting_Model> getAllmeetingforAdmin()
-        {
-            try
-            {
-                List<Meeting_Model> _list = new List<Meeting_Model>();
-                Meeting_Model obj = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getAllmeetingofadmin");
-                con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-
-                while (sdr.Read())
-                {
-                    obj = new Meeting_Model();
-                    obj.Id = Convert.ToInt32(sdr["id"]);
-                    obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
-                    obj.MeetingType = sdr["meetingType"].ToString();
-                    obj.MeetingLink = sdr["meetingLink"].ToString();
-                    obj.MeetingTitle = sdr["MeetingTitle"].ToString();
-                    obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
-                    obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
-                    obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
-                    obj.summary = sdr["meetSummary"].ToString();
-                    _list.Add(obj);
-                    obj.createdBy = sdr["createdBy"].ToString();
-                }
-
-                sdr.Close();
-                return _list;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-        public List<Meeting_Model> getAllmeetingforprojectmanager()
-        {
-            try
-            {
-                List<Meeting_Model> _list = new List<Meeting_Model>();
-                Meeting_Model obj = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageMeeting", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getAllmeetingofprojectmanager");
-                con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-
-                while (sdr.Read())
-                {
-                    obj = new Meeting_Model();
-                    obj.Id = Convert.ToInt32(sdr["id"]);
-                    obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
-                    obj.MeetingType = sdr["meetingType"].ToString();
-                    obj.MeetingLink = sdr["meetingLink"].ToString();
-                    obj.MeetingTitle = sdr["MeetingTitle"].ToString();
-                    obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
-                    obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
-                    obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy");
-                    obj.summary = sdr["meetSummary"].ToString();
-                    _list.Add(obj);
-                    obj.createdBy = sdr["createdBy"].ToString();
-                }
-
-                sdr.Close();
-                return _list;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                con.Close();
-            }
-        }
-        #endregion
-        public List<SubProblem> getAllSubOrdinateProblemByIdforadmin(int id)
-        {
-            try
-            {
-                List<SubProblem> problemList = new List<SubProblem>();
-                SubProblem obj = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageSubordinateProjectProblem", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getallproblembyidforadmin");
-                cmd.Parameters.AddWithValue("@id", id);
-                con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
-                {
-                    while (sdr.Read())
-                    {
-                        obj = new SubProblem();
-                        obj.ProblemId = Convert.ToInt32(sdr["problemId"]);
-                        obj.ProjectName = sdr["ProjectName"].ToString();
-                        obj.Title = sdr["Title"].ToString();
-                        obj.Description = sdr["Description"].ToString();
-                        obj.Attchment_Url = sdr["Attachment"].ToString();
-                        obj.CreatedDate = Convert.ToDateTime(sdr["CreatedDate"]).ToString("dd-MM-yyyy");
-                        obj.newRequest = Convert.ToBoolean(sdr["newRequest"]);
-                        problemList.Add(obj);
-                    }
-                }
-                return problemList;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error accured", ex);
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-                cmd.Dispose();
-            }
-
-        }
-
-        public List<BudgetHeadModel> GetBudgetHeads()
-        {
-            try
-            {
-                //List<EmpReportModel> budgetlist = new List<EmpReportModel>();
-                List<BudgetHeadModel> budgetlist = new List<BudgetHeadModel>();
-                con.Open();
-                using (var tran = con.BeginTransaction())
-                using (var cmd = new NpgsqlCommand("fn_manageempreport_cursor", con))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("v_action", "getbudgetHeads");
-                    cmd.Parameters.AddWithValue("v_projectmanager", 0);
-                    cmd.Parameters.AddWithValue("v_id", 0);
-                    cmd.Parameters.AddWithValue("v_limit", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_page", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_year", DBNull.Value);
-                    cmd.Parameters.AddWithValue("v_month", DBNull.Value);
-
-                    string cursorName = (string)cmd.ExecuteScalar();
-                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
-                    using (NpgsqlDataReader res = fetchCmd.ExecuteReader())
-                    {
-                        while (res.Read())
-                        {
-                            budgetlist.Add(new BudgetHeadModel
-                            {
-                                Id = res["id"] == DBNull.Value ? 0 : Convert.ToInt32(res["id"]),
-                                BudgetHead = res["budgethead"] == DBNull.Value
-                                    ? null
-                                    : res["budgethead"].ToString()
-                            });
-                        }
-                    }
-                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\"", con, tran))
-                    {
-                        closeCmd.ExecuteNonQuery();
-                    }
-                    tran.Commit();
-                }
-
-                return budgetlist;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("An error occurred", ex);
-            }
-            finally
-            {
-                if (con.State == ConnectionState.Open)
-                    con.Close();
-
-                if (cmd != null)
-                    cmd.Dispose();
-            }
-        }
-
-    }
 }

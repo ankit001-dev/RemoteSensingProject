@@ -1,1030 +1,1465 @@
-﻿using Newtonsoft.Json;
-using RemoteSensingProject.Models.Admin;
-using RemoteSensingProject.Models.ProjectManager;
+// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
+// for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
+// RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+// RemoteSensingProject.Controllers.EmployeeController
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
-using static RemoteSensingProject.Models.Admin.main;
+using Newtonsoft.Json;
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Accounts;
+using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.SubOrdinate;
 
 namespace RemoteSensingProject.Controllers
 {
-    [Authorize(Roles = "projectManager")]
-    public class EmployeeController : Controller
-    {
-        private readonly ManagerService _managerServices;
-        private readonly AdminServices _adminServices;
-        public EmployeeController()
-        {
-            _managerServices = new ManagerService();
-            _adminServices = new AdminServices();
-        }
-
-
-        // GET: Employee
-        public ActionResult Dashboard()
-        {
-            var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
-            var TotalCount = _managerServices.DashboardCount(Convert.ToInt32(userObj.userId));
-            DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
-            ViewData["emplist"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null,null,null).Where(d=>d.AssignDate>=twoYearsAgo).ToList();
-            return View(TotalCount);
-        }
-        public ActionResult BindOverallCompletionPercentage()
-        {
-            var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
-            var list = _adminServices.getAllProjectCompletion().Where(e => e.ProjectManager == userObj.userId).ToList();
-            return Json(new { list = list }, JsonRequestBehavior.AllowGet);
-
-        }
-        #region OutSource
-        public ActionResult OutSource(string searchTerm = null)
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj,searchTerm:searchTerm);
-            ViewData["Designations"] = _adminServices.ListDesgination();
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult CreateOutSource(OuterSource os)
-        {
-            bool res = false;
-            string message = "Some issue occured !";
-            try
-            {
-                var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-                os.EmpId = Convert.ToInt32(userObj);
-                 res = _managerServices.insertOutSource(os);
-            }
-            catch(Exception ex)
-            {
-                message = ex.Message;
-            }
-            return Json(new
-            {
-                status = res,
-                message = res ? "Outsource created succesfully !" : message
-            });
-        }
-        #endregion
-
-        #region  Task Assign
-        public ActionResult CreateTask(string req)
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["OutSourceList"] = _managerServices.selectAllOutSOurceList(userObj);
-            ViewData["TaskList"] = req == "completed" ? _managerServices.taskList(userObj).Where(d => d.completeStatus).ToList() : req == "pending" ? _managerServices.taskList(userObj).Where(d => !d.completeStatus).ToList() : _managerServices.taskList(userObj);
-            return View();
-        }
-        [HttpPost]
-        public ActionResult CreateTaskJson(OutSourceTask ost)
-        {
-            ost.empId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            bool res = _managerServices.createTask(ost);
-            return Json(new
-            {
-                status = res,
-                message = res ? "Task created successfully !" : "Some issue occured !"
-            });
-        }
-        #endregion
-        public ActionResult Add_Project()
-        {
-            var data = _adminServices.SelectEmployeeRecord();
-            ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
-            ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
-            ViewData["Designations"] = _adminServices.ListDesgination();
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult UpdateTaskStatus(int taskId)
-        {
-            bool res = false;
-            string message = "Some issue occured !";
-            try
-            {
-                res = _managerServices.updateTaskStatus(taskId);
-            }
-            catch(Exception ex)
-            {
-                message = ex.Message;
-            }
-            return Json(new
-            {
-                status = res,
-                message = res ? "Task updated successfully !" : message
-            });
-        }
-        public ActionResult InsertProject(createProjectModel pm)
-        {
-            string filePage = Server.MapPath("~/ProjectContent/ProjectManager/ProjectDocs/");
-            if (!Directory.Exists(filePage))
-                Directory.CreateDirectory(filePage);
-            var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
-            if (userObj != null)
-            {
-                pm.pm.ProjectManager = userObj.userId;
-                pm.pm.createdBy = "projectManager";
-            }
-            else
-            {
-                return RedirectToAction("login","login");
-            }
-
-            if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
-            {
-                pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
-                pm.pm.projectDocumentUrl = "/ProjectContent/ProjectManager/ProjectDocs/" + pm.pm.projectDocumentUrl;
-            }
-
-            if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
-            {
-                foreach (var item in pm.stages)
-                {
-                    if (item.Stage_Document != null && item.Stage_Document.FileName != "")
-                    {
-                        item.Document_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(item.Stage_Document.FileName);
-                        item.Document_Url = "/ProjectContent/ProjectManager/ProjectDocs/" + item.Document_Url;
-                    }
-                }
-            }
-            
-            bool res = _adminServices.addProject(pm);
-
-            if (res)
-            {
-                if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
-                {
-                    pm.pm.projectDocument.SaveAs(Server.MapPath(pm.pm.projectDocumentUrl));
-                }
-
-                if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
-                {
-                    foreach (var item in pm.stages)
-                    {
-                        if (item.Stage_Document != null && item.Stage_Document.FileName != "")
-                        {
-                            item.Stage_Document.SaveAs(Server.MapPath(item.Document_Url));
-                        }
-                    }
-                }
-            }
-            return Json(new
-            {
-                status = res,
-                message = pm.pm.Id>0 ?"Project Updated Successfully":"Project Created Successfully"
-            }, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult Project_List(string searchTerm = null, string statusFilter = null)
-        {
-            var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
-            ViewBag.ProjectList = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "ManagerProject",searchTerm:searchTerm,statusFilter:statusFilter);
-            return View();
-        }
-
-        public ActionResult All_Project_List(string searchTerm = null, string statusFilter = null)
-        {
-            var userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, null,searchTerm:searchTerm,statusFilter:statusFilter);
-            return View();
-        }
-
-        #region /* Assign Project */
-        public ActionResult Assigned_Project(string searchTerm = null, string statusFilter = null)
-        {
-            var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
-
-            List<ProjectList> _list = new List<ProjectList>();
-            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AssignedProject",searchTerm:searchTerm,statusFilter:statusFilter);
-            return View();
-        }
-        public ActionResult GetAllProjectByManager()
-        {
-            var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
-
-            List<Project_model> _list = new List<Project_model>();
-            _list = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AssignedProject");
-            return Json(new { _list = _list }, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult GetProjecDatatById(int Id)
-        {
-            var data = _adminServices.GetProjectById(Id);
-            return Json(new
-            {
-                status = true,
-                data = data
-            }, JsonRequestBehavior.AllowGet);
-        }
-
-        #endregion /* End */
-
-
-
-        public ActionResult Approved_Project()
-        {
-            return View();
-        }
-        #region weekly update
-        public ActionResult Weekly_Update_Project(int Id)
-        {
-            ViewBag.WeeklyUpdateList = _managerServices.MonthlyProjectUpdate(Id);
-            return View();
-        }
-
-        public ActionResult monthly_extr_ProjectStatue(int Id)
-        {
-            ViewData["totalData"] = _managerServices.GetExtrnlFinancialReport(Id);
-            return View();
-        }
-
-        public JsonResult insertMonthlyExtrPrj(FinancialMonthlyReport fr)
-        {
-            bool res = _managerServices.updateFinancialReportMonthly(fr);
-            return Json(new
-            {
-                status = res,
-                message = res ? "Updated successfully !" : "Some issue occured while processing..."
-            });
-        }
-
-        public JsonResult UpdateWeekly(Project_MonthlyUpdate pwu)
-        {
-            bool res = _managerServices.UpdateMonthlyStatus(pwu);
-            return Json(new
-            {
-                status = res,
-                message = res ? "Monthly updated successfully !" : "Some issue conflicted !"
-            });
-        }
-        #endregion
-
-
-        public ActionResult Update_Project_Stage(int Id)
-        {
-
-            ViewBag.ProjectStages = _adminServices.ProjectStagesList(Id);
-            return View();
-        }
-        [HttpPost]
-        public ActionResult AddStageStatus(Project_Statge formData)
-        {
-            if ((formData.StageDocument != null && formData.StageDocument.ContentLength > 0) ||
-                     (formData.DelayedStageDocument != null && formData.DelayedStageDocument.ContentLength > 0))
-            {
-                string fileName = formData.StageDocument?.FileName ?? formData.DelayedStageDocument?.FileName;
-                formData.StageDocument_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(fileName);
-                formData.StageDocument_Url = Path.Combine("/ProjectContent/ProjectManager/ProjectDocs/", formData.StageDocument_Url);
-            }
-
-            string message = "";
-            bool status = _managerServices.InsertStageStatus(formData);
-            if (status)
-            {
-                if (formData.StageDocument != null && formData.StageDocument.FileName != "")
-                {
-                    formData.StageDocument.SaveAs(Server.MapPath(formData.StageDocument_Url));
-                }
-            }
-            if (status)
-            {
-
-                message = "Satges Updated Successfully !";
-            }
-            else
-            {
-                message = "Failed To Update Stages";
-            }
-            return Json(new { message = message, status = status }, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult viewStagesReason(string stageId)
-        {
-            List<Project_Statge> stageList = new List<Project_Statge>();
-            stageList = _managerServices.ViewStagesComments(stageId);
-            return Json(new { stageList = stageList }, JsonRequestBehavior.AllowGet);
-        }
-        #region Project expenses
-        public ActionResult Add_Expenses(int Id)
-        {
-            ViewData["ProjectStages"] = _adminServices.ProjectBudgetList(Id);
-            return View();
-        }
-
-        public ActionResult InsertExpenses(List<ProjectExpenses> list)
-        {
-            string filePage = Server.MapPath("~/ProjectContent/ProjectManager/HeadsSlip/");
-            if (!Directory.Exists(filePage))
-                Directory.CreateDirectory(filePage);
-            if (list.Count > 0)
-            {
-                bool res = false;
-                foreach (var item in list)
-                {
-                    var file = item.Attatchment_file;
-                    if (file != null && file.FileName != "")
-                    {
-                        item.attatchment_url = DateTime.Now.ToString("ddMMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                        item.attatchment_url = Path.Combine("/ProjectContent/ProjectManager/HeadsSlip/", item.attatchment_url);
-                    }
-                    res = _managerServices.insertExpences(item);
-
-                    if (res)
-                    {
-                        if (file != null && file.FileName != "")
-                        {
-                            file.SaveAs(Server.MapPath(item.attatchment_url));
-                        }
-                    }
-                }
-
-                return Json(new
-                {
-                    status = res,
-                    message = res ? "Project created successfully !" : "Some issue occured !"
-                });
-            }
-            else
-            {
-                return Json(new
-                {
-                    status = false,
-                    message = "Server is busy !"
-                });
-            }
-        }
-        #endregion
-        public ActionResult Min_Of_Meeting()
-        {
-
-            var empList = _adminServices.BindEmployee().Where(e => e.EmployeeRole == "subOrdinate");
-            return View(empList);
-        }
-
-        public ActionResult GetConclusions(int id)
-        {
-            var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            var res = _managerServices.getConclusionForMeeting(id, int.Parse(userId.userId));
-            return Json(res, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpPost]
-        public ActionResult AddMeeting(AddMeeting_Model formData)
-        {
-            string filePage = Server.MapPath("~/ProjectContent/ProjectManager/Meeting_Attachment/");
-            if (!Directory.Exists(filePage))
-                Directory.CreateDirectory(filePage);
-            string path = null;
-            if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
-            {
-                var guid = Guid.NewGuid();
-                var FileExtension = Path.GetExtension(formData.Attachment.FileName);
-                var fileName = $"{guid}{FileExtension}";
-                path = Path.Combine("/ProjectContent/ProjectManager/Meeting_Attachment", fileName);
-
-                formData.Attachment_Url = path;
-            }
-            var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            formData.CreaterId = int.Parse(userId.userId);
-            bool status = _adminServices.insertMeeting(formData);
-            if (status && formData.Attachment != null)
-            {
-                formData.Attachment.SaveAs(Server.MapPath(path));
-            }
-            return Json(new { success = status }, JsonRequestBehavior.AllowGet);
-        }
-        [HttpPost]
-        public ActionResult UpdateMeeting(AddMeeting_Model formData)
-        {
-            string path = null;
-            if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
-            {
-                var guid = Guid.NewGuid();
-                var FileExtension = Path.GetExtension(formData.Attachment.FileName);
-                var fileName = $"{guid}{FileExtension}";
-                path = Path.Combine("/ProjectContent/ProjectManager/Meeting_Attachment", fileName);
-
-                formData.Attachment_Url = path;
-            }
-            bool status = _adminServices.UpdateMeeting(formData);
-            if (status && formData.Attachment != null)
-            {
-                formData.Attachment.SaveAs(Server.MapPath(path));
-            }
-            return Json(new { success = status }, JsonRequestBehavior.AllowGet);
-        }
-
-        [HttpGet]
-        public ActionResult GetMeetingById(int id)
-        {
-            var obj = _adminServices.getMeetingById(id);
-            return Json(obj, JsonRequestBehavior.AllowGet);
-
-        }
-
-        [HttpGet]
-        public ActionResult GetAllMeeting()
-        {
-            var id = _managerServices.getManagerDetails(User.Identity.Name).userId;
-            List<Meeting_Model> empList = new List<Meeting_Model>();
-            empList = _adminServices.getAllmeeting().Where(e => e.CreaterId.ToString() == id).ToList();
-            return Json(new { empList = empList }, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult Meeting_Conclusion(int meeting)
-        {
-            ViewBag.empList = _adminServices.BindEmployee();
-            var obj = _adminServices.getMeetingById(meeting);
-            ViewBag.getMember = _adminServices.GetMeetingMemberList(meeting);
-            ViewBag.MeetingConclusion = _adminServices.getConclusion(meeting);
-            return View(obj);
-        }
-        [HttpPost]
-        public ActionResult AddMeetingConclusion(MeetingConclusion mc)
-        {
-            var res = _adminServices.AddMeetingResponse(mc);
-            return Json(res);
-        }
-        public ActionResult getPresentMember(int id)
-        {
-            var res = _adminServices.getPresentMember(id);
-            return Json(res, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult getKeypointResponse(int id)
-        {
-            var res = _adminServices.getKeypointResponse(id);
-            return Json(res, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult Meetings(string searchTerm = null,string statusFilter = null)
-        {
-            var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            var res = _managerServices.getAllmeeting(int.Parse(userId.userId),searchTerm:searchTerm,statusFilter:statusFilter);
-            return View(res);
-        }
-
-        public ActionResult GetMemberResponse(getMemberResponse mr)
-        {
-            var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            mr.MemberId = int.Parse(userId.userId);
-            var res = _managerServices.GetResponseFromMember(mr);
-            return Json(res);
-        }
-
-        [HttpGet]
-        public ActionResult GetMemberJoiningStatusByMeeting(int meetingId)
-        {
-
-            var res = _managerServices.getMemberJoiningStatus(meetingId);
-            return Json(res, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult MyProfile()
-        {
-            return View();
-        }
-
-        public ActionResult Notice(int? projectId, string searchTerm = null)
-        {
-            dynamic noticeList = null;
-            var managerName = User.Identity.Name;
-            UserCredential userObj = _managerServices.getManagerDetails(managerName);
-            noticeList = _adminServices.getNoticeList(null, null, projectId, Convert.ToInt32(userObj.userId),searchTerm:searchTerm);
-           
-            ViewBag.ProjectList = _adminServices.Project_List();
-
-            ViewData["NoticeList"] = noticeList;
-
-            return View();
-        }
-        [HttpGet]
-        public ActionResult GetProjectById(int? id)
-        {
-            dynamic project = null;
-            if (id.HasValue)
-            {
-                project = _adminServices.GetProjectById((int)id);
-            }
-
-            return Json(project, JsonRequestBehavior.AllowGet);
-
-        }
-        public ActionResult SubOrdinateProblemList(string searchTerm = null)
-        {
-            var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
-            ViewBag.ProjectProblemList = _managerServices.getAllSubOrdinateProblem(userObj.userId,searchTerm:searchTerm);
-              
-            return View();
-        }
-        [HttpGet]
-        public ActionResult SubordinateProblemListById(int id)
-        {
-            var managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
-            var data = _managerServices.getAllSubOrdinateProblemById(userObj.userId, id);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-        [HttpPost]
-        public ActionResult updateProjectProblemStatus(int problemId)
-        {
-            bool res = _managerServices.CompleteSelectedProblem(problemId);
-            return Json(new
-            {
-                status = res,
-                message = res ? "Problem solved successfully !" : "Some issue occured.  Try after sometime."
-            });
-        }
-        public ActionResult All_Project_Report(string searchTerm = null, string statusFilter = null)
-        {
-            var userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId),null,null,null,null,searchTerm:searchTerm,statusFilter:statusFilter);
-                return View();
-        }
-
-        public ActionResult Pending_Project_Report()
-        {
-            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-            ViewData["NotStartedProject"] = _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "Upcoming");
-            return View();
-        }
-
-        public ActionResult Complete_Project_Report()
-        {
-            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-            ViewData["CompleteProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "Complete");
-            return View();
-        }
-
-        public ActionResult Expense_Report()
-        {
-            var userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewBag.ProjectList = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, null);
-            return View();
-        }
-
-        public ActionResult Reimbursement_Form(string typeFilter = null)
-        {
-            int id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.GetReimbursements(null, null, null, id, "getSpecificUserData",typeFilter:typeFilter);
-            ViewData["reimlist"] = res;
-            return View();
-        }
-        [HttpPost]
-        public ActionResult Reimbursement_Form(List<Reimbursement> data)
-        {
-            try
-            {
-                int i = 0;
-                if (data.Any())
-                {
-                    foreach (var item in data)
-                    {
-                        item.userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-                        bool res = _managerServices.insertReimbursement(item);
-                        if (res)
-                            i++;
-                    }
-                }
-                return Json(new
-                {
-                    status = i == data.Count,
-                    message = i == data.Count ? "Added Successfully" : "Some issue occured while processing some data ."
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { status = false, message = ex.Message });
-            }
-
-        }
-
-        public ActionResult ViewReinbursementListByType(string type, int id)
-        {
-            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _managerServices.GetReimbursements(null, null, id, userId, type);
-            return Json(new
-            {
-                status = data.Any(),
-                data = data,
-
-            }, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult SubmitReinbursementFormType(string type, int Id)
-        {
-            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-
-            bool res = _managerServices.submitReinbursementForm(type, userId, Id);
-
-            return Json(new
-            {
-                status = res,
-                message = res ? "Submitted successfully !" : "Some issue occured !"
-            }, JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult Hiring_Vehicle(int? projectFilter = null)
-        {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.All_Project_List(userid, null, null, null);
-            ViewData["projectlist"] = res;
-            var res1 = _managerServices.GetHiringVehicles(userId: userid, type: "projectManager",projectFilter:projectFilter);
-            ViewData["hiringList"] = res1;
-            return View();
-        }
-        [HttpPost]
-        public ActionResult Hiring_Vehicle(HiringVehicle data)
-        {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            data.userId = userid;
-            bool res = _managerServices.insertHiring(data);
-            if (res)
-            {
-                return Json(new
-                {
-                    status = res,
-                    message = "Added Successfully"
-                });
-            }
-            else
-            {
-                return Json(new
-                {
-                    status = res,
-                    message = "Something went wrong"
-                });
-            }
-        }
-        public ActionResult Tour_Proposal(int? projectFilter = null)
-        {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.getTourList(userId: userid, type: "specificUser",projectFilter:projectFilter);
-            var res1 = _managerServices.All_Project_List(userid, null, null, null);
-            ViewData["projectList"] = res1;
-            ViewData["tourList"] = res;
-            return View();
-        }
-        [HttpPost]
-        public ActionResult Tour_Proposal(tourProposal data)
-        {
-            data.userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            bool res = _managerServices.insertTour(data);
-            if (res)
-            {
-                return Json(new
-                {
-                    status = res,
-                    message = "Added Successfully"
-                });
-            }
-            else
-            {
-                return Json(new
-                {
-                    status = res,
-                    message = "Something went wrong"
-                });
-            }
-        }
-
-        public ActionResult Reimbursement_Report(string typeFilter = null, string statusFilter = null)
-        {
-            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["totalReinursementReport"] = _managerServices.GetReimbursements(managerId: userId, type: "selectReinbursementforUserReport",statusFilter:statusFilter,typeFilter:typeFilter);
-            return View();
-        }
-        public ActionResult TourProposal_Report(int? projectFilter = null, string statusFilter = null)
-        {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["tourList"] = _managerServices.getTourList(userId: userid, type: "specificUser", projectFilter: projectFilter, statusFilter: statusFilter);
-            ViewData["projects"] = _adminServices.Project_List();
-            ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-            return View();
-        }
-        public ActionResult Hiring_Report(int? projectFilter = null, string statusFilter = null)
-        {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.All_Project_List(userid, null, null, null);
-            ViewData["projectlist"] = res;
-            var res1 = _managerServices.GetHiringVehicles(userId: userid, type: "projectManager",projectFilter:projectFilter,statusFilter:statusFilter);
-            ViewData["hiringList"] = res1;
-            ViewData["projects"] = _adminServices.Project_List();
-            return View();
-        }
-        public ActionResult RaiseProblem()
-        {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["projectList"] = _managerServices.All_Project_List(userid, null, null, null);
-            ViewData["ProblemList"] = _managerServices.getProblems(userid);
-            return View();
-        }
-        [HttpPost]
-        public ActionResult RaiseProblem(RaiseProblem dt)
-        {
-            dt.id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            if (dt.document.ContentLength > 0)
-            {
-                dt.documentname = $"/ProjectContent/ProjectManager/raisedproblem/{Guid.NewGuid()}{dt.document.FileName}";
-            }
-            bool res = _managerServices.insertRaisedProblem(dt);
-            if (res)
-            {
-                if (dt.document != null && dt.document.ContentLength > 0)
-                {
-                    string fullPath = Server.MapPath(dt.documentname);
-                    string dir = Path.GetDirectoryName(fullPath);
-                    if (!Directory.Exists(dir))
-                    {
-                        Directory.CreateDirectory(dir);
-                    }
-                    dt.document.SaveAs(fullPath);
-                }
-                return Json(new
-                {
-                    status = res,
-                    message = "Problem raised successfully !"
-                });
-            }
-            return Json(new
-            {
-                status = res,
-                message = "Some issue occured !"
-            });
-        }
-
-        [HttpGet]
-        public ActionResult GetRaiseProblemById(int id)
-        {
-            int managerId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _adminServices.getProblemList(managerId: managerId, id: id);
-            return Json(new
-            {
-                status = true,
-                data
-            }, JsonRequestBehavior.AllowGet);
-        }
-        [HttpGet]
-        public ActionResult DeleteRaiseProblem(int id)
-        {
-            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            bool res = _managerServices.deleteRaisedProblem(id, userId);
-            if (res)
-            {
-                return Json(new
-                {
-                    status = res,
-                    message = "Deleted Successfully"
-                }, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new
-                {
-                    status = res,
-                    message = "Something wend wrong.",
-                },
-                    JsonRequestBehavior.AllowGet
-                );
-            }
-        }
-        public ActionResult ManageAttendance()
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj);
-            ViewData["attendanceCount"] = _managerServices.getAttendanceCount(userObj);
-            return View();
-        }
-        [HttpGet]
-        public JsonResult GetAttendanceListByEmpId(int id)
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _managerServices.GetAllAttendanceForProjectManager(userObj, id);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-        [HttpPost]
-        public JsonResult AddAttendance(AttendanceManage model)
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            model.projectManager = Convert.ToInt32(userObj);
-            var result = _managerServices.InsertAttendance(model);
-
-            if (result.success)
-            {
-                if (result.skippedDates.Count > 0)
-                {
-                    return Json(new
-                    {
-                        success = true,
-                        message = "Attendance submitted. Some dates were skipped as they already exist.",
-                        skipped = result.skippedDates
-                    });
-                }
-
-                return Json(new { success = true, message = "Attendance submitted successfully." });
-            }
-            else
-            {
-                return Json(new { success = false, message = "Error occurred: " + result.error });
-            }
-        }
-        public ActionResult AttendanceRequest()
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["newattendancelist"] = _managerServices.GetAllAttendanceForProjectManager(userObj);
-            return View();
-        }
-        [HttpPost]
-        public ActionResult AttendanceRequest(bool status, int id, string remark)
-        {
-            bool res = _managerServices.AttendanceApproval(id, status, remark);
-            if (res)
-            {
-                return Json(new
-                {
-                    status = res,
-                    message = (res == true && status == true) ? "Approved Successfully" : "Rejected Successfully"
-                });
-            }
-            else
-            {
-                return Json(new
-                {
-                    status = res,
-                    message = "Some error Occured"
-                });
-            }
-        }
-        [HttpGet]
-        public ActionResult getAttendanceRepo(int month, int year, int EmpId)
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _managerServices.getReportAttendance(month, year, userObj, EmpId);
-            if (data.Any())
-            {
-                return Json(new
-                {
-                    status = data.Any(),
-                    data = data,
-                }, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new
-                {
-                    status = data.Any(),
-                    message = "Data not found"
-                }, JsonRequestBehavior.AllowGet);
-            }
-        }
-        [HttpGet]
-        public ActionResult Attendance_Report()
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj);
-            ViewData["attendanceCount"] = _managerServices.getAttendanceCount(userObj);
-            return View();
-        }
-        [HttpGet]
-        public JsonResult Attendance_ReportByMonth(int year ,int month)
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _managerServices.getAttendanceCountByMonth(year, month, userObj);
-            return Json(data, JsonRequestBehavior.AllowGet);
-        }
-        public ActionResult ExportAttendanceToExcel(int month, int year, int EmpId)
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _managerServices.ConvertExcelFile(month, year, userObj, EmpId);
-            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReport.xlsx");
-        }
-        public ActionResult ShowAllAttendance(int year,int month)
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _managerServices.GetAllAttendanceForPmByMonth(year, month, userObj);
-            ViewData["showAllAtt"] = data;
-            ViewData["AllAttendance"] = JsonConvert.SerializeObject(data); // 'data' is List<AllAttendance>
-            ViewData["Year"] = year;
-            ViewData["Month"] = month;
-            return View();
-        }
-        public ActionResult ExportAllAtt(int year,int month)
-        {
-            int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _managerServices.ConvertExcelFileOfAll(month, year, userObj);
-            return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReportOfAll.xlsx");
-        }
-        public ActionResult EmpMonthlyReport(int?month=null,int?year=null)
-        {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["projectList"] = _managerServices.All_Project_List(userid, null, null, null);
-            ViewData["ReportList"] = _managerServices.GetEmpReport(userid,month:month,year:year);
-            return View();
-        }
-        [HttpPost]
-        public ActionResult InsertEmpReport(EmpReportModel model)
-        {
-            try
-            {
-                string message = "";
-                int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-                model.PmId = userid;
-                bool res = _managerServices.InsertEmpReport(model, out message);
-
-                if (res)
-                {
-                    return Json(new
-                    {
-                        status = res,
-                        message = "Report inserted successfully!"
-                    });
-                }
-                else
-                {
-                    return Json(new
-                    {
-                        status = res,
-                        message = message
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new
-                {
-                    status = false,
-                    message = "Server error occurred: " + ex.Message
-                });
-            }
-        }
-
-        public ActionResult Feedback()
-        {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["feedbacklist"] = _managerServices.GetFeedbacks(userid);
-            return View();
-        }
-        [HttpPost]
-        public ActionResult InsertFeedback(FeedbackModel feed)
-        {
-            try
-            {
-                feed.UserId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-                bool res = _managerServices.InsertFeedback(feed);
-                return Json(new
-                {
-                    status = res,
-                    message = "Feedback added successfully"
-                });
-            }
-            catch
-            {
-                return Json(new
-                {
-                    status = false,
-                    message = "Server error occurred"
-                });
-            }
-        }
-        [HttpPost]
-        public JsonResult UpdateProjectStatus(UpdateProjectStatus upd)
-        {
-            try
-            {
-                bool res = _managerServices.InsertProjectStatus(upd);
-
-                return Json(new { status = res, message = res? "Project status updated successfully":"Some error occured" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { status = false, message = ex.Message });
-            }
-        }
-        [HttpGet]
-        public JsonResult LastProjectStatusPrencentage(int projectid)
-        {
-            try
-            {
-                var data = _managerServices.LastProjectStatus(projectid);
-                return Json(new { status = data.Count > 0 ? true : false, message = data.Count > 0 ? "data recived" : "data not found" ,data = data},JsonRequestBehavior.AllowGet);
-            }
-            catch(Exception ex)
-            {
-                return Json(new { status = false, message = ex.Message });
-            }
-        }
-    }
+	[Authorize(Roles = "projectManager")]
+	public class EmployeeController : Controller
+	{
+		private readonly ManagerService _managerServices;
+
+		private readonly AdminServices _adminServices;
+
+		private readonly AccountService _accountService;
+
+		public EmployeeController()
+		{
+			_managerServices = new ManagerService();
+			_adminServices = new AdminServices();
+			_accountService = new AccountService();
+		}
+
+		public ActionResult Dashboard()
+		{
+			string managerName = User.Identity.Name;
+			UserCredential userObj = new UserCredential();
+			userObj = _managerServices.getManagerDetails(managerName);
+			DashboardCount TotalCount = _managerServices.DashboardCount(Convert.ToInt32(userObj.userId));
+			DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
+			((ControllerBase)this).ViewData["emplist"] = (from d in _managerServices.All_Project_List(Convert.ToInt32(userObj.userId))
+														  where d.AssignDate >= twoYearsAgo
+														  select d).ToList();
+			return View((object)TotalCount);
+		}
+
+		public ActionResult BindOverallCompletionPercentage()
+		{
+			string managerName = User.Identity.Name;
+			UserCredential userObj = new UserCredential();
+			userObj = _managerServices.getManagerDetails(managerName);
+			List<RemoteSensingProject.Models.Admin.main.DashboardCount> list = (from e in _adminServices.getAllProjectCompletion()
+																				where e.ProjectManager == userObj.userId
+																				select e).ToList();
+			return Json((object)new { list }, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult OutSource(string searchTerm = null)
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			((ControllerBase)this).ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj, null, null, searchTerm);
+			((ControllerBase)this).ViewData["Designations"] = _adminServices.ListDesgination();
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult CreateOutSource(OuterSource os)
+		{
+			bool res = false;
+			string message = "Some issue occured !";
+			try
+			{
+				string userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+				os.EmpId = Convert.ToInt32(userObj);
+				res = _managerServices.insertOutSource(os);
+			}
+			catch (Exception ex)
+			{
+				message = ex.Message;
+			}
+			return Json((object)new
+			{
+				status = res,
+				message = (res ? "Outsource created succesfully !" : message)
+			});
+		}
+
+		public ActionResult CreateTask(string req)
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			((ControllerBase)this).ViewData["OutSourceList"] = _managerServices.selectAllOutSOurceList(userObj);
+			((ControllerBase)this).ViewData["TaskList"] = ((req == "completed") ? (from d in _managerServices.taskList(userObj)
+																				   where d.completeStatus
+																				   select d).ToList() : ((req == "pending") ? (from d in _managerServices.taskList(userObj)
+																															   where !d.completeStatus
+																															   select d).ToList() : _managerServices.taskList(userObj)));
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult CreateTaskJson(OutSourceTask ost)
+		{
+			ost.empId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			bool res = _managerServices.createTask(ost);
+			return Json((object)new
+			{
+				status = res,
+				message = (res ? "Task created successfully !" : "Some issue occured !")
+			});
+		}
+
+		public ActionResult Add_Project()
+		{
+			List<RemoteSensingProject.Models.Admin.main.Employee_model> data = _adminServices.SelectEmployeeRecord();
+			((dynamic)((ControllerBase)this).ViewBag).subOrdinateList = data.Where((RemoteSensingProject.Models.Admin.main.Employee_model d) => d.EmployeeRole.Equals("subOrdinate")).ToList();
+			((ControllerBase)this).ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
+			((ControllerBase)this).ViewData["Designations"] = _adminServices.ListDesgination();
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult UpdateTaskStatus(int taskId)
+		{
+			bool res = false;
+			string message = "Some issue occured !";
+			try
+			{
+				res = _managerServices.updateTaskStatus(taskId);
+			}
+			catch (Exception ex)
+			{
+				message = ex.Message;
+			}
+			return Json((object)new
+			{
+				status = res,
+				message = (res ? "Task updated successfully !" : message)
+			});
+		}
+
+		public ActionResult InsertProject(RemoteSensingProject.Models.Admin.main.createProjectModel pm)
+		{
+			string filePage = Server.MapPath("~/ProjectContent/ProjectManager/ProjectDocs/");
+			if (!Directory.Exists(filePage))
+			{
+				Directory.CreateDirectory(filePage);
+			}
+			string managerName = User.Identity.Name;
+			UserCredential userObj = new UserCredential();
+			userObj = _managerServices.getManagerDetails(managerName);
+			if (userObj != null)
+			{
+				pm.pm.ProjectManager = userObj.userId;
+				pm.pm.createdBy = "projectManager";
+				if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
+				{
+					pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
+					pm.pm.projectDocumentUrl = "/ProjectContent/ProjectManager/ProjectDocs/" + pm.pm.projectDocumentUrl;
+				}
+				if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
+				{
+					foreach (RemoteSensingProject.Models.Admin.main.Project_Statge item in pm.stages)
+					{
+						if (item.Stage_Document != null && item.Stage_Document.FileName != "")
+						{
+							item.Document_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(item.Stage_Document.FileName);
+							item.Document_Url = "/ProjectContent/ProjectManager/ProjectDocs/" + item.Document_Url;
+						}
+					}
+				}
+				bool res = _adminServices.addProject(pm);
+				if (res)
+				{
+					if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
+					{
+						pm.pm.projectDocument.SaveAs(Server.MapPath(pm.pm.projectDocumentUrl));
+					}
+					if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
+					{
+						foreach (RemoteSensingProject.Models.Admin.main.Project_Statge item2 in pm.stages)
+						{
+							if (item2.Stage_Document != null && item2.Stage_Document.FileName != "")
+							{
+								item2.Stage_Document.SaveAs(Server.MapPath(item2.Document_Url));
+							}
+						}
+					}
+				}
+				return Json((object)new
+				{
+					status = res,
+					message = ((pm.pm.Id > 0) ? "Project Updated Successfully" : "Project Created Successfully")
+				}, (JsonRequestBehavior)0);
+			}
+			return RedirectToAction("login", "login");
+		}
+
+		public ActionResult Project_List(string searchTerm = null, string statusFilter = null)
+		{
+			string managerName = User.Identity.Name;
+			UserCredential userObj = new UserCredential();
+			userObj = _managerServices.getManagerDetails(managerName);
+			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "ManagerProject", null, searchTerm, statusFilter);
+			return View();
+		}
+
+		public ActionResult All_Project_List(string searchTerm = null, string statusFilter = null)
+		{
+			UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
+			((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, null, null, searchTerm, statusFilter);
+			return View();
+		}
+
+		public ActionResult Assigned_Project(string searchTerm = null, string statusFilter = null)
+		{
+			string managerName = User.Identity.Name;
+			UserCredential userObj = new UserCredential();
+			userObj = _managerServices.getManagerDetails(managerName);
+			List<ProjectList> _list = new List<ProjectList>();
+			((ControllerBase)this).ViewData["AssignedProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AssignedProject", null, searchTerm, statusFilter);
+			return View();
+		}
+
+		public ActionResult GetAllProjectByManager()
+		{
+			string managerName = User.Identity.Name;
+			UserCredential userObj = new UserCredential();
+			userObj = _managerServices.getManagerDetails(managerName);
+			List<RemoteSensingProject.Models.Admin.main.Project_model> _list = new List<RemoteSensingProject.Models.Admin.main.Project_model>();
+			_list = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AssignedProject");
+			return Json((object)new { _list }, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult GetProjecDatatById(int Id)
+		{
+			RemoteSensingProject.Models.Admin.main.createProjectModel data = _adminServices.GetProjectById(Id);
+			return Json((object)new
+			{
+				status = true,
+				data = data
+			}, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult Approved_Project()
+		{
+			return View();
+		}
+
+		public ActionResult Weekly_Update_Project(int Id)
+		{
+			((dynamic)((ControllerBase)this).ViewBag).WeeklyUpdateList = _managerServices.MonthlyProjectUpdate(Id);
+			return View();
+		}
+
+		public ActionResult monthly_extr_ProjectStatue(int Id)
+		{
+			((ControllerBase)this).ViewData["totalData"] = _managerServices.GetExtrnlFinancialReport(Id);
+			return View();
+		}
+
+		public JsonResult insertMonthlyExtrPrj(FinancialMonthlyReport fr)
+		{
+			bool res = _managerServices.updateFinancialReportMonthly(fr);
+			return Json((object)new
+			{
+				status = res,
+				message = (res ? "Updated successfully !" : "Some issue occured while processing...")
+			});
+		}
+
+		public JsonResult UpdateWeekly(RemoteSensingProject.Models.Admin.main.Project_MonthlyUpdate pwu)
+		{
+			bool res = _managerServices.UpdateMonthlyStatus(pwu);
+			return Json((object)new
+			{
+				status = res,
+				message = (res ? "Monthly updated successfully !" : "Some issue conflicted !")
+			});
+		}
+
+		public ActionResult Update_Project_Stage(int Id)
+		{
+			((dynamic)((ControllerBase)this).ViewBag).ProjectStages = _adminServices.ProjectStagesList(Id);
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult AddStageStatus(RemoteSensingProject.Models.Admin.main.Project_Statge formData)
+		{
+			if ((formData.StageDocument != null && formData.StageDocument.ContentLength > 0) || (formData.DelayedStageDocument != null && formData.DelayedStageDocument.ContentLength > 0))
+			{
+				string fileName = formData.StageDocument?.FileName ?? formData.DelayedStageDocument?.FileName;
+				formData.StageDocument_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(fileName);
+				formData.StageDocument_Url = Path.Combine("/ProjectContent/ProjectManager/ProjectDocs/", formData.StageDocument_Url);
+			}
+			string message = "";
+			bool status = _managerServices.InsertStageStatus(formData);
+			if (status && formData.StageDocument != null && formData.StageDocument.FileName != "")
+			{
+				formData.StageDocument.SaveAs(Server.MapPath(formData.StageDocument_Url));
+			}
+			message = ((!status) ? "Failed To Update Stages" : "Satges Updated Successfully !");
+			return Json((object)new { message, status }, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult viewStagesReason(string stageId)
+		{
+			List<RemoteSensingProject.Models.Admin.main.Project_Statge> stageList = new List<RemoteSensingProject.Models.Admin.main.Project_Statge>();
+			stageList = _managerServices.ViewStagesComments(stageId);
+			return Json((object)new { stageList }, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult Add_Expenses(int Id)
+		{
+			((ControllerBase)this).ViewData["ProjectStages"] = _adminServices.ProjectBudgetList(Id);
+			return View();
+		}
+
+		public ActionResult InsertExpenses(List<ProjectExpenses> list)
+		{
+			string filePage = Server.MapPath("~/ProjectContent/ProjectManager/HeadsSlip/");
+			if (!Directory.Exists(filePage))
+			{
+				Directory.CreateDirectory(filePage);
+			}
+			if (list.Count > 0)
+			{
+				bool res = false;
+				foreach (ProjectExpenses item in list)
+				{
+					HttpPostedFileBase file = item.Attatchment_file;
+					if (file != null && file.FileName != "")
+					{
+						item.attatchment_url = DateTime.Now.ToString("ddMMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+						item.attatchment_url = Path.Combine("/ProjectContent/ProjectManager/HeadsSlip/", item.attatchment_url);
+					}
+					res = _managerServices.insertExpences(item);
+					if (res && file != null && file.FileName != "")
+					{
+						file.SaveAs(Server.MapPath(item.attatchment_url));
+					}
+				}
+				return Json((object)new
+				{
+					status = res,
+					message = (res ? "Project created successfully !" : "Some issue occured !")
+				});
+			}
+			return Json((object)new
+			{
+				status = false,
+				message = "Server is busy !"
+			});
+		}
+
+		public ActionResult Min_Of_Meeting()
+		{
+			IEnumerable<RemoteSensingProject.Models.Admin.main.Employee_model> empList = from e in _adminServices.BindEmployee()
+																						 where e.EmployeeRole == "subOrdinate"
+																						 select e;
+			return View((object)empList);
+		}
+
+		public ActionResult GetConclusions(int id)
+		{
+			UserCredential userId = _managerServices.getManagerDetails(User.Identity.Name);
+			List<GetConclusion> res = _managerServices.getConclusionForMeeting(id, int.Parse(userId.userId));
+			return Json((object)res, (JsonRequestBehavior)0);
+		}
+
+		[HttpPost]
+		public ActionResult AddMeeting(RemoteSensingProject.Models.Admin.main.AddMeeting_Model formData)
+		{
+			string filePage = Server.MapPath("~/ProjectContent/ProjectManager/Meeting_Attachment/");
+			if (!Directory.Exists(filePage))
+			{
+				Directory.CreateDirectory(filePage);
+			}
+			string path = null;
+			if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
+			{
+				Guid guid = Guid.NewGuid();
+				string FileExtension = Path.GetExtension(formData.Attachment.FileName);
+				string fileName = $"{guid}{FileExtension}";
+				path = (formData.Attachment_Url = Path.Combine("/ProjectContent/ProjectManager/Meeting_Attachment", fileName));
+			}
+			UserCredential userId = _managerServices.getManagerDetails(User.Identity.Name);
+			formData.CreaterId = int.Parse(userId.userId);
+			bool status = _adminServices.insertMeeting(formData);
+			if (status && formData.Attachment != null)
+			{
+				formData.Attachment.SaveAs(Server.MapPath(path));
+			}
+			return Json((object)new
+			{
+				success = status
+			}, (JsonRequestBehavior)0);
+		}
+
+		[HttpPost]
+		public ActionResult UpdateMeeting(RemoteSensingProject.Models.Admin.main.AddMeeting_Model formData)
+		{
+			string path = null;
+			if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
+			{
+				Guid guid = Guid.NewGuid();
+				string FileExtension = Path.GetExtension(formData.Attachment.FileName);
+				string fileName = $"{guid}{FileExtension}";
+				path = (formData.Attachment_Url = Path.Combine("/ProjectContent/ProjectManager/Meeting_Attachment", fileName));
+			}
+			bool status = _adminServices.UpdateMeeting(formData);
+			if (status && formData.Attachment != null)
+			{
+				formData.Attachment.SaveAs(Server.MapPath(path));
+			}
+			return Json((object)new
+			{
+				success = status
+			}, (JsonRequestBehavior)0);
+		}
+
+		[HttpGet]
+		public ActionResult GetMeetingById(int id)
+		{
+			RemoteSensingProject.Models.Admin.main.Meeting_Model obj = _adminServices.getMeetingById(id);
+			return Json((object)obj, (JsonRequestBehavior)0);
+		}
+
+		[HttpGet]
+		public ActionResult GetAllMeeting()
+		{
+			string id = _managerServices.getManagerDetails(User.Identity.Name).userId;
+			List<RemoteSensingProject.Models.Admin.main.Meeting_Model> empList = new List<RemoteSensingProject.Models.Admin.main.Meeting_Model>();
+			empList = (from e in _adminServices.getAllmeeting()
+					   where e.CreaterId.ToString() == id
+					   select e).ToList();
+			return Json((object)new { empList }, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult Meeting_Conclusion(int meeting)
+		{
+			((dynamic)((ControllerBase)this).ViewBag).empList = _adminServices.BindEmployee();
+			RemoteSensingProject.Models.Admin.main.Meeting_Model obj = _adminServices.getMeetingById(meeting);
+			((dynamic)((ControllerBase)this).ViewBag).getMember = _adminServices.GetMeetingMemberList(meeting);
+			((dynamic)((ControllerBase)this).ViewBag).MeetingConclusion = _adminServices.getConclusion(meeting);
+			return View((object)obj);
+		}
+
+		[HttpPost]
+		public ActionResult AddMeetingConclusion(RemoteSensingProject.Models.Admin.main.MeetingConclusion mc)
+		{
+			bool res = _adminServices.AddMeetingResponse(mc);
+			return Json((object)res);
+		}
+
+		public ActionResult getPresentMember(int id)
+		{
+			List<RemoteSensingProject.Models.Admin.main.Employee_model> res = _adminServices.getPresentMember(id);
+			return Json((object)res, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult getKeypointResponse(int id)
+		{
+			List<RemoteSensingProject.Models.Admin.main.KeyPointResponse> res = _adminServices.getKeypointResponse(id);
+			return Json((object)res, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult Meetings(string searchTerm = null, string statusFilter = null)
+		{
+			UserCredential userId = _managerServices.getManagerDetails(User.Identity.Name);
+			List<RemoteSensingProject.Models.Admin.main.Meeting_Model> res = _managerServices.getAllmeeting(int.Parse(userId.userId), null, null, searchTerm, statusFilter);
+			return View((object)res);
+		}
+
+		public ActionResult GetMemberResponse(getMemberResponse mr)
+		{
+			UserCredential userId = _managerServices.getManagerDetails(User.Identity.Name);
+			mr.MemberId = int.Parse(userId.userId);
+			bool res = _managerServices.GetResponseFromMember(mr);
+			return Json((object)res);
+		}
+
+		[HttpGet]
+		public ActionResult GetMemberJoiningStatusByMeeting(int meetingId)
+		{
+			List<RemoteSensingProject.Models.Admin.main.Employee_model> res = _managerServices.getMemberJoiningStatus(meetingId);
+			return Json((object)res, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult MyProfile()
+		{
+			return View();
+		}
+
+		public ActionResult Notice(int? projectId, string searchTerm = null)
+		{
+			object noticeList = null;
+			string managerName = User.Identity.Name;
+			UserCredential userObj = _managerServices.getManagerDetails(managerName);
+			noticeList = _adminServices.getNoticeList(null, null, projectId, Convert.ToInt32(userObj.userId), searchTerm);
+			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _adminServices.Project_List();
+			((ControllerBase)this).ViewData["NoticeList"] = noticeList;
+			return View();
+		}
+
+		[HttpGet]
+		public ActionResult GetProjectById(int? id)
+		{
+			dynamic project = null;
+			if (id.HasValue)
+			{
+				project = _adminServices.GetProjectById(id.Value);
+			}
+			return (ActionResult)Json(project, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult SubOrdinateProblemList(string searchTerm = null)
+		{
+			string managerName = User.Identity.Name;
+			UserCredential userObj = new UserCredential();
+			userObj = _managerServices.getManagerDetails(managerName);
+			((dynamic)((ControllerBase)this).ViewBag).ProjectProblemList = _managerServices.getAllSubOrdinateProblem(userObj.userId, null, null, searchTerm);
+			return View();
+		}
+
+		[HttpGet]
+		public ActionResult SubordinateProblemListById(int id)
+		{
+			string managerName = User.Identity.Name;
+			UserCredential userObj = new UserCredential();
+			userObj = _managerServices.getManagerDetails(managerName);
+			List<RemoteSensingProject.Models.SubOrdinate.main.Raise_Problem> data = _managerServices.getAllSubOrdinateProblemById(userObj.userId, id);
+			return Json((object)data, (JsonRequestBehavior)0);
+		}
+
+		[HttpPost]
+		public ActionResult updateProjectProblemStatus(int problemId)
+		{
+			bool res = _managerServices.CompleteSelectedProblem(problemId);
+			return Json((object)new
+			{
+				status = res,
+				message = (res ? "Problem solved successfully !" : "Some issue occured.  Try after sometime.")
+			});
+		}
+
+		public ActionResult All_Project_Report(string searchTerm = null, string statusFilter = null)
+		{
+			UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
+			((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, null, null, searchTerm, statusFilter);
+			return View();
+		}
+
+		public ActionResult Pending_Project_Report()
+		{
+			string userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+			((ControllerBase)this).ViewData["NotStartedProject"] = _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "Upcoming");
+			return View();
+		}
+
+		public ActionResult Complete_Project_Report()
+		{
+			string userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+			((ControllerBase)this).ViewData["CompleteProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "Complete");
+			return View();
+		}
+
+		public ActionResult Expense_Report()
+		{
+			UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
+			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId));
+			return View();
+		}
+
+		public ActionResult Reimbursement_Form(string typeFilter = null)
+		{
+			int id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			List<Reimbursement> res = _managerServices.GetReimbursements(null, null, null, id, "getSpecificUserData", typeFilter);
+			((ControllerBase)this).ViewData["reimlist"] = res;
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult Reimbursement_Form(List<Reimbursement> data)
+		{
+			try
+			{
+				int i = 0;
+				if (data.Any())
+				{
+					foreach (Reimbursement item in data)
+					{
+						item.userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+						if (_managerServices.insertReimbursement(item))
+						{
+							i++;
+						}
+					}
+				}
+				return Json((object)new
+				{
+					status = (i == data.Count),
+					message = ((i == data.Count) ? "Added Successfully" : "Some issue occured while processing some data .")
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json((object)new
+				{
+					status = false,
+					message = ex.Message
+				});
+			}
+		}
+
+		public ActionResult ViewReinbursementListByType(string type, int id)
+		{
+			int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			List<Reimbursement> data = _managerServices.GetReimbursements(null, null, id, userId, type);
+			return Json((object)new
+			{
+				status = data.Any(),
+				data = data
+			}, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult SubmitReinbursementFormType(string type, int Id)
+		{
+			int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			bool res = _managerServices.submitReinbursementForm(type, userId, Id);
+			return Json((object)new
+			{
+				status = res,
+				message = (res ? "Submitted successfully !" : "Some issue occured !")
+			}, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult Hiring_Vehicle(int? projectFilter = null)
+		{
+			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			List<RemoteSensingProject.Models.Admin.main.Project_model> res = _managerServices.All_Project_List(userid);
+			((ControllerBase)this).ViewData["projectlist"] = res;
+			ManagerService managerServices = _managerServices;
+			int? userId = userid;
+			int? projectFilter2 = projectFilter;
+			List<HiringVehicle> res2 = managerServices.GetHiringVehicles(userId, null, "projectManager", null, null, projectFilter2);
+			((ControllerBase)this).ViewData["hiringList"] = res2;
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult Hiring_Vehicle(HiringVehicle data)
+		{
+			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			data.userId = userid;
+			bool res = _managerServices.insertHiring(data);
+			if (res)
+			{
+				return Json((object)new
+				{
+					status = res,
+					message = "Added Successfully"
+				});
+			}
+			return Json((object)new
+			{
+				status = res,
+				message = "Something went wrong"
+			});
+		}
+
+		public ActionResult Tour_Proposal(int? projectFilter = null)
+		{
+			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			ManagerService managerServices = _managerServices;
+			int? userId = userid;
+			int? projectFilter2 = projectFilter;
+			List<tourProposal> res = managerServices.getTourList(userId, null, "specificUser", null, null, projectFilter2);
+			List<RemoteSensingProject.Models.Admin.main.Project_model> res2 = _managerServices.All_Project_List(userid);
+			((ControllerBase)this).ViewData["projectList"] = res2;
+			((ControllerBase)this).ViewData["tourList"] = res;
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult Tour_Proposal(tourProposal data)
+		{
+			data.userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			bool res = _managerServices.insertTour(data);
+			if (res)
+			{
+				return Json((object)new
+				{
+					status = res,
+					message = "Added Successfully"
+				});
+			}
+			return Json((object)new
+			{
+				status = res,
+				message = "Something went wrong"
+			});
+		}
+
+		public ActionResult Reimbursement_Report(string typeFilter = null, string statusFilter = null)
+		{
+			int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
+			ManagerService managerServices = _managerServices;
+			int? managerId = userId;
+			viewData["totalReinursementReport"] = managerServices.GetReimbursements(null, null, null, managerId, "selectReinbursementforUserReport", typeFilter, statusFilter);
+			return View();
+		}
+
+		public ActionResult TourProposal_Report(int? projectFilter = null, string statusFilter = null)
+		{
+			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
+			ManagerService managerServices = _managerServices;
+			int? userId = userid;
+			int? projectFilter2 = projectFilter;
+			viewData["tourList"] = managerServices.getTourList(userId, null, "specificUser", null, null, projectFilter2, statusFilter);
+			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
+			return View();
+		}
+
+		public ActionResult Hiring_Report(int? projectFilter = null, string statusFilter = null)
+		{
+			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			List<RemoteSensingProject.Models.Admin.main.Project_model> res = _managerServices.All_Project_List(userid);
+			((ControllerBase)this).ViewData["projectlist"] = res;
+			ManagerService managerServices = _managerServices;
+			int? userId = userid;
+			int? projectFilter2 = projectFilter;
+			List<HiringVehicle> res2 = managerServices.GetHiringVehicles(userId, null, "projectManager", null, null, projectFilter2, statusFilter);
+			((ControllerBase)this).ViewData["hiringList"] = res2;
+			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+			return View();
+		}
+
+		public ActionResult RaiseProblem()
+		{
+			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			((ControllerBase)this).ViewData["projectList"] = _managerServices.All_Project_List(userid);
+			((ControllerBase)this).ViewData["ProblemList"] = _managerServices.getProblems(userid);
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult RaiseProblem(RaiseProblem dt)
+		{
+			dt.id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			if (dt.document.ContentLength > 0)
+			{
+				dt.documentname = $"/ProjectContent/ProjectManager/raisedproblem/{Guid.NewGuid()}{dt.document.FileName}";
+			}
+			bool res = _managerServices.insertRaisedProblem(dt);
+			if (res)
+			{
+				if (dt.document != null && dt.document.ContentLength > 0)
+				{
+					string fullPath = Server.MapPath(dt.documentname);
+					string dir = Path.GetDirectoryName(fullPath);
+					if (!Directory.Exists(dir))
+					{
+						Directory.CreateDirectory(dir);
+					}
+					dt.document.SaveAs(fullPath);
+				}
+				return Json((object)new
+				{
+					status = res,
+					message = "Problem raised successfully !"
+				});
+			}
+			return Json((object)new
+			{
+				status = res,
+				message = "Some issue occured !"
+			});
+		}
+
+		[HttpGet]
+		public ActionResult GetRaiseProblemById(int id)
+		{
+			int managerId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			AdminServices adminServices = _adminServices;
+			int? managerId2 = managerId;
+			int? id2 = id;
+			List<RemoteSensingProject.Models.Admin.main.RaisedProblem> data = adminServices.getProblemList(null, null, id2, managerId2);
+			return Json((object)new
+			{
+				status = true,
+				data = data
+			}, (JsonRequestBehavior)0);
+		}
+
+		[HttpGet]
+		public ActionResult DeleteRaiseProblem(int id)
+		{
+			int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			bool res = _managerServices.deleteRaisedProblem(id, userId);
+			if (res)
+			{
+				return Json((object)new
+				{
+					status = res,
+					message = "Deleted Successfully"
+				}, (JsonRequestBehavior)0);
+			}
+			return Json((object)new
+			{
+				status = res,
+				message = "Something wend wrong."
+			}, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult ManageAttendance()
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			((ControllerBase)this).ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj);
+			((ControllerBase)this).ViewData["attendanceCount"] = _managerServices.getAttendanceCount(userObj);
+			return View();
+		}
+
+		[HttpGet]
+		public JsonResult GetAttendanceListByEmpId(int id)
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			List<AttendanceManage> data = _managerServices.GetAllAttendanceForProjectManager(userObj, id);
+			return Json((object)data, (JsonRequestBehavior)0);
+		}
+
+		[HttpPost]
+		public JsonResult AddAttendance(AttendanceManage model)
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			model.projectManager = Convert.ToInt32(userObj);
+			(bool, List<string>, string) result = _managerServices.InsertAttendance(model);
+			if (result.Item1)
+			{
+				if (result.Item2.Count > 0)
+				{
+					return Json((object)new
+					{
+						success = true,
+						message = "Attendance submitted. Some dates were skipped as they already exist.",
+						skipped = result.Item2
+					});
+				}
+				return Json((object)new
+				{
+					success = true,
+					message = "Attendance submitted successfully."
+				});
+			}
+			return Json((object)new
+			{
+				success = false,
+				message = "Error occurred: " + result.Item3
+			});
+		}
+
+		public ActionResult AttendanceRequest()
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			((ControllerBase)this).ViewData["newattendancelist"] = _managerServices.GetAllAttendanceForProjectManager(userObj);
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult AttendanceRequest(bool status, int id, string remark)
+		{
+			bool res = _managerServices.AttendanceApproval(id, status, remark);
+			if (res)
+			{
+				return Json((object)new
+				{
+					status = res,
+					message = ((res && status) ? "Approved Successfully" : "Rejected Successfully")
+				});
+			}
+			return Json((object)new
+			{
+				status = res,
+				message = "Some error Occured"
+			});
+		}
+
+		[HttpGet]
+		public ActionResult getAttendanceRepo(int month, int year, int EmpId)
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			List<AttendanceManage> data = _managerServices.getReportAttendance(month, year, userObj, EmpId);
+			if (data.Any())
+			{
+				return Json((object)new
+				{
+					status = data.Any(),
+					data = data
+				}, (JsonRequestBehavior)0);
+			}
+			return Json((object)new
+			{
+				status = data.Any(),
+				message = "Data not found"
+			}, (JsonRequestBehavior)0);
+		}
+
+		[HttpGet]
+		public ActionResult Attendance_Report()
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			((ControllerBase)this).ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj);
+			((ControllerBase)this).ViewData["attendanceCount"] = _managerServices.getAttendanceCount(userObj);
+			return View();
+		}
+
+		[HttpGet]
+		public JsonResult Attendance_ReportByMonth(int year, int month)
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			List<AttendanceManage> data = _managerServices.getAttendanceCountByMonth(year, month, userObj);
+			return Json((object)data, (JsonRequestBehavior)0);
+		}
+
+		public ActionResult ExportAttendanceToExcel(int month, int year, int EmpId)
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			byte[] data = _managerServices.ConvertExcelFile(month, year, userObj, EmpId);
+			return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReport.xlsx");
+		}
+
+		public ActionResult ShowAllAttendance(int year, int month)
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			List<AllAttendance> data = _managerServices.GetAllAttendanceForPmByMonth(year, month, userObj);
+			((ControllerBase)this).ViewData["showAllAtt"] = data;
+			((ControllerBase)this).ViewData["AllAttendance"] = JsonConvert.SerializeObject((object)data);
+			((ControllerBase)this).ViewData["Year"] = year;
+			((ControllerBase)this).ViewData["Month"] = month;
+			return View();
+		}
+
+		public ActionResult ExportAllAtt(int year, int month)
+		{
+			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			byte[] data = _managerServices.ConvertExcelFileOfAll(month, year, userObj);
+			return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReportOfAll.xlsx");
+		}
+
+		public ActionResult EmpMonthlyReport(int? month = null, int? year = null)
+		{
+			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			((ControllerBase)this).ViewData["projectList"] = _managerServices.All_Project_List(userid);
+			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
+			ManagerService managerServices = _managerServices;
+			int? month2 = month;
+			viewData["ReportList"] = managerServices.GetEmpReport(userid, null, null, null, month2, year);
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult InsertEmpReport(EmpReportModel model)
+		{
+			try
+			{
+				string message = "";
+				int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+				model.PmId = userid;
+				bool res = _managerServices.InsertEmpReport(model, out message);
+				if (res)
+				{
+					return Json((object)new
+					{
+						status = res,
+						message = "Report inserted successfully!"
+					});
+				}
+				return Json((object)new
+				{
+					status = res,
+					message = message
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json((object)new
+				{
+					status = false,
+					message = "Server error occurred: " + ex.Message
+				});
+			}
+		}
+
+		public ActionResult Feedback()
+		{
+			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+			((ControllerBase)this).ViewData["feedbacklist"] = _managerServices.GetFeedbacks(userid);
+			return View();
+		}
+
+		[HttpPost]
+		public ActionResult InsertFeedback(FeedbackModel feed)
+		{
+			try
+			{
+				feed.UserId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+				bool res = _managerServices.InsertFeedback(feed);
+				return Json((object)new
+				{
+					status = res,
+					message = "Feedback added successfully"
+				});
+			}
+			catch
+			{
+				return Json((object)new
+				{
+					status = false,
+					message = "Server error occurred"
+				});
+			}
+		}
+
+		[HttpPost]
+		public JsonResult UpdateProjectStatus(UpdateProjectStatus upd)
+		{
+			try
+			{
+				bool res = _managerServices.InsertProjectStatus(upd);
+				return Json((object)new
+				{
+					status = res,
+					message = (res ? "Project status updated successfully" : "Some error occured")
+				});
+			}
+			catch (Exception ex)
+			{
+				return Json((object)new
+				{
+					status = false,
+					message = ex.Message
+				});
+			}
+		}
+
+		[HttpGet]
+		public JsonResult LastProjectStatusPrencentage(int projectid)
+		{
+			try
+			{
+				List<UpdateProjectStatus> data = _managerServices.LastProjectStatus(projectid);
+				return Json((object)new
+				{
+					status = (data.Count > 0),
+					message = ((data.Count > 0) ? "data recived" : "data not found"),
+					data = data
+				}, (JsonRequestBehavior)0);
+			}
+			catch (Exception ex)
+			{
+				return Json((object)new
+				{
+					status = false,
+					message = ex.Message
+				});
+			}
+		}
+
+		public ActionResult ProjectReport(string type, string searchTerm = null, string statusFilter = null)
+		{
+			//IL_027f: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0286: Expected O, but got Unknown
+			//IL_0041: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0048: Expected O, but got Unknown
+			//IL_0269: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0270: Expected O, but got Unknown
+			UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
+			int managerId = Convert.ToInt32(userData.userId);
+			try
+			{
+				if (string.IsNullOrWhiteSpace(type))
+				{
+					return (ActionResult)new HttpStatusCodeResult(400, "Report type is required.");
+				}
+				List<ApiCommon.ColumnMapping> columnMappings = new List<ApiCommon.ColumnMapping>
+			{
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Project Code",
+					PropertyName = "projectCode"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Project Name",
+					PropertyName = "ProjectTitle"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Division",
+					PropertyName = "devisionName"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Assign Date",
+					PropertyName = "AssignDateString"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Start Date",
+					PropertyName = "StartDateString"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Completion Date",
+					PropertyName = "CompletionDatestring"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Physical in %",
+					PropertyName = "physicalcomplete"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Financial in %",
+					PropertyName = "Percentage"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Overall in %",
+					PropertyName = "overallPercentage"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Project Status",
+					PropertyName = "projectStatusLabel"
+				}
+			};
+				AdminServices adminServices = _adminServices;
+				int? projectManager = managerId;
+				IEnumerable<RemoteSensingProject.Models.Admin.main.Project_model> data = adminServices.Project_List(null, null, null, searchTerm, statusFilter, projectManager);
+				if (type.Equals("Excel", StringComparison.OrdinalIgnoreCase))
+				{
+					byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Project Report");
+					return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Project_Report.xlsx");
+				}
+				if (type.Equals("pdf", StringComparison.OrdinalIgnoreCase))
+				{
+					byte[] pdfBytes = ReportGenerator.CreatePdf(columnMappings, data, "Project Report");
+					return File(pdfBytes, "application/pdf", "Project_Report.pdf");
+				}
+				return (ActionResult)new HttpStatusCodeResult(400, "Invalid report type. Use Excel or Pdf.");
+			}
+			catch (Exception)
+			{
+				return (ActionResult)new HttpStatusCodeResult(500, "Error while generating project report.");
+			}
+		}
+
+		public ActionResult DownloadExpencesReport(string type, int projectId, int headId)
+		{
+			//IL_0165: Unknown result type (might be due to invalid IL or missing references)
+			//IL_016b: Expected O, but got Unknown
+			//IL_0017: Unknown result type (might be due to invalid IL or missing references)
+			//IL_001d: Expected O, but got Unknown
+			//IL_0150: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0156: Expected O, but got Unknown
+			try
+			{
+				if (string.IsNullOrWhiteSpace(type))
+				{
+					return (ActionResult)new HttpStatusCodeResult(500, "Report type is required");
+				}
+				List<ApiCommon.ColumnMapping> columnMappings = new List<ApiCommon.ColumnMapping>
+			{
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Title",
+					PropertyName = "title"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Date",
+					PropertyName = "DateString"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Description",
+					PropertyName = "description"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Amount",
+					PropertyName = "amount"
+				}
+			};
+				List<ProjectExpenses> data = _managerServices.ExpencesList(headId, projectId);
+				if (type.Equals("pdf", StringComparison.OrdinalIgnoreCase))
+				{
+					byte[] pdfBytes = ReportGenerator.CreatePdf(columnMappings, data, "Expense Report");
+					return File(pdfBytes, "application/pdf", "Project_Expense_report.pdf");
+				}
+				if (type.Equals("excel", StringComparison.OrdinalIgnoreCase))
+				{
+					byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Expense Report");
+					return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Project_Expense_Report.xlsx");
+				}
+				return (ActionResult)new HttpStatusCodeResult(400, "Invalid report type. Use Excel or Pdf.");
+			}
+			catch (Exception)
+			{
+				return (ActionResult)new HttpStatusCodeResult(500, "Error while generating project expenses report.");
+			}
+		}
+
+		public ActionResult DownloadReimbursementReport(string type, string typeFilter = null, string statusFilter = null)
+		{
+			//IL_01b4: Unknown result type (might be due to invalid IL or missing references)
+			//IL_01bb: Expected O, but got Unknown
+			//IL_0041: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0048: Expected O, but got Unknown
+			//IL_019e: Unknown result type (might be due to invalid IL or missing references)
+			//IL_01a5: Expected O, but got Unknown
+			try
+			{
+				UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
+				int projectManagerFilter = Convert.ToInt32(userData.userId);
+				if (string.IsNullOrWhiteSpace(type))
+				{
+					return (ActionResult)new HttpStatusCodeResult(500, "Report type is required");
+				}
+				List<ApiCommon.ColumnMapping> columnMappings = new List<ApiCommon.ColumnMapping>
+			{
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Type",
+					PropertyName = "type"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Amount",
+					PropertyName = "amount"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Remark",
+					PropertyName = "remark"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Status",
+					PropertyName = "statusLabel"
+				}
+			};
+				ManagerService managerServices = _managerServices;
+				int? managerId = projectManagerFilter;
+				List<Reimbursement> data = managerServices.GetReimbursements(null, null, null, managerId, "selectReinbursementReport", typeFilter, statusFilter);
+				if (type.Equals("pdf", StringComparison.OrdinalIgnoreCase))
+				{
+					byte[] pdfBytes = ReportGenerator.CreatePdf(columnMappings, data, "Reimbursement Report");
+					return File(pdfBytes, "application/pdf", "Reimbursement_report.pdf");
+				}
+				if (type.Equals("excel", StringComparison.OrdinalIgnoreCase))
+				{
+					byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Reimbursement Report");
+					return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reimbursement_report.xlsx");
+				}
+				return (ActionResult)new HttpStatusCodeResult(400, "Invalid report type. Use Excel or Pdf.");
+			}
+			catch (Exception)
+			{
+				return (ActionResult)new HttpStatusCodeResult(500, "Error while generating project expenses report.");
+			}
+		}
+
+		public ActionResult DownloadTourProposalReport(string type, int? projectFilter = null, string statusFilter = null)
+		{
+			//IL_027d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0284: Expected O, but got Unknown
+			//IL_0041: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0048: Expected O, but got Unknown
+			//IL_0267: Unknown result type (might be due to invalid IL or missing references)
+			//IL_026e: Expected O, but got Unknown
+			try
+			{
+				UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
+				int managerFilter = Convert.ToInt32(userData.userId);
+				if (string.IsNullOrWhiteSpace(type))
+				{
+					return (ActionResult)new HttpStatusCodeResult(500, "Report type is required");
+				}
+				List<ApiCommon.ColumnMapping> columnMappings = new List<ApiCommon.ColumnMapping>
+			{
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Project Code",
+					PropertyName = "projectCode"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Project",
+					PropertyName = "projectName"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Purpose",
+					PropertyName = "purpose"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Date of Depart",
+					PropertyName = "dateOfDept"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Date of Return",
+					PropertyName = "returnDate"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Place Visit",
+					PropertyName = "place"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Period From",
+					PropertyName = "periodFrom"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Period To",
+					PropertyName = "periodTo"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Remark",
+					PropertyName = "remark"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Status",
+					PropertyName = "statusLabel"
+				}
+			};
+				AccountService accountService = _accountService;
+				int? managerFilter2 = managerFilter;
+				List<RemoteSensingProject.Models.Accounts.main.tourProposal> data = accountService.getTourList(null, null, managerFilter2, projectFilter, statusFilter);
+				if (type.Equals("pdf", StringComparison.OrdinalIgnoreCase))
+				{
+					byte[] pdfBytes = ReportGenerator.CreatePdf(columnMappings, data, "Tourproposal Report");
+					return File(pdfBytes, "application/pdf", "Tour_Proposal_Report.pdf");
+				}
+				if (type.Equals("excel", StringComparison.OrdinalIgnoreCase))
+				{
+					byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Tourproposal Report");
+					return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Tour_Proposal_Report.xlsx");
+				}
+				return (ActionResult)new HttpStatusCodeResult(400, "Invalid report type. Use Excel or Pdf.");
+			}
+			catch (Exception)
+			{
+				return (ActionResult)new HttpStatusCodeResult(500, "Error while generating project expenses report.");
+			}
+		}
+
+		public ActionResult DownloadHiringVehicleReport(string type, int? projectFilter = null, string statusFilter = null)
+		{
+			//IL_02a1: Unknown result type (might be due to invalid IL or missing references)
+			//IL_02a8: Expected O, but got Unknown
+			//IL_0041: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0048: Expected O, but got Unknown
+			//IL_028b: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0292: Expected O, but got Unknown
+			try
+			{
+				UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
+				int managerFilter = Convert.ToInt32(userData.userId);
+				if (string.IsNullOrWhiteSpace(type))
+				{
+					return (ActionResult)new HttpStatusCodeResult(500, "Report type is required");
+				}
+				List<ApiCommon.ColumnMapping> columnMappings = new List<ApiCommon.ColumnMapping>
+			{
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Project Code",
+					PropertyName = "projectCode"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Project",
+					PropertyName = "projectName"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Head Name",
+					PropertyName = "headName"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Date From",
+					PropertyName = "dateFrom"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Date To",
+					PropertyName = "dateTo"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Proposed Place",
+					PropertyName = "proposedPlace"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Purpose of Visit",
+					PropertyName = "purposeOfVisit"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Total Day & Night",
+					PropertyName = "totalDaysNight"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Availability of Fund",
+					PropertyName = "availbilityOfFund"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Remark",
+					PropertyName = "remark"
+				},
+				new ApiCommon.ColumnMapping
+				{
+					Header = "Status",
+					PropertyName = "statusLabel"
+				}
+			};
+				AdminServices adminServices = _adminServices;
+				int? managerFilter2 = managerFilter;
+				List<RemoteSensingProject.Models.Admin.main.HiringVehicle1> data = adminServices.HiringReort(null, null, managerFilter2, projectFilter, statusFilter);
+				if (type.Equals("pdf", StringComparison.OrdinalIgnoreCase))
+				{
+					byte[] pdfBytes = ReportGenerator.CreatePdf(columnMappings, data, "Hiring Report");
+					return File(pdfBytes, "application/pdf", "Hiring_Report.pdf");
+				}
+				if (type.Equals("excel", StringComparison.OrdinalIgnoreCase))
+				{
+					byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Hiring Report");
+					return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Hiring_Report.xlsx");
+				}
+				return (ActionResult)new HttpStatusCodeResult(400, "Invalid report type. Use Excel or Pdf.");
+			}
+			catch (Exception)
+			{
+				return (ActionResult)new HttpStatusCodeResult(500, "Error while generating project expenses report.");
+			}
+		}
+	}
 }

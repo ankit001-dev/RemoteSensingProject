@@ -6,51 +6,14 @@
     var reportData = ViewData["totalReinursementReport"] as List<RemoteSensingProject.Models.ProjectManager.Reimbursement>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
 
+    string typeFilter = Request.QueryString["typeFilter"];
+    string statusFilter = Request.QueryString["statusFilter"];
+
 }
 <link href="~/assets/css/reinbursementCssDesign.css" rel="stylesheet" />
 <style>
     #dataTableExample thead tr:first-child {
         width: 10px !important;
-    }
-    .dt-button {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-        border-radius: 4px !important;
-        border: none !important;
-        cursor: pointer !important;
-        margin-right: 5px !important;
-        display: inline-block !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-        .dt-button.buttons-excel {
-            background-color: #3b9f42 !important; /* Excel-like green */
-            color: white !important;
-        }
-
-            .dt-button.buttons-excel:hover {
-                background-color: #2a7c2f !important; /* Darker green on hover */
-            }
-
-        /* PDF button (Red) */
-        .dt-button.buttons-pdf {
-            background-color: #e74c3c !important; /* PDF-like red */
-            color: white !important;
-        }
-
-            .dt-button.buttons-pdf:hover {
-                background-color: #c0392b !important; /* Darker red on hover */
-            }
-
-    /* Additional styling for the buttons wrapper */
-    .dataTables_wrapper .dt-buttons {
-        margin-bottom: 10px !important;
-    }
-
-    .dt-search {
-        float: right;
-        margin-bottom: 5px !important;
     }
 </style>
 <div class="card my-1">
@@ -86,6 +49,10 @@
 
 <div class="card">
     <div class="card-body">
+        <div>
+            <a href="/employee/DownloadReimbursementReport?type=excel&typeFilter=@typeFilter&statusFilter=@statusFilter"><button class="btn btn-success">Excel</button></a>
+            <a href="/employee/DownloadReimbursementReport?type=pdf&typeFilter=@typeFilter&statusFilter=@statusFilter"><button class="btn btn-danger">Pdf</button></a>
+        </div>
         <div class="table-responsive">
             <table class="table table-hover" id="reibursementReportTable">
                 <thead>
@@ -261,16 +228,7 @@
     $(document).ready(function () {
 
 
-        $("#reibursementReportTable").DataTable({
-            layout: {
-                topStart: {
-                    buttons: ['excel', 'pdf']
-                }
-            },
-            columnDefs: [
-                { width: "100px", targets: 0 }
-            ],
-        });
+        $("#reibursementReportTable").DataTable();
 
         $("#printBtn").click(function () {
 

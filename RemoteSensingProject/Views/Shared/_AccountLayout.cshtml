@@ -26,6 +26,10 @@
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
 
     <style>
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: #444;
+            line-height: 11px;
+        }
         * {
             user-select: none !important;
         }
@@ -190,7 +194,18 @@
                             <span class="link-title">Hiring Vehicle</span>
                         </a>
                     </li>
-
+                    <li class="nav-item">
+                        <a href="/home/Help_menu" class="nav-link">
+                            <i class="link-icon" data-feather="help-circle"></i>
+                            <span class="link-title">Help Desk</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/Home/Support" class="nav-link">
+                            <i class="link-icon" data-feather="compass"></i>
+                            <span class="link-title">Support</span>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#reports" role="button" aria-expanded="false" aria-controls="reports">
                             <i class="link-icon" data-feather="file"></i>
@@ -255,7 +270,6 @@
                                             <span>Log Out</span>
                                         </a>
                                     </li>
-
                                     <li class="dropdown-item py-2">
                                         <a class="text-body ms-0" href="/login/ChangePassword">
                                             <i class="me-2 icon-md" data-feather="user"></i>
@@ -305,18 +319,49 @@
 
     <script src="~/assets/vendors/select2/select2.min.js"></script>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.dataTables.css" />
-
-    <script src="https://cdn.datatables.net/buttons/3.2.0/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.dataTables.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.2.0/js/buttons.print.min.js"></script>
-
-
     <script>
+        function initSelect2(context = document) {
+
+            $(context).find('select')
+                .not('.dataTables_length select')      // DataTable page length
+                .not('.dataTables_filter select')      // (future-proof)
+                .not('[name$="_length"]')               // DataTable generated
+                .not('.dataTables_paginate select')    // safety
+                .each(function () {
+
+                    const $select = $(this);
+
+                    // destroy if already initialized
+                    if ($select.hasClass('select2-hidden-accessible')) {
+                        $select.select2('destroy');
+                    }
+
+                    // detect modal parent
+                    const $modal = $select.closest('.modal');
+
+                    // check if multiple
+                    const isMultiple = $select.prop('multiple');
+
+                    // placeholder logic for multi-select
+                    let placeholderText = '';
+                    if (isMultiple) {
+                        placeholderText =
+                            $select.data('placeholder') ||
+                            $select.find('option:first').text() ||
+                            'Select options';
+                    }
+
+                    $select.select2({
+                        width: '100%',
+                        dropdownParent: $modal.length ? $modal : $('body'),
+                        placeholder: isMultiple ? placeholderText : undefined,
+                        allowClear: isMultiple
+                    });
+                });
+        }
+        $(document).on('shown.bs.modal', '.modal', function () {
+            initSelect2(this);
+        });
         $(document).ready(function () {
             $('#dataTableExample').DataTable({
                 paging: true,
@@ -328,6 +373,7 @@
             $("img").on("error", function () {
                 $(this).attr("src", "/assets/no-pictures.png")
             })
+            initSelect2();
         });
     </script>
 
@@ -349,10 +395,7 @@
             hideLoader();
         });
 
-        // Optional: show loader on form submit
-        $("form").on("submit", function () {
-            showLoader();
-        });
+      
 
         // Remove loader on page ready
         $(document).ready(function () {

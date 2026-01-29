@@ -5,51 +5,10 @@
     var data = ViewData["tourlist"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
     var dta = ViewData["projectList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    string projectId = Request.QueryString["projectFilter"];
+    string statusFilter = Request.QueryString["statusFilter"];
 }
 <link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
-<!--Style button DataTable-->
-<style>
-    .dt-button {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-        border-radius: 4px !important;
-        border: none !important;
-        cursor: pointer !important;
-        margin-right: 5px !important;
-        display: inline-block !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-        .dt-button.buttons-excel {
-            background-color: #3b9f42 !important; /* Excel-like green */
-            color: white !important;
-        }
-
-            .dt-button.buttons-excel:hover {
-                background-color: #2a7c2f !important; /* Darker green on hover */
-            }
-
-        /* PDF button (Red) */
-        .dt-button.buttons-pdf {
-            background-color: #e74c3c !important; /* PDF-like red */
-            color: white !important;
-        }
-
-            .dt-button.buttons-pdf:hover {
-                background-color: #c0392b !important; /* Darker red on hover */
-            }
-
-    /* Additional styling for the buttons wrapper */
-    .dataTables_wrapper .dt-buttons {
-        margin-bottom: 10px !important;
-    }
-
-    .dt-search {
-        float: right;
-        margin-bottom: 5px !important;
-    }
-</style>
 
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
@@ -85,6 +44,10 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
+                <div>
+                    <a href="/employee/DownloadTourProposalReport?type=excel&projectFilter=@projectId&statusFilter=@statusFilter"><button class="btn btn-success">Excel</button></a>
+                    <a href="/employee/DownloadTourProposalReport?type=pdf&projectFilter=@projectId&statusFilter=@statusFilter"><button class="btn btn-danger">Pdf</button></a>
+                </div>
                 <div class="table-responsive">
                     <table id="tableTour" class="table">
                         <thead>
@@ -132,8 +95,8 @@
                                             { <span>@item.remark</span>}
                                         </td>
                                         @*<td class="text-center" data-id="@item.id">
-                                                <i class="fa-solid fa-eye action"></i>
-                                            </td>*@
+                                    <i class="fa-solid fa-eye action"></i>
+                                </td>*@
                                         <td class="text-center">
                                             @{
                                                 if (item.newRequest == true && item.adminappr == false)
@@ -282,13 +245,7 @@
 
 <script>
     $(document).ready(function () {
-        $("#tableTour").DataTable({
-            layout: {
-                topStart: {
-                    buttons: ['excel', 'pdf']
-                }
-            }
-        });
+        $("#tableTour").DataTable();
 
         $(".action").on("click", function () {
             Swal.fire({

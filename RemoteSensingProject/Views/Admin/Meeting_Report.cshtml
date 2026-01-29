@@ -29,43 +29,7 @@
     .select2-dropdown {
         z-index: 9999 !important; /* Make sure it is on top of other UI elements */
     }
-    /* Custom button styling */
-    .dt-button {
-        font-size: 14px !important;
-        padding: 10px 20px !important;
-        border-radius: 4px !important;
-        border: none !important;
-        cursor: pointer !important;
-        margin-right: 5px !important;
-        display: inline-block !important;
-        font-weight: 600 !important;
-        transition: all 0.3s ease-in-out !important;
-    }
-
-        /* Excel button (Green) */
-        .dt-button.buttons-excel {
-            background-color: #3b9f42 !important; /* Excel-like green */
-            color: white !important;
-        }
-
-            .dt-button.buttons-excel:hover {
-                background-color: #2a7c2f !important; /* Darker green on hover */
-            }
-
-        /* PDF button (Red) */
-        .dt-button.buttons-pdf {
-            background-color: #e74c3c !important; /* PDF-like red */
-            color: white !important;
-        }
-
-            .dt-button.buttons-pdf:hover {
-                background-color: #c0392b !important; /* Darker red on hover */
-            }
-
-    /* Additional styling for the buttons wrapper */
-    .dataTables_wrapper .dt-buttons {
-        margin-bottom: 10px !important;
-    }
+   
 </style>
 
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
@@ -104,7 +68,16 @@
             <div class="card-body">
                 <h4 class="mb-4">Meeting List</h4>
                 <div class="table-container">
+                    <div class="d-flex">
+                        <a id="excelDownload" href="/admin/DownloadMeetingReport?type=excel">
+                            <button class="btn btn-success">Excel</button>
+                        </a>
 
+                        <a id="pdfDownload" href="/admin/DownloadMeetingReport?type=pdf">
+                            <button class="btn btn-danger">Pdf</button>
+                        </a>
+
+                    </div>
                     <div class="table-responsive">
                         <table id="meetingTable" class="table custom-table">
                             <thead>
@@ -253,7 +226,7 @@
         let searchTerm = $("#searchmeetingName").val().trim();
         let statusFilter = $("#searchByMeetingStatus").val();
         let meetingMode = $("#searchmeetingMode").val();
-
+        updateDownloadLinks();
         $.ajax({
             url: '/Admin/GetAllMeeting',
             type: 'GET',
@@ -286,18 +259,33 @@
 
                 $('#meetingTable tbody').append(rows);
 
-                $('#meetingTable').DataTable({
-                    layout: {
-                        topStart: {
-                            buttons: ['excel', 'pdf']
-                        }
-                    }
-                });
+                $('#meetingTable').DataTable();
             },
             error: function (xhr) {
                 console.log("Error: ", xhr);
             }
         });
+    }
+
+    function updateDownloadLinks() {
+        const searchTerm = $("#searchmeetingName").val() || '';
+        const statusFilter = $("#searchByMeetingStatus").val() || '';
+        const meetingMode = $("#searchmeetingMode").val() || '';
+
+        const queryString =
+            `&searchTerm=${encodeURIComponent(searchTerm)}` +
+            `&statusFilter=${encodeURIComponent(statusFilter)}` +
+            `&meetingMode=${encodeURIComponent(meetingMode)}`;
+
+        $("#excelDownload").attr(
+            "href",
+            `/admin/DownloadMeetingReport?type=excel${queryString}`
+        );
+
+        $("#pdfDownload").attr(
+            "href",
+            `/admin/DownloadMeetingReport?type=pdf${queryString}`
+        );
     }
 
 
@@ -417,92 +405,5 @@
             }
         })
     }
-    //$(document).ready(function () {
-
-    //    $('#searchmeetingName').on('keyup', function () {
-    //        let table = $("#meetingTable").DataTable();
-    //        table.columns(1).search(this.value).draw();
-    //    });
-    //    $('#searchmeetingName').on('keyup', function () {
-    //        let table = $("#meetingTable").DataTable();
-    //        table.columns(1).search(this.value).draw();
-    //    }); $('#searchmeetingMode').on('change', function () {
-    //        let table = $("#meetingTable").DataTable();
-    //        table.columns(2).search(this.value).draw();
-    //    });
-    //    $('#searchByMeetingStatus').on('change', function () {
-    //    debugger
-    //        let table = $("#meetingTable").DataTable();
-    //        table.columns(4).search(this.value).draw();
-    //    });
-    //});
-
-    //// Search by Meeting Name
-    //$("#searchmeetingName").on("keyup", function () {
-    //    let value = $(this).val().trim();
-    //    const url = new URL(window.location.href);
-
-    //    if (value)
-    //        url.searchParams.set("searchTerm", value);
-    //    else
-    //        url.searchParams.delete("searchTerm");
-
-    //    clearTimeout(window.searchTimer);
-    //    window.searchTimer = setTimeout(() => {
-    //        showLoader();
-    //        window.location.href = url.toString();
-    //    }, 500);
-    //});
-
-
-    //// Search by Meeting Status
-    //$("#searchByMeetingStatus").on("change", function () {
-    //    const url = new URL(window.location.href);
-    //    const status = $(this).val();
-
-    //    if (status)
-    //        url.searchParams.set("statusFilter", status);
-    //    else
-    //        url.searchParams.delete("statusFilter");
-
-    //    const searchTerm = $("#searchmeetingName").val().trim();
-    //    if (searchTerm) url.searchParams.set("searchTerm", searchTerm);
-
-    //    showLoader();
-    //    window.location.href = url.toString();
-    //});
-
-
-    //// Search by Meeting Mode
-    //$("#searchmeetingMode").on("change", function () {
-    //    const url = new URL(window.location.href);
-    //    const mode = $(this).val();
-
-    //    if (mode)
-    //        url.searchParams.set("meetingMode", mode);
-    //    else
-    //        url.searchParams.delete("meetingMode");
-
-    //    const searchTerm = $("#searchmeetingName").val().trim();
-    //    if (searchTerm) url.searchParams.set("searchTerm", searchTerm);
-
-    //    showLoader();
-    //    window.location.href = url.toString();
-    //});
-
-
-    //// Restore UI state on page load
-    //$(document).ready(function () {
-    //    const urlParams = new URLSearchParams(window.location.search);
-
-    //    const searchTerm = urlParams.get("searchTerm");
-    //    if (searchTerm) $("#searchmeetingName").val(searchTerm);
-
-    //    const statusFilter = urlParams.get("statusFilter");
-    //    if (statusFilter) $("#searchByMeetingStatus").val(statusFilter);
-
-    //    const meetingMode = urlParams.get("meetingMode");
-    //    if (meetingMode) $("#searchmeetingMode").val(meetingMode);
-    //});
 
 </script>
