@@ -1,14 +1,15 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Npgsql;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using DocumentFormat.OpenXml.Math;
-using Npgsql;
 using static RemoteSensingProject.Models.Accounts.main;
 
 namespace RemoteSensingProject.Models.Accounts
 {
-    public class AccountService:DataFactory
+    public class AccountService : DataFactory
     {
         public List<Project_model> Project_List()
         {
@@ -42,7 +43,7 @@ namespace RemoteSensingProject.Models.Accounts
                             ProjectStatus = Convert.ToBoolean(rd["CompleteStatus"]),
                             AssignDateString = Convert.ToDateTime(rd["assignDate"]).ToString("dd-MM-yyyy"),
                             StartDateString = Convert.ToDateTime(rd["startDate"]).ToString("dd-MM-yyyy"),
-                            projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString():"N/A"
+                            projectCode = rd["projectCode"] != DBNull.Value ? rd["projectCode"].ToString() : "N/A"
                         });
                     }
                 }
@@ -75,7 +76,7 @@ namespace RemoteSensingProject.Models.Accounts
                 {
                     cmd.Parameters.AddWithValue("@reason", he.Reason);
                 }
-                cmd.Parameters.AddWithValue("@amount",Convert.ToDecimal(he.Amount));
+                cmd.Parameters.AddWithValue("@amount", Convert.ToDecimal(he.Amount));
                 cmd.Parameters.AddWithValue("@id", he.Id);
                 cmd.Parameters.AddWithValue("@projectId", he.ProjectId);
                 cmd.Parameters.AddWithValue("@appStatus", he.AppStatus);
@@ -148,8 +149,8 @@ namespace RemoteSensingProject.Models.Accounts
                 List<Reimbursement> getlist = new List<Reimbursement>();
                 var res = cmd.ExecuteReader();
                 if (res.HasRows)
-                    {
-                        while (res.Read())
+                {
+                    while (res.Read())
                     {
                         getlist.Add(new Reimbursement
                         {
@@ -178,7 +179,7 @@ namespace RemoteSensingProject.Models.Accounts
             }
         }
 
-        public List<tourProposal> getTourList(int? limit = null,int? page = null)
+        public List<tourProposal> getTourList(int? limit = null, int? page = null, int? managerFilter = null, int? projectFilter = null,string statusFilter = null)
         {
             try
             {
@@ -189,19 +190,24 @@ namespace RemoteSensingProject.Models.Accounts
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("v_action", "selectAlltourforAcc");
+                    cmd.Parameters.AddWithValue("v_projectmanager", managerFilter.HasValue ? managerFilter : 0);
+                    cmd.Parameters.AddWithValue("v_id", projectFilter.HasValue ? projectFilter : 0);
                     cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
                     cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_statusfilter", string.IsNullOrEmpty(statusFilter) ? DBNull.Value : (object)statusFilter);
                     string cursorName = (string)cmd.ExecuteScalar();
                     using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
                     using (var res = fetchCmd.ExecuteReader())
                     {
                         if (res.HasRows)
                         {
+                            bool firstRow = true;
                             while (res.Read())
                             {
                                 getlist.Add(new tourProposal
                                 {
                                     id = Convert.ToInt32(res["id"]),
+                                    projectId = Convert.ToInt32(res["projectId"]),
                                     projectManager = Convert.ToString(res["name"]),
                                     projectName = Convert.ToString(res["title"]),
                                     dateOfDept = Convert.ToDateTime(res["dateOfDept"]),
@@ -213,12 +219,29 @@ namespace RemoteSensingProject.Models.Accounts
                                     newRequest = Convert.ToBoolean(res["newRequest"]),
                                     adminappr = Convert.ToBoolean(res["adminappr"]),
                                     remark = res["remark"].ToString(),
-                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A"
+                                    projectCode = res["projectCode"] != DBNull.Value ? res["projectCode"].ToString() : "N/A",
+                                    statusLabel =
+        Convert.ToBoolean(res["newRequest"]) == true && Convert.ToBoolean(res["adminappr"]) == false
+            ? "Pending"
+        : Convert.ToBoolean(res["newRequest"]) == false && Convert.ToBoolean(res["adminappr"]) == true
+            ? "Approved"
+        : "Rejected"
                                 });
+                                if (firstRow)
+                                {
+                                    getlist[0].Pagination = new ApiCommon.PaginationInfo
+                                    {
+                                        PageNumber = page ?? 0,
+                                        TotalPages = Convert.ToInt32(res["totalpages"] != DBNull.Value ? res["totalpages"] : 0),
+                                        TotalRecords = Convert.ToInt32(res["totalrecords"] != DBNull.Value ? res["totalrecords"] : 0),
+                                        PageSize = limit ?? 0
+                                    };
+                                    firstRow = false; // Optional: ensure pagination is only assigned once
+                                }
                             }
                         }
                     }
-                    using(var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
                     {
                         closeCmd.ExecuteNonQuery();
                     }
@@ -297,13 +320,13 @@ namespace RemoteSensingProject.Models.Accounts
                 cmd.Parameters.AddWithValue("@p_chequedate", Convert.ToDateTime(rs.date));
                 cmd.Parameters.AddWithValue("@p_sanctionamt", rs.amount);
                 cmd.Parameters.AddWithValue("@p_appramt", rs.apprAmt);
-                cmd.Parameters.AddWithValue("@p_rejectamt", rs.amount-rs.apprAmt);
+                cmd.Parameters.AddWithValue("@p_rejectamt", rs.amount - rs.apprAmt);
                 cmd.Parameters.AddWithValue("@p_id", rs.id);
                 con.Open();
                 cmd.ExecuteNonQuery();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -321,7 +344,7 @@ namespace RemoteSensingProject.Models.Accounts
                 cmd.ExecuteNonQuery();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

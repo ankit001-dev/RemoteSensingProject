@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>@ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            height: 60px;
+            background: #334155;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sidebar-toggler {
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .search-bar {
+            width: 280px;
+        }
+
+        /* ===== MAIN LAYOUT ===== */
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 250px;
+            background: #ffffff;
+            transition: width 0.3s ease;
+            border-right: 1px solid #ddd;
+        }
+
+            .sidebar.collapsed {
+                width: 70px;
+            }
+
+        .sidebar-body {
+            padding: 15px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: black;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+            .nav-link:hover {
+                background: #334155;
+                color: #fff;
+            }
+
+        .sidebar.collapsed .link-title {
+            display: none;
+        }
+
+        /* ===== PAGE CONTENT ===== */
+        .page-wrapper {
+            flex: 1;
+            background: #f4f6f9;
+            padding: 20px;
+        }
+    </style>
+
+    @RenderSection("Styles", false)
+</head>
+
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header>
+        <div class="header-left">
+            <span class="sidebar-toggler" id="toggleIcon" onclick="toggleSidebar()">☰</span>
+            <span class="header-title">Remote Sensing</span>
+        </div>
+
+        <input type="text" class="form-control search-bar" placeholder="Search...">
+
+        <div class="dropdown">
+            <button style="text-decoration:none;" class="btn btn-link text-white dropdown-toggle" data-bs-toggle="dropdown">
+                Chief Minister
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="/Auth/changePassword">Change Password</a></li>
+                <li><a class="dropdown-item" href="/Auth/Logout">Logout</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ===== BODY AREA ===== -->
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-body">
+                <ul class="nav flex-column">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Cm/Dashboard">
+                            <i data-feather="home"></i>
+                            <span class="link-title">Dashboard</span>
+                        </a>
+                    </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/Employee/Assigned_Project">
+                        <i data-feather="user"></i>
+                        <span class="link-title">Assigned Projects</span>
+                    </a>
+                </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Cm/ProjectList">
+                            <i data-feather="folder"></i>
+                            <span class="link-title">Projects</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <!-- PAGE CONTENT -->
+        <div class="page-wrapper">
+            @RenderBody()
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        feather.replace();
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const icon = document.getElementById("toggleIcon");
+
+            sidebar.classList.toggle("collapsed");
+            icon.innerHTML = sidebar.classList.contains("collapsed") ? "✖" : "☰";
+        }
+    </script>
+
+    @RenderSection("Scripts", false)
+
+</body>
+</html>

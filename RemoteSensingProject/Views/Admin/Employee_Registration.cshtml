@@ -18,12 +18,6 @@
     }
 </style>
 
-@*<div id="loader" class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-light bg-opacity-75" style="z-index: 9999;">
-    <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-</div>*@
-
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
@@ -72,7 +66,6 @@
                                 <th>Role</th>
                                 <th>Division</th>
                                 <th>Designation</th>
-                                <th>Date</th>
                                 <th class="text-center">Active Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -90,7 +83,6 @@
                                         <td>@item.EmployeeRole</td>
                                         <td>@item.DevisionName</td>
                                         <td>@item.DesignationName</td>
-                                        <td>@item.CreationDate</td>
                                         <td class="text-center">
                                             <span class="form-check form-switch"><input type="checkbox" class="form-check-input activeSwitch"  data-id="@item.Id" checked="@item.ActiveStatus"></span>
                                         </td>
@@ -138,7 +130,8 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="employeemobno" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" name="MobileNo" required id="employeemobno" placeholder="Enter Mobile">
+                            <input type="text" class="form-control mobileval" name="MobileNo" required id="employeemobno" placeholder="Enter Mobile">
+                            <span class="mobileError text-danger"></span>
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="employeeEmail" class="form-label">Email</label>
@@ -207,7 +200,7 @@
                         </div>
                        
                         <div class="mb-3 col-md-6">
-                            <label for="fileupload" class="form-label">Upload Images</label>
+                            <label for="fileupload" class="form-label">Upload Image</label>
                             <input class="form-control" required type="file" name="EmployeeImages" id="fileupload">
                         </div>
                     </div>
@@ -277,6 +270,17 @@
 
 <script>
 
+    $(function () {
+        $('.mobileval').on('input', function () {
+            let m = $(this).val().replace(/\D/g, '').slice(0, 10);
+            $(this).val(m);
+            $('.mobileError').text(
+                m.length < 10 ? 'Mobile number must be 10 digits.' :
+                    !/^[6-9]/.test(m) ? 'Mobile number must start with 6, 7, 8, or 9.' : ''
+            );
+        });
+    });
+
     function showLoading(action) {
         Swal.fire({
             title: "Please Wait..!",
@@ -311,10 +315,10 @@
             contentType:false,
             data: formData,
             success: function (res) {
-                if (res) {
+                if (res.status) {
                     Swal.fire({
                         title: "success",
-                        text: $("#employeeInpId").val()!=""?"Employee Updated Successfully":"Employee Added Successfully",
+                        text: $("#employeeInpId").val()!=""?"Employee Updated Successfully":res.message,
                         icon: "success",
                         didClose: () => {
                             location.reload();
@@ -323,7 +327,7 @@
                 } else {
                     Swal.fire({
                         title: "error",
-                        text: "something went wrong",
+                        text: res.message,
                         icon: "error"
                     })
                 }
@@ -381,8 +385,9 @@
                     $(".empDivision").text(res.DevisionName)
                     $(".empDesignation").text(res.DesignationName)
                     $(".empgender").text(res.Gender)
-                    $(".empActiveStatus").html(res.ActiveStatus ? "<i class='fa-solid text-success fa-circle'></i> Active" : "<i class='fa-solid text-danger fa-circle'></i> Deactive")
+                    $(".empActiveStatus").html(res.ActiveStatus ? "<i class='fa-solid text-success fa-circle'></i> Active" : "<i class='fa-solid text-danger fa-circle'></i> Inactive")
                 }
+
                 showLoading(false)
 
             }, error: function (xhr) {
@@ -443,6 +448,7 @@
 
     $("#addEmployeeBtn").click(function () {
         $(".actionType").text("Add")
+        document.getElementById("employeeRole").disabled = false;
         document.querySelector(".addEmployeeform").reset();
     })
 
@@ -458,7 +464,7 @@
             data: { id: id },
             success: function (res) {
                 console.log(res)
-                if (res!=null) {
+                if (res != null) {
                     $("#employeeCode").val(res.EmployeeCode)
                     $("#employeeName").val(res.EmployeeName)
                     $("#employeeEmail").val(res.Email)
@@ -468,10 +474,11 @@
                     $("#employeeRole").val(res.EmployeeRole)
                     $(".employeeGender").each(function (i, d) {
                         if (d.value == res.Gender) {
-                            d.setAttribute("checked",true)
+                            d.setAttribute("checked", true)
                         }
                     })
                 }
+                document.getElementById("employeeRole").disabled = true;
                 showLoading(false)
 
             }, error: function (xhr) {
@@ -482,12 +489,50 @@
                 })
             }
         })
-    })
-    $("#filterDivision").on("change", function () {
-        location.href = "/admin/Employee_Registration?division="+ $(this).val();
-    })
-    $('#searchByEmployeeName').on('keyup', function () {
-        let table = $("#dataTableExample").DataTable();
-        table.columns(2).search(this.value).draw();
     });
+    $('#searchByEmployeeName').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        const division = $("#filterDivision").val();
+        if (division && division !== "null") url.searchParams.set("division", division);
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader(); // 👈 Add here
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    $("#filterDivision").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("division", $(this).val());
+        else url.searchParams.delete("division");
+
+        const searchValue = $('#searchByEmployeeName').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        showLoader(); // 👈
+        window.location.href = url.toString();
+    });
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('division');
+
+        if (search) {
+            $('#searchByEmployeeName').val(search).focus();
+        }
+
+        if (division) {
+            $('#filterDivision').val(division);
+        }
+    });
+    
 </script>

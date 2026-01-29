@@ -65,7 +65,7 @@
                                 {
                                     if (proman.EmployeeRole == "projectManager")
                                     {
-                            <option value="@proman.EmployeeName">@proman.EmployeeName</option>
+                                        <option value="@proman.Id">@proman.EmployeeName</option>
                                     }
                                 }
                             }
@@ -74,11 +74,12 @@
                     <div class="col-sm-4">
                         <select id="Filter2" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
-                            @if (projects != null) {
-                                foreach(var proj in projects)
-                {
-                            <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
-                }
+                            @if (projects != null)
+                            {
+                                foreach (var proj in projects)
+                                {
+                                    <option value="@proj.Id">@proj.ProjectTitle</option>
+                                }
                             }
                         </select>
                     </div>
@@ -120,40 +121,41 @@
                         </thead>
                         <tbody>
                             @if (data != null)
-                { int i = 1;
-                    foreach (var item in data)
-                    {
-                            <tr>
-                                <td>@i</td>
-                                <td data-id="@item.id">
-                                    <a href="#" data-title="View Details" class="action">@item.projectManager</a>
-                                </td>
-                                <td>@item.projectCode</td>
-                                <td>@item.projectName</td>
-                                <td>@item.purpose</td>
-                                <td>@item.dateOfDept</td>
-                                <td>@item.place</td>
-                                <td>@item.periodFrom</td>
-                                <td>@item.periodTo</td>
-                                <td>@item.returnDate</td>
-                                <td>@item.remark</td>
-                                @*<td class="text-center" data-id="@item.id">
-                                    <a href="#" class="action"><i class="fa-solid fa-eye text-success"></i></a>
-                                </td>*@
-                                <td class="text-center">
-                                    @{
-                        if (item.newRequest == true && item.adminappr == false)
-                        { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                        else if (item.newRequest == false && item.adminappr == true)
-                        { <span id="status" class="badge bg-success">Approved</span> }
-                        else if (item.newRequest == false && item.adminappr == false)
-    { <span id="status" class="badge bg-danger">Rejected</span> }
-                                    }
-                                </td>
-                            </tr>
-                                i++;
+                            {
+                                int i = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td data-id="@item.id">
+                                            <a href="#" data-title="View Details" class="action">@item.projectManager</a>
+                                        </td>
+                                        <td>@item.projectCode</td>
+                                        <td>@item.projectName</td>
+                                        <td>@item.purpose</td>
+                                        <td>@item.dateOfDept</td>
+                                        <td>@item.place</td>
+                                        <td>@item.periodFrom</td>
+                                        <td>@item.periodTo</td>
+                                        <td>@item.returnDate</td>
+                                        <td>@item.remark</td>
+                                        @*<td class="text-center" data-id="@item.id">
+                                                <a href="#" class="action"><i class="fa-solid fa-eye text-success"></i></a>
+                                            </td>*@
+                                        <td class="text-center">
+                                            @{
+                                                if (item.newRequest == true && item.adminappr == false)
+                                                { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                                else if (item.newRequest == false && item.adminappr == true)
+                                                { <span id="status" class="badge bg-success">Approved</span> }
+                                                else if (item.newRequest == false && item.adminappr == false)
+                                                { <span id="status" class="badge bg-danger">Rejected</span> }
+                                            }
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
                             }
-                        }
                         </tbody>
                     </table>
                 </div>
@@ -277,11 +279,11 @@
                         </div>
                     </div>
                 </div>
-               
+
             </div>
             <div class="modal-footer">
-                    <button class="btn btn-secondary py-1 rounded-0" id="printBtn">Download</button>
-           
+                <button class="btn btn-secondary py-1 rounded-0" id="printBtn">Download</button>
+
             </div>
         </div>
     </div>
@@ -295,22 +297,6 @@
                     buttons: ['excel', 'pdf']
                 }
             }
-        })
-        //Filter
-        $("#Filter1").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#tableTour").DataTable()
-            table.column(1).search(filter).draw()
-        })
-        $("#Filter2").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#tableTour").DataTable()
-            table.column(2).search(filter).draw()
-        })
-        $("#Filter3").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#tableTour").DataTable()
-            table.column(10).search(filter).draw()
         })
 
         debugger
@@ -467,5 +453,44 @@
                 });
 
         })
+    });
+
+</script>
+    <script>
+        function applyFilters() {
+        const url = new URL(window.location.href);
+
+        const manager = $("#Filter1").val();
+        const project = $("#Filter2").val();
+        const status = $("#Filter3").val();
+
+        // Project Manager Filter
+        if (manager) url.searchParams.set("managerFilter", manager);
+        else url.searchParams.delete("managerFilter");
+
+        // Project Filter
+        if (project) url.searchParams.set("projectFilter", project);
+        else url.searchParams.delete("projectFilter");
+
+        // Status Filter
+        if (status) url.searchParams.set("statusFilter", status);
+        else url.searchParams.delete("statusFilter");
+
+        showLoader(); // optional loader
+        window.location.href = url.toString();
+    }
+
+        // Trigger filter on change
+        $("#Filter1").on("change", applyFilters);
+        $("#Filter2").on("change", applyFilters);
+        $("#Filter3").on("change", applyFilters);
+
+        // Restore dropdown values on load
+        $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        $("#Filter1").val(urlParams.get("managerFilter"));
+        $("#Filter2").val(urlParams.get("projectFilter"));
+        $("#Filter3").val(urlParams.get("statusFilter"));
     });
 </script>

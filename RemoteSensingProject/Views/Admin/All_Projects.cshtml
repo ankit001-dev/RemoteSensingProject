@@ -76,20 +76,20 @@
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="searchByProjectManager">
-                    <option selected value="">Serch by Project Manager</option>
+                    <option selected value="">Filter by Project Manager</option>
                     @foreach (var item in ViewBag.ManagerList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
                     {
-                        <option value="@item.EmployeeName">@item.EmployeeName</option>
+                        <option value="@item.Id">@item.EmployeeName</option>
                     }
                 </select>
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="filterProjectStatus">
                     <option selected value="">Project Status</option>
-                    <option>Work in Progress</option>
-                    <option>Not Started</option>
-                    <option>Delay</option>
-                    <option>Completed</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="delay">Delay</option>
+                    <option value="Complete">Completed</option>
                 </select>
             </div>
         </div>
@@ -129,9 +129,9 @@
                                         </a>
                                     </td>
                                     <td>@item.ProjectManager</td>
-                                    <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
-                                    <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
-                                    <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
+                                    <td>@item.AssignDateString</td>
+                                    <td>@item.StartDateString</td>
+                                    <td>@item.CompletionDatestring</td>
                                     <td>
                                         <div class="progress-bar">
                                             <div class="progress" style="width:@item.physicalcomplete%; color:black;">@item.physicalcomplete%</div>
@@ -156,32 +156,23 @@
                                         {
                                             <span class="badge bg-danger">Delay</span>
                                         }
-                                        else if (item.StartDate < DateTime.Now)
+                                        else if (item.StartDate <= DateTime.Now)
                                         {
-                                            <span class="badge bg-warning">Work in Progress</span>
+                                    <span class="badge bg-warning">Ongoing</span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-primary">Not Started</span>
+                                            <span class="badge bg-primary">Upcoming</span>
                                         }
                                     </td>
 
                                     <td class="text-center">
                                         <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                             <li class="me-2">
-                                                @*<a href="/Admin/View_Weekly_Update?Id=@item.Id" data-title="View Weekly Update">
-                                                        <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                                    </a>*@
                                                 <a href="#" data-title="Report" class="monthlyReport" data-prjType="@item.ProjectType" data-prjId="@item.Id">
                                                     <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
                                                 </a>
                                             </li>
-
-                                            @*<li class="me-2">
-                                                <a href="/Admin/View_Project_Stage?Id=@item.Id" data-title="View Stages">
-                                                    <i class="link-icon text-info" data-feather="plus-circle"> </i>
-                                                </a>
-                                            </li>*@
                                             <li class="me-2">
                                                 <a href="/Admin/View_Expenses?Id=@item.Id" data-title="View Expenses">
                                                     <i class="link-icon text-danger" data-feather="file-plus"></i>
@@ -203,7 +194,7 @@
             <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header d-flex">
-                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Project Details</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="viewProjectModalBody">
@@ -367,6 +358,66 @@
                 console.log(res);
                 if (res.status) {
 
+                    let hrSection = "";
+
+                    if (res.data.hr && res.data.hr.length > 0) {
+
+                        let hrItems = "";
+
+                        $.each(res.data.hr, function (i, h) {
+                            hrItems += `
+            <div class="col-sm-4 mb-2">
+                <div class="border p-2 rounded">
+
+                   
+                    <span>Designation Name : ${h.designationName}</span><br/>
+                    <span>Designation Count : ${h.designationCount}</span>
+                </div>
+            </div>
+        `
+                        });
+
+                        hrSection = `
+        <div class="row mt-3">
+            <label class="form-label fw-bolder">Human Resources</label>
+            ${hrItems}
+        </div>
+    `
+  }
+
+                    //--------------------------------
+
+                    let budgethead = "";
+
+                    if (res.data.budgets && res.data.budgets.length > 0) {
+
+                        let budgetsItems = "";
+
+                        $.each(res.data.budgets, function (i, h) {
+                            console.log("my data "+ h)
+                            budgetsItems += `
+            <div class="col-sm-4 mb-2">
+                <div class="border p-2 rounded">
+                   
+                     <span class="fw-bold">heads Name : ${h.budgetheadsname}</span><br/>
+                    <span>heads Amount : ${h.ProjectAmount}</span>
+                </div>
+            </div>
+        `;
+                        });
+
+                        budgethead = `
+        <div class="row mt-3">
+            <label class="form-label fw-bolder">Budget Head</label>
+            ${budgetsItems}
+        </div>
+        <hr/>
+    `;
+                    }
+
+
+                    //--------------------------------
+
                     let stages = `<div class="stageSection">`;
                     if (res.data.pm.ProjectStage) {
                         if (res.data.stages.length > 0) {
@@ -378,11 +429,13 @@
         <br />
         <span>${d.KeyPoint}</span>
     </div>
+
     <div class="col-sm-4 mb-2">
         <label class="form-label fw-bolder">Pdf Document</label>
         <br />
        <a href="${d.Document_Url}"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
     </div>
+
     <div class="col-sm-4 mb-2">
         <label class="form-label fw-bolder">Completion Date</label>
         <br />
@@ -436,7 +489,7 @@
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Assign Date</label>
          <br />
-         <span>${convertToDate(res.data.pm.AssignDate)}</span>
+         <span>${res.data.pm.AssignDateString}</span>
      </div>
 
      <hr />
@@ -445,12 +498,12 @@
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Start Date</label>
          <br />
-         <span>${convertToDate(res.data.pm.StartDate)}</span>
+         <span>${res.data.pm.StartDateString}</span>
      </div>
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Completion Date</label>
          <br />
-         <span>${convertToDate(res.data.pm.CompletionDate)}</span>
+         <span>${res.data.pm.CompletionDatestring}</span>
      </div>
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Project Type</label>
@@ -482,10 +535,14 @@
  </div>
  ${res.data.pm.ProjectStage ? stages : ""}
 
-     <div class="row">
+ <div class="row">
          <label class="form-label fw-bolder">Description</label>
          <p>${res.data.pm.ProjectDescription}</p>
-     </div>` ;
+ </div>
+ ${hrSection}
+ ${budgethead}` ;
+
+  
 
                     function convertToDate(timestamp) {
                         const parsedTimestamp = parseInt(timestamp.match(/\d+/)[0], 10);
@@ -509,21 +566,6 @@
 
     $(document).ready(function () {
 
-
-
-        $("#searchProjectBy").on("keyup", function () {
-            var table = $("#AllProjectList").DataTable();
-            table.column(2).search(this.value).draw()
-        });
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#AllProjectList").DataTable();
-            table.column(10).search(this.value).draw()
-        })
-        $("#searchByProjectManager").on("change", function () {
-            var table = $("#AllProjectList").DataTable();
-            table.column(3).search(this.value).draw()
-        })
-
         $('#AllProjectList').DataTable({
             deferRender: false,
             layout: {
@@ -540,6 +582,7 @@
 
 
     $(".monthlyReport").click(function () {
+        debugger
         let prjType = $(this).attr("data-prjType");
         let prjId = $(this).attr("data-prjId");
         if (prjType === "External") {
@@ -607,6 +650,7 @@
 
 
     function loadExternalProjectDetail(prjId) {
+        debugger
         $.ajax({
             url: "/api/getFinancialReport",
             type: "get",
@@ -638,6 +682,13 @@
                     })
 
                     $("#viewMonthlyReportExternalPrj").modal("show")
+                }
+                else {
+                    Swal.fire({
+                        title: 'Warning',
+                        text: 'Data not found !',
+                        icon: 'warning'
+                    });
                 }
             },
             error: function () {
@@ -793,6 +844,73 @@
 
     })
 
+    // Search by text
+    $('#searchProjectBy').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        const division = $("#filterProjectStatus").val();
+        if (division && division !== "null") url.searchParams.set("statusFilter", division);
+        else url.searchParams.delete("statusFilter");
+
+        const manager = $("#searchByProjectManager").val();
+        if (manager && manager !== "null") url.searchParams.set("projectManagerFilter", manager);
+        else url.searchParams.delete("projectManagerFilter");
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Filter by status
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        const manager = $("#searchByProjectManager").val();
+        if (manager) url.searchParams.set("projectManagerFilter", manager);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Filter by Project Manager
+    $("#searchByProjectManager").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("projectManagerFilter", $(this).val());
+        else url.searchParams.delete("projectManagerFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        const division = $("#filterProjectStatus").val();
+        if (division) url.searchParams.set("statusFilter", division);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Set values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
+        const manager = urlParams.get('projectManagerFilter');
+
+        if (search) $('#searchProjectBy').val(search).focus();
+        if (division) $('#filterProjectStatus').val(division);
+        if (manager) $('#searchByProjectManager').val(manager);
+    });
 
 </script>
 

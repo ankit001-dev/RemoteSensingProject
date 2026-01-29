@@ -66,14 +66,14 @@
                 <h5>Employee Lists</h5>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="text" placeholder="Search by employee name" class="form-control" id="filterByEmployeeName">
+                <input type="text" placeholder="Search by employee name" class="form-control" id="searchByEmployeeName">
             </div>
             <div class="col-lg-4 col-md-6">
-                <select class="form-select form-select-lg" id="fileterByEmployeeDiv">
+                <select class="form-select form-select-lg" id="filterDivision">
                     <option selected value="">-- Select Divison --</option>
                     @foreach(var item in ViewBag.DivisonList as List<RemoteSensingProject.Models.Admin.main.CommonResponse>)
             {
-                        <option>@item.name</option>
+                        <option value="@item.id">@item.name</option>
             }
                 </select>
             </div>
@@ -113,15 +113,6 @@
                                     <td class="text-center">
                                         <span class="text-light px-2 py-1 rounded @(item.ActiveStatus?"bg-success":"bg-danger")">@(item.ActiveStatus?"Active":"Deactive")</span>
                                     </td>
-                                    @*<td class="text-center">
-                                        <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                            <li class="me-2">
-                                                <a data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider"><i class="link-icon" data-feather="eye"></i></a>
-
-                                            </li>
-
-                                        </ul>
-                                    </td>*@
                                 </tr>
                                     count++;
                                 }
@@ -357,24 +348,67 @@
 
 
     $(document).ready(function () {
-        $("#filterByEmployeeName").on("input", function () {
-            var table = $("#dataTableExamples").DataTable();
-            table.column(3).search($(this).val()).draw();
-        })
-        $("#fileterByEmployeeDiv").on("change", function () {
-            var table = $("#dataTableExamples").DataTable();
-            table.column(4).search($(this).val()).draw();
-        })
+        //$("#filterByEmployeeName").on("input", function () {
+        //    var table = $("#dataTableExamples").DataTable();
+        //    table.column(3).search($(this).val()).draw();
+        //})
+        //$("#fileterByEmployeeDiv").on("change", function () {
+        //    var table = $("#dataTableExamples").DataTable();
+        //    table.column(4).search($(this).val()).draw();
+        //})
 
         $('#dataTableExamples').DataTable({
             layout: {
                 topStart: {
-                    buttons: [ 'excel', 'pdf' ]
+                    buttons: ['excel', 'pdf']
                 }
             }
         });
-      
-       
-    })
+    });
+
+    $('#searchByEmployeeName').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        const division = $("#filterDivision").val();
+        if (division && division !== "null") url.searchParams.set("division", division);
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader(); // 👈 Add here
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    $("#filterDivision").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("division", $(this).val());
+        else url.searchParams.delete("division");
+
+        const searchValue = $('#searchByEmployeeName').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        showLoader(); // 👈
+        window.location.href = url.toString();
+    });
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('division');
+
+        if (search) {
+            $('#searchByEmployeeName').val(search).focus();
+        }
+
+        if (division) {
+            $('#filterDivision').val(division);
+        }
+    });
 </script>
 

@@ -75,7 +75,7 @@
                 <div class="t-header"><h4 class="mb-2 text-primary"><a href="#">Meeting Lists</a></h4></div>
             </div>
             <div class="col-lg-4 col-md-6">
-                <input type="search" id="searchmeetingName" placeholder="Search by meeting name" class="form-control">
+                <input type="text" id="searchmeetingName" placeholder="Search by meeting name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="searchByMeetingStatus">
@@ -114,7 +114,6 @@
                                     <th>Meeting Mode</th>
                                     <th>Meeting Date</th>
                                     <th>Status</th>
-                                    @*<th>Action</th>*@
                                 </tr>
                             </thead>
                             <tbody>
@@ -189,10 +188,10 @@
                         <table id="dataTableExamples" class="table table-striped">
                             <thead class="bg-success text-light">
                                 <tr>
-                                    <th>Venue</th>
+                                    <th>Date</th>
                                     <th>Mode</th>
                                     <th>Conclusion</th>
-                                    <th>Next FolloUp Date</th>
+                                    <th style="white-space:nowrap;">Next Follow Up Date</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -201,9 +200,6 @@
                         </table>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -226,50 +222,84 @@
 
     $(document).ready(function () {
 
+        loadMeetings();
+
+        // Search Meeting Name
+        $("#searchmeetingName").on("keyup", function () {
+            clearTimeout(window.searchTermTimer);
+            window.searchTermTimer = setTimeout(() => {
+                loadMeetings();
+            }, 500);
+        });
+
+        // Meeting Status Filter
+        $("#searchByMeetingStatus").on("change", function () {
+            loadMeetings();
+        });
+
+        // Meeting Mode Filter
+        $("#searchmeetingMode").on("change", function () {
+            loadMeetings();
+        });
+
         document.getElementById('AllMemmberDetails').addEventListener('hide.bs.modal', function () {
             $('#AllConclusionModal').modal('show');
         }); document.getElementById('customModalTwo').addEventListener('hide.bs.modal', function () {
             $('#AllConclusionModal').modal('show');
         });
+    })
 
-        setTimeout(() => {
-
-            $('#meetingTable').DataTable({
-                layout: {
-                    topStart: {
-                        buttons: ['excel', 'pdf']
-                    }
-                }
-            });
-        }, 1000)
+    function loadMeetings() {
+        let searchTerm = $("#searchmeetingName").val().trim();
+        let statusFilter = $("#searchByMeetingStatus").val();
+        let meetingMode = $("#searchmeetingMode").val();
 
         $.ajax({
             url: '/Admin/GetAllMeeting',
             type: 'GET',
+            data: {
+                searchTerm: searchTerm,
+                statusFilter: statusFilter,
+                meetingMode: meetingMode
+            },
+            beforeSend: function () {
+            },
             success: function (res) {
+                showLoading(false);
+                $('#meetingTable').DataTable().clear().destroy();
                 $('#meetingTable tbody').empty();
-                var rows = '';
+
+                let rows = '';
                 $.each(res.empList, function (index, item) {
                     rows += `<tr>
                    <td>${index + 1}</td>
-                   <td><a href="#" data-title="View Details"><span onclick="showAllConclusion(${item.Id})" role="button" >${item.MeetingTitle}</span></a></td>
+                   <td><a href="#" data-title="View Details"><span onclick="showAllConclusion(${item.Id})" role="button">${item.MeetingTitle}</span></a></td>
                    <td>${item.MeetingType}</td>
                    <td>${item.MeetingDate}</td>
-               <td>
+                   <td>
                      <span class="${item.CompleteStatus == 0 ? 'badge badge-pending' : 'badge badge-completed'}">
                        ${item.CompleteStatus == 0 ? 'Pending' : 'Completed'}
                      </span>
                    </td>
-                   
-                   </tr>`;
+                </tr>`;
                 });
+
                 $('#meetingTable tbody').append(rows);
+
+                $('#meetingTable').DataTable({
+                    layout: {
+                        topStart: {
+                            buttons: ['excel', 'pdf']
+                        }
+                    }
+                });
             },
-            error: function (xhr, error) {
-                console.log("An error accured", error);
+            error: function (xhr) {
+                console.log("Error: ", xhr);
             }
-        })
-    })
+        });
+    }
+
 
     function showAllConclusion(id) {
         $("#AllConclusionModal").modal("show")
@@ -387,23 +417,92 @@
             }
         })
     }
-    $(document).ready(function () {
+    //$(document).ready(function () {
 
-    $('#searchmeetingName').on('keyup', function () {
-        let table = $("#meetingTable").DataTable();
-        table.columns(1).search(this.value).draw();
-    });
-    $('#searchmeetingName').on('keyup', function () {
-        let table = $("#meetingTable").DataTable();
-        table.columns(1).search(this.value).draw();
-    }); $('#searchmeetingMode').on('change', function () {
-        let table = $("#meetingTable").DataTable();
-        table.columns(2).search(this.value).draw();
-    });
-    $('#searchByMeetingStatus').on('change', function () {
-    debugger
-        let table = $("#meetingTable").DataTable();
-        table.columns(4).search(this.value).draw();
-    });
-    });
+    //    $('#searchmeetingName').on('keyup', function () {
+    //        let table = $("#meetingTable").DataTable();
+    //        table.columns(1).search(this.value).draw();
+    //    });
+    //    $('#searchmeetingName').on('keyup', function () {
+    //        let table = $("#meetingTable").DataTable();
+    //        table.columns(1).search(this.value).draw();
+    //    }); $('#searchmeetingMode').on('change', function () {
+    //        let table = $("#meetingTable").DataTable();
+    //        table.columns(2).search(this.value).draw();
+    //    });
+    //    $('#searchByMeetingStatus').on('change', function () {
+    //    debugger
+    //        let table = $("#meetingTable").DataTable();
+    //        table.columns(4).search(this.value).draw();
+    //    });
+    //});
+
+    //// Search by Meeting Name
+    //$("#searchmeetingName").on("keyup", function () {
+    //    let value = $(this).val().trim();
+    //    const url = new URL(window.location.href);
+
+    //    if (value)
+    //        url.searchParams.set("searchTerm", value);
+    //    else
+    //        url.searchParams.delete("searchTerm");
+
+    //    clearTimeout(window.searchTimer);
+    //    window.searchTimer = setTimeout(() => {
+    //        showLoader();
+    //        window.location.href = url.toString();
+    //    }, 500);
+    //});
+
+
+    //// Search by Meeting Status
+    //$("#searchByMeetingStatus").on("change", function () {
+    //    const url = new URL(window.location.href);
+    //    const status = $(this).val();
+
+    //    if (status)
+    //        url.searchParams.set("statusFilter", status);
+    //    else
+    //        url.searchParams.delete("statusFilter");
+
+    //    const searchTerm = $("#searchmeetingName").val().trim();
+    //    if (searchTerm) url.searchParams.set("searchTerm", searchTerm);
+
+    //    showLoader();
+    //    window.location.href = url.toString();
+    //});
+
+
+    //// Search by Meeting Mode
+    //$("#searchmeetingMode").on("change", function () {
+    //    const url = new URL(window.location.href);
+    //    const mode = $(this).val();
+
+    //    if (mode)
+    //        url.searchParams.set("meetingMode", mode);
+    //    else
+    //        url.searchParams.delete("meetingMode");
+
+    //    const searchTerm = $("#searchmeetingName").val().trim();
+    //    if (searchTerm) url.searchParams.set("searchTerm", searchTerm);
+
+    //    showLoader();
+    //    window.location.href = url.toString();
+    //});
+
+
+    //// Restore UI state on page load
+    //$(document).ready(function () {
+    //    const urlParams = new URLSearchParams(window.location.search);
+
+    //    const searchTerm = urlParams.get("searchTerm");
+    //    if (searchTerm) $("#searchmeetingName").val(searchTerm);
+
+    //    const statusFilter = urlParams.get("statusFilter");
+    //    if (statusFilter) $("#searchByMeetingStatus").val(statusFilter);
+
+    //    const meetingMode = urlParams.get("meetingMode");
+    //    if (meetingMode) $("#searchmeetingMode").val(meetingMode);
+    //});
+
 </script>

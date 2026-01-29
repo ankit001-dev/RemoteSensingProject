@@ -1,4 +1,5 @@
-﻿using RemoteSensingProject.Models.Admin;
+﻿using Newtonsoft.Json;
+using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using static RemoteSensingProject.Models.Admin.main;
-using Newtonsoft.Json;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -43,23 +43,33 @@ namespace RemoteSensingProject.Controllers
 
         }
         #region OutSource
-        public ActionResult OutSource()
+        public ActionResult OutSource(string searchTerm = null)
         {
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj);
+            ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj,searchTerm:searchTerm);
+            ViewData["Designations"] = _adminServices.ListDesgination();
             return View();
         }
 
         [HttpPost]
         public ActionResult CreateOutSource(OuterSource os)
         {
-            var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-            os.EmpId = Convert.ToInt32(userObj);
-            bool res = _managerServices.insertOutSource(os);
+            bool res = false;
+            string message = "Some issue occured !";
+            try
+            {
+                var userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
+                os.EmpId = Convert.ToInt32(userObj);
+                 res = _managerServices.insertOutSource(os);
+            }
+            catch(Exception ex)
+            {
+                message = ex.Message;
+            }
             return Json(new
             {
                 status = res,
-                message = res ? "Outsource created succesfully !" : "Some issue occured !"
+                message = res ? "Outsource created succesfully !" : message
             });
         }
         #endregion
@@ -88,22 +98,35 @@ namespace RemoteSensingProject.Controllers
         {
             var data = _adminServices.SelectEmployeeRecord();
             ViewBag.subOrdinateList = data.Where(d => d.EmployeeRole.Equals("subOrdinate")).ToList();
-
+            ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
+            ViewData["Designations"] = _adminServices.ListDesgination();
             return View();
         }
 
         [HttpPost]
         public ActionResult UpdateTaskStatus(int taskId)
         {
-            bool res = _managerServices.updateTaskStatus(taskId);
+            bool res = false;
+            string message = "Some issue occured !";
+            try
+            {
+                res = _managerServices.updateTaskStatus(taskId);
+            }
+            catch(Exception ex)
+            {
+                message = ex.Message;
+            }
             return Json(new
             {
                 status = res,
-                message = res ? "Task updated successfully !" : "Some issue occured !"
+                message = res ? "Task updated successfully !" : message
             });
         }
         public ActionResult InsertProject(createProjectModel pm)
         {
+            string filePage = Server.MapPath("~/ProjectContent/ProjectManager/ProjectDocs/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             var managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
@@ -116,6 +139,7 @@ namespace RemoteSensingProject.Controllers
             {
                 return RedirectToAction("login","login");
             }
+
             if (pm.pm.projectDocument != null && pm.pm.projectDocument.FileName != "")
             {
                 pm.pm.projectDocumentUrl = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(pm.pm.projectDocument.FileName);
@@ -156,34 +180,35 @@ namespace RemoteSensingProject.Controllers
             }
             return Json(new
             {
-                status = res
+                status = res,
+                message = pm.pm.Id>0 ?"Project Updated Successfully":"Project Created Successfully"
             }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Project_List()
+        public ActionResult Project_List(string searchTerm = null, string statusFilter = null)
         {
             var managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
-            ViewBag.ProjectList = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "ManagerProject");
+            ViewBag.ProjectList = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "ManagerProject",searchTerm:searchTerm,statusFilter:statusFilter);
             return View();
         }
 
-        public ActionResult All_Project_List()
+        public ActionResult All_Project_List(string searchTerm = null, string statusFilter = null)
         {
             var userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, null);
+            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, null,searchTerm:searchTerm,statusFilter:statusFilter);
             return View();
         }
 
         #region /* Assign Project */
-        public ActionResult Assigned_Project()
+        public ActionResult Assigned_Project(string searchTerm = null, string statusFilter = null)
         {
             var managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
 
             List<ProjectList> _list = new List<ProjectList>();
-            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AdminProject");
+            ViewData["AssignedProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AssignedProject",searchTerm:searchTerm,statusFilter:statusFilter);
             return View();
         }
         public ActionResult GetAllProjectByManager()
@@ -301,6 +326,9 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult InsertExpenses(List<ProjectExpenses> list)
         {
+            string filePage = Server.MapPath("~/ProjectContent/ProjectManager/HeadsSlip/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             if (list.Count > 0)
             {
                 bool res = false;
@@ -356,6 +384,9 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult AddMeeting(AddMeeting_Model formData)
         {
+            string filePage = Server.MapPath("~/ProjectContent/ProjectManager/Meeting_Attachment/");
+            if (!Directory.Exists(filePage))
+                Directory.CreateDirectory(filePage);
             string path = null;
             if (formData.Attachment != null && formData.Attachment.ContentLength > 0)
             {
@@ -384,7 +415,7 @@ namespace RemoteSensingProject.Controllers
                 var guid = Guid.NewGuid();
                 var FileExtension = Path.GetExtension(formData.Attachment.FileName);
                 var fileName = $"{guid}{FileExtension}";
-                path = Path.Combine("/ProjectContent/Admin/Meeting_Attachment", fileName);
+                path = Path.Combine("/ProjectContent/ProjectManager/Meeting_Attachment", fileName);
 
                 formData.Attachment_Url = path;
             }
@@ -436,10 +467,10 @@ namespace RemoteSensingProject.Controllers
             var res = _adminServices.getKeypointResponse(id);
             return Json(res, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult Meetings(string req)
+        public ActionResult Meetings(string searchTerm = null,string statusFilter = null)
         {
             var userId = _managerServices.getManagerDetails(User.Identity.Name);
-            var res = req == "admin" ? _managerServices.getAllmeeting(int.Parse(userId.userId)).Where(d => d.createdBy == "admin").ToList() : req == "projectmanager" ? _managerServices.getAllmeeting(int.Parse(userId.userId)).Where(d => d.createdBy == "projectmanager").ToList() : _managerServices.getAllmeeting(int.Parse(userId.userId));
+            var res = _managerServices.getAllmeeting(int.Parse(userId.userId),searchTerm:searchTerm,statusFilter:statusFilter);
             return View(res);
         }
 
@@ -464,12 +495,12 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Notice(int? projectId)
+        public ActionResult Notice(int? projectId, string searchTerm = null)
         {
             dynamic noticeList = null;
             var managerName = User.Identity.Name;
             UserCredential userObj = _managerServices.getManagerDetails(managerName);
-            noticeList = _adminServices.getNoticeList(null, null, projectId, Convert.ToInt32(userObj.userId));
+            noticeList = _adminServices.getNoticeList(null, null, projectId, Convert.ToInt32(userObj.userId),searchTerm:searchTerm);
            
             ViewBag.ProjectList = _adminServices.Project_List();
 
@@ -489,12 +520,12 @@ namespace RemoteSensingProject.Controllers
             return Json(project, JsonRequestBehavior.AllowGet);
 
         }
-        public ActionResult SubOrdinateProblemList()
+        public ActionResult SubOrdinateProblemList(string searchTerm = null)
         {
             var managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
-            ViewBag.ProjectProblemList = _adminServices.getProblemList(null, null, null, Convert.ToInt32(userObj.userId));
+            ViewBag.ProjectProblemList = _managerServices.getAllSubOrdinateProblem(userObj.userId,searchTerm:searchTerm);
               
             return View();
         }
@@ -517,10 +548,10 @@ namespace RemoteSensingProject.Controllers
                 message = res ? "Problem solved successfully !" : "Some issue occured.  Try after sometime."
             });
         }
-        public ActionResult All_Project_Report(string req)
+        public ActionResult All_Project_Report(string searchTerm = null, string statusFilter = null)
         {
             var userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId),null,null,req,null);
+            ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId),null,null,null,null,searchTerm:searchTerm,statusFilter:statusFilter);
                 return View();
         }
 
@@ -545,10 +576,10 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Reimbursement_Form()
+        public ActionResult Reimbursement_Form(string typeFilter = null)
         {
             int id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.GetReimbursements(null, null, null, id, "getSpecificUserData");
+            var res = _managerServices.GetReimbursements(null, null, null, id, "getSpecificUserData",typeFilter:typeFilter);
             ViewData["reimlist"] = res;
             return View();
         }
@@ -606,14 +637,13 @@ namespace RemoteSensingProject.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Hiring_Vehicle()
+        public ActionResult Hiring_Vehicle(int? projectFilter = null)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             var res = _managerServices.All_Project_List(userid, null, null, null);
             ViewData["projectlist"] = res;
-            var res1 = _managerServices.GetHiringVehicles(userId: userid, type: "projectManager");
+            var res1 = _managerServices.GetHiringVehicles(userId: userid, type: "projectManager",projectFilter:projectFilter);
             ViewData["hiringList"] = res1;
-            ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
         [HttpPost]
@@ -639,10 +669,10 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
-        public ActionResult Tour_Proposal()
+        public ActionResult Tour_Proposal(int? projectFilter = null)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var res = _managerServices.getTourList(userId: userid, type: "specificUser");
+            var res = _managerServices.getTourList(userId: userid, type: "specificUser",projectFilter:projectFilter);
             var res1 = _managerServices.All_Project_List(userid, null, null, null);
             ViewData["projectList"] = res1;
             ViewData["tourList"] = res;
@@ -671,26 +701,26 @@ namespace RemoteSensingProject.Controllers
             }
         }
 
-        public ActionResult Reimbursement_Report(string req)
+        public ActionResult Reimbursement_Report(string typeFilter = null, string statusFilter = null)
         {
             int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["totalReinursementReport"] = req == "approved" ? _managerServices.GetReimbursements(managerId:userId, type: "selectReinbursementforUserReport").Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _managerServices.GetReimbursements(managerId: userId, type: "selectReinbursementforUserReport").Where(d => d.newRequest == false && d.adminappr == false).ToList() : _managerServices.GetReimbursements(managerId: userId, type: "selectReinbursementforUserReport");
+            ViewData["totalReinursementReport"] = _managerServices.GetReimbursements(managerId: userId, type: "selectReinbursementforUserReport",statusFilter:statusFilter,typeFilter:typeFilter);
             return View();
         }
-        public ActionResult TourProposal_Report(string req)
+        public ActionResult TourProposal_Report(int? projectFilter = null, string statusFilter = null)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["tourList"] = req == "approved" ? _managerServices.getTourList(userId:userid, type: "specificUser").Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _managerServices.getTourList(userId: userid, type: "specificUser").Where(d => d.newRequest && d.adminappr == false).ToList() : req == "pending" ? _managerServices.getTourList(userId: userid, type: "specificUser").Where(d => d.newRequest == true && d.adminappr == false).ToList() : _managerServices.getTourList(userId: userid, type: "specificUser");
+            ViewData["tourList"] = _managerServices.getTourList(userId: userid, type: "specificUser", projectFilter: projectFilter, statusFilter: statusFilter);
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
-        public ActionResult Hiring_Report(string req)
+        public ActionResult Hiring_Report(int? projectFilter = null, string statusFilter = null)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             var res = _managerServices.All_Project_List(userid, null, null, null);
             ViewData["projectlist"] = res;
-            var res1 = req == "approved" ? _managerServices.GetHiringVehicles(userId: userid, type: "projectManager").Where(d => d.newRequest == false && d.adminappr == true).ToList() : req == "rejected" ? _managerServices.GetHiringVehicles(userId: userid, type: "projectManager").Where(d => d.newRequest == false && d.adminappr == false).ToList() : req == "pending" ? _managerServices.GetHiringVehicles(userId: userid, type: "projectManager").Where(d => d.newRequest == true && d.adminappr == false).ToList() : _managerServices.GetHiringVehicles(userId: userid, type: "projectManager");
+            var res1 = _managerServices.GetHiringVehicles(userId: userid, type: "projectManager",projectFilter:projectFilter,statusFilter:statusFilter);
             ViewData["hiringList"] = res1;
             ViewData["projects"] = _adminServices.Project_List();
             return View();
@@ -708,13 +738,21 @@ namespace RemoteSensingProject.Controllers
             dt.id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             if (dt.document.ContentLength > 0)
             {
-                dt.documentname = $"/ProjectContent/ProjectManager/raisedproblem{Guid.NewGuid()}{dt.document.FileName}";
+                dt.documentname = $"/ProjectContent/ProjectManager/raisedproblem/{Guid.NewGuid()}{dt.document.FileName}";
             }
             bool res = _managerServices.insertRaisedProblem(dt);
             if (res)
             {
-                if (dt.document.ContentLength > 0)
-                    dt.document.SaveAs(Server.MapPath(dt.documentname));
+                if (dt.document != null && dt.document.ContentLength > 0)
+                {
+                    string fullPath = Server.MapPath(dt.documentname);
+                    string dir = Path.GetDirectoryName(fullPath);
+                    if (!Directory.Exists(dir))
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+                    dt.document.SaveAs(fullPath);
+                }
                 return Json(new
                 {
                     status = res,
@@ -726,6 +764,18 @@ namespace RemoteSensingProject.Controllers
                 status = res,
                 message = "Some issue occured !"
             });
+        }
+
+        [HttpGet]
+        public ActionResult GetRaiseProblemById(int id)
+        {
+            int managerId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var data = _adminServices.getProblemList(managerId: managerId, id: id);
+            return Json(new
+            {
+                status = true,
+                data
+            }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public ActionResult DeleteRaiseProblem(int id)
@@ -877,35 +927,103 @@ namespace RemoteSensingProject.Controllers
             var data = _managerServices.ConvertExcelFileOfAll(month, year, userObj);
             return File(data, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelReportOfAll.xlsx");
         }
-        public ActionResult EmpMonthlyReport()
+        public ActionResult EmpMonthlyReport(int?month=null,int?year=null)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             ViewData["projectList"] = _managerServices.All_Project_List(userid, null, null, null);
-            ViewData["ReportList"] = _managerServices.GetEmpReport(userid);
+            ViewData["ReportList"] = _managerServices.GetEmpReport(userid,month:month,year:year);
             return View();
         }
         [HttpPost]
         public ActionResult InsertEmpReport(EmpReportModel model)
         {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            model.PmId = userid;
-            bool res = _managerServices.InsertEmpReport(model);
+            try
+            {
+                string message = "";
+                int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+                model.PmId = userid;
+                bool res = _managerServices.InsertEmpReport(model, out message);
 
-            if (res)
+                if (res)
+                {
+                    return Json(new
+                    {
+                        status = res,
+                        message = "Report inserted successfully!"
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        status = res,
+                        message = message
+                    });
+                }
+            }
+            catch (Exception ex)
             {
                 return Json(new
                 {
-                    status = res,
-                    message = "Report inserted successfully!"
+                    status = false,
+                    message = "Server error occurred: " + ex.Message
                 });
             }
-            else
+        }
+
+        public ActionResult Feedback()
+        {
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["feedbacklist"] = _managerServices.GetFeedbacks(userid);
+            return View();
+        }
+        [HttpPost]
+        public ActionResult InsertFeedback(FeedbackModel feed)
+        {
+            try
             {
+                feed.UserId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+                bool res = _managerServices.InsertFeedback(feed);
                 return Json(new
                 {
                     status = res,
-                    message = "Some issue occurred!"
+                    message = "Feedback added successfully"
                 });
+            }
+            catch
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "Server error occurred"
+                });
+            }
+        }
+        [HttpPost]
+        public JsonResult UpdateProjectStatus(UpdateProjectStatus upd)
+        {
+            try
+            {
+                bool res = _managerServices.InsertProjectStatus(upd);
+
+                return Json(new { status = res, message = res? "Project status updated successfully":"Some error occured" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public JsonResult LastProjectStatusPrencentage(int projectid)
+        {
+            try
+            {
+                var data = _managerServices.LastProjectStatus(projectid);
+                return Json(new { status = data.Count > 0 ? true : false, message = data.Count > 0 ? "data recived" : "data not found" ,data = data},JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
             }
         }
     }

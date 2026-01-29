@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Web;
 using System.Web.Http;
@@ -19,7 +20,7 @@ using static RemoteSensingProject.Models.SubOrdinate.main;
 
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize]
+    [JwtAuthorize(Roles = "outSource")]
     public class OutSourceController : ApiController
     {
         private readonly AdminServices _adminServices;
@@ -35,39 +36,25 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getOutSourceTask")]
-        public IHttpActionResult getOutSourceAssignTask(int id)
+        public IHttpActionResult getOutSourceAssignTask(int id,int? limit = null,int? page = null,string searchTerm = null)
         {
             try
             {
-                var taskList = _subordinate.getOutSourceTask(id);
-
-                if (taskList != null)
+                var data = _subordinate.getOutSourceTask(id,limit:limit,page:page,searchTerm:searchTerm);
+                var selectprop = new[] { "id", "Title", "Description", "CompleteStatus", "Status" };
+                var newdata = CommonHelper.SelectProperties(data, selectprop);
+                if (data.Count > 0)
                 {
-                    return Ok(new
-                    {
-                        status = true,
-                        data = taskList,
-                        message = "Data found !"
-                    });
+                    return CommonHelper.Success(this, newdata, "Data fetched successfully", 200, data[0].Pagination);
                 }
                 else
                 {
-                    return Ok(new
-                    {
-                        status = false,
-                        data = taskList,
-                        message = "Data not found !"
-                    });
+                    return CommonHelper.NoData(this);
                 }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
 
         }

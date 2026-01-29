@@ -253,11 +253,11 @@
 <script>
     $(document).ready(function () {
 
-        $("#typeFilter").on("change", function () {
-            let tp = $(this).val();
-            let table = $("#dataTableExample").DataTable();
-            table.column(1).search(tp).draw();
-        });
+        //$("#typeFilter").on("change", function () {
+        //    let tp = $(this).val();
+        //    let table = $("#dataTableExample").DataTable();
+        //    table.column(1).search(tp).draw();
+        //});
 
         $("#printBtn").click(function () {
 
@@ -457,7 +457,7 @@
                 type: "Get",
                 data: { "userId": userId, "type": type, id: Id, page: null, limit:null },
                 success: function (result) {
-                    if (result.status) {
+                    if (result.Status) {
                         $("#apprAmttext").text(apprvAmt);
                         $("#chequeNumberText").text(chequeNum);
                         $("#chequeDatetext").text(chequeDate);
@@ -607,4 +607,24 @@
             });
         })
     })
+
+    // Filter by Type
+    $("#typeFilter").on("change", function () {
+        const url = new URL(window.location.href);
+        const type = $(this).val();
+
+        if (type) url.searchParams.set("typeFilter", type);
+        else url.searchParams.delete("typeFilter");
+
+        showLoader(); // optional loader function
+        window.location.href = url.toString();
+    });
+
+    // Set dropdowns on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('typeFilter');
+
+        if (type) $("#typeFilter").val(type);
+    });
 </script>

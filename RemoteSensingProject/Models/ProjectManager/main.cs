@@ -192,6 +192,8 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string joiningdate { get; set; }
         public int Id { get; set; }
         public int EmpId { get; set; }
+        public int designationid { get; set; }
+        public string designationname { get; set; }
         public string EmpName { get; set; }
         public long mobileNo { get; set; } 
         public string gender { get; set; }
@@ -212,6 +214,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class Reimbursement
     {
+        public string statusLabel { get; set; }
         public bool apprstatus { get; set; }
         public bool submitstatus { get; set; }
         public string remark { get; set; }
@@ -281,6 +284,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class RaiseProblem
     {
+        public PaginationInfo Pagination { get; set; }
         public string projectCode { get; set; }
         public DateTime createdAt { get; set; }
         public string projectManager {get; set; }  
@@ -345,5 +349,21 @@ namespace RemoteSensingProject.Models.ProjectManager
         // Departments Benefiting & Remarks
         public string BenefitingDepartments { get; set; }
         public string Remarks { get; set; }
+        public string CreatedAt { get; set; }
+    }
+    public class FeedbackModel
+    {
+        public string Title { get; set; }
+        public string FeedbackType { get; set; }
+        public string Description { get; set; }
+        public int UserId { get; set; }
+        public string Status { get; set; }
+    }
+    public class UpdateProjectStatus
+    {
+        public bool projectStatus { get; set; }
+        public string remark { get; set; }
+        public string CompletionPrecentage { get; set; }
+        public int projectId { get; set; }
     }
 }

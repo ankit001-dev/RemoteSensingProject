@@ -23,6 +23,14 @@ namespace RemoteSensingProject.Models
             public int TotalRecords { get; set; }
             public int TotalPages { get; set; }
         }
-
+        public class FilterTypes
+        {
+            public int? division { get; set; }
+        }
+        public class ColumnMapping
+        {
+            public string Header { get; set; }
+            public string PropertyName { get; set; }
+        }
     }
 }

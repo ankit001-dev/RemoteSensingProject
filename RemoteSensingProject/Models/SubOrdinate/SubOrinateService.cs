@@ -1,8 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using static RemoteSensingProject.Models.SubOrdinate.main;
+﻿using DocumentFormat.OpenXml.Math;
+using Google.Protobuf.WellKnownTypes;
 using Npgsql;
+using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using static RemoteSensingProject.Models.SubOrdinate.main;
 
 namespace RemoteSensingProject.Models.SubOrdinate
 {
@@ -90,24 +93,19 @@ namespace RemoteSensingProject.Models.SubOrdinate
         {
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_ManageSubordinateProjectProblem", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "insertProblem");
-                cmd.Parameters.AddWithValue("@Project_Id", raise.Project_Id);
-                cmd.Parameters.AddWithValue("@Title", raise.Title);
-                cmd.Parameters.AddWithValue("@Description", raise.Description);
-                cmd.Parameters.AddWithValue("@Attachment", raise.Attchment_Url);
+                NpgsqlCommand cmd = new NpgsqlCommand("call sp_managesubordinateprojectproblem(v_action=>@v_action,v_project_id=>@v_project_id,v_title=>@v_title,v_description=>@v_description,v_attachment=>@v_attachment)", con);
+                //cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@v_action", "insertProblem");
+                cmd.Parameters.AddWithValue("@v_project_id", raise.Project_Id);
+                cmd.Parameters.AddWithValue("@v_project_id", raise.Project_Id);
+                cmd.Parameters.AddWithValue("@v_title", raise.Title);
+                cmd.Parameters.AddWithValue("@v_description", raise.Description);
+                cmd.Parameters.AddWithValue("@v_attachment", raise.Attchment_Url??"");
                 con.Open();
-                int i = cmd.ExecuteNonQuery();
-                if (i > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }catch(Exception ex)
+                cmd.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception ex)
             {
                 throw new Exception("An error accured", ex);
             }
@@ -123,30 +121,54 @@ namespace RemoteSensingProject.Models.SubOrdinate
         #endregion Problem End 
 
         #region Outsource Start
-        public List<OutSource_Task> getOutSourceTask(int id)
+        public List<OutSource_Task> getOutSourceTask(int id,int? limit = null ,int? page = null, string searchTerm = null)
         {
             try
             {
                 List<OutSource_Task> taskList = new List<OutSource_Task>();
                 OutSource_Task task = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("sp_manageOutSourceTask", con);
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", "getTaskByOutSource");
-                cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
-                if (sdr.HasRows)
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageoutsource_cursor", con, tran))
                 {
-                    while (sdr.Read())
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@v_action", "getTaskByOutSource");
+                    cmd.Parameters.AddWithValue("@v_id", id);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("v_searchterm", string.IsNullOrEmpty(searchTerm) ? DBNull.Value : (object)searchTerm);
+                    string cursorName = (string)cmd.ExecuteScalar();
+                    using (var fetchCmd = new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran))
+                    using (var sdr = fetchCmd.ExecuteReader())
                     {
-                        task = new OutSource_Task();
-                        task.id = Convert.ToInt32(sdr["id"]);
-                        task.Title = sdr["title"].ToString();
-                        task.Description = sdr["description"].ToString();
-                        task.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
-                        task.Status = sdr["Status"].ToString();
-                        taskList.Add(task);
+                        bool firstRow = true;
+                        while (sdr.Read())
+                        {
+                            task = new OutSource_Task();
+                            task.id = Convert.ToInt32(sdr["id"]);
+                            task.Title = sdr["title"].ToString(); 
+                            task.Description = sdr["description"].ToString();
+                            task.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
+                            task.Status = sdr["Status"].ToString();
+                            taskList.Add(task);
+                        if (firstRow)
+                        {
+                            task.Pagination = new ApiCommon.PaginationInfo
+                            {
+                                PageNumber = page ?? 0,
+                                TotalPages = Convert.ToInt32(sdr["totalpages"] != DBNull.Value ? sdr["totalpages"] : 0),
+                                TotalRecords = Convert.ToInt32(sdr["totalrecords"] != DBNull.Value ? sdr["totalrecords"] : 0),
+                                PageSize = limit ?? 0
+                            };
+                            firstRow = false; // Optional: ensure pagination is only assigned once
+                        }
+                        }
                     }
+                    using (var closeCmd = new NpgsqlCommand($"close \"{cursorName}\";", con, tran))
+                    {
+                        closeCmd.ExecuteNonQuery();
+                    }
+                    tran.Commit();
                 }
                 return taskList;
             }
@@ -164,23 +186,15 @@ namespace RemoteSensingProject.Models.SubOrdinate
 
         public bool AddOutSourceTask(OutSource_Task task)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("sp_manageOutSourceTask",con);
-            cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@action", "insertOutsource");
-            cmd.Parameters.AddWithValue("@response", task.Reason);
-            cmd.Parameters.AddWithValue("@id", task.id);
-            cmd.Parameters.AddWithValue("@empId", task.EmpId);
+            NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, @v_id, @v_empid, NULL, NULL,@v_response , null::smallint, NULL, NULL, NULL)", con);
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.Parameters.AddWithValue("@v_action", "insertOutsource");
+            cmd.Parameters.AddWithValue("@v_response", task.Reason);
+            cmd.Parameters.AddWithValue("@v_id", task.id);
+            cmd.Parameters.AddWithValue("@v_empId", task.EmpId);
             con.Open();
-            int i=cmd.ExecuteNonQuery();
-            if (i > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            cmd.ExecuteNonQuery();
+            return true;
         }
 
         #endregion Outsource End
@@ -188,7 +202,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
         #region DashboardCount
         public DashboardCount GetDashboardCounts(int userId)
         {
-            
+
             DashboardCount obj = null;
             try
             {
@@ -226,7 +240,69 @@ namespace RemoteSensingProject.Models.SubOrdinate
                         return obj;
                     }
                 }
-               
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error accured", ex);
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        #endregion
+
+        #region Get Meeting 
+        public List<Admin.main.Meeting_Model> getAllSubordinatemeeting(int id, int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null)
+        {
+            try
+            {
+                List<Admin.main.Meeting_Model> _list = new List<Admin.main.Meeting_Model>();
+                Admin.main.Meeting_Model obj = null;
+                con.Open();
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand(@"select * from fn_get_meetings(@p_action,@p_id,@v_limit,@v_page,@v_type,@v_searchTerm,@v_statusFilter);", con))
+                {
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.Parameters.AddWithValue("@p_action", "selectsubordinatemeetings");
+                    cmd.Parameters.AddWithValue("@p_id", id);
+                    cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? (object)limit.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", page.HasValue ? (object)page.Value : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_type", (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_searchTerm", string.IsNullOrEmpty(searchTerm) ? DBNull.Value : (object)searchTerm);
+                    cmd.Parameters.AddWithValue("@v_statusFilter", string.IsNullOrEmpty(statusFilter) ? DBNull.Value : (object)statusFilter);
+                    var sdr = cmd.ExecuteReader();
+                    bool firstRow = true;
+                    while (sdr.Read())
+                    {
+                        obj = new Admin.main.Meeting_Model();
+                        obj.Id = Convert.ToInt32(sdr["id"]);
+                        obj.CompleteStatus = Convert.ToInt32(sdr["completeStatus"]);
+                        obj.MeetingType = sdr["meetingType"].ToString();
+                        obj.MeetingLink = sdr["meetingLink"].ToString();
+                        obj.MeetingTitle = sdr["MeetingTitle"].ToString();
+                        obj.AppStatus = sdr["appStatus"] != DBNull.Value ? (int)sdr["appStatus"] : 0;
+                        obj.memberId = sdr["memberId"] != DBNull.Value ? sdr["memberId"].ToString().Split(',').ToList() : new List<string>();
+                        obj.CreaterId = sdr["createrId"] != DBNull.Value ? Convert.ToInt32(sdr["createrId"]) : 0;
+                        obj.MeetingDate = Convert.ToDateTime(sdr["meetingTime"]).ToString("dd-MM-yyyy hh:mm tt");
+                        obj.createdBy = sdr["createdBy"].ToString();
+                        _list.Add(obj);
+
+                        if (firstRow)
+                        {
+                            obj.Pagination = new ApiCommon.PaginationInfo
+                            {
+                                PageNumber = page ?? 0,
+                                TotalPages = Convert.ToInt32(sdr["totalpages"] != DBNull.Value ? sdr["totalpages"] : 0),
+                                TotalRecords = Convert.ToInt32(sdr["totalrecords"] != DBNull.Value ? sdr["totalrecords"] : 0),
+                                PageSize = limit ?? 0
+                            };
+                            firstRow = false; // Optional: ensure pagination is only assigned once
+                        }
+                    }
+                }
+                return _list;
             }
             catch (Exception ex)
             {

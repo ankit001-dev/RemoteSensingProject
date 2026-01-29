@@ -27,9 +27,16 @@
     <link rel="shortcut icon" href="../images/favicon.png" />
     <link href="~/assets/datatable/datatables.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/assets/Summernotes/summernote.min.css">
-    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/assets/vendors/core/core.js"></script>
 
+   
+
+    @Scripts.Render("~/bundles/jqueryval")
     <style>
+        * {
+            user-select: none !important;
+        }
+
         .form-control {
             padding: 5px 15px !important;
         }
@@ -90,24 +97,60 @@
         #summernote {
             z-index: 10000;
         }
+
+
+        /*Loader Style*/
+        #loaderOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.7);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Glowing Circular Loader */
+        .custom-loader {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 6px solid transparent;
+            border-top: 6px solid rgba(0, 255, 180, 0.7);
+            border-right: 6px solid rgba(0, 255, 180, 0.7);
+            animation: spin 1s linear infinite, glow 1.5s ease-in-out infinite alternate;
+            box-shadow: 0 0 15px rgba(0,255,180,0.6);
+        }
+
+        @@keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes glow {
+            0% {
+                box-shadow: 0 0 5px rgba(0,255,180,0.3);
+            }
+
+            100% {
+                box-shadow: 0 0 25px rgba(0,255,180,0.9);
+            }
+        }
     </style>
 </head>
 <body>
-    @*<div id="loader" class="d-flex justify-content-center align-items-center position-fixed top-0 start-0 w-100 h-100 bg-light bg-opacity-75" style="z-index: 9999; display: none;">
-            <div class="spinner-border spinner-border-l text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>*@
 
     <div class="main-wrapper">
 
         <nav class="sidebar">
             <div class="sidebar-header">
                 <a href="https://rsac.up.gov.in/" class="sidebar-brand" target="_blank">
-                    @*<img src="~/assets/images/macreel.png" alt="logo" class="w-75">*@
                     <img src="~/assets/images/remote_sensing_logo.jfif" height="50">
                     <span style="font-size:14px">Remote Sensing</span>
-                    @*<img src="https://rsac.up.gov.in/images/logo.png" class="w-100 h-50">*@
 
                 </a>
                 <div class="sidebar-toggler not-active">
@@ -207,15 +250,6 @@
                         </div>
                     </li>
 
-
-                    @*<li class="nav-item">
-                            <a href="/Admin/SubOrdinateProblemList" class="nav-link">
-                                <i class="link-icon" data-feather="pocket"></i>
-                                <span class="link-title">Project Problem</span>
-                            </a>
-                        </li>*@
-
-
                     <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#events" role="button" aria-expanded="false" aria-controls="events">
                             <i class="link-icon" data-feather="columns"></i>
@@ -278,107 +312,14 @@
                             </ul>
                         </div>
                     </li>
-                    @*<li class="nav-item">
-                            <a href="about-sec.html" class="nav-link">
-                                <i class="link-icon" data-feather="file"></i>
-                                <span class="link-title">About Section</span>
-                            </a>
-                        </li>*@
-                    @*<li class="nav-item">
-                            <a href="title-section.html" class="nav-link">
-                                <i class="link-icon" data-feather="type"></i>
-                                <span class="link-title">Content Management</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="services-list.html" class="nav-link">
-                                <i class="link-icon" data-feather="columns"></i>
-                                <span class="link-title">Sevices Section</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="gallery.html" class="nav-link">
-                                <i class="link-icon" data-feather="image"></i>
-                                <span class="link-title">Gallery Section</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#events" role="button" aria-expanded="false" aria-controls="events">
-                                <i class="link-icon" data-feather="user"></i>
-                                <span class="link-title">Package Management</span>
-                                <i class="link-arrow" data-feather="chevron-down"></i>
-                            </a>
-                            <div class="collapse" id="events">
-                                <ul class="nav sub-menu">
-                                    <li class="nav-item">
-                                        <a href="events.html" class="nav-link">All Package Lists</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="addevents.html" class="nav-link">Add Package</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a href="testimonial.html" class="nav-link">
-                                <i class="link-icon" data-feather="pocket"></i>
-                                <span class="link-title">Testimonial Section</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="appointment.html" class="nav-link">
-                                <i class="link-icon" data-feather="table"></i>
-                                <span class="link-title">Booking Section</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coupon.html" class="nav-link">
-                                <i class="link-icon" data-feather="gift"></i>
-                                <span class="link-title">Coupons</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#users" role="button" aria-expanded="false" aria-controls="users">
-                                <i class="link-icon" data-feather="user"></i>
-                                <span class="link-title">User Management</span>
-                                <i class="link-arrow" data-feather="chevron-down"></i>
-                            </a>
-                            <div class="collapse" id="users">
-                                <ul class="nav sub-menu">
-                                    <li class="nav-item">
-                                        <a href="user-manage.html" class="nav-link">All User Lists</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="adduser.html" class="nav-link">Add User</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="collapse" href="#setting" role="button" aria-expanded="false" aria-controls="setting">
-                                <i class="link-icon" data-feather="settings"></i>
-                                <span class="link-title">Settings</span>
-                                <i class="link-arrow" data-feather="chevron-down"></i>
-                            </a>
-                            <div class="collapse" id="setting">
-                                <ul class="nav sub-menu">
-                                    <li class="nav-item">
-                                        <a href="company-profile.html" class="nav-link">Company Profile</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="role-manange-list.html" class="nav-link">Role Management</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="configuration.html" class="nav-link">Configuration</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>*@
                 </ul>
             </div>
         </nav>
 
         <div class="page-wrapper">
+            <div id="loaderOverlay" style="display:none;">
+                <div class="custom-loader"></div>
+            </div>
 
             <nav class="navbar">
                 <a href="#" class="sidebar-toggler">
@@ -404,24 +345,6 @@
                                     </div>
                                 </div>
                                 <ul class="list-unstyled p-1">
-                                    @*<li class="dropdown-item py-2">
-                                            <a href="/Employee/MyProfile" class="text-body ms-0">
-                                                <i class="me-2 icon-md" data-feather="user"></i>
-                                                <span>Profile</span>
-                                            </a>
-                                        </li>
-                                        <li class="dropdown-item py-2">
-                                            <a class="text-body ms-0">
-                                                <i class="me-2 icon-md" data-feather="edit"></i>
-                                                <span>Edit Profile</span>
-                                            </a>
-                                        </li>*@
-                                    @*<li class="dropdown-item py-2">
-                                            <a class="text-body ms-0">
-                                                <i class="me-2 icon-md" data-feather="repeat"></i>
-                                                <span>Switch User</span>
-                                            </a>
-                                        </li>*@
                                     <li class="dropdown-item py-2">
                                         <a class="text-body ms-0" href="/login/Logout">
                                             <i class="me-2 icon-md" data-feather="log-out"></i>
@@ -448,7 +371,7 @@
 
         </div>
     </div>
-    <script src="~/assets/vendors/core/core.js"></script>
+    
 
     <script src="~/assets/vendors/chartjs/Chart.min.js"></script>
     <script src="~/assets/vendors/jquery.flot/jquery.flot.js"></script>
@@ -462,7 +385,6 @@
     <script src="~/assets/Summernotes/summernote.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js"></script>
-    @*<script src="~/assets/js/dashboard-light.js"></script>*@
 
     <script src="~/assets/js/datepicker.js"></script>
     <script src="~/assets/datatable/datatables.min.js"></script>
@@ -482,10 +404,8 @@
 
     <script>
         $(document).ready(function () {
-            // Show the loader when the page is still loading
             $('#loader').fadeIn();
 
-            // Hide the loader once the page is fully loaded
             $(window).on('load', function () {
                 $('#loader').fadeOut();
             });
@@ -535,6 +455,37 @@
         });
     </script>
 
+    <script>
+        function showLoader() {
+            $("#loaderOverlay").show();
+        }
+
+        function hideLoader() {
+            $("#loaderOverlay").hide();
+        }
+
+        // Loader only for AJAX requests
+        $(document).ajaxStart(function () {
+            showLoader();
+        });
+
+        $(document).ajaxStop(function () {
+            hideLoader();
+        });
+
+        // Optional: show loader on form submit
+        //$("form").on("submit", function () {
+        //    showLoader();
+        //});
+
+        // Remove loader on page ready
+        $(document).ready(function () {
+            hideLoader();
+        });
+    </script>
+
+
+
 
     <script>(function () { if (!document.body) return; var js = "window['__CF$cv$params']={r:'883a8eae8a7f44a7',t:'MTcxNTY4NjIzOS4zNTkwMDA='};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='../../../cdn-cgi/challenge-platform/h/g/scripts/jsd/1b3559406bc8/main.js',document.getElementsByTagName('head')[0].appendChild(_cpo);"; var _0xh = document.createElement('iframe'); _0xh.height = 1; _0xh.width = 1; _0xh.style.position = 'absolute'; _0xh.style.top = 0; _0xh.style.left = 0; _0xh.style.border = 'none'; _0xh.style.visibility = 'hidden'; document.body.appendChild(_0xh); function handler() { var _0xi = _0xh.contentDocument || _0xh.contentWindow.document; if (_0xi) { var _0xj = _0xi.createElement('script'); _0xj.innerHTML = js; _0xi.getElementsByTagName('head')[0].appendChild(_0xj); } } if (document.readyState !== 'loading') { handler(); } else if (window.addEventListener) { document.addEventListener('DOMContentLoaded', handler); } else { var prev = document.onreadystatechange || function () { }; document.onreadystatechange = function (e) { prev(e); if (document.readyState !== 'loading') { document.onreadystatechange = prev; handler(); } }; } })();</script>
     <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vedd3670a3b1c4e178fdfb0cc912d969e1713874337387" integrity="sha512-EzCudv2gYygrCcVhu65FkAxclf3mYM6BCwiGUm6BEuLzSb5ulVhgokzCZED7yMIkzYVg65mxfIBNdNra5ZFNyQ==" data-cf-beacon='{"rayId":"883a8eae8a7f44a7","version":"2024.4.1","r":1,"token":"e2e296138d64407b8469055f5cbf0b42","b":1}' crossorigin="anonymous"></script>
@@ -560,6 +511,4 @@
         })
     </script>
 </body>
-
-<!-- Mirrored from htmldesigntemplates.com/html/travelin/dashboard// by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 14 May 2024 11:34:40 GMT -->
 </html> 

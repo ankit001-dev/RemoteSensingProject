@@ -259,11 +259,10 @@
             })
             let id = $(this).parent().data("id");
             $.ajax({
-                url: '/api/getRaisedProblemById',
+                url: '/employee/GetRaiseProblemById',
                 type: 'get',
                 data: { id: id },
                 success: function (res) {
-                    console.log(res.data[0])
                     $("#projectName1").val(res.data[0].projectname);
                     $("#title1").val(res.data[0].title);
                     $("#description1").text(res.data[0].description);
