@@ -2,6 +2,23 @@
 @{
     ViewBag.Title = "Add_Project";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+
+
+    var budgetHeads = ViewData["BudgetHeads"] as List<RemoteSensingProject.Models.Admin.main.BudgetHeadModel>;
+    string budgetOptions = "<option value=''>-- Select Budget Head --</option>";
+
+    if (budgetHeads != null)
+    {
+        foreach (var h in budgetHeads)
+        {
+            budgetOptions += $"<option value='{h.Id}'>{h.BudgetHead}</option>";
+        }
+    }
+
+    var designations = ViewData["Designations"]
+      as List<RemoteSensingProject.Models.Admin.main.CommonResponse>
+      ?? new List<RemoteSensingProject.Models.Admin.main.CommonResponse>();
+
 }
 
 
@@ -10,141 +27,185 @@
         color: #444;
         line-height: 13px;
     }
+
     .select2-selection {
         height: 34px !important;
         border-radius: 10px !important;
     }
-    .select2-selection__rendered{
-        line-height:17px !important;
+
+    .select2-selection__rendered {
+        line-height: 17px !important;
     }
-    .select2-selection__arrow{
-        height:32px !important;
+
+    .select2-selection__arrow {
+        height: 32px !important;
     }
 </style>
-    <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item active" aria-current="page">Add Project</li>
-        </ol>
-        <a href="/admin/Project_List" class="btn btn-primary"><i class="link-icon" data-feather="arrow-left"></i> Back To List</a>
-    </nav>
-    <div class="row mx-0">
-        <div class="col-md-12 grid-margin stretch-card">
-            <div class="card">
-                <div class="card-body">
-                    <form class="forms-sample" id="createProjectForm" >
-                        <div class="row">
-                            <div class="col-lg-4 mb-3">
-                                <label for="upload" class="form-label">Title</label>
-                                <input type="text" name="pm.pm.ProjectTitle" required class="form-control form-control-sm" id="daynight" placeholder="Enter Project Title">
-                            </div>
-                            <div class="col-lg-4 mb-3">
-                                <label for="title" class="form-label">Assign Date</label>
-                                <div class="input-group date datepicker datePickerExample">
-                                    <input type="text" required class="form-control form-control-sm" name="pm.pm.AssignDate">
-                                    <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 mb-3">
-                                <label for="subtitle" class="form-label">Start Date</label>
-                                <div class="input-group date datepicker datePickerExample">
-                                    <input type="text" required class="form-control form-control-sm" name="pm.pm.StartDate">
-                                    <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
-                                </div>
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Add Project</li>
+    </ol>
+    <a href="/admin/Project_List" class="btn btn-primary"><i class="link-icon" data-feather="arrow-left"></i> Back To List</a>
+</nav>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <form class="forms-sample" id="createProjectForm">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="upload" class="form-label">Title</label>
+                            <input type="text" name="pm.pm.ProjectTitle" required class="form-control form-control-sm" id="daynight" placeholder="Enter Project Title">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="title" class="form-label">Assign Date</label>
+                            <div class="input-group date datepicker datePickerExample">
+                                <input type="text" required class="form-control form-control-sm" id="assignDate" name="pm.pm.AssignDate">
+                                <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-4 mb-3">
-                                <label for="title" class="form-label">Completion Date</label>
-                                <div class="input-group date datepicker datePickerExample">
-                                    <input type="text" required class="form-control form-control-sm" name="pm.pm.CompletionDate">
-                                    <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mb-3">
-                                <label for="title" class="form-label mb-1">Project Manager</label>
-                                <select class="form-select form-select-sm" required name="pm.pm.ProjectManager">
-                                    <option value="">Select an Option</option>
-                                    @foreach (var item in ViewBag.projectManager as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
-                                    {
-                                        <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="col-lg-4 mb-3">
-                                <label for="title" class="form-label mb-1">Sub-Ordinate</label>
-                                <select class="form-select form-select-sm" required name="pm.pm.SubOrdinate" multiple>
-                                    <option value="">Select an Option</option>
-                                    @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
-                                    {
-                                        <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
-                                    }
-                                </select>
-                            </div>
-
-                            <div class="col-lg-4 mb-3">
-                                <label for="letterNumber" class="form-label">Letter Number</label>
-                                <div class="input-group">
-                                    <input type="text" required class="form-control form-control-sm" name="pm.pm.letterNo" id="letterNumber" placeholder="Enter Letter Number">
-                                </div>
-                            </div>
-
-                            <div class="col-lg-4 mb-3">
-                                <div class="d-flex justify-content-between">
-                                    <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="0"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" required name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
-                                <span id="budgetValidate" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-lg-4 mb-3">
-                                <label for="title" class="form-label">Project Document</label>
-                                <input type="file" class="form-control form-control-sm" required name="" id="projectDocumentFile">
+                        <div class="col-lg-4 mb-3">
+                            <label for="subtitle" class="form-label">Start Date</label>
+                            <div class="input-group date datepicker datePickerExample">
+                                <input type="text" required class="form-control form-control-sm" id="startDate" name="pm.pm.StartDate">
+                                <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                             </div>
                         </div>
-                        <div class="row">
-                            
-                            <div class="col-lg-4 mb-3">
-                                <label for="title" class="form-label">Project Type</label>
-                                <br />
-                                <label for="projectType" class="form-label">
-                                    <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="Internal" checked /><span>Internal</span>
-                                </label>
-                                <label for="stage" class="form-label ms-2">
-                                    <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="External" /> <span>External</span>
-                                </label>
-                            </div>
-
-
-                            <div class="col-lg-4 mb-3">
-                                <label for="title" class="form-label w-100">Stage</label>
-                                <label for="stage" class="form-label">
-                                    <input type="radio" name="pm.pm.ProjectStage" required class="form-check-input" value="true" /> <span>Yes</span>
-                                </label>
-                                <label for="stage" class="form-label ms-2">
-                                    <input type="radio" name="pm.pm.ProjectStage" required class="form-check-input" value="false" checked /><span>No</span>
-                                </label>
-
-
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="title" class="form-label">Completion Date</label>
+                            <div class="input-group date datepicker datePickerExample">
+                                <input type="text" required class="form-control form-control-sm" id="completeDate" name="pm.pm.CompletionDate">
+                                <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
                             </div>
                         </div>
-                        <div id="budgetContainerBox" style="display:none;">
+
+                        <div class="col-lg-4 mb-3">
+                            <label for="title" class="form-label mb-1">Project Manager</label>
+                            <select class="form-select form-select-sm" required name="pm.pm.ProjectManager">
+                                <option value="">Select an Option</option>
+                                @foreach (var item in ViewBag.projectManager as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                {
+                                    <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="title" class="form-label mb-1">Sub-Ordinate</label>
+                            <select class="form-select form-select-sm" required name="pm.pm.SubOrdinate" multiple>
+                                <option value="">Select an Option</option>
+                                @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                {
+                                    <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <label for="letterNumber" class="form-label">Letter Number</label>
+                            <div class="input-group">
+                                <input type="text" required class="form-control form-control-sm" name="pm.pm.letterNo" id="letterNumber" placeholder="Enter Letter Number">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <div class="d-flex justify-content-between">
+                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
+                            </div>
+                            <input type="text" class="form-control form-control-sm" required name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget">
+                            <span id="budgetValidate" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <label for="title" class="form-label">Project Document</label>
+                            <input type="file" class="form-control form-control-sm" name="" id="projectDocumentFile">
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+
+                        <div class="col-lg-4 mb-3">
+                            <div class="d-flex justify-content-between">
+                                <label for="humanResourcesCount" class="form-label">Human Resources</label>
+                                <label class="form-label" id="addHRItem" data-count="1">
+                                    <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Designations</a>
+                                </label>
+                            </div>
+                            <input type="number" class="form-control form-control-sm"
+                                   name="humanResourcesCount" id="humanResourcesCount"
+                                   placeholder="Enter total HR count" required min="0">
+                        </div>
+
+
+                        <div class="col-lg-12 mb-3" id="humanResourcesContainer" style="display:none;">
                             <fieldset>
-                                <legend style="font-size:15px;"> <label class="form-label my-2 fw-bolder"><a href="#">Project Budget Detail</a></label></legend>
+                                <legend style="font-size:15px;">
+                                    Human Resources Details
+                                </legend>
+                                <div id="hrRows"></div>
+                            </fieldset>
+                        </div>
+
+                        <div class="col-lg-4 mb-3">
+                            <label for="title" class="form-label">Project Type</label>
+                            <br />
+                            <label for="projectType" class="form-label">
+                                <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="Internal" checked /><span>Internal (Non Salary Head from Government of U.P.)</span>
+                            </label>
+                            <label for="stage" class="form-label ms-2">
+                                <input type="radio" name="pm.pm.ProjectType" required class="form-check-input" value="External" /> <span>Externally Funded Project</span>
+                            </label>
+                        </div>
 
 
-                                <div class="row budgetList">
-                                    <div class="col-lg-5 mb-3">
-                                        <label for="title" class="form-label">Heads</label>
-                                        <input type="text"  class="form-control form-control-sm"  name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point">
-                                    </div>
-                                    <div class="col-lg-5 mb-3">
-                                        <label for="title" class="form-label">Amount</label>
-                                        <input type="number" class="form-control form-control-s amnt" name="pm.budgets[0].ProjectAmount" placeholder="Enter amount...">
-                                        <span id="_person" class="ms-2 text-danger"></span>
-                                    </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="title" class="form-label w-100">Stage</label>
+                            <label for="stage" class="form-label">
+                                <input type="radio" name="pm.pm.ProjectStage" required class="form-check-input" value="true" /> <span>Yes</span>
+                            </label>
+                            <label for="stage" class="form-label ms-2">
+                                <input type="radio" name="pm.pm.ProjectStage" required class="form-check-input" value="false" checked /><span>No</span>
+                            </label>
+
+
+                        </div>
+                    </div>
+                    <div id="budgetContainerBox" style="display:none;">
+                        <fieldset>
+                            <legend style="font-size:15px;"> <label class="form-label my-2 fw-bolder"><a href="#">Project Budget Detail</a></label></legend>
+
+
+                            <div class="row budgetList">
+
+                                <!--<div class="col-lg-5 mb-3">
+                                <label for="title" class="form-label">Heads</label>-->
+                                @*<input type="text" class="form-control form-control-sm" name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point">*@
+                                <!--<select class="form-select form-select-sm"
+                                            name="pm.budgets[0].ProjectHeads">
+                                        <option value="">-- Select Budget Head --</option>
+
+                                    </select>
+
+                                </div>-->
+                                <div class="col-lg-5 mb-3">
+                                    <label class="form-label">Heads</label>
+                                    <select class="form-select form-select-sm no-select2 budgetHeadSelect"
+                                            name="pm.budgets[0].HeadId">
+                                        @Html.Raw(budgetOptions)
+                                    </select>
+
                                 </div>
-                                <div class="row" id="miscList">
+
+                                <div class="col-lg-5 mb-3">
+                                    <label for="title" class="form-label">Amount</label>
+                                    <input type="number" class="form-control form-control-s amnt" name="pm.budgets[0].ProjectAmount" placeholder="Enter amount...">
+                                    <span id="_person" class="ms-2 text-danger"></span>
+                                </div>
+                            </div>
+
+                            @*<div class="row" id="miscList">
                                     <div class="col-lg-5 mb-3">
                                         <label for="title" class="form-label">
                                             Miscellaneous
@@ -155,65 +216,309 @@
                                         <label for="misAmount" class="form-label">Amount</label>
                                         <input type="number" readonly class="form-control form-control-sm" id="misAmount" name="pm.budgets[1].ProjectAmount" placeholder="Enter amount">
                                     </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                        <div id="projectTypeDetailContainer" style="display:none;">
-                            <fieldset>
-                                <legend style="font-size:15px;">  <label class="form-label my-2 fw-bolder"><a href="#">External Project Detail</a></label></legend>
+                                </div>*@
 
-                               
-                                <div class="row stageListItem">
-                                    <div class="col-lg-4 mb-3">
-                                        <label for="title" class="form-label">Department Name</label>
-                                        <input type="text" class="form-control form-control-sm" id="venue" placeholder="Enter Key Point">
-                                    </div>
-                                    <div class="col-lg-4 mb-3">
-                                        <label for="title" class="form-label">Contact Person</label>
-                                        <input type="text" class="form-control form-control-sm" id="person" placeholder="Enter Contact Person Name">
-                                    </div>
-                                    <div class="col-lg-4 mb-3">
-                                        <label for="title" class="form-label">Address</label>
-                                        <input type="text" class="form-control form-control-sm" id="person" placeholder="Enter address">
-                                    </div>
+                        </fieldset>
+                    </div>
+                    <div id="projectTypeDetailContainer" style="display:none;">
+                        <fieldset>
+                            <legend style="font-size:15px;">  <label class="form-label my-2 fw-bolder"><a href="#">External Project Detail</a></label></legend>
 
+
+                            <div class="row stageListItem">
+                                <div class="col-lg-4 mb-3">
+                                    <label for="title" class="form-label">Department Name</label>
+                                    <input type="text" class="form-control form-control-sm" id="venue" placeholder="Enter Key Point">
                                 </div>
-                                </fieldset>
-                        </div>
-                        <div id="stageItemContainer" style="display:none;">
-                            <fieldset>
-                                <legend style="font-size:15px;">
-                                    <div class="d-flex justify-content-between">
-                                        <label class="form-label my-2 fw-bolder"><a href="#">Project Stage Detail</a></label>
-                                        <label class="form-label" id="addStageIcon" data-count="0 "> <a href="#"><i class="link-icon" data-feather="plus"></i> Add Stage</a> <sup style="font-size:10px; color:red;">(* Max 10 stage allowed)</sup></label>
-                                    </div>
-                                </legend>
-                                
-                                </fieldset>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12 mb-3">
-                                <label for="description" class="form-label"> Description</label>
+                                <div class="col-lg-4 mb-3">
+                                    <label for="title" class="form-label">Contact Person</label>
+                                    <input type="text" class="form-control form-control-sm" id="person" placeholder="Enter Contact Person Name">
+                                </div>
+                                <div class="col-lg-4 mb-3">
+                                    <label for="title" class="form-label">Address</label>
+                                    <input type="text" class="form-control form-control-sm" id="person" placeholder="Enter address">
+                                </div>
+
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div id="stageItemContainer" style="display:none;">
+                        <fieldset>
+                            <legend style="font-size:15px;">
+                                <div class="d-flex justify-content-between">
+                                    <label class="form-label my-2 fw-bolder"><a href="#">Project Stage Detail</a></label>
+                                    <label class="form-label" id="addStageIcon" data-count="0 "> <a href="#"><i class="link-icon" data-feather="plus"></i> Add Stage</a> <sup style="font-size:10px; color:red;">(* Max 10 stage allowed)</sup></label>
+                                </div>
+                            </legend>
+
+                        </fieldset>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 mb-3">
+                            <label for="description" class="form-label"> Description</label>
 <textarea class="form-control form-control-sm" name="pm.pm.ProjectDescription" id="tinymceExample" rows="10" placeholder="Project Description"></textarea>
-                            </div>
-                            <div class="text-center">
-                                <button type="submit" id="addbtn" class="btn btn-primary">Submit</button>
-                            </div>
                         </div>
-                    </form>
-                </div>
+                        <div class="text-center">
+                            <button type="submit" id="addbtn" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="~/Scripts/jquery-3.7.1.js"></script>
-    <script>
-    $(document).ready(function(){
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- jQuery Validation -->
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+
+ @*Optional (additional rules like accept, filesize etc.)*@ 
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
+
+
+<script>
+    var budgetOptions = `@Html.Raw(budgetOptions)`;
+</script>
+
+<script>
+    const designations = @Html.Raw(
+        System.Text.Json.JsonSerializer.Serialize(
+            designations.Select(d => new {
+                id = d.id,        // ⚠️ property name match karo
+                name = d.name
+            })
+        )
+    );
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+
+
+        // HR Count input validation
+        $("#humanResourcesCount").on("input", function () {
+            const hrCount = parseInt($(this).val()) || 0;
+            updateHRDisplay(hrCount);
+            updateOtherCount();
+        });
+
+        // Add Designation button click
+        $("#addHRItem").click(function (e) {
+            e.preventDefault();
+            addHRRow();
+        });
+
+        // Add new HR row function
+        function addHRRow() {
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+
+            if (isNaN(totalHR) || totalHR <= 0) {
+                Swal.fire("Warning!", "Please enter a valid Human Resources count first.", "warning");
+                return;
+            }
+
+            // Show HR container if hidden
+            $("#humanResourcesContainer").show();
+
+            // Check if it's the first row
+            let count = $("#hrRows .hrRow").length;
+
+            if (count === 0) {
+                // First click: create default 2 rows
+                let row1 = generateHRRow(false);
+                let row2 = generateHRRow(true, totalHR);
+                $("#hrRows").append(row1 + row2);
+            } else {
+                // Add new designation row
+                let newRow = generateHRRow(false);
+                $("#hrRows").append(newRow);
+            }
+
+            // Update other count
+            updateOtherCount();
+        }
+
+        // Generate HR row HTML
+        function generateHRRow(isOther = false, value = 0) {
+            if (isOther) {
+                return `
+                <div class="row hrRow mb-2 align-items-center">
+                    <div class="col-lg-6">
+                        <input type="text" class="form-control form-control-sm hr-other" value="Other" readonly>
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="number" class="form-control form-control-sm hr-count" value="${value}" readonly>
+                    </div>
+                    <div class="col-lg-2"></div>
+                </div>`;
+            } else {
+                return `
+                <div class="row hrRow mb-2 align-items-center">
+                    <div class="col-lg-6">
+                     <select class="form-control form-control-sm hr-designation-select">
+                         <option value="">Select Designation</option>
+                          ${designations.map(d =>
+                    `<option value="${d.id}">${d.name}</option>`
+                ).join('')}
+                   </select>
+
+                    </div>
+                    <div class="col-lg-4">
+                        <input type="number" class="form-control form-control-sm hr-count" placeholder="Count" min="0">
+                    </div>
+                    <div class="col-lg-2 text-center">
+                        <a href="#" class="deleteHRRow"><i class="fa-solid fa-trash text-danger fs-4"></i></a>
+                    </div>
+                </div>`;
+            }
+        }
+
+        // Delete HR row
+        $("#humanResourcesContainer").on("click", ".deleteHRRow", function (e) {
+            e.preventDefault();
+            $(this).closest(".hrRow").remove();
+            updateOtherCount();
+
+            // Hide container if no rows left
+            if ($("#hrRows .hrRow").length === 0) {
+                $("#humanResourcesContainer").hide();
+            }
+        });
+
+        // HR count input validation
+        $(document).on("input", ".hr-count", function () {
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+            let sum = 0;
+
+            // Sum of all designation counts except Other
+            $("#hrRows .hrRow").each(function () {
+                if (!$(this).find(".hr-other").length) {
+                    let val = parseInt($(this).find(".hr-count").val()) || 0;
+                    sum += val;
+                }
+            });
+
+            if (sum > totalHR) {
+                Swal.fire("Warning!", "Total count cannot exceed Human Resources count.", "warning");
+                $(this).val(0);
+                sum = 0;
+
+                // Recalculate sum after reset
+                $("#hrRows .hrRow").each(function () {
+                    if (!$(this).find(".hr-other").length) {
+                        let val = parseInt($(this).find(".hr-count").val()) || 0;
+                        sum += val;
+                    }
+                });
+            }
+
+            updateOtherCount();
+        });
+
+        // Update Other count
+        function updateOtherCount() {
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+            let sum = 0;
+
+            // Calculate sum of all designation counts
+            $("#hrRows .hrRow").each(function () {
+                if (!$(this).find(".hr-other").length) {
+                    let val = parseInt($(this).find(".hr-count").val()) || 0;
+                    sum += val;
+                }
+            });
+
+            let remaining = totalHR - sum;
+            if (remaining < 0) remaining = 0;
+
+            // Update Other row value
+            $("#hrRows .hrRow").each(function () {
+                let otherInput = $(this).find(".hr-other");
+                if (otherInput.length) {
+                    $(this).find(".hr-count").val(remaining);
+                }
+            });
+        }
+
+        // Update HR display based on count
+        function updateHRDisplay(hrCount) {
+            if (hrCount > 0) {
+                $("#humanResourcesContainer").show();
+
+                // Check if we need to add initial rows
+                if ($("#hrRows .hrRow").length === 0) {
+                    $("#addHRItem").click();
+                } else {
+                    updateOtherCount();
+                }
+            } else {
+                // Clear all HR rows if count is 0
+                $("#hrRows").empty();
+                $("#humanResourcesContainer").hide();
+            }
+        }
+
+        // Form submission - Collect HR data
+        $("#createProjectForm").on("submit", function (e) {
+            e.preventDefault();
+
+            let hrData = [];
+            let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
+            let sum = 0;
+
+            // Collect HR details
+            $("#hrRows .hrRow").each(function () {
+                const designationSelect = $(this).find(".hr-designation-select");
+                const otherInput = $(this).find(".hr-other");
+                const countInput = $(this).find(".hr-count");
+
+                let designation = "";
+                let count = parseInt(countInput.val()) || 0;
+
+                if (designationSelect.length && designationSelect.val()) {
+                    designation = designationSelect.find("option:selected").text();
+                } else if (otherInput.length) {
+                    designation = otherInput.val();
+                }
+
+                if (designation && count > 0) {
+                    hrData.push({
+                        designation: designation,
+                        count: count
+                    });
+                    sum += count;
+                }
+            });
+
+            // Validate total count
+            if (sum !== totalHR) {
+                Swal.fire("Error!", `Total HR count (${sum}) must match Human Resources count (${totalHR}).`, "error");
+                return false;
+            }
+
+            // Continue with form submission
+            console.log("HR Data:", hrData);
+            // Add your form submission logic here
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
         $("select").select2({
             placeholder: "Select an option",
         });
 
-    })
+
+        // Disable Select2 only on this select
+        $("select.no-select2").select2('destroy');
+
+    });
     $(document).ready(function () {
 
         $("input[name='pm.pm.ProjectStage']").click(function () {
@@ -276,62 +581,109 @@
                 $("#projectTypeDetailContainer").hide();
             }
         });
-        //managing budget section
-        $("#addBudgetItem").click(function () {
-            let budgetAmt = parseInt($("#budgetAmount").val())
-            let ammt = parseInt($('#budgetContainerBox').find('.amnt').val())
-            if ($("#budgetContainerBox").find('.amnt').empty()) {
-                $("#misAmount").val(budgetAmt)
-            }
-            else {
-                $('#misAmount').val(budgetAmt - parseInt($('#budgetContainerBox').find('.amnt').val()));
-            }
-            if (budgetAmt != null && budgetAmt > 0) {
-                let count = parseInt($(this).attr("data-count"));
-                $("#budgetContainerBox").show();
-                if (count > 0) {
-                    let ele = `<div class="row budgetList">
-    <div class="col-lg-5 mb-3">
-        <label for="title" class="form-label">Heads</label>
-        <input type="text" class="form-control form-control-sm" name="pm.budgets[${count + 1}].ProjectHeads" id="venue" placeholder="Enter Key Point">
-    </div>
-    <div class="col-lg-5 mb-3">
-        <label for="title" class="form-label">Amount</label>
-        <input type="number" class="form-control form-control-sm amnt"  name="pm.budgets[${count + 1}].ProjectAmount" placeholder="Enter amount">
-    </div>
-    <div class="col-lg-2 text-center mb-3" style="line-height:6;">
-        <a href="#" class="deleteCurrntRow">
-            <i class="fa-solid fa-trash text-danger fs-4" style="cursor: pointer;"></i>
-        </a>
-    </div>
 
-</div>`;
-                    $("#miscList").before(ele);
-                }
-                count++;
-                $(this).attr("data-count", count)
-            }
-            else {
-                Swal.fire("Sorry !", "Budget amount is invalid", "warning")
-            }
-        })
-        $("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
-            e.preventDefault();
-            let i = $("#budgetContainerBox #addBudgetItem").attr("data-count");
-            if (i > 0)
-                i--;
-            $("#budgetContainerBox #addBudgetItem").attr("data-count", i);
-            $(this).closest(".row.budgetList").remove();
-        })
     });
 
-       
 
-    </script>
-<script>
     $(document).ready(function () {
-        $("#budgetAmount").on("keyup", function(){
-            $("#misAmount").val($(this).val())
+
+        // 🔹 Add Budget Head
+        $("#addBudgetItem").on("click", function (e) {
+            e.preventDefault();
+
+            let budgetAmt = parseFloat($("#budgetAmount").val());
+            if (isNaN(budgetAmt) || budgetAmt <= 0) {
+                Swal.fire("Warning!", "Please enter Project Budget first", "warning");
+                return;
+            }
+
+            $("#budgetContainerBox").show();
+
+            /* let count = parseInt($(this).attr("data-count")) || 0;*/
+
+            let count = $(".budgetList").length;
+
+            let row = `
+        <div class="row budgetList">
+
+            <div class="col-lg-5 mb-3">
+                <label class="form-label">Heads</label>
+                <select class="form-select form-select-sm"
+                        name="pm.budgets[${count}].HeadId">
+                    ${budgetOptions}
+                </select>
+            </div>
+
+            <div class="col-lg-5 mb-3">
+                <label class="form-label">Amount</label>
+                <input type="number"
+                       class="form-control form-control-sm amnt"
+                       name="pm.budgets[${count}].ProjectAmount"
+                       placeholder="Enter amount...">
+            </div>
+
+            <div class="col-lg-2 text-center mb-3" style="line-height:6;">
+                <a href="#" class="deleteCurrntRow">
+                    <i class="fa-solid fa-trash text-danger fs-4"></i>
+                </a>
+            </div>
+
+        </div>`;
+
+            $("#budgetContainerBox fieldset").append(row);
+
+
+
+            $(this).attr("data-count", count + 1);
+
+            updateMiscAmount();
+            updateBudgetOptions();
+
+        });
+
+        // 🔹 Delete Budget Head
+        $("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
+            e.preventDefault();
+            $(this).closest(".budgetList").remove();
+            updateMiscAmount();
+        });
+
+        // 🔹 Recalculate when amount changes
+        $(document).on("input", "#budgetAmount, .amnt", function () {
+            updateMiscAmount($(this));
+        });
+
+        // 🔹 Calculation logic
+        function updateMiscAmount(changedInput = null) {
+            let budgetAmt = parseFloat($("#budgetAmount").val()) || 0;
+            let totalHeads = 0;
+
+            $(".amnt").each(function () {
+                let val = parseFloat($(this).val());
+                if (!isNaN(val)) totalHeads += val;
+            });
+
+            if (totalHeads > budgetAmt) {
+                Swal.fire("Warning!", "Total of all heads cannot exceed Project Budget!", "error");
+
+                if (changedInput) {
+                    $(changedInput).val('');
+                }
+
+                totalHeads = 0;
+                $(".amnt").each(function () {
+                    let val = parseFloat($(this).val());
+                    if (!isNaN(val)) totalHeads += val;
+                });
+            }
+        }
+
+    });
+
+
+    $(document).ready(function () {
+        $("#budgetAmount").on("keyup", function () {
+            //$("#misAmount").val($(this).val())
         })
         $("#budgetContainerBox").find(".amnt").on("keyup", function () {
             debugger
@@ -339,26 +691,340 @@
             let am = parseInt($(this).val());
             if (am > amm) {
                 $("#_person").text("Amount is not more than Budget Amount");
-                $("#misAmount").val(0);
+                //$("#misAmount").val(0);
             }
             else if (am < amm) {
                 $("#_person").text("");
-                $("#misAmount").val(amm - am);
+                //$("#misAmount").val(amm - am);
             }
-            else if($(this).empty()) {
+            else if ($(this).empty()) {
                 $("#_person").text("");
-                $("#misAmount").val(amm);
+                //$("#misAmount").val(amm);
             }
-            
+
         });
     });
-</script>
 
-<script>
     $(document).ready(function () {
+        // Initialize Select2
+        $("select").select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+
+
+        // Disable Select2 only on this select
+        $("select.no-select2").select2('destroy');
+
+        $('#assignDate, #startDate, #completeDate').on('change blur', function () {
+            $(this).valid();
+        });
+
+        function parseDate(value) {
+            if (!value) return null;
+
+            // dd/MM/yyyy
+            if (value.includes('/')) {
+                const [d, m, y] = value.split('/');
+                return new Date(y, m - 1, d);
+            }
+
+            // yyyy-MM-dd
+            if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                const [y, m, d] = value.split('-');
+                return new Date(y, m - 1, d);
+            }
+
+            // dd-MMMM-yyyy  (16-December-2025)
+            if (/^\d{1,2}-[A-Za-z]+-\d{4}$/.test(value)) {
+                return new Date(value); // browser handles this format correctly
+            }
+
+            return null;
+        }
+
+
+
+        // Initialize jQuery Validation
+        $.validator.setDefaults({
+            highlight: function (element) {
+                $(element)
+                    .addClass('is-invalid')
+                    .removeClass('is-valid');
+            },
+
+            unhighlight: function (element) {
+                $(element)
+                    .removeClass('is-invalid')
+                    .addClass('is-valid');
+            },
+
+            errorElement: 'span',
+            errorClass: 'invalid-feedback',
+
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                }
+                else if (element.is(':checkbox') || element.is(':radio')) {
+                    error.insertAfter(element.closest('.form-check'));
+                }
+                else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+
+
+
+        // Line 512 se 540 tak ka code - sirf yeh 3 methods update karen
+        $.validator.addMethod("dateGreaterThanMultiple", function (value, element, params) {
+            debugger;
+            if (!value) return true;
+
+            const current = parseDate(value);
+            if (!current) return false;
+
+            let isValid = true;
+
+            params.forEach(function (selector) {
+                const compareVal = $(selector).val();
+                if (compareVal) {
+                    const compareDate = parseDate(compareVal);
+                    // CHANGE HERE: <= se < kar diya
+                    if (!compareDate || current < compareDate) {
+                        isValid = false;
+                    }
+                }
+            });
+
+            return isValid;
+        }, "Date must be greater than previous dates");
+
+      
+
+        $.validator.addMethod("dateLessThan", function (value, element, selector) {
+            debugger
+            const compareVal = $(selector).val();
+            if (!value || !compareVal) return true;
+
+            const d1 = parseDate(value);
+            const d2 = parseDate(compareVal);
+            if (!d1 || !d2) return true;
+
+            return d1 <= d2;
+        });
+
+        $.validator.addMethod("dateGreaterThan", function (value, element, selector) {
+            debugger
+            const compareVal = $(selector).val();
+            if (!value || !compareVal) return true;
+
+            const d1 = parseDate(value);
+            const d2 = parseDate(compareVal);
+            if (!d1 || !d2) return true;
+
+            return d1 >= d2;
+        });
+
+
+        // Custom validation method for future date
+        $.validator.addMethod("notPastDate", function (value, element) {
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+            var inputDate = new Date(value);
+
+            return inputDate >= today;
+        }, "Date cannot be in the past");
+
+        // Custom validation method for file size
+        $.validator.addMethod("filesize", function (value, element, param) {
+            var size = element.files[0].size;
+            return size <= param;
+        }, "File size must be less than {0} bytes");
+
+        // Custom validation method for select2 multiple
+        $.validator.addMethod("minimumOne", function (value, element) {
+            return $(element).val() && $(element).val().length > 0;
+        }, "Please select at least one option");
+
+        // Initialize form validation
+        $("#createProjectForm").validate({
+            rules: {
+                "pm.pm.ProjectTitle": {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 200
+                },
+                "pm.pm.AssignDate": {
+                    required: true,
+                    dateLessThan: "#startDate"
+                },
+
+                "pm.pm.StartDate": {
+                    required: true,
+                    dateGreaterThan: "#assignDate",
+                    dateLessThan: "#completeDate"
+                },
+
+                "pm.pm.CompletionDate": {
+                    required: true,
+                    dateGreaterThanMultiple: ["#assignDate", "#startDate"]
+                },
+
+                "pm.pm.ProjectManager": {
+                    required: true
+                },
+                "pm.pm.SubOrdinate": {
+                    required: true,
+                    minimumOne: true
+                },
+                "pm.pm.letterNo": {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 50
+                },
+                "pm.pm.ProjectBudget": {
+                    required: true,
+                    number: true,
+                    min: 1
+                },
+                projectDocument: {
+                    required: true,
+                    accept: "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    filesize: 5242880 // 5MB
+                },
+                "pm.pm.ProjectType": {
+                    required: true
+                },
+                "pm.pm.ProjectStage": {
+                    required: true
+                },
+                "pm.pm.ProjectDescription": {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 5000
+                }
+            },
+            messages: {
+                
+
+                "pm.pm.ProjectTitle": {
+                    required: "Please enter project title",
+                    minlength: "Title must be at least 3 characters long",
+                    maxlength: "Title cannot exceed 200 characters"
+                },
+                "pm.pm.AssignDate": {
+                    required: "Please select assign date",
+                    // CHANGE MESSAGE HERE
+                    dateLessThan: "Assign date must be before Start date (same dates allowed)"
+                },
+                "pm.pm.StartDate": {
+                    required: "Please select start date",
+                    // CHANGE MESSAGE HERE
+                    dateGreaterThan: "Start date must be after Assign date (same dates allowed)",
+                    // CHANGE MESSAGE HERE
+                    dateLessThan: "Start date must be before Completion date (same dates allowed)"
+                },
+                "pm.pm.CompletionDate": {
+                    required: "Please select completion date",
+                    date: "Please enter a valid date",
+                    // CHANGE MESSAGE HERE
+                    dateGreaterThanMultiple: "Completion date must be after or same as Assign Date and Start Date"
+                },
+
+                "pm.pm.ProjectManager": {
+                    required: "Please select a project manager"
+                },
+                "pm.pm.SubOrdinate": {
+                    required: "Please select at least one sub-ordinate"
+                },
+                "pm.pm.letterNo": {
+                    required: "Please enter letter number",
+                    minlength: "Letter number must be at least 2 characters",
+                    maxlength: "Letter number cannot exceed 50 characters"
+                },
+                "pm.pm.ProjectBudget": {
+                    required: "Please enter project budget",
+                    number: "Please enter a valid number",
+                    min: "Budget must be greater than 0"
+                },
+                projectDocument: {
+                    required: "Please upload project document",
+                    accept: "Please upload valid document format (PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX)",
+                    filesize: "File size must be less than 5MB"
+                },
+                "pm.pm.ProjectType": {
+                    required: "Please select project type"
+                },
+                "pm.pm.ProjectStage": {
+                    required: "Please select stage"
+                },
+                "pm.pm.ProjectDescription": {
+                    required: "Please enter project description",
+                    minlength: "Description must be at least 10 characters",
+                    maxlength: "Description cannot exceed 5000 characters"
+                }
+            }
+        });
+
+        // Add validation for Select2 fields
+        $('.select2-validated').on('change', function () {
+            $(this).valid();
+        });
+
+        // Add validation for radio buttons
+        $('input[type="radio"]').on('change', function () {
+            $(this).valid();
+        });
+
+        // Add validation for datepicker fields
+        $('.datepicker-field').on('change', function () {
+            $(this).valid();
+        });
+
+        // Initialize your other existing functionality
+        // (Your existing toggle logic for stages, budget, etc.)
+
+        $("input[name='pm.pm.ProjectStage']").click(function () {
+            if ($(this).val() === "true") {
+                $("#stageItemContainer").show();
+                $("#addStageIcon").show().click();
+            } else {
+                $("#stageItemContainer").hide();
+                $("#addStageIcon").hide();
+                $("#stageItemContainer .stageListItem").remove();
+                $("#addStageIcon").attr("data-count", 1);
+            }
+        });
+
+        $('#assignDate, #startDate, #completeDate').on('change blur', function () {
+            $("#assignDate").valid();
+            $("#startDate").valid();
+            $("#completeDate").valid();
+        });
+
+
+
+        // Add validation for dynamically added budget items
+        $(document).on('input', '.amnt', function () {
+            $(this).valid();
+        });
+
+        // Reset form handler
+        $('button[type="reset"]').click(function () {
+            $("#createProjectForm").validate().resetForm();
+            $('.error').removeClass('error');
+            $('.valid').removeClass('valid');
+            $('.has-error').removeClass('has-error');
+        });
+
         $("#createProjectForm").on("submit", function (e) {
             e.preventDefault();
-
+            if (!$(this).valid()) {
+                return;
+            }
             Swal.fire({
                 title: "Please wait !",
                 text: "Processing your request ....",
@@ -372,21 +1038,31 @@
             let formData = new FormData();
             let arrData = $(this).serializeArray();
 
-            // Loop through the serialized form data and append it to FormData
             arrData.forEach(function (d) {
-                // Check if the key already exists in the formData
-                if (!formData.has(d.name) && d.value.trim() !== "") {
+                if (d.value !== null && d.value !== "") {
                     formData.append(d.name, d.value);
-                } else {
-                    console.log(`Duplicate or empty key skipped: ${d.name}`);
                 }
             });
-            //let arrData = $(this).serializeArray();
 
-            //// Add regular form data to formData object
-            //arrData.forEach(function (d) {
-            //    formData.append(d.name, d.value); 
-            //});
+       
+            let projectType = $('input[name="pm.pm.ProjectType"]:checked').val();
+            if (projectType === "External") {
+
+                let departmentName = $('.stageListItem input#venue').val();
+                let contactPerson = $('.stageListItem input#person').eq(0).val();
+                let address = $('.stageListItem input#person').eq(1).val();
+
+                if (departmentName) {
+                    formData.append("pm.pm.ProjectDepartment", departmentName);
+                }
+                if (contactPerson) {
+                    formData.append("pm.pm.ContactPerson", contactPerson);
+                }
+                if (address) {
+                    formData.append("pm.pm.Address", address);
+                }
+            }
+         
 
             // Check if the project document file exists and append if not already added
             let file = $("#projectDocumentFile")[0].files[0];
@@ -396,6 +1072,18 @@
                     formData.append("pm.pm.projectDocument", file);
                 }
             }
+
+            $("#hrRows .hrRow").each(function (i) {
+                let designationId = $(this).find(".hr-designation-select").val();
+                let count = $(this).find(".hr-count").val();
+
+                if (designationId && count > 0) {
+                    formData.append(`pm.hr[${i}].designationId`, designationId);
+                    formData.append(`pm.hr[${i}].designationCount`, count);
+                }
+            });
+            formData.append("pm.pm.hrCount", $("#humanResourcesCount").val());
+
 
             // Loop through stages images and add them
             $.each($(".stagesImages"), function (i, d) {
@@ -408,6 +1096,7 @@
                         formData.append(stageKey, file);
                     }
                 }
+
             });
             // Send the data via AJAX
             $.ajax({
@@ -449,5 +1138,63 @@
                 }
             });
         });
+
+    });
+
+
+</script>
+
+<!-- Additional validation for budget section -->
+<script>
+    $(document).ready(function () {
+        // Budget validation
+        $("#addBudgetItem").click(function (e) {
+            e.preventDefault();
+
+            // Validate budget amount first
+            if (!$("#budgetAmount").valid()) {
+                Swal.fire("Error!", "Please enter a valid project budget first.", "error");
+                return;
+            }
+
+            let budgetAmt = parseFloat($("#budgetAmount").val());
+
+            if (isNaN(budgetAmt) || budgetAmt <= 0) {
+                Swal.fire("Error!", "Please enter a valid project budget first.", "error");
+                return;
+            }
+
+
+            // Rest of your budget addition logic...
+            // (Your existing budget addition code here)
+        });
+
+        // Additional validation for budget heads
+        $.validator.addMethod("budgetSum", function (value, element) {
+            let budgetAmt = parseFloat($("#budgetAmount").val()) || 0;
+            let totalHeads = 0;
+
+            $(".amnt").each(function () {
+                let val = parseFloat($(this).val()) || 0;
+                totalHeads += val;
+            });
+
+            return totalHeads <= budgetAmt;
+        }, "Total of all budget heads cannot exceed project budget");
+
+        // Add rules for dynamically added budget fields
+        $(document).on('focusout', '.amnt', function () {
+            $(this).rules('add', {
+                number: true,
+                min: 0,
+                budgetSum: true,
+                messages: {
+                    number: "Please enter a valid amount",
+                    min: "Amount cannot be negative",
+                    budgetSum: "Total exceeds project budget"
+                }
+            });
+        });
     });
 </script>
+

@@ -115,7 +115,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex">
-                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">Project Details</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="viewProjectModalBody">
@@ -287,15 +287,7 @@
     })
 
     $(document).ready(function () {
-        $("#searchProjectBy").on("keyup", function () {
-            var table = $("#dataTableExamples").DataTable();
-            table.column(1).search(this.value).draw()
-        });
-
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#dataTableExamples").DataTable();
-            table.column(5).search(this.value).draw();
-        })
+        
         $('#dataTableExamples').DataTable({
             layout: {
                 topStart: {
@@ -303,6 +295,25 @@
                 }
             }
         });
+    });
+
+    // Filter by status
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+    // Set values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const division = urlParams.get('statusFilter');
+
+        if (division) $('#filterProjectStatus').val(division);
     });
 </script>
 

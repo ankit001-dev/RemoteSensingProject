@@ -9,12 +9,11 @@
         <table id="dataTableExample" class="table-bordered table-striped">
             <thead>
                 <tr>
-                    <th class="text-center">ID</th>
+                    <th class="text-center">SR</th>
                     <th>Employee Code</th>
                     <th>Name</th>
                     <th>Divison</th>
                     <th class="text-center">Download</th>
-                    @*<th class="text-center">Action</th>*@
                 </tr>
             </thead>
             <tbody>
@@ -30,7 +29,7 @@
                             <td>@item.EmployeeName</td>
                             <td>@item.DevisionName</td>
                             <td class="text-center">
-                                <a href="#" data-title="Report" class="monthlyReport" data-prjId="@item.Id" onclick="loadInternalProjectDetail(@item.Id)">
+                                <a href="#" data-title="Report" class="monthlyReport" data-prjId="@item.Id">
                                     <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
                                 </a>
                             </td>
@@ -58,6 +57,39 @@
                         <div class="col-sm-6 mx-auto text-center">
                             <span>मासिक समीक्षा: रूप पत्र-2</span>
                             <p class="fw-bold" style="font-size: 15px;">शासन से गैर वेतन मद में प्राप्त धनराशि से संचालित योजना / कार्यक्रम की भौतिक उपलब्धियो का विवरण </p>
+                        </div>
+                    </div>
+                    <input type="hidden" id="hiddenProjectId" />
+                    <!-- Year and Month Filter -->
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <label for="filterYear">Year</label>
+                            <select class="form-select" id="filterYear">
+                                @for (int i = DateTime.Now.Year; i >= 2020; i--)
+                                {
+                                    <option value="@i" @(i == DateTime.Now.Year ? "selected" : "")>@i</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="filterMonth">Month</label>
+                            <select class="form-select" id="filterMonth">
+                                <!-- Options will be added dynamically -->
+                                @{
+                                    DateTime start = new DateTime(DateTime.Now.Year, 1, 1); // January of current year
+                                    int currentMonth = DateTime.Now.Month;
+
+                                    for (int i = 1; i <= 12; i++)
+                                    {
+                                        <option value="@start.Month" selected="@(start.Month == currentMonth ? "selected" : null)">
+                                            @start.ToString("MMMM")
+                                        </option>
+                                        ;
+
+                                        start = start.AddMonths(1);
+                                    }
+                                }
+                            </select>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between">
@@ -114,13 +146,17 @@
 
 <script>
 
-    function loadInternalProjectDetail(prjId) {
+    function loadInternalProjectDetail() {
+        debugger
+        let prjId = $("#hiddenProjectId").val();
+        let month = $("#filterMonth").val();
+        let year = $("#filterYear").val();
         if (prjId != null && prjId > 0) {
 
             $.ajax({
                 url: "/admin/EmployeeReportMon",
                 type: "get",
-                data: { id: prjId },
+                data: { id: prjId, month: month, year: year },
                 success: function (res) {
                     if (res.status) {
                         $("#internalProjectTbody").empty();
@@ -160,7 +196,25 @@
             });
         }
     }
-    
+
+    $(document).ready(function () {
+
+        // 1. When project link is clicked
+        $(".monthlyReport").on("click", function (e) {
+            e.preventDefault();
+            let prjId = $(this).data("prjid");
+            $("#hiddenProjectId").val(prjId);
+            loadInternalProjectDetail(); // load data for current month/year
+        });
+
+        // 2. When month or year changes
+        $("#filterMonth, #filterYear").on("change", function () {
+            if ($("#hiddenProjectId").val() > 0) {
+                loadInternalProjectDetail(); // reload table with new month/year
+            }
+        });
+
+    });
 
     $("#printMonthlyRprt").click(function () {
 
@@ -231,4 +285,9 @@
             });
 
     })
+
+
+    $("#filterMonth, #filterYear").on("change", function () {
+        loadInternalProjectDetail();   // no args needed
+    });
 </script>

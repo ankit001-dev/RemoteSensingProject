@@ -67,9 +67,9 @@ namespace RemoteSensingProject.Controllers
            return  Json(res);
         }
 
-        public ActionResult RequestHistory()
+        public ActionResult RequestHistory(string searchTerm = null)
         {
-            ViewBag.ProjectList = _managerServices.All_Project_List(0, null, null, "AccountApproved");
+            ViewBag.ProjectList = _managerServices.All_Project_List(0, null, null, "AccountApproved",searchTerm:searchTerm);
             return View();
         }
         public ActionResult Meeting_List()
@@ -77,11 +77,11 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult TourProposalRequest()
+        public ActionResult TourProposalRequest(int? managerFilter = null, int? projectFilter = null)
         {
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-            ViewData["tourproposal"] = _accountSerivce.getTourList();
+            ViewData["tourproposal"] = _accountSerivce.getTourList(managerFilter: managerFilter, projectFilter: projectFilter);
             return View();
         }
         public ActionResult ReinbursementRequest()
@@ -90,23 +90,23 @@ namespace RemoteSensingProject.Controllers
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
-        public ActionResult HiringRequest()
+        public ActionResult HiringRequest(int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
         {
-            ViewData["hiringList"] = _adminServices.HiringReort();
+            ViewData["hiringList"] = _adminServices.HiringReort(managerFilter: managerFilter, projectFilter: projectFilter, statusFilter: statusFilter);
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             ViewData["projects"] = _adminServices.Project_List();
             return View();
         }
-        public ActionResult FundReport(string req)
+        public ActionResult FundReport(string statusFilter=null)
         {
             var data = _managerServices.All_Project_List(0, null, null, null);
-            if (!string.IsNullOrWhiteSpace(req))
+            if (!string.IsNullOrWhiteSpace(statusFilter))
             {
-                if (req.Equals("complete"))
+                if (statusFilter.ToLower().Equals("complete"))
                 {
                     data = _managerServices.All_Project_List(0, null, null, "AccountApproved");
                 }
-                else if (req.Equals("pending"))
+                else if (statusFilter.ToLower().Equals("pending"))
                 {
                     data = _managerServices.All_Project_List(0, null, null, "AccountPending");
                 }
@@ -115,59 +115,24 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Reimbursement_Report(string req)
+        public ActionResult Reimbursement_Report(int? projectManagerFilter = null, string typeFilter = null, string statusFilter = null)
         {
             ViewData["totalProjectManager"] = _adminServices.SelectEmployeeRecord().Where(d => d.EmployeeRole.Equals("projectManager")).ToList();
-            var data = _managerServices.GetReimbursements(type: "accountrepo").ToList();
-            if (!string.IsNullOrWhiteSpace(req))
-            {
-                if (req.Equals("approved"))
-                {
-                    data = data.Where(d => d.accountNewRequest == false && d.apprstatus == true && d.status == true).ToList();
-                }else if (req.Equals("rejected"))
-                {
-                    data = data.Where(d => d.accountNewRequest == false && (d.apprstatus == false || d.status == false)).ToList();
-                }
-            }
+            var data = _managerServices.GetReimbursements(type: "accountrepo", managerId: projectManagerFilter, typeFilter: typeFilter, statusFilter: statusFilter);
+           
             ViewData["totalReinursementReport"] = data;
             return View();
         }
-        public ActionResult TourProposal_Report(string req)
+        public ActionResult TourProposal_Report(int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
         {
-           if(req == "pending")
-            {
-                ViewData["allTourList"] = _accountSerivce.getTourList().Where(d => d.newRequest && !d.adminappr).ToList();
-            } 
-            else if (req == "approved")
-            {
-                ViewData["allTourList"] = _accountSerivce.getTourList().Where(d => !d.newRequest && d.adminappr).ToList();
-            }
-            else if (req == "rejected")
-            {
-                ViewData["allTourList"] = _accountSerivce.getTourList().Where(d => !d.newRequest && !d.adminappr).ToList();
-            }
+            ViewData["allTourList"] = _accountSerivce.getTourList(managerFilter: managerFilter, projectFilter: projectFilter, statusFilter: statusFilter);
             ViewData["projects"] = _adminServices.Project_List();
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             return View();
         }
-        public ActionResult Hiring_Report(string req)
+        public ActionResult Hiring_Report(int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
         {
-            if (req == "pending")
-            {
-                ViewData["hiringList"] = _adminServices.HiringReort().Where(d => d.newRequest && !d.adminappr).ToList();
-            }
-            else if (req == "approved")
-            {
-                ViewData["hiringList"] = _adminServices.HiringReort().Where(d => !d.newRequest && d.adminappr).ToList();
-            }
-            else if (req == "rejected")
-            {
-                ViewData["hiringList"] = _adminServices.HiringReort().Where(d => !d.newRequest && !d.adminappr).ToList();
-            }
-            else
-            {
-                ViewData["hiringList"] = _adminServices.HiringReort();
-            }
+            ViewData["hiringList"] = _adminServices.HiringReort(managerFilter: managerFilter, projectFilter: projectFilter, statusFilter: statusFilter);
             ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
             ViewData["projects"] = _adminServices.Project_List();
             return View();

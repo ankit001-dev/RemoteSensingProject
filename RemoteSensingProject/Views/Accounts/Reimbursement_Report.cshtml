@@ -3,7 +3,7 @@
     ViewBag.Title = "Reimbursement_Report";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
     var empData = ViewData["totalProjectManager"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
-    var reportData = ViewData["totalReinursementReport"] as List<RemoteSensingProject.Models.Accounts.main.Reimbursement>;
+    var reportData = ViewData["totalReinursementReport"] as List<RemoteSensingProject.Models.ProjectManager.Reimbursement>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
 
 }
@@ -57,13 +57,13 @@
     <div class="card-body">
         <div class="row">
             <div class="col-sm-4">
-                <select class="form-select form-select-sm" id="filterByProjectManager">
+                <select class="form-select form-select-sm" id="Filter1">
                     <option value="" selected>Filter by Project Manager</option>
                     @if (empData.Any())
                     {
                         foreach (var item in empData)
                         {
-                            <option>@item.EmployeeName (@item.EmployeeCode)</option>
+                            <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
                         }
                     }
                 </select>
@@ -71,7 +71,7 @@
             </div>
 
             <div class="col-sm-4">
-                <select class="form-select form-select-sm" id="filterByprojectType">
+                <select class="form-select form-select-sm" id="typeFilter">
                     <option value="" selected>Filter by request type</option>
                     <option value="contigency">Contigency</option>
                     <option value="pi_adjustment">P.I. Adjustment</option>
@@ -82,9 +82,9 @@
             <div class="col-sm-4">
                 <select class="form-select form-select-sm" id="fileterByProjectStatus">
                     <option value="" selected>Filter by status</option>
-                    <option>Approved</option>
-                    <option>Rejected</option>
-                    <option>Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="pending">Pending</option>
                 </select>
 
             </div>
@@ -109,7 +109,6 @@
                         <th>Approve Amount</th>
                         <th>Remark</th>
                         <th>Status</th>
-                        @*<th>Action</th>*@
                     </tr>
                 </thead>
                 <tbody>
@@ -137,11 +136,11 @@
                                     { <span>@item.remark</span>}
                                 </td>
                                 <td>
-                                    @if (item.appr_status && !item.accountNewRequest && item.status)
+                                    @if (item.apprstatus && !item.accountNewRequest && item.status)
                                     {
                                         <span class="badge bg-success">Approved</span>
                                     }
-                                    else if (!item.accountNewRequest && (!item.appr_status || !item.status))
+                                    else if (!item.accountNewRequest && (!item.apprstatus || !item.status))
                                     {
                                         <span class="badge bg-danger">Rejected</span>
                                     }
@@ -152,11 +151,6 @@
                                     }
 
                                 </td>
-                                @*<td>
-                                    <a href="#" class="viewSanctionreciept" data-type="@item.type" data-userId="@item.userId" data-id="@item.id" data-chequeNum="@item.chequeNum" data-chequeDate="@item.chequeDate" data-apprAmt="@item.approveAmount">
-                                        <i class="fa-solid fa-eye text-success"></i>
-                                    </a>
-                                </td>*@
                             </tr>
 
                             i++;
@@ -274,7 +268,7 @@
 <script>
     $(document).ready(function () {
 
-    
+
 
         $("#reibursementReportTable").DataTable({
             layout: {
@@ -284,7 +278,7 @@
             }
         });
 
-       
+
         $("#filterByProjectManager").on("change", function () {
             let table = $("#reibursementReportTable").DataTable();
             table.column(1).search($(this).val()).draw();
@@ -323,7 +317,7 @@
                 type: "Get",
                 data: { "userId": userId, "type": type, id: Id },
                 success: function (result) {
-                    if (result.status) {
+                    if (result.Status) {
                         $("#apprAmttext").text(apprvAmt);
                         $("#chequeNumberText").text(chequeNum);
                         $("#chequeDatetext").text(chequeDate);
@@ -455,9 +449,44 @@
                     console.error("Error:", error)
                 });
 
-        })
+        });
+    });
 
-        
+    function applyFilters() {
+        const url = new URL(window.location.href);
 
-    })
+        const manager = $("#Filter1").val();
+        const type = $("#typeFilter").val();
+        const status = $("#fileterByProjectStatus").val();
+
+        // Project Manager Filter
+        if (manager) url.searchParams.set("projectManagerFilter", manager);
+        else url.searchParams.delete("projectManagerFilter");
+
+        // Type Filter
+        if (type) url.searchParams.set("typeFilter", type);
+        else url.searchParams.delete("typeFilter");
+
+        // Status Filter
+        if (status) url.searchParams.set("statusFilter", status);
+        else url.searchParams.delete("statusFilter");
+
+        showLoader();
+        window.location.href = url.toString();
+    }
+
+    // Attach events
+    $("#Filter1").on("change", applyFilters);
+    $("#typeFilter").on("change", applyFilters);
+    $("#fileterByProjectStatus").on("change", applyFilters);
+
+
+    // Set filters on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        $("#Filter1").val(urlParams.get("projectManagerFilter"));
+        $("#typeFilter").val(urlParams.get("typeFilter"));
+        $("#fileterByProjectStatus").val(urlParams.get("statusFilter"));
+    }); 
 </script>

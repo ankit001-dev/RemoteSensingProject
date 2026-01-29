@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "Assigned_Project";
     Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
-    var assignedData = ViewData["AssignedProjectList"] as List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList>;
+    var assignedData = ViewData["AssignedProjectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     int i = 1;
 }
 
@@ -19,14 +19,14 @@
                 <h5>Assigned Project Lists</h5>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="text" id="searchByProjectName" name="searchByProjectName" placeholder="Search by project name" class="form-control">
+                <input type="text" id="searchProjectBy" name="searchByProjectName" placeholder="Search by project name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
-                <select id="statusFilter" class="form-select form-select-lg">
+                <select id="filterProjectStatus" class="form-select form-select-lg">
                     <option selected value="">Project Status</option>
-                    <option value="Processing">Work in Progress</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Completed">Completed</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="delay">Delay</option>
+                    <option value="Complete">Completed</option>
                 </select>
             </div>
         </div>
@@ -37,7 +37,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="projectTable" class="dataTableExample" style="width:100%">
+                    <table id="projectTable1" class="dataTableExample" style="width:100%">
                         <thead>
                             <tr>
                                 <th>Sr No.</th>
@@ -61,34 +61,32 @@
                                     <tr>
                                         <td>@i</td>
                                         <td>@item.projectCode</td>
-                                        <td><a href="#" class="viewProject" data-title="View Details" data-id="@item.Id">@item.Title</a></td>
-                                        <td>@item.CreatedBy</td>
+                                        <td><a href="#" class="viewProject" data-title="View Details" data-id="@item.Id">@item.ProjectTitle</a></td>
+                                        <td>@item.createdBy</td>
                                         <td>@item.AssignDateString</td>
                                         <td>@item.StartDateString</td>
                                         <td>@item.CompletionDatestring</td>
                                         <td>
-                                            @if (item.CompleteionStatus == true && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
+                                            @if (item.ProjectStatus || item.physicalcomplete == 100)
                                             {
                                                 <span class="badge bg-success">Completed</span>
                                             }
-                                            else if (item.CompleteionStatus == false && item.CompletionDate > currentDate)
+                                            else if (item.CompletionDate < DateTime.Now)
                                             {
-                                                <span class="badge bg-warning text-dark">Processing</span>
+                                                <span class="badge bg-danger">Delay</span>
+                                            }
+                                            else if (item.StartDate < DateTime.Now)
+                                            {
+                                                <span class="badge bg-warning">Ongoing</span>
                                             }
                                             else
                                             {
-                                                <span class="badge bg-secondary">Pending</span>
+                                                <span class="badge bg-primary">Upcoming</span>
                                             }
+
                                         </td>
                                         <td class="text-center">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                                @*<li class="me-2">
-                                                    <a href="#" class="viewProject" data-id="@item.Id">
-                                                        <i class="link-icon" data-feather="eye"></i>
-                                                    </a>
-
-                                                </li>*@
-
                                                 <li class="me-2">
                                                     <a href="#" data-title="Raise Problem" id="viewCompleteDetails" data-id="@item.Id" data-bs-toggle="modal" data-bs-target="#viewStatusModal">
                                                         <i class="link-icon text-success" data-feather="plus-circle"></i>
@@ -102,39 +100,6 @@
                                     i++;
                                 }
                             }
-                            @*<tr>
-                                    <td>1</td>
-                                    <td>01/01/2022</td>
-                                    <td>India Stack Global</td>
-                                    <td>01/01/2022</td>
-                                    <td>26/04/2022</td>
-                                    <td>
-                                        <span class="badge bg-warning">Work in Progress</span>
-                                    </td>
-
-                                    <td class="text-center">
-                                        <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                            <li class="me-2"><a href="#" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="eye"></i></a></li>
-                                            <li class="me-2">
-                                                <a href="/Employee/Weekly_Update_Project/" title="Weekly Update">
-                                                    <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                                </a>
-                                            </li>
-
-                                            <li class="me-2">
-                                                <a href="/Employee/Update_Project_Stage/" title="Update Stages">
-                                                    <i class="link-icon text-info" data-feather="plus-circle"> </i>
-                                                </a>
-                                            </li>
-                                            <li class="me-2">
-                                                <a href="/Employee/Add_Expenses/" title="Add Expenses">
-                                                    <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </td>
-                                </tr>*@
-
                         </tbody>
                     </table>
                 </div>
@@ -145,7 +110,7 @@
             <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header d-flex">
-                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Detail</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="viewProjectModalBody">
@@ -187,9 +152,6 @@
                         <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Problem</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -260,23 +222,12 @@
     })
 </script>
 
-
-
 <script>
     $(document).ready(function () {
-        var table = $("#projectTable").DataTable({
+        var table = $("#projectTable1").DataTable({
             drawCallback: function () {
                 feather.replace(); 
             }
-        });
-
-        $("#statusFilter").on("change", function () {
-            var projectStatus = $(this).val();
-            table.column(6).search(projectStatus).draw();
-        });
-
-        $('#searchByProjectName').on('keyup', function () {
-            table.columns(1).search($(this).val()).draw();
         });
 
         setTimeout(() => {
@@ -349,17 +300,7 @@
         });
         feather.replace();
     });
-
-    $(document).ready(function () {
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#projectTable").DataTable();
-            table.column(5).search(this.value).draw();
-        })
-     
-  
-    })
 </script>
-
 
 <script>
     $(document).on("click", ".viewProject", function () {
@@ -524,7 +465,52 @@
         })
     })
 
+    // Search by text
+    $('#searchProjectBy').on('keyup', function () {
+        debugger
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
 
+        const division = $("#filterProjectStatus").val();
+        if (division && division !== "null") url.searchParams.set("statusFilter", division);
+        else url.searchParams.delete("statusFilter");
 
+        const manager = $("#searchByProjectManager").val();
+        if (manager && manager !== "null") url.searchParams.set("projectManagerFilter", manager);
+        else url.searchParams.delete("projectManagerFilter");
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Filter by status
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Set values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
+        const manager = urlParams.get('projectManagerFilter');
+
+        if (search) $('#searchProjectBy').val(search).focus();
+        if (division) $('#filterProjectStatus').val(division);
+    });
 </script>
 

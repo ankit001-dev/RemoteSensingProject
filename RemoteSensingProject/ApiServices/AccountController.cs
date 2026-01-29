@@ -4,6 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Http;
+using System.Web.UI;
+using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Spreadsheet;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
@@ -12,7 +15,7 @@ using static RemoteSensingProject.Models.Accounts.main;
 
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize]
+    [JwtAuthorize(Roles ="account,admin")]
     public class AccountController : ApiController
     {
         // GET: Account
@@ -26,24 +29,41 @@ namespace RemoteSensingProject.ApiServices
 
         [Route("api/getProjectList")]
         [HttpGet]
-        public IHttpActionResult GetProjectList()
+        public IHttpActionResult GetProjectList(int? page = null, int? limit = null,string searchTerm = null)
         {
-            var res = _accountSerivce.Project_List().Where(e => e.ApproveStatus == false).ToList();
+            var res = _mangerServices.All_Project_List(userId: 0, limit: limit, page: page, filterType: "AccountPending",searchTerm:searchTerm);
             return Ok(new { status = true, data = res, message = "data retrieved" });
         }
         [Route("api/getProjectHistoryList")]
         [HttpGet]
-        public IHttpActionResult GetProjectHistoryList()
+        public IHttpActionResult GetProjectHistoryList(int? page = null, int? limit = null,string searchTerm = null)
         {
-            var res = _accountSerivce.Project_List().Where(e => e.ApproveStatus == true).ToList();
+            var res = _mangerServices.All_Project_List(userId: 0, limit: limit, page: page, filterType: "AccountApproved", searchTerm: searchTerm);
             return Ok(new { status = true, data = res, message = "data retrieved" });
         }
         [Route("api/ProjectBudgetList")]
         [HttpGet]
         public IHttpActionResult ProjectBudgetList(int projectId)
         {
-            var res=_accountSerivce.ProjectBudgetList(projectId);
-            return Ok(new { status = true, data = res, message = "data retrieved" });
+            try
+            {
+                var res = _mangerServices.ProjectBudgetList(projectId);
+                var selectprop = new[] { "Id", "Project_Id", "ProjectHeads", "ProjectAmount", "TotalAskAmount", "ApproveAmount" };
+                var newdata = CommonHelper.SelectProperties(res, selectprop);
+                if (newdata.Count > 0)
+                {
+                    return CommonHelper.Success(this, newdata, "Data fetched successfully", 200);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return CommonHelper.Error(this, ex.Message);
+            }
+
         }
         [Route("api/UpdateExpensesResponse")]
         [HttpPost]
@@ -53,41 +73,41 @@ namespace RemoteSensingProject.ApiServices
             HeadExpenses he = new HeadExpenses
             {
                 Reason = httpRequest.Form.Get("reason"),
-                Amount=Convert.ToInt32(httpRequest.Form.Get("amount")),
-                ProjectId =Convert.ToInt32(httpRequest.Form.Get("projectId")),
-                HeadId =Convert.ToInt32(httpRequest.Form.Get("headId")),
-                AppStatus =Convert.ToInt32(httpRequest.Form.Get("approveStatus")),
-                Id =Convert.ToInt32(httpRequest.Form.Get("expensesId")),
+                Amount = Convert.ToInt32(httpRequest.Form.Get("amount")),
+                ProjectId = Convert.ToInt32(httpRequest.Form.Get("projectId")),
+                HeadId = Convert.ToInt32(httpRequest.Form.Get("headId")),
+                AppStatus = Convert.ToInt32(httpRequest.Form.Get("approveStatus")),
+                Id = Convert.ToInt32(httpRequest.Form.Get("expensesId")),
             };
 
-            var res=_accountSerivce.UpdateExpensesResponse(he);
+            var res = _accountSerivce.UpdateExpensesResponse(he);
             if (res)
             {
-                return Ok(new { status = true,statusCode=200, message = "Response updated successfully" });
+                return Ok(new { status = true, statusCode = 200, message = "Response updated successfully" });
             }
             else
             {
-                return Ok(new { status = false,statusCode=500, message = "something went wrong" });
+                return Ok(new { status = false, statusCode = 500, message = "something went wrong" });
 
             }
         }
 
         [Route("api/getFundReport")]
         [HttpGet]
-        public IHttpActionResult getFundReport()
+        public IHttpActionResult getFundReport(int?page = null,int?limit = null)
         {
-           var res = _accountSerivce.Project_List();
+            var res = _mangerServices.All_Project_List(userId: 0, limit: limit, page: page, filterType: "ManagerProject");
             return Ok(new { status = true, data = res, message = "data retrieved" });
         }
-        
+
         [Route("api/getAccountDashboards")]
         [HttpGet]
         public IHttpActionResult getAccountDashboards()
         {
-           int completeCount = _accountSerivce.Project_List().Count(e => e.ApproveStatus);
-            int pendingCount = _accountSerivce.Project_List().Count(e => !e.ApproveStatus);
-            int totalcount = _accountSerivce.Project_List().Count();
-            return Ok(new { status = true, data = new {CompleteRequist= completeCount ,PendingRequest= pendingCount ,TotalRequest= totalcount }, message = "data retrieved" });
+            int completeCount = _mangerServices.All_Project_List(userId: 0, limit: null, page: null, filterType: "ManagerProject").Count(e => e.ApproveStatus);
+            int pendingCount = _mangerServices.All_Project_List(userId: 0, limit: null, page: null, filterType: "ManagerProject").Count(e => !e.ApproveStatus);
+            int totalcount = _mangerServices.All_Project_List(userId: 0, limit: null, page: null, filterType: "ManagerProject").Count();
+            return Ok(new { status = true, data = new { CompleteRequist = completeCount, PendingRequest = pendingCount, TotalRequest = totalcount }, message = "data retrieved" });
         }
 
         [System.Web.Mvc.AllowAnonymous]
@@ -97,7 +117,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _mangerServices.getTourList(id:id, type: "GetById");
+                var data = _mangerServices.getTourList(id: id, type: "GetById");
                 return Ok(new
                 {
                     status = data.Any(),
@@ -108,9 +128,9 @@ namespace RemoteSensingProject.ApiServices
             {
                 return Ok(new
                 {
-                    status=false,
+                    status = false,
                     StatusCode = 500,
-                    message="Data not found"
+                    message = "Data not found"
                 });
             }
         }
@@ -148,11 +168,11 @@ namespace RemoteSensingProject.ApiServices
                 var request = HttpContext.Current.Request;
                 var formData = new Models.Accounts.main.Reimbursement
                 {
-                  chequeNumber = request.Form.Get("chequeNum"),
-                 date = Convert.ToDateTime(request.Form.Get("chequeDate")),
-                 amount = Convert.ToDecimal(request.Form.Get("sanctionAmt")),
-                apprAmt= Convert.ToDecimal(request.Form.Get("apprAmount")),
-                id = Convert.ToInt32(request.Form.Get("id"))
+                    chequeNumber = request.Form.Get("chequeNum"),
+                    date = Convert.ToDateTime(request.Form.Get("chequeDate")),
+                    amount = Convert.ToDecimal(request.Form.Get("sanctionAmt")),
+                    apprAmt = Convert.ToDecimal(request.Form.Get("apprAmount")),
+                    id = Convert.ToInt32(request.Form.Get("id"))
                 };
 
                 bool res = _accountSerivce.reinbursementRequestAmt(formData);
@@ -163,7 +183,8 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = res ? 200 : 500,
                     message = res ? "Amount approved successfully !" : "Some issue occured while processing reuqest.."
                 });
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -191,7 +212,7 @@ namespace RemoteSensingProject.ApiServices
                     message = res ? "Reinbursement rejected successfully !" : "Some issue occured while processing your request."
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(new
                 {
@@ -278,25 +299,25 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getAccountReinbursement")]
-        public IHttpActionResult getAccountReinbursement()
+        public IHttpActionResult getAccountReinbursement( int? page = null , int? limit = null, int? projectMangerFilter = null)
         {
             try
             {
-                var data = _accountSerivce.GetReimbursements();
-                return Ok(new
+                var data = _mangerServices.GetReimbursements(type: "selectApprovedReinbursement",managerId: projectMangerFilter,limit:limit,page:page);
+                var selectProperties = new[] { "EmpName", "type", "id", "amount", "userId", "apprstatus", "subStatus", "adminappr", "status", "chequeNum", "accountNewRequest", "chequeDate", "newRequest", "approveAmount" };
+                var filterData = CommonHelper.SelectProperties(data, selectProperties);
+                if (data.Count > 0)
                 {
-                    status = data.Any(),
-                    data = data
-                });
+                    return CommonHelper.Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                else
+                {
+                    return CommonHelper.NoData(this);
+                }
             }
             catch (Exception ex)
             {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
+                return CommonHelper.Error(this, ex.Message);
             }
         }
     }

@@ -75,7 +75,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex">
-                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">Project Details</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="viewProjectModalBody">
@@ -246,12 +246,28 @@
         })
     })
 
+    // Search by text
+    $('#searchProjectBy').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Set values on page load
     $(document).ready(function () {
-        $("#searchProjectBy").on("input", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(3).search(this.value).draw()
-        });
-       
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
+        const manager = urlParams.get('projectManagerFilter');
+
+        if (search) $('#searchProjectBy').val(search).focus();
     });
 </script>
 

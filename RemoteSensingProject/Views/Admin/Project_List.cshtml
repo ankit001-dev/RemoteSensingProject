@@ -20,11 +20,11 @@
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="filterProjectStatus">
-                    <option value="" selected>Project Status</option>
-                    <option value="Work in Progress">Work in Progress</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Delay">Delay</option>
+                    <option selected value="">Project Status</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="delay">Delay</option>
+                    <option value="Complete">Completed</option>
                 </select>
             </div>
         </div>
@@ -61,10 +61,10 @@
                                 </a>
                             </td>
                             <td>@item.ProjectManager</td>
-                            <td>@Convert.ToDateTime(item.AssignDate).ToString("dd MMM yyyy")</td>
+                            <td>@item.AssignDateString</td>
 
-                            <td>@Convert.ToDateTime(item.StartDate).ToString("dd MMM yyyy")</td>
-                            <td>@Convert.ToDateTime(item.CompletionDate).ToString("dd MMM yyyy")</td>
+                            <td>@item.StartDateString</td>
+                            <td>@item.CompletionDatestring</td>
 
                             <td>
                                 @if (item.ProjectStatus)
@@ -102,7 +102,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex">
-                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Project Details</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="viewProjectModalBody">
@@ -203,7 +203,7 @@
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Assign Date</label>
          <br />
-         <span>${convertToDate(res.data.pm.AssignDate)}</span>
+         <span>${res.data.pm.AssignDateString}</span>
      </div>
 
      <hr />
@@ -212,12 +212,12 @@
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Start Date</label>
          <br />
-         <span>${convertToDate(res.data.pm.StartDate)}</span>
+         <span>${res.data.pm.StartDateString}</span>
      </div>
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Completion Date</label>
          <br />
-         <span>${convertToDate(res.data.pm.CompletionDate)}</span>
+         <span>${res.data.pm.CompletionDatestring}</span>
      </div>
      <div class="col-sm-4 mb-2">
          <label class="form-label fw-bolder">Project Type</label>
@@ -274,17 +274,48 @@
         })
     })
 
+    $('#searchProjectBy').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        const division = $("#filterProjectStatus").val();
+        if (division && division !== "null") url.searchParams.set("statusFilter", division);
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader(); // 👈 Add here
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        showLoader(); // 👈
+        window.location.href = url.toString();
+    });
+
     $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
 
-  
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
 
-        $("#searchProjectBy").on("input", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(2).search(this.value).draw()
-        });
-        $("#filterProjectStatus").on("change", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(6).search(this.value).draw();
-        })
+        if (search) {
+            $('#searchProjectBy').val(search).focus();
+        }
+
+        if (division) {
+            $('#filterProjectStatus').val(division);
+        }
     });
 </script>

@@ -108,8 +108,6 @@
     <div class="col-12 col-xl-12">
         <div class="row flex-grow-1">
 
-
-
             <!-- Total Budget Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1 ">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
@@ -158,7 +156,6 @@
                     </div>
                 </div>
             </div>
-
 
             <!-- Project's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
@@ -231,8 +228,6 @@
                 </div>
             </div>
 
-
-
             <!-- Meeting's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
@@ -304,6 +299,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Request's status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
@@ -339,6 +335,7 @@
                     </div>
                 </div>
             </div>
+            
             <!-- Request's status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
@@ -374,6 +371,7 @@
                     </div>
                 </div>
             </div>
+            
             <!-- Request's status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
@@ -410,19 +408,10 @@
                 </div>
             </div>
 
-
         </div>
     </div>
 </div>
 <style>
-    /*    body {
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-    }*/
 
     .card-chart-mini {
         max-width: 265px;
@@ -910,6 +899,7 @@
 
 <script>
     $(document).ready(function () {
+        debugger
         var bgdata = @Html.Raw(Json.Encode(ViewData["budgetGraph"]));
         console.log("bgdata", bgdata[0].remaining);
         Chart.defaults.font.size = 13;

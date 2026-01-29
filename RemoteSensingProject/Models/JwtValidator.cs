@@ -16,20 +16,22 @@ namespace RemoteSensingProject.Models
 
     public class JwtAuthorizeAttribute : AuthorizationFilterAttribute
     {
+        public string Roles { get; set; }   // <── Add this
+
         private readonly string _secretKey = System.Configuration.ConfigurationManager.AppSettings["JwtSecretKey"];
         private readonly string _issuer = System.Configuration.ConfigurationManager.AppSettings["JwtIssuer"];
         private readonly string _audience = System.Configuration.ConfigurationManager.AppSettings["JwtAudience"];
 
         public override void OnAuthorization(HttpActionContext actionContext)
         {
-            // Check if the action OR controller has AllowAnonymous
+            // AllowAnonymous logic…
             bool skipAuthorization = actionContext.ActionDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().Any()
                                      || actionContext.ControllerContext.ControllerDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().Any();
 
             if (skipAuthorization)
-                return; // Skip JWT validation for login API or any AllowAnonymous API
+                return;
 
-            // JWT validation logic here
+            // JWT validation…
             var authHeader = actionContext.Request.Headers.Authorization;
             if (authHeader == null || authHeader.Scheme != "Bearer" || string.IsNullOrEmpty(authHeader.Parameter))
             {
@@ -47,13 +49,30 @@ namespace RemoteSensingProject.Models
 
             // Attach principal
             Thread.CurrentPrincipal = principal;
-            if (actionContext.RequestContext.Principal != null)
-                actionContext.RequestContext.Principal = principal;
+            actionContext.RequestContext.Principal = principal;
+
+            // ❗ NEW: Role check inside JWT attribute
+            if (!string.IsNullOrEmpty(Roles))
+            {
+                var requiredRoles = Roles.Split(',').Select(r => r.Trim()).ToList();
+
+                var userRoles = principal.Claims
+                    .Where(c => c.Type == ClaimTypes.Role || c.Type == "role")
+                    .Select(c => c.Value)
+                    .ToList();
+
+                if (!requiredRoles.Any(r => userRoles.Contains(r, StringComparer.OrdinalIgnoreCase)))
+                {
+                    actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden,
+                        "You do not have permission to perform this action.");
+                    return;
+                }
+            }
 
             base.OnAuthorization(actionContext);
         }
 
-        private bool ValidateToken(string token, out ClaimsPrincipal principal)
+        public bool ValidateToken(string token, out ClaimsPrincipal principal)
         {
             principal = null;
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -81,5 +100,115 @@ namespace RemoteSensingProject.Models
                 return false;
             }
         }
+        public int ValidateTokenIgnoreExpiry(string token, out ClaimsPrincipal principal)
+        {
+            principal = null;
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_secretKey);
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+
+                ValidateIssuer = true,
+                ValidIssuer = _issuer,
+
+                ValidateAudience = true,
+                ValidAudience = _audience,
+
+                ValidateLifetime = false, // expiry manually check karenge
+                ClockSkew = TimeSpan.Zero
+            };
+
+            try
+            {
+                principal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
+
+                var jwtToken = validatedToken as JwtSecurityToken;
+                if (jwtToken == null)
+                    return 0;
+
+                var expClaim = jwtToken.Claims
+                    .FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)?.Value;
+
+                if (expClaim == null || !long.TryParse(expClaim, out long exp))
+                    return 0;
+
+                var expiryDate = DateTimeOffset
+                    .FromUnixTimeSeconds(exp)
+                    .UtcDateTime;
+
+                if (expiryDate < DateTime.UtcNow)
+                    return 1; // expired
+
+                return 2; // valid & not expired
+            }
+            catch
+            {
+                return 0; // invalid
+            }
+        }
+
+
+        public bool IsTokenExpired(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+
+            var expClaim = jwtToken.Claims
+                .FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Exp)
+                ?.Value;
+
+            if (expClaim == null)
+                return true;
+
+            var expiryDate = DateTimeOffset
+                .FromUnixTimeSeconds(long.Parse(expClaim))
+                .UtcDateTime;
+
+            return expiryDate < DateTime.UtcNow;
+        }
+
     }
+
+    public class RoleAuthorizeAttribute : AuthorizationFilterAttribute
+    {
+        private readonly string[] _roles;
+
+        public RoleAuthorizeAttribute(string roles)
+        {
+            _roles = roles.Split(',').Select(r => r.Trim()).ToArray();
+        }
+
+        public override void OnAuthorization(HttpActionContext actionContext)
+        {
+            var user = Thread.CurrentPrincipal as ClaimsPrincipal;
+
+            if (user == null || !user.Identity.IsAuthenticated)
+            {
+                actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized, "User not authenticated.");
+                return;
+            }
+
+            // ✅ Support both "role" and ClaimTypes.Role
+            var roles = user.Claims
+                .Where(c => c.Type == ClaimTypes.Role || c.Type == "role")
+                .Select(c => c.Value)
+                .ToList();
+
+            System.Diagnostics.Debug.WriteLine("User roles: " + string.Join(", ", roles));
+
+            // Check if user has at least one of the required roles
+            if (!_roles.Any(required => roles.Contains(required, StringComparer.OrdinalIgnoreCase)))
+            {
+                actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Forbidden, "You do not have permission to perform this action.");
+                return;
+            }
+
+            base.OnAuthorization(actionContext);
+        }
+    }
+
 }

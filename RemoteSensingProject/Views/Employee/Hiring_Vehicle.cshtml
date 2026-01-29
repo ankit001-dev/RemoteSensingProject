@@ -4,7 +4,6 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
 
 }
@@ -33,13 +32,13 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-4">
-                        <select id="Filter2" class="form-select form-select-sm">
+                        <select id="projectFilter" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
-                            @if (projects != null)
+                            @if (data1 != null)
                             {
-                                foreach (var proj in projects)
+                                foreach (var item in data1)
                                 {
-                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                                    <option value="@item.Id">@item.ProjectTitle</option>
                                 }
                             }
                         </select>
@@ -291,13 +290,6 @@
 
     $(document).ready(function () {
 
-        //Filter
-        $("#Filter2").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#dataTableExample").DataTable()
-            table.column(1).search(filter).draw()
-        })
-
         $("#printBtn").click(function () {
 
             Swal.fire({
@@ -383,6 +375,7 @@
                 type: 'get',
                 data: { id: id },
                 success: function (res) {
+                    console.log(res);
                     $("#nameProject").text(res.data[0].projectName)
                     $("#from").text(convertToDate(res.data[0].dateFrom))
                     $("#to").text(convertToDate(res.data[0].dateTo))
@@ -484,10 +477,30 @@
                     Swal.fire({
                         titel: 'Error',
                         text: 'Server Busy.Try after sometime!',
-                        icon:'error'
+                        icon: 'error'
                     })
                 }
             })
         })
-    })
+    });
+
+    // Project Filter
+    $("#projectFilter").on("change", function () {
+        const url = new URL(window.location.href);
+        const project = $(this).val();
+
+        if (project) url.searchParams.set("projectFilter", project);
+        else url.searchParams.delete("projectFilter");
+
+        showLoader(); // optional
+        window.location.href = url.toString();
+    });
+
+    // Restore selected values on load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const project = urlParams.get("projectFilter");
+
+        if (project) $("#projectFilter").val(project);
+    });
 </script>

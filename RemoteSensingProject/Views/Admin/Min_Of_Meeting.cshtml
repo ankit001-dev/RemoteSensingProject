@@ -570,7 +570,6 @@
             keyPointList.forEach((v, i) => {
                 formData.append(`keyPointList[${i}]`, v);
             });
-            debugger
 
             $.ajax({
                 url: '/Admin/AddMeeting',
@@ -583,7 +582,7 @@
                         Swal.fire({
                             title: 'Success',
                             icon: 'success',
-                            text: 'Meeting Added Successfully!',
+                            text: response.message,
                             confirmButtonText: 'ok'
                         }).then(() => {
                             window.location.reload();
@@ -592,7 +591,7 @@
                         Swal.fire({
                             title: 'Error',
                             icon: 'error',
-                            text: 'Failed to added meeting',
+                            text: response.message,
                             confirmButtonText: 'ok'
                         })
                     }

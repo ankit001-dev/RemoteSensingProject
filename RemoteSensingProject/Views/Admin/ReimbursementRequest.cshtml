@@ -22,7 +22,7 @@
                                 {
                                     if (proman.EmployeeRole == "projectManager")
                                     {
-                                        <option value="@proman.EmployeeRole">@proman.EmployeeName</option>
+                                        <option value="@proman.Id">@proman.EmployeeName</option>
                                     }
                                 }
                             }
@@ -183,23 +183,10 @@
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
 
     $(document).ready(function () {
-
-        //Filter
-        $("#typeFilter").on("change", function () {
-            let tp = $(this).val();
-            let table = $("#dataTableExample").DataTable();
-            table.column(2).search(tp).draw();
-        });
-        $("#Filter1").on("change", function () {
-            let tp = $(this).val();
-            let table = $("#dataTableExample").DataTable();
-            table.column(1).search(tp).draw();
-        });
 
         $("#printBtn").click(function () {
 
@@ -365,13 +352,14 @@
                 type: "Get",
                 data: { "userId": userId, "type": type ,id:id},
                 success: function (result) {
-                    if (result.status) {
+                    if (result.Status) {
                         $("#viewReinburseRecieptListBody").empty();
                         Swal.close();
                         let totalAmout = 0;
                         let element = "";
                         let adminApprStatus = false;
                         let newRequest = false;
+                        console.log('Reimbursement Report',result);
 
                         $.each(result.data, function (i, d) {
                             element += `
@@ -427,4 +415,47 @@
         }
 
     });
+
+    // Filter by Project Manager
+    $("#Filter1").on("change", function () {
+        const url = new URL(window.location.href);
+        const manager = $(this).val();
+
+        if (manager) url.searchParams.set("projectManagerFilter", manager);
+        else url.searchParams.delete("projectManagerFilter");
+
+        const type = $("#typeFilter").val();
+        if (type) url.searchParams.set("typeFilter", type);
+        else url.searchParams.delete("typeFilter");
+
+        showLoader(); // optional loader function
+        window.location.href = url.toString();
+    });
+
+    // Filter by Type
+    $("#typeFilter").on("change", function () {
+        const url = new URL(window.location.href);
+        const type = $(this).val();
+
+        if (type) url.searchParams.set("typeFilter", type);
+        else url.searchParams.delete("typeFilter");
+
+        const manager = $("#Filter1").val();
+        if (manager) url.searchParams.set("projectManagerFilter", manager);
+        else url.searchParams.delete("projectManagerFilter");
+
+        showLoader(); // optional loader function
+        window.location.href = url.toString();
+    });
+
+    // Set dropdowns on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const manager = urlParams.get('projectManagerFilter');
+        const type = urlParams.get('typeFilter');
+
+        if (manager) $("#Filter1").val(manager);
+        if (type) $("#typeFilter").val(type);
+    });
+
 </script>

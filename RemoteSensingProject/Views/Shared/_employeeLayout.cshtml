@@ -28,16 +28,23 @@
     <link href="~/assets/vendors/select2/select2.min.css" rel="stylesheet" />
     <link rel="shortcut icon" href="../images/favicon.png" />
     <link href="~/assets/datatable/datatables.min.css" rel="stylesheet" />
-    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/assets/vendors/core/core.js"></script>
+    @Scripts.Render("~/bundles/jqueryval")
     <style>
+        * {
+            user-select: none !important;
+        }
+
         a::before {
             content: none !important;
             display: none !important;
         }
+
         a:hover::before {
             display: none !important;
             content: none !important;
         }
+
         .form-control {
             padding: 5px 15px !important;
         }
@@ -84,6 +91,48 @@
         .btn-close {
             background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center / 0.8em auto no-repeat !important;
         }
+
+        /*Loader Style*/
+        #loaderOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.7);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Glowing Circular Loader */
+        .custom-loader {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 6px solid transparent;
+            border-top: 6px solid rgba(0, 255, 180, 0.7);
+            border-right: 6px solid rgba(0, 255, 180, 0.7);
+            animation: spin 1s linear infinite, glow 1.5s ease-in-out infinite alternate;
+            box-shadow: 0 0 15px rgba(0,255,180,0.6);
+        }
+
+        @@keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes glow {
+            0% {
+                box-shadow: 0 0 5px rgba(0,255,180,0.3);
+            }
+
+            100% {
+                box-shadow: 0 0 25px rgba(0,255,180,0.9);
+            }
+        }
     </style>
 </head>
 <body>
@@ -122,7 +171,7 @@
                     <li class="nav-item">
                         <a href="/employee/OutSource" class="nav-link">
                             <i class="link-icon" data-feather="user"></i>
-                            <span class="link-title">Outsource</span>
+                            <span class="link-title">Out Source</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -230,6 +279,12 @@
                         </div>
                     </li>
                     <li class="nav-item">
+                        <a href="/Employee/Feedback" class="nav-link">
+                            <i class="link-icon" data-feather="calendar"></i>
+                            <span class="link-title">Feedback</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" data-bs-toggle="collapse" href="#pmreports2" role="button" aria-expanded="false" aria-controls="pmreports2">
                             <i class="link-icon" data-feather="list"></i>
                             <span class="link-title">Project Report</span>
@@ -240,12 +295,12 @@
                                 <li class="nav-item">
                                     <a href="/Employee/All_Project_Report" class="nav-link">All Report</a>
                                 </li>
-                                <li class="nav-item">
+                                @*<li class="nav-item">
                                     <a href="/Employee/Pending_Project_Report" class="nav-link">Not Started Report</a>
-                                </li>
-                                <li class="nav-item">
+                                </li>*@
+                                @*<li class="nav-item">
                                     <a href="/Employee/Complete_Project_Report" class="nav-link">Completed Report</a>
-                                </li>
+                                </li>*@
                                 <li class="nav-item">
                                     <a href="/Employee/Expense_Report" class="nav-link">Expenses Report</a>
                                 </li>
@@ -273,15 +328,17 @@
         </nav>
 
         <div class="page-wrapper">
-
+            <div id="loaderOverlay" style="display:none;">
+                <div class="custom-loader"></div>
+            </div>
             <nav class="navbar">
                 <a href="#" class="sidebar-toggler">
                     <i data-feather="menu"></i>
                 </a>
                 <div class="navbar-content">
-                    
+
                     <ul class="navbar-nav">
-                       
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img class="wd-30 ht-30 rounded-circle" src="~/assets/no-pictures.png" alt="profile">
@@ -289,7 +346,7 @@
                             <div class="dropdown-menu p-0" aria-labelledby="profileDropdown">
                                 <div class="d-flex flex-column align-items-center border-bottom px-5 py-3">
                                     <div class="mb-3">
-                                        <img class="wd-80 ht-80 rounded-circle" src="~/assets/no-pictures.png" >
+                                        <img class="wd-80 ht-80 rounded-circle" src="~/assets/no-pictures.png">
                                     </div>
                                     <div class="text-center">
                                         <p class="tx-16 fw-bolder"></p>
@@ -300,28 +357,16 @@
                                     </div>
                                 </div>
                                 <ul class="list-unstyled p-1">
-                                    @*<li class="dropdown-item py-2">
-                                        <a href="/Employee/MyProfile" class="text-body ms-0">
-                                            <i class="me-2 icon-md" data-feather="user"></i>
-                                            <span>Profile</span>
-                                        </a>
-                                    </li>
-                                    <li class="dropdown-item py-2">
-                                        <a class="text-body ms-0">
-                                            <i class="me-2 icon-md" data-feather="edit"></i>
-                                            <span>Edit Profile</span>
-                                        </a>
-                                    </li>*@
-                                    @*<li class="dropdown-item py-2">
-                                            <a class="text-body ms-0">
-                                                <i class="me-2 icon-md" data-feather="repeat"></i>
-                                                <span>Switch User</span>
-                                            </a>
-                                        </li>*@
                                     <li class="dropdown-item py-2">
                                         <a class="text-body ms-0" href="/login/Logout">
                                             <i class="me-2 icon-md" data-feather="log-out"></i>
                                             <span>Log Out</span>
+                                        </a>
+                                    </li>
+                                    <li class="dropdown-item py-2">
+                                        <a class="text-body ms-0" href="/login/ChangePassword">
+                                            <i class="me-2 icon-md" data-feather="user"></i>
+                                            <span>Change Password</span>
                                         </a>
                                     </li>
                                 </ul>
@@ -344,8 +389,6 @@
 
         </div>
     </div>
-    <script src="~/assets/vendors/core/core.js"></script>
-
 
     <script src="~/assets/vendors/chartjs/Chart.min.js"></script>
     <script src="~/assets/vendors/jquery.flot/jquery.flot.js"></script>
@@ -377,14 +420,14 @@
 
     <script>
         $(document).ready(function () {
-            
+
             $('#dataTableExample').DataTable({
                 deferRender: false,
                 drawCallback: function () {
                     feather.replace();
                 },
                 columnDefs: [
-                    { width: "100px", targets: 0, className:'dt-center' }
+                    { width: "100px", targets: 0, className: 'dt-center' }
                 ],
                 paging: true,
                 searching: true,
@@ -399,6 +442,32 @@
                 $(this).attr("src", "/assets/no-pictures.png")
             })
         })
+    </script>
+
+    <script>
+        function showLoader() {
+            $("#loaderOverlay").show();
+        }
+
+        function hideLoader() {
+            $("#loaderOverlay").hide();
+        }
+
+        // Loader only for AJAX requests
+        $(document).ajaxStart(function () {
+            showLoader();
+        });
+
+        $(document).ajaxStop(function () {
+            hideLoader();
+        });
+
+
+
+        // Remove loader on page ready
+        $(document).ready(function () {
+            hideLoader();
+        });
     </script>
 
     <script>(function () { if (!document.body) return; var js = "window['__CF$cv$params']={r:'883a8eae8a7f44a7',t:'MTcxNTY4NjIzOS4zNTkwMDA='};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='../../../cdn-cgi/challenge-platform/h/g/scripts/jsd/1b3559406bc8/main.js',document.getElementsByTagName('head')[0].appendChild(_cpo);"; var _0xh = document.createElement('iframe'); _0xh.height = 1; _0xh.width = 1; _0xh.style.position = 'absolute'; _0xh.style.top = 0; _0xh.style.left = 0; _0xh.style.border = 'none'; _0xh.style.visibility = 'hidden'; document.body.appendChild(_0xh); function handler() { var _0xi = _0xh.contentDocument || _0xh.contentWindow.document; if (_0xi) { var _0xj = _0xi.createElement('script'); _0xj.innerHTML = js; _0xi.getElementsByTagName('head')[0].appendChild(_0xj); } } if (document.readyState !== 'loading') { handler(); } else if (window.addEventListener) { document.addEventListener('DOMContentLoaded', handler); } else { var prev = document.onreadystatechange || function () { }; document.onreadystatechange = function (e) { prev(e); if (document.readyState !== 'loading') { document.onreadystatechange = prev; handler(); } }; } })();</script>

@@ -27,7 +27,7 @@
                                 {
                                     if (proman.EmployeeRole == "projectManager")
                                     {
-                                        <option value="@proman.EmployeeName">@proman.EmployeeName</option>
+                                        <option value="@proman.Id">@proman.EmployeeName</option>
                                     }
                                 }
                             }
@@ -40,7 +40,7 @@
                             {
                                 foreach (var proj in projects)
                                 {
-                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                                    <option value="@proj.Id">@proj.ProjectTitle</option>
                                 }
                             }
                         </select>
@@ -70,7 +70,6 @@
                                 <th>Date of return</th>
                                 <th>Remark</th>
                                 <th>Status</th>
-                                @*<th>View</th>*@
                             </tr>
                         </thead>
                         <tbody>
@@ -370,5 +369,47 @@
                 });
 
         })
-    })
+    });
+
+    // Project Manager Filter
+    $("#Filter1").on("change", function () {
+        const url = new URL(window.location.href);
+        const manager = $(this).val();
+
+        if (manager) url.searchParams.set("managerFilter", manager);
+        else url.searchParams.delete("managerFilter");
+
+        const project = $("#Filter2").val();
+        if (project) url.searchParams.set("projectFilter", project);
+        else url.searchParams.delete("projectFilter");
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Project Filter
+    $("#Filter2").on("change", function () {
+        const url = new URL(window.location.href);
+        const project = $(this).val();
+
+        if (project) url.searchParams.set("projectFilter", project);
+        else url.searchParams.delete("projectFilter");
+
+        const manager = $("#Filter1").val();
+        if (manager) url.searchParams.set("managerFilter", manager);
+        else url.searchParams.delete("managerFilter");
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Restore selected values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const manager = urlParams.get("managerFilter");
+        const project = urlParams.get("projectFilter");
+
+        if (manager) $("#Filter1").val(manager);
+        if (project) $("#Filter2").val(project);
+    });
 </script>

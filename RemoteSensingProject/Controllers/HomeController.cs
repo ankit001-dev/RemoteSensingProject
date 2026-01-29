@@ -13,6 +13,22 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
+        public ActionResult ContactUs()
+        {
+            return View();
+        }
+        public ActionResult Privacy_Policy()
+        {
+            Response.Cache.SetCacheability(HttpCacheability.Public);
+            Response.Cache.SetMaxAge(TimeSpan.FromDays(1));
+            return View();
+        }
+
+        public ActionResult Help_menu()
+        {
+            return View();
+        }
+
         #region checklogin
 
         [HttpPost]

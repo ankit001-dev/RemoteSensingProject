@@ -30,7 +30,7 @@
                             {
                                 foreach (var item in dta)
                                 {
-                                    <option value="@item.ProjectTitle">@item.ProjectTitle</option>
+                                    <option value="@item.Id">@item.ProjectTitle</option>
                                 }
                             }
                         </select>
@@ -286,13 +286,6 @@
     $(document).ready(function () {
 
         //Filter
-        
-        $("#Filter2").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#dataTableExample").DataTable()
-            table.column(2).search(filter).draw()
-        })
-
         $("#printBtn").click(function () {
 
             Swal.fire({
@@ -445,6 +438,26 @@
                 }
             })
         })
-    })
+    });
+
+    // Project Filter
+    $("#Filter2").on("change", function () {
+        const url = new URL(window.location.href);
+        const project = $(this).val();
+
+        if (project) url.searchParams.set("projectFilter", project);
+        else url.searchParams.delete("projectFilter");
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Restore selected values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const project = urlParams.get("projectFilter");
+
+        if (project) $("#Filter2").val(project).focus();
+    });
 </script>
 

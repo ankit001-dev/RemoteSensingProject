@@ -10,7 +10,7 @@
                 <div class="t-header"><h4 class="mb-2 text-primary"><a href="#">Meeting Lists</a></h4></div>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="search" id="searchByMeetingName" placeholder="Search by meeting name" class="form-control">
+                <input type="text" id="searchByMeetingName" placeholder="Search by meeting name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="meetingStatus">
@@ -50,7 +50,7 @@
                                     <tr>
                                         <td>@count</td>
                                         <td>
-                                            <a href="#" data-title="View Details" onclick="showAllConclusion(@item.Id)" role="button" >@item.MeetingTitle</a>
+                                            <a href="#" data-title="View Details" onclick="showAllConclusion(@item.Id)" role="button">@item.MeetingTitle</a>
                                         </td>
                                         <td>
                                             @item.MeetingType
@@ -403,14 +403,14 @@
         })
     }
 
-    $("#meetingStatus").on("change", function () {
-        let table = $("#dataTableExample").DataTable();
-        table.columns(5).search(this.value).draw();
-    })
-    $('#searchByMeetingName').on('keyup', function () {
-        let table = $("#dataTableExample").DataTable();
-        table.columns(2).search(this.value).draw();
-    });
+    //$("#meetingStatus").on("change", function () {
+    //    let table = $("#dataTableExample").DataTable();
+    //    table.columns(5).search(this.value).draw();
+    //})
+    //$('#searchByMeetingName').on('keyup', function () {
+    //    let table = $("#dataTableExample").DataTable();
+    //    table.columns(2).search(this.value).draw();
+    //});
 
     $(document).ready(function () {
         document.getElementById('AllMemmberDetails').addEventListener('hide.bs.modal', function () {
@@ -420,3 +420,48 @@
         });
     })
 </script>
+
+<script>
+    function applyMeetingFilters() {
+        const url = new URL(window.location.href);
+
+        const meetingName = $("#searchByMeetingName").val().trim();
+        const meetingStatus = $("#meetingStatus").val();
+
+        // Set or remove meeting name search
+        if (meetingName) url.searchParams.set("searchTerm", meetingName);
+        else url.searchParams.delete("searchTerm");
+
+        // Set or remove status filter
+        if (meetingStatus) url.searchParams.set("statusFilter", meetingStatus);
+        else url.searchParams.delete("statusFilter");
+
+        showLoader(); // optional loader function
+        window.location.href = url.toString();
+    }
+
+    // Search on typing
+    $("#searchByMeetingName").on("keyup", function () {
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            applyMeetingFilters();
+        }, 500);  // debounce
+    });
+
+    // Meeting status change
+    $("#meetingStatus").on("change", function () {
+        applyMeetingFilters();
+    });
+
+    // Restore values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const searchMeeting = urlParams.get("searchTerm");
+        const statusFilter = urlParams.get("statusFilter");
+
+        if (searchMeeting) $("#searchByMeetingName").val(searchMeeting).focus();
+        if (statusFilter) $("#meetingStatus").val(statusFilter);
+    });
+</script>
+

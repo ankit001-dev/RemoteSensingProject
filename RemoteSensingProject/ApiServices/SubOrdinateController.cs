@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using DocumentFormat.OpenXml.Math;
 using Microsoft.AspNetCore.Hosting.Server;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
@@ -15,7 +16,7 @@ using RemoteSensingProject.Models.SubOrdinate;
 using static RemoteSensingProject.Models.SubOrdinate.main;
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize]
+    [JwtAuthorize(Roles = "subOrdinate")]
     public class SubOrdinateController : ApiController
     {
 
@@ -35,11 +36,11 @@ namespace RemoteSensingProject.ApiServices
         #region subordiinate
         [HttpGet]
         [Route("api/subAssignedProject")]
-        public IHttpActionResult assignedProject(int subId)
+        public IHttpActionResult assignedProject(int subId,int? page = null,int? limit = null, string searchTerm = null, string statusFilter = null)
         {
             try
             {
-                var data = _subOrdinate.getProjectBySubOrdinate(subId.ToString());
+                var data = _managerService.All_Project_List(userId:0,limit:limit,page:page,filterType: "SubordinateProject", id:subId, searchTerm: searchTerm, statusFilter: statusFilter);
                 return Ok(new
                 {
                     status = data.Any(),
@@ -47,7 +48,8 @@ namespace RemoteSensingProject.ApiServices
                     message = data.Any() ? "Data found !" : "Data not found !",
                     data = data
                 });
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 return BadRequest(new
                 {
@@ -73,8 +75,7 @@ namespace RemoteSensingProject.ApiServices
                 {
                     Project_Id = Convert.ToInt32(request.Form.Get("Project_Id")),
                     Title = request.Form.Get("title"),
-                    Description = request.Form.Get("Description"),
-                    Attchment_Url = request.Form.Get("Attchment_Url")
+                    Description = request.Form.Get("Description")
                 };
                 var file = request.Files["Attachment"];
                 if (file != null && file.FileName != "")
@@ -82,7 +83,7 @@ namespace RemoteSensingProject.ApiServices
                     data.Attchment_Url = DateTime.Now.ToString("ddMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                     data.Attchment_Url = Path.Combine("/ProjectContent/SubOrdinate/ProblemDocs", data.Attchment_Url);
                 }
-                else if (string.IsNullOrEmpty(data.Attchment_Url))
+                else 
                 {
                     return BadRequest(new
                     {
@@ -92,12 +93,24 @@ namespace RemoteSensingProject.ApiServices
                     });
                 }
 
-                bool status = _subOrdinate.InsertSubOrdinateProblem(data);
+                bool status = _subOrdinate.InsertSubOrdinateProblem(data);  
                 if (status)
                 {
                     if (file != null && file.FileName != "")
                     {
-                        file.SaveAs(HttpContext.Current.Server.MapPath(data.Attchment_Url));
+                        string fullPath = HttpContext.Current.Server.MapPath(data.Attchment_Url);
+
+                        // Directory ka path nikaalo
+                        string directoryPath = Path.GetDirectoryName(fullPath);
+
+                        // ✅ Agar directory exist nahi karti to create karo
+                        if (!Directory.Exists(directoryPath))
+                        {
+                            Directory.CreateDirectory(directoryPath);
+                        }
+
+                        // ✅ File save karo
+                        file.SaveAs(fullPath);
                     }
                 }
                 if (status)

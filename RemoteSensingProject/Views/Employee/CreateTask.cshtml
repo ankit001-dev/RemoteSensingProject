@@ -239,6 +239,7 @@
                 if (res.status) {
                     $("#viewProjectModalBody").empty();
                     let element = '';
+                    console.log(res);
                     $.each(res.data, function (i, d) {
                         element += `<div class="row">
                         <div class="col-sm-4 mb-2">
@@ -311,8 +312,8 @@
                 }
                 else {
                     Swal.fire({
-                        tilte: "Successfully !",
-                        text: "Some issue occured while processing your request!",
+                        tilte: "Sorry !",
+                        text: res.message,
                         icon: "warning"
                     })
                 }

@@ -3,13 +3,16 @@
     ViewBag.Title = "OutSource";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["UserList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
+
+    var designations = ViewData["Designations"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
+
 }
 
 <style>
     .modal-body .sliderimages img {
         width: 20% !important;
         height: 20%;
-        border-radius: 10px;
+        border-radius: 10px; 
     }
 
     svg {
@@ -19,14 +22,18 @@
     .link-icon {
         height: 16px;
     }
+    #addEmployeeform .form-group {
+        padding: 8px 0;
+    }
+
 </style>
 
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item active"><a href="/">Dashboard</a></li>
-        <li class="breadcrumb-item" aria-current="page">/Outsource</li>
+        <li class="breadcrumb-item" aria-current="page">/Out Source</li>
     </ol>
-    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add OutSource</button>
+    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Out Source</button>
 </nav>
 <div class="search-box p-4 bg-white rounded mb-3 mx-3 box-shadow">
     <div class="row align-items-center">
@@ -50,6 +57,7 @@
                                 <th>Name</th>
                                 <th>Contact No.</th>
                                 <th>Email</th>
+                                <th>Designations</th>
                                 <th>Joining Date</th>
                                 <th>Gender</th>
                             </tr>
@@ -65,6 +73,7 @@
                                         <td>@item.EmpName</td>
                                         <td>@item.mobileNo</td>
                                         <td>@item.email</td>
+                                        <td>@item.designationname</td>
                                         <td>@item.joiningdate</td>
                                         <td>@item.gender</td>
                                     </tr>   
@@ -82,53 +91,73 @@
 </div>
 
 <div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-sm modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
 
             <div class="modal-header">
                 <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
 
-                <h5 class="modal-title" id="exampleModalLabel"><span class="actionType">Add</span> OutSource</h5>
+                <h5 class="modal-title" id="exampleModalLabel"><span class="actionType">Add</span> Out Source</h5>
 
             </div>
             <div class="modal-body">
                 <form id="addEmployeeform">
                     <input type="hidden" id="employeeInpId" name="Id" />
-                        <div class="form-group">
-                            <label for="employeeName" class="form-label"> Employee Name</label>
-                            <input type="text" class="form-control" name="EmpName" required id="employeeName" autocomplete="off" placeholder="Enter Employee Name">
-                        </div>
-                        <div class="form-group">
-                            <label for="employeemobno" class="form-label">Mobile</label>
-                            <input type="number" class="form-control" name="mobileNo" required id="employeemobno" placeholder="Enter Mobile">
-                        </div>
-                        <div class="form-group">
-                            <label for="employeeEmail" class="form-label">Email</label>
-                            <input type="text" class="form-control" name="email" required id="employeeEmail" placeholder="Enter Email">
-                        </div>
                     <div class="form-group">
-                            <label for="joiningdate" class="form-label">Joining Date</label>
-                            <input type="date" class="form-control" name="joiningdate" required id="joiningdate">
-                        </div>
-                        <div class="form-group">
-                            <label for="gender" class="form-label">Gender</label>
-                            <div id="gender">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="male" value="male">
-                                    <label class="form-check-label" for="male">Male</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="female" value="female">
-                                    <label class="form-check-label" for="female">Female</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input employeeGender" required type="radio" name="gender" id="other" value="other">
-                                    <label class="form-check-label" for="other">Other</label>
-                                </div>
+                        <label for="employeeName" class="form-label"> Employee Name</label>
+                        <input type="text" class="form-control" name="EmpName" required id="employeeName" autocomplete="off" placeholder="Enter Employee Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="employeemobno" class="form-label">Mobile</label>
+                        <input type="number" class="form-control mobileval" name="mobileNo" required id="employeemobno" placeholder="Enter Mobile">
+                        <span class="mobileError text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employeeEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" required id="employeeEmail" placeholder="Enter Email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="DesignationId" class="form-label">Designation</label>
+
+                        <select class="form-control" id="DesignationId" name="DesignationId">
+                            <option value="">-- Select Designation --</option>
+
+                            @if (designations != null && designations.Any())
+                            {
+                                foreach (var d in designations)
+                                {
+                                    <option value="@d.id">@d.name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="joiningdate" class="form-label">Joining Date</label>
+                        <input type="date" class="form-control" name="joiningdate" required id="joiningdate">
+                    </div>
+                    <div class="form-group">
+                        <label for="gender" class="form-label">Gender</label>
+                        <div id="gender">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input employeeGender" required type="radio" name="gender" id="male" value="male">
+                                <label class="form-check-label" for="male">Male</label>
                             </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input employeeGender" required type="radio" name="gender" id="female" value="female">
+                                <label class="form-check-label" for="female">Female</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input employeeGender" required type="radio" name="gender" id="other" value="other">
+                                <label class="form-check-label" for="other">Other</label>
+                            </div>
+                        </div>
                     </div>
                     <div class="text-center mt-3">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Outsource</button>
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Out Source</button>
                     </div>
                 </form>
             </div>
@@ -138,10 +167,21 @@
 
 <script>
     $(document).ready(function () {
-        $("#searchByEmployeeName").on("input", function () {
-            var table = $("#dataTableExample").DataTable();
-            table.column(1).search($(this).val()).draw();
-        })
+        //$("#searchByEmployeeName").on("input", function () {
+        //    var table = $("#dataTableExample").DataTable();
+        //    table.column(1).search($(this).val()).draw();
+        //});
+
+        $(function () {
+            $('.mobileval').on('input', function () {
+                let m = $(this).val().replace(/\D/g, '').slice(0, 10);
+                $(this).val(m);
+                $('.mobileError').text(
+                    m.length < 10 ? 'Mobile number must be 10 digits.' :
+                        !/^[6-9]/.test(m) ? 'Mobile number must start with 6, 7, 8, or 9.' : ''
+                );
+            });
+        });
     })
 </script>
 
@@ -196,4 +236,28 @@
             }
         })
     })
+
+    $('#searchByEmployeeName').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader(); // 👈 Add here
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+
+        if (search) {
+            $('#searchByEmployeeName').val(search).focus();
+        }
+    });
 </script>

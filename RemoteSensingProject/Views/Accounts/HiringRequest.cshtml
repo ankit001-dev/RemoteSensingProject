@@ -40,7 +40,7 @@
                                 {
                                     if (proman.EmployeeRole == "projectManager")
                                     {
-                                        <option value="@proman.EmployeeName">@proman.EmployeeName</option>
+                                        <option value="@proman.Id">@proman.EmployeeName</option>
                                     }
                                 }
                             }
@@ -53,7 +53,7 @@
                             {
                                 foreach (var proj in projects)
                                 {
-                                    <option value="@proj.ProjectTitle">@proj.ProjectTitle</option>
+                                    <option value="@proj.Id">@proj.ProjectTitle</option>
                                 }
                             }
                         </select>
@@ -61,9 +61,9 @@
                     <div class="col-sm-4">
                         <select id="filter3" class="form-select form-select-sm">
                             <option selected value="">Filter By Status</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Rejected">Rejected</option>
+                            <option value="approved">Approved</option>
+                            <option value="pending">Pending</option>
+                            <option value="rejected">Rejected</option>
                         </select>
                     </div>
                 </div>
@@ -75,68 +75,68 @@
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
-                <table class="table" id="dataTableExample">
-                    <thead>
-                        <tr>
-                            <th>S.N.</th>
-                            <th>Project Manager</th>
-                            <th>Project Code</th>
-                            <th>Project Name</th>
-                            <th>Head Name</th>
-                            <th>Date From</th>
-                            <th>Date To</th>
-                            <th>Proposed Place</th>
-                            <th>Purpose of Visit</th>
-                            <th>Total Days & Night</th>
-                            <th>Avaiability of fund</th>
-                            <th>Remark</th>
-                            @*<th>Action</th>*@
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (data != null)
-                                    {
-                                        int i = 1;
-                                        foreach (var item in data)
-                                        {
-                                <tr>
-                                    <td>@i</td>
-                                    <td data-id="@item.id"><a class="action" href="#" data-title="View Details" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal">@item.projectManager</a></td>
-                                    <td>@item.projectCode</td>
-                                    <td>@item.projectName</td>
-                                    <td>@item.headName</td>
-                                    <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
-                                    <td>@Convert.ToDateTime(item.dateTo).ToString("dd-MMM-yyyy")</td>
-                                    <td>@item.proposedPlace</td>
-                                    <td>@item.purposeOfVisit</td>
-                                    <td>@item.totalDaysNight</td>
-                                    <td>@item.amount</td>
-                                    <td>
-                                        @if (item.adminappr && !item.newRequest && string.IsNullOrEmpty(item.remark))
-                                        {<span>Approved</span> }
-                                        else if (item.newRequest && !item.adminappr)
-                                        { <span>Pending</span>}
-                                        else
-                                        { <span>@item.remark</span>}
-                                    </td>
-                                    @*<td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal"></i></td>*@
-                                    <td>
-                                        @{
-                                            if (item.newRequest == true && item.adminappr == false)
-                                            { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                            else if (item.newRequest == false && item.adminappr == true)
-                                            { <span id="status" class="badge bg-success">Approved</span> }
-                                            else if (item.newRequest == false && item.adminappr == false)
-                                            { <span id="status" class="badge bg-danger">Rejected</span> }
-                                        }
-                                    </td>
-                                </tr>
-                                i++;
+                <div class="table-responsive">
+                    <table class="table" id="dataTableExample">
+                        <thead>
+                            <tr>
+                                <th >S.N.</th>
+                                <th>Project Manager</th>
+                                <th>Project Code</th>
+                                <th>Project Name</th>
+                                <th>Head Name</th>
+                                <th>Date From</th>
+                                <th>Date To</th>
+                                <th>Proposed Place</th>
+                                <th>Purpose of Visit</th>
+                                <th>Total Days & Night</th>
+                                <th>Avaiability of fund</th>
+                                <th>Remark</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (data != null)
+                            {
+                                int i = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td data-id="@item.id"><a class="action" href="#" data-title="View Details" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal">@item.projectManager</a></td>
+                                        <td>@item.projectCode</td>
+                                        <td>@item.projectName</td>
+                                        <td>@item.headName</td>
+                                        <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
+                                        <td>@Convert.ToDateTime(item.dateTo).ToString("dd-MMM-yyyy")</td>
+                                        <td>@item.proposedPlace</td>
+                                        <td>@item.purposeOfVisit</td>
+                                        <td>@item.totalDaysNight</td>
+                                        <td>@item.amount</td>
+                                        <td>
+                                            @if (item.adminappr && !item.newRequest && string.IsNullOrEmpty(item.remark))
+                                            {<span>Approved</span> }
+                                            else if (item.newRequest && !item.adminappr)
+                                            { <span>Pending</span>}
+                                            else
+                                            { <span>@item.remark</span>}
+                                        </td>
+                                        <td>
+                                            @{
+                                                if (item.newRequest == true && item.adminappr == false)
+                                                { <span id="status" class="badge bg-primary pt-1">Pending</span> }
+                                                else if (item.newRequest == false && item.adminappr == true)
+                                                { <span id="status" class="badge bg-success">Approved</span> }
+                                                else if (item.newRequest == false && item.adminappr == false)
+                                                { <span id="status" class="badge bg-danger">Rejected</span> }
+                                            }
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
                             }
-                        }
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -237,27 +237,6 @@
 <script>
 
     $(document).ready(function () {
-
-        //Filter
-        $("#Filter1").on("change", function () {
-            let filter = $(this).val();
-            console.log(filter)
-            let table = $("#dataTableExample").DataTable()
-            table.column(1).search(filter).draw()
-        })
-        $("#Filter2").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#dataTableExample").DataTable()
-            table.column(3).search(filter).draw()
-        })
-
-        $("#filter3").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#dataTableExample").DataTable()
-            table.column(12).search(filter).draw()
-        })
-
-
         $("#printBtn").click(function () {
 
             Swal.fire({
@@ -360,5 +339,42 @@
         const date = new Date(timestamp);
         return date.toLocaleDateString();
     }
+
+    function applyFilters() {
+        const url = new URL(window.location.href);
+
+        const manager = $("#Filter1").val();
+        const project = $("#Filter2").val();
+        const status = $("#Filter3").val();
+
+        // Project Manager Filter
+        if (manager) url.searchParams.set("managerFilter", manager);
+        else url.searchParams.delete("managerFilter");
+
+        // Project Filter
+        if (project) url.searchParams.set("projectFilter", project);
+        else url.searchParams.delete("projectFilter");
+
+        // Status Filter
+        if (status) url.searchParams.set("statusFilter", status);
+        else url.searchParams.delete("statusFilter");
+
+        showLoader(); // Optional loader
+        window.location.href = url.toString();
+    }
+
+    // Attach change events
+    $("#Filter1").on("change", applyFilters);
+    $("#Filter2").on("change", applyFilters);
+    $("#Filter3").on("change", applyFilters);
+
+    // Restore values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        $("#Filter1").val(urlParams.get("managerFilter"));
+        $("#Filter2").val(urlParams.get("projectFilter"));
+        $("#Filter3").val(urlParams.get("statusFilter"));
+    });
 
 </script>

@@ -39,8 +39,15 @@ namespace RemoteSensingProject.Models.Admin
             public bool PresentStatus { get; set; }
             public int AppStatus { get; set; }
             public string Reason { get; set; }
-
+            public string Password { get; set; }    
             public PaginationInfo Pagination { get; set; }
+            public bool updationStatus { get; set; }
+        }
+        public class BudgetHeadModel
+        {
+            public int Id { get; set; }
+            public string BudgetHead { get; set; }
+            //public bool Status { get; set; }
         }
         public class SubProblem
         {
@@ -86,9 +93,20 @@ namespace RemoteSensingProject.Models.Admin
             public List<Project_Budget> budgets { get; set; }
             public List<Project_Statge> stages { get; set; }
             public List<Project_Subordination> SubOrdinate { get; set; }
+            public List<HumanResources> hr { get; set; }
+        }
+
+        public class HumanResources
+        {
+            public int id { get; set; }
+            public int designationId { get; set; }
+            public int designationCount { get; set; }
+            public string designationName { get; set; }
         }
         public class Project_model
         {        
+            public int hrCount { get; set; }
+            public string projectStatusLabel { get; set; }
             public string projectCode { get; set; }
             public bool completestatus { get; set; }
             //public string projectType { get; set; }
@@ -98,9 +116,9 @@ namespace RemoteSensingProject.Models.Admin
             public decimal overallPercentage { get; set; }
             public string ProjectTitle { get; set; }
             public DateTime CurrentDate => DateTime.Now;
-            public DateTime AssignDate { get; set; }
-            public DateTime StartDate { get; set; }
-            public DateTime CompletionDate { get; set; }
+            public DateTime? AssignDate { get; set; }
+            public DateTime? StartDate { get; set; }
+            public DateTime? CompletionDate { get; set; }
             public string ProjectManager { get; set; }
             public string CompletionDatestring { get; set; }
             public string AssignDateString { get; set; }
@@ -151,6 +169,7 @@ namespace RemoteSensingProject.Models.Admin
             public string CompletionDatestring { get; set; }
             public string TotalAskAmount { get; set; }
             public string ApproveAmount { get; set; }
+            public  string budgetheadsname { get; set; }
 
         }
         public class Project_Subordination
@@ -182,6 +201,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class Meeting_Model
         {
+            public string statusLabel { get; set; }
             public string createdBy { get; set; }
             public int Id { get; set; }
             public string MeetingType { get; set; }
@@ -327,6 +347,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class ProjectExpenditure
         {
+            public PaginationInfo Pagination { get; set; }
             public string projectmanager { get; set; }
             public int id { get; set; }
             public string ProjectName  { get; set; }
@@ -386,6 +407,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class HiringVehicle1
         {
+            public string statusLabel { get; set; } 
             public string employeecode { get; set; }
             public string projectCode { get; set; }
             public string remark { get; set; }
@@ -414,6 +436,7 @@ namespace RemoteSensingProject.Models.Admin
         }
         public class RaisedProblem
         {
+            public PaginationInfo Pagination { get; set; }
             public string projectCode { get; set; }
             public DateTime createdAt { get; set; }
             public string projectManager { get; set; }

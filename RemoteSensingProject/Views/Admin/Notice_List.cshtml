@@ -25,18 +25,18 @@
                 <h5>Notice Lists</h5>
             </div>
             <div class="col-lg-6 col-md-6">
-                <input type="text" id="searchbyProjecManager" placeholder="Search by Project Manager" class="form-control">
+                <input type="text" id="searchbyProjecManager" placeholder="Search by Project Name" class="form-control">
             </div>
             <div class="col-lg-3 col-md-6">
                 <select class="form-select form-select-lg" id="filterByProject">
-                    <option selected value=null>--Select Project--</option>
-                    @if (ViewBag.ProjectList != null)
+                    <option selected value=null>--Select Employee--</option>
+                    @if (ViewBag.EmployeeList != null)
                     {
-                        if (ViewBag.ProjectList.Count > 0)
+                        if (ViewBag.EmployeeList.Count > 0)
                         {
-                            foreach (var item in ViewBag.ProjectList)
+                            foreach (var item in ViewBag.EmployeeList)
                             {
-                                <option value="@item.Id" @(int.TryParse(Request.QueryString["projectId"],out int projectId) && projectId==item.Id ? "selected":"") >@item.ProjectTitle</option>
+                                <option value="@item.Id">@item.EmployeeName</option>
                             }
                         }
                     }
@@ -158,7 +158,7 @@
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex">
-                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> PPP Based Slum Rehabilitaiton</h1>
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Detail</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -297,9 +297,6 @@
                         </div>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -499,7 +496,9 @@
         getProjectManagerData(pId)
     })
 
-    function updateNotice(data,id,pId) {
+    function updateNotice(data, id, pId) {
+        debugger
+
         $("#selectProject").val(pId)
         getProjectManagerData(pId)
         $("#noticeId").val(id)
@@ -553,21 +552,21 @@
         })
     })
 
-    $("#filterByProject").change(function () {
-        let id = $(this).val();
-        if (id!=null) {
+    //$("#filterByProject").change(function () {
+    //    let id = $(this).val();
+    //    if (id!=null) {
 
-            location.href = "/admin/Notice_List?projectId=" + id;
-        } else {
-            location.href = "/admin/Notice_List"
+    //        location.href = "/admin/Notice_List?projectId=" + id;
+    //    } else {
+    //        location.href = "/admin/Notice_List"
 
-        }
-    })
+    //    }
+    //})
 
-    $('#searchbyProjecManager').on('keyup', function () {
-        let table = $("#dataTableExample").DataTable();
-        table.columns(2).search(this.value).draw();
-    });
+    //$('#searchbyProjecManager').on('keyup', function () {
+    //    let table = $("#dataTableExample").DataTable();
+    //    table.columns(2).search(this.value).draw();
+    //});
 
     function shownotice(data) {
         var newTab = window.open();
@@ -576,4 +575,54 @@
         newTab.document.close();
         newTab.print();
     }
+
+    // Search by Project Manager (searchTerm)
+    $("#searchbyProjecManager").on("keyup", function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+
+        if (value)
+            url.searchParams.set("searchTerm", value);
+        else
+            url.searchParams.delete("searchTerm");
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+
+    // Project Dropdown Filter
+    $("#filterByProject").on("change", function () {
+        const url = new URL(window.location.href);
+        const projectValue = $(this).val();
+
+        if (projectValue && projectValue !== "null")
+            url.searchParams.set("projectManager", projectValue);
+        else
+            url.searchParams.delete("projectManager");
+
+        const searchTerm = $("#searchbyProjecManager").val().trim();
+        if (searchTerm)
+            url.searchParams.set("searchTerm", searchTerm);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+
+    // Restore values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const searchTerm = urlParams.get("searchTerm");
+        if (searchTerm) $("#searchbyProjecManager").val(searchTerm).focus();
+
+        const projectId = urlParams.get("projectManager");
+        if (projectId) $("#filterByProject").val(projectId);
+    });
+
+
 </script>
