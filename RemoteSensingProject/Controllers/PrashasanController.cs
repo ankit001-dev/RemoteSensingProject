@@ -13,5 +13,26 @@ namespace RemoteSensingProject.Controllers
         {
             return View();
         }
+
+        public ActionResult ManageDivision()
+        {
+            return View();
+        }
+
+
+        public ActionResult ManageOutSource()
+        {
+            return View();
+        }
+
+        public ActionResult ManageManPowerRequest()
+        {
+            return View();
+        }
+
+        public ActionResult Monthly_ManPower_Allocation_Report()
+        {
+            return View();
+        }
     }
 }

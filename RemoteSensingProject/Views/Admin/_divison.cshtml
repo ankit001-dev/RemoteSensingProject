@@ -40,7 +40,7 @@
             <div class="modal-header">
                 <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
 
-                <h5 class="modal-title" id="exampleModalLabel">Add <span id="modalTitle">Designation</span></h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add <span id="modalTitle">Division</span></h5>
 
             </div>
             <div class="modal-body">
@@ -126,7 +126,8 @@
         }
 
 
-        $(".deletDivion").click(function () {
+        $(document).on("click", ".deletDivion", function () {
+            
             let dataId = $(this).attr("data-id");
             Swal.fire({
                 title: "Are you sure?",
