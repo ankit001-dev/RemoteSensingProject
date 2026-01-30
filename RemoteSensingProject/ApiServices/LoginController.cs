@@ -1,7 +1,3 @@
-// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
-// for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
-// RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// RemoteSensingProject.ApiServices.LoginController
 using System;
 using System.Linq;
 using System.Net;
@@ -37,7 +33,7 @@ namespace RemoteSensingProject.ApiServices
 			authgaurd = new JwtAuthorizeAttribute();
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpPost]
 		[Route("api/login")]
 		public IHttpActionResult Login()
@@ -88,7 +84,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpGet]
 		[Route("api/refresh-token")]
 		public IHttpActionResult RefreshToken(string token)
@@ -155,7 +151,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpPost]
 		[Route("api/send-otp")]
 		public IHttpActionResult SendOtp([FromBody] RemoteSensingProject.Models.LoginManager.main.Credentials userData)
@@ -190,7 +186,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpPost]
 		[Route("api/verify-otp")]
 		public IHttpActionResult VerifyOtp([FromBody] RemoteSensingProject.Models.LoginManager.main.VerifyOtpRequest model)
@@ -219,7 +215,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpPost]
 		[Route("api/reset-password")]
 		public IHttpActionResult ResetPassword([FromBody] RemoteSensingProject.Models.LoginManager.main.Credentials userdata)

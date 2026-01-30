@@ -710,7 +710,6 @@ namespace RemoteSensingProject.ApiServices
 					mobileNo = Convert.ToInt64(request.Form.Get("mobileNo")),
 					gender = request.Form.Get("gender"),
 					email = request.Form.Get("email"),
-					joiningdate = request.Form.Get("joiningdate"),
 					designationid = Convert.ToInt32(request.Form.Get("designationId"))
 				};
 				bool res = _managerService.insertOutSource(formData);
