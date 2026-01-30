@@ -737,7 +737,7 @@ namespace RemoteSensingProject.ApiServices
 		{
 			try
 			{
-				List<OuterSource> data = _managerService.selectAllOutSOurceList(userId, limit, page, searchTerm);
+				List<OuterSource> data = _managerService.selectAllOutSOurceList( null, limit, page, searchTerm);
 				string[] selectProperties = new string[6] { "Id", "EmpName", "mobileNo", "email", "joiningdate", "gender" };
 				List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
 				if (data.Count > 0)

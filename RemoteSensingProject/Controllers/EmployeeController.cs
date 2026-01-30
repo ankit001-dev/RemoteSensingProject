@@ -60,7 +60,7 @@ namespace RemoteSensingProject.Controllers
 		public ActionResult OutSource(string searchTerm = null)
 		{
 			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-			((ControllerBase)this).ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj, null, null, searchTerm);
+			((ControllerBase)this).ViewData["UserList"] = _managerServices.selectAllOutSOurceList( null, null, null, searchTerm);
 			((ControllerBase)this).ViewData["Designations"] = _adminServices.ListDesgination();
 			return View();
 		}

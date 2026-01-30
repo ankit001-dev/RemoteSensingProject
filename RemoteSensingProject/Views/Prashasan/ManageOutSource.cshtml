@@ -3,6 +3,7 @@
     ViewBag.Title = "ManageOutSource";
     Layout = "~/Views/Shared/_prashasanLayout.cshtml";
     var designations = ViewData["Designations"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
+    var data = ViewData["UserList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
 }
 
 <style>
@@ -54,13 +55,13 @@
                                 <th>Name</th>
                                 <th>Contact No.</th>
                                 <th>Email</th>
-                                <th>Designations</th>
-                                <th>Joining Date</th>
                                 <th>Gender</th>
+                                <th>Designations</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @*@if (data != null && data.Count > 0)
+                            @if (data != null && data.Count > 0)
                             {
                                 var count = 1;
                                 foreach (var item in data)
@@ -70,15 +71,19 @@
                                         <td>@item.EmpName</td>
                                         <td>@item.mobileNo</td>
                                         <td>@item.email</td>
-                                        <td>@item.designationname</td>
-                                        <td>@item.joiningdate</td>
                                         <td>@item.gender</td>
+                                        <td>@item.designationname</td>
+                                        <td>
+                                            <a href="#edit" class="cl_editOutSource" data-id="@item.Id"><i class="link-icon" data-feather="edit"></i></a>
+                                            <a href="#delete" class="cl_deleteOutSource" data-id="@item.Id"> <i class="link-icon text-danger" data-feather="trash"></i></a>
+                                          
+                                        </td>
                                     </tr>
 
                                     count++;
                                 }
 
-                            }*@
+                            }
 
                         </tbody>
                     </table>
@@ -149,8 +154,6 @@
                             }
                         </select>
                     </div>
-
-
                     <div class="text-center mt-3">
                         <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Out Source</button>
                     </div>
@@ -178,10 +181,7 @@
             });
         });
     })
-</script>
 
-
-<script>
     $("#addEmployeeform").on("submit", function (e) {
         e.preventDefault();
         Swal.fire({
@@ -255,4 +255,50 @@
             $('#searchByEmployeeName').val(search).focus();
         }
     });
+
+    $(document).on("click", ".cl_editOutSource", function () {
+        const empId = $(this).data("id");
+        Swal.fire({
+            title: "Please wait...",
+            text: "Processing your request ....",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: `/api/prashasan/OutsourceList?id=${empId}`,
+            type: "get",
+            success: function (res) {
+                if (res.Status) {
+                    const data = res.data;
+                    console.log(data);
+                    $(".actionType").text("Update");
+                    $("#addslider").modal("show");
+                    $("#employeeInpId").val(data.Id);
+
+                    // text inputs
+                    $("#employeeName").val(data.EmpName);
+                    $("#employeemobno").val(data.mobileNo);
+                    $("#employeeEmail").val(data.email);
+
+                    // radio button (gender)
+                    $("input[name='gender'][value='" + data.gender + "']").prop("checked", true);
+
+                    // dropdown
+                    $("#DesignationId").val(data.designationid);
+
+                    Swal.close();
+                }
+            },
+            error: function (xhr, error, statusCode) {
+                console.error(xhr);
+                console.error(error);
+                console.error(statusCode);
+            }
+        })
+
+    })
 </script>

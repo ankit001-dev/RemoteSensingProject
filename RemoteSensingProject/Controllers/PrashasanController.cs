@@ -29,9 +29,10 @@ namespace RemoteSensingProject.Controllers
         }
 
 
-        public ActionResult ManageOutSource()
+        public ActionResult ManageOutSource(string searchTerm = null)
         {
             ViewData["Designations"] = _adminServices.ListDesgination();
+            ViewData["UserList"] = _managerServices.selectAllOutSOurceList(null, null, null, searchTerm);
             return View();
         }
 

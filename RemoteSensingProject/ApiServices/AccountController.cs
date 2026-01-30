@@ -10,7 +10,7 @@ using System.Web;
 using System.Web.Http;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
-using RemoteSensingProject.Models.Admin;
+using static RemoteSensingProject.Models.CommonHelper;
 using RemoteSensingProject.Models.ProjectManager;
 
 namespace RemoteSensingProject.ApiServices
@@ -62,16 +62,16 @@ namespace RemoteSensingProject.ApiServices
 			{
 				List<RemoteSensingProject.Models.Admin.main.Project_Budget> res = _mangerServices.ProjectBudgetList(projectId);
 				string[] selectprop = new string[6] { "Id", "Project_Id", "ProjectHeads", "ProjectAmount", "TotalAskAmount", "ApproveAmount" };
-				List<object> newdata = CommonHelper.SelectProperties(res, selectprop);
+				List<object> newdata = SelectProperties(res, selectprop);
 				if (newdata.Count > 0)
 				{
-					return CommonHelper.Success((ApiController)(object)this, newdata, "Data fetched successfully");
+					return Success(this, newdata, "Data fetched successfully");
 				}
-				return CommonHelper.NoData((ApiController)(object)this);
+				return NoData(this);
 			}
 			catch (Exception ex)
 			{
-				return CommonHelper.Error((ApiController)(object)this, ex.Message);
+				return Error(this, ex.Message);
 			}
 		}
 
@@ -342,16 +342,16 @@ namespace RemoteSensingProject.ApiServices
 				"EmpName", "type", "id", "amount", "userId", "apprstatus", "subStatus", "adminappr", "status", "chequeNum",
 				"accountNewRequest", "chequeDate", "newRequest", "approveAmount"
 				};
-				List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
+				List<object> filterData = SelectProperties(data, selectProperties);
 				if (data.Count > 0)
 				{
-					return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+					return Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
 				}
-				return CommonHelper.NoData((ApiController)(object)this);
+				return NoData(this);
 			}
 			catch (Exception ex)
 			{
-				return CommonHelper.Error((ApiController)(object)this, ex.Message);
+				return Error(this, ex.Message);
 			}
 		}
 	}
