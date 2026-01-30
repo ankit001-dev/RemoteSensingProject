@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "ManageOutSource";
     Layout = "~/Views/Shared/_prashasanLayout.cshtml";
+    var designations = ViewData["Designations"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
 }
 
 <style>
@@ -116,27 +117,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="DesignationId" class="form-label">Designation</label>
-
-                        <select class="form-control" id="DesignationId" name="DesignationId">
-                            <option value="">-- Select Designation --</option>
-
-                            @*@if (designations != null && designations.Any())
-                            {
-                                foreach (var d in designations)
-                                {
-                                    <option value="@d.id">@d.name</option>
-                                }
-                            }*@
-                        </select>
-                    </div>
-
-
-                    <div class="form-group">
-                        <label for="joiningdate" class="form-label">Joining Date</label>
-                        <input type="date" class="form-control" name="joiningdate" required id="joiningdate">
-                    </div>
-                    <div class="form-group">
                         <label for="gender" class="form-label">Gender</label>
                         <div id="gender">
                             <div class="form-check form-check-inline">
@@ -153,6 +133,24 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label for="DesignationId" class="form-label">Designation</label>
+
+                        <select class="form-control" id="DesignationId" name="DesignationId">
+                            <option value="">-- Select Designation --</option>
+
+                            @if (designations != null && designations.Any())
+                            {
+                                foreach (var d in designations)
+                                {
+                                    <option value="@d.id">@d.name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+
                     <div class="text-center mt-3">
                         <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Out Source</button>
                     </div>
@@ -198,7 +196,7 @@
         });
         let data = new FormData(this);
         $.ajax({
-            url: "/employee/CreateOutSource",
+            url: "/Prashasan/CreateOutSource",
             type: "Post",
             data: data,
             contentType: false,
