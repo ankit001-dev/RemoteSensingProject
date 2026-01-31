@@ -55,7 +55,19 @@ namespace RemoteSensingProject.Controllers
                 message = (res ? "Outsource created succesfully !" : message)
             });
         }
-
+        [HttpPost]
+        public ActionResult DeleteOutsource(int id)
+        {
+            try 
+            {
+                bool res = _managerServices.DeleteOutSource(id);
+                return Json((object)res,(JsonRequestBehavior)0);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
         public ActionResult ManageManPowerRequest()
         {
             return View();
