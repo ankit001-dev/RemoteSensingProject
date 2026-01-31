@@ -1473,6 +1473,34 @@ namespace RemoteSensingProject.Models.ProjectManager
 			}
 		}
 
+		public bool DeleteOutSource(int id)
+		{
+			try
+			{
+                cmd = new NpgsqlCommand();
+				cmd.Connection = con;
+                ((DbCommand)(object)cmd).CommandType = CommandType.Text;
+				((DbCommand)(object)cmd).CommandText = "CALL sp_manageoutsource(p_action=>@p_action,p_id=>@p_id)";
+				cmd.Parameters.AddWithValue("p_action", (object)"deleteOutsource");
+				cmd.Parameters.AddWithValue("p_id", (object)id);
+                ((DbConnection)(object)con).Open();
+                ((DbCommand)(object)cmd).ExecuteNonQuery();
+                return true;
+            }
+			catch(Exception ex)
+			{
+				throw ex;
+			}
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)cmd).Dispose();
+            }
+        }
+
 		public bool GetResponseFromMember(getMemberResponse mr)
 		{
 			//IL_001f: Unknown result type (might be due to invalid IL or missing references)

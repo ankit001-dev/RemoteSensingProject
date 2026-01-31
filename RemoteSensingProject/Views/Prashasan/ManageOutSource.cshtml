@@ -301,4 +301,59 @@
         })
 
     })
+
+    $(document).on("click", ".cl_deleteOutSource", function () {
+        const id = $(this).data("id");
+        Swal.fire({
+            title: "Do you really want to Delete?",
+            text: "you won't be able to revert",
+            icon: "warning",
+            showDenyButton: true,
+            showCancelButton: false,
+            confirmButtonText: "Delete",
+            denyButtonText: `Cancel`
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Please wait...",
+                    text: "Processing your request ....",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                $.ajax({
+                    url: "/Prashasan/DeleteOutsource",
+                    type: "post",
+                    data: { id: id },
+                    success: function (res) {
+                        if (res) {
+                            Swal.fire({
+                                title: "success",
+                                text: "Outsource Deleted Successfully",
+                                icon: "success",
+                                didClose: () => {
+                                    location.reload();
+                                }
+                            })
+                        } else {
+                            Swal.fire({
+                                title: "error",
+                                text: "something went wrong",
+                                icon: "error"
+                            })
+                        }
+                    }, error: function (xhr) {
+                        Swal.fire({
+                            title: "error",
+                            text: "something went wrong",
+                            icon: "error"
+                        })
+                    }
+                })
+            }
+        });
+    });
 </script>
