@@ -1333,8 +1333,6 @@ namespace RemoteSensingProject.Models.ProjectManager
 
 		public bool insertOutSource(OuterSource os)
 		{
-			//IL_0069: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0073: Expected O, but got Unknown
 			try
 			{
 				string validChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -1347,16 +1345,14 @@ namespace RemoteSensingProject.Models.ProjectManager
 						userpassword += validChars[rnd.Next(validChars.Length)];
 					}
 				}
-				cmd = new NpgsqlCommand("CALL sp_manageoutsource(@p_action, NULL::int, @p_empid,@p_designationid, @p_outcode, @p_emp_name, @p_emp_mobile, @p_emp_email, @p_joiningdate, @p_emp_gender, @p_password,NULL::boolean)", con);
+				cmd = new NpgsqlCommand("CALL sp_manageoutsource(@p_action,@p_id, @p_designationid, @p_emp_name, @p_emp_mobile, @p_emp_email, @p_emp_gender, @p_password,NULL::boolean)", con);
 				((DbCommand)(object)cmd).CommandType = CommandType.Text;
-				((DbParameter)(object)cmd.Parameters.Add("@p_action", (NpgsqlDbType)22)).Value = "createOutSource";
-				((DbParameter)(object)cmd.Parameters.Add("@p_empid", (NpgsqlDbType)9)).Value = os.EmpId;
+				((DbParameter)(object)cmd.Parameters.Add("@p_action", (NpgsqlDbType)22)).Value = os.Id > 0 ? "updateOutSource" : "createOutSource";
+				((DbParameter)(object)cmd.Parameters.Add("@p_id", (NpgsqlDbType)9)).Value = os.Id;
 				((DbParameter)(object)cmd.Parameters.Add("@p_designationid", (NpgsqlDbType)9)).Value = os.designationid;
-				((DbParameter)(object)cmd.Parameters.Add("@p_outcode", (NpgsqlDbType)22)).Value = os.email;
 				((DbParameter)(object)cmd.Parameters.Add("@p_emp_name", (NpgsqlDbType)22)).Value = os.EmpName;
 				((DbParameter)(object)cmd.Parameters.Add("@p_emp_mobile", (NpgsqlDbType)1)).Value = Convert.ToInt64(os.mobileNo);
 				((DbParameter)(object)cmd.Parameters.Add("@p_emp_email", (NpgsqlDbType)22)).Value = os.email;
-				((DbParameter)(object)cmd.Parameters.Add("@p_joiningdate", (NpgsqlDbType)21)).Value = Convert.ToDateTime(os.joiningdate);
 				((DbParameter)(object)cmd.Parameters.Add("@p_emp_gender", (NpgsqlDbType)22)).Value = os.gender;
 				((DbParameter)(object)cmd.Parameters.Add("@p_password", (NpgsqlDbType)22)).Value = userpassword;
 				((DbConnection)(object)con).Open();
@@ -1377,14 +1373,8 @@ namespace RemoteSensingProject.Models.ProjectManager
 			}
 		}
 
-		public List<OuterSource> selectAllOutSOurceList(int userId, int? limit = null, int? page = null, string searchTerm = null)
+		public List<OuterSource> selectAllOutSOurceList(int? id, int? limit = null, int? page = null, string searchTerm = null)
 		{
-			//IL_002c: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0032: Expected O, but got Unknown
-			//IL_0108: Unknown result type (might be due to invalid IL or missing references)
-			//IL_010f: Expected O, but got Unknown
-			//IL_0299: Unknown result type (might be due to invalid IL or missing references)
-			//IL_02a0: Expected O, but got Unknown
 			try
 			{
 				List<OuterSource> list = new List<OuterSource>();
@@ -1397,7 +1387,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 					{
 						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
 						cmd.Parameters.AddWithValue("@v_action", (object)"selectAll");
-						cmd.Parameters.AddWithValue("@v_id", (object)userId);
+						cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
 						cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
 						cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
 						cmd.Parameters.AddWithValue("@v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
@@ -1419,9 +1409,9 @@ namespace RemoteSensingProject.Models.ProjectManager
 											EmpName = ((DbDataReader)(object)rd)["emp_name"].ToString(),
 											mobileNo = Convert.ToInt64(((DbDataReader)(object)rd)["emp_mobile"]),
 											email = ((DbDataReader)(object)rd)["emp_email"].ToString(),
-											joiningdate = ((DbDataReader)(object)rd)["joiningdate"].ToString(),
 											gender = ((DbDataReader)(object)rd)["emp_gender"].ToString(),
-											designationname = ((DbDataReader)(object)rd)["designationname"].ToString()
+											designationname = ((DbDataReader)(object)rd)["designationname"].ToString(),
+											designationid = Convert.ToInt32(rd["designationid"])
 										};
 										if (firstRow)
 										{

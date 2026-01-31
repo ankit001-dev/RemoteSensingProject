@@ -60,33 +60,12 @@ namespace RemoteSensingProject.Controllers
 		public ActionResult OutSource(string searchTerm = null)
 		{
 			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-			((ControllerBase)this).ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj, null, null, searchTerm);
+			((ControllerBase)this).ViewData["UserList"] = _managerServices.selectAllOutSOurceList( null, null, null, searchTerm);
 			((ControllerBase)this).ViewData["Designations"] = _adminServices.ListDesgination();
 			return View();
 		}
 
-		[HttpPost]
-		public ActionResult CreateOutSource(OuterSource os)
-		{
-			bool res = false;
-			string message = "Some issue occured !";
-			try
-			{
-				string userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-				os.EmpId = Convert.ToInt32(userObj);
-				res = _managerServices.insertOutSource(os);
-			}
-			catch (Exception ex)
-			{
-				message = ex.Message;
-			}
-			return Json((object)new
-			{
-				status = res,
-				message = (res ? "Outsource created succesfully !" : message)
-			});
-		}
-
+		
 		public ActionResult CreateTask(string req)
 		{
 			int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);

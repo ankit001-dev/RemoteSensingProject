@@ -10,44 +10,73 @@ using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.Models.ProjectManager
 {
-   
+
     public class DashboardCount
     {
         public string ProjectProblem { get; set; }
-        public string OutSource { get; set; }
-        public string CompletedTask { get; set; }
-        public string TotalTask { get; set; }
-        public string ReimbursementPendingRequest { get; set; }
-        public string ReimbursementApprovedRequest { get; set; }
-        public string ReimbursementRejectedRequest { get; set; }
-        public string HiringPendingRequest { get; set; }
-        public string HiringApprovedRequest { get; set; }
-        public string HiringRejectedRequest { get; set; }
-        public string TourPendingRequest { get; set; }
-        public string TourApprovedRequest { get; set; }
-        public string TourRejectedRequest { get; set; }
-        public string EmpMeeting { get; set; }
-        public string TotalReimbursement { get; set; }
-        public string TotalTourProposal { get; set; }
-        public string TotalHiring { get; set; }
-        public string AdminMeeting { get; set; }
-        public string SelfCreatedProject { get; set; }
-        public string TotalAssignProject { get; set; }
-        public string TotaCompleteProject { get; set; }
-        public string TotalDelayProject { get; set; }
-        public string TotalMeeting { get; set; }
-        public string TotalOngoingProject { get; set; }
-        public string TotalNotice { get; set; }
 
+        public string OutSource { get; set; }
+
+        public string CompletedTask { get; set; }
+
+        public string TotalTask { get; set; }
+
+        public string ReimbursementPendingRequest { get; set; }
+
+        public string ReimbursementApprovedRequest { get; set; }
+
+        public string ReimbursementRejectedRequest { get; set; }
+
+        public string HiringPendingRequest { get; set; }
+
+        public string HiringApprovedRequest { get; set; }
+
+        public string HiringRejectedRequest { get; set; }
+
+        public string TourPendingRequest { get; set; }
+
+        public string TourApprovedRequest { get; set; }
+
+        public string TourRejectedRequest { get; set; }
+
+        public string EmpMeeting { get; set; }
+
+        public string TotalReimbursement { get; set; }
+
+        public string TotalTourProposal { get; set; }
+
+        public string TotalHiring { get; set; }
+
+        public string AdminMeeting { get; set; }
+
+        public string SelfCreatedProject { get; set; }
+
+        public string TotalAssignProject { get; set; }
+
+        public string TotaCompleteProject { get; set; }
+
+        public string TotalDelayProject { get; set; }
+
+        public string TotalMeeting { get; set; }
+
+        public string TotalOngoingProject { get; set; }
+
+        public string TotalNotice { get; set; }
     }
+
 
     public class AssignedProject
     {
-        public int Id { get; set; } // Unique identifier for the project
+        public int Id { get; set; }
+
         public DateTime AssignDate { get; set; }
+
         public string ProjectName { get; set; }
+
         public DateTime StartDate { get; set; }
+
         public DateTime CompletionDate { get; set; }
+
         public string ProjectStatus { get; set; }
     }
     public class UserCredential
@@ -60,56 +89,94 @@ namespace RemoteSensingProject.Models.ProjectManager
     public class GetConclusion
     {
         public int Id { get; set; }
+
         public string Conclusion { get; set; }
+
         public string FollowDate { get; set; }
-        
     }
+
 
     public class ProjectList
     {
         public string projectCode { get; set; }
-        public int Id { get; set; } // Unique identifier for the project
-        public DateTime AssignDate { get; set; }
-        public DateTime CurrentDate => DateTime.Now;
-        public string ProjectName { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime CompletionDate { get; set; }
-        public string ProjectStatus { get; set; } // e.g., Running, Completed, Delayed
-        public string Status { get; set; } // Additional status field (define its purpose)
-        public string Title { get; set; }
-        public int managerId { get; set; }
-        public float budget { get; set; }
-        public string Description { set; get; }
-        public string ProjectDocument { get; set; }
-        public string projectType { get; set; }
-        public bool stage { get; set; }
-        public string CreatedAt { get; set; }
-        public string Upadtedat { get; set; }
-        public string CreatedBy { get; set;}
-        public int CompleteionStatus { get; set;}
-        public int ApproveStatus { get; set;}
-        public string CompletionDatestring { get; set; }
-        public string AssignDateString { get; set; }
-        public string StartDateString { get; set; }
-        public decimal Percentage { get; set; }
-        public decimal physicalPercent { get; set; }
-        public decimal overAllPercent { get; set; }
 
+        public int Id { get; set; }
+
+        public DateTime AssignDate { get; set; }
+
+        public DateTime CurrentDate => DateTime.Now;
+
+        public string ProjectName { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime CompletionDate { get; set; }
+
+        public string ProjectStatus { get; set; }
+
+        public string Status { get; set; }
+
+        public string Title { get; set; }
+
+        public int managerId { get; set; }
+
+        public float budget { get; set; }
+
+        public string Description { get; set; }
+
+        public string ProjectDocument { get; set; }
+
+        public string projectType { get; set; }
+
+        public bool stage { get; set; }
+
+        public string CreatedAt { get; set; }
+
+        public string Upadtedat { get; set; }
+
+        public string CreatedBy { get; set; }
+
+        public int CompleteionStatus { get; set; }
+
+        public int ApproveStatus { get; set; }
+
+        public string CompletionDatestring { get; set; }
+
+        public string AssignDateString { get; set; }
+
+        public string StartDateString { get; set; }
+
+        public decimal Percentage { get; set; }
+
+        public decimal physicalPercent { get; set; }
+
+        public decimal overAllPercent { get; set; }
     }
+
 
 
     public class FinancialMonthlyReport
     {
-        public int id { get; set;}
+        public int id { get; set; }
+
         public int projectId { get; set; }
+
         public string aim { get; set; }
+
         public string date { get; set; }
+
         public string month_aim { get; set; }
+
         public string completeInMonth { get; set; }
+
         public string departBeneficiaries { get; set; }
+
         public string projectName { get; set; }
+
         public string totalBudget { get; set; }
+
         public string department { get; set; }
+
         public string description { get; set; }
     }
 

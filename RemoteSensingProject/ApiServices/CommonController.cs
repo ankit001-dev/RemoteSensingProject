@@ -184,7 +184,7 @@ public class CommonController : ApiController
 		try
 		{
 			RemoteSensingProject.Models.Admin.main.createProjectModel data = _adminServices.GetProjectById(Id);
-			return (IHttpActionResult)(object)((ApiController)this).Ok(new
+			return Ok(new
 			{
 				status = true,
 				data = data
@@ -282,7 +282,7 @@ public class CommonController : ApiController
 			{
 				file.SaveAs(HttpContext.Current.Server.MapPath(formData.Attachment_Url));
 			}
-			return (IHttpActionResult)(object)((ApiController)this).Ok(new
+			return Ok(new
 			{
 				status = res,
 				StatusCode = ((!res) ? 500 : ((formData.Id > 0) ? 200 : 201)),
@@ -308,7 +308,7 @@ public class CommonController : ApiController
 		try
 		{
 			RemoteSensingProject.Models.Admin.main.Meeting_Model data = _adminServices.getMeetingById(Id);
-			return (IHttpActionResult)(object)((ApiController)this).Ok(new
+			return Ok(new
 			{
 				status = true,
 				StatusCode = 200,
@@ -341,14 +341,14 @@ public class CommonController : ApiController
 		};
 		if (_managerservice.GetResponseFromMember(mr))
 		{
-			return (IHttpActionResult)(object)((ApiController)this).Ok(new
+			return Ok(new
 			{
 				status = true,
 				message = "Response Send Successfully",
 				statusCode = 200
 			});
 		}
-		return (IHttpActionResult)(object)((ApiController)this).Ok(new
+		return Ok(new
 		{
 			status = true,
 			message = "something went wrong",
@@ -442,7 +442,7 @@ public class CommonController : ApiController
 			{
 				file.SaveAs(HttpContext.Current.Server.MapPath(empData.Image_url));
 			}
-			return (IHttpActionResult)(object)((ApiController)this).Ok(new
+			return Ok(new
 			{
 				status = res,
 				StatusCode = (res ? 200 : 500),
@@ -470,7 +470,7 @@ public class CommonController : ApiController
 			RemoteSensingProject.Models.Admin.main.Employee_model data = _adminServices.SelectEmployeeRecordById(Id);
 			if (data != null && data.Id > 0)
 			{
-				return (IHttpActionResult)(object)((ApiController)this).Ok(new
+				return Ok(new
 				{
 					status = true,
 					StatusCode = 200,
@@ -507,7 +507,7 @@ public class CommonController : ApiController
 			List<RemoteSensingProject.Models.Admin.main.CommonResponse> data = _adminServices.ListDesgination();
 			if (data != null && data.Count > 0)
 			{
-				return (IHttpActionResult)(object)((ApiController)this).Ok(new
+				return Ok(new
 				{
 					status = true,
 					StatusCode = 200,
@@ -543,14 +543,14 @@ public class CommonController : ApiController
 			List<AttendanceManage> data = _managerservice.GetAllAttendanceForProjectManager(projectManager, EmpId);
 			if (data != null)
 			{
-				return (IHttpActionResult)(object)((ApiController)this).Ok(new
+				return Ok(new
 				{
 					status = data.Any(),
 					data = data,
 					message = "Data found!"
 				});
 			}
-			return (IHttpActionResult)(object)((ApiController)this).Ok(new
+			return Ok(new
 			{
 				status = data.Any(),
 				data = data,
@@ -559,7 +559,7 @@ public class CommonController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).Ok(new
+			return Ok(new
 			{
 				status = false,
 				StatusCode = 500,
@@ -592,6 +592,6 @@ public class CommonController : ApiController
 
 	private IHttpActionResult BadRequest(object value)
 	{
-		return (IHttpActionResult)(object)((ApiController)this).Content<object>(HttpStatusCode.BadRequest, value);
+		return Content<object>(HttpStatusCode.BadRequest, value);
 	}
 }

@@ -167,7 +167,7 @@ public class ReportApiController : ApiController
 			{
 				if (!role.Equals("projectManager"))
 				{
-					return (IHttpActionResult)(object)((ApiController)this).Content<string>(HttpStatusCode.Forbidden, role + "You do not have permission to access this resource.");
+					return Content<string>(HttpStatusCode.Forbidden, role + "You do not have permission to access this resource.");
 				}
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
@@ -178,7 +178,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the project report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the project report: " + ex.Message));
 		}
 	}
 
@@ -258,7 +258,7 @@ public class ReportApiController : ApiController
 			{
 				if (!role.Equals("projectManager"))
 				{
-					return (IHttpActionResult)(object)((ApiController)this).Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
+					return Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
 				}
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
@@ -269,7 +269,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
 		}
 	}
 
@@ -464,7 +464,7 @@ public class ReportApiController : ApiController
 			{
 				if (!role.Equals("accounts"))
 				{
-					return (IHttpActionResult)(object)((ApiController)this).Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
+					return Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
 				}
 				ManagerService managerservice3 = _managerservice;
 				int? managerId = projectManagerFilter;
@@ -477,7 +477,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
 		}
 	}
 
@@ -544,7 +544,7 @@ public class ReportApiController : ApiController
 			{
 				if (!role.Equals("accounts"))
 				{
-					return (IHttpActionResult)(object)((ApiController)this).Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
+					return Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
 				}
 				ManagerService managerservice3 = _managerservice;
 				int? managerId = projectManagerFilter;
@@ -557,7 +557,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
 		}
 	}
 
@@ -639,7 +639,7 @@ public class ReportApiController : ApiController
 			{
 				if (!role.Equals("projectManager"))
 				{
-					return (IHttpActionResult)(object)((ApiController)this).Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
+					return Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
 				}
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
@@ -654,7 +654,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
 		}
 	}
 
@@ -736,7 +736,7 @@ public class ReportApiController : ApiController
 			{
 				if (!role.Equals("projectManager"))
 				{
-					return (IHttpActionResult)(object)((ApiController)this).Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
+					return Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
 				}
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
@@ -751,7 +751,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
 		}
 	}
 
@@ -838,7 +838,7 @@ public class ReportApiController : ApiController
 			{
 				if (!role.Equals("projectManager"))
 				{
-					return (IHttpActionResult)(object)((ApiController)this).Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
+					return Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
 				}
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
@@ -853,7 +853,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
 		}
 	}
 
@@ -940,7 +940,7 @@ public class ReportApiController : ApiController
 			{
 				if (!role.Equals("projectManager"))
 				{
-					return (IHttpActionResult)(object)((ApiController)this).Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
+					return Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
 				}
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
@@ -955,7 +955,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
 		}
 	}
 
@@ -1061,7 +1061,7 @@ public class ReportApiController : ApiController
 			{
 				if (!role.Equals("projectManager"))
 				{
-					return (IHttpActionResult)(object)((ApiController)this).Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
+					return Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
 				}
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
@@ -1083,7 +1083,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
 		}
 	}
 
@@ -1177,7 +1177,7 @@ public class ReportApiController : ApiController
 			{
 				if (!role.Equals("projectManager"))
 				{
-					return (IHttpActionResult)(object)((ApiController)this).Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
+					return Content<string>(HttpStatusCode.Forbidden, "You do not have permission to access this resource.");
 				}
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
@@ -1199,7 +1199,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
 		}
 	}
 
@@ -1215,7 +1215,7 @@ public class ReportApiController : ApiController
 		}
 		catch (Exception ex)
 		{
-			return (IHttpActionResult)(object)((ApiController)this).InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
+			return InternalServerError(new Exception("An error occurred while generating the report: " + ex.Message));
 		}
 	}
 }

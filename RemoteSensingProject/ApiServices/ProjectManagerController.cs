@@ -710,7 +710,6 @@ namespace RemoteSensingProject.ApiServices
 					mobileNo = Convert.ToInt64(request.Form.Get("mobileNo")),
 					gender = request.Form.Get("gender"),
 					email = request.Form.Get("email"),
-					joiningdate = request.Form.Get("joiningdate"),
 					designationid = Convert.ToInt32(request.Form.Get("designationId"))
 				};
 				bool res = _managerService.insertOutSource(formData);
@@ -738,7 +737,7 @@ namespace RemoteSensingProject.ApiServices
 		{
 			try
 			{
-				List<OuterSource> data = _managerService.selectAllOutSOurceList(userId, limit, page, searchTerm);
+				List<OuterSource> data = _managerService.selectAllOutSOurceList( null, limit, page, searchTerm);
 				string[] selectProperties = new string[6] { "Id", "EmpName", "mobileNo", "email", "joiningdate", "gender" };
 				List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
 				if (data.Count > 0)
