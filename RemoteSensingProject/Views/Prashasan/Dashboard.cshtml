@@ -2,7 +2,284 @@
 @{
     ViewBag.Title = "Dashboard";
     Layout = "~/Views/Shared/_prashasanLayout.cshtml";
+    var data = Model as RemoteSensingProject.Models.ProjectManager.PrashasanDashboard;
 }
+<style>
+    .uniform-card {
+        /*        height: 200px;
+    */ width: 160px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+    }
 
-<h2>Dashboard</h2>
+        .uniform-card .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+        }
 
+        .uniform-card .card-title {
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .uniform-card p.text-success {
+            font-size: 13px;
+        }
+
+        .uniform-card img {
+            margin: 0 auto;
+        }
+
+    /*    .grid-margin .w-100 .card {
+        background: #0a6d9d6b;
+    }*/
+
+    .align-items-baseline .text-success {
+        color: #000 !important;
+    }
+
+    .grid-margin {
+        margin: 3px 0px !important;
+    }
+
+    .card .card-body .justify-content-between {
+        padding-bottom: 3px !important;
+    }
+
+
+    /*Trae*/
+    .uniform-card {
+        overflow: hidden;
+    }
+
+    .card-body {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+        /* Hide scrollbar but keep functionality */
+        .card-body::-webkit-scrollbar {
+            display: none;
+        }
+</style>
+<style>
+
+    .text-success span {
+        display: flex;
+        align-items: center;
+    }
+
+    .text-success span {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0px;
+    }
+
+        .text-success span span.text-dark {
+            min-width: 110px;
+            text-align: left;
+        }
+
+    .card-body {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+        /* Hide scrollbar but keep functionality */
+        .card-body::-webkit-scrollbar {
+            display: none;
+        }
+</style>
+<div class="row mx-0">
+    <div class="col-12 col-xl-12">
+        <div class="row flex-grow-1">
+            <!-- Total Designation Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1 ">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 shadow-lg">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Total Designation</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-lg-6 ps-3 pt-3">
+                                    <h3 class="">@data.totalDesignation</h3>
+                                </div>
+                                <div class="col-md-12 col-lg-6">
+                                    <img src="~/assets/gif/graphic-designer.gif" height="50" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total OutSource Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1 ">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 shadow-lg">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Total Outsource</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-lg-6 ps-3 pt-3">
+                                    <h3 class="">@data.totalOutsource</h3>
+                                </div>
+                                <div class="col-md-12 col-lg-6">
+                                    <img src="~/assets/gif/labour-market.gif" height="50" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Requests Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1 ">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 shadow-lg">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Total requests</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-lg-6 ps-3 pt-3">
+                                    <h3 class="">@data.totalRequest</h3>
+                                </div>
+                                <div class="col-md-12 col-lg-6">
+                                    <img src="~/assets/gif/sos.gif" height="50" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Remaining Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1 ">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 shadow-lg">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Total Remaining</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 col-lg-6 ps-3 pt-3">
+                                    <h3 class="">@data.totalRemaining</h3>
+                                </div>
+                                <div class="col-md-12 col-lg-6">
+                                    <img src="~/assets/gif/graphic-designer.gif" height="50" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mx-0 mt-1">
+    <div class="col-lg-12 col-xl-12 px-1">
+        <div class="card ">
+            <div class="card-body">
+                <div class="card-title">
+                    Outsource Data
+                </div>
+                <div id="monthlySalesChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        // Dummy Monthly Outsource Data
+        var data = [
+            { month: "Jan", added: 45, allocated: 30 },
+            { month: "Feb", added: 60, allocated: 52 },
+            { month: "Mar", added: 38, allocated: 25 },
+            { month: "Apr", added: 72, allocated: 60 },
+            { month: "May", added: 55, allocated: 48 },
+            { month: "Jun", added: 80, allocated: 70 }
+        ];
+
+        if (data && data.length > 0) {
+
+            $("#monthlySalesChart").empty();
+
+            var categories = [];
+            var addedData = [];
+            var allocatedData = [];
+
+            $.each(data, function (index, item) {
+                categories.push(item.month);
+                addedData.push(item.added);
+                allocatedData.push(item.allocated);
+            });
+
+            var options = {
+                chart: {
+                    type: 'bar',
+                    height: 318,
+                    toolbar: { show: false }
+                },
+                colors: ['#1aa7a6', '#f39c12'],
+                plotOptions: {
+                    bar: {
+                        columnWidth: '35%',
+                        borderRadius: 4
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    offsetY: -20,
+                    style: {
+                        fontSize: '10px'
+                    }
+                },
+                series: [
+                    {
+                        name: 'Outsource Added',
+                        data: addedData
+                    },
+                    {
+                        name: 'Outsource Allocated',
+                        data: allocatedData
+                    }
+                ],
+                xaxis: {
+                    categories: categories,
+                    title: {
+                        text: 'Month'
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Outsource Count'
+                    }
+                },
+                legend: {
+                    position: 'top'
+                },
+                tooltip: {
+                    shared: true,
+                    intersect: false
+                }
+            };
+
+            var chart = new ApexCharts(
+                document.querySelector("#monthlySalesChart"),
+                options
+            );
+            chart.render();
+        }
+    });
+</script>
