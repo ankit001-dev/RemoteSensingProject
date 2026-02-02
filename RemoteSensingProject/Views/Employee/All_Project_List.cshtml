@@ -122,12 +122,6 @@
                                         <td class="text-center">
                                             <ul class="d-flex list-unstyled mb-0 justify-content-center">
                                                 <li class="me-2">
-                                                    @*<a href="#" class="viewProject" title="View" data-id="@item.Id">
-                                                        <i class="link-icon" data-feather="eye"></i>
-                                                    </a>*@
-
-                                                </li>
-                                                <li class="me-2">
                                                     <a href="@(item.ProjectType.Equals("Internal") ? $"/Employee/Weekly_Update_Project?Id={item.Id}" : item.ProjectType.Equals("External") ? $"/Employee/monthly_extr_ProjectStatue?Id={item.Id}" : "")" data-title="Weekly Update">
                                                         <i class="link-icon" data-feather="calendar" style="color:orangered"></i>
                                                     </a>
@@ -141,8 +135,8 @@
                                                     </a>
                                                 </li>
                                                 <li class="me-2">
-                                                    <a href="/Employee/Add_Expenses?Id=@item.Id" data-title="Add Expenses">
-                                                        <i class="link-icon text-danger" data-feather="file-plus"></i>
+                                                    <a href="/Employee/Add_Expenses?Id=@item.Id" data-title="View Expenses">
+                                                        <i class="link-icon text-primary" data-feather="list"></i>
                                                     </a>
                                                 </li>
                                             </ul>

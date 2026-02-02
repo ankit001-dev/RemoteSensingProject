@@ -21,103 +21,36 @@
                                 <th>Head</th>
                                 <th class="text-center">Amount</th>
                                 <th class="text-center">Expended Amount</th>
-                                <th class="text-center">Approved Amount</th>
-                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if(projectStages != null && projectStages.Count > 0)
-            {
-                foreach(var item in projectStages)
-                {
-<tr>
-    <td >@i</td>
-    <td>
-        
-        <a href="#" data-title="View Details" class="headExpense" data-Id="@item.Id">@item.ProjectHeads</a>
+                            @if (projectStages != null && projectStages.Count > 0)
+                            {
+                                foreach (var item in projectStages)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>
 
-    </td>
-    <td class="text-center">
-        ₹@item.ProjectAmount
-    </td>
-    <td class="text-center">₹@item.TotalAskAmount</td>
-    <td class="text-center">₹@item.ApproveAmount</td>
-    <td class="text-center">
-        @if (item.ProjectAmount >= Convert.ToDecimal(item.TotalAskAmount))
-        {
-            decimal acceptableAmount = item.ProjectAmount - Convert.ToDecimal(item.TotalAskAmount);
-            <a href="#" data-title="Add Expences" class="addExpences" data-acceptableAmount="@acceptableAmount" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a>
-        }
-        
-    </td>
-</tr>        i++;
-                }
-            }
-                            
+                                            <a href="#" data-title="View Details" class="headExpense" data-Id="@item.Id">@item.ProjectHeads</a>
+
+                                        </td>
+                                        <td class="text-center">
+                                            ₹@item.ProjectAmount
+                                        </td>
+                                        <td class="text-center">₹@item.TotalAskAmount</td>                                        
+                                    </tr>
+               i++;
+                                }
+                            }
+
                         </tbody>
                     </table>
-                    @*<div class="text-center">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Expenses</button>
-                    </div>*@
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-<div class="modal fade" id="addExpencesModal" tabindex="-1" aria-labelledby="addExpencesModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div>Total Amount <span id="totalAcceptableAmountLeft"></span></div>
-                <h5 class="modal-title" id="exampleModalLabel">Add Project Expenses</h5>
-            </div>
-            <div class="modal-body">
-                <form class="forms-sample" id="expenseForm">
-                    <div id="expenseRows">
-                        <div class="row expense-row">
-                            <div class="mb-3 col-md-6">
-                                <label for="title" class="form-label">Title</label>
-                                <input type="text" class="form-control" name="list[0].title" autocomplete="off" placeholder="Enter Expense Title">
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label for="date" class="form-label">Date</label>
-                                <div class="input-group">
-                                    <input type="date" class="form-control form-control-sm" name="list[0].date">
-                                </div>
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label for="amount" class="form-label">Amount</label>
-                                <input type="number" class="form-control requestAmountValue" name="list[0].amount" autocomplete="off" placeholder="Enter Amount">
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label for="upload" class="form-label">Upload Attachment</label>
-                                <input class="form-control headsSlip" type="file">
-                            </div>
-                            <div class="col-lg-10 mb-3">
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control form-control-sm" name="list[0].description" rows="2" placeholder="Description"></textarea>
-                            </div>
-                            <input type="hidden" name="list[0].projectId" value="@Request.QueryString["Id"]"/>
-                            <input type="hidden" name="list[0].projectHeadId" id="projectHeadId"/>
-                            
-                            <hr>
-                        </div>
-                    </div>
-                    <div class="text-start">
-                        <a class="cursor-pointer" id="addMore" data-count="1" data-projectHeadId=""><i class="link-icon" data-feather="plus"></i> Add More</a>
-                    </div>
-                    <div class="text-center mt-3">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Expenses</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <div class="modal fade" id="ViewBudgetExpenses" tabindex="-1" aria-labelledby="ViewBudgetExpenses" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
@@ -136,10 +69,7 @@
                                 <th>Description</th>
                                 <th>Amount</th>
                                 <th>Reciept</th>
-                                <th>Approve Amount</th>
                                 <th>Date</th>
-                                <th>Reason</th>
-                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody id="viewBudgetExpensesBody">
@@ -152,54 +82,7 @@
 </div>
 
 <script>
-        // Function to add more rows
-    $('#addMore').on('click', function () {
-        let count = $(this).attr("data-count");
-        let projectHeadId = $(this).attr("data-projectHeadId")
-            var newRow = `
-            <div class="row expense-row">
-                <div class="mb-3 col-md-6">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" name="list[${count}].title" autocomplete="off" placeholder="Enter Expense Title">
-                </div>
-                <div class="mb-3 col-md-6">
-                    <label for="date" class="form-label">Date</label>
-                    <div class="input-group">
-                        <input type="date" class="form-control form-control-sm" name="list[${count}].date">
-                    </div>
-                </div>
-                <div class="mb-3 col-md-6">
-                    <label for="amount" class="form-label">Amount</label>
-                    <input type="number" class="form-control requestAmountValue" name="list[${count}].amount" autocomplete="off" placeholder="Enter Amount">
-                </div>
-                <div class="mb-3 col-md-6">
-                    <label for="upload" class="form-label">Upload Attachment</label>
-                    <input class="form-control headsSlip" type="file">
-                </div>
-                <div class="col-lg-12 mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control form-control-sm" name="list[${count}].description" rows="2" placeholder="Description"></textarea>
-                </div>
-                <input type="hidden" name="list[${count}].projectId" value="@Request.QueryString["Id"]"/>
-                <input type="hidden" name="list[${count}].projectHeadId" value="${projectHeadId}"/>
-                <div class="col-lg-12 text-end">
-                    <a class=" remove-row"><i class="link-icon text-danger" data-feather="trash-2"></i></a>
-                <hr>
-            </div>`;
-        $('#expenseRows').append(newRow);
-        $(this).attr("data-count", count + 1);
-            feather.replace(); // Reinitialize feather icons
-        });
-
-        // Function to remove a row
-    $(document).on('click', '.remove-row', function () {
-        let count = $("#addMore").attr("data-count", count);
-        $(this).closest('.expense-row').remove();
-        $("#addMore").attr("data-count", count - 1);
-        });
-
-
-
+        
     $(".headExpense").click(function () {
         let headId = $(this).attr("data-Id");
         let projectId = @Request.QueryString["Id"];
@@ -231,11 +114,8 @@
  <td>${d.description}</td>
  <td>₹${d.amount}</td>
  <td><a target='_blank' href="${d.attatchment_url}">Reciept</a></td>
- <td>₹${d.AppAmount}</td>
  <td>${convertToDate(d.date)}</td>
- <td>${d.reason && d.reason=="null"?"N/A":d.reason}</td>
- <td>${d.AppStatus == 0 ? "<span class='text-light bg-warning px-2 rounded-1 border'>Pending</span>" : d.AppStatus == 1 ? "<span class='text-light px-2 bg-success rounded-1 border'>Accepted</span>" : `<span class='text-light px-2 bg-danger rounded-1 border'>Rejected</span> (₹${d.amount - d.AppAmount})`}</td>
- 
+
                           </tr>`
                     });
                     $("#viewBudgetExpensesBody").append(element);
@@ -263,112 +143,6 @@
         let dateObj = new Date(date);
         return dateObj.toLocaleDateString();
     }
-    let acceptableAmount = 0
-        $(".addExpences").click(function () {
-            let dataId = $(this).attr("data-Id");
-            acceptableAmount = $(this).attr("data-acceptableAmount");
-            $("#addMore").attr("data-projectHeadId", dataId)
-            $("#projectHeadId").val(dataId);
-            $("#addExpencesModal").modal("show");
-            $("#totalAcceptableAmountLeft").text(acceptableAmount)
-
-        })
-
-    function getTotalAcceptableAmount() {
-        let totalAmount = $(".requestAmountValue").toArray().reduce(function (a, input) {
-            return a + parseFloat($(input).val()) || 0
-        }, 0)
-        return Number(totalAmount);
-    }
-
-
-    $(document).on("input", ".requestAmountValue", function () {
-        let finalAmount = Number(acceptableAmount)-getTotalAcceptableAmount()
-
-        if (Number($(this).val()) > Number(acceptableAmount)) {
-            Swal.fire({
-                title: "warning",
-                text: "Please input valid amount",
-                icon: "warning",
-                didClose: () => {
-                    $(this).val(0)
-                    finalAmount = Number(acceptableAmount) - getTotalAcceptableAmount()
-                    $("#totalAcceptableAmountLeft").text(Number(finalAmount))
-
-                }
-            })
-        } else if (getTotalAcceptableAmount() > Number(acceptableAmount)) {
-            Swal.fire({
-                title: "warning",
-                text: "Please input valid amount",
-                icon: "warning",
-                didClose: () => {
-                    $(this).val(0)
-                    finalAmount = Number(acceptableAmount) - getTotalAcceptableAmount()
-                    $("#totalAcceptableAmountLeft").text(finalAmount)
-                }
-            })
-        }
-        $("#totalAcceptableAmountLeft").text(finalAmount)
-    })
-
-    $("#expenseForm").on("submit", function (e) {
-        e.preventDefault();
-        let formData = new FormData(this);
-        $.each($(".headsSlip"), function (i, d) {
-            let file = d.files[0];
-            if (file) {
-                formData.append(`list[${i}].Attatchment_file`, file);
-            }
-        });
-
-        Swal.fire({
-            title: "Please wait ...",
-            text: "Processing your request ....",
-            timer: 100000,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            didOpen: () => {
-                Swal.showLoading();
-            }
-        })
-        $.ajax({
-            url: "/employee/InsertExpenses",
-            type: "post",
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (res) {
-                if (res.status) {
-                    Swal.fire({
-                        title: "Successfully !",
-                        text: "Expences added successfully !",
-                        icon: "success",
-                        didClose: () => {
-                            location.reload(true);
-                        }
-                    })
-                }
-                else {
-                    Swal.fire({
-                        title: "Sorry !",
-                        text: "Some issue occured",
-                        icon: "warning"
-                    })
-                }
-            },
-            error: function () {
-                Swal.fire({
-                    title: "Server busy !",
-                    text: "Server is busy ! Please try after sometime.",
-                    icon: "error",
-                    didClose: () => {
-                        location.reload(true)
-                    }
-                })
-            }
-        })
-    })
 </script>
 
 

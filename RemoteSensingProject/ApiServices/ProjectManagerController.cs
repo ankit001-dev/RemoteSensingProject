@@ -35,7 +35,7 @@ namespace RemoteSensingProject.ApiServices
 			_managerService = new ManagerService();
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpGet]
 		[Route("api/getProjectExpencesList")]
 		public IHttpActionResult GetExpencesList(int projectId, int headId)

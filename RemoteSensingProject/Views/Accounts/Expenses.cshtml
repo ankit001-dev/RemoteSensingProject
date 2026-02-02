@@ -2,27 +2,15 @@
 @{
     ViewBag.Title = "Expenses";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    var projectStages = ViewData["ProjectStages"] as List<RemoteSensingProject.Models.Admin.main.Project_Budget>;
+    int i = 1;
 }
 
-<style>
-    .swal2-popup {
-        overflow: visible !important;
-    }
-
-    .swal2-modal {
-        z-index: 9999 !important; /* Ensure the modal is on top */
-    }
-    body{
-        padding:0 !important;
-    }
-</style>
-
-<div class="row">
+<div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-header d-flex justify-content-between">
                 <span class="card-title">Add Project Expenses </span>
-                <span class="card-title text-center mx-auto text-info" style="text-transform:none"></span>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -33,41 +21,105 @@
                                 <th>Head</th>
                                 <th class="text-center">Amount</th>
                                 <th class="text-center">Expended Amount</th>
-                                <th class="text-center">Approved Amount</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if (ViewData["projectStages"] != null)
+                            @if (projectStages != null && projectStages.Count > 0)
                             {
-                                int i = 1;
-                                foreach (var item in ViewData["ProjectStages"] as List<RemoteSensingProject.Models.Admin.main.Project_Budget>)
+                                foreach (var item in projectStages)
                                 {
                                     <tr>
-                                        <td class="text-start">@i</td>
+                                        <td>@i</td>
                                         <td>
+
                                             <a href="#" data-title="View Details" class="headExpense" data-Id="@item.Id">@item.ProjectHeads</a>
-                                            </td>
+
+                                        </td>
                                         <td class="text-center">
                                             ₹@item.ProjectAmount
                                         </td>
                                         <td class="text-center">₹@item.TotalAskAmount</td>
-                                        <td class="text-center">₹@item.ApproveAmount</td>
+                                        <td class="text-center">
+                                            @if (item.ProjectAmount >= Convert.ToDecimal(item.TotalAskAmount))
+                                            {
+                                                decimal acceptableAmount = item.ProjectAmount - Convert.ToDecimal(item.TotalAskAmount);
+                                                <a href="#" data-title="Add Expences" class="addExpences" data-acceptableAmount="@acceptableAmount" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a>
+                                            }
+
+                                        </td>
                                     </tr>
                                     i++;
                                 }
                             }
 
-
                         </tbody>
                     </table>
+                    @*<div class="text-center">
+                            <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Expenses</button>
+                        </div>*@
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
+<div class="modal fade" id="addExpencesModal" tabindex="-1" aria-labelledby="addExpencesModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div>Total Amount <span id="totalAcceptableAmountLeft"></span></div>
+                <h5 class="modal-title" id="exampleModalLabel">Add Project Expenses</h5>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="expenseForm">
+                    <div id="expenseRows">
+                        <div class="row expense-row">
+                            <div class="mb-3 col-md-6">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" class="form-control" name="list[0].title" autocomplete="off" placeholder="Enter Expense Title">
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label for="date" class="form-label">Date</label>
+                                <div class="input-group">
+                                    <input type="date" class="form-control form-control-sm" name="list[0].date">
+                                </div>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label for="amount" class="form-label">Amount</label>
+                                <input type="number" class="form-control requestAmountValue" name="list[0].amount" autocomplete="off" placeholder="Enter Amount">
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label for="upload" class="form-label">Upload Attachment</label>
+                                <input class="form-control headsSlip" type="file">
+                            </div>
+                            <div class="col-lg-10 mb-3">
+                                <label for="description" class="form-label">Description</label>
+                                <textarea class="form-control form-control-sm" name="list[0].description" rows="2" placeholder="Description"></textarea>
+                            </div>
+                            <input type="hidden" name="list[0].projectId" value="@Request.QueryString["Id"]" />
+                            <input type="hidden" name="list[0].projectHeadId" id="projectHeadId" />
+
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="text-start">
+                        <a class="cursor-pointer" id="addMore" data-count="1" data-projectHeadId=""><i class="link-icon" data-feather="plus"></i> Add More</a>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Expenses</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="modal fade" id="ViewBudgetExpenses" tabindex="-1" aria-labelledby="ViewBudgetExpenses" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header d-flex">
                 <h1 class="modal-title fs-5 text-light" id="ViewBudgetExpensesModal">Equipment Expenses</h1>
@@ -78,16 +130,12 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>Sr. No.</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Amount</th>
                                 <th>Reciept</th>
-                                <th>Approve Amount</th>
                                 <th>Date</th>
-                                <th>Status</th>
-                                <th>Reason</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="viewBudgetExpensesBody">
@@ -99,72 +147,70 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header d-flex justify-content-between">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Manage Request</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="headId" />
-                <input type="hidden" id="expenseId" />
-                <div class="text-center">
-                    <div class="form-check my-3">
-                        <input type="radio" class="form-check-input" name="option" id="accept" value="accept">
-                        <label class="form-check-label" for="accept">Accept</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="radio" class="form-check-input" name="option" id="reject" value="reject">
-                        <label class="form-check-label" for="reject">Reject</label>
-                    </div>
-                </div>
-
-                <div id="amountDiv" class="my-2" style="display: none;">
-                    <div class="readOnlyInput w-100">
-                        Amount :
-                        <input type="number" class="form-control mb-2" id="readonlyamount" readonly />
-                    </div>
-                    <div class="my-3 d-flex gap-5 w-100 align-items-center">
-                        <div>Other <input type="checkbox" value="other" id="otherCheckbox" /></div>
-                        <div id="totalAmountSpan"></div>
-                    </div>
-                    <div class="d-none w-100 mb-2" id="manualInputBox">
-                        <label for="amount" class="form-label">Enter Amount :</label>
-                        <input type="number" id="givenamount" class="form-control" placeholder="Amount">
-                    </div>
-                </div>
-                <div id="descriptionDiv" class="mt-3" style="display: none;">
-                    <label for="description" class="form-label">Enter Description:</label>
-                    <textarea id="description" class="form-control" placeholder="Description"></textarea>
-                </div>
-
-                <div id="pendingRejectDiv" class="my-2" style="display: none;">
-                    <label class="form-label">Select Status:</label> Left :- <span class="bg-secondary rounded-1 border text-light" id="leftAmount"></span><br><br />
-                    <div class="form-check">
-                        <input type="radio" class="form-check-input leftAmountStatus" checked name="status" id="pending" value="0">
-                        <label class="form-check-label" for="pending">Pending</label>
-                    </div>
-                    <div class="form-check">
-                        <input type="radio" class="form-check-input leftAmountStatus" name="status" id="rejectStatus" value="2">
-                        <label class="form-check-label" for="rejectStatus">Reject</label>
-                    </div>
-                    <textarea id="Acceptdescription" class="form-control" placeholder="Description"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="confirmBtn">Confirm</button>
-
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-    function getExpensesList(projectId, headId) {
-        Swal.fire({
+        // Function to add more rows
+    $('#addMore').on('click', function () {
+    let count = parseInt($(this).attr("data-count"));
+    let projectHeadId = $(this).attr("data-projectHeadId");
+
+    let newRow = `
+        <div class="row expense-row">
+            <div class="mb-3 col-md-6">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-control" name="list[${count}].title">
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label class="form-label">Date</label>
+                <input type="date" class="form-control" name="list[${count}].date">
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label class="form-label">Amount</label>
+                <input type="number" class="form-control requestAmountValue" name="list[${count}].amount">
+            </div>
+
+            <div class="mb-3 col-md-6">
+                <label class="form-label">Upload Attachment</label>
+                <input class="form-control headsSlip" type="file">
+            </div>
+
+            <div class="col-lg-12 mb-3">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" name="list[${count}].description"></textarea>
+            </div>
+
+            <input type="hidden" name="list[${count}].projectId" value="@Request.QueryString["Id"]"/>
+            <input type="hidden" name="list[${count}].projectHeadId" value="${projectHeadId}"/>
+
+            <div class="col-lg-12 text-end">
+                <a href="javascript:void(0)" class="remove-row">
+                    <i class="link-icon text-danger" data-feather="trash-2"></i>
+                </a>
+            </div>
+            <hr>
+        </div>
+    `;
+
+    $('#expenseRows').append(newRow);
+    $(this).attr("data-count", count + 1);
+
+    feather.replace();
+});
+
+    $(document).on('click', '.remove-row', function () {
+        $(this).closest('.expense-row').remove();
+
+        let count = parseInt($("#addMore").attr("data-count"));
+        $("#addMore").attr("data-count", count - 1);
+    });
+
+
+    $(".headExpense").click(function () {
+        let headId = $(this).attr("data-Id");
+        let projectId = @Request.QueryString["Id"];
+
+            Swal.fire({
             title: "Please wait !",
             text: "Processing your request...",
             timer: 100000,
@@ -186,17 +232,14 @@
                     let element = "";
                     $.each(res.data, function (i, d) {
                         element += `  <tr>
-                      <td>${i + 1}</td>
-                      <td>${d.title}</td>
-                      <td>${d.description}</td>
-                      <td>₹${d.amount}</td>
-                      <td><a href="${d.attatchment_url}" target="_blank">Reciept</a></td>
-                      <td>₹${d.AppAmount}</td>
-                      <td>${convertToDate(d.date)}</td>
-                      <td>${d.AppStatus == 0 ? "<span class='text-light bg-warning px-2 rounded-1 border'>Pending</span>" : d.AppStatus == 1 ? "<span class='text-light px-2 bg-success rounded-1 border'>Accepted</span>" : `<span class='text-light px-2 bg-danger rounded-1 border'>Rejected </span> (₹${d.amount - d.AppAmount})`}</td>
-                      <td>${d.reason && d.reason == "null" ? "N/A" : d.reason}</td>
-                      <td>${d.AppStatus == 0 ? `<i role="button" onclick="getResponse(${d.amount - d.AppAmount},${d.Id},${d.projectHeadId})" class="fa-solid text-success fa-pen-to-square"></i>` : ""}</td>
-                  </tr>`
+                              <td>${i + 1}</td>
+ <td>${d.title}</td>
+ <td>${d.description}</td>
+ <td>₹${d.amount}</td>
+ <td><a target='_blank' href="${d.attatchment_url}">Reciept</a></td>
+ <td>${convertToDate(d.date)}</td>
+
+                          </tr>`
                     });
                     $("#viewBudgetExpensesBody").append(element);
                     $("#ViewBudgetExpenses").modal("show");
@@ -217,237 +260,115 @@
                 Swal.close();
             }
         })
-    }
-    $(".headExpense").click(function () {
-        let headId = $(this).attr("data-Id");
-        let projectId = @Request.QueryString["Id"];
-        getExpensesList(projectId, headId)
-
     })
 
     function convertToDate(date) {
         let dateObj = new Date(date);
         return dateObj.toLocaleDateString();
     }
-
-
-    $(document).ready(function () {
-        $("#exampleModal").on("hide.bs.modal", function () {
-            $("#ViewBudgetExpenses").modal("show")
-
-        })
+    let acceptableAmount = 0
+    $(".addExpences").click(function () {
+        let dataId = $(this).attr("data-Id");
+        acceptableAmount = $(this).attr("data-acceptableAmount");
+        $("#addMore").attr("data-projectHeadId", dataId)
+        $("#projectHeadId").val(dataId);
+        $("#addExpencesModal").modal("show");
+        $("#totalAcceptableAmountLeft").text(acceptableAmount)
     })
 
-    let actualamount=0;
-    let responseId;
-
-    function getResponse(actualamounts, id, headId) {
-        actualamount = actualamounts;
-        responseId = id;
-            debugger
-            const modal = new bootstrap.Modal($('#exampleModal'));
-            modal.show();
-            $("#expenseId").val(id)
-            $("#headId").val(headId)
-            $("#ViewBudgetExpenses").modal("hide")
-                // Reset any previous selections
-                $('input[name="option"]:checked').prop('checked', false);
-                $('#amount').val('');
-                $('#description').val('');
-                $('#pendingRejectDiv').hide();
-                $('#amountDiv').hide();
-                $('#descriptionDiv').hide();
-
+    function getTotalAcceptableAmount() {
+        let totalAmount = $(".requestAmountValue").toArray().reduce(function (a, input) {
+            return a + parseFloat($(input).val()) || 0
+        }, 0)
+        return Number(totalAmount);
     }
-                // Show/Hide elements based on radio button selection
-        $('#accept').on('change', function () {
-            $('#amountDiv').show();
-            $('#descriptionDiv').hide();
-            $('#pendingRejectDiv').hide();
-            $("#readonlyamount").val(actualamount)
-            $("#givenamount").val("")
-            $("#totalAmountSpan").hide()
-            
-            $("#otherCheckbox").prop("checked", false)
- $("#manualInputBox").addClass("d-none");
-$(".readOnlyInput").show()
-$("#totalAmountSpan").hide()
-        });
 
-        $('#reject').on('change', function () {
-            $('#amountDiv').hide();
-            $('#descriptionDiv').show();
-            $('#pendingRejectDiv').hide();
-            $("#otherCheckbox").prop("checked", false)
 
-        });
+    $(document).on("input", ".requestAmountValue", function () {
+        let finalAmount = Number(acceptableAmount)-getTotalAcceptableAmount()
 
-$("#otherCheckbox").on("change", function () {
-    if ($(this).prop("checked")) {
-        $("#manualInputBox").removeClass("d-none");
-        $(".readOnlyInput").hide()
-        $("#totalAmountSpan").show()
-        $("#totalAmountSpan").text("Total Ask : ₹" + actualamount)
-        $('#pendingRejectDiv').show();
-        $("#leftAmount").text("₹" + actualamount)
+        if (Number($(this).val()) > Number(acceptableAmount)) {
+            Swal.fire({
+                title: "warning",
+                text: "Please input valid amount",
+                icon: "warning",
+                didClose: () => {
+                    $(this).val(0)
+                    finalAmount = Number(acceptableAmount) - getTotalAcceptableAmount()
+                    $("#totalAcceptableAmountLeft").text(Number(finalAmount))
 
-    } else {
-        $("#manualInputBox").addClass("d-none");
-        $(".readOnlyInput").show()
-        $("#totalAmountSpan").hide()
-        $('#pendingRejectDiv').hide();
+                }
+            })
+        } else if (getTotalAcceptableAmount() > Number(acceptableAmount)) {
+            Swal.fire({
+                title: "warning",
+                text: "Please input valid amount",
+                icon: "warning",
+                didClose: () => {
+                    $(this).val(0)
+                    finalAmount = Number(acceptableAmount) - getTotalAcceptableAmount()
+                    $("#totalAcceptableAmountLeft").text(finalAmount)
+                }
+            })
+        }
+        $("#totalAcceptableAmountLeft").text(finalAmount)
+    })
 
-    }
-})
-        // Amount input event to show pending/reject options if amount is less than the actual amount
-$('#givenamount').on('input', function () {
-            const amount = parseFloat($(this).val());
-            if (amount < actualamount) {
-                $('#pendingRejectDiv').show();
-            } else {
-                $('#pendingRejectDiv').hide();
+    $("#expenseForm").on("submit", function (e) {
+        e.preventDefault();
+        let formData = new FormData(this);
+        $.each($(".headsSlip"), function (i, d) {
+            let file = d.files[0];
+            if (file) {
+                formData.append(`list[${i}].Attatchment_file`, file);
             }
-            $("#leftAmount").text("₹"+(actualamount - amount))
-            if (amount > actualamount || actualamount <0) {
+        });
+
+        Swal.fire({
+            title: "Please wait ...",
+            text: "Processing your request ....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        })
+        $.ajax({
+            url: "/Accounts/InsertExpenses",
+            type: "post",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: "Expences added successfully !",
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true);
+                        }
+                    })
+                }
+                else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: "Some issue occured",
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
                 Swal.fire({
-                    icon: 'warning',
-                    title: 'Please select amount between ₹0-₹' + actualamount,
-                    text: 'Please correct your input',
-                });
-                $(this).val(actualamount)
-                return;
+                    title: "Server busy !",
+                    text: "Server is busy ! Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
             }
-        });
-          // Handle confirm button click
-    $('#confirmBtn').on('click', function () {
-          
-      let expenseId=  $("#expenseId").val()
-  let headId=$("#headId").val()
-      const option = $('input[name="option"]:checked').val();
-      if (!option) {
-          // Show SweetAlert if no option is selected
-          Swal.fire({
-              icon: 'warning',
-              title: 'Please select Accept or Reject',
-              text: 'You need to choose an option before proceeding.',
-          });
-          return;
-      }
-
-      let result = { option: option };
-      if (option === 'accept') {
-          let amount = 0;
-          if ($("#otherCheckbox").prop("checked")) {
-              amount = $('#givenamount').val();
-          } else {
-              amount = $("#readonlyamount").val()
-          }
-          if (!amount) {
-              Swal.fire({
-                  icon: 'warning',
-                  title: 'Please enter an amount',
-                  text: 'The amount field is required for acceptance.',
-              });
-              return;
-          }
-
-          result.amount = amount;
-
-          if (parseFloat(amount) < actualamount) {
-              const status = $('input[name="status"]:checked').val();
-              if (!status) {
-                  Swal.fire({
-                      icon: 'warning',
-                      title: 'Please select Pending or Reject',
-                      text: 'You must select a status when the amount is below the threshold.',
-                  });
-                  return;
-              }
-              result.status = status;
-          }
-      } else if (option === 'reject') {
-          let description;
-          if ($("#otherCheckbox").prop("checked")) {
-              description = $('#Acceptdescription').val();
-
-          } else {
-              description = $('#description').val();
-
-          }
-          if (!description || description=="") {
-              Swal.fire({
-                  icon: 'warning',
-                  title: 'Please enter a description',
-                  text: 'A description is required for rejection.',
-              });
-              return;
-          }
-          result.description = description;
-      }
-
-      if (!responseId) {
-           Swal.fire({
-     icon: 'warning',
-     title: 'Id are required',
-     text: 'Please try again',
- });
- return;
-      }
-
-      // Display the result
-      let formData = new FormData();
-      if (result.option === 'accept') {
-
-          let leftAmountStatus = $(".leftAmountStatus:checked").val();
-          let appStatus = parseFloat(result.amount) < actualamount ? leftAmountStatus:1;
-               formData.append("ProjectId",@Request.QueryString["Id"])
-               formData.append("HeadId", headId)
-               formData.append("id", responseId)
-               formData.append("Reason", $("#Acceptdescription").val())
-               formData.append("AppStatus", appStatus)
-               formData.append("Amount", parseFloat(result.amount))
-      } else {
-           formData.append("ProjectId",@Request.QueryString["Id"])
-           formData.append("HeadId",headId)
-           formData.append("AppStatus", 2)
-           formData.append("id", responseId)
-           formData.append("Reason", result.description)
-           formData.append("Amount",0)
-      }
-      $.ajax({
-          url: "/accounts/UpdateExpensesResponse",
-          type: "post",
-          processData: false,
-          contentType:false,
-          data: formData,
-          success: function (res) {
-              debugger
-              if (res) {
-                  Swal.fire({
-                      title: "success",
-                      text: "Response Updated Successfully",
-                      icon: "success"
-                  })
-                  getExpensesList(@Request.QueryString["Id"],headId)
-               $("#exampleModal").modal("hide")
-                  $("#ViewBudgetExpenses").modal("show")
-              }
-               else {
-                  Swal.fire({
-                      title: "error",
-                      text: "some error occured",
-                      icon: "error"
-                  })
-              }
-          }, error: function (xhr) {
-              Swal.fire({
-                  title: "error",
-                  text: "some error occured",
-                  icon:"error"
-              })
-          }
-      })
-
-  });
+        })
+    })
 </script>
-
