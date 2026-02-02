@@ -1,4 +1,5 @@
-﻿using RemoteSensingProject.Models.Admin;
+﻿using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
@@ -51,7 +52,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         [HttpPost]
-        [Route("api/delete-outsource")]
+        [Route("delete-outsource")]
         public IHttpActionResult DeleteOutSource(int Id)
         {
             try
@@ -91,6 +92,89 @@ namespace RemoteSensingProject.ApiServices
                     StatusCode = 500,
                     message = ex.Message,
                     data = ex
+                });
+            }
+        }
+
+        [Route("OutsourceList")]
+        [HttpGet]
+        public IHttpActionResult ManpowerRequests(string searchTerm = null, int? page = null, int? limit = null)
+        {
+            try
+            {
+                var data = _managerServices.GetManpowerRequests(searchTerm: searchTerm, page: page, limit: limit);
+
+                if (data != null && data.Any())
+                {
+                    return Success(this, data, pagination: data[0].Pagination);
+                }
+                else
+                {
+                    return NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Error(this, ex.Message);
+            }
+        }
+
+        [Route("getoutsource-notin-division")]
+        [HttpGet]
+        public IHttpActionResult ManpowerRequests()
+        {
+            try
+            {
+                var data = _managerServices.OutsourceNotInDivision();
+
+                if (data != null && data.Any())
+                {
+                    return Success(this, data);
+                }
+                else
+                {
+                    return NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Error(this, ex.Message);
+            }
+        }
+        [Route("add-manpower")]
+        [HttpPost]
+        public IHttpActionResult AddManpower([FromBody] AddManPower ap)
+        {
+            try
+            {
+                List<string> errors = new List<string>();
+                if (ap.DivisionId <= 0)
+                {
+                    errors.Add("Division id is not valid");
+                }
+                if (ap.Outsource.Count <= 0)
+                {
+                    errors.Add("At least one outsource is required");
+                }
+                if (errors.Count > 0)
+                {
+                    return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
+                }
+                bool res = _managerServices.AddManpower(ap);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = (res ? 200 : 500),
+                    message = (res ? "Manpower added successfully !" : "Some issue occured")
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
                 });
             }
         }

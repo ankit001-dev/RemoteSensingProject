@@ -20,7 +20,8 @@ namespace RemoteSensingProject.Controllers
         // GET: Prashasan
         public ActionResult Dashboard()
         {
-            return View();
+            PrashasanDashboard data = _managerServices.GetPrashasanDashboardData();
+            return View(data);
         }
 
         public ActionResult ManageDivision()
@@ -68,14 +69,34 @@ namespace RemoteSensingProject.Controllers
                 throw ex;
             }
         }
-        public ActionResult ManageManPowerRequest()
+        public ActionResult ManageManPowerRequest(string searchTerm = null)
         {
+            ViewData["manpowerrequests"] = _managerServices.GetManpowerRequests(searchTerm: searchTerm);
+            ViewData["OutsourceList"] = _managerServices.OutsourceNotInDivision();
             return View();
         }
 
         public ActionResult Monthly_ManPower_Allocation_Report()
         {
             return View();
+        }
+        [HttpPost]
+        public ActionResult AddManPower(AddManPower model)
+        {
+            try
+            {
+                if (model.DivisionId == 0 || model.Outsource == null || !model.Outsource.Any())
+                {
+                    return Json(new { status = false, message = "Invalid data" });
+                }
+                bool res = _managerServices.AddManpower(model);
+
+                return Json(new { status = res, message = res ? "Manpower added successfully" : "Some error occured" });
+            }
+            catch(Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
+            }
         }
     }
 }
