@@ -1347,7 +1347,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 						userpassword += validChars[rnd.Next(validChars.Length)];
 					}
 				}
-				cmd = new NpgsqlCommand("CALL sp_manageoutsource(@p_action,@p_id, @p_designationid, @p_emp_name, @p_emp_mobile, @p_emp_email, @p_emp_gender, @p_password,NULL::boolean)", con);
+				cmd = new NpgsqlCommand("CALL sp_manageoutsource(@p_action,@p_id, @p_designationid,NULL :: int, @p_emp_name, @p_emp_mobile, @p_emp_email, @p_emp_gender, @p_password,NULL::boolean)", con);
 				((DbCommand)(object)cmd).CommandType = CommandType.Text;
 				((DbParameter)(object)cmd.Parameters.Add("@p_action", (NpgsqlDbType)22)).Value = os.Id > 0 ? "updateOutSource" : "createOutSource";
 				((DbParameter)(object)cmd.Parameters.Add("@p_id", (NpgsqlDbType)9)).Value = os.Id;
@@ -1763,7 +1763,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 			NpgsqlTransaction tran = con.BeginTransaction();
 			try
 			{
-				cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, null::int, @v_empid, @v_title, @v_description, null::text, null::smallint, @v_taskid, NULL, NULL)", con, tran);
+				cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, null::int, @v_empid,null::int, @v_title, @v_description, null::text, null::smallint, @v_taskid, NULL, NULL)", con, tran);
 				((DbCommand)(object)cmd).CommandType = CommandType.Text;
 				cmd.Parameters.AddWithValue("@v_action", (object)"createTask");
 				cmd.Parameters.AddWithValue("@v_empid", (object)ost.empId);
@@ -1782,7 +1782,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 					foreach (int item in outSourceId)
 					{
 						((Component)(object)cmd).Dispose();
-						cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, @v_id, @v_empid, NULL, NULL, null::text, null::smallint, NULL, NULL, NULL)", con, tran);
+						cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, @v_id, @v_empid,null::int, NULL, NULL, null::text, null::smallint, NULL, NULL, NULL)", con, tran);
 						((DbCommand)(object)cmd).CommandType = CommandType.Text;
 						cmd.Parameters.AddWithValue("@v_action", (object)"assignTask");
 						cmd.Parameters.AddWithValue("@v_empid", (object)item);
@@ -2007,7 +2007,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 			//IL_0018: Expected O, but got Unknown
 			try
 			{
-				cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, @v_id, NULL, NULL, NULL, NULL::text, NULL::smallint, NULL, NULL, NULL)", con);
+				cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, @v_id, NULL,null::int, NULL, NULL, NULL::text, NULL::smallint, NULL, NULL, NULL)", con);
 				((DbCommand)(object)cmd).CommandType = CommandType.Text;
 				cmd.Parameters.AddWithValue("@v_action", (object)"updateTaskStatus");
 				cmd.Parameters.AddWithValue("@v_id", (object)taskId);
@@ -4493,7 +4493,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 		}
 
         #region Manpower Requests
-        public List<ManpowerRequests> GetManpowerRequests(int? limit = null, int? page = null,string searchTerm=null)
+        public List<ManpowerRequests> GetManpowerRequestsInDivision(int? limit = null, int? page = null,string searchTerm=null)
         {
             try
             {
@@ -4503,7 +4503,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 NpgsqlTransaction tran = con.BeginTransaction();
                 try
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageOutsource_cursor", con, tran);
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageprshasanpanel", con, tran);
                     try
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
@@ -4599,14 +4599,15 @@ namespace RemoteSensingProject.Models.ProjectManager
                 foreach (var outsourceId in os.Outsource)
                 {
                     using (var cmd = new NpgsqlCommand(
-                        "CALL sp_manageoutsource(p_action=>@p_action, p_id=>@p_id, p_designationid=>@p_designationid)",
+                        "CALL sp_manageoutsource(p_action=>@p_action, p_id=>@p_id, p_designationid=>@p_designationid,p_outsourceid=>@p_outsourceid)",
                         con))
                     {
                         cmd.CommandType = CommandType.Text;
 
                         cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = "addmanpower";
                         cmd.Parameters.Add("@p_id", NpgsqlDbType.Integer).Value = os.DivisionId;
-                        cmd.Parameters.Add("@p_designationid", NpgsqlDbType.Integer).Value = outsourceId;
+                        cmd.Parameters.Add("@p_designationid", NpgsqlDbType.Integer).Value = os.DesignationId;
+                        cmd.Parameters.Add("@p_outsourceid", NpgsqlDbType.Integer).Value = outsourceId;
 
                         cmd.ExecuteNonQuery();
                     }
@@ -4637,7 +4638,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 NpgsqlTransaction tran = con.BeginTransaction();
                 try
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageOutsource_cursor", con, tran);
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageprshasanpanel", con, tran);
                     try
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
@@ -4712,7 +4713,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<OuterSource> OutsourceNotInDivision()
+        public List<OuterSource> OutsourceNotInDivision(int id)
         {
             try
             {
@@ -4721,15 +4722,12 @@ namespace RemoteSensingProject.Models.ProjectManager
                 NpgsqlTransaction tran = con.BeginTransaction();
                 try
                 {
-                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageOutsource_cursor", con, tran);
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageprshasanpanel", con, tran);
                     try
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@v_action", (object)"selectoutsourcenotindivision");
-                        //cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
-                        //cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
-                        //cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
-                        //cmd.Parameters.AddWithValue("@v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+                        cmd.Parameters.AddWithValue("@v_id", (object)id);
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
                         try
@@ -4752,17 +4750,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                                             designationname = ((DbDataReader)(object)rd)["designationname"].ToString(),
                                             designationid = Convert.ToInt32(rd["designationid"])
                                         };
-                                        //if (firstRow)
-                                        //{
-                                        //    data.Pagination = new ApiCommon.PaginationInfo
-                                        //    {
-                                        //        TotalPages = Convert.ToInt32(((DbDataReader)(object)rd)["totalpages"]),
-                                        //        TotalRecords = Convert.ToInt32(((DbDataReader)(object)rd)["totalrecords"]),
-                                        //        PageNumber = page.GetValueOrDefault(),
-                                        //        PageSize = limit.GetValueOrDefault()
-                                        //    };
-                                        //    firstRow = false;
-                                        //}
                                         list.Add(data);
                                     }
                                 }
@@ -4777,6 +4764,105 @@ namespace RemoteSensingProject.Models.ProjectManager
                             ((IDisposable)fetchCmd)?.Dispose();
                         }
                         NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)base.cmd).Dispose();
+            }
+        }
+
+		public List<ManpowerRequests> GetManpowerRequestsInDesignation(int id, int? limit = null, int? page = null, string searchTerm = null)
+        {
+            try
+            {
+                ((DbConnection)(object)con).Open();
+                List<ManpowerRequests> list = new List<ManpowerRequests>();
+                RemoteSensingProject.Models.Admin.main.Project_model pm = new RemoteSensingProject.Models.Admin.main.Project_model();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageprshasanpanel", con, tran);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("v_action", (object)"selectmanpowerwithdesignation");
+                        cmd.Parameters.AddWithValue("@v_id", (object)id);
+                        cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    bool firstRow = true;
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+                                        ManpowerRequests data = new ManpowerRequests
+                                        {
+                                            id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+                                            divisionName = ((DbDataReader)(object)rd)["designationName"].ToString(),
+                                            manpowerrequests = rd["manpower"] != DBNull.Value ? Convert.ToInt32(rd["manpower"]) : 0,
+                                            manpowerremaining = rd["remaining_outsource"] != DBNull.Value ? Convert.ToInt32(rd["remaining_outsource"]) : 0,
+                                            manpoweradded = rd["added_outsource"] != DBNull.Value ? Convert.ToInt32(rd["added_outsource"]) : 0
+                                        };
+                                        if (firstRow)
+                                        {
+                                            data.Pagination = new ApiCommon.PaginationInfo
+                                            {
+                                                TotalPages = Convert.ToInt32(((DbDataReader)(object)rd)["totalpages"]),
+                                                TotalRecords = Convert.ToInt32(((DbDataReader)(object)rd)["totalrecords"]),
+                                                PageNumber = page.GetValueOrDefault(),
+                                                PageSize = limit.GetValueOrDefault()
+                                            };
+                                            firstRow = false;
+                                        }
+                                        list.Add(data);
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
                         try
                         {
                             ((DbCommand)(object)closeCmd).ExecuteNonQuery();
