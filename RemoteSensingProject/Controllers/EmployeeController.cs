@@ -300,7 +300,7 @@ namespace RemoteSensingProject.Controllers
 		public ActionResult Min_Of_Meeting()
 		{
 			IEnumerable<RemoteSensingProject.Models.Admin.main.Employee_model> empList = from e in _adminServices.BindEmployee()
-																						 where e.EmployeeRole == "subOrdinate"
+																						 where e.EmployeeRole.Contains("subOrdinate")
 																						 select e;
 			return View((object)empList);
 		}
