@@ -1714,12 +1714,19 @@ namespace RemoteSensingProject.Models.ProjectManager
 						{
 							while (((DbDataReader)(object)rdr).Read())
 							{
-								meetingc.Add(new RemoteSensingProject.Models.Admin.main.Employee_model
+								var roleValue = rdr["role"];
+
+                                meetingc.Add(new RemoteSensingProject.Models.Admin.main.Employee_model
 								{
 									EmployeeName = ((DbDataReader)(object)rdr)["name"].ToString(),
 									Image_url = ((DbDataReader)(object)rdr)["profile"].ToString(),
-									EmployeeRole = ((DbDataReader)(object)rdr)["role"].ToString(),
-									AppStatus = ((((DbDataReader)(object)rdr)["appstatus"] != DBNull.Value) ? ((int)((DbDataReader)(object)rdr)["appstatus"]) : 0),
+									EmployeeRole = roleValue != DBNull.Value
+    ? roleValue.ToString()
+        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        .Select(r => r.Trim())
+        .ToArray()
+    : Array.Empty<string>(),
+                                    AppStatus = ((((DbDataReader)(object)rdr)["appstatus"] != DBNull.Value) ? ((int)((DbDataReader)(object)rdr)["appstatus"]) : 0),
 									Reason = ((((DbDataReader)(object)rdr)["reason"] != DBNull.Value) ? ((DbDataReader)(object)rdr)["reason"].ToString() : "N/A")
 								});
 							}

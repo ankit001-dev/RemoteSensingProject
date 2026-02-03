@@ -706,7 +706,7 @@ namespace RemoteSensingProject.Controllers
 		public ActionResult Attendance()
 		{
 			((ControllerBase)this).ViewData["EmployeeList"] = (from d in _adminServices.SelectEmployeeRecord()
-															   where d.EmployeeRole == "projectManager"
+															   where d.EmployeeRole.Contains("projectManager")
 															   select d).ToList();
 			return View();
 		}
@@ -714,7 +714,7 @@ namespace RemoteSensingProject.Controllers
 		public ActionResult Attendance_Report()
 		{
 			((ControllerBase)this).ViewData["EmployeeList"] = (from d in _adminServices.SelectEmployeeRecord()
-															   where d.EmployeeRole == "projectManager"
+															   where d.EmployeeRole.Contains("projectManager")
 															   select d).ToList();
 			return View();
 		}
