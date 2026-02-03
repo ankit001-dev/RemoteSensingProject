@@ -118,6 +118,57 @@
     </div>
 </div>
 
+<!--Table Modal-->
+<div class="modal fade" id="addslider" data-backdrop="static" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Add Manpower</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="addmanpowerform">
+                    <div class="form-group">
+                        <label for="DivisionId" class="form-label">Select Division</label>
+                        <select class="form-control" id="DivisionId" name="DivisionId">
+                            <option value="">-- Select Division --</option>
+
+                            @if (data != null && data.Any())
+                            {
+                                foreach (var d in data)
+                                {
+                                    <option value="@d.id">@d.divisionName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label for="outsourceId" class="form-label">Outsource</label>
+
+                        <select class="form-control" id="outsourceId" multiple name="Outsource">
+                            <option value="">-- Select Outsource --</option>
+
+                            @if (outsourcelist != null && outsourcelist.Any())
+                            {
+                                foreach (var d in outsourcelist)
+                                {
+                                    <option value="@d.Id">@d.EmpName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Out Source</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     $('#searchByDivisionName').on('keyup', function () {
         let value = $(this).val().trim();
