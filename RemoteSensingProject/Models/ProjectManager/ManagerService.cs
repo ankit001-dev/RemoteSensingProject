@@ -2,6 +2,15 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Models.ProjectManager.ManagerService
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Math;
+using Npgsql;
+using NpgsqlTypes;
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.SubOrdinate;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,13 +19,6 @@ using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using ClosedXML.Excel;
-using Npgsql;
-using NpgsqlTypes;
-using RemoteSensingProject.Models;
-using RemoteSensingProject.Models.Admin;
-using RemoteSensingProject.Models.ProjectManager;
-using RemoteSensingProject.Models.SubOrdinate;
 
 namespace RemoteSensingProject.Models.ProjectManager
 {
@@ -1472,6 +1474,34 @@ namespace RemoteSensingProject.Models.ProjectManager
 				((Component)(object)base.cmd).Dispose();
 			}
 		}
+
+		public bool DeleteOutSource(int id)
+		{
+			try
+			{
+                cmd = new NpgsqlCommand();
+				cmd.Connection = con;
+                ((DbCommand)(object)cmd).CommandType = CommandType.Text;
+				((DbCommand)(object)cmd).CommandText = "CALL sp_manageoutsource(p_action=>@p_action,p_id=>@p_id)";
+				cmd.Parameters.AddWithValue("p_action", (object)"deleteOutsource");
+				cmd.Parameters.AddWithValue("p_id", (object)id);
+                ((DbConnection)(object)con).Open();
+                ((DbCommand)(object)cmd).ExecuteNonQuery();
+                return true;
+            }
+			catch(Exception ex)
+			{
+				throw ex;
+			}
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)cmd).Dispose();
+            }
+        }
 
 		public bool GetResponseFromMember(getMemberResponse mr)
 		{
@@ -4461,5 +4491,326 @@ namespace RemoteSensingProject.Models.ProjectManager
 				((Component)(object)base.cmd).Dispose();
 			}
 		}
-	}
+
+        #region Manpower Requests
+        public List<ManpowerRequests> GetManpowerRequests(int? limit = null, int? page = null,string searchTerm=null)
+        {
+            try
+            {
+                ((DbConnection)(object)con).Open();
+                List<ManpowerRequests> list = new List<ManpowerRequests>();
+                RemoteSensingProject.Models.Admin.main.Project_model pm = new RemoteSensingProject.Models.Admin.main.Project_model();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageOutsource_cursor", con, tran);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("v_action", (object)"selectmanpowerrequests");
+                        cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    bool firstRow = true;
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+                                        ManpowerRequests data = new ManpowerRequests
+                                        {
+                                            id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+											divisionName = ((DbDataReader)(object)rd)["devisionName"].ToString(),
+                                            manpowerrequests = rd["manpower"] != DBNull.Value? Convert.ToInt32(rd["manpower"]) : 0,
+                                            manpowerremaining = rd["remaining_outsource"] != DBNull.Value? Convert.ToInt32(rd["remaining_outsource"]) : 0,
+                                            manpoweradded = rd["added_outsource"] != DBNull.Value? Convert.ToInt32(rd["added_outsource"]) : 0
+                                        };
+                                        if (firstRow)
+                                        {
+                                            data.Pagination = new ApiCommon.PaginationInfo
+                                            {
+                                                TotalPages = Convert.ToInt32(((DbDataReader)(object)rd)["totalpages"]),
+                                                TotalRecords = Convert.ToInt32(((DbDataReader)(object)rd)["totalrecords"]),
+                                                PageNumber = page.GetValueOrDefault(),
+                                                PageSize = limit.GetValueOrDefault()
+                                            };
+                                            firstRow = false;
+                                        }
+                                        list.Add(data);
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)base.cmd).Dispose();
+            }
+        }
+        public bool AddManpower(AddManPower os)
+        {
+            try
+            {
+                ((DbConnection)(object)con).Open();
+
+                foreach (var outsourceId in os.Outsource)
+                {
+                    using (var cmd = new NpgsqlCommand(
+                        "CALL sp_manageoutsource(p_action=>@p_action, p_id=>@p_id, p_designationid=>@p_designationid)",
+                        con))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = "addmanpower";
+                        cmd.Parameters.Add("@p_id", NpgsqlDbType.Integer).Value = os.DivisionId;
+                        cmd.Parameters.Add("@p_designationid", NpgsqlDbType.Integer).Value = outsourceId;
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)cmd).Dispose();
+            }
+        }
+
+        public PrashasanDashboard GetPrashasanDashboardData()
+        {
+            try
+            {
+                ((DbConnection)(object)con).Open();
+                PrashasanDashboard data = new PrashasanDashboard();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageOutsource_cursor", con, tran);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("v_action", (object)"prashasandashboarddata");
+                        cmd.Parameters.AddWithValue("@v_limit", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_page", DBNull.Value);
+						cmd.Parameters.AddWithValue("@v_searchterm", DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+                                        data = new PrashasanDashboard
+                                        {
+                                            totalDesignation = rd["totalDesignation"] != DBNull.Value ? Convert.ToInt32(rd["totalDesignation"]) : 0,
+                                            totalOutsource = rd["totalOutsource"] != DBNull.Value ? Convert.ToInt32(rd["totaloutsource"]) : 0,
+                                            totalRemaining = rd["totalRemaining"] != DBNull.Value ? Convert.ToInt32(rd["totalremaining"]) : 0,
+                                            totalRequest = rd["totalRequest"] != DBNull.Value ? Convert.ToInt32(rd["totalRequest"]) : 0
+                                        };
+										//list = data;
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)base.cmd).Dispose();
+            }
+        }
+
+        public List<OuterSource> OutsourceNotInDivision()
+        {
+            try
+            {
+                List<OuterSource> list = new List<OuterSource>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageOutsource_cursor", con, tran);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"selectoutsourcenotindivision");
+                        //cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
+                        //cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+                        //cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                        //cmd.Parameters.AddWithValue("@v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    //bool firstRow = true;
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+                                        OuterSource data = new OuterSource
+                                        {
+                                            Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+                                            EmpName = ((DbDataReader)(object)rd)["emp_name"].ToString(),
+                                            mobileNo = Convert.ToInt64(((DbDataReader)(object)rd)["emp_mobile"]),
+                                            email = ((DbDataReader)(object)rd)["emp_email"].ToString(),
+                                            gender = ((DbDataReader)(object)rd)["emp_gender"].ToString(),
+                                            designationname = ((DbDataReader)(object)rd)["designationname"].ToString(),
+                                            designationid = Convert.ToInt32(rd["designationid"])
+                                        };
+                                        //if (firstRow)
+                                        //{
+                                        //    data.Pagination = new ApiCommon.PaginationInfo
+                                        //    {
+                                        //        TotalPages = Convert.ToInt32(((DbDataReader)(object)rd)["totalpages"]),
+                                        //        TotalRecords = Convert.ToInt32(((DbDataReader)(object)rd)["totalrecords"]),
+                                        //        PageNumber = page.GetValueOrDefault(),
+                                        //        PageSize = limit.GetValueOrDefault()
+                                        //    };
+                                        //    firstRow = false;
+                                        //}
+                                        list.Add(data);
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)base.cmd).Dispose();
+            }
+        }
+        #endregion
+    }
 }

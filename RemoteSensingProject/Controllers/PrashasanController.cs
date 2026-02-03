@@ -20,7 +20,8 @@ namespace RemoteSensingProject.Controllers
         // GET: Prashasan
         public ActionResult Dashboard()
         {
-            return View();
+            PrashasanDashboard data = _managerServices.GetPrashasanDashboardData();
+            return View(data);
         }
 
         public ActionResult ManageDivision()
@@ -55,15 +56,47 @@ namespace RemoteSensingProject.Controllers
                 message = (res ? "Outsource created succesfully !" : message)
             });
         }
-
-        public ActionResult ManageManPowerRequest()
+        [HttpPost]
+        public ActionResult DeleteOutsource(int id)
         {
+            try 
+            {
+                bool res = _managerServices.DeleteOutSource(id);
+                return Json((object)res,(JsonRequestBehavior)0);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public ActionResult ManageManPowerRequest(string searchTerm = null)
+        {
+            ViewData["manpowerrequests"] = _managerServices.GetManpowerRequests(searchTerm: searchTerm);
+            ViewData["OutsourceList"] = _managerServices.OutsourceNotInDivision();
             return View();
         }
 
         public ActionResult Monthly_ManPower_Allocation_Report()
         {
             return View();
+        }
+        [HttpPost]
+        public ActionResult AddManPower(AddManPower model)
+        {
+            try
+            {
+                if (model.DivisionId == 0 || model.Outsource == null || !model.Outsource.Any())
+                {
+                    return Json(new { status = false, message = "Invalid data" });
+                }
+                bool res = _managerServices.AddManpower(model);
+
+                return Json(new { status = res, message = res ? "Manpower added successfully" : "Some error occured" });
+            }
+            catch(Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
+            }
         }
     }
 }

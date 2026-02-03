@@ -2,12 +2,15 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Controllers.AccountsController
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -158,5 +161,45 @@ namespace RemoteSensingProject.Controllers
 			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
 			return View();
 		}
-	}
+
+		#region New Expense Changes
+		[HttpPost]
+        public ActionResult InsertExpenses(List<ProjectExpenses> list)
+        {
+            string filePage = Server.MapPath("~/ProjectContent/ProjectManager/HeadsSlip/");
+            if (!Directory.Exists(filePage))
+            {
+                Directory.CreateDirectory(filePage);
+            }
+            if (list.Count > 0)
+            {
+                bool res = false;
+                foreach (ProjectExpenses item in list)
+                {
+                    HttpPostedFileBase file = item.Attatchment_file;
+                    if (file != null && file.FileName != "")
+                    {
+                        item.attatchment_url = DateTime.Now.ToString("ddMMMyyyy") + Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        item.attatchment_url = Path.Combine("/ProjectContent/ProjectManager/HeadsSlip/", item.attatchment_url);
+                    }
+                    res = _managerServices.insertExpences(item);
+                    if (res && file != null && file.FileName != "")
+                    {
+                        file.SaveAs(Server.MapPath(item.attatchment_url));
+                    }
+                }
+                return Json((object)new
+                {
+                    status = res,
+                    message = (res ? "Project created successfully !" : "Some issue occured !")
+                });
+            }
+            return Json((object)new
+            {
+                status = false,
+                message = "Server is busy !"
+            });
+        }
+        #endregion
+    }
 }

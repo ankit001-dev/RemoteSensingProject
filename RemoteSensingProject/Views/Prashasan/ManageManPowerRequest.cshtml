@@ -2,7 +2,247 @@
 @{
     ViewBag.Title = "ManageManPowerRequest";
     Layout = "~/Views/Shared/_prashasanLayout.cshtml";
+    var data = ViewData["manpowerrequests"] as List<RemoteSensingProject.Models.ProjectManager.ManpowerRequests>;
+    var outsourcelist = ViewData["OutsourceList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>; 
 }
 
-<h2>ManageManPowerRequest</h2>
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active"><a href="/">Manpower Request</a></li>
+    </ol>
+</nav>
+<div class="search-box p-4 bg-white rounded mb-3 mx-3 box-shadow">
+    <div class="row align-items-center">
+        <div class="col-lg-3">
+            <h5>Division</h5>
+        </div>
+        <div class="col-lg-9 col-md-9">
+            <input type="search" placeholder="Search by division name" id="searchByDivisionName" class="form-control">
+        </div>
+    </div>
+</div>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr. No.</th>
+                                <th>Name</th>
+                                <th>Manpower Requests</th>
+                                <th>Added</th>
+                                <th>Remaining</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (data != null && data.Count > 0)
+                            {
+                                var count = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td class="text-start">@count</td>
+                                        <td>@item.divisionName</td>
+                                        <td>@item.manpowerrequests</td>
+                                        <td>@item.manpoweradded</td>
+                                        <td>@item.manpowerremaining</td>
+                                        <td>
+                                            <a id="addEmployeeBtn" data-bs-toggle="modal" class="cursor-pointer" data-bs-target="#addslider" title="Add Manpower" data-id="@item.id"><i class="link-icon" data-feather="edit"></i></a>
+                                        </td>
+                                    </tr>
 
+                                    count++;
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addslider" data-backdrop="static" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Add Manpower</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="addmanpowerform">
+                    <div class="form-group">
+                        <label for="DivisionId" class="form-label">Select Division</label>
+                        <select class="form-control" id="DivisionId" name="DivisionId">
+                            <option value="">-- Select Division --</option>
+
+                            @if (data != null && data.Any())
+                            {
+                                foreach (var d in data)
+                                {
+                                    <option value="@d.id">@d.divisionName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label for="outsourceId" class="form-label">Outsource</label>
+
+                        <select class="form-control" id="outsourceId" multiple name="Outsource">
+                            <option value="">-- Select Outsource --</option>
+
+                            @if (outsourcelist != null && outsourcelist.Any())
+                                {
+                                    foreach (var d in outsourcelist)
+                                    {
+                                        <option value="@d.Id">@d.EmpName</option>
+                                    }
+                                }
+                        </select>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Out Source</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Table Modal-->
+<div class="modal fade" id="addslider" data-backdrop="static" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Add Manpower</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="addmanpowerform">
+                    <div class="form-group">
+                        <label for="DivisionId" class="form-label">Select Division</label>
+                        <select class="form-control" id="DivisionId" name="DivisionId">
+                            <option value="">-- Select Division --</option>
+
+                            @if (data != null && data.Any())
+                            {
+                                foreach (var d in data)
+                                {
+                                    <option value="@d.id">@d.divisionName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label for="outsourceId" class="form-label">Outsource</label>
+
+                        <select class="form-control" id="outsourceId" multiple name="Outsource">
+                            <option value="">-- Select Outsource --</option>
+
+                            @if (outsourcelist != null && outsourcelist.Any())
+                            {
+                                foreach (var d in outsourcelist)
+                                {
+                                    <option value="@d.Id">@d.EmpName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Out Source</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#searchByDivisionName').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader(); // 👈 Add here
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    $(document).ready(function () {
+        $('#outsourceId').select2();
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchTerm = urlParams.get("searchTerm");
+
+        if (searchTerm !== null) {
+            $('#searchByDivisionName')
+                .val(searchTerm)   // value restore
+                .focus();          // focus on input
+        }
+    });
+
+    $("#addmanpowerform").on("submit", function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        let data = new FormData(this);
+        $.ajax({
+            url: "/Prashasan/AddManPower",
+            type: "Post",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Added Successfuly!",
+                        text: res.message,
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: res.message,
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue",
+                    text: "Server is not respondig. Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
+    })
+</script>

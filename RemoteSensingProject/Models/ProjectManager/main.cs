@@ -433,4 +433,25 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string CompletionPrecentage { get; set; }
         public int projectId { get; set; }
     }
+    public class ManpowerRequests
+    {
+        public string divisionName { get; set; }
+        public int manpowerrequests { get; set; }
+        public int manpowerremaining { get; set; }
+        public int manpoweradded { get; set; }
+        public int id { get; set; }
+        public PaginationInfo Pagination { get; set; }
+    }
+    public class AddManPower
+    {
+        public int DivisionId { get; set; }
+        public List<int> Outsource { get; set; }
+    }
+    public class PrashasanDashboard
+    {
+        public int totalOutsource { get; set; }
+        public int totalRequest { get; set; }
+        public int totalRemaining { get; set; }
+        public int totalDesignation { get; set; }
+    }
 }
