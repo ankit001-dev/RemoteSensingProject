@@ -2,8 +2,8 @@
 @{
     ViewBag.Title = "AddManpower";
     Layout = "~/Views/Shared/_prashasanLayout.cshtml";
-    var data = ViewData["manpowerrequests"] as List<RemoteSensingProject.Models.ProjectManager.ManpowerRequests>;
-    var outsourcelist = ViewData["OutsourceList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
+    var data = ViewData["manpowerrequestsindesignation"] as List<RemoteSensingProject.Models.ProjectManager.ManpowerRequests>;
+    var designations = ViewData["designationList"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
 }
 
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
@@ -81,16 +81,18 @@
             </div>
             <div class="modal-body">
                 <form id="addmanpowerform">
-                    <div class="form-group">
-                        <label for="DivisionId" class="form-label">Select Division</label>
-                        <select class="form-control" id="DivisionId" name="DivisionId">
-                            <option value="">-- Select Division --</option>
+                    <input type="hidden" name="DivisionId" value="@Request.QueryString["id"]" />                    
 
-                            @if (data != null && data.Any())
+                    <div class="form-group mt-2">
+                        <label for="DesignationId" class="form-label">Select Designation</label>
+                        <select class="form-control" id="DesignationId" name="DesignationId">
+                            <option value="" selected disabled>-- Select Designation --</option>
+
+                            @if (designations != null && designations.Any())
                             {
-                                foreach (var d in data)
+                                foreach (var d in designations)
                                 {
-                                    <option value="@d.id">@d.divisionName</option>
+                                    <option value="@d.id">@d.name</option>
                                 }
                             }
                         </select>
@@ -100,15 +102,7 @@
                         <label for="outsourceId" class="form-label">Outsource</label>
 
                         <select class="form-control" id="outsourceId" multiple name="Outsource">
-                            <option value="">-- Select Outsource --</option>
-
-                            @if (outsourcelist != null && outsourcelist.Any())
-                            {
-                                foreach (var d in outsourcelist)
-                                {
-                                    <option value="@d.Id">@d.EmpName</option>
-                                }
-                            }
+                            <option value="" selected disabled>-- Select Outsource --</option>
                         </select>
                     </div>
                     <div class="text-center mt-3">
@@ -145,6 +139,31 @@
                 .focus();          // focus on input
         }
     });
+
+    $(document).on('change', '#DesignationId', function () {
+        const designationId = $(this).val();
+        getOutSourceList(designationId);
+    });
+
+    function getOutSourceList(id) {
+        $.ajax({
+            url: `/prashasan/OutSourceListByDesignation?id=${id}`,
+            type: "get",
+            success: function (res) {
+                if (res.status) {
+                    const dropdown = $('#outsourceId');
+                    dropdown.empty();
+                    dropdown.append('<option value="" disabled>--Select Outsource--</option>');
+                    $.each(res.data, function (i, d) {
+                        dropdown.append(`<option value="${d.Id}">${d.EmpName}</option>`);
+                    });
+                }
+            },
+            error: function (xhr) {
+                console.error(xhr);
+            }
+        })
+    }
 
     $("#addmanpowerform").on("submit", function (e) {
         e.preventDefault();
