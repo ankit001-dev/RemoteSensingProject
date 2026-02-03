@@ -78,12 +78,12 @@ namespace RemoteSensingProject.ApiServices
 					EmployeeName = request.Form.Get("EmployeeName"),
 					MobileNo = Convert.ToInt64(request.Form.Get("MobileNo")),
 					Email = request.Form.Get("Email"),
-					EmployeeRole = request.Form.Get("EmployeeRole"),
 					Division = Convert.ToInt32(request.Form.Get("Division")),
 					Designation = Convert.ToInt32(request.Form.Get("Designation")),
 					Gender = request.Form.Get("Gender"),
 					Image_url = request.Form.Get("Image_url")
 				};
+				string[] empRole = request.Form.GetValues("EmployeeRole") ?? Array.Empty<string>();
 				HttpPostedFile file = request.Files["EmployeeImages"];
 				if (file != null && file.FileName != "")
 				{
@@ -116,7 +116,7 @@ namespace RemoteSensingProject.ApiServices
 				{
 					validationErrors.Add("A valid Email address is required.");
 				}
-				if (string.IsNullOrWhiteSpace(empData.EmployeeRole))
+				if (empData.EmployeeRole == null||empData.EmployeeRole.Length == 0)
 				{
 					validationErrors.Add("Employee Role is required.");
 				}

@@ -36,7 +36,7 @@ namespace RemoteSensingProject.Models.Admin
 
 			public string Email { get; set; }
 
-			public string EmployeeRole { get; set; }
+			public string[] EmployeeRole { get; set; }
 
 			public int Division { get; set; }
 
