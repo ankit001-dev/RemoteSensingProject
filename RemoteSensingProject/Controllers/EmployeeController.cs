@@ -1,7 +1,4 @@
-// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
-// for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
-// RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// RemoteSensingProject.Controllers.EmployeeController
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -1012,8 +1009,15 @@ namespace RemoteSensingProject.Controllers
 				});
 			}
 		}
+        #region Division Head Section
+		public ActionResult DivisionHead()
+		{
+			return View();
+        }	
+        #endregion Division Head Section
+        #region Reports Starts here
 
-		public ActionResult ProjectReport(string type, string searchTerm = null, string statusFilter = null)
+        public ActionResult ProjectReport(string type, string searchTerm = null, string statusFilter = null)
 		{
 			//IL_027f: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0286: Expected O, but got Unknown
@@ -1403,5 +1407,7 @@ namespace RemoteSensingProject.Controllers
 				return (ActionResult)new HttpStatusCodeResult(500, "Error while generating project expenses report.");
 			}
 		}
-	}
+
+        #endregion Reports Ends here	
+    }
 }
