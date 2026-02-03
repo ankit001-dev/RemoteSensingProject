@@ -12,8 +12,6 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
-using RemoteSensingProject.Models;
-using RemoteSensingProject.Models.LoginManager;
 
 namespace RemoteSensingProject.Models.LoginManager
 {

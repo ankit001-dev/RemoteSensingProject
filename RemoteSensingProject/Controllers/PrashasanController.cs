@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace RemoteSensingProject.Controllers
 {
+    [Authorize(Roles = "prashasan")]
     public class PrashasanController : Controller
     {
         private readonly AdminServices _adminServices;
@@ -77,6 +78,10 @@ namespace RemoteSensingProject.Controllers
         }
 
         public ActionResult Monthly_ManPower_Allocation_Report()
+        {
+            return View();
+        }
+        public ActionResult AddManpower(int id)
         {
             return View();
         }

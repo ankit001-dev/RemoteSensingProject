@@ -44,39 +44,31 @@ namespace RemoteSensingProject.Controllers
 			{
 				string url = "";
 				string role = cr.role;
-				string role2 = role;
-				if (role2 != null)
-				{
-					if (role2.Equals("admin"))
-					{
-						url = "/admin/Dashboard";
-					}
-					else
-					{
-						string role3 = role2;
-						if (role3.Equals("projectManager"))
-						{
-							url = "/employee/dashboard";
-						}
-						else
-						{
-							string role4 = role2;
-							if (role4.Equals("accounts"))
-							{
-								url = "/accounts/dashboard";
-							}
-							else
-							{
-								string role5 = role2;
-								if (role5.Equals("subOrdinate"))
-								{
-									url = "/SubOrdinate/dashboard";
-								}
-							}
-						}
-					}
-				}
-				FormsAuthentication.SetAuthCookie(username, createPersistentCookie: false);
+                if (role != null)
+                {
+                    if (role.Equals("admin"))
+                    {
+                        url = "/admin/Dashboard";
+                    }
+                    else if (role.Equals("projectManager"))
+                    {
+                        url = "/employee/dashboard";
+                    }
+                    else if (role.Equals("accounts"))
+                    {
+                        url = "/accounts/dashboard";
+                    }
+                    else if (role.Equals("subOrdinate"))
+                    {
+                        url = "/SubOrdinate/dashboard";
+                    }
+                    else if (role.Equals("prashasan"))
+                    {
+                        url = "/Prashasan/Dashboard"; 
+                    }
+                }
+
+                FormsAuthentication.SetAuthCookie(username, createPersistentCookie: false);
 				return Json((object)new
 				{
 					status = true,

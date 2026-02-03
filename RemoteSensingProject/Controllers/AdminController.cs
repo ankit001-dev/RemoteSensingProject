@@ -17,7 +17,7 @@ using RemoteSensingProject.Models.SubOrdinate;
 namespace RemoteSensingProject.Controllers
 {
 
-	[Authorize(Roles = "admin")]
+	[Authorize(Roles = "admin,prashasan")]
 	public class AdminController : Controller
 	{
 		private readonly AdminServices _adminServices;
