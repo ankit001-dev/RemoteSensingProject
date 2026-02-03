@@ -44,27 +44,31 @@ namespace RemoteSensingProject.Controllers
 			{
 				string url = "";
 				string role = cr.role;
-				if (role != null)
+				string role2 = role;
+				if (role2 != null)
 				{
-					if (role.Equals("admin"))
+					if (role2.Equals("admin"))
 					{
 						url = "/admin/Dashboard";
 					}
 					else
 					{
-						if (role.Equals("projectManager"))
+						string role3 = role2;
+						if (role3.Equals("projectManager"))
 						{
 							url = "/employee/dashboard";
 						}
 						else
 						{
-							if (role.Equals("accounts"))
+							string role4 = role2;
+							if (role4.Equals("accounts"))
 							{
 								url = "/accounts/dashboard";
 							}
 							else
 							{
-								if (role.Equals("subOrdinate"))
+								string role5 = role2;
+								if (role5.Equals("subOrdinate"))
 								{
 									url = "/SubOrdinate/dashboard";
 								}
@@ -78,7 +82,7 @@ namespace RemoteSensingProject.Controllers
 					status = true,
 					message = "Authorised successfully !",
 					url = url
-				}, JsonRequestBehavior.AllowGet);
+				}, (JsonRequestBehavior)0);
 			}
 			return Json((object)new
 			{
