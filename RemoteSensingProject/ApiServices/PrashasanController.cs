@@ -102,7 +102,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                var data = _managerServices.GetManpowerRequests(searchTerm: searchTerm, page: page, limit: limit);
+                var data = _managerServices.GetManpowerRequestsInDivision(searchTerm: searchTerm, page: page, limit: limit);
 
                 if (data != null && data.Any())
                 {
@@ -121,11 +121,11 @@ namespace RemoteSensingProject.ApiServices
 
         [Route("getoutsource-notin-division")]
         [HttpGet]
-        public IHttpActionResult ManpowerRequests()
+        public IHttpActionResult ManpowerRequests(int designationid)
         {
             try
             {
-                var data = _managerServices.OutsourceNotInDivision();
+                var data = _managerServices.OutsourceNotInDivision(designationid);
 
                 if (data != null && data.Any())
                 {

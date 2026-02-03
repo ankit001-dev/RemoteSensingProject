@@ -445,6 +445,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     public class AddManPower
     {
         public int DivisionId { get; set; }
+        public int DesignationId { get; set; }
         public List<int> Outsource { get; set; }
     }
     public class PrashasanDashboard

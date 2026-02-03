@@ -72,8 +72,7 @@ namespace RemoteSensingProject.Controllers
         }
         public ActionResult ManageManPowerRequest(string searchTerm = null)
         {
-            ViewData["manpowerrequests"] = _managerServices.GetManpowerRequests(searchTerm: searchTerm);
-            ViewData["OutsourceList"] = _managerServices.OutsourceNotInDivision();
+            ViewData["manpowerrequestsindivision"] = _managerServices.GetManpowerRequestsInDivision(searchTerm: searchTerm);
             return View();
         }
 
@@ -81,9 +80,24 @@ namespace RemoteSensingProject.Controllers
         {
             return View();
         }
-        public ActionResult AddManpower(int id)
+        public ActionResult AddManpower(int id, string searchTerm = null)
         {
+            ViewData["manpowerrequestsindesignation"] = _managerServices.GetManpowerRequestsInDesignation(id:id,searchTerm: searchTerm);
+            ViewData["designationList"] = _adminServices.ListDesgination();
             return View();
+        }
+        [HttpGet]
+        public JsonResult OutSourceListByDesignation(int id)
+        {
+            try
+            {
+                var data = _managerServices.OutsourceNotInDivision(id);
+                return Json(new { status = true, data = data }, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json(new { status = false, message=ex.Message });
+            }
         }
         [HttpPost]
         public ActionResult AddManPower(AddManPower model)
