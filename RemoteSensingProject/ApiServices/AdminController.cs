@@ -10,6 +10,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Http;
+using Antlr.Runtime.Tree;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
@@ -64,7 +65,89 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
+		#region Manage Division
 		[HttpPost]
+		[Route("api/add-division")]
+		public IHttpActionResult AddDivision([FromBody] Models.Admin.main.CommonResponse cr)
+		{
+			try
+			{
+				if (string.IsNullOrEmpty(cr.name))
+					return Content(HttpStatusCode.BadRequest, new
+					{
+						status = false,
+						StatusCode = 400,
+						message = "Division name is required"
+					});
+				bool res = _adminServices.InsertDivison(cr);
+				return Ok(new
+				{
+					status = res,
+					StatusCode = res ? 201 : 400,
+					message = res ? cr.id>0?"Updated Successfully": "Added Successfully" : "Some error occured"
+				});
+			}
+			catch(Exception ex)
+			{
+				return BadRequest(new
+				{
+					status = false,
+					StatusCode = 400,
+					message = ex.Message
+				});
+			}
+		}
+
+		[HttpGet]
+		[Route("api/get-division")]
+		public IHttpActionResult GetAllDivision()
+		{
+			try
+			{
+				var data = _adminServices.ListDivison();
+				return Ok(new
+				{
+					status = data.Any(),
+					data = data
+				});
+			}
+			catch(Exception ex)
+			{
+				return BadRequest(new
+				{
+					status = false,
+					StatusCode = 400,
+					message = ex.Message
+				});
+			}
+		}
+		[HttpGet]
+		[Route("api/remove-division")]
+		public IHttpActionResult RemoveDivision(int id)
+		{
+			try
+			{
+				bool res = _adminServices.removeDivison(id);
+				return Ok(new
+				{
+					status = res,
+					StatusCode = res ? 200 : 400,
+					message = res ? "Deleted Successfully" : "Something went wrong"
+				});
+			}
+			catch(Exception ex)
+			{
+				return BadRequest(new
+				{
+					status = false,
+					StatusCode = 400,
+					message = ex.Message
+				});
+			}
+		}
+        #endregion
+
+        [HttpPost]
 		[Route("api/EmployeeRegistration")]
 		public IHttpActionResult Emp_Register()
 		{
@@ -561,7 +644,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpGet]
 		[Route("api/GetProjectBudgets")]
 		public IHttpActionResult GetProjetBudgets(int projectId)
@@ -1177,7 +1260,7 @@ namespace RemoteSensingProject.ApiServices
 			{
 				ManagerService managerservice = _managerservice;
 				int? id = projectId;
-				List<HiringVehicle> data = managerservice.GetHiringVehicles(null, id, "GetById");
+				List<HiringVehicle> data = managerservice.GetHiringVehicles(projectId);
 				return Ok(new
 				{
 					status = data.Any(),

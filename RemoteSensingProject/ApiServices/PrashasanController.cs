@@ -23,7 +23,28 @@ namespace RemoteSensingProject.ApiServices
             _managerServices = new ManagerService();
         }
 
+        [Route("dashboard-count")]
+        [HttpGet]
+        public IHttpActionResult DashboardCount()
+        {
+            try
+            {
+                var data = _managerServices.GetPrashasanDashboardData();
 
+                if (data != null)
+                {
+                    return Success(this, data);
+                }
+                else
+                {
+                    return NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Error(this, ex.Message);
+            }
+        }
         [Route("OutsourceList")]
         [HttpGet]
         public IHttpActionResult GetOutsourceList(int?id= null, string searchTerm= null, int? page = null, int? limit = null) {
@@ -96,9 +117,9 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        [Route("OutsourceList")]
+        [Route("manpower-request-division")]
         [HttpGet]
-        public IHttpActionResult ManpowerRequests(string searchTerm = null, int? page = null, int? limit = null)
+        public IHttpActionResult ManpowerRequestsInDivision(string searchTerm = null, int? page = null, int? limit = null)
         {
             try
             {
@@ -119,9 +140,32 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+        [Route("manpower-request-designation")]
+        [HttpGet]
+        public IHttpActionResult ManpowerRequestsInDesignation(int divisionid, string searchTerm = null, int? page = null, int? limit = null)
+        {
+            try
+            {
+                var data = _managerServices.GetManpowerRequestsInDesignation(id: divisionid, searchTerm: searchTerm, page: page, limit: limit);
+
+                if (data != null && data.Any())
+                {
+                    return Success(this, data, pagination: data[0].Pagination);
+                }
+                else
+                {
+                    return NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Error(this, ex.Message);
+            }
+        }
+
         [Route("getoutsource-notin-division")]
         [HttpGet]
-        public IHttpActionResult ManpowerRequests(int designationid)
+        public IHttpActionResult OutsourceNotInDevision(int designationid)
         {
             try
             {
@@ -148,32 +192,46 @@ namespace RemoteSensingProject.ApiServices
             try
             {
                 List<string> errors = new List<string>();
+
+                if (ap == null)
+                    errors.Add("Request body is empty");
+
                 if (ap.DivisionId <= 0)
-                {
                     errors.Add("Division id is not valid");
-                }
-                if (ap.Outsource.Count <= 0)
-                {
+
+                if (ap.DesignationId <= 0)
+                    errors.Add("Designation id is not valid");
+
+                if (ap.Outsource == null || !ap.Outsource.Any())
                     errors.Add("At least one outsource is required");
-                }
-                if (errors.Count > 0)
+
+                if (errors.Any())
                 {
-                    return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
+                    return Content(HttpStatusCode.BadRequest, new
+                    {
+                        status = false,
+                        StatusCode = 400,
+                        message = string.Join(", ", errors)
+                    });
                 }
+
+                // Service throws exception on failure
                 bool res = _managerServices.AddManpower(ap);
+
                 return Ok(new
                 {
                     status = res,
-                    StatusCode = (res ? 200 : 500),
-                    message = (res ? "Manpower added successfully !" : "Some issue occured")
+                    StatusCode = 200,
+                    message = "Manpower added successfully!"
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return BadRequest(new
+                // Business / DB validation error
+                return Content(HttpStatusCode.Conflict, new
                 {
                     status = false,
-                    StatusCode = 500,
+                    StatusCode = 409,
                     message = ex.Message
                 });
             }
