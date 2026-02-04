@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "ManageManPowerRequest";
     Layout = "~/Views/Shared/_prashasanLayout.cshtml";
-    var data = ViewData["manpowerrequests"] as List<RemoteSensingProject.Models.ProjectManager.ManpowerRequests>;
+    var data = ViewData["manpowerrequestsindivision"] as List<RemoteSensingProject.Models.ProjectManager.ManpowerRequests>;
 }
 
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
@@ -44,7 +44,7 @@
                                     <tr>
                                         <td class="text-start">@count</td>
                                         <td>@item.divisionName</td>
-                                        <td><a href="/prashasan/addManpower/id=@item.id" data-title="show designation">@item.manpowerrequests</a></td>
+                                        <td><a href="/prashasan/addManpower?id=@item.id" data-title="show designation">@item.manpowerrequests</a></td>
                                         <td>@item.manpoweradded</td>
                                         <td>@item.manpowerremaining</td>                                        
                                     </tr>

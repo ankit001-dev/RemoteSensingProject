@@ -2904,7 +2904,6 @@ namespace RemoteSensingProject.Models.Admin
 											id = (int)((DbDataReader)(object)res)["id"],
 											projectId = (int)((DbDataReader)(object)res)["projectId"],
 											projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
-											projectManager = Convert.ToString(((DbDataReader)(object)res)["name"]),
 											headName = Convert.ToString(((DbDataReader)(object)res)["heads"]),
 											amount = Convert.ToDecimal(((DbDataReader)(object)res)["amount"]),
 											dateFrom = Convert.ToDateTime(((DbDataReader)(object)res)["dateFrom"]),
@@ -2917,11 +2916,8 @@ namespace RemoteSensingProject.Models.Admin
 											BookAgainstCentre = ((DbDataReader)(object)res)["BookAgainstCentre"].ToString(),
 											availbilityOfFund = ((DbDataReader)(object)res)["availbilityOfFund"].ToString(),
 											note = ((DbDataReader)(object)res)["note"].ToString(),
-											newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
-											adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"]),
 											remark = ((DbDataReader)(object)res)["remark"].ToString(),
-											projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A"),
-											statusLabel = ((Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]) && !Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"])) ? "Pending" : ((!Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]) && Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"])) ? "Approved" : "Rejected"))
+											projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A")
 										});
 										if (firstRow)
 										{
