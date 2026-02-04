@@ -59,7 +59,8 @@ namespace RemoteSensingProject.Models
                             {
                                 while (rd.Read())
                                 {
-                                    role.Add(rd["userRole"].ToString());
+                                    string roles = rd["userRole"].ToString();
+                                    role = roles.Split(',').ToList();
                                 }
                             }
                         }

@@ -336,6 +336,7 @@ namespace RemoteSensingProject.Models.Admin
 							userPassword += validChars[rnd.Next(validChars.Length)];
 						}
 					}
+					string role = string.Join(",", emp.EmployeeRole);
 					string actionType = ((emp.Id > 0) ? "UpdateEmployees" : "InsertEmployees");
 					cmd.Parameters.AddWithValue("p_id", (emp.Id == 0) ? DBNull.Value : ((object)emp.Id));
 					cmd.Parameters.AddWithValue("p_employeecode", ((object)emp.EmployeeCode) ?? ((object)DBNull.Value));
@@ -343,7 +344,7 @@ namespace RemoteSensingProject.Models.Admin
 					cmd.Parameters.AddWithValue("p_mobile", (object)emp.MobileNo);
 					cmd.Parameters.AddWithValue("p_email", ((object)emp.Email) ?? ((object)DBNull.Value));
 					cmd.Parameters.AddWithValue("p_gender", ((object)emp.Gender) ?? ((object)DBNull.Value));
-					cmd.Parameters.AddWithValue("p_role", ((object)emp.EmployeeRole) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_role", ((object)role) ?? ((object)DBNull.Value));
 					cmd.Parameters.AddWithValue("p_username", ((object)emp.Email) ?? ((object)DBNull.Value));
 					cmd.Parameters.AddWithValue("p_password", ((object)userPassword) ?? ((object)DBNull.Value));
 					cmd.Parameters.AddWithValue("p_devision", (object)emp.Division);

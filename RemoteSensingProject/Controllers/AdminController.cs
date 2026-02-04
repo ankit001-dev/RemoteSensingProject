@@ -125,11 +125,11 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult Employee_Registration(int? division = null, string searchTerm = null)
 		{
-			((dynamic)((ControllerBase)this).ViewBag).division = _adminServices.ListDivison();
-			((dynamic)((ControllerBase)this).ViewBag).designation = _adminServices.ListDesgination();
+			ViewBag.division = _adminServices.ListDivison();
+			ViewBag.designation = _adminServices.ListDesgination();
 			List<RemoteSensingProject.Models.Admin.main.Employee_model> empList = new List<RemoteSensingProject.Models.Admin.main.Employee_model>();
 			empList = _adminServices.SelectEmployeeRecord(null, null, searchTerm, division);
-			((ControllerBase)this).ViewData["EmployeeList"] = empList;
+			ViewData["EmployeeList"] = empList;
 			return View();
 		}
 
@@ -769,50 +769,7 @@ namespace RemoteSensingProject.Controllers
 			}
 		}
 
-		public ActionResult CMDashboardData()
-		{
-			((ControllerBase)this).ViewData["ProjectList"] = _adminServices.GetCmDashboardList(null, true);
-			return View();
-		}
-
-		[HttpPost]
-		public ActionResult SubmitDashboardData(RemoteSensingProject.Models.Admin.main.CMDashboardData cm)
-		{
-			if (!((Controller)this).ModelState.IsValid)
-			{
-				return Json((object)new
-				{
-					status = false,
-					message = "Invalid data submitted"
-				});
-			}
-			cm.db_action = ((cm.Id > 0) ? "UPDATE" : "INSERT");
-			bool result = _adminServices.InsertCmDashboardProject(cm);
-			return Json((object)new
-			{
-				status = result,
-				message = ((!result) ? "Some issue found while submitting." : ((cm.Id > 0) ? "Project updated successfuflly !" : "Project inserted successfully !"))
-			}, (JsonRequestBehavior)0);
-		}
-
-		public ActionResult DeleteDashboardData(int projectId)
-		{
-			RemoteSensingProject.Models.Admin.main.CMDashboardData cm = new RemoteSensingProject.Models.Admin.main.CMDashboardData();
-			cm.Id = projectId;
-			cm.db_action = "DELETE";
-			bool result = _adminServices.InsertCmDashboardProject(cm);
-			return Json((object)new
-			{
-				status = result,
-				message = (result ? "Project deleted successfully!" : "Failed to delete project.")
-			}, (JsonRequestBehavior)0);
-		}
-
-		public ActionResult GetCmPRojectById(int projectId)
-		{
-			RemoteSensingProject.Models.Admin.main.CMDashboardData data = _adminServices.GetCmDashboardList(projectId, true).FirstOrDefault();
-			return Json((object)new { data }, (JsonRequestBehavior)0);
-		}
+		
 
 		public ActionResult ProjectReport(string type, string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null)
 		{

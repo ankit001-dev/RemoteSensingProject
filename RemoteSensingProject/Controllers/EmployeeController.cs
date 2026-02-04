@@ -1013,7 +1013,8 @@ namespace RemoteSensingProject.Controllers
 			}
 		}
 
-		public ActionResult ProjectReport(string type, string searchTerm = null, string statusFilter = null)
+        #region reports Start
+        public ActionResult ProjectReport(string type, string searchTerm = null, string statusFilter = null)
 		{
 			//IL_027f: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0286: Expected O, but got Unknown
@@ -1403,5 +1404,59 @@ namespace RemoteSensingProject.Controllers
 				return (ActionResult)new HttpStatusCodeResult(500, "Error while generating project expenses report.");
 			}
 		}
-	}
+
+		#endregion Reports End
+
+		[Authorize(Roles = "divisionHead")]
+		public ActionResult DivisionHead()
+		{
+			return View();
+		}
+
+		[Authorize(Roles = "cmDashboard")]
+		public ActionResult CMDashboardData()
+		{
+            ViewData["ProjectList"] = _adminServices.GetCmDashboardList(null, true);
+            return View();
+		}
+        [Authorize(Roles = "cmDashboard")]
+        [HttpPost]
+        public ActionResult SubmitDashboardData(RemoteSensingProject.Models.Admin.main.CMDashboardData cm)
+        {
+            if (!((Controller)this).ModelState.IsValid)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Invalid data submitted"
+                });
+            }
+            cm.db_action = ((cm.Id > 0) ? "UPDATE" : "INSERT");
+            bool result = _adminServices.InsertCmDashboardProject(cm);
+            return Json((object)new
+            {
+                status = result,
+                message = ((!result) ? "Some issue found while submitting." : ((cm.Id > 0) ? "Project updated successfuflly !" : "Project inserted successfully !"))
+            }, (JsonRequestBehavior)0);
+        }
+        [Authorize(Roles = "cmDashboard")]
+        public ActionResult DeleteDashboardData(int projectId)
+        {
+            RemoteSensingProject.Models.Admin.main.CMDashboardData cm = new RemoteSensingProject.Models.Admin.main.CMDashboardData();
+            cm.Id = projectId;
+            cm.db_action = "DELETE";
+            bool result = _adminServices.InsertCmDashboardProject(cm);
+            return Json((object)new
+            {
+                status = result,
+                message = (result ? "Project deleted successfully!" : "Failed to delete project.")
+            }, (JsonRequestBehavior)0);
+        }
+        [Authorize(Roles = "cmDashboard")]
+        public ActionResult GetCmPRojectById(int projectId)
+        {
+            RemoteSensingProject.Models.Admin.main.CMDashboardData data = _adminServices.GetCmDashboardList(projectId, true).FirstOrDefault();
+            return Json((object)new { data }, (JsonRequestBehavior)0);
+        }
+    }
 }
