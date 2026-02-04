@@ -13,18 +13,19 @@
     #reimbursementForm {
         display: none;
     }
-    .row label{
-        font-size:12px !important;
+
+    .row label {
+        font-size: 12px !important;
     }
-    input::placeholder{
-        font-size:12px !important;
+
+    input::placeholder {
+        font-size: 12px !important;
     }
 </style>
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item active" aria-current="page">Indent For Hiring Vehicle For Field Work</li>
     </ol>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Request For Vehicle</button>
 </nav>
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
@@ -49,84 +50,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header d-flex justify-content-between">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Indent For Hiring Vehicle for Field Form </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form class="forms-sample" id="createProjectForm">
-                    <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <label for="projectName" class="form-label">Name of the Project</label>
-                            <select name="projectId" class="form-select form-control-sm" id="projectName">
-                                <option selected value="">Select Project</option>
-                                @if (data1 != null)
-                                {
-                                    foreach (var item in data1)
-                                    {
-                                        <option value="@item.Id">@item.ProjectTitle</option>
-                                    }
-                                }
-                            </select>
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="particular" class="form-label">Date of Field Program: From</label>
-                            <input type="date" name="dateFrom" class="form-control form-control-sm" id="dateFrom">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="items" class="form-label">To</label>
-                            <input type="date" name="dateTo" class="form-control form-control-sm" id="dateTo">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="purposeOfVisit" class="form-label">Purpose of Visit</label>
-                            <input type="text" name="purposeOfVisit" class="form-control form-control-sm" id="purposeOfVisit" placeholder="Enter Purpose of Visit">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="totalDaysNight" class="form-label">Total Number of Days & Night Halt</label>
-                            <input type="text" name="totalDaysNight" class="form-control form-control-sm" id="totalDaysNight" placeholder="Total Number of Days & Night Halt">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="totalPlainHills" class="form-label">Total Area Travel in Plain & Hills</label>
-                            <input type="text" name="totalPlainHills" class="form-control form-control-sm" id="totalPlainHills" placeholder="Enter Total Area Travel in Plain & Hills">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="taxi" class="form-label">Taxi (Ambassdor/Maruti/Gypsy/Jeep/Other)</label>
-                            <input type="text" name="taxi" class="form-control form-control-sm" id="taxi" placeholder="Enter Taxi">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="BookAgainstCentre" class="form-label">Book against Centre/Project Account</label>
-                            <input type="text" name="BookAgainstCentre" class="form-control form-control-sm" id="BookAgainstCentre" placeholder="Book against Centre/Project Account">
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="availbilityOfFund" class="form-label">Availability of fund in the Project</label>
-                            <select name="headId" class="form-control form-control-sm" id="availbilityOfFund">
-                                <option value="">-Select Head-</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="availablefund" class="form-label">Availability of fund</label>
-                            <input type="number" readonly name="amount" id="availablefund" class="form-control form-control-sm" placeholder="Amount" />
-                        </div>
-                        <div class="col-lg-8 mb-3">
-                            <label for="proposedPlace" class="form-label">Proposed Place/Places of Field Programme</label>
-                            <textarea name="proposedPlace" class="form-control form-control-sm" placeholder="Write here..." id="proposedPlace"></textarea>
-                        </div>
-                        <div class="col-lg-12 mb-3">
-                            <label for="note" class="form-label">Note: </label>
-                            <textarea name="note" class="form-control form-control-sm" id="note" placeholder="Enter Note..."></textarea>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="row mx-0">
     <div class="col-sm-12">
@@ -143,17 +66,14 @@
                     <th>Purpose of Visit</th>
                     <th>Total Days & Night</th>
                     <th>Avaiability of fund</th>
-                    <th>Remark</th>
-                    @*<th>Action</th>*@
-                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 @if (data != null)
-                            {
-                                int i = 1;
-                                foreach (var item in data)
-                                {
+                {
+                    int i = 1;
+                    foreach (var item in data)
+                    {
                         <tr>
                             <td>@i</td>
                             <td>@item.projectCode</td>
@@ -165,29 +85,10 @@
                             <td>@item.purposeOfVisit</td>
                             <td>@item.totalDaysNight</td>
                             <td>@item.amount</td>
-                            <td>
-                                @if (item.adminappr && !item.newRequest && item.remark == null)
-                                {<span>Approved</span> }
-                                else if (item.newRequest && !item.adminappr)
-                                { <span>Pending</span>}
-                                else
-                                { <span>@item.remark</span>}
-                        </td>
-                        @*<td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action"></i></td>*@
-                        <td>
-                            @{
-                                if (item.newRequest == true && item.adminappr == false)
-                                { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                else if (item.newRequest == false && item.adminappr == true)
-                                { <span id="status" class="badge bg-success">Approved</span> }
-                                else if (item.newRequest == false && item.adminappr == false)
-                                { <span id="status" class="badge bg-danger">Rejected</span> }
-                            }
-                        </td>
                         </tr>
-                                            i++;
-                                        }
-                                    }
+                        i++;
+                    }
+                }
             </tbody>
         </table>
     </div>
@@ -254,7 +155,7 @@
                         <div class="note-section w-100">
                             <div>
                                 Note :  <span class="dotted-line w-100" id="note1">
-                                </span> 
+                                </span>
                             </div>
                         </div>
 
@@ -360,7 +261,6 @@
     });
 
     $(document).ready(function () {
-        debugger
         $(".action").on("click", function () {
             Swal.fire({
                 title: "Please Wait!",
@@ -403,95 +303,10 @@
         return date.toLocaleDateString();
     }
 
-</script>  
-<script>
-
-    $("#availbilityOfFund").change(function () {
-        let selectedElem = $(this).find("option:selected")
-        $("#availablefund").val(selectedElem.attr("data-availabelFund"))
-    })
-
-    $("#projectName").change(function () {
-        let prId = $(this).val();
-        $.ajax({
-            url: '/api/GetProjectBudgets',
-            type: 'get',
-            data: { projectId: prId },
-            success: function (res) {
-                    $("#availbilityOfFund").empty();
-                if (res.status) {
-                    let option = `<option selected value="">Select Head</option>`;
-                    $.each(res.data, function (i, d) {
-                        option += `<option value="${d.Id}" data-availabelFund="${d.ProjectAmount - d.ApproveAmount}">${d.ProjectHeads}</option>`;
-                    })
-                    $("#availbilityOfFund").append(option);
-                } else {
-                    Swal.fire({
-                        title: "Sorry !",
-                        text: "This project haven't any budget heads, First updat the project.",
-                        icon: "info"
-                    })
-                }
-                
-            },
-            error: function (xhr) {
-                Swal.fire({
-                    title: "Server issue !",
-                    text: "Server is busy. Please try after sometime.",
-                    icon: "error",
-                    didClose: () => {
-                        location.reload(true);   
-                    }
-                })
-            }
-        });
-    });
-
 </script>
-<script>
-    $(document).ready(function () {
-        $("#createProjectForm").submit(function (e) {
-            e.preventDefault();
-            Swal.fire({
-                title: 'Please Wait!',
-                text: 'Your request under process.',
-                didOpen: () => { Swal.showLoading(); }
-            })
-            let formData = new FormData(this);
-            $.ajax({
-                url: '/employee/Hiring_Vehicle',
-                type: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (res) {
-                    if (res.status) {
-                        Swal.fire({
-                            title: 'Success',
-                            text: res.message,
-                            icon: 'success',
-                            didClose: () => { location.reload(true) }
-                        })
-                    }
-                    else {
-                        Swal.fire({
-                            title: 'warning',
-                            text: res.message,
-                            icon: 'warning'
-                        })
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        titel: 'Error',
-                        text: 'Server Busy.Try after sometime!',
-                        icon: 'error'
-                    })
-                }
-            })
-        })
-    });
 
+
+<script>
     // Project Filter
     $("#projectFilter").on("change", function () {
         const url = new URL(window.location.href);

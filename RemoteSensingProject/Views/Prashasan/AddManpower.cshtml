@@ -51,7 +51,14 @@
                                         <td>@item.manpoweradded</td>
                                         <td>@item.manpowerremaining</td>
                                         <td>
-                                            <a id="addEmployeeBtn" data-bs-toggle="modal" class="cursor-pointer" data-bs-target="#addslider" title="Add Manpower" data-id="@item.id"><i class="link-icon" data-feather="edit"></i></a>
+                                            <a class="cursor-pointer addManpowerBtn"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#addslider"
+                                               data-designationid="@item.id"
+                                               data-designationname="@item.divisionName"
+                                               title="Add Manpower">
+                                                <i class="link-icon" data-feather="edit"></i>
+                                            </a>
                                         </td>
                                     </tr>
 
@@ -81,21 +88,13 @@
             </div>
             <div class="modal-body">
                 <form id="addmanpowerform">
-                    <input type="hidden" name="DivisionId" value="@Request.QueryString["id"]" />                    
+                    <input type="hidden" name="DivisionId" value="@Request.QueryString["id"]" />
+
+                    <input type="hidden" name="DesignationId" id="DesignationId" />
 
                     <div class="form-group mt-2">
-                        <label for="DesignationId" class="form-label">Select Designation</label>
-                        <select class="form-control" id="DesignationId" name="DesignationId">
-                            <option value="" selected disabled>-- Select Designation --</option>
-
-                            @if (designations != null && designations.Any())
-                            {
-                                foreach (var d in designations)
-                                {
-                                    <option value="@d.id">@d.name</option>
-                                }
-                            }
-                        </select>
+                        <label class="form-label">Designation</label>
+                        <input type="text" class="form-control" id="DesignationName" readonly />
                     </div>
 
                     <div class="form-group mt-2">
@@ -124,9 +123,21 @@
 
         clearTimeout(window.searchTimer);
         window.searchTimer = setTimeout(() => {
-            showLoader(); // 👈 Add here
+            showLoader(); // Add here
             window.location.href = url.toString();
         }, 500);
+    });
+    $(document).on("click", ".addManpowerBtn", function () {
+        const designationId = $(this).data("designationid");
+        const designationName = $(this).data("designationname");
+
+        $("#DesignationId").val(designationId);
+        $("#DesignationName").val(designationName);
+
+        // clear outsource dropdown
+        $("#outsourceId").empty();
+
+        getOutSourceList(designationId);
     });
     $(document).ready(function () {
         $('#outsourceId').select2();
@@ -177,6 +188,10 @@
                 Swal.showLoading();
             }
         });
+        if ($("#outsourceId").val().length === 0) {
+            Swal.fire("Warning", "Please select at least one outsource", "warning");
+            return;
+        }
         let data = new FormData(this);
         $.ajax({
             url: "/Prashasan/AddManPower",

@@ -688,5 +688,9 @@ namespace RemoteSensingProject.Models.Accounts
 				((Component)(object)cmd).Dispose();
 			}
 		}
-	}
+
+        #region Manage Hiring Vehicle
+
+        #endregion
+    }
 }

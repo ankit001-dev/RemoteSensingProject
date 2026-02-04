@@ -585,65 +585,20 @@ namespace RemoteSensingProject.Controllers
 			List<RemoteSensingProject.Models.Admin.main.Project_model> res = _managerServices.All_Project_List(userid);
 			((ControllerBase)this).ViewData["projectlist"] = res;
 			ManagerService managerServices = _managerServices;
-			int? userId = userid;
-			int? projectFilter2 = projectFilter;
-			List<HiringVehicle> res2 = managerServices.GetHiringVehicles(userId, null, "projectManager", null, null, projectFilter2);
+			List<HiringVehicle> res2 = managerServices.GetHiringVehicles(type: "GETBYMANAGER",id:userid,projectFilter:projectFilter);
 			((ControllerBase)this).ViewData["hiringList"] = res2;
 			return View();
-		}
-
-		[HttpPost]
-		public ActionResult Hiring_Vehicle(HiringVehicle data)
-		{
-			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-			data.userId = userid;
-			bool res = _managerServices.insertHiring(data);
-			if (res)
-			{
-				return Json((object)new
-				{
-					status = res,
-					message = "Added Successfully"
-				});
-			}
-			return Json((object)new
-			{
-				status = res,
-				message = "Something went wrong"
-			});
 		}
 
 		public ActionResult Tour_Proposal(int? projectFilter = null)
 		{
 			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
 			ManagerService managerServices = _managerServices;
-			int? userId = userid;
-			int? projectFilter2 = projectFilter;
-			List<tourProposal> res = managerServices.getTourList(userId, null, "specificUser", null, null, projectFilter2);
+			List<tourProposal> res = managerServices.GetTourList(type: "GETBYMANAGER",id:userid,projectFilter:projectFilter);
 			List<RemoteSensingProject.Models.Admin.main.Project_model> res2 = _managerServices.All_Project_List(userid);
 			((ControllerBase)this).ViewData["projectList"] = res2;
 			((ControllerBase)this).ViewData["tourList"] = res;
 			return View();
-		}
-
-		[HttpPost]
-		public ActionResult Tour_Proposal(tourProposal data)
-		{
-			data.userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-			bool res = _managerServices.insertTour(data);
-			if (res)
-			{
-				return Json((object)new
-				{
-					status = res,
-					message = "Added Successfully"
-				});
-			}
-			return Json((object)new
-			{
-				status = res,
-				message = "Something went wrong"
-			});
 		}
 
 		public ActionResult Reimbursement_Report(string typeFilter = null, string statusFilter = null)
@@ -656,32 +611,32 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
 
-		public ActionResult TourProposal_Report(int? projectFilter = null, string statusFilter = null)
-		{
-			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-			ManagerService managerServices = _managerServices;
-			int? userId = userid;
-			int? projectFilter2 = projectFilter;
-			viewData["tourList"] = managerServices.getTourList(userId, null, "specificUser", null, null, projectFilter2, statusFilter);
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-			return View();
-		}
+		//public ActionResult TourProposal_Report(int? projectFilter = null, string statusFilter = null)
+		//{
+		//	int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+		//	ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
+		//	ManagerService managerServices = _managerServices;
+		//	int? userId = userid;
+		//	int? projectFilter2 = projectFilter;
+		//	viewData["tourList"] = managerServices.getTourList(userId, null, "specificUser", null, null, projectFilter2, statusFilter);
+		//	((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+		//	((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
+		//	return View();
+		//}
 
-		public ActionResult Hiring_Report(int? projectFilter = null, string statusFilter = null)
-		{
-			int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-			List<RemoteSensingProject.Models.Admin.main.Project_model> res = _managerServices.All_Project_List(userid);
-			((ControllerBase)this).ViewData["projectlist"] = res;
-			ManagerService managerServices = _managerServices;
-			int? userId = userid;
-			int? projectFilter2 = projectFilter;
-			List<HiringVehicle> res2 = managerServices.GetHiringVehicles(userId, null, "projectManager", null, null, projectFilter2, statusFilter);
-			((ControllerBase)this).ViewData["hiringList"] = res2;
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-			return View();
-		}
+		//public ActionResult Hiring_Report(int? projectFilter = null, string statusFilter = null)
+		//{
+		//	int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+		//	List<RemoteSensingProject.Models.Admin.main.Project_model> res = _managerServices.All_Project_List(userid);
+		//	((ControllerBase)this).ViewData["projectlist"] = res;
+		//	ManagerService managerServices = _managerServices;
+		//	int? userId = userid;
+		//	int? projectFilter2 = projectFilter;
+		//	List<HiringVehicle> res2 = managerServices.GetHiringVehicles(userId, null, "projectManager", null, null, projectFilter2, statusFilter);
+		//	((ControllerBase)this).ViewData["hiringList"] = res2;
+		//	((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+		//	return View();
+		//}
 
 		public ActionResult RaiseProblem()
 		{
