@@ -2,13 +2,10 @@
 @{
     ViewBag.Title = "Hiring_Report";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
-    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.Admin.main.HiringVehicle1>;
+    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
-    string managerId = Request.QueryString["managerFilter"];
     string projectId = Request.QueryString["projectFilter"];
-    string statusFilter = Request.QueryString["statusFilter"];
 }
 <link href="~/assets/css/hiringVehicleStyle.css" rel="stylesheet" />
 <style>
@@ -34,21 +31,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-4">
-                        <select id="Filter1" class="form-select form-select-sm">
-                            <option selected value="">Filter By Project Manager</option>
-                            @if (projManager != null)
-                            {
-                                foreach (var proman in projManager)
-                                {
-                                    if (proman.EmployeeRole == "projectManager")
-                                    {
-                                        <option value="@proman.Id">@proman.EmployeeName</option>
-                                    }
-                                }
-                            }
-                        </select>
-                    </div>
+                    
                     <div class="col-sm-4">
                         <select id="Filter2" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
@@ -61,14 +44,7 @@
                             }
                         </select>
                     </div>
-                    <div class="col-sm-4">
-                        <select id="Filter3" class="form-select form-select-sm">
-                            <option selected value="">Filter By Status</option>
-                            <option value="approved">Approved</option>
-                            <option value="pending">Pending</option>
-                            <option value="rejected">Rejected</option>
-                        </select>
-                    </div>
+                   
                 </div>
             </div>
         </div>
@@ -80,14 +56,13 @@
            
             <div class="card-body">
                 <div>
-                    <a href="/admin/DownloadHiringVehicleReport?type=excel&managerFilter=@managerId&projectFilter=@projectId&statusFilter=@statusFilter"><button class="btn btn-success">Excel</button></a>
-                    <a href="/admin/DownloadHiringVehicleReport?type=pdf&managerFilter=@managerId&projectFilter=@projectId&statusFilter=@statusFilter"><button class="btn btn-danger">Pdf</button></a>
+                    <a href="/admin/DownloadHiringVehicleReport?type=excel&projectFilter=@projectId"><button class="btn btn-success">Excel</button></a>
+                    <a href="/admin/DownloadHiringVehicleReport?type=pdf&projectFilter=@projectId"><button class="btn btn-danger">Pdf</button></a>
                 </div>
                 <table class="table" id="tableHiring">
                     <thead>
                         <tr>
                             <th>Sr. No.</th>
-                            <th>Project Manager</th>
                             <th>Project Code</th>
                             <th>Project Name</th>
                             <th>Head Name</th>
@@ -97,9 +72,6 @@
                             <th>Purpose of Visit</th>
                             <th>Total Days & Night</th>
                             <th>Availability of fund</th>
-                            <th>Remark</th>
-                            @*<th>Action</th>*@
-                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,9 +82,8 @@
                             {
                                 <tr>
                                     <td>@i</td>
-                                    <td data-id="@item.id"><a href="#" data-title="View Details" class="action">@item.projectManager</a></td>
                                     <td>@item.projectCode</td>
-                                    <td>@item.projectName</td>
+                                    <td data-id="@item.id"><a href="#" data-title="View Details" class="action">@item.projectName</a></td>
                                     <td>@item.headName</td>
                                     <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
                                     <td>@Convert.ToDateTime(item.dateTo).ToString("dd-MMM-yyyy")</td>
@@ -120,25 +91,6 @@
                                     <td>@item.purposeOfVisit</td>
                                     <td>@item.totalDaysNight</td>
                                     <td>@item.amount</td>
-                                    <td>
-                                        @if (item.adminappr && !item.newRequest && string.IsNullOrEmpty(item.remark))
-                                        {<span>Approved</span> }
-                                        else if (item.newRequest && !item.adminappr)
-                                        { <span>Pending</span>}
-                                        else
-                                        { <span>@item.remark</span>}
-                                    </td>
-                                    @*<td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action"></i></td>*@
-                                    <td>
-                                        @{
-                                            if (item.newRequest == true && item.adminappr == false)
-                                            { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                            else if (item.newRequest == false && item.adminappr == true)
-                                            { <span id="status" class="badge bg-success">Approved</span> }
-                                            else if (item.newRequest == false && item.adminappr == false)
-                                            { <span id="status" class="badge bg-danger">Rejected</span> }
-                                        }
-                                    </td>
                                 </tr>
                                 i++;
                             }
@@ -364,38 +316,24 @@
     function applyFilters() {
         const url = new URL(window.location.href);
 
-        const manager = $("#Filter1").val();
         const project = $("#Filter2").val();
-        const status = $("#Filter3").val();
-
-        // Project Manager Filter
-        if (manager) url.searchParams.set("managerFilter", manager);
-        else url.searchParams.delete("managerFilter");
 
         // Project Filter
         if (project) url.searchParams.set("projectFilter", project);
         else url.searchParams.delete("projectFilter");
-
-        // Status Filter
-        if (status) url.searchParams.set("statusFilter", status);
-        else url.searchParams.delete("statusFilter");
 
         showLoader(); // Optional loader
         window.location.href = url.toString();
     }
 
     // Attach change events
-    $("#Filter1").on("change", applyFilters);
     $("#Filter2").on("change", applyFilters);
-    $("#Filter3").on("change", applyFilters);
 
     // Restore values on page load
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
 
-        $("#Filter1").val(urlParams.get("managerFilter"));
         $("#Filter2").val(urlParams.get("projectFilter"));
-        $("#Filter3").val(urlParams.get("statusFilter"));
     });
 
 </script>

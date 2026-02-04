@@ -1123,30 +1123,30 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[HttpGet]
-		[Route("api/GetTourForUserId")]
-		public IHttpActionResult gettour(int userId, int? page, int? limit, int? projectFilter = null)
-		{
-			try
-			{
-				List<tourProposal> data = _managerService.getTourList(userId, null, "specificUser", page, limit, projectFilter);
-				string[] selectProperties = new string[11]
-				{
-				"id", "projectName", "dateOfDept", "place", "periodFrom", "periodTo", "returnDate", "purpose", "newRequest", "adminappr",
-				"projectCode"
-				};
-				List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
-				if (data.Count > 0)
-				{
-					return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
-				}
-				return CommonHelper.NoData((ApiController)(object)this);
-			}
-			catch (Exception ex)
-			{
-				return CommonHelper.Error((ApiController)(object)this, ex.Message);
-			}
-		}
+		//[HttpGet]
+		//[Route("api/GetTourForUserId")]
+		//public IHttpActionResult gettour(int userId, int? page, int? limit, int? projectFilter = null)
+		//{
+		//	try
+		//	{
+		//		List<tourProposal> data = _managerService.getTourList(userId, null, "specificUser", page, limit, projectFilter);
+		//		string[] selectProperties = new string[11]
+		//		{
+		//		"id", "projectName", "dateOfDept", "place", "periodFrom", "periodTo", "returnDate", "purpose", "newRequest", "adminappr",
+		//		"projectCode"
+		//		};
+		//		List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
+		//		if (data.Count > 0)
+		//		{
+		//			return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+		//		}
+		//		return CommonHelper.NoData((ApiController)(object)this);
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return CommonHelper.Error((ApiController)(object)this, ex.Message);
+		//	}
+		//}
 
 		[Route("api/addHiringRequest")]
 		[HttpPost]
@@ -1190,58 +1190,7 @@ namespace RemoteSensingProject.ApiServices
 				});
 			}
 		}
-
-		[AllowAnonymous]
-		[HttpGet]
-		[Route("api/getHiringList")]
-		public IHttpActionResult getHiringList(int id)
-		{
-			try
-			{
-				ManagerService managerService = _managerService;
-				int? id2 = id;
-				List<HiringVehicle> data = managerService.GetHiringVehicles(null, id2, "GetById");
-				return Ok(new
-				{
-					status = data.Any(),
-					data = data
-				});
-			}
-			catch (Exception ex)
-			{
-				return Ok(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = ex.Message
-				});
-			}
-		}
-
-		[HttpGet]
-		[Route("api/getAllHiringList")]
-		public IHttpActionResult getAllHiringList(int userId, int? limit = null, int? page = null, int? projectFilter = null)
-		{
-			try
-			{
-				List<HiringVehicle> data = _managerService.GetHiringVehicles(userId, null, "projectManager", page, limit, projectFilter);
-				return Ok(new
-				{
-					status = data.Any(),
-					data = data
-				});
-			}
-			catch (Exception ex)
-			{
-				return Ok(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = ex.Message
-				});
-			}
-		}
-
+		
 		private IHttpActionResult BadRequest(object value)
 		{
 			return Content<object>(HttpStatusCode.BadRequest, value);
@@ -1611,53 +1560,53 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[HttpGet]
-		[Route("api/getalltourproposalfilter")]
-		public IHttpActionResult getalltourproposalforapp(int userId)
-		{
-			try
-			{
-				List<tourProposal> data = _managerService.getTourList(userId);
-				return Ok(new
-				{
-					status = data.Any(),
-					data = data
-				});
-			}
-			catch (Exception ex)
-			{
-				return Ok(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = ex.Message
-				});
-			}
-		}
+		//[HttpGet]
+		//[Route("api/getalltourproposalfilter")]
+		//public IHttpActionResult getalltourproposalforapp(int userId)
+		//{
+		//	try
+		//	{
+		//		List<tourProposal> data = _managerService.getTourList(userId);
+		//		return Ok(new
+		//		{
+		//			status = data.Any(),
+		//			data = data
+		//		});
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return Ok(new
+		//		{
+		//			status = false,
+		//			StatusCode = 500,
+		//			message = ex.Message
+		//		});
+		//	}
+		//}
 
-		[HttpGet]
-		[Route("api/getallhiringfilter")]
-		public IHttpActionResult getallhiringforapp(int userId)
-		{
-			try
-			{
-				List<HiringVehicle> data = _managerService.GetHiringVehicles(userId, null, "projectManager");
-				return Ok(new
-				{
-					status = data.Any(),
-					data = data
-				});
-			}
-			catch (Exception ex)
-			{
-				return Ok(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = ex.Message
-				});
-			}
-		}
+		//[HttpGet]
+		//[Route("api/getallhiringfilter")]
+		//public IHttpActionResult getallhiringforapp(int userId)
+		//{
+		//	try
+		//	{
+		//		List<HiringVehicle> data = _managerService.GetHiringVehicles(userId, null, "projectManager");
+		//		return Ok(new
+		//		{
+		//			status = data.Any(),
+		//			data = data
+		//		});
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		return Ok(new
+		//		{
+		//			status = false,
+		//			StatusCode = 500,
+		//			message = ex.Message
+		//		});
+		//	}
+		//}
 
 		[HttpGet]
 		[Route("api/getMonthlyIntUpdate")]
