@@ -644,10 +644,7 @@ public class ReportApiController : ApiController
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
 				ManagerService managerservice = _managerservice;
-				int? userId2 = userId;
-				int? projectFilter2 = projectFilter;
-				string statusFilter2 = statusFilter;
-				data = managerservice.getTourList(userId2, null, "specificUser", null, null, projectFilter2, statusFilter2);
+				data = managerservice.GetTourList(type:"ALLDATA",projectFilter:projectFilter);
 			}
 			byte[] pdfBytes = ReportGenerator.CreatePdf(columnMappings, data, "Tourproposal Report");
 			return (IHttpActionResult)(object)new PdfResult(pdfBytes, "TourproposalReport.pdf", ((ApiController)this).Request);
@@ -741,10 +738,7 @@ public class ReportApiController : ApiController
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
 				ManagerService managerservice = _managerservice;
-				int? userId2 = userId;
-				int? projectFilter2 = projectFilter;
-				string statusFilter2 = statusFilter;
-				data = managerservice.getTourList(userId2, null, "specificUser", null, null, projectFilter2, statusFilter2);
+				data = managerservice.GetTourList(type:"ALLDATA",projectFilter:projectFilter);
 			}
 			byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Tourproposal Report");
 			return (IHttpActionResult)(object)new PdfResult(excelBytes, "TourproposalReport.xlsx", ((ApiController)this).Request);
@@ -843,10 +837,7 @@ public class ReportApiController : ApiController
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
 				ManagerService managerservice = _managerservice;
-				int? userId2 = userId;
-				int? projectFilter2 = projectFilter;
-				string statusFilter2 = statusFilter;
-				data = managerservice.GetHiringVehicles(userId2, null, "projectManager", null, null, projectFilter2, statusFilter2);
+				data = managerservice.GetHiringVehicles(type:"GETALLDATA",projectFilter:projectFilter);
 			}
 			byte[] pdfBytes = ReportGenerator.CreatePdf(columnMappings, data, "Hiring Report");
 			return (IHttpActionResult)(object)new PdfResult(pdfBytes, "HiringReport.pdf", ((ApiController)this).Request);
@@ -945,10 +936,7 @@ public class ReportApiController : ApiController
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
 				ManagerService managerservice = _managerservice;
-				int? userId2 = userId;
-				int? projectFilter2 = projectFilter;
-				string statusFilter2 = statusFilter;
-				data = managerservice.GetHiringVehicles(userId2, null, "projectManager", null, null, projectFilter2, statusFilter2);
+				data = managerservice.GetHiringVehicles(type:"GETALLDATA",projectFilter:projectFilter);
 			}
 			byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Hiring Report");
 			return (IHttpActionResult)(object)new PdfResult(excelBytes, "HiringReport.xlsx", ((ApiController)this).Request);

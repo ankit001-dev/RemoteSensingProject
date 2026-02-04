@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Numerics;
-using System.Security.Policy;
 using System.Web;
-using System.Windows.Documents;
 using static RemoteSensingProject.Models.ApiCommon;
 
 namespace RemoteSensingProject.Models.ProjectManager
@@ -348,6 +343,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string availbilityOfFund { get; set; }
         public string note { get; set; }
         public string proposedPlace { get; set; }
+        public PaginationInfo Pagination { get; set; }
     }
     public class RaiseProblem
     {

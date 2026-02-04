@@ -104,17 +104,31 @@ namespace RemoteSensingProject.Controllers
         {
             try
             {
-                if (model.DivisionId == 0 || model.Outsource == null || !model.Outsource.Any())
+                // Basic validation
+                if (model.DivisionId == 0 ||
+                    model.DesignationId == 0 ||
+                    model.Outsource == null ||
+                    !model.Outsource.Any())
                 {
                     return Json(new { status = false, message = "Invalid data" });
                 }
-                bool res = _managerServices.AddManpower(model);
 
-                return Json(new { status = res, message = res ? "Manpower added successfully" : "Some error occured" });
+                _managerServices.AddManpower(model);
+
+                return Json(new
+                {
+                    status = true,
+                    message = "Manpower added successfully"
+                });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                return Json(new { status = false, message = ex.Message });
+                // DB validation / business rule message
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
             }
         }
     }

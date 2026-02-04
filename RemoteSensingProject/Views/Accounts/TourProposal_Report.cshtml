@@ -2,9 +2,8 @@
 @{
     ViewBag.Title = "TourProposal_Report";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
-    var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.Accounts.main.tourProposal>;
+    var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
 <link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
 <!--Style button DataTable-->
@@ -56,21 +55,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-4">
-                        <select id="Filter1" class="form-select form-select-sm">
-                            <option selected value="">Filter By Project Manager</option>
-                            @if (projManager != null)
-                            {
-                                foreach (var proman in projManager)
-                                {
-                                    if (proman.EmployeeRole == "projectManager")
-                                    {
-                                        <option value="@proman.Id">@proman.EmployeeName</option>
-                                    }
-                                }
-                            }
-                        </select>
-                    </div>
+                    
                     <div class="col-sm-4">
                         <select id="Filter2" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
@@ -81,14 +66,6 @@
                                     <option value="@proj.Id">@proj.ProjectTitle</option>
                                 }
                             }
-                        </select>
-                    </div>
-                    <div class="col-sm-4">
-                        <select id="Filter3" class="form-select form-select-sm">
-                            <option selected value="">Filter By Status</option>
-                            <option value="approved">Approved</option>
-                            <option value="pending">Pending</option>
-                            <option value="rejected">Rejected</option>
                         </select>
                     </div>
                 </div>
@@ -105,7 +82,6 @@
                         <thead>
                             <tr>
                                 <th class="text-center">S.N.</th>
-                                <th>Project Manager</th>
                                 <th>Project Code</th>
                                 <th>Project</th>
                                 <th>Purpose</th>
@@ -114,9 +90,6 @@
                                 <th>Period From</th>
                                 <th>Period To</th>
                                 <th>Date of return</th>
-                                <th>Remark</th>
-                                @*<th class="text-center">Action</th>*@
-                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -127,36 +100,14 @@
                                 {
                                     <tr>
                                         <td>@i</td>
-                                        <td data-id="@item.id"><a href="#" data-title="View Details" class="action">@item.projectManager</a></td>
                                         <td>@item.projectCode</td>
-                                        <td>@item.projectName</td>
+                                        <td data-id="@item.id"><a href="#" data-title="View Details" class="action">@item.projectName</a></td>
                                         <td>@item.purpose</td>
                                         <td>@item.dateOfDept</td>
                                         <td>@item.place</td>
                                         <td>@item.periodFrom</td>
                                         <td>@item.periodTo</td>
                                         <td>@item.returnDate</td>
-                                        <td>
-                                            @if (item.adminappr && !item.newRequest && string.IsNullOrEmpty(item.remark))
-                                            {<span>Approved</span> }
-                                            else if (item.newRequest && !item.adminappr)
-                                            { <span>Pending</span>}
-                                            else
-                                            { <span>@item.remark</span>}
-                                        </td>
-                                        @*<td class="text-center" data-id="@item.id">
-                                                <i class="fa-solid fa-eye action"></i>
-                                            </td>*@
-                                        <td class="text-center">
-                                            @{
-                                                if (item.newRequest == true && item.adminappr == false)
-                                                { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                                else if (item.newRequest == false && item.adminappr == true)
-                                                { <span id="status" class="badge bg-success">Approved</span> }
-                                                else if (item.newRequest == false && item.adminappr == false)
-                                                { <span id="status" class="badge bg-danger">Rejected</span> }
-                                            }
-                                        </td>
                                     </tr>
                                     i++;
                                 }
@@ -296,11 +247,11 @@
 <script>
     $(document).ready(function () {
         $("#tableTour").DataTable({
-            layout: {
-                topStart: {
-                    buttons: ['excel', 'pdf']
-                }
-            }
+            //layout: {
+            //    topStart: {
+            //        buttons: ['excel', 'pdf']
+            //    }
+            //}
         })
 
         $(".action").on("click", function () {
@@ -462,40 +413,29 @@
 
 <script>
     function applyFilters() {
+        debugger
         const url = new URL(window.location.href);
 
-        const manager = $("#Filter1").val();
         const project = $("#Filter2").val();
-        const status = $("#Filter3").val();
 
-        // Project Manager Filter
-        if (manager) url.searchParams.set("managerFilter", manager);
-        else url.searchParams.delete("managerFilter");
 
         // Project Filter
         if (project) url.searchParams.set("projectFilter", project);
         else url.searchParams.delete("projectFilter");
 
-        // Status Filter
-        if (status) url.searchParams.set("statusFilter", status);
-        else url.searchParams.delete("statusFilter");
-
-        showLoader(); // optional loader
+        showLoader(); // Optional loader
         window.location.href = url.toString();
     }
 
-    // Trigger filter on change
-    $("#Filter1").on("change", applyFilters);
+    // Attach change events
     $("#Filter2").on("change", applyFilters);
-    $("#Filter3").on("change", applyFilters);
 
-    // Restore dropdown values on load
     $(document).ready(function () {
-        const urlParams = new URLSearchParams(window.location.search);
+        $("#Filter2").on("change", applyFilters);
 
-        $("#Filter1").val(urlParams.get("managerFilter"));
+        // restore selected value
+        const urlParams = new URLSearchParams(window.location.search);
         $("#Filter2").val(urlParams.get("projectFilter"));
-        $("#Filter3").val(urlParams.get("statusFilter"));
     });
 </script>
 

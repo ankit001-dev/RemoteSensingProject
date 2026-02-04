@@ -2330,14 +2330,14 @@ namespace RemoteSensingProject.Models.ProjectManager
 			}
 		}
 
-		public bool insertTour(tourProposal data)
+        #region Manage Tour Proposal
+        public bool insertTour(tourProposal data)
 		{
 			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0018: Expected O, but got Unknown
 			try
 			{
-				cmd = new NpgsqlCommand("CALL sp_Tourproposal(v_userid => @userId, v_projectid => @projectId, v_dateofdept => @dateOfDept, v_place => @place, v_periodfrom => @periodFrom, v_periodto => @periodTo, v_returndate => @returnDate, v_purpose => @purpose, v_action => @action)", con);
-				cmd.Parameters.AddWithValue("@userId", (object)data.userId);
+				cmd = new NpgsqlCommand("CALL sp_Tourproposal(v_id=> @v_id,v_userid => null::INT, v_projectid => @projectId, v_dateofdept => @dateOfDept, v_place => @place, v_periodfrom => @periodFrom, v_periodto => @periodTo, v_returndate => @returnDate, v_purpose => @purpose, v_action => @action)", con);
 				cmd.Parameters.AddWithValue("@projectId", (object)data.projectId);
 				cmd.Parameters.AddWithValue("@dateOfDept", (object)data.dateOfDept);
 				cmd.Parameters.AddWithValue("@place", (object)data.place);
@@ -2345,7 +2345,8 @@ namespace RemoteSensingProject.Models.ProjectManager
 				cmd.Parameters.AddWithValue("@periodTo", (object)data.periodTo);
 				cmd.Parameters.AddWithValue("@returnDate", (object)data.returnDate);
 				cmd.Parameters.AddWithValue("@purpose", (object)data.purpose);
-				cmd.Parameters.AddWithValue("@action", (object)"insert");
+				cmd.Parameters.AddWithValue("@action", data.id > 0 ? "update" : (object)"insert");
+				cmd.Parameters.AddWithValue("@v_id", data.id);
 				((DbConnection)(object)con).Open();
 				((DbCommand)(object)cmd).ExecuteNonQuery();
 				return true;
@@ -2364,7 +2365,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 			}
 		}
 
-		public List<tourProposal> getTourList(int? userId = null, int? id = null, string type = null, int? page = null, int? limit = null, int? projectFilter = null, string statusFilter = null)
+		public List<tourProposal> GetTourList(int? id = null, string type = null, int? page = null, int? limit = null, int? projectFilter = null)
 		{
 			//IL_002b: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0031: Expected O, but got Unknown
@@ -2382,18 +2383,9 @@ namespace RemoteSensingProject.Models.ProjectManager
 					{
 						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
 						cmd.Parameters.AddWithValue("v_action", (object)"selectAlltour");
-						cmd.Parameters.AddWithValue("v_projectmanager", (object)(userId ?? new int?(0)));
 						cmd.Parameters.AddWithValue("v_id", (object)(id ?? new int?(0)));
 						cmd.Parameters.AddWithValue("v_projectid", (object)(projectFilter ?? new int?(0)));
-						cmd.Parameters.AddWithValue("v_statusfilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
-						if (string.IsNullOrWhiteSpace(type))
-						{
-							cmd.Parameters.AddWithValue("v_type", (object)DBNull.Value);
-						}
-						else
-						{
-							cmd.Parameters.AddWithValue("v_type", (object)type);
-						}
+						cmd.Parameters.AddWithValue("v_type", (object)type);
 						cmd.Parameters.AddWithValue("v_limit", (object)(limit ?? new int?(0)));
 						cmd.Parameters.AddWithValue("v_page", (object)(page ?? new int?(0)));
 						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
@@ -2412,14 +2404,13 @@ namespace RemoteSensingProject.Models.ProjectManager
 										{
 											id = Convert.ToInt32(((DbDataReader)(object)res)["id"]),
 											projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
+											projectId = Convert.ToInt32(res["projectId"]),
 											dateOfDept = Convert.ToDateTime(((DbDataReader)(object)res)["dateOfDept"]),
 											place = Convert.ToString(((DbDataReader)(object)res)["place"]),
 											periodFrom = Convert.ToDateTime(((DbDataReader)(object)res)["periodFrom"]),
 											periodTo = Convert.ToDateTime(((DbDataReader)(object)res)["periodTo"]),
 											returnDate = Convert.ToDateTime(((DbDataReader)(object)res)["returnDate"]),
 											purpose = Convert.ToString(((DbDataReader)(object)res)["purpose"]),
-											newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
-											adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"]),
 											projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A")
 										};
 										if (firstRow)
@@ -2472,16 +2463,18 @@ namespace RemoteSensingProject.Models.ProjectManager
 			}
 		}
 
-		public bool insertHiring(HiringVehicle data)
+        #endregion
+
+        #region Manage Hiring Vehicle
+        public bool insertHiring(HiringVehicle data)
 		{
 			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0018: Expected O, but got Unknown
 			try
 			{
-				cmd = new NpgsqlCommand("CALL sp_HiringVehicle(v_hid => @hid, v_amount => @amount, v_userid => @userId, v_projectid => @projectId, v_datefrom => @dateFrom, v_dateto => @dateTo, v_proposedplace=> @proposedPlace, v_purposeofvisit=>@purposeOfVisit, v_totaldaysnight=>@totalDaysNight, v_totalplainhills=>@totalPlainHills,v_taxi=>@taxi,v_bookagainstcentre=>@BookAgainstCentre,v_note =>@note, v_action=>@action )", con);
+				cmd = new NpgsqlCommand("CALL sp_HiringVehicle(v_id=>@v_id,v_hid => @hid, v_amount => @amount, v_userid => null::int, v_projectid => @projectId, v_datefrom => @dateFrom, v_dateto => @dateTo, v_proposedplace=> @proposedPlace, v_purposeofvisit=>@purposeOfVisit, v_totaldaysnight=>@totalDaysNight, v_totalplainhills=>@totalPlainHills,v_taxi=>@taxi,v_bookagainstcentre=>@BookAgainstCentre,v_note =>@note, v_action=>@action )", con);
 				cmd.Parameters.AddWithValue("@hid", (object)data.headId);
 				cmd.Parameters.AddWithValue("@amount", (object)data.amount);
-				cmd.Parameters.AddWithValue("@userId", (object)data.userId);
 				cmd.Parameters.AddWithValue("@projectId", (object)data.projectId);
 				cmd.Parameters.AddWithValue("@dateFrom", (object)data.dateFrom);
 				cmd.Parameters.AddWithValue("@dateTo", (object)data.dateTo);
@@ -2492,7 +2485,8 @@ namespace RemoteSensingProject.Models.ProjectManager
 				cmd.Parameters.AddWithValue("@taxi", (object)data.taxi);
 				cmd.Parameters.AddWithValue("@BookAgainstCentre", (object)data.BookAgainstCentre);
 				cmd.Parameters.AddWithValue("@note", (object)data.note);
-				cmd.Parameters.AddWithValue("@action", (object)"insert");
+				cmd.Parameters.AddWithValue("@action",data.id > 0 ? "update" : (object)"insert");
+				cmd.Parameters.AddWithValue("@v_id", data.id);
 				((DbConnection)(object)con).Open();
 				((DbCommand)(object)cmd).ExecuteNonQuery();
 				return true;
@@ -2511,7 +2505,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 			}
 		}
 
-		public List<HiringVehicle> GetHiringVehicles(int? userId = null, int? id = null, string type = null, int? page = null, int? limit = null, int? projectFilter = null, string statusFilter = null)
+		public List<HiringVehicle> GetHiringVehicles(int? id = null, string type = null, int? page = null, int? limit = null, int? projectFilter = null)
 		{
 			//IL_002b: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0031: Expected O, but got Unknown
@@ -2529,20 +2523,11 @@ namespace RemoteSensingProject.Models.ProjectManager
 					{
 						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
 						cmd.Parameters.AddWithValue("v_action", (object)"selectAllHiring");
-						cmd.Parameters.AddWithValue("v_projectmanager", (object)(userId ?? new int?(0)));
 						cmd.Parameters.AddWithValue("v_projectid", (object)(projectFilter ?? new int?(0)));
 						cmd.Parameters.AddWithValue("v_id", (object)(id ?? new int?(0)));
-						if (string.IsNullOrWhiteSpace(type))
-						{
-							cmd.Parameters.AddWithValue("v_type", (object)DBNull.Value);
-						}
-						else
-						{
-							cmd.Parameters.AddWithValue("v_type", (object)type);
-						}
+						cmd.Parameters.AddWithValue("v_type", (object)type);
 						cmd.Parameters.AddWithValue("v_limit", (object)(limit ?? new int?(0)));
 						cmd.Parameters.AddWithValue("v_page", (object)(page ?? new int?(0)));
-						cmd.Parameters.AddWithValue("v_statusfilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
 						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
 						NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
 						try
@@ -2554,11 +2539,14 @@ namespace RemoteSensingProject.Models.ProjectManager
 								{
 									while (((DbDataReader)(object)res).Read())
 									{
+										bool firstRow = true;
 										hiringList.Add(new HiringVehicle
 										{
 											id = (int)((DbDataReader)(object)res)["id"],
 											projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
+											projectId = Convert.ToInt32(res["projectId"]),
 											headName = Convert.ToString(((DbDataReader)(object)res)["heads"]),
+											headId = Convert.ToInt32(res["hid"]),
 											amount = Convert.ToDecimal(((DbDataReader)(object)res)["amount"]),
 											dateFrom = Convert.ToDateTime(((DbDataReader)(object)res)["dateFrom"]),
 											dateTo = Convert.ToDateTime(((DbDataReader)(object)res)["dateTo"]),
@@ -2568,12 +2556,20 @@ namespace RemoteSensingProject.Models.ProjectManager
 											totalPlainHills = ((DbDataReader)(object)res)["totalPlainHills"].ToString(),
 											taxi = ((DbDataReader)(object)res)["taxi"].ToString(),
 											BookAgainstCentre = ((DbDataReader)(object)res)["BookAgainstCentre"].ToString(),
-											availbilityOfFund = ((DbDataReader)(object)res)["availbilityOfFund"].ToString(),
 											note = ((DbDataReader)(object)res)["note"].ToString(),
-											newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
-											adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"]),
 											projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A")
 										});
+										if (firstRow)
+										{
+											hiringList[0].Pagination = new ApiCommon.PaginationInfo
+                                            {
+                                                PageNumber = page ?? 0,
+                                                TotalPages = Convert.ToInt32(res["totalpages"] != DBNull.Value ? res["totalpages"] : 0),
+                                                TotalRecords = Convert.ToInt32(res["totalrecords"] != DBNull.Value ? res["totalrecords"] : 0),
+                                                PageSize = limit ?? 0
+                                            };
+                                            firstRow = false; // Optional: ensure pagination is only assigned once
+                                        }
 									}
 								}
 								return hiringList;
@@ -2611,57 +2607,8 @@ namespace RemoteSensingProject.Models.ProjectManager
 				((Component)(object)base.cmd).Dispose();
 			}
 		}
-
-		public List<HiringVehicle> GetHiringList(int id)
-		{
-			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0018: Expected O, but got Unknown
-			try
-			{
-				cmd = new NpgsqlCommand("sp_HiringVehicle", con);
-				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-				cmd.Parameters.AddWithValue("@action", (object)"selectOne");
-				cmd.Parameters.AddWithValue("@id", (object)id);
-				((DbConnection)(object)con).Open();
-				List<HiringVehicle> hiringList = new List<HiringVehicle>();
-				NpgsqlDataReader res = cmd.ExecuteReader();
-				if (((DbDataReader)(object)res).HasRows)
-				{
-					while (((DbDataReader)(object)res).Read())
-					{
-						hiringList.Add(new HiringVehicle
-						{
-							id = Convert.ToInt32(((DbDataReader)(object)res)["id"]),
-							projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
-							headName = Convert.ToString(((DbDataReader)(object)res)["heads"]),
-							amount = Convert.ToDecimal(((DbDataReader)(object)res)["amount"]),
-							dateFrom = Convert.ToDateTime(((DbDataReader)(object)res)["dateFrom"]),
-							dateTo = Convert.ToDateTime(((DbDataReader)(object)res)["dateTo"]),
-							proposedPlace = (string)((DbDataReader)(object)res)["proposedPlace"],
-							purposeOfVisit = (string)((DbDataReader)(object)res)["purposeOfVisit"],
-							totalDaysNight = (string)((DbDataReader)(object)res)["totalDaysNight"],
-							totalPlainHills = Convert.ToString(((DbDataReader)(object)res)["totalPlainHills"]),
-							taxi = (string)((DbDataReader)(object)res)["taxi"],
-							BookAgainstCentre = (string)((DbDataReader)(object)res)["BookAgainstCentre"],
-							note = ((DbDataReader)(object)res)["note"].ToString()
-						});
-					}
-				}
-				return hiringList;
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (((DbConnection)(object)con).State == ConnectionState.Open)
-				{
-					((DbConnection)(object)con).Close();
-				}
-				((Component)(object)cmd).Dispose();
-			}
-		}
+        
+		#endregion
 
 		public List<HiringVehicle> getHead(int id)
 		{
@@ -4599,40 +4546,48 @@ namespace RemoteSensingProject.Models.ProjectManager
         }
         public bool AddManpower(AddManPower os)
         {
-            try
+            ((DbConnection)(object)con).Open();
+            using (var transaction = con.BeginTransaction())
             {
-                ((DbConnection)(object)con).Open();
-
-                foreach (var outsourceId in os.Outsource)
+                try
                 {
-                    using (var cmd = new NpgsqlCommand(
-                        "CALL sp_manageoutsource(p_action=>@p_action, p_id=>@p_id, p_designationid=>@p_designationid,p_outsourceid=>@p_outsourceid)",
-                        con))
+                    foreach (var outsourceId in os.Outsource)
                     {
-                        cmd.CommandType = CommandType.Text;
+                        using (var cmd = new NpgsqlCommand(
+                            "CALL sp_manageoutsource(p_action=>@p_action, p_id=>@p_id, p_designationid=>@p_designationid, p_outsourceid=>@p_outsourceid)",
+                            con, transaction))
+                        {
+                            cmd.CommandType = CommandType.Text;
 
-                        cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = "addmanpower";
-                        cmd.Parameters.Add("@p_id", NpgsqlDbType.Integer).Value = os.DivisionId;
-                        cmd.Parameters.Add("@p_designationid", NpgsqlDbType.Integer).Value = os.DesignationId;
-                        cmd.Parameters.Add("@p_outsourceid", NpgsqlDbType.Integer).Value = outsourceId;
+                            cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = "addmanpower";
+                            cmd.Parameters.Add("@p_id", NpgsqlDbType.Integer).Value = os.DivisionId;
+                            cmd.Parameters.Add("@p_designationid", NpgsqlDbType.Integer).Value = os.DesignationId;
+                            cmd.Parameters.Add("@p_outsourceid", NpgsqlDbType.Integer).Value = outsourceId;
 
-                        cmd.ExecuteNonQuery();
+                            cmd.ExecuteNonQuery();
+                        }
                     }
-                }
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (((DbConnection)(object)con).State == ConnectionState.Open)
-                {
-                    ((DbConnection)(object)con).Close();
+                    transaction.Commit();
+                    return true;
                 }
-                ((Component)(object)cmd).Dispose();
+                catch (PostgresException pgEx)
+                {
+                    transaction.Rollback();
+
+                    // Stored procedure ka exact error message
+                    throw new Exception(pgEx.MessageText);
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+                finally
+                {
+                    if (con.State == ConnectionState.Open)
+                        con.Close();
+                }
             }
         }
 

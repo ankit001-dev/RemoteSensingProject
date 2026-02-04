@@ -1,9 +1,8 @@
 ﻿@{
     ViewBag.Title = "TravelRequest";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
-    var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.Admin.main.tourProposalAll>;
+    var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
 <link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
 <div class="row mx-0">
@@ -11,21 +10,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-4">
-                        <select id="Filter1" class="form-select form-select-sm">
-                            <option selected value="">Filter By Project Manager</option>
-                            @if (projManager != null)
-                            {
-                                foreach (var proman in projManager)
-                                {
-                                    if (proman.EmployeeRole == "projectManager")
-                                    {
-                                        <option value="@proman.Id">@proman.EmployeeName</option>
-                                    }
-                                }
-                            }
-                        </select>
-                    </div>
+
                     <div class="col-sm-4">
                         <select id="Filter2" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
@@ -52,7 +37,6 @@
                         <thead>
                             <tr>
                                 <th class="text-center">Sr. No.</th>
-                                <th>Project Manager</th>
                                 <th>Project Code</th>
                                 <th>Project</th>
                                 <th>Purpose</th>
@@ -60,7 +44,6 @@
                                 <th>Place Visit</th>
                                 <th>Period From</th>
                                 <th>Period To</th>
-                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -71,26 +54,17 @@
                                 {
                                     <tr>
                                         <td>@i</td>
+                                        <td>@item.projectCode</td>
                                         <td>
                                             <a href="#" data-title="View Details" class="action" data-id="@item.id">
-                                                @item.projectManager
+                                                @item.projectName
                                             </a>
-                                         </td>
-                                        <td>@item.projectCode</td>
-                                        <td>@item.projectName</td>
+                                        </td>
                                         <td>@item.purpose</td>
                                         <td>@Convert.ToDateTime(item.dateOfDept).ToString("dd-MM-yyyy")</td>
                                         <td>@item.place</td>
                                         <td>@Convert.ToDateTime(item.periodFrom).ToString("dd-MM-yyyy")</td>
                                         <td>@Convert.ToDateTime(item.periodTo).ToString("dd-MM-yyyy")</td>
-                                        <td data-id="id_@item.id">
-                                            <a href="#" class="changeStatus" data-value="true" data-title="Approve" data-id="@item.id">
-                                                <i class="fa-solid fa-check text-success"></i>
-                                            </a> &nbsp; | &nbsp;
-                                            <a href="#" class="changeStatus" data-title="Reject" data-value="false" data-id="@item.id">
-                                                <i class="fa-solid fa-xmark text-danger"></i>
-                                            </a>
-                                        </td>
                                     </tr>
                                     i++;
                                 }
@@ -228,17 +202,6 @@
 <script>
     $(document).ready(function () {
 
-        ////Filter
-        //$("#Filter1").on("change", function () {
-        //    let filter = $(this).val();
-        //    let table = $("#dataTableExample").DataTable()
-        //    table.column(1).search(filter).draw()
-        //})
-        //$("#Filter2").on("change", function () {
-        //    let filter = $(this).val();
-        //    let table = $("#dataTableExample").DataTable()
-        //    table.column(2).search(filter).draw()
-        //})
 
         $(".action").on("click", function () {
             Swal.fire({
@@ -278,79 +241,6 @@
     }
 </script>
 
-
-<script>
-    $(document).ready(function () {
-        $(".changeStatus").on("click", async function (e) {
-            e.preventDefault();
-            
-            let status = $(this).data("value");
-            let id = $(this).data("id")
-            let remark = "";
-
-            if (!status) {
-                Swal.close();
-
-
-                const { value: text, isConfirmed } = await Swal.fire({
-                    input: "text",
-                    inputLabel: "Remark",
-                    inputPlaceholder: "Type your remark here...",
-                    inputAttributes: {
-                        "aria-label": "Type your remark here",
-                        "autocomplete":"off"
-                    },
-                    showCancelButton: true,
-                    allowOutsideClick: false,
-                    allowEscapeKey: false
-                });
-                if (isConfirmed && text) {
-                    remark = text;
-                    Swal.fire({
-                        title: 'Please wait !',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        text: 'Your request under process',
-                        didOpen: () => { Swal.showLoading(); }
-                    })
-                }
-                else if (!isConfirmed) {
-                    return
-                }
-            }
-            $.ajax({
-                url: '/admin/TravelRequest',
-                type: 'post',
-                data: { status: status, id: id, remark: remark },
-                success: function (res) {
-                    if (res.status) {
-                        Swal.fire({
-                            title: 'Success',
-                            text: res.message,
-                            icon: 'success',
-                            didClose: () => { location.reload() }
-                        })
-                    }
-                    else {
-                        Swal.fire({
-                            title: 'success',
-                            text: res.message,
-                            icon: 'success'
-                        })
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        title: 'error',
-                        text: 'Server busy Please try after sometime.',
-                        icon: 'error'
-                    })
-                }
-            })
-        })
-    });
-</script>
-
 <script>
     $(document).ready(function () {
         $("#printBtn").click(function () {
@@ -376,7 +266,7 @@
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ HtmlText: htmlContentToPdf }) 
+                body: JSON.stringify({ HtmlText: htmlContentToPdf })
             })
                 .then(response => {
                     if (!response.ok) {
@@ -384,7 +274,7 @@
                     }
 
                     const contentDisposition = response.headers.get("Content-Disposition");
-                    let fileName = "Generated.pdf"; 
+                    let fileName = "Generated.pdf";
 
                     if (contentDisposition) {
                         const match = contentDisposition.match(/filename="?([^"]+)"?/);
@@ -408,7 +298,7 @@
                     document.body.appendChild(link);
                     link.click();
                     link.remove();
-                    URL.revokeObjectURL(url); 
+                    URL.revokeObjectURL(url);
                 })
                 .catch(error => {
                     Swal.fire({
@@ -427,9 +317,6 @@
         const url = new URL(window.location.href);
         const manager = $(this).val();
 
-        if (manager) url.searchParams.set("managerFilter", manager);
-        else url.searchParams.delete("managerFilter");
-
         const project = $("#Filter2").val();
         if (project) url.searchParams.set("projectFilter", project);
         else url.searchParams.delete("projectFilter");
@@ -446,10 +333,6 @@
         if (project) url.searchParams.set("projectFilter", project);
         else url.searchParams.delete("projectFilter");
 
-        const manager = $("#Filter1").val();
-        if (manager) url.searchParams.set("managerFilter", manager);
-        else url.searchParams.delete("managerFilter");
-
         showLoader();
         window.location.href = url.toString();
     });
@@ -457,10 +340,8 @@
     // Restore selected values on page load
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
-        const manager = urlParams.get("managerFilter");
         const project = urlParams.get("projectFilter");
-
-        if (manager) $("#Filter1").val(manager);
+         
         if (project) $("#Filter2").val(project);
     });
 

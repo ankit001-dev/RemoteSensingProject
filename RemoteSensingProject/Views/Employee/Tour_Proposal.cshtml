@@ -16,7 +16,6 @@
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item active" aria-current="page">Tour Proposal</li>
     </ol>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Tour Proposal</button>
 </nav>
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
@@ -40,62 +39,6 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header d-flex justify-content-between">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Proposal Form </h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form class="forms-sample" id="tourForm">
-                    <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <label for="project" class="form-label">Project</label>
-                            <select class="form-select form-select-sm" id="project" name="projectId">
-                                <option value="">select project</option>
-                                @if (dta != null)
-                                {
-                                    foreach (var item in dta)
-                                    {
-                                       <option value="@item.Id">@item.ProjectTitle</option>
-                                    }
-                                }
-                            </select>
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="dateOfDept" class="form-label">Date of Departure</label>
-                            <input type="date" class="form-control form-control-sm" id="dateOfDept" name="dateOfDept" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="place" class="form-label">Place</label>
-                            <input type="text" class="form-control form-control-sm" id="place" name="place" placeholder="Enter Place" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="periodFrom" class="form-label">Period: From</label>
-                            <input type="date" class="form-control form-control-sm" id="periodFrom" name="periodFrom" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="periodTo" class="form-label">Period: To</label>
-                            <input type="date" class="form-control form-control-sm" id="periodTo" name="periodTo" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="returnDate" class="form-label">Date of return</label>
-                            <input type="date" class="form-control form-control-sm" id="returnDate" name="returnDate" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="purpose" class="form-label">Purpose</label>
-                            <textarea class="form-control form-control-sm" id="purpose" name="purpose" placeholder="Write Purpose"></textarea>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary">submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="row mx-0">
     <div class="col-sm-12">
@@ -111,16 +54,14 @@
                     <th>Period From</th>
                     <th>Period To</th>
                     <th>Date of return</th>
-                    <th>Remark</th>
-                    @*<th>Action</th>*@
-                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 @if (data != null)
-                            { int i = 1;
-                                foreach (var item in data)
-                                {
+                {
+                    int i = 1;
+                    foreach (var item in data)
+                    {
                         <tr>
                             <td>@i</td>
                             <td>@item.projectCode</td>
@@ -131,29 +72,10 @@
                             <td>@item.periodFrom</td>
                             <td>@item.periodTo</td>
                             <td>@item.returnDate</td>
-                            <td>
-                                @if (item.adminappr && !item.newRequest && item.remark == null)
-                                {<span>Approved</span> }
-                                else if (item.newRequest && !item.adminappr)
-                                { <span>Pending</span>}
-                                else
-                                { <span>@item.remark</span>}
-                            </td>
-                            @*<td class="text-center" data-id="@item.id"><i class="fa-solid fa-eye action"></i></td>*@
-                            <td class="text-center">
-                                @{
-                                    if (item.newRequest == true && item.adminappr == false)
-                                    { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                    else if (item.newRequest == false && item.adminappr == true)
-                                    { <span id="status" class="badge bg-success">Approved</span> }
-                                    else if (item.newRequest == false && item.adminappr == false)
-                                    { <span id="status" class="badge bg-danger">Rejected</span> }
-                                }
-                            </td>
                         </tr>
-                                            i++;
-                                        }
-                                    }
+                        i++;
+                    }
+                }
             </tbody>
         </table>
     </div>
@@ -380,7 +302,7 @@
                     $("#i4").text(res.data[0].periodFrom)
                     $("#i5").text(res.data[0].periodTo)
                     $("#i6").text(res.data[0].returnDate)
-                    let status="";
+                    let status = "";
                     if (res.data[0].newRequest == true && res.data[0].adminappr == false) { status = "Pending" }
                     else if (res.data[0].newRequest == false && res.data[0].adminappr == false) { status = "Rejected" }
                     else if (res.data[0].newRequest == false && res.data[0].adminappr == true) { status = "Approved" }
@@ -397,48 +319,6 @@
 </script>
 
 <script>
-    $(document).ready(function () {
-        $("#tourForm").submit(function (e) {
-            e.preventDefault();
-            Swal.fire({
-                title: 'Please Wait',
-                text: 'Your request under process. Please wait!',
-                didOpen: () => { Swal.showLoading(); }
-            })
-            let formData = new FormData(this);
-            $.ajax({
-                url: '/employee/Tour_proposal',
-                type: 'post',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (res) {
-                    if (res.status) {
-                        Swal.fire({
-                            title: 'Success',
-                            text: res.message,
-                            icon: 'success',
-                            didClose: () => { location.reload() }
-                        })
-                    }
-                    else {
-                        Swal.fire({
-                            title: 'warning',
-                            text: res.message,
-                            icon: 'warning'
-                        })
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        title: 'error',
-                        text: 'Server busy Please try after sometime.',
-                        icon: 'error'
-                    })
-                }
-            })
-        })
-    });
 
     // Project Filter
     $("#Filter2").on("change", function () {
@@ -460,4 +340,3 @@
         if (project) $("#Filter2").val(project).focus();
     });
 </script>
-
