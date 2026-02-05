@@ -1,0 +1,227 @@
+﻿
+@{
+    ViewBag.Title = "ManageManpower";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["data"] as List<RemoteSensingProject.Models.ProjectManager.ManpowerRequests>;
+}
+
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active"><a href="/">Manage Manpower</a></li>
+    </ol>
+</nav>
+<div class="search-box p-4 bg-white rounded mb-3 mx-3 box-shadow">
+    <div class="row align-items-center">
+        <div class="col-lg-3">
+            <h5>Employee</h5>
+        </div>
+        <div class="col-lg-9 col-md-9">
+            <input type="search" placeholder="Search by employee name" id="searchByEmployee" class="form-control">
+        </div>
+    </div>
+</div>
+
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr. No.</th>
+                                <th>Project Manager</th>
+                                <th>Manpower Request</th>
+                                <th>Added Manpower</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (data != null && data.Count > 0)
+                            {
+                                var count = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td class="text-start">@count</td>
+                                        <td>@item.projectManager</td>
+                                        <td>
+                                            <a class="cursor-pointer addManpowerBtn"
+                                               data-bs-toggle="modal"
+                                               data-bs-target="#addslider"
+                                               data-pmid="@item.pmid"
+                                               data-projectmanager="@item.projectManager"
+                                               data-designationid="@item.id"
+                                               title="Add Manpower">
+                                                @item.manpowerrequests
+                                            </a>
+                                        </td>
+                                        <td>@item.manpoweradded</td>
+                                    </tr>
+
+                                    count++;
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addslider" data-backdrop="static" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Add Manpower</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="addmanpowerform">
+
+                    <input type="hidden" name="PmId" id="pmid" />
+
+                    <div class="form-group mt-2">
+                        <label class="form-label">Projecet Manager</label>
+                        <input type="text" class="form-control" id="projectManager" readonly />
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label for="outsourceId" class="form-label">Outsource</label>
+
+                        <select class="form-control" id="outsourceId" multiple name="Outsource">
+                            <option value="" selected disabled>-- Select Outsource --</option>
+                        </select>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Out Source</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+   
+
+    $(document).on("click", ".addManpowerBtn", function () {
+        const projectManager = $(this).data("projectmanager");
+        const pmid = $(this).data("pmid");
+        const designationId = $(this).data("designationid");
+        $("#pmid").val(pmid);
+        $("#projectManager").val(projectManager);
+
+        // clear outsource dropdown
+        $("#outsourceId").empty();
+
+        getOutSourceList(designationId);
+    });
+
+    function getOutSourceList(id) {
+        $.ajax({
+            url: `/employee/GetOutsouceOfDivision?designationid=${id}`,
+            type: "get",
+            success: function (res) {
+                if (res.status) {
+                    const dropdown = $('#outsourceId');
+                    dropdown.empty();
+                    dropdown.append('<option value="" disabled>--Select Outsource--</option>');
+                    $.each(res.data, function (i, d) {
+                        dropdown.append(`<option value="${d.Id}">${d.EmpName}</option>`);
+                    });
+                }
+            },
+            error: function (xhr) {
+                console.error(xhr);
+            }
+        })
+    }
+
+    $("#addmanpowerform").on("submit", function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        if ($("#outsourceId").val().length === 0) {
+            Swal.fire("Warning", "Please select at least one outsource", "warning");
+            return;
+        }
+        let data = new FormData(this);
+        $.ajax({
+            url: "/employee/AllocateManPower",
+            type: "Post",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Added Successfuly!",
+                        text: res.message,
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: res.message,
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue",
+                    text: "Server is not respondig. Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
+    });
+</script>
+
+<script>
+    $('#searchByEmployee').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader(); // Add here
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const searchTerm = urlParams.get("searchTerm");
+
+        if (searchTerm !== null) {
+            $('#searchByEmployee')
+                .val(searchTerm)   // value restore
+                .focus();          // focus on input
+        }
+    });
+</script>
+

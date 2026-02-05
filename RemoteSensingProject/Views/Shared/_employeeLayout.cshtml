@@ -169,22 +169,28 @@
                     @if (User.IsInRole("divisionHead"))
                     {
 
-                    <li class="nav-item">
-                        <a href="/Employee/DivisionHead" class="nav-link">
-                            <i class="link-icon" data-feather="box"></i>
-                            <span class="link-title">Division Head</span>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="/Employee/DivisionHead" class="nav-link">
+                                <i class="link-icon" data-feather="box"></i>
+                                <span class="link-title">Manpower Request</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Employee/manpower" class="nav-link">
+                                <i class="link-icon" data-feather="box"></i>
+                                <span class="link-title">Manage Manpower</span>
+                            </a>
+                        </li>
                     }
                     @if (User.IsInRole("cmDashboard"))
                     {
 
-                    <li class="nav-item">
-                        <a href="/Employee/CMDashboardData" class="nav-link">
-                            <i class="link-icon" data-feather="box"></i>
-                            <span class="link-title">CM Dashboard</span>
-                        </a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="/Employee/CMDashboardData" class="nav-link">
+                                <i class="link-icon" data-feather="box"></i>
+                                <span class="link-title">CM Dashboard</span>
+                            </a>
+                        </li>
                     }
                     <li class="nav-item">
                         <a href="/Employee/Assigned_Project" class="nav-link">
@@ -192,7 +198,7 @@
                             <span class="link-title">Assigned Projects</span>
                         </a>
                     </li>
-                    
+
                     <li class="nav-item">
                         <a href="/employee/OutSource" class="nav-link">
                             <i class="link-icon" data-feather="user"></i>
@@ -202,7 +208,7 @@
                     <li class="nav-item">
                         <a href="/employee/CreateTask" class="nav-link">
                             <i class="link-icon" data-feather="user"></i>
-                            <span class="link-title">Task</span> 
+                            <span class="link-title">Task</span>
                         </a>
                     </li>
 

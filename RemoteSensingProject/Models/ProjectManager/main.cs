@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using System.Web;
 using static RemoteSensingProject.Models.ApiCommon;
 
@@ -79,6 +80,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string userRole { get; set; }
         public string username { get; set; }
         public string userId { get; set; }
+        public int divisionId { get; set; }
     }
 
     public class GetConclusion
@@ -266,6 +268,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
 
     public class OutSourceTask { 
+        public int projectId { get; set; }
         public int Id { get; set; }
         public int empId { get; set; }
         public string title { get; set; }
@@ -432,6 +435,9 @@ namespace RemoteSensingProject.Models.ProjectManager
     public class ManpowerRequests
     {
         public string divisionName { get; set; }
+        public int pmid { get; set; }
+        public string projectManager { get; set; }
+        public string designationName { get; set; }
         public int manpowerrequests { get; set; }
         public int manpowerremaining { get; set; }
         public int manpoweradded { get; set; }
@@ -442,6 +448,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     {
         public int DivisionId { get; set; }
         public int DesignationId { get; set; }
+        public int PmId { get; set; } = 0;
         public List<int> Outsource { get; set; }
     }
     public class PrashasanDashboard
