@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var outSourceList = ViewData["OutSourceList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
     var TaskList = ViewData["TaskList"] as List<RemoteSensingProject.Models.ProjectManager.OutSourceTask>;
+    var projects = ViewData["projectlist"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     int i = 1;
 }
 
@@ -53,34 +54,33 @@
                             </tr>
                         </thead>
                         <tbody>
-                          @if(TaskList != null && TaskList.Count > 0)
-            {
-                foreach(var item in TaskList)
-                {
-                    <tr>
-                        <td>@i</td>
-                        <td>
-                            <a href="#" data-title="View Details" class="viewAssignedSource" data-taskId="@item.Id">@item.title</a>
-                         </td>
-                        <td>@item.description</td>
-                        <td>
-                            <span class="badge bg-@(item.completeStatus ? "success" : "primary")">@(item.completeStatus ? "completed" : "pending")</span>
-                        </td>
-                        <td class="text-center">
-                            @*<a href="#" class="viewAssignedSource" data-taskId="@item.Id"><i class="fa-solid fa-eye"></i></a> &nbsp;*@
-                            @if (!item.completeStatus)
+                            @if (TaskList != null && TaskList.Count > 0)
                             {
-                                <a href="#" data-title="Approve" class="updateTaskStatus" data-taskId="@item.Id"><i class="fa-solid fa-check"></i></a>
+                                foreach (var item in TaskList)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>
+                                            <a href="#" data-title="View Details" class="viewAssignedSource" data-taskId="@item.Id">@item.title</a>
+                                        </td>
+                                        <td>@item.description</td>
+                                        <td>
+                                            <span class="badge bg-@(item.completeStatus ? "success" : "primary")">@(item.completeStatus ? "completed" : "pending")</span>
+                                        </td>
+                                        <td class="text-center">
+                                            @if (!item.completeStatus)
+                                            {
+                                                <a href="#" data-title="Approve" class="updateTaskStatus" data-taskId="@item.Id"><i class="fa-solid fa-check"></i></a>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-@(item.completeStatus ? "success" : "primary")">@(item.completeStatus ? "completed" : "pending")</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
                             }
-                            else
-                            {
-                                <span class="badge bg-@(item.completeStatus ? "success" : "primary")">@(item.completeStatus ? "completed" : "pending")</span>
-                            }
-                        </td>
-                    </tr>
-                                  i++;
-                              }
-                          }
                         </tbody>
                     </table>
                 </div>
@@ -104,7 +104,20 @@
                     <input type="hidden" id="employeeInpId" name="Id" />
                     <div class="form-group">
                         <label for="employeeName" class="form-label">Title</label>
-                        <input type="text" class="form-control" name="title" required id="employeeName" autocomplete="off" placeholder="Enter Employee Name">
+                        <select class="form-select" name="projectId" id="project">
+                            <option value="" selected disabled>--Select project--</option>
+                            @if (projects != null && projects.Count > 0)
+                            {
+                                foreach (var item in projects)
+                                {
+                                    <option value="@item.Id">@item.ProjectTitle</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="employeeName" class="form-label">Title</label>
+                        <input type="text" class="form-control" name="title" required id="employeeName" autocomplete="off" placeholder="Enter title">
                     </div>
                     <div class="form-group">
                         <label for="employeemobno" class="form-label">Description</label>
@@ -113,18 +126,18 @@
                     <div class="form-group">
                         <label for="employeeEmail" class="form-label">Assign Outsource</label>
                         <select class="form-select" name="outSourceId" id="select" multiple required>
-                            <option>---Select Option---</option>
+                            <option disabled>--Select Option--</option>
                             @if (outSourceList != null && outSourceList.Count > 0)
                             {
-                                foreach(var item in outSourceList)
+                                foreach (var item in outSourceList)
                                 {
-                    <option value="@item.Id">@item.EmpName</option>
-                }
-            }
+                                    <option value="@item.Id">@item.EmpName</option>
+                                }
+                            }
                         </select>
                     </div>
                     <div class="text-center mt-3">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Register</button>
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Task</button>
                     </div>
                 </form>
             </div>
@@ -157,7 +170,7 @@
                 });
             });
         }
-       
+
         $("#searchByEmployeeName").on("input", function () {
             var table = $("#dataTableExample").DataTable();
             table.column(1).search($(this).val()).draw();
