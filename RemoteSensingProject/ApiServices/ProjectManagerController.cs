@@ -13,25 +13,20 @@ using System.Web;
 using System.Web.Http;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
-using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
-using RemoteSensingProject.Models.SubOrdinate;
 
 namespace RemoteSensingProject.ApiServices
 {
-	[JwtAuthorize(Roles = "projectManager")]
+	[JwtAuthorize(Roles = "projectManager,divisionHead")]
 	public class ProjectManagerController : ApiController
 	{
 		private readonly AdminServices _adminServices;
-
-		private readonly LoginServices _loginService;
 
 		private readonly ManagerService _managerService;
 
 		public ProjectManagerController()
 		{
 			_adminServices = new AdminServices();
-			_loginService = new LoginServices();
 			_managerService = new ManagerService();
 		}
 
@@ -737,8 +732,8 @@ namespace RemoteSensingProject.ApiServices
 		{
 			try
 			{
-				List<OuterSource> data = _managerService.selectAllOutSOurceList( null, limit, page, searchTerm);
-				string[] selectProperties = new string[6] { "Id", "EmpName", "mobileNo", "email", "joiningdate", "gender" };
+				List<OuterSource> data = _managerService.GetAllocatedOutSOurceList(userId, limit, page, searchTerm);
+                string[] selectProperties = new string[6] { "Id", "EmpName", "mobileNo", "email", "joiningdate", "gender" };
 				List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
 				if (data.Count > 0)
 				{
@@ -1926,5 +1921,130 @@ namespace RemoteSensingProject.ApiServices
 				});
 			}
 		}
-	}
+
+		[HttpGet]
+		[Route("api/deallocate-outsourece")]
+		public IHttpActionResult DeAllocateOutsource(int outsourceid)
+		{
+			try
+			{
+				bool res = _managerService.DeAllocateManpower(outsourceid);
+				return Ok(new
+				{
+					status = res,
+					StatusCode = res ? 200 : 400,
+					message = res ? "Deallocate Successfully" : "Something went wrong"
+				});
+			}
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        #region Manage Division Head
+        [Authorize(Roles = "divisionHead")]
+        [Route("api/manpower-request")]
+		[HttpGet]
+		public IHttpActionResult GetManpowerRequests(int divisionid, int? designationid = null,string searchTerm = null,int? page = null,int? limit = null)
+		{
+			try
+			{
+				var data = _managerService.GetManpowerRequestsInDesignationPmWise(id: divisionid,designationid:designationid, searchTerm: searchTerm);
+				return Ok(new
+				{
+					status = data.Any(),
+					data = data
+				});
+            }
+			catch(Exception ex)
+			{
+				return BadRequest(new
+				{
+					statuss = false,
+					StatuCode = 400,
+					message = ex.Message
+				});
+			}
+		}
+        [Authorize(Roles = "divisionHead")]
+		[Route("api/manpower-request-bydivision")]
+		[HttpGet]
+		public IHttpActionResult GetManpowerRequestByDivision(int divisionid,string searchTerm = null)
+		{
+			try
+			{
+                var data = _managerService.GetManpowerRequestsInDesignation(id: divisionid, searchTerm: searchTerm);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    statuss = false,
+                    StatuCode = 400,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [Route("allocate-manpower")]
+        [HttpPost]
+        public IHttpActionResult AddManpower([FromBody] AddManPower ap)
+        {
+            try
+            {
+                List<string> errors = new List<string>();
+
+                if (ap == null)
+                    errors.Add("Request body is empty");
+
+
+                if (ap.PmId <= 0)
+                    errors.Add("Project manager id is not valid");
+
+                if (ap.Outsource == null || !ap.Outsource.Any())
+                    errors.Add("At least one outsource is required");
+
+                if (errors.Any())
+                {
+                    return Content(HttpStatusCode.BadRequest, new
+                    {
+                        status = false,
+                        StatusCode = 400,
+                        message = string.Join(", ", errors)
+                    });
+                }
+
+                // Service throws exception on failure
+                bool res = _managerService.AllocateManpower(ap);
+
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = 200,
+                    message = "Manpower allocated successfully!"
+                });
+            }
+            catch (Exception ex)
+            {
+                // Business / DB validation error
+                return Content(HttpStatusCode.Conflict, new
+                {
+                    status = false,
+                    StatusCode = 409,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+    }
 }
