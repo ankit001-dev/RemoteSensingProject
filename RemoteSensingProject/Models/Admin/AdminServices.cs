@@ -336,6 +336,7 @@ namespace RemoteSensingProject.Models.Admin
 							userPassword += validChars[rnd.Next(validChars.Length)];
 						}
 					}
+					string role = string.Join(",", emp.EmployeeRole);
 					string actionType = ((emp.Id > 0) ? "UpdateEmployees" : "InsertEmployees");
 					cmd.Parameters.AddWithValue("p_id", (emp.Id == 0) ? DBNull.Value : ((object)emp.Id));
 					cmd.Parameters.AddWithValue("p_employeecode", ((object)emp.EmployeeCode) ?? ((object)DBNull.Value));
@@ -343,7 +344,7 @@ namespace RemoteSensingProject.Models.Admin
 					cmd.Parameters.AddWithValue("p_mobile", (object)emp.MobileNo);
 					cmd.Parameters.AddWithValue("p_email", ((object)emp.Email) ?? ((object)DBNull.Value));
 					cmd.Parameters.AddWithValue("p_gender", ((object)emp.Gender) ?? ((object)DBNull.Value));
-					cmd.Parameters.AddWithValue("p_role", ((object)emp.EmployeeRole) ?? ((object)DBNull.Value));
+					cmd.Parameters.AddWithValue("p_role", ((object)role) ?? ((object)DBNull.Value));
 					cmd.Parameters.AddWithValue("p_username", ((object)emp.Email) ?? ((object)DBNull.Value));
 					cmd.Parameters.AddWithValue("p_password", ((object)userPassword) ?? ((object)DBNull.Value));
 					cmd.Parameters.AddWithValue("p_devision", (object)emp.Division);
@@ -441,7 +442,9 @@ namespace RemoteSensingProject.Models.Admin
 						bool firstRow = true;
 						while (((DbDataReader)(object)record).Read())
 						{
-							main.Employee_model employee = new main.Employee_model
+							var roleValue = ((DbDataReader)(object)record)["role"];
+
+                            main.Employee_model employee = new main.Employee_model
 							{
 								Id = Convert.ToInt32(((DbDataReader)(object)record)["id"]),
 								EmployeeCode = ((DbDataReader)(object)record)["employeecode"]?.ToString(),
@@ -449,8 +452,13 @@ namespace RemoteSensingProject.Models.Admin
 								DevisionName = ((DbDataReader)(object)record)["devisionname"]?.ToString(),
 								Email = ((DbDataReader)(object)record)["email"]?.ToString(),
 								MobileNo = ((((DbDataReader)(object)record)["mobile"] != DBNull.Value) ? Convert.ToInt64(((DbDataReader)(object)record)["mobile"]) : 0),
-								EmployeeRole = ((((DbDataReader)(object)record)["role"] != DBNull.Value) ? ((DbDataReader)(object)record)["role"].ToString().Trim() : ""),
-								Division = ((((DbDataReader)(object)record)["devision"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)record)["devision"]) : 0),
+                                EmployeeRole = roleValue != DBNull.Value
+    ? roleValue.ToString()
+        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        .Select(r => r.Trim())
+        .ToArray()
+    : Array.Empty<string>(),
+                                Division = ((((DbDataReader)(object)record)["devision"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)record)["devision"]) : 0),
 								DesignationName = ((DbDataReader)(object)record)["designationname"]?.ToString(),
 								Status = (((DbDataReader)(object)record)["status"] != DBNull.Value && Convert.ToBoolean(((DbDataReader)(object)record)["status"])),
 								Image_url = ((((DbDataReader)(object)record)["profile"] != DBNull.Value) ? ((DbDataReader)(object)record)["profile"].ToString() : null),
@@ -513,6 +521,7 @@ namespace RemoteSensingProject.Models.Admin
 					{
 						while (((DbDataReader)(object)record).Read())
 						{
+							var roleValue = record["role"];
 							empModel = new main.Employee_model
 							{
 								Id = Convert.ToInt32(((DbDataReader)(object)record)["id"]),
@@ -521,8 +530,14 @@ namespace RemoteSensingProject.Models.Admin
 								DevisionName = ((DbDataReader)(object)record)["devisionname"]?.ToString(),
 								Email = ((DbDataReader)(object)record)["email"]?.ToString(),
 								MobileNo = ((((DbDataReader)(object)record)["mobile"] != DBNull.Value) ? Convert.ToInt64(((DbDataReader)(object)record)["mobile"]) : 0),
-								EmployeeRole = ((((DbDataReader)(object)record)["role"] != DBNull.Value) ? ((DbDataReader)(object)record)["role"].ToString().Trim() : ""),
-								Division = ((((DbDataReader)(object)record)["devision"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)record)["devision"]) : 0),
+                                EmployeeRole = roleValue != DBNull.Value
+    ? roleValue.ToString()
+        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        .Select(r => r.Trim())
+        .ToArray()
+    : Array.Empty<string>(),
+
+                                Division = ((((DbDataReader)(object)record)["devision"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)record)["devision"]) : 0),
 								Designation = ((((DbDataReader)(object)record)["designation"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)record)["designation"]) : 0),
 								DesignationName = ((DbDataReader)(object)record)["designationname"]?.ToString(),
 								Gender = ((DbDataReader)(object)record)["gender"]?.ToString(),
@@ -1548,11 +1563,17 @@ namespace RemoteSensingProject.Models.Admin
 					{
 						while (((DbDataReader)(object)reader).Read())
 						{
-							empObj = new main.Employee_model();
+                            var roleValue = reader["role"];
+                            empObj = new main.Employee_model();
 							empObj.Id = Convert.ToInt32(((DbDataReader)(object)reader)["id"]);
 							empObj.EmployeeName = ((DbDataReader)(object)reader)["name"].ToString();
-							empObj.EmployeeRole = ((DbDataReader)(object)reader)["role"].ToString();
-							empList.Add(empObj);
+							empObj.EmployeeRole = roleValue != DBNull.Value
+    ? roleValue.ToString()
+        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        .Select(r => r.Trim())
+        .ToArray()
+    : Array.Empty<string>();
+                            empList.Add(empObj);
 						}
 					}
 					finally
@@ -1935,13 +1956,19 @@ namespace RemoteSensingProject.Models.Admin
 						{
 							while (((DbDataReader)(object)res).Read())
 							{
-								empModel.Add(new main.Employee_model
+                                var roleValue = res["role"];
+                                empModel.Add(new main.Employee_model
 								{
 									Id = (int)((DbDataReader)(object)res)["id"],
 									EmployeeCode = ((DbDataReader)(object)res)["employeeCode"].ToString(),
 									EmployeeName = ((DbDataReader)(object)res)["name"].ToString(),
-									EmployeeRole = ((DbDataReader)(object)res)["role"].ToString(),
-									MobileNo = Convert.ToInt64((((DbDataReader)(object)res)["mobile"] != DBNull.Value) ? ((DbDataReader)(object)res)["mobile"] : ((object)0)),
+									EmployeeRole = roleValue != DBNull.Value
+    ? roleValue.ToString()
+        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        .Select(r => r.Trim())
+        .ToArray()
+    : Array.Empty<string>(),
+                                    MobileNo = Convert.ToInt64((((DbDataReader)(object)res)["mobile"] != DBNull.Value) ? ((DbDataReader)(object)res)["mobile"] : ((object)0)),
 									Email = ((DbDataReader)(object)res)["email"].ToString(),
 									meetingId = Convert.ToInt32((((DbDataReader)(object)res)["meetingId"] != DBNull.Value) ? ((DbDataReader)(object)res)["meetingId"] : ((object)0))
 								});
@@ -2156,12 +2183,19 @@ namespace RemoteSensingProject.Models.Admin
 						{
 							while (((DbDataReader)(object)rdr).Read())
 							{
-								meetingc.Add(new main.Employee_model
+								var roleValue = rdr["role"];
+
+                                meetingc.Add(new main.Employee_model
 								{
 									EmployeeName = ((DbDataReader)(object)rdr)["name"].ToString(),
 									Image_url = ((DbDataReader)(object)rdr)["profile"].ToString(),
-									EmployeeRole = ((DbDataReader)(object)rdr)["role"].ToString(),
-									PresentStatus = (bool)((DbDataReader)(object)rdr)["completeStatus"]
+									EmployeeRole = roleValue != DBNull.Value
+    ? roleValue.ToString()
+        .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+        .Select(r => r.Trim())
+        .ToArray()
+    : Array.Empty<string>(),
+                                    PresentStatus = (bool)((DbDataReader)(object)rdr)["completeStatus"]
 								});
 							}
 						}
@@ -2870,7 +2904,6 @@ namespace RemoteSensingProject.Models.Admin
 											id = (int)((DbDataReader)(object)res)["id"],
 											projectId = (int)((DbDataReader)(object)res)["projectId"],
 											projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
-											projectManager = Convert.ToString(((DbDataReader)(object)res)["name"]),
 											headName = Convert.ToString(((DbDataReader)(object)res)["heads"]),
 											amount = Convert.ToDecimal(((DbDataReader)(object)res)["amount"]),
 											dateFrom = Convert.ToDateTime(((DbDataReader)(object)res)["dateFrom"]),
@@ -2883,11 +2916,8 @@ namespace RemoteSensingProject.Models.Admin
 											BookAgainstCentre = ((DbDataReader)(object)res)["BookAgainstCentre"].ToString(),
 											availbilityOfFund = ((DbDataReader)(object)res)["availbilityOfFund"].ToString(),
 											note = ((DbDataReader)(object)res)["note"].ToString(),
-											newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
-											adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"]),
 											remark = ((DbDataReader)(object)res)["remark"].ToString(),
-											projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A"),
-											statusLabel = ((Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]) && !Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"])) ? "Pending" : ((!Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]) && Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"])) ? "Approved" : "Rejected"))
+											projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A")
 										});
 										if (firstRow)
 										{

@@ -35,11 +35,11 @@ namespace RemoteSensingProject.Controllers
 			((dynamic)((ControllerBase)this).ViewBag).CompleteRequest = _managerServices.All_Project_List(0, null, null, "AccountApproved").Count();
 			((dynamic)((ControllerBase)this).ViewBag).PendingStatus = _managerServices.All_Project_List(0, null, null, "AccountPending").Count();
 			((dynamic)((ControllerBase)this).ViewBag).TotalFunRequest = _managerServices.All_Project_List(0).Count();
-			RemoteSensingProject.Models.Accounts.main.DashboardCount TotalCount = _accountSerivce.DashboardCount();
+			//RemoteSensingProject.Models.Accounts.main.DashboardCount TotalCount = _accountSerivce.DashboardCount();
 			((ControllerBase)this).ViewData["projectlist"] = _managerServices.All_Project_List(0, 1, 5, "AccountApproved").Take(5).ToList();
 			((ControllerBase)this).ViewData["graphdata"] = _accountSerivce.ExpencesListforgraph();
 			((ControllerBase)this).ViewData["budgetdataforgraph"] = _accountSerivce.budgetdataforgraph();
-			return View((object)TotalCount);
+			return View();
 		}
 
 		public ActionResult Requests()
@@ -81,36 +81,86 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
 
-		public ActionResult TourProposalRequest(int? managerFilter = null, int? projectFilter = null)
+        #region Manage TourProposal
+        public ActionResult TourProposalRequest(int? projectFilter = null)
 		{
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-			AccountService accountSerivce = _accountSerivce;
-			int? managerFilter2 = managerFilter;
-			viewData["tourproposal"] = accountSerivce.getTourList(null, null, managerFilter2, projectFilter);
+			((ControllerBase)this).ViewData["projectList"] = _adminServices.Project_List();
+			ViewData["tourproposal"] = _managerServices.GetTourList(type:"ALLDATA",projectFilter:projectFilter);
 			return View();
 		}
 
-		public ActionResult ReinbursementRequest()
+        [HttpPost]
+        public ActionResult Tour_Proposal(tourProposal data)
+        {
+            bool res = _managerServices.insertTour(data);
+            if (res)
+            {
+                return Json((object)new
+                {
+                    status = res,
+                    message = data.id > 0 ? "Updated Successfully" : "Added Successfully"
+                });
+            }
+            return Json((object)new
+            {
+                status = res,
+                message = "Something went wrong"
+            });
+        }
+		public ActionResult TourProposal_Report(int? projectFilter = null)
+		{
+			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
+			viewData["allTourList"] = _managerServices.GetTourList(type: "ALLDATA", projectFilter:projectFilter);
+			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+			return View();
+		}
+
+        #endregion
+
+        public ActionResult ReinbursementRequest()
 		{
 			((ControllerBase)this).ViewData["ReimBurseData"] = _managerServices.GetReimbursements(null, null, null, null, "selectApprovedReinbursement");
 			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
 			return View();
 		}
 
-		public ActionResult HiringRequest(int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
+        #region Manage Hiring
+        public ActionResult HiringRequest(int? projectFilter = null)
 		{
-			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-			AdminServices adminServices = _adminServices;
-			int? projectFilter2 = projectFilter;
-			viewData["hiringList"] = adminServices.HiringReort(null, null, managerFilter, projectFilter2, statusFilter);
-			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+			ViewData["hiringList"] = _managerServices.GetHiringVehicles(type: "ALLDATA", projectFilter: projectFilter);
+            ((ControllerBase)this).ViewData["projectlist"] = _adminServices.Project_List();
 			return View();
 		}
 
-		public ActionResult FundReport(string statusFilter = null)
+        [HttpPost]
+        public ActionResult Hiring_Vehicle(HiringVehicle data)
+        {
+            bool res = _managerServices.insertHiring(data);
+            if (res)
+            {
+                return Json((object)new
+                {
+                    status = res,
+                    message = data.id > 0 ? "Updated Successfully" : "Added Successfully"
+                });
+            }
+            return Json((object)new
+            {
+                status = res,
+                message = "Something went wrong"
+            });
+        }
+		public ActionResult Hiring_Report(int? projectFilter = null)
+		{
+			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
+			AdminServices adminServices = _adminServices;
+			viewData["hiringList"] = _managerServices.GetHiringVehicles(type: "ALLDATA", projectFilter: projectFilter);
+			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+			return View();
+		}
+        #endregion
+
+        public ActionResult FundReport(string statusFilter = null)
 		{
 			List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerServices.All_Project_List(0);
 			if (!string.IsNullOrWhiteSpace(statusFilter))
@@ -140,27 +190,7 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
 
-		public ActionResult TourProposal_Report(int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
-		{
-			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-			AccountService accountSerivce = _accountSerivce;
-			int? projectFilter2 = projectFilter;
-			viewData["allTourList"] = accountSerivce.getTourList(null, null, managerFilter, projectFilter2, statusFilter);
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-			return View();
-		}
 
-		public ActionResult Hiring_Report(int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
-		{
-			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-			AdminServices adminServices = _adminServices;
-			int? projectFilter2 = projectFilter;
-			viewData["hiringList"] = adminServices.HiringReort(null, null, managerFilter, projectFilter2, statusFilter);
-			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-			return View();
-		}
 
 		#region New Expense Changes
 		[HttpPost]

@@ -139,7 +139,7 @@ namespace RemoteSensingProject.ApiServices
 			});
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[Route("api/getTourById")]
 		[HttpGet]
 		public IHttpActionResult TourById(int id)
@@ -148,7 +148,7 @@ namespace RemoteSensingProject.ApiServices
 			{
 				ManagerService mangerServices = _mangerServices;
 				int? id2 = id;
-				List<tourProposal> data = mangerServices.getTourList(null, id2, "GetById");
+				List<tourProposal> data = mangerServices.GetTourList(type:"GETBYID",id:id);
 				return Ok(new
 				{
 					status = data.Any(),
@@ -257,7 +257,6 @@ namespace RemoteSensingProject.ApiServices
 		{
 			return Content<object>(HttpStatusCode.BadRequest, value);
 		}
-
 		[HttpGet]
 		[Route("api/getDashboardCounts")]
 		public IHttpActionResult DashboardCount()
@@ -354,5 +353,57 @@ namespace RemoteSensingProject.ApiServices
 				return Error(this, ex.Message);
 			}
 		}
-	}
+
+        #region Manage Hiring Vehicle
+        // Get Hiring BY ID
+        [System.Web.Mvc.AllowAnonymous]
+        [HttpGet]
+        [Route("api/getHiringList")]
+        public IHttpActionResult GetHiringById(int id)
+        {
+            try
+            {
+                List<HiringVehicle> data = _mangerServices.GetHiringVehicles(id: id, type: "GETBYID");
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+		//All Hirings
+        [HttpGet]
+        [Route("api/getAllHiringList")]
+        public IHttpActionResult getAllHiringList(int? limit = null, int? page = null, int? projectFilter = null)
+        {
+            try
+            {
+                List<HiringVehicle> data = _mangerServices.GetHiringVehicles(type:"ALLDATA",projectFilter:projectFilter,limit:limit,page:page);
+                if (data.Count > 0)
+                {
+                    return Success(this, data, "Data fetched successfully", 200, data[0].Pagination);
+                }
+                return NoData(this);
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+    }
 }

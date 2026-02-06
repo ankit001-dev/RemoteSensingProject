@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 
@@ -7,80 +6,189 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Login Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Remote & Sensing - Login</title>
 
-    <!-- Font Icon -->
-    <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Main css -->
-    <link rel="stylesheet" href="~/loginAssets/css/style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        .main {
-            padding: 10px 0;
+        body {
+            /*            background-image: url('../../loginassets/images/newloginpagetwo.png');*/
+            /*                        background: linear-gradient(to top, #3b82f6, #93c5fd, white);*/
+            /*                        background: linear-gradient(to bottom, #2563eb, #bfdbfe, #ffffff);*/
+            /*                        background: linear-gradient(225deg, #3b82f6, #93c5fd, #ffffff);*/
+            background: linear-gradient(315deg, #ffffff, #93c5fd, #3b82f6);
+            /*            background: linear-gradient(315deg, #2563eb, #bfdbfe, #ffffff);*/
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start; /* Card top aligned */
+            justify-content: center;
+            padding-top: 50px; /* Top gap */
+            margin: 0;
         }
-        * {
-            user-select: none !important;
+
+        .login-container {
+            max-width: 1000px;
+            width: 95%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            overflow: hidden;
+            margin-top: 30px;
         }
+
+        .image-section img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            min-height: 250px; /* Mobile friendly */
+        }
+
+        .form-section {
+            padding: 40px;
+            background-color: white;
+        }
+
+            .form-section h3 {
+                font-weight: 700;
+                margin-bottom: 30px;
+                color: #0d47a1;
+            }
+
+        .input-group-text {
+            background: transparent;
+            border-right: none;
+        }
+
+        .form-control {
+            border-left: none;
+        }
+
+            .form-control:focus {
+                box-shadow: none;
+                border-color: #dee2e6;
+            }
+
+        .login-btn {
+            background: linear-gradient(90deg, #2196f3, #1976d2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+            .login-btn:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
+
+        .forgot {
+            text-decoration: none;
+            color: #666;
+            font-size: 14px;
+        }
+
+            .forgot:hover {
+                color: #0d47a1;
+            }
+
+        /* Brand Header */
+
+
+        .brand-subtitle-main {
+            font-size: 21px; /* 22px → 28px for bigger text */
+            font-weight: 1000; /* 600 → 700 for bolder */
+            color: #37474f;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-title {
+            font-size: 36px; /* 32px → 36px for bigger PMS text */
+            font-weight: 900; /* 800 → 900 for bolder PMS */
+            color: #0d47a1;
+            letter-spacing: 2px;
+        }
+
+        .brand-logo {
+            height: 65px;
+        }
+
+        .footer-link {
+            color: #0d47a1;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .footer-link:hover {
+                text-decoration: underline;
+                color: #1976d2;
+            }
     </style>
 </head>
-
-
 <body>
 
-    <div class="main">
-        <section class="sign-in">
-            <div class="container">
-                <div class="signin-content">
-                    <div class="signin-image">
-                        <figure><img src="~/loginAssets/images/signin-image.jpg" alt="sing up image"></figure>
-                        @*<a href="#" class="signup-image-link">Create an account</a>*@
-                    </div>
-
-                    <div class="signin-form">
-                        <div style="margin-bottom:50px;">
-                            <img src="~/assets/images/macreel.png" alt="logo" class="w-50 h-50" style="height: 50px;">
-                            <img src="~/assets/images/remote_sensing_logo.jfif" height="75" width="75">
-                        </div>
-                        <form method="POST" class="register-form" id="login-form">
-                            <div class="form-group">
-                                <label for="your_name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                                <input type="text" name="username" id="username" placeholder="Your UserName" autocomplete="off" />
-                            </div>
-                            <div class="form-group">
-                                <div class="input-group" style="display:flex;">
-                                    <input type="password"
-                                           class="form-control"
-                                           id="password"
-                                           placeholder="Password"
-                                           name="password">
-
-                                    <span class="input-group-text toggle-password" style="cursor:pointer;" data-target="#password">
-                                        <i class="bi bi-eye"></i>
-                                    </span>
-                                </div>
-                            </div>
-
-
-                            <div class="form-group" style="display:flex; justify-content:space-between;">
-                                <input type="checkbox" name="remember-me" id="remember-me" class="agree-term" />
-                                <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
-                                <a href="/Login/ForgotPassword" class="text-end">Forgot Password ?</a>
-                            </div>
-                            <div class="form-group form-button">
-                                <input type="submit" name="signin" id="btnlogin" class="form-submit" value="Log in" />
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <div class="login-container">
+        <div class="row g-0">
+            <!-- Left Image -->
+            <div class="col-md-6 image-section">
+                <img src="~/loginAssets/images/newloginpage.png" />
             </div>
-        </section>
+            <!-- Right Form -->
+            <div class="col-md-6 form-section d-flex flex-column justify-content-center">
+                <!-- Brand Header -->
+                <div class="brand-header mb-4 text-center text-md-start">
+                    <p class="brand-subtitle-main mb-3 fw-bold">
+                        Remote Sensing Application Centre, UP
+                    </p>
+
+                    <div class="d-flex justify-content-center align-items-center gap-3">
+                        <img src="~/assets/images/remote_sensing_logo.jfif" alt="logo" class="brand-logo">
+                        <h2 class="brand-title mb-0">PMS</h2>
+                    </div>
+
+
+                </div>
+                <!-- Login Form -->
+                <form id="login-form">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">
+                            <i class="bi bi-person text-primary"></i>
+                        </span>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Email Address" required>
+                    </div>
+
+                    <div class="input-group mb-4">
+                        <span class="input-group-text">
+                            <i class="bi bi-lock text-primary"></i>
+                        </span>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 login-btn mb-3">LOGIN</button>
+
+                    <div class="text-center">
+                        <a href="#" class="forgot">Forgot Password?</a>
+                    </div>
+                </form>
+                <!-- Footer -->
+                <div class="text-center mt-3 mb-3 footer-text">
+                    Created by
+                    <a href="https://macreel.co.in/homepage" target="_blank" class="footer-link">
+                        macreel infosoft pvt. ltd.
+                    </a>
+                </div>
+
+            </div>
+        </div>
     </div>
-    <!-- Container end -->
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/assets/js/sweetalert.min.js"></script>
     <script>
 
         $("#login-form").on("submit", function () {
@@ -96,7 +204,7 @@
                     allowEscapeKey: false,
                     allowEnterKey: false,
                 }).then((result) => {
-                    $("#email").focus();
+                    $("#username").focus();
                 });
                 return false;
             }
@@ -184,8 +292,6 @@
             return false;
 
         });
-    </script>
-    <script>
         window.onload = function () {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function (position) {
@@ -202,8 +308,6 @@
 
 
         };
-    </script>
-    <script>
         $(".toggle-password").on("click", function () {
             debugger
             const input = $($(this).data("target"));
@@ -219,7 +323,5 @@
         });
     </script>
 
-
 </body>
-
 </html>
