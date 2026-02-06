@@ -59,17 +59,17 @@ namespace RemoteSensingProject.Models.ProjectManager
 									obj.EmpMeeting = ((DbDataReader)(object)sdr)["EmpMeeting"].ToString();
 									obj.AdminMeeting = ((DbDataReader)(object)sdr)["AdminMeeting"].ToString();
 									obj.TotalReimbursement = ((DbDataReader)(object)sdr)["TotalReimbursement"].ToString();
-									obj.TotalTourProposal = ((DbDataReader)(object)sdr)["TotalTourProposal"].ToString();
-									obj.TotalHiring = ((DbDataReader)(object)sdr)["TotalHiring"].ToString();
+									//obj.TotalTourProposal = ((DbDataReader)(object)sdr)["TotalTourProposal"].ToString();
+									//obj.TotalHiring = ((DbDataReader)(object)sdr)["TotalHiring"].ToString();
 									obj.ReimbursementPendingRequest = ((DbDataReader)(object)sdr)["ReimbursementPendingRequest"].ToString();
 									obj.ReimbursementApprovedRequest = ((DbDataReader)(object)sdr)["ReimbursementApprovedRequest"].ToString();
 									obj.ReimbursementRejectedRequest = ((DbDataReader)(object)sdr)["ReimbursementRejectedRequest"].ToString();
-									obj.TourPendingRequest = ((DbDataReader)(object)sdr)["TourPendingRequest"].ToString();
-									obj.TourApprovedRequest = ((DbDataReader)(object)sdr)["TourApprovedRequest"].ToString();
-									obj.TourRejectedRequest = ((DbDataReader)(object)sdr)["TourRejectedRequest"].ToString();
-									obj.HiringPendingRequest = ((DbDataReader)(object)sdr)["HiringPendingRequest"].ToString();
-									obj.HiringApprovedRequest = ((DbDataReader)(object)sdr)["HiringApprovedRequest"].ToString();
-									obj.HiringRejectedRequest = ((DbDataReader)(object)sdr)["HiringRejectedRequest"].ToString();
+									//obj.TourPendingRequest = ((DbDataReader)(object)sdr)["TourPendingRequest"].ToString();
+									//obj.TourApprovedRequest = ((DbDataReader)(object)sdr)["TourApprovedRequest"].ToString();
+									//obj.TourRejectedRequest = ((DbDataReader)(object)sdr)["TourRejectedRequest"].ToString();
+									//obj.HiringPendingRequest = ((DbDataReader)(object)sdr)["HiringPendingRequest"].ToString();
+									//obj.HiringApprovedRequest = ((DbDataReader)(object)sdr)["HiringApprovedRequest"].ToString();
+									//obj.HiringRejectedRequest = ((DbDataReader)(object)sdr)["HiringRejectedRequest"].ToString();
 									obj.TotalTask = ((DbDataReader)(object)sdr)["TotalTask"].ToString();
 									obj.CompletedTask = ((DbDataReader)(object)sdr)["CompletedTask"].ToString();
 									obj.OutSource = ((DbDataReader)(object)sdr)["OutSource"].ToString();
@@ -1342,7 +1342,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 						userpassword += validChars[rnd.Next(validChars.Length)];
 					}
 				}
-				cmd = new NpgsqlCommand("CALL sp_manageoutsource(@p_action,@p_id, @p_designationid,NULL :: int, @p_emp_name, @p_emp_mobile, @p_emp_email, @p_emp_gender, @p_password,NULL::boolean)", con);
+				cmd = new NpgsqlCommand("CALL sp_manageoutsource(p_aciton => @p_action,p_id=>@p_id,p_designationid=> @p_designationid,p_emp_name=> @p_emp_name, p_emp_mobile=>@p_emp_mobile, p_emp_email=>@p_emp_email, p_emp_gender=>@p_emp_gender, p_password=>@p_password)", con);
 				((DbCommand)(object)cmd).CommandType = CommandType.Text;
 				((DbParameter)(object)cmd.Parameters.Add("@p_action", (NpgsqlDbType)22)).Value = os.Id > 0 ? "updateOutSource" : "createOutSource";
 				((DbParameter)(object)cmd.Parameters.Add("@p_id", (NpgsqlDbType)9)).Value = os.Id;
@@ -1370,7 +1370,38 @@ namespace RemoteSensingProject.Models.ProjectManager
 			}
 		}
 
-		public List<OuterSource> selectAllOutSOurceList(int? id, int? limit = null, int? page = null, string searchTerm = null)
+        public bool SendOutSourceAtTour(OutsourceAtTour os)
+        {
+            try
+            {
+                cmd = new NpgsqlCommand("CALL sp_manageoutsource(p_action => @p_action,p_outsourceid=>@p_outsourceid,p_fromdate=> @p_fromdate,p_todate=> @p_todate, p_description=>@p_description)", con);
+                ((DbCommand)(object)cmd).CommandType = CommandType.Text;
+
+                cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = "sendoutsourceontour";
+                cmd.Parameters.Add("@p_outsourceid", NpgsqlDbType.Integer).Value = os.outsourceid;
+                cmd.Parameters.Add("@p_fromdate", NpgsqlDbType.Timestamp).Value = os.fromDate;
+                cmd.Parameters.Add("@p_todate", NpgsqlDbType.Timestamp).Value = os.toDate;
+                cmd.Parameters.Add("@p_description", NpgsqlDbType.Text).Value = os.description;
+
+                ((DbConnection)(object)con).Open();
+                ((DbCommand)(object)cmd).ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)cmd).Dispose();
+            }
+        }
+
+        public List<OuterSource> selectAllOutSOurceList(int? id, int? limit = null, int? page = null, string searchTerm = null)
 		{
 			try
 			{
@@ -1942,7 +1973,8 @@ namespace RemoteSensingProject.Models.ProjectManager
 											Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
 											title = ((DbDataReader)(object)rd)["title"].ToString(),
 											description = ((DbDataReader)(object)rd)["description"].ToString(),
-											completeStatus = Convert.ToBoolean(((DbDataReader)(object)rd)["completeStatus"])
+											completeStatus = Convert.ToBoolean(((DbDataReader)(object)rd)["completeStatus"]),
+											projectName = rd["projectName"].ToString()
 										};
 										if (firstRow)
 										{

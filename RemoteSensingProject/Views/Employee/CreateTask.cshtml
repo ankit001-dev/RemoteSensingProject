@@ -47,6 +47,7 @@
                         <thead>
                             <tr>
                                 <th>Sr. No.</th>
+                                <th>Project</th>
                                 <th>Title</th>
                                 <th>Description</th>
                                 <th>Task Status</th>
@@ -60,6 +61,7 @@
                                 {
                                     <tr>
                                         <td>@i</td>
+                                        <td>@item.projectName</td>
                                         <td>
                                             <a href="#" data-title="View Details" class="viewAssignedSource" data-taskId="@item.Id">@item.title</a>
                                         </td>
@@ -103,7 +105,7 @@
                 <form id="createTaskForm">
                     <input type="hidden" id="employeeInpId" name="Id" />
                     <div class="form-group">
-                        <label for="employeeName" class="form-label">Title</label>
+                        <label for="employeeName" class="form-label">Project</label>
                         <select class="form-select" name="projectId" id="project">
                             <option value="" selected disabled>--Select project--</option>
                             @if (projects != null && projects.Count > 0)

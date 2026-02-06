@@ -66,7 +66,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult CreateTask(string req)
         {
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-           ViewData["projectlist"] =  _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "AssignedProject");
+            ViewData["projectlist"] = _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "AssignedProject");
             ((ControllerBase)this).ViewData["OutSourceList"] = _managerServices.GetAllocatedOutSOurceList(userObj);
             ((ControllerBase)this).ViewData["TaskList"] = ((req == "completed") ? (from d in _managerServices.taskList(userObj)
                                                                                    where d.completeStatus
@@ -74,6 +74,24 @@ namespace RemoteSensingProject.Controllers
                                                                                                                                where !d.completeStatus
                                                                                                                                select d).ToList() : _managerServices.taskList(userObj)));
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult InsertOutSourceTour(OutsourceAtTour at)
+        {
+            try
+            {
+                bool res = _managerServices.SendOutSourceAtTour(at);
+                return Json(new
+                {
+                    status = res,
+                    message = res ? "Submitted successfully" : "Something went wrong"
+                });
+            }
+            catch(Exception ex)
+            {
+                return Json(new { status = false, message = ex.Message });
+            }
         }
 
         [HttpPost]
@@ -297,9 +315,8 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Min_Of_Meeting()
         {
-            IEnumerable<RemoteSensingProject.Models.Admin.main.Employee_model> empList = from e in _adminServices.BindEmployee()
-                                                                                         where e.EmployeeRole.Contains("subOrdinate")
-                                                                                         select e;
+            int userid =Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var empList = _managerServices.GetAllocatedOutSOurceList(userid);
             return View((object)empList);
         }
 
@@ -978,7 +995,7 @@ namespace RemoteSensingProject.Controllers
                     message = "Deallocated Successfully"
                 });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return Json(new
                 {
@@ -1400,10 +1417,10 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
         [Authorize(Roles = "divisionHead")]
-        public ActionResult ManageManpower(int id,string searchTerm = null)
+        public ActionResult ManageManpower(int id, string searchTerm = null)
         {
             int divisionid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).divisionId);
-            ViewData["data"] = _managerServices.GetManpowerRequestsInDesignationPmWise(id: divisionid, designationid: id,searchTerm:searchTerm);
+            ViewData["data"] = _managerServices.GetManpowerRequestsInDesignationPmWise(id: divisionid, designationid: id, searchTerm: searchTerm);
             return View();
         }
         [Authorize(Roles = "divisionHead")]
@@ -1417,7 +1434,7 @@ namespace RemoteSensingProject.Controllers
                 {
                     status = data.Any(),
                     data = data
-                },JsonRequestBehavior.AllowGet);
+                }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -1425,7 +1442,7 @@ namespace RemoteSensingProject.Controllers
                 {
                     status = false,
                     message = ex.Message
-                },JsonRequestBehavior.AllowGet);
+                }, JsonRequestBehavior.AllowGet);
             }
         }
         [Authorize(Roles = "divisionHead")]

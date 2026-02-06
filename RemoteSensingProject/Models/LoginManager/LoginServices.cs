@@ -114,7 +114,7 @@ namespace RemoteSensingProject.Models.LoginManager
             }
             string issuer = _issuer;
 			string audience = _audience;
-			DateTime? dateTime = DateTime.Now.AddMinutes(1.0);
+			DateTime? dateTime = DateTime.UtcNow.AddMinutes(30);
 			SigningCredentials val = creds;
 			JwtSecurityToken token = new JwtSecurityToken(issuer, audience, (IEnumerable<Claim>)claims, (DateTime?)null, dateTime, val);
 			return ((SecurityTokenHandler)new JwtSecurityTokenHandler()).WriteToken((SecurityToken)(object)token);
