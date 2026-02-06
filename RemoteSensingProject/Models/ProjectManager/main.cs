@@ -250,7 +250,13 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string DateString { get; set; }
         public string reason { get; set; }
     }
-
+    public class OutsourceAtTour
+    {
+        public int outsourceid { get; set; }
+        public DateTime fromDate { get; set; }
+        public DateTime toDate { get; set; }
+        public string description { get; set; }
+    }
     public class OuterSource
     {
         public string joiningdate { get; set; }
@@ -276,6 +282,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public int[] outSourceId { get; set; }
         public bool completeStatus { get; set; }
         public PaginationInfo Pagination { get; set; }
+        public string projectName { get; set; }
     }
     public class Reimbursement
     {
