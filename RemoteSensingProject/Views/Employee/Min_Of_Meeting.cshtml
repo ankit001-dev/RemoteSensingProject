@@ -71,13 +71,14 @@
                             <div class="form-group">
                                 <label>Meeting Member:</label>
                                 <select class="form-control select2" required id="MeetingMember" name="meetingMemberList" multiple>
+                                    <option value="" disabled>--Select outsource--</option>
                                     @if (Model != null)
                                     {
                                         foreach (var item in Model)
                                         {
                                             if (item != null)
                                             {
-                                                <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
+                                                <option value="@item.Id">@item.EmpName</option>
                                             }
                                         }
                                     }
@@ -201,13 +202,14 @@
                             <div class="form-group">
                                 <label>Meeting Member:</label><br />
                                 <select class="form-control" id="updateMeetingMember" name="meetingMemberList" multiple>
+                                    <option value="" disabled>--Select outsource--</option>
                                     @if (Model != null)
                                     {
                                         foreach (var item in Model)
                                         {
                                             if (item != null)
                                             {
-                                                <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
+                                                <option value="@item.Id">@item.EmpName</option>
                                             }
                                         }
                                     }

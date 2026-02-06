@@ -862,7 +862,7 @@ namespace RemoteSensingProject.Models.Admin
 						{
 							project.projectStatusLabel = "Ongoing";
 						}
-						else
+						else if(project.StartDate > DateTime.Now)
 						{
 							project.projectStatusLabel = "Upcoming";
 						}
@@ -1354,17 +1354,17 @@ namespace RemoteSensingProject.Models.Admin
 										TotalAdminMeetings = ((DbDataReader)(object)sdr)["TotalAdminMeetings"].ToString(),
 										TotalProjectManagerMeetings = ((DbDataReader)(object)sdr)["TotalProjectManagerMeetings"].ToString(),
 										TotalReinbursementReq = ((DbDataReader)(object)sdr)["TotalReinbursementReq"].ToString(),
-										TotalTourProposalReq = ((DbDataReader)(object)sdr)["TotalTourProposalReq"].ToString(),
-										totalVehicleHiringRequest = ((DbDataReader)(object)sdr)["totalVehicleHiringRequest"].ToString(),
+										//TotalTourProposalReq = ((DbDataReader)(object)sdr)["TotalTourProposalReq"].ToString(),
+										//totalVehicleHiringRequest = ((DbDataReader)(object)sdr)["totalVehicleHiringRequest"].ToString(),
 										totalReinbursementPendingRequest = ((DbDataReader)(object)sdr)["totalReinbursementPendingRequest"].ToString(),
 										totalReinbursementapprovedRequest = ((DbDataReader)(object)sdr)["totalReinbursementapprovedRequest"].ToString(),
 										totalReinbursementRejectRequest = ((DbDataReader)(object)sdr)["totalReinbursementRejectRequest"].ToString(),
-										totalTourProposalApprReque = ((DbDataReader)(object)sdr)["totalTourProposalApprReque"].ToString(),
-										totalTourProposalRejectReque = ((DbDataReader)(object)sdr)["totalTourProposalRejectReque"].ToString(),
-										totaTourProposalPendingReque = ((DbDataReader)(object)sdr)["totalTourProposalRejectReque"].ToString(),
-										totalPendingHiringVehicle = ((DbDataReader)(object)sdr)["totalPendingHiringVehicle"].ToString(),
-										totalApproveHiringVehicle = ((DbDataReader)(object)sdr)["totalApproveHiringVehicle"].ToString(),
-										totalRejectHiringVehicle = ((DbDataReader)(object)sdr)["totalRejectHiringVehicle"].ToString(),
+										//totalTourProposalApprReque = ((DbDataReader)(object)sdr)["totalTourProposalApprReque"].ToString(),
+										//totalTourProposalRejectReque = ((DbDataReader)(object)sdr)["totalTourProposalRejectReque"].ToString(),
+										//totaTourProposalPendingReque = ((DbDataReader)(object)sdr)["totalTourProposalRejectReque"].ToString(),
+										//totalPendingHiringVehicle = ((DbDataReader)(object)sdr)["totalPendingHiringVehicle"].ToString(),
+										//totalApproveHiringVehicle = ((DbDataReader)(object)sdr)["totalApproveHiringVehicle"].ToString(),
+										//totalRejectHiringVehicle = ((DbDataReader)(object)sdr)["totalRejectHiringVehicle"].ToString(),
 										TotalBudget = Convert.ToDecimal((((DbDataReader)(object)sdr)["totalBudgets"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["totalBudgets"] : ((object)0)),
 										PendingBudget = Convert.ToDecimal((((DbDataReader)(object)sdr)["pendingBudget"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["pendingBudget"] : ((object)0))
 									};
