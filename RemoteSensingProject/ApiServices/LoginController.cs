@@ -17,8 +17,6 @@ namespace RemoteSensingProject.ApiServices
 	{
 		private readonly LoginServices _loginService;
 
-		private readonly AdminServices _adminServices;
-
 		private readonly ObjectCache _cache = MemoryCache.Default;
 
 		private readonly mail _mail;
@@ -28,7 +26,6 @@ namespace RemoteSensingProject.ApiServices
 		public LoginController()
 		{
 			_loginService = new LoginServices();
-			_adminServices = new AdminServices();
 			_mail = new mail();
 			authgaurd = new JwtAuthorizeAttribute();
 		}
