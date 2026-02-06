@@ -104,14 +104,20 @@ namespace RemoteSensingProject.ApiServices
 					});
 				default:
 					{
-						ClaimsIdentity identity = principal.Identity as ClaimsIdentity;
-						RemoteSensingProject.Models.LoginManager.main.Credentials cred = new RemoteSensingProject.Models.LoginManager.main.Credentials
-						{
-							role = identity.Claims.FirstOrDefault((Claim c) => c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" || c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value,
-							username = identity.Claims.FirstOrDefault((Claim c) => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value,
-							userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value)
-						};
-						string newToken = _loginService.GenerateToken(cred);
+                        ClaimsIdentity identity = principal.Identity as ClaimsIdentity;
+
+                        RemoteSensingProject.Models.LoginManager.main.Credentials cred =
+                            new RemoteSensingProject.Models.LoginManager.main.Credentials
+                            {
+                                role = identity.Claims
+                                           .Where(c => c.Type == ClaimTypes.Role)
+                                           .Select(c => c.Value)
+                                           .ToArray(),
+                                username = identity.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+
+                                userId = int.Parse(identity.FindFirst("userId")?.Value ?? "0")
+                            };
+                        string newToken = _loginService.GenerateToken(cred);
 						return Ok(new
 						{
 							status = "newtoken",

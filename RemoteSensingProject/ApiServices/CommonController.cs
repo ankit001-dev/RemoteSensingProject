@@ -17,7 +17,7 @@ using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
 
-[JwtAuthorize(Roles = "admin,account,projectManager,subOrdinate,outSource")]
+[JwtAuthorize(Roles = "admin,account,projectManager,subOrdinate,outSource,prashasan")]
 public class CommonController : ApiController
 {
 	private readonly AdminServices _adminServices;
@@ -497,7 +497,40 @@ public class CommonController : ApiController
 		}
 	}
 
-	[RoleAuthorize("admin,projectManager")]
+    #region Manage Designation
+    [RoleAuthorize("admin,prashasan")]
+    [HttpPost]
+    [Route("api/add-designation")]
+    public IHttpActionResult AddDesignation([FromBody] RemoteSensingProject.Models.Admin.main.CommonResponse cr)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(cr.name))
+                return Content(HttpStatusCode.BadRequest, new
+                {
+                    status = false,
+                    StatusCode = 400,
+                    message = "Designation name is required"
+                });
+            bool res = _adminServices.InsertDesignation(cr);
+            return Ok(new
+            {
+                status = res,
+                StatusCode = res ? 201 : 400,
+                message = res ? cr.id > 0 ? "Updated Successfully" : "Added Successfully" : "Some error occured"
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 400,
+                message = ex.Message
+            });
+        }
+    }
+    [RoleAuthorize("admin,projectManager,prashasan")]
 	[HttpGet]
 	[Route("api/DesginationList")]
 	public IHttpActionResult DesginationList()
@@ -533,7 +566,33 @@ public class CommonController : ApiController
 		}
 	}
 
-	[RoleAuthorize("admin,projectManager")]
+    [HttpGet]
+    [Route("api/remove-designation")]
+    public IHttpActionResult RemoveDesignation(int id)
+    {
+        try
+        {
+            bool res = _adminServices.removeDesgination(id);
+            return Ok(new
+            {
+                status = res,
+                StatusCode = res ? 200 : 400,
+                message = res ? "Deleted Successfully" : "Something went wrong"
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 400,
+                message = ex.Message
+            });
+        }
+    }
+    #endregion
+
+    [RoleAuthorize("admin,projectManager")]
 	[HttpGet]
 	[Route("api/getattendancebyIdofEmp")]
 	public IHttpActionResult GetAttendanceByIdOfEmp(int projectManager, int EmpId)

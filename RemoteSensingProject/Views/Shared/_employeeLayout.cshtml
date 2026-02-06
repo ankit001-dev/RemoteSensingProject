@@ -160,18 +160,45 @@
             <div class="sidebar-body">
                 <ul class="nav">
 
-                    <li class="nav-item active">
+                    <li class="nav-item">
                         <a href="/Employee/Dashboard" class="nav-link">
                             <i class="link-icon" data-feather="box"></i>
                             <span class="link-title">Dashboard</span>
                         </a>
                     </li>
+                    @if (User.IsInRole("divisionHead"))
+                    {
+
+                        <li class="nav-item">
+                            <a href="/Employee/DivisionHead" class="nav-link">
+                                <i class="link-icon" data-feather="box"></i>
+                                <span class="link-title">Manpower Request</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/Employee/manpower" class="nav-link">
+                                <i class="link-icon" data-feather="box"></i>
+                                <span class="link-title">Manage Manpower</span>
+                            </a>
+                        </li>
+                    }
+                    @if (User.IsInRole("cmDashboard"))
+                    {
+
+                        <li class="nav-item">
+                            <a href="/Employee/CMDashboardData" class="nav-link">
+                                <i class="link-icon" data-feather="box"></i>
+                                <span class="link-title">CM Dashboard</span>
+                            </a>
+                        </li>
+                    }
                     <li class="nav-item">
                         <a href="/Employee/Assigned_Project" class="nav-link">
                             <i class="link-icon" data-feather="user"></i>
                             <span class="link-title">Assigned Projects</span>
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a href="/Employee/DivisionHead" class="nav-link">
                             <i class="link-icon" data-feather="user"></i>

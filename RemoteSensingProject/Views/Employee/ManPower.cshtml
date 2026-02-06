@@ -1,25 +1,28 @@
 ﻿
 @{
-    ViewBag.Title = "ManageManPowerRequest";
-    Layout = "~/Views/Shared/_prashasanLayout.cshtml";
-    var data = ViewData["manpowerrequestsindivision"] as List<RemoteSensingProject.Models.ProjectManager.ManpowerRequests>;
+    ViewBag.Title = "ManPower";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["manpowerrequestsindesignation"] as List<RemoteSensingProject.Models.ProjectManager.ManpowerRequests>;
 }
+
+
 
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item active"><a href="/">Manpower request in division</a></li>
+        <li class="breadcrumb-item active"><a href="/">Manpower added by prashasan</a></li>
     </ol>
 </nav>
 <div class="search-box p-4 bg-white rounded mb-3 mx-3 box-shadow">
     <div class="row align-items-center">
         <div class="col-lg-3">
-            <h5>Division</h5>
+            <h5>Designation</h5>
         </div>
         <div class="col-lg-9 col-md-9">
-            <input type="search" placeholder="Search by division name" id="searchByDivisionName" class="form-control">
+            <input type="search" placeholder="Search by designation name" id="searchByDesignationName" class="form-control">
         </div>
     </div>
 </div>
+
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
@@ -29,10 +32,9 @@
                         <thead>
                             <tr>
                                 <th class="text-center">Sr. No.</th>
-                                <th>Division</th>
-                                <th>Manpower Requests</th>
-                                <th>Added</th>
-                                <th>Remaining</th>
+                                <th>Designation</th>
+                                <th>Total Manpower</th>
+                                <th>Manpower Request</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,9 +46,8 @@
                                     <tr>
                                         <td class="text-start">@count</td>
                                         <td>@item.divisionName</td>
-                                        <td><a href="/prashasan/addManpower?id=@item.id" data-title="show designation">@item.manpowerrequests</a></td>
                                         <td>@item.manpoweradded</td>
-                                        <td>@item.manpowerremaining</td>                                        
+                                        <td><a href="/employee/ManageManpower?id=@item.id" data-title="View Details">@item.manpowerrequests</a></td>
                                     </tr>
 
                                     count++;
@@ -62,9 +63,8 @@
     </div>
 </div>
 
-
 <script>
-    $('#searchByDivisionName').on('keyup', function () {
+    $('#searchByDesignationName').on('keyup', function () {
         let value = $(this).val().trim();
         const url = new URL(window.location.href);
         url.searchParams.set("searchTerm", value);
@@ -73,20 +73,19 @@
 
         clearTimeout(window.searchTimer);
         window.searchTimer = setTimeout(() => {
-            showLoader(); // 👈 Add here
+            showLoader(); // Add here
             window.location.href = url.toString();
         }, 500);
     });
 
     $(document).ready(function () {
-        $('#outsourceId').select2();
         const urlParams = new URLSearchParams(window.location.search);
         const searchTerm = urlParams.get("searchTerm");
 
         if (searchTerm !== null) {
-            $('#searchByDivisionName')
+            $('#searchByDesignationName')
                 .val(searchTerm)   // value restore
                 .focus();          // focus on input
         }
-    });   
+    });
 </script>

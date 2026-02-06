@@ -2,10 +2,9 @@
 @{
     ViewBag.Title = "HiringRequest";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
-    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.Admin.main.HiringVehicle1>;
+    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
     int i = 1;
 }
@@ -34,21 +33,6 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-4">
-                        <select id="Filter1" class="form-select form-select-sm">
-                            <option selected value="">Filter By Project Manager</option>
-                            @if (projManager != null)
-                            {
-                                foreach (var proman in projManager)
-                                {
-                                    if (proman.EmployeeRole == "projectManager")
-                                    {
-                                        <option value="@proman.Id">@proman.EmployeeName</option>
-                                    }
-                                }
-                            }
-                        </select>
-                    </div>
-                    <div class="col-sm-4">
                         <select id="projectFilter" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
                             @if (projects != null)
@@ -74,7 +58,6 @@
                         <thead>
                             <tr>
                                 <th>Sr. No.</th>
-                                <th>Project Manager</th>
                                 <th>Project Code</th>
                                 <th>Project Name</th>
                                 <th>Head Name</th>
@@ -94,13 +77,12 @@
                                 {
                                     <tr>
                                         <td>@i</td>
+                                        <td>@item.projectCode</td>
                                         <td>
                                             <a href="#" data-title="View Details">
-                                                <span class="action" data-id="@item.id">@item.projectManager</span>
+                                                <span class="action" data-id="@item.id">@item.projectName</span>
                                             </a>
                                         </td>
-                                        <td>@item.projectCode</td>
-                                        <td>@item.projectName</td>
                                         <td>@item.headName</td>
                                         <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
                                         <td>@Convert.ToDateTime(item.dateTo).ToString("dd-MMM-yyyy")</td>
@@ -108,15 +90,7 @@
                                         <td>@item.purposeOfVisit</td>
                                         <td>@item.totalDaysNight</td>
                                         <td>@item.amount</td>
-                                        <td data-id="id_@item.id" class="text-center">
-                                            <a href="#" class="changeStatus" data-value="true" data-title="Approve" data-id="@item.id">
-                                                <i class="fa-solid fa-check text-success"></i>
-                                            </a>  &nbsp; | &nbsp;
-                                            <a href="#" class="changeStatus" data-value="false" data-title="Reject" data-id="@item.id">
-                                                <i class="fa-solid fa-xmark text-danger"></i>
-                                            </a>
-
-                                        </td>
+                                        <td><a class="edit-btn" data-id="@item.id"><i class="fa-solid fa-pencil"></i></a></td>
                                     </tr>
                                     i++;
                                 }
@@ -224,18 +198,6 @@
 </div>
 
 <script>
-    ////Filter
-    //$("#Filter1").on("change", function () {
-    //    let filter = $(this).val();
-    //    console.log(filter)
-    //    let table = $("#dataTableExample").DataTable()
-    //    table.column(1).search(filter).draw()
-    //})
-    //$("#Filter2").on("change", function () {
-    //    let filter = $(this).val();
-    //    let table = $("#dataTableExample").DataTable()
-    //    table.column(2).search(filter).draw()
-    //})
     $(document).ready(function () {
         $("#printBtn").click(function () {
 
@@ -306,151 +268,73 @@
         })
     });
 
-    $(document).ready(function () {
-        $(".action").on("click", function () {
-            Swal.fire({
-                title: "Please Wait!",
-                text: "Processing Your Request.",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                didOpen: () => { Swal.showLoading(); }
-            });
-            let id = $(this).attr("data-id")
-            $.ajax({
-                url: '/api/getHiringList',  //In Project Manager Controller
-                type: 'get',
-                data: { id: id },
-                success: function (res) {
-                    console.log(res.data)
-                    $("#nameProject").text(res.data[0].projectName)
-                    $("#from").text(convertToDate(res.data[0].dateFrom))
-                    $("#to").text(convertToDate(res.data[0].dateTo))
-                    $("#proposed").text(res.data[0].proposedPlace)
-                    $("#purpose").text(res.data[0].purposeOfVisit)
-                    $("#totalNo").text(res.data[0].totalDaysNight)
-                    $("#totalArea").text(res.data[0].totalPlainHills)
-                    $("#taxi1").text(res.data[0].taxi)
-                    $("#book").text(res.data[0].BookAgainstCentre)
-                    $("#availability").text(res.data[0].amount)
-                    $("#note1").text(res.data[0].note)
-                    $("#staticBackdrop").modal("show")
-                    Swal.close();
-                },
-                error: function (xhr) {
+    function loadHiringDetails(id, mode) {
+        Swal.fire({
+            title: "Please Wait!",
+            text: "Processing Your Request.",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
 
+        $.ajax({
+            url: '/api/getHiringList',
+            type: 'get',
+            data: { id: id },
+            success: function (res) {
+                const data = res.data[0];
+
+                if (mode === "view") {
+                    // VIEW MODE (existing logic)
+                    $("#nameProject").text(data.projectName);
+                    $("#from").text(convertToDate(data.dateFrom));
+                    $("#to").text(convertToDate(data.dateTo));
+                    $("#proposed").text(data.proposedPlace);
+                    $("#purpose").text(data.purposeOfVisit);
+                    $("#totalNo").text(data.totalDaysNight);
+                    $("#totalArea").text(data.totalPlainHills);
+                    $("#taxi1").text(data.taxi);
+                    $("#book").text(data.BookAgainstCentre);
+                    $("#availability").text(data.amount);
+                    $("#note1").text(data.note);
                 }
-            })
-        })
-    })
 
+                if (mode === "edit") {
+                    // EDIT MODE (example inputs)
+                    $("#editProjectName").val(data.projectName);
+                    $("#editFrom").val(data.dateFrom.split('T')[0]);
+                    $("#editTo").val(data.dateTo.split('T')[0]);
+                    $("#editProposed").val(data.proposedPlace);
+                    $("#editPurpose").val(data.purposeOfVisit);
+                    $("#editTotalDays").val(data.totalDaysNight);
+                    $("#editTotalArea").val(data.totalPlainHills);
+                    $("#editTaxi").val(data.taxi);
+                    $("#editBook").val(data.BookAgainstCentre);
+                    $("#editAmount").val(data.amount);
+                    $("#editNote").val(data.note);
+                }
+
+                $("#staticBackdrop").modal("show");
+                Swal.close();
+            },
+            error: function () {
+                Swal.fire("Error", "Unable to fetch data", "error");
+            }
+        });
+    }
 
     function convertToDate(timestamp) {
         const date = new Date(timestamp);
         return date.toLocaleDateString();
     }
-
+    $(document).on("click", ".action", function () {
+        const id = $(this).data("id");
+        loadHiringDetails(id, "view");
+    });
 </script>
 
 <script>
-    $(document).ready(function () {
-        function getCookie(name) {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var c = cookies[i].trim();
-                if (c.indexOf(name + "=") == 0) {
-                    return c.substring(name.length + 1);
-                }
-            }
-            return null;
-        }
-        $(".changeStatus").on("click", async function (e) {
-            e.preventDefault();
-            var lat = getCookie("latitude");
-            var lng = getCookie("longitude");
-            let status = $(this).data("value");
-            let id = $(this).data("id")
-            let remark = "";
-
-            
-
-            if (!status) {
-                Swal.close();
-
-
-                const { value: text, isConfirmed } = await Swal.fire({
-                    input: "text",
-                    inputLabel: "Remark",
-                    inputPlaceholder: "Type your remark here...",
-                    inputAttributes: {
-                        "aria-label": "Type your remark here",
-                        "autocomplete": "off"
-                    },
-                    showCancelButton: true,
-                    allowOutsideClick: false,
-                    allowEscapeKey: false
-                });
-                if (isConfirmed && text) {
-                    remark = text;
-                    Swal.fire({
-                        title: 'Please wait !',
-                        allowOutsideClick: false,
-                        allowEscapeKey: false,
-                        text: 'Your request under process',
-                        didOpen: () => { Swal.showLoading(); }
-                    });
-                }
-                else if (!isConfirmed) {
-                    return
-                }
-            }
-
-            $.ajax({
-                url: '/admin/HiringRequest',
-                type: 'post',
-                data: { status: status, id: id, remark: remark, latitude: lat, longitude: lng },
-                success: function (res) {
-                    if (res.status) {
-                        Swal.fire({
-                            title: 'Success',
-                            text: res.message,
-                            icon: 'success',
-                            didClose: () => { location.reload() }
-                        })
-                    }
-                    else {
-                        Swal.fire({
-                            title: 'Warning',
-                            text: res.message,
-                            icon: 'warning'
-                        })
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        title: 'error',
-                        text: 'Server busy Please try after sometime.',
-                        icon: 'error'
-                    });
-                }
-            });
-        });
-    });
-    // Project Manager Filter
-    $("#Filter1").on("change", function () {
-        const url = new URL(window.location.href);
-        const manager = $(this).val();
-
-        if (manager) url.searchParams.set("managerFilter", manager);
-        else url.searchParams.delete("managerFilter");
-
-        const project = $("#projectFilter").val();
-        if (project) url.searchParams.set("projectFilter", project);
-        else url.searchParams.delete("projectFilter");
-
-        showLoader(); // optional
-        window.location.href = url.toString();
-    });
-
+    
     // Project Filter
     $("#projectFilter").on("change", function () {
         const url = new URL(window.location.href);
@@ -459,10 +343,6 @@
         if (project) url.searchParams.set("projectFilter", project);
         else url.searchParams.delete("projectFilter");
 
-        const manager = $("#Filter1").val();
-        if (manager) url.searchParams.set("managerFilter", manager);
-        else url.searchParams.delete("managerFilter");
-
         showLoader(); // optional
         window.location.href = url.toString();
     });
@@ -470,10 +350,8 @@
     // Restore selected values on load
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
-        const manager = urlParams.get("managerFilter");
         const project = urlParams.get("projectFilter");
 
-        if (manager) $("#Filter1").val(manager);
         if (project) $("#projectFilter").val(project);
     });
 </script>

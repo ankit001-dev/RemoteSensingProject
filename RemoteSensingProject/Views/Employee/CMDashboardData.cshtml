@@ -1,0 +1,308 @@
+﻿
+@{
+    ViewBag.Title = "CMDashboardData";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["ProjectList"] as List<RemoteSensingProject.Models.Admin.main.CMDashboardData>;
+}
+
+<style>
+    .modal-body .sliderimages img {
+        width: 20% !important;
+        height: 20%;
+        border-radius: 10px;
+    }
+
+    svg {
+        height: 20px;
+    }
+
+    .link-icon {
+        height: 16px;
+    }
+</style>
+
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">/CM Dashboard</li>
+    </ol>
+    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#createTaskModal"><i class="link-icon" data-feather="plus"></i> Add Project</button>
+</nav>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <div class="row align-items-center">
+        <div class="col">
+            <h5>Project List</h5>
+        </div>
+    </div>
+</div>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin p-0 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th>Sr. No.</th>
+                                <th>Title</th>
+                                <th>Start Year</th>
+                                <th>End Date</th>
+                                <th>Budget</th>
+                                <th>Remark</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (data != null && data.Count > 0)
+                            {
+                                int i = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.ProjectTitile</td>
+                                        <td>@item.StartYear</td>
+                                        <td>@item.EndDate</td>
+                                        <td>@item.Budget</td>
+                                        <td>@item.Remark</td>
+                                        <td>
+                                            <a href="#" data-id="@item.Id" class="editProject"><i class="link-icon" data-feather="edit"></i></a>
+                                            <a href="#" data-id="@item.Id" class="deleteProject"><i class="link-icon text-danger" data-feather="trash"></i></a>
+                                        </td>
+                                    </tr>
+
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel"><span class="actionType">Add</span> Project</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="submitProjectForm">
+                    <input type="hidden" id="projectId" name="Id" />
+                    <div class="form-group">
+                        <label for="employeeName" class="form-label">Title</label>
+                        <input type="text" class="form-control" name="ProjectTitile" required autocomplete="off" placeholder="Enter Employee Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="employeemobno" class="form-label">Start Year</label>
+                        <input type="number" class="form-control" name="StartYear" required autocomplete="off" placeholder="Enter project start year..." />
+                    </div>
+                    <div class="form-group">
+                        <label for="employeemobno" class="form-label">End Date</label>
+                        <input type="date" class="form-control" name="EndDate" required autocomplete="off" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employeeEmail" class="form-label">Budget</label>
+                        <input type="text" name="Budget" class="form-control" required autocomplete="off" placeholder="Enter project budget...." />
+                    </div>
+                    <div class="form-group">
+                        <label for="employeeEmail" class="form-label">Remark</label>
+                        <input type="text" name="Remark" class="form-control" required autocomplete="off" placeholder="Enter project remark...." />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="employeeEmail" class="form-label">Project Status</label>
+                        <select class="form-control" name="projectStatus" required>
+                            <option value="">Select Project Status</option>
+                            <option value="Ongoing">Ongoing</option>
+                            <option value="Complete">Complete</option>
+                        </select>
+                    </div>
+
+
+
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewProjectModal" tabindex="-1" aria-labelledby="viewProjectModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <h1 class="modal-title fs-5 text-success" id="exampleModalLabel">Task Detail</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewProjectModalBody">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
+
+<script>
+    $("#submitProjectForm").on("submit", function (e) {
+        e.preventDefault();
+        let data = $(this).serialize();
+
+        $.ajax({
+            url: "/employee/SubmitDashboardData",
+            method: "post",
+            data: data,
+            success: function (res) {
+                Swal.fire({
+                    title: res.status ? "Successfully !" : "Sorry !",
+                    text: res.message,
+                    icon: res.status ? "success" : "warning",
+                    didClose: () => {
+                        if (res.status) {
+                            location.reload();
+                        }
+                    }
+                })
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Error",
+                    text: "Internal server issue found.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload();
+                    }
+                })
+            }
+        })
+    })
+
+
+    $(".deleteProject").on("click", function () {
+        let id = $(this).data("id");
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+        });
+        swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                swalWithBootstrapButtons.fire({
+                    title: "Please wait !",
+                    text: "Processing your request...",
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        swalWithBootstrapButtons.showLoading();
+                    }
+                });
+
+                $.ajax({
+                    url: `/employee/DeleteDashboardData?projectId=${id}`,
+                    type: "get",
+                    success: function (res) {
+                        swalWithBootstrapButtons.fire({
+                            title: res.status ? "Deleted!" : "Sorry !",
+                            text: res.message,
+                            icon: res.status ? "success" : "warning",
+                            didClose: () => {
+                                if (res.status) {
+
+                                location.reload();
+                                }
+                            }
+                        })
+                    },
+                    error: function () {
+                        swalWithBootstrapButtons.fire({
+                            title: "Deleted!" ,
+                            text: "Internal server issue found !",
+                            icon: "error",
+                            didClose: () => {
+                               location.reload();
+                            }
+                        })
+                    }
+                })
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire({
+                    title: "Cancelled",
+                    text: "Your selected project is safe :)",
+                    icon: "info"
+                });
+            }
+        });
+    });
+
+    $(".editProject").on("click", function () {
+        let id = $(this).data("id");
+        Swal.fire({
+            title: "Please wait !",
+            text: "Fetching data...",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: `/employee/GetCmPRojectById?projectId=${id}`,
+            type: "get",
+            success: function (res) {
+                Swal.close();
+                $("#projectId").val(id);
+                $("input[name='ProjectTitile']").val(res.data.ProjectTitile);
+                $("input[name='StartYear']").val(res.data.StartYear);
+                $("input[name='EndDate']").val(parseMvcDate(res.data.EndDate));
+                $("input[name='Budget']").val(res.data.Budget);
+                $("input[name='Remark']").val(res.data.Remark);
+                $("select[name='projectStatus']").val(res.data.projectStatus);
+
+                $("#createTaskModal").modal('show')
+                console.log(res.data)
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Sorry !",
+                    text: "Internal server issue found while fetching data ...",
+                    icon: "error",
+                    didCloseL:() =>{
+                        location.reload()
+                    }
+                })
+            }
+        })
+    })
+
+    function parseMvcDate(mvcDate) {
+        if (!mvcDate) return "";
+
+        var timestamp = parseInt(mvcDate.replace(/\/Date\((\d+)\)\//, "$1"));
+        var date = new Date(timestamp);
+
+        return date.toISOString().split("T")[0]; // yyyy-MM-dd
+    }
+</script>

@@ -2,45 +2,36 @@
 @{
     ViewBag.Title = "TourProposalRequest";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
-    var data = ViewData["tourproposal"] as List<RemoteSensingProject.Models.Accounts.main.tourProposal>;
-    var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
+    var data = ViewData["tourproposal"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
+    var dta = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
 }
 
 <link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
 <style>
-    .modal-dialog{
-        margin-top:5% !important;
+    #reimbursementForm {
+        display: none;
     }
 </style>
+
+<nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Tour Proposal</li>
+    </ol>
+    <button class="btn btn-primary" id="openModal">Add Tour Proposal</button>
+</nav>
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-4">
-                        <select id="Filter1" class="form-select form-select-sm">
-                            <option selected value="">Filter By Project Manager</option>
-                            @if (projManager != null)
-                            {
-                                foreach (var proman in projManager)
-                                {
-                                    if (proman.EmployeeRole == "projectManager")
-                                    {
-                                        <option value="@proman.Id">@proman.EmployeeName</option>
-                                    }
-                                }
-                            }
-                        </select>
-                    </div>
-                    <div class="col-sm-4">
                         <select id="Filter2" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
-                            @if (projects != null)
+                            @if (dta != null)
                             {
-                                foreach (var proj in projects)
+                                foreach (var item in dta)
                                 {
-                                    <option value="@proj.Id">@proj.ProjectTitle</option>
+                                    <option value="@item.Id">@item.ProjectTitle</option>
                                 }
                             }
                         </select>
@@ -50,81 +41,108 @@
         </div>
     </div>
 </div>
-<div class="row mx-0">
-    <div class="col-md-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table id="dataTableExample" class="table">
-                        <thead>
-                            <tr>
-                                <th class="text-center">S.N.</th>
-                                <th>Project Manager</th>
-                                <th>Project Code</th>
-                                <th>Project</th>
-                                <th>Purpose</th>
-                                <th>Date of Depart</th>
-                                <th>Place Visit</th>
-                                <th>Period From</th>
-                                <th>Period To</th>
-                                <th>Date of return</th>
-                                <th>Remark</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (data != null)
-                                        {
-                                            int i = 1;
-                                            foreach (var item in data)
-                                            {
-                                    <tr>
-                                        <td>@i</td>
-                                        <td data-id="@item.id"><a class="action" data-title="View Details" href="#">@item.projectManager</a></td>
-                                        <td>@item.projectCode</td>
-                                        <td>@item.projectName</td>
-                                        <td>@item.purpose</td>
-                                        <td>@item.dateOfDept</td>
-                                        <td>@item.place</td>
-                                        <td>@item.periodFrom</td>
-                                        <td>@item.periodTo</td>
-                                        <td>@item.returnDate</td>
-                                        <td>
-                                            @if (item.adminappr && !item.newRequest && string.IsNullOrEmpty(item.remark))
-                                            {<span>Approved</span> }
-                                            else if (item.newRequest && !item.adminappr)
-                                            { <span>Pending</span>}
-                                            else
-                                            { <span>@item.remark</span>}
-                                        </td>
-                                        <td>
-                                            @{
-                                                if (item.newRequest == true && item.adminappr == false)
-                                                { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                                else if (item.newRequest == false && item.adminappr == true)
-                                                { <span id="status" class="badge bg-success">Approved</span> }
-                                                else if (item.newRequest == false && item.adminappr == false)
-                                                { <span id="status" class="badge bg-danger">Rejected</span> }
-                                            }
-                                        </td>
-                                        @*<td data-id="@item.id" class="text-center"><i class="fa-solid fa-eye action"></i> </td>*@
-                                    </tr>
-                                                                    i++;
-                                                                }
-                                                            }
-                        </tbody>
-                    </table>
-                </div>
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Proposal Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="tourForm">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="project" class="form-label">Project</label>
+                            <select class="form-select form-select-sm" id="project" name="projectId">
+                                <option value="">select project</option>
+                                @if (dta != null)
+                                {
+                                    foreach (var item in dta)
+                                    {
+                                        <option value="@item.Id">@item.ProjectTitle</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="dateOfDept" class="form-label">Date of Departure</label>
+                            <input type="date" class="form-control form-control-sm" id="dateOfDept" name="dateOfDept" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="place" class="form-label">Place</label>
+                            <input type="text" class="form-control form-control-sm" id="place" name="place" placeholder="Enter Place" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="periodFrom" class="form-label">Period: From</label>
+                            <input type="date" class="form-control form-control-sm" id="periodFrom" name="periodFrom" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="periodTo" class="form-label">Period: To</label>
+                            <input type="date" class="form-control form-control-sm" id="periodTo" name="periodTo" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="returnDate" class="form-label">Date of return</label>
+                            <input type="date" class="form-control form-control-sm" id="returnDate" name="returnDate" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="purpose" class="form-label">Purpose</label>
+                            <textarea class="form-control form-control-sm" id="purpose" name="purpose" placeholder="Write Purpose"></textarea>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">submit</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
+<div class="row mx-0">
+    <div class="col-sm-12">
+        <table class="table-bordered table-striped" id="dataTableExample">
+            <thead>
+                <tr>
+                    <th>Sr. No.</th>
+                    <th>Project Code</th>
+                    <th>Project Name</th>
+                    <th>Purpose</th>
+                    <th>Date of Depart</th>
+                    <th>Place Visit</th>
+                    <th>Period From</th>
+                    <th>Period To</th>
+                    <th>Date of return</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (data != null)
+                {
+                    int i = 1;
+                    foreach (var item in data)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.projectCode</td>
+                            <td data-id="@item.id"><a data-title="View Details" class="action" href="#">@item.projectName</a></td>
+                            <td>@item.purpose</td>
+                            <td>@item.dateOfDept</td>
+                            <td>@item.place</td>
+                            <td>@item.periodFrom</td>
+                            <td>@item.periodTo</td>
+                            <td>@item.returnDate</td>
+                            <td><a class="edit-btn" data-id="@item.id"><i class="fa-solid fa-pencil"></i></a></td>
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<!--Modal-->
-
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Proposal Request </h1>
@@ -239,7 +257,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="modal-footer">
                 <button class="btn btn-secondary py-1 rounded-0" id="printBtn">Download</button>
             </div>
@@ -247,61 +264,10 @@
     </div>
 </div>
 
-
 <script>
     $(document).ready(function () {
 
         //Filter
-        $("#Filter2").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#dataTableExample").DataTable()
-            table.column(3).search(filter).draw()
-        })
-        $("#Filter1").on("change", function () {
-            let filter = $(this).val();
-            let table = $("#dataTableExample").DataTable()
-            table.column(1).search(filter).draw()
-        })
-
-        $(".action").on("click", function () {
-            Swal.fire({
-                title: "Please Wait!",
-                text: "Processing Your Request.",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                didOpen: () => { Swal.showLoading(); }
-            });
-            let id = $(this).parent().attr("data-id")
-            $.ajax({
-                url: '/api/getTourById',
-                type: 'get',
-                data: { id: id },
-                success: function (res) {
-                    console.log(res.data)
-                    $("#projectMan").text(res.data[0].projectManager)
-                    $("#project").text(res.data[0].projectName)
-                    $("#i1").text(res.data[0].purpose)
-                    $("#i2").text(res.data[0].dateOfDept)
-                    $("#i3").text(res.data[0].place)
-                    $("#i4").text(res.data[0].periodFrom)
-                    $("#i5").text(res.data[0].periodTo)
-                    $("#i6").text(res.data[0].returnDate)
-                    let status = "";
-                    if (res.data[0].newRequest == true && res.data[0].adminappr == false) { status = "Pending" }
-                    else if (res.data[0].newRequest == false && res.data[0].adminappr == false) { status = "Rejected" }
-                    else if (res.data[0].newRequest == false && res.data[0].adminappr == true) { status = "Approved" }
-                    $("#statuss").text(status);
-                    $("#staticBackdrop").modal("show")
-                    Swal.close();
-                },
-                error: function (xhr) {
-
-                }
-            })
-        })
-
-
-
         $("#printBtn").click(function () {
 
             Swal.fire({
@@ -370,46 +336,170 @@
 
         })
     });
+</script>
 
-    // Project Manager Filter
-    $("#Filter1").on("change", function () {
+<script>
+    $('#openModal').on('click', function () {
+        $('#submitBtn').text('Submit');
+        $('#tourForm')[0].reset();
+        $("#staticBackdrop").modal("show");
+    })
+    function getTourById(id) {
+        return $.ajax({
+            url: '/api/getTourById',
+            type: 'get',
+            data: { id: id }
+        });
+    }
+    function setViewTour(data) {
+
+        $("#projectMan").text(data.projectManager);
+        $("#project").text(data.projectName);
+
+        $("#i1").text(data.purpose);
+        $("#i2").text(data.dateOfDept);
+        $("#i3").text(data.place);
+        $("#i4").text(data.periodFrom);
+        $("#i5").text(data.periodTo);
+        $("#i6").text(data.returnDate);
+
+        $("#staticBackdrop1").modal("show");
+    }
+
+    function setEditTour(data) {
+
+        // text / date fields
+        $("#dateOfDept").val(data.dateOfDept.split('T')[0]);
+        $("#place").val(data.place);
+        $("#periodFrom").val(data.periodFrom.split('T')[0]);
+        $("#periodTo").val(data.periodTo.split('T')[0]);
+        $("#returnDate").val(data.returnDate.split('T')[0]);
+        $("#purpose").val(data.purpose);
+
+        // 🔥 project select – delay added
+        setTimeout(function () {
+            $("#project").val(data.projectId).trigger("change");
+        }, 300);
+
+        // hidden id (for update)
+        if ($("#tourId").length === 0) {
+            $("#tourForm").append(`<input type="hidden" id="tourId" name="id">`);
+        }
+        $("#tourId").val(data.id);
+        $('#submitBtn').text("Update");
+        $("#staticBackdrop").modal("show");
+    }
+
+    $(document).on("click", ".action", function (e) {
+        e.preventDefault();
+
+        const id = $(this).closest("td").data("id");
+
+        Swal.fire({
+            title: "Please Wait!",
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        getTourById(id)
+            .done(function (res) {
+                setViewTour(res.data[0]);
+                Swal.close();
+            })
+            .fail(function () {
+                Swal.fire("Error", "Unable to fetch details", "error");
+            });
+    });
+
+    $(document).on("click", ".edit-btn", function () {
+
+        const id = $(this).data("id");
+
+        Swal.fire({
+            title: "Please Wait!",
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        getTourById(id)
+            .done(function (res) {
+                setEditTour(res.data[0]);
+                Swal.close();
+            })
+            .fail(function () {
+                Swal.fire("Error", "Unable to fetch details", "error");
+            });
+    });
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#tourForm").submit(function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Please Wait',
+                text: 'Your request under process. Please wait!',
+                didOpen: () => { Swal.showLoading(); }
+            })
+            let formData = new FormData(this);
+            $.ajax({
+                url: '/accounts/Tour_proposal',
+                type: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload() }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'warning',
+                            text: res.message,
+                            icon: 'warning'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'error',
+                        text: 'Server busy Please try after sometime.',
+                        icon: 'error'
+                    })
+                }
+            })
+        })
+    });
+
+    function applyFilters() {
+        debugger
         const url = new URL(window.location.href);
-        const manager = $(this).val();
-
-        if (manager) url.searchParams.set("managerFilter", manager);
-        else url.searchParams.delete("managerFilter");
 
         const project = $("#Filter2").val();
+
+
+        // Project Filter
         if (project) url.searchParams.set("projectFilter", project);
         else url.searchParams.delete("projectFilter");
 
-        showLoader();
+        showLoader(); // Optional loader
         window.location.href = url.toString();
-    });
+    }
 
-    // Project Filter
-    $("#Filter2").on("change", function () {
-        const url = new URL(window.location.href);
-        const project = $(this).val();
+    // Attach change events
+    $("#Filter2").on("change", applyFilters);
 
-        if (project) url.searchParams.set("projectFilter", project);
-        else url.searchParams.delete("projectFilter");
-
-        const manager = $("#Filter1").val();
-        if (manager) url.searchParams.set("managerFilter", manager);
-        else url.searchParams.delete("managerFilter");
-
-        showLoader();
-        window.location.href = url.toString();
-    });
-
-    // Restore selected values on page load
     $(document).ready(function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const manager = urlParams.get("managerFilter");
-        const project = urlParams.get("projectFilter");
+        $("#Filter2").on("change", applyFilters);
 
-        if (manager) $("#Filter1").val(manager);
-        if (project) $("#Filter2").val(project);
+        // restore selected value
+        const urlParams = new URLSearchParams(window.location.search);
+        $("#Filter2").val(urlParams.get("projectFilter"));
     });
 </script>

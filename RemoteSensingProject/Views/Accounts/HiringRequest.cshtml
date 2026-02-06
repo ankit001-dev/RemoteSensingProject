@@ -1,12 +1,11 @@
 ﻿@{
     ViewBag.Title = "HiringRequest";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
-    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.Admin.main.HiringVehicle1>;
-    var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
+    var data = ViewData["hiringList"] as List<RemoteSensingProject.Models.ProjectManager.HiringVehicle>;
+    var data1 = ViewData["projectlist"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
-
 }
+
 <link href="~/assets/css/hiringVehicleStyle.css" rel="stylesheet" />
 <style>
     #reimbursementForm {
@@ -20,130 +19,164 @@
     input::placeholder {
         font-size: 12px !important;
     }
-
-    .modal-dialog {
-        margin-top: 15vh; /* You can adjust this value */
-    }
 </style>
-
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Indent For Hiring Vehicle For Field Work</li>
+    </ol>
+    <button class="btn btn-primary" id="openModal">Request For Vehicle</button>
+</nav>
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm-4">
-                        <select id="Filter1" class="form-select form-select-sm">
-                            <option selected value="">Filter By Project Manager</option>
-                            @if (projManager != null)
-                            {
-                                foreach (var proman in projManager)
-                                {
-                                    if (proman.EmployeeRole == "projectManager")
-                                    {
-                                        <option value="@proman.Id">@proman.EmployeeName</option>
-                                    }
-                                }
-                            }
-                        </select>
-                    </div>
-                    <div class="col-sm-4">
-                        <select id="Filter2" class="form-select form-select-sm">
+                        <select id="projectFilter" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
-                            @if (projects != null)
+                            @if (data1 != null)
                             {
-                                foreach (var proj in projects)
+                                foreach (var item in data1)
                                 {
-                                    <option value="@proj.Id">@proj.ProjectTitle</option>
+                                    <option value="@item.Id">@item.ProjectTitle</option>
                                 }
                             }
                         </select>
                     </div>
-                    <div class="col-sm-4">
-                        <select id="filter3" class="form-select form-select-sm">
-                            <option selected value="">Filter By Status</option>
-                            <option value="approved">Approved</option>
-                            <option value="pending">Pending</option>
-                            <option value="rejected">Rejected</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row mx-0">
-    <div class="col-sm-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table" id="dataTableExample">
-                        <thead>
-                            <tr>
-                                <th >S.N.</th>
-                                <th>Project Manager</th>
-                                <th>Project Code</th>
-                                <th>Project Name</th>
-                                <th>Head Name</th>
-                                <th>Date From</th>
-                                <th>Date To</th>
-                                <th>Proposed Place</th>
-                                <th>Purpose of Visit</th>
-                                <th>Total Days & Night</th>
-                                <th>Avaiability of fund</th>
-                                <th>Remark</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (data != null)
-                            {
-                                int i = 1;
-                                foreach (var item in data)
-                                {
-                                    <tr>
-                                        <td>@i</td>
-                                        <td data-id="@item.id"><a class="action" href="#" data-title="View Details" data-bs-target="#viewHiringVehicle" data-bs-toggle="modal">@item.projectManager</a></td>
-                                        <td>@item.projectCode</td>
-                                        <td>@item.projectName</td>
-                                        <td>@item.headName</td>
-                                        <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
-                                        <td>@Convert.ToDateTime(item.dateTo).ToString("dd-MMM-yyyy")</td>
-                                        <td>@item.proposedPlace</td>
-                                        <td>@item.purposeOfVisit</td>
-                                        <td>@item.totalDaysNight</td>
-                                        <td>@item.amount</td>
-                                        <td>
-                                            @if (item.adminappr && !item.newRequest && string.IsNullOrEmpty(item.remark))
-                                            {<span>Approved</span> }
-                                            else if (item.newRequest && !item.adminappr)
-                                            { <span>Pending</span>}
-                                            else
-                                            { <span>@item.remark</span>}
-                                        </td>
-                                        <td>
-                                            @{
-                                                if (item.newRequest == true && item.adminappr == false)
-                                                { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                                else if (item.newRequest == false && item.adminappr == true)
-                                                { <span id="status" class="badge bg-success">Approved</span> }
-                                                else if (item.newRequest == false && item.adminappr == false)
-                                                { <span id="status" class="badge bg-danger">Rejected</span> }
-                                            }
-                                        </td>
-                                    </tr>
-                                    i++;
-                                }
-                            }
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Indent For Hiring Vehicle for Field Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="createProjectForm">
+                    <input type="hidden" name="id" value="" id="hiringId" />
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="projectName" class="form-label">Name of the Project</label>
+                            <select name="projectId" class="form-select form-control-sm" id="projectName">
+                                <option selected disabled value="">Select Project</option>
+                                @if (data1 != null)
+                                {
+                                    foreach (var item in data1)
+                                    {
+                                        <option value="@item.Id">@item.ProjectTitle</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="particular" class="form-label">Date of Field Program: From</label>
+                            <input type="date" name="dateFrom" class="form-control form-control-sm" id="dateFrom">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="items" class="form-label">To</label>
+                            <input type="date" name="dateTo" class="form-control form-control-sm" id="dateTo">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="purposeOfVisit" class="form-label">Purpose of Visit</label>
+                            <input type="text" name="purposeOfVisit" class="form-control form-control-sm" id="purposeOfVisit" placeholder="Enter Purpose of Visit">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="totalDaysNight" class="form-label">Total Number of Days & Night Halt</label>
+                            <input type="text" name="totalDaysNight" class="form-control form-control-sm" id="totalDaysNight" placeholder="Total Number of Days & Night Halt">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="totalPlainHills" class="form-label">Total Area Travel in Plain & Hills</label>
+                            <input type="text" name="totalPlainHills" class="form-control form-control-sm" id="totalPlainHills" placeholder="Enter Total Area Travel in Plain & Hills">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="taxi" class="form-label">Taxi (Ambassdor/Maruti/Gypsy/Jeep/Other)</label>
+                            <input type="text" name="taxi" class="form-control form-control-sm" id="taxi" placeholder="Enter Taxi">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="BookAgainstCentre" class="form-label">Book against Centre/Project Account</label>
+                            <input type="text" name="BookAgainstCentre" class="form-control form-control-sm" id="BookAgainstCentre" placeholder="Book against Centre/Project Account">
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="availbilityOfFund" class="form-label">Availability of fund in the Project</label>
+                            <select name="headId" class="form-control form-control-sm" id="availbilityOfFund">
+                                <option value="">-Select Head-</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="availablefund" class="form-label">Availability of fund</label>
+                            <input type="number" readonly name="amount" id="availablefund" class="form-control form-control-sm" placeholder="Amount" />
+                        </div>
+                        <div class="col-lg-8 mb-3">
+                            <label for="proposedPlace" class="form-label">Proposed Place/Places of Field Programme</label>
+                            <textarea name="proposedPlace" class="form-control form-control-sm" placeholder="Write here..." id="proposedPlace"></textarea>
+                        </div>
+                        <div class="col-lg-12 mb-3">
+                            <label for="note" class="form-label">Note: </label>
+                            <textarea name="note" class="form-control form-control-sm" id="note" placeholder="Enter Note..."></textarea>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mx-0">
+    <div class="col-sm-12">
+        <table class="table-bordered table-striped" id="dataTableExample">
+            <thead>
+                <tr>
+                    <th>Sr. No.</th>
+                    <th>ProjectCode</th>
+                    <th>Project Name</th>
+                    <th>Head Name</th>
+                    <th>Date From</th>
+                    <th>Date To</th>
+                    <th>Proposed Place</th>
+                    <th>Purpose of Visit</th>
+                    <th>Total Days & Night</th>
+                    <th>Avaiability of fund</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (data != null)
+                {
+                    int i = 1;
+                    foreach (var item in data)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.projectCode</td>
+                            <td class="text-center" data-id="@item.id"><a data-title="View Details" class="action" href="#">@item.projectName</a></td>
+                            <td>@item.headName</td>
+                            <td>@Convert.ToDateTime(item.dateFrom).ToString("dd-MMM-yyyy")</td>
+                            <td>@Convert.ToDateTime(item.dateTo).ToString("dd-MMM-yyyy")</td>
+                            <td>@item.proposedPlace</td>
+                            <td>@item.purposeOfVisit</td>
+                            <td>@item.totalDaysNight</td>
+                            <td>@item.amount</td>
+                            <td><a class="edit-btn" data-id="@item.id"><i class="fa-solid fa-pencil"></i></a></td>
+                        </tr>
+                        i++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
 <div class="modal fade" id="viewHiringVehicle" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Indent For Hiring Vehicle for Field Form </h1>
@@ -235,46 +268,50 @@
 </div>
 
 <script>
-
     $(document).ready(function () {
-        $("#printBtn").click(function () {
+
+        $('#openModal').on('click', function () {
+            $('#submitBtn').text('Submit');
+            $('#hiringId').val(0);
+            $("#staticBackdrop").modal("show");
+        })
+
+        /* =========================
+           PRINT TO PDF
+        ========================== */
+        $("#printBtn").on("click", function () {
 
             Swal.fire({
                 title: "Please wait !",
                 text: "Processing your request....",
                 allowOutsideClick: false,
                 allowEscapeKey: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            })
+                didOpen: () => { Swal.showLoading(); }
+            });
+
             var formContent = document.getElementById("formToPrint").outerHTML;
 
-            var style = `<link href="${window.location.origin}/assets/css/hiringVehicleStyle.css" rel="stylesheet" type="text/css"/>
-<link href="${window.location.origin}/assets/css/style.css" rel="stylesheet" type="text/css"/>
-`;
+            var style = `
+                <link href="${window.location.origin}/assets/css/hiringVehicleStyle.css" rel="stylesheet" type="text/css"/>
+                <link href="${window.location.origin}/assets/css/style.css" rel="stylesheet" type="text/css"/>
+            `;
+
             let htmlContentToPdf = `<html><head>${style}</head><body><div>${formContent}</div></body></html>`;
 
             fetch("/login/ExportHtmlToPdf", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ HtmlText: htmlContentToPdf })
             })
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Failed to generate PDF");
-                    }
+                    if (!response.ok) throw new Error("Failed to generate PDF");
 
                     const contentDisposition = response.headers.get("Content-Disposition");
                     let fileName = "Generated.pdf";
 
                     if (contentDisposition) {
                         const match = contentDisposition.match(/filename="?([^"]+)"?/);
-                        if (match && match[1]) {
-                            fileName = match[1];
-                        }
+                        if (match && match[1]) fileName = match[1];
                     }
 
                     return response.blob().then(blob => ({ blob, fileName }));
@@ -284,7 +321,8 @@
                         title: "Successfully !",
                         text: "Reinbursement pdf generated successfully.",
                         icon: "success"
-                    })
+                    });
+
                     const link = document.createElement("a");
                     const url = URL.createObjectURL(blob);
                     link.href = url;
@@ -299,82 +337,223 @@
                         title: "Sorry !",
                         text: "Some issue occured while processing your request.",
                         icon: "error"
-                    })
-                    console.error("Error:", error)
+                    });
+                    console.error("Error:", error);
                 });
+        });
 
-        })
-    });
-
-    $(document).ready(function () {
-        $(".action").on("click", function () {
-            let id = $(this).parent().attr("data-id")
-            $.ajax({
+        function getHiringVehicleById(id) {
+            return $.ajax({
                 url: '/api/getHiringList',
                 type: 'get',
-                data: { id: id },
+                data: { id: id }
+            });
+        }
+
+        function setViewHiringVehicle(data) {
+            $("#nameProject").text(data.projectName);
+            $("#from").text(convertToDate(data.dateFrom));
+            $("#to").text(convertToDate(data.dateTo));
+            $("#proposed").text(data.proposedPlace);
+            $("#purpose").text(data.purposeOfVisit);
+            $("#totalNo").text(data.totalDaysNight);
+            $("#totalArea").text(data.totalPlainHills);
+            $("#taxi1").text(data.taxi);
+            $("#book").text(data.BookAgainstCentre);
+            $("#availability").text(data.amount);
+            $("#note1").text(data.note);
+
+            $("#viewHiringVehicle").modal("show");
+        }
+
+        function setEditHiringVehicle(data) {
+            console.log(data);
+            $("#projectName").val(data.projectId).trigger("change");
+            setTimeout(function () {
+                $('#availbilityOfFund').val(data.headId).trigger('change');
+            }, 300);
+            $("#dateFrom").val(data.dateFrom.split('T')[0]);
+            $("#dateTo").val(data.dateTo.split('T')[0]);
+            $("#purposeOfVisit").val(data.purposeOfVisit);
+            $("#totalDaysNight").val(data.totalDaysNight);
+            $("#totalPlainHills").val(data.totalPlainHills);
+            $("#taxi").val(data.taxi);
+            $("#BookAgainstCentre").val(data.BookAgainstCentre);
+            $("#availablefund").val(data.amount);
+            $("#proposedPlace").val(data.proposedPlace);
+            $("#note").val(data.note);
+            $('#hiringId').val(data.id);
+
+            $('#submitBtn').text('');
+            $('#submitBtn').text('Update');
+
+            $("#staticBackdrop").modal("show");
+        }
+
+        $(document).on("click", ".action", function (e) {
+            e.preventDefault();
+
+            const id = $(this).closest("td").data("id");
+
+            Swal.fire({
+                title: "Please Wait!",
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            getHiringVehicleById(id)
+                .done(function (res) {
+                    setViewHiringVehicle(res.data[0]);
+                    Swal.close();
+                })
+                .fail(function () {
+                    Swal.fire("Error", "Unable to fetch details", "error");
+                });
+        });
+
+        $(document).on("click", ".edit-btn", function () {
+
+            const id = $(this).data("id");
+
+            Swal.fire({
+                title: "Please Wait!",
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            getHiringVehicleById(id)
+                .done(function (res) {
+                    setEditHiringVehicle(res.data[0]);
+                    Swal.close();
+                })
+                .fail(function () {
+                    Swal.fire("Error", "Unable to fetch details", "error");
+                });
+        });
+
+        /* =========================
+           FUND AVAILABILITY CHANGE
+        ========================== */
+        $("#availbilityOfFund").on("change", function () {
+            let selectedElem = $(this).find("option:selected");
+            $("#availablefund").val(selectedElem.attr("data-availabelFund"));
+        });
+
+
+        /* =========================
+           PROJECT BUDGET LOAD
+        ========================== */
+        $(document).on("change", "#projectName", function () {
+            let prId = $(this).val();
+
+            $.ajax({
+                url: '/api/GetProjectBudgets',
+                type: 'get',
+                data: { projectId: prId },
                 success: function (res) {
-                    console.log(res.data)
-                    $("#nameProject").text(res.data[0].projectName)
-                    $("#from").text(convertToDate(res.data[0].dateFrom))
-                    $("#to").text(convertToDate(res.data[0].dateTo))
-                    $("#proposed").text(res.data[0].proposedPlace)
-                    $("#purpose").text(res.data[0].purposeOfVisit)
-                    $("#totalNo").text(res.data[0].totalDaysNight)
-                    $("#totalArea").text(res.data[0].totalPlainHills)
-                    $("#taxi1").text(res.data[0].taxi)
-                    $("#book").text(res.data[0].BookAgainstCentre)
-                    $("#availability").text(res.data[0].amount)
-                    $("#note1").text(res.data[0].note)
+                    $("#availbilityOfFund").empty();
+
+                    if (res.status) {
+                        let option = `<option selected value="">Select Head</option>`;
+                        $.each(res.data, function (i, d) {
+                            option += `<option value="${d.Id}" data-availabelFund="${d.ProjectAmount - d.ApproveAmount}">
+                                            ${d.ProjectHeads}
+                                       </option>`;
+                        });
+                        $("#availbilityOfFund").append(option);
+                    } else {
+                        Swal.fire({
+                            title: "Sorry !",
+                            text: "This project haven't any budget heads, First updat the project.",
+                            icon: "info"
+                        });
+                    }
                 },
-                error: function (xhr) {
-
+                error: function () {
+                    Swal.fire({
+                        title: "Server issue !",
+                        text: "Server is busy. Please try after sometime.",
+                        icon: "error"
+                    });
                 }
-            })
-        })
-    })
+            });
+        });
 
 
+        /* =========================
+           CREATE PROJECT FORM
+        ========================== */
+        $("#createProjectForm").on("submit", function (e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: 'Please Wait!',
+                text: 'Your request under process.',
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: '/accounts/Hiring_Vehicle',
+                type: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload(true); }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'warning',
+                            text: res.message,
+                            icon: 'warning'
+                        });
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Server Busy.Try after sometime!',
+                        icon: 'error'
+                    });
+                }
+            });
+        });
+
+
+        /* =========================
+           PROJECT FILTER
+        ========================== */
+        $("#projectFilter").on("change", function () {
+            const url = new URL(window.location.href);
+            const project = $(this).val();
+
+            if (project) url.searchParams.set("projectFilter", project);
+            else url.searchParams.delete("projectFilter");
+
+            showLoader(); // optional
+            window.location.href = url.toString();
+        });
+
+        // Restore filter on page load
+        const urlParams = new URLSearchParams(window.location.search);
+        const project = urlParams.get("projectFilter");
+        if (project) $("#projectFilter").val(project);
+
+    });
+
+
+    /* =========================
+       COMMON FUNCTION
+    ========================== */
     function convertToDate(timestamp) {
         const date = new Date(timestamp);
         return date.toLocaleDateString();
     }
-
-    function applyFilters() {
-        const url = new URL(window.location.href);
-
-        const manager = $("#Filter1").val();
-        const project = $("#Filter2").val();
-        const status = $("#Filter3").val();
-
-        // Project Manager Filter
-        if (manager) url.searchParams.set("managerFilter", manager);
-        else url.searchParams.delete("managerFilter");
-
-        // Project Filter
-        if (project) url.searchParams.set("projectFilter", project);
-        else url.searchParams.delete("projectFilter");
-
-        // Status Filter
-        if (status) url.searchParams.set("statusFilter", status);
-        else url.searchParams.delete("statusFilter");
-
-        showLoader(); // Optional loader
-        window.location.href = url.toString();
-    }
-
-    // Attach change events
-    $("#Filter1").on("change", applyFilters);
-    $("#Filter2").on("change", applyFilters);
-    $("#Filter3").on("change", applyFilters);
-
-    // Restore values on page load
-    $(document).ready(function () {
-        const urlParams = new URLSearchParams(window.location.search);
-
-        $("#Filter1").val(urlParams.get("managerFilter"));
-        $("#Filter2").val(urlParams.get("projectFilter"));
-        $("#Filter3").val(urlParams.get("statusFilter"));
-    });
-
 </script>

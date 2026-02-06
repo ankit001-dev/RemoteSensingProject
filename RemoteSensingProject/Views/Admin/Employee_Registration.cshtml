@@ -80,7 +80,7 @@
                                         <td class="text-start">@count</td>
                                         <td>@item.EmployeeCode</td>
                                         <td><a href="#" data-title="View Details" data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider">@item.EmployeeName</a></td>
-                                        <td>@item.EmployeeRole</td>
+                                        <td>@string.Join(", ", item.EmployeeRole)</td>
                                         <td>@item.DevisionName</td>
                                         <td>@item.DesignationName</td>
                                         <td class="text-center">
@@ -139,11 +139,13 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label for="employeeRole" class="form-label">Select Role</label>
-                            <select class="form-select form-select-lg" id="employeeRole"  name="EmployeeRole" required>
-                                <option selected disabled>Select Role</option>
+                            <select class="form-select form-select-lg" id="employeeRole"  name="EmployeeRole" required multiple>
+                                <option disabled>Select Role</option>
                                 <option value="projectManager">Project Manager</option>
-                                <option value="subOrdinate">Sub Ordinate</option>
-                                <option value="accounts">Accounts</option>
+                                <option value="divisionHead">Division Head</option>
+                                <option value="prashasan">Prashasan</option>
+                                <option value="cmDashboard">CM Dashboard</option>
+                                <option value="cgp">CGP</option>
                             </select>
                         </div>
                         <div class="mb-3 col-md-6">

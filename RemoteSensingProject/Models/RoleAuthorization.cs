@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
 using System.Web.Security;
-using RemoteSensingProject.Models.LoginManager;
 using Npgsql;
 
 namespace RemoteSensingProject.Models
@@ -59,7 +55,8 @@ namespace RemoteSensingProject.Models
                             {
                                 while (rd.Read())
                                 {
-                                    role.Add(rd["userRole"].ToString());
+                                    string roles = rd["userRole"].ToString();
+                                    role = roles.Split(',').ToList();
                                 }
                             }
                         }

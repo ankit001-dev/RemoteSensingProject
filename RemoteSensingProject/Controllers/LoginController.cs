@@ -3,6 +3,7 @@
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Controllers.LoginController
 using System;
+using System.Linq;
 using System.Runtime.Caching;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -43,26 +44,26 @@ namespace RemoteSensingProject.Controllers
 			if (!string.IsNullOrEmpty(cr.username) && !string.IsNullOrEmpty(cr.password) && cr.username.Equals(username) && cr.password.Equals(password))
 			{
 				string url = "";
-				string role = cr.role;
-                if (role != null)
+				string[] role = cr.role;
+                if (role != null && role.Length > 0)
                 {
-                    if (role.Equals("admin"))
+                    if (role.Contains("admin"))
                     {
                         url = "/admin/Dashboard";
                     }
-                    else if (role.Equals("projectManager"))
+                    else if (role.Contains("projectManager"))
                     {
                         url = "/employee/dashboard";
                     }
-                    else if (role.Equals("accounts"))
+                    else if (role.Contains("accounts"))
                     {
                         url = "/accounts/dashboard";
                     }
-                    else if (role.Equals("subOrdinate"))
+                    else if (role.Contains("subOrdinate"))
                     {
                         url = "/SubOrdinate/dashboard";
                     }
-                    else if (role.Equals("prashasan"))
+                    else if (role.Contains("prashasan"))
                     {
                         url = "/Prashasan/Dashboard"; 
                     }

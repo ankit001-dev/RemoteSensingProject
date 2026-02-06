@@ -2,17 +2,14 @@
 @{
     ViewBag.Title = "TourProposal_Report";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
-    var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.Accounts.main.tourProposal>;
+    var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
-    var projManager = ViewData["projectMangaer"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
-    string managerId = Request.QueryString["managerFilter"];
     string projectId = Request.QueryString["projectFilter"];
-    string statusFiilter = Request.QueryString["statusFilter"];
 }
 <link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
 <!--Style button DataTable-->
 <style>
-   
+
     .dt-search {
         float: right;
         margin-bottom: 5px !important;
@@ -24,21 +21,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-sm-4">
-                        <select id="Filter1" class="form-select form-select-sm">
-                            <option selected value="">Filter By Project Manager</option>
-                            @if (projManager != null)
-                            {
-                                foreach (var proman in projManager)
-                                {
-                                    if (proman.EmployeeRole == "projectManager")
-                                    {
-                                        <option value="@proman.Id">@proman.EmployeeName</option>
-                                    }
-                                }
-                            }
-                        </select>
-                    </div>
+
                     <div class="col-sm-4">
                         <select id="Filter2" class="form-select form-select-sm">
                             <option selected value="">Filter By Project</option>
@@ -51,14 +34,6 @@
                             }
                         </select>
                     </div>
-                    <div class="col-sm-4">
-                        <select id="Filter3" class="form-select form-select-sm">
-                            <option selected value="">Filter By Status</option>
-                            <option value="approved">Approved</option>
-                            <option value="pending">Pending</option>
-                            <option value="rejected">Rejected</option>
-                        </select>
-                    </div>
                 </div>
             </div>
         </div>
@@ -69,15 +44,14 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex">
-                    <a href="/admin/DownloadTourProposalReport?type=excel&managerFilter=@managerId&projectFilter=@projectId&statusFilter=@statusFiilter"><button class="btn btn-success">Excel</button></a>
-                    <a href="/admin/DownloadTourProposalReport?type=pdf&managerFilter=@managerId&projectFilter=@projectId&statusFilter=@statusFiilter"><button class="btn btn-danger">Pdf</button></a>
+                    <a href="/admin/DownloadTourProposalReport?type=excel&projectFilter=@projectId"><button class="btn btn-success">Excel</button></a>
+                    <a href="/admin/DownloadTourProposalReport?type=pdf&projectFilter=@projectId"><button class="btn btn-danger">Pdf</button></a>
                 </div>
                 <div class="table-responsive">
                     <table id="tableTour" class="table">
                         <thead>
                             <tr>
                                 <th class="text-center">Sr. No.</th>
-                                <th>Project Manager</th>
                                 <th>Project Code</th>
                                 <th>Project</th>
                                 <th>Purpose</th>
@@ -86,9 +60,6 @@
                                 <th>Period From</th>
                                 <th>Period To</th>
                                 <th>Date of return</th>
-                                <th>Remark</th>
-                                @*<th class="text-center">Action</th>*@
-                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -99,31 +70,16 @@
                                 {
                                     <tr>
                                         <td>@i</td>
-                                        <td data-id="@item.id">
-                                            <a href="#" data-title="View Details" class="action">@item.projectManager</a>
-                                        </td>
                                         <td>@item.projectCode</td>
-                                        <td>@item.projectName</td>
+                                        <td data-id="@item.id">
+                                            <a href="#" data-title="View Details" class="action">@item.projectName</a>
+                                        </td>
                                         <td>@item.purpose</td>
                                         <td>@item.dateOfDept</td>
                                         <td>@item.place</td>
                                         <td>@item.periodFrom</td>
                                         <td>@item.periodTo</td>
                                         <td>@item.returnDate</td>
-                                        <td>@item.remark</td>
-                                        @*<td class="text-center" data-id="@item.id">
-                                                <a href="#" class="action"><i class="fa-solid fa-eye text-success"></i></a>
-                                            </td>*@
-                                        <td class="text-center">
-                                            @{
-                                                if (item.newRequest == true && item.adminappr == false)
-                                                { <span id="status" class="badge bg-primary pt-1">Pending</span> }
-                                                else if (item.newRequest == false && item.adminappr == true)
-                                                { <span id="status" class="badge bg-success">Approved</span> }
-                                                else if (item.newRequest == false && item.adminappr == false)
-                                                { <span id="status" class="badge bg-danger">Rejected</span> }
-                                            }
-                                        </td>
                                     </tr>
                                     i++;
                                 }
@@ -312,45 +268,6 @@
 
 <script>
     $(document).ready(function () {
-        $(".changeStatus").on("click", function (e) {
-            e.preventDefault();
-            Swal.fire({
-                title: 'Please wait !',
-                text: 'Your request under process',
-                didOpen: () => { Swal.showLoading(); }
-            })
-            let status = $(this).data("value");
-            let id = $(this).data("id")
-            $.ajax({
-                url: '/admin/TravelRequest',
-                type: 'post',
-                data: { status: status, id: id },
-                success: function (res) {
-                    if (res.status) {
-                        Swal.fire({
-                            title: 'Success',
-                            text: res.message,
-                            icon: 'success',
-                            didClose: () => { location.reload() }
-                        })
-                    }
-                    else {
-                        Swal.fire({
-                            title: 'success',
-                            text: res.message,
-                            icon: 'success'
-                        })
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        title: 'error',
-                        text: 'Server busy Please try after sometime.',
-                        icon: 'error'
-                    })
-                }
-            })
-        })
 
         $("#printBtn").click(function () {
 
@@ -422,41 +339,27 @@
     });
 
 </script>
-    <script>
-        function applyFilters() {
+<script>
+    function applyFilters() {
         const url = new URL(window.location.href);
 
-        const manager = $("#Filter1").val();
         const project = $("#Filter2").val();
-        const status = $("#Filter3").val();
-
-        // Project Manager Filter
-        if (manager) url.searchParams.set("managerFilter", manager);
-        else url.searchParams.delete("managerFilter");
 
         // Project Filter
         if (project) url.searchParams.set("projectFilter", project);
         else url.searchParams.delete("projectFilter");
 
-        // Status Filter
-        if (status) url.searchParams.set("statusFilter", status);
-        else url.searchParams.delete("statusFilter");
-
         showLoader(); // optional loader
         window.location.href = url.toString();
     }
 
-        // Trigger filter on change
-        $("#Filter1").on("change", applyFilters);
-        $("#Filter2").on("change", applyFilters);
-        $("#Filter3").on("change", applyFilters);
+    // Trigger filter on change
+    $("#Filter2").on("change", applyFilters);
 
-        // Restore dropdown values on load
-        $(document).ready(function () {
+    // Restore dropdown values on load
+    $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
 
-        $("#Filter1").val(urlParams.get("managerFilter"));
         $("#Filter2").val(urlParams.get("projectFilter"));
-        $("#Filter3").val(urlParams.get("statusFilter"));
     });
 </script>

@@ -2,16 +2,17 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Models.LoginManager.LoginServices
+using Microsoft.IdentityModel.Tokens;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using Npgsql;
 
 namespace RemoteSensingProject.Models.LoginManager
 {
@@ -51,13 +52,19 @@ namespace RemoteSensingProject.Models.LoginManager
 						if (((DbDataReader)(object)rd).HasRows)
 						{
 							((DbDataReader)(object)rd).Read();
+							var roleValue = rd["userrole"];
 							cr.userId = ((((DbDataReader)(object)rd)["userid"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)rd)["userid"]) : 0);
 							cr.username = ((DbDataReader)(object)rd)["username"].ToString();
 							cr.password = ((DbDataReader)(object)rd)["password"].ToString();
 							cr.Emp_Id = ((((DbDataReader)(object)rd)["emp_id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)rd)["emp_id"]) : 0);
 							cr.Emp_Name = ((((DbDataReader)(object)rd)["name"] != DBNull.Value) ? ((DbDataReader)(object)rd)["name"].ToString() : "Admin");
 							cr.profilePath = ((((DbDataReader)(object)rd)["profile"] != DBNull.Value) ? ((DbDataReader)(object)rd)["profile"].ToString() : "/ProjectContent/Admin/Employee_Image/img.png");
-							cr.role = ((DbDataReader)(object)rd)["userrole"].ToString();
+							cr.role = roleValue != DBNull.Value
+								? roleValue.ToString()
+									.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+									.Select(r => r.Trim())
+									.ToArray()
+								: Array.Empty<string>();
 						}
 					}
 					finally
@@ -95,16 +102,19 @@ namespace RemoteSensingProject.Models.LoginManager
 			//IL_00d4: Unknown result type (might be due to invalid IL or missing references)
 			SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
 			SigningCredentials creds = new SigningCredentials((SecurityKey)(object)key, "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256", "http://www.w3.org/2001/04/xmlenc#sha256");
-			Claim[] claims = new Claim[4]
+            var claims = new List<Claim>
 			{
-			new Claim("sub", cr.username),
-			new Claim("role", cr.role),
-			new Claim("userId", cr.userId.ToString()),
-			new Claim("jti", Guid.NewGuid().ToString())
+				new Claim(JwtRegisteredClaimNames.Sub, cr.username),
+				new Claim("userId", cr.userId.ToString()),
+				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
 			};
-			string issuer = _issuer;
+            foreach (var role in cr.role)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            string issuer = _issuer;
 			string audience = _audience;
-			DateTime? dateTime = DateTime.Now.AddHours(5.0);
+			DateTime? dateTime = DateTime.Now.AddMinutes(1.0);
 			SigningCredentials val = creds;
 			JwtSecurityToken token = new JwtSecurityToken(issuer, audience, (IEnumerable<Claim>)claims, (DateTime?)null, dateTime, val);
 			return ((SecurityTokenHandler)new JwtSecurityTokenHandler()).WriteToken((SecurityToken)(object)token);
@@ -130,10 +140,15 @@ namespace RemoteSensingProject.Models.LoginManager
 					{
 						if (((DbDataReader)(object)rd).HasRows)
 						{
-							((DbDataReader)(object)rd).Read();
+							var roleValue = rd["userrole"];
+                            ((DbDataReader)(object)rd).Read();
 							cr.userId = ((((DbDataReader)(object)rd)["userid"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)rd)["userid"]) : 0);
 							cr.username = ((DbDataReader)(object)rd)["username"].ToString();
-							cr.role = ((DbDataReader)(object)rd)["userrole"].ToString();
+							cr.role = roleValue != DBNull.Value ? roleValue.ToString()
+								.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+								.Select(r => r.Trim())
+								.ToArray()
+							: Array.Empty<string>();
 							cr.Email = ((((DbDataReader)(object)rd)["username"] != DBNull.Value) ? ((DbDataReader)(object)rd)["username"].ToString() : "");
 						}
 					}
