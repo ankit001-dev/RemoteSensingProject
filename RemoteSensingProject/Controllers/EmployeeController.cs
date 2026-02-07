@@ -108,8 +108,9 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Add_Project()
         {
-            List<RemoteSensingProject.Models.Admin.main.Employee_model> data = _adminServices.SelectEmployeeRecord();
-            ((dynamic)((ControllerBase)this).ViewBag).subOrdinateList = data.Where((RemoteSensingProject.Models.Admin.main.Employee_model d) => d.EmployeeRole.Equals("subOrdinate")).ToList();
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            var data = _managerServices.GetAllocatedOutSOurceList(id:userid);
+            ((dynamic)((ControllerBase)this).ViewBag).subOrdinateList = data;
             ((ControllerBase)this).ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
             ((ControllerBase)this).ViewData["Designations"] = _adminServices.ListDesgination();
             return View();
