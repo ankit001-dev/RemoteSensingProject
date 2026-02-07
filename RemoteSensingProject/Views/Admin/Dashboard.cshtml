@@ -69,29 +69,29 @@
                     <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0">Project's</h6>
+                                <h6 class="card-title mb-0 text-nowrap">Project's</h6>
                             </div>
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
-
+                                    <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/All_Projects?statusFilter=Internal">
-                                            <p class="text-success w-100"><span><span class="text-dark">Internal Project's :  </span> @data.TotalInternalProject</span></p>
+                                        <a href="/admin/All_Projects?statusFilter=Ongoing&typeFilter=Internal">
+                                            <p class="text-success w-100"><span><span class="text-dark">Internal  :  </span> @data.TotalInternalProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/All_Projects?statusFilter=External">
-                                            <p class="text-success w-100"><span><span class="text-dark">External Project's :  </span> @data.TotalExternalProject</span></p>
+                                        <a href="/admin/All_Projects?statusFilter=Complete&typeFilter=Internal">
+                                            <p class="text-success w-100"><span><span class="text-dark">External  :  </span> @data.TotalExternalProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/Admin/All_Projects?req">
-                                            <p class="text-success w-100"><span><span class="text-dark">Total Project's :  </span> @data.TotalProject</span></p>
+                                        <a href="/admin/All_Projects?statusFilter=delay&typeFilter=Internal">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total  :  </span> @data.TotalProject</span></p>
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-5">
-                                    <img src="~/assets/gif/project.gif" height="60" />
+                                <div class="col-6 col-md-12 col-xl-5 pt-2">
+                                    <img src="~/assets/gif/file.gif" height="60" />
                                 </div>
                             </div>
                         </div>
@@ -112,17 +112,17 @@
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/admin/All_Projects?statusFilter=Ongoing&typeFilter=Internal">
-                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @data.TotalOngoingProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing : </span> @data.TotalOngoingProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/admin/All_Projects?statusFilter=Complete&typeFilter=Internal">
-                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@data.TotalCompleteProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Complete : </span>@data.TotalCompleteProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/admin/All_Projects?statusFilter=delay&typeFilter=Internal">
-                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @data.TotalDelayproject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Delay :  </span> @data.TotalDelayproject</span></p>
                                         </a>
                                     </div>
                                 </div>
@@ -148,17 +148,17 @@
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/admin/All_Projects?statusFilter=Ongoing&typeFilter=External">
-                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @data.ExternalOngoingProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing : </span> @data.ExternalOngoingProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/admin/All_Projects?statusFilter=Complete&typeFilter=External">
-                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@data.ExternalCompletedProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Complete : </span>@data.ExternalCompletedProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/admin/All_Projects?statusFilter=delay&typeFilter=External">
-                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @data.ExternalDelayProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Delay : </span> @data.ExternalDelayProject</span></p>
                                         </a>
                                     </div>
                                 </div>
@@ -180,7 +180,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-8">
                                     <h3 class="mb-2 text-success"></h3>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/Admin/Meeting_Report">
@@ -198,7 +198,74 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-4">
+                                    <img src="~/assets/gif/discussion.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Employee Card-->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 shadow-lg">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Employee's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-8">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total :  </span> @data.TotalMeetings</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report?statusFilter=admin">
+                                            <p class="text-success w-100"><span><span class="text-dark">Division Head :  </span> @data.TotalAdminMeetings</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report?statusFilter=projectmanager">
+                                            <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @data.TotalProjectManagerMeetings</span></p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-4">
+                                    <img src="~/assets/gif/discussion.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Category Card-->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 shadow-lg">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Category's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-8">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report?statusFilter=admin">
+                                            <p class="text-success w-100"><span><span class="text-dark">Division :  </span> @data.TotalAdminMeetings</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/Admin/Meeting_Report?statusFilter=projectmanager">
+                                            <p class="text-success w-100"><span><span class="text-dark">Designation :  </span> @data.TotalProjectManagerMeetings</span></p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-4">
                                     <img src="~/assets/gif/discussion.gif" height="60" />
                                 </div>
                             </div>
