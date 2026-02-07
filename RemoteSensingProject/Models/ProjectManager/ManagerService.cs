@@ -2132,7 +2132,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 			//IL_0018: Expected O, but got Unknown
 			try
 			{
-				cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(@v_action, @v_id, NULL,null::int, NULL, NULL, NULL::text, NULL::smallint, NULL, NULL, NULL)", con);
+				cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(v_action=>@v_action,v_id=> @v_id)", con);
 				((DbCommand)(object)cmd).CommandType = CommandType.Text;
 				cmd.Parameters.AddWithValue("@v_action", (object)"updateTaskStatus");
 				cmd.Parameters.AddWithValue("@v_id", (object)taskId);
