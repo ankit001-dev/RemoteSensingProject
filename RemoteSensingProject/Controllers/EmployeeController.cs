@@ -984,7 +984,7 @@ namespace RemoteSensingProject.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPost]
         public ActionResult DeAllocateOutsource(int outsourceid)
         {
             try

@@ -14,7 +14,7 @@
         downloadLink = Url.Content("~/Content/User Manual/RSAC User Manual - Subordinate.pdf");
         Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
     }
-    else if (User.IsInRole("accounts"))
+    else if (User.IsInRole("accounts"))     
     {
         downloadLink = Url.Content("~/Content/User Manual/RSAC User Manual - Accounts.pdf");
         Layout = "~/Views/Shared/_AccountLayout.cshtml";
