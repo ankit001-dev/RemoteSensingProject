@@ -216,16 +216,7 @@
     </div>
 </div>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- jQuery Validation -->
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
-
- @*Optional (additional rules like accept, filesize etc.)*@ 
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
-
-
+  
 <script>
     var budgetOptions = `@Html.Raw(budgetOptions)`;
 </script>
@@ -600,7 +591,15 @@
         // 🔹 Delete Budget Head
         $("#budgetContainerBox").on("click", ".deleteCurrntRow", function (e) {
             e.preventDefault();
+
             $(this).closest(".budgetList").remove();
+
+            // Check if any budgetList is left
+            if ($("#budgetContainerBox .budgetList").length === 0) {
+                $("#budgetContainerBox").css('display', 'none');
+
+            }
+
             updateMiscAmount();
         });
 

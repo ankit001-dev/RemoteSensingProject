@@ -281,7 +281,7 @@
             });
             let id = $(this).parent().attr("data-id")
             $.ajax({
-                url: '/api/getHiringList',
+                url: '/api/getHiringById',
                 type: 'get',
                 data: { id: id },
                 success: function (res) {
