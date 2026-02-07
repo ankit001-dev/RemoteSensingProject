@@ -284,7 +284,7 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
 
-		public ActionResult All_Projects(string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null)
+		public ActionResult All_Projects(string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null,string typeFilter = null)
 		{
 			((dynamic)((ControllerBase)this).ViewBag).ManagerList = (from d in _adminServices.SelectEmployeeRecord()
 																	 where d.EmployeeRole.Equals("projectManager")
@@ -292,7 +292,7 @@ namespace RemoteSensingProject.Controllers
 			object viewBag = ((ControllerBase)this).ViewBag;
 			AdminServices adminServices = _adminServices;
 			int? projectManager = projectManagerFilter;
-			((dynamic)viewBag).ProjectList = adminServices.Project_List(null, null, null, searchTerm, statusFilter, projectManager);
+			((dynamic)viewBag).ProjectList = adminServices.Project_List(null, null, typeFilter, searchTerm, statusFilter, projectManager);
 			return View();
 		}
 
@@ -628,11 +628,10 @@ namespace RemoteSensingProject.Controllers
 			});
 		}
 
-		public ActionResult TravelRequest(int? managerFilter = null, int? projectFilter = null)
+		public ActionResult TravelRequest(int? projectFilter = null)
 		{
 			AdminServices adminServices = _adminServices;
-			int? projectFilter2 = projectFilter;
-			List<RemoteSensingProject.Models.Admin.main.tourProposalAll> res = adminServices.getAllTourList(null, null, null, null, managerFilter, projectFilter2);
+			var res = _managerServices.GetTourList(type: "ALLDATA", projectFilter: projectFilter);
 			((ControllerBase)this).ViewData["allTourList"] = res;
 			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
 			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
@@ -658,25 +657,21 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
 
-		public ActionResult TourProposal_Report(int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
+		public ActionResult TourProposal_Report( int? projectFilter = null)
 		{
 			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-			AccountService accountService = _accountService;
-			int? projectFilter2 = projectFilter;
-			viewData["allTourList"] = accountService.getTourList(null, null, managerFilter, projectFilter2, statusFilter);
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
+			viewData["allTourList"] = _managerServices.GetTourList(type: "ALLDATA", projectFilter: projectFilter);
+            ((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
 			return View();
 		}
 
-		public ActionResult Hiring_Report(int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
+		public ActionResult Hiring_Report(int? projectFilter = null)
 		{
 			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
 			AdminServices adminServices = _adminServices;
 			int? projectFilter2 = projectFilter;
-			viewData["hiringList"] = adminServices.HiringReort(null, null, managerFilter, projectFilter2, statusFilter);
-			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+			viewData["hiringList"] = _managerServices.GetHiringVehicles(type: "ALLDATA", projectFilter: projectFilter);
+            ((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
 			return View();
 		}
 
