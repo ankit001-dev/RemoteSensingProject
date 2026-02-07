@@ -4667,13 +4667,16 @@ div.tox .btn-group-vertical > .btn-group:not(:first-child) > .tox-button,
     word-wrap: break-word;
     background-color: #fff;
     background-clip: border-box;
-/*    border: 1px solid #19a7a6;*/
+    /*    border: 1px solid #19a7a6;*/
     border-radius: 5px;
     box-sizing: border-box !important;
 }
+.uniform-card {
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px !important;
+}
 .card > hr {
-  margin-right: 0;
-  margin-left: 0;
+    margin-right: 0;
+    margin-left: 0;
 }
 .card > .list-group {
   border-top: inherit;
