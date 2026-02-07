@@ -1,0 +1,184 @@
+﻿
+@{
+    ViewBag.Title = "ProjectPendingTaskList";
+    Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
+    var data = ViewData["TaskList"] as List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task>;
+}
+
+<style>
+    .link-icon {
+        height: 16px;
+    }
+</style>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <form class="forms-sample">
+        <div class="row align-items-center">
+            <div class="col-lg-3">
+                <h5>Pending Tasks Lists</h5>
+            </div>
+            @*<div class="col-lg-6 col-md-6">
+                    <input type="text" id="searchProjectBy" name="searchByProjectName" placeholder="Search by project name" class="form-control">
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <select id="filterProjectStatus" class="form-select form-select-lg">
+                        <option selected value="">Project Status</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="delay">Delay</option>
+                        <option value="Complete">Completed</option>
+                    </select>
+                </div>*@
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="projectTable1" class="dataTableExample" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Project Name</th>
+                                <th>Task</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (data != null && data.Count > 0)
+                            {
+                                int i = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.projectName</td>
+                                        <td><a class="cursor-pointer viewTaskDetail" data-description="@item.Description">@item.Title</a></td>
+                                        <td>
+                                            @if (!item.CompleteStatus && item.ApprovalStatus)
+                                            {
+                                                <span class="badge bg-success">Approval Pending</span>
+
+                                            }
+                                            else
+                                            {
+                                                <a class="cursor-pointer completeTask" data-id="@item.AssignTaskId" title="Complete task"> <i data-feather="check"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="viewProjectModal" tabindex="-1" aria-labelledby="viewProjectModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header d-flex">
+                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Detail</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="viewProjectModalBody">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    $(document).on("click", ".completeTask", async function () {
+
+        const dataId = $(this).data('id');
+
+        const { value: review } = await Swal.fire({
+            title: "Complete Task",
+            input: "textarea",
+            inputLabel: "Write your review",
+            inputPlaceholder: "Enter your review here...",
+            inputAttributes: {
+                'aria-label': 'Type your review here'
+            },
+            showCancelButton: true,
+            confirmButtonText: "Submit",
+            cancelButtonText: "Cancel",
+            inputValidator: (value) => {
+                if (!value) {
+                    return "Review is required!";
+                }
+            }
+        });
+
+        // If user clicked submit
+        if (review) {
+
+            console.log("Task ID:", dataId);
+            console.log("Review:", review);
+
+            // 👉 Call your AJAX here
+           
+            $.ajax({
+                url: "/SubOrdinate/CompleteTask",
+                type: "POST",
+                data: {
+                    id: dataId,
+                    Reason: review
+                },
+                success: function (res) {
+                    
+                    Swal.fire({
+                        title: res.status ? "Success!" : "Sorry !",
+                        text: res.message,
+                        icon: res.status ? "success" : "info",
+                        didClose: () => {
+                            if (res.status) {
+                                location.reload()
+                            }
+                        }
+                    });
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Some issue found !",
+                        text: "Some internal issue found. Please try after sometime.",
+                        icon: "error",
+                        didClose: () => {
+                            location.reload()
+                        }
+                    })
+                }
+            });
+        }
+    });
+
+
+    $(document).on("click", ".viewTaskDetail", function () {
+        const description = $(this).data('description');
+
+        Swal.fire({
+            title: '<strong>Task Details</strong>',
+            html: `<div style="max-height:250px; overflow-y:auto; text-align:left;">
+                ${description || 'No description available.'}
+               </div>`,
+            icon: 'info',
+            confirmButtonText: 'Close',
+            confirmButtonColor: '#3085d6',
+            width: '500px',
+            padding: '1.5em',
+            backdrop: `
+            rgba(0,0,0,0.6)
+        `,
+            customClass: {
+                popup: 'rounded-3 shadow-lg'
+            }
+        });
+    });
+
+</script>

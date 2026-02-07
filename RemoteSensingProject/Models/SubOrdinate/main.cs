@@ -139,14 +139,16 @@ namespace RemoteSensingProject.Models.SubOrdinate
 
 		public string Description { get; set; }
 
-		public int CompleteStatus { get; set; }
-
+		public bool CompleteStatus { get; set; }
+			public bool ApprovalStatus { get; set; }
 		public string Status { get; set; }
 
 		public int EmpId { get; set; }
 
 		public string Reason { get; set; }
-
+		public int projectId { get; set; }
+		public string projectName { get; set; }
+			public int AssignTaskId { get; set; }
 		public ApiCommon.PaginationInfo Pagination { get; set; }
 	}
 }

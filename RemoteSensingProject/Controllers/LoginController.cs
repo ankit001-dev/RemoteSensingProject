@@ -59,7 +59,7 @@ namespace RemoteSensingProject.Controllers
                     {
                         url = "/accounts/dashboard";
                     }
-                    else if (role.Contains("subOrdinate"))
+                    else if (role.Contains("outSource"))
                     {
                         url = "/SubOrdinate/dashboard";
                     }

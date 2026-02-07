@@ -1,13 +1,15 @@
 // Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// RemoteSensingProject.Models.SubOrdinate.SubOrinateService
+// SubOrinateService
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
+using System.Web.UI;
+using DocumentFormat.OpenXml.Office.Word;
 using Npgsql;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
@@ -17,11 +19,11 @@ namespace RemoteSensingProject.Models.SubOrdinate
 {
 	public class SubOrinateService : DataFactory
 	{
-		public RemoteSensingProject.Models.SubOrdinate.main.UserCredential getManagerDetails(string managerName)
+		public main.UserCredential getManagerDetails(string managerName)
 		{
 			//IL_0013: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0019: Expected O, but got Unknown
-			RemoteSensingProject.Models.SubOrdinate.main.UserCredential _details = new RemoteSensingProject.Models.SubOrdinate.main.UserCredential();
+			main.UserCredential _details = new main.UserCredential();
 			try
 			{
 				NpgsqlCommand cmd = new NpgsqlCommand("sp_adminAddproject", con);
@@ -32,7 +34,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
 				NpgsqlDataReader sdr = cmd.ExecuteReader();
 				while (((DbDataReader)(object)sdr).Read())
 				{
-					_details = new RemoteSensingProject.Models.SubOrdinate.main.UserCredential();
+					_details = new main.UserCredential();
 					_details.username = ((DbDataReader)(object)sdr)["username"].ToString();
 					_details.userId = ((DbDataReader)(object)sdr)["userid"].ToString();
 					_details.userRole = ((DbDataReader)(object)sdr)["userRole"].ToString();
@@ -50,12 +52,12 @@ namespace RemoteSensingProject.Models.SubOrdinate
 			return _details;
 		}
 
-		public List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList> getProjectBySubOrdinate(string userId)
+		public List<main.ProjectList> getProjectBySubOrdinate(string userId)
 		{
 			//IL_0015: Unknown result type (might be due to invalid IL or missing references)
 			//IL_001b: Expected O, but got Unknown
-			List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList> _list = new List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList>();
-			RemoteSensingProject.Models.SubOrdinate.main.ProjectList obj = null;
+			List<main.ProjectList> _list = new List<main.ProjectList>();
+			main.ProjectList obj = null;
 			try
 			{
 				NpgsqlCommand cmd = new NpgsqlCommand("sp_adminAddproject", con);
@@ -66,7 +68,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
 				NpgsqlDataReader sdr = cmd.ExecuteReader();
 				while (((DbDataReader)(object)sdr).Read())
 				{
-					obj = new RemoteSensingProject.Models.SubOrdinate.main.ProjectList();
+					obj = new main.ProjectList();
 					obj.Id = Convert.ToInt32(((DbDataReader)(object)sdr)["id"]);
 					obj.Title = ((DbDataReader)(object)sdr)["title"].ToString();
 					obj.AssignDateString = Convert.ToDateTime(((DbDataReader)(object)sdr)["AssignDate"]).ToString("dd-MM-yyyy");
@@ -96,7 +98,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
 			return _list;
 		}
 
-		public bool InsertSubOrdinateProblem(RemoteSensingProject.Models.SubOrdinate.main.Raise_Problem raise)
+		public bool InsertSubOrdinateProblem(main.Raise_Problem raise)
 		{
 			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0013: Expected O, but got Unknown
@@ -126,19 +128,55 @@ namespace RemoteSensingProject.Models.SubOrdinate
 				((Component)(object)base.cmd).Dispose();
 			}
 		}
-
-		public List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task> getOutSourceTask(int id, int? limit = null, int? page = null, string searchTerm = null)
+		public main.UserCredential GetOutSourceId(string username)
 		{
-			//IL_002e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0034: Expected O, but got Unknown
-			//IL_010c: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0113: Expected O, but got Unknown
-			//IL_0292: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0299: Expected O, but got Unknown
 			try
 			{
-				List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task> taskList = new List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task>();
-				RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task task = null;
+				main.UserCredential userData = new main.UserCredential();
+				con.Open();
+                using (NpgsqlTransaction tran = con.BeginTransaction())
+				{
+					using (NpgsqlCommand cmd = new NpgsqlCommand("fn_manageoutsource_cursor", con, tran))
+					{
+						cmd.CommandType = CommandType.StoredProcedure;
+						cmd.Parameters.AddWithValue("@v_action", "getOutSourceById");
+						cmd.Parameters.AddWithValue("@v_searchterm", username);
+						string cursorName = (string)cmd.ExecuteScalar();
+						using (NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran))
+						{
+							using (NpgsqlDataReader sdr = fetchCmd.ExecuteReader())
+							{
+								if (sdr.HasRows)
+								{
+									sdr.Read();
+									userData.userId = sdr["id"].ToString();
+									userData.username = sdr["emp_name"].ToString();
+								}
+							}
+                        }
+					}
+					return userData;
+				}
+			}catch(Exception ex)
+			{
+				throw ex;
+			}
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)base.cmd).Dispose();
+            }
+        }
+
+        public List<main.OutSource_Task> getOutSourceTask(int id, int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null)
+		{
+			try
+			{
+				List<main.OutSource_Task> taskList = new List<main.OutSource_Task>();
+				main.OutSource_Task task = null;
 				((DbConnection)(object)con).Open();
 				NpgsqlTransaction tran = con.BeginTransaction();
 				try
@@ -147,12 +185,25 @@ namespace RemoteSensingProject.Models.SubOrdinate
 					try
 					{
 						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-						cmd.Parameters.AddWithValue("@v_action", (object)"getTaskByOutSource");
-						cmd.Parameters.AddWithValue("@v_id", (object)id);
-						cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
-						cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
-						cmd.Parameters.AddWithValue("v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
-						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.Add("@v_action", NpgsqlTypes.NpgsqlDbType.Varchar).Value = "getTaskByOutSource";
+
+                        cmd.Parameters.Add("@v_statusfilter", NpgsqlTypes.NpgsqlDbType.Varchar)
+                            .Value = (object)statusFilter ?? DBNull.Value;
+
+                        cmd.Parameters.Add("@v_id", NpgsqlTypes.NpgsqlDbType.Integer)
+                            .Value = id;
+
+                        cmd.Parameters.Add("@v_limit", NpgsqlTypes.NpgsqlDbType.Integer)
+                            .Value = (object)limit ?? DBNull.Value;
+
+                        cmd.Parameters.Add("@v_page", NpgsqlTypes.NpgsqlDbType.Integer)
+                            .Value = (object)page ?? DBNull.Value;
+
+                        cmd.Parameters.Add("@v_searchterm", NpgsqlTypes.NpgsqlDbType.Varchar)
+                            .Value = (object)searchTerm ?? DBNull.Value;
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
 						NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
 						try
 						{
@@ -162,12 +213,16 @@ namespace RemoteSensingProject.Models.SubOrdinate
 								bool firstRow = true;
 								while (((DbDataReader)(object)sdr).Read())
 								{
-									task = new RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task();
+									task = new main.OutSource_Task();
 									task.id = Convert.ToInt32(((DbDataReader)(object)sdr)["id"]);
 									task.Title = ((DbDataReader)(object)sdr)["title"].ToString();
 									task.Description = ((DbDataReader)(object)sdr)["description"].ToString();
-									task.CompleteStatus = Convert.ToInt32(((DbDataReader)(object)sdr)["completeStatus"]);
+									task.CompleteStatus = Convert.ToBoolean(((DbDataReader)(object)sdr)["completeStatus"]);
 									task.Status = ((DbDataReader)(object)sdr)["Status"].ToString();
+									task.projectId = Convert.ToInt32(sdr["projectid"]);
+									task.projectName = sdr["ProjectTitle"].ToString();
+									task.AssignTaskId = Convert.ToInt32(sdr["AssignTaskId"]);
+									task.ApprovalStatus = Convert.ToBoolean(sdr["OutSourceCompleteStatus"]);
 									taskList.Add(task);
 									if (firstRow)
 									{
@@ -227,7 +282,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
 			}
 		}
 
-		public bool AddOutSourceTask(RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task task)
+		public bool AddOutSourceTask(main.OutSource_Task task)
 		{
 			//IL_000c: Unknown result type (might be due to invalid IL or missing references)
 			//IL_0012: Expected O, but got Unknown
@@ -242,13 +297,13 @@ namespace RemoteSensingProject.Models.SubOrdinate
 			return true;
 		}
 
-		public RemoteSensingProject.Models.SubOrdinate.main.DashboardCount GetDashboardCounts(int userId)
+		public main.DashboardCount GetDashboardCounts(int userId)
 		{
 			//IL_0027: Unknown result type (might be due to invalid IL or missing references)
 			//IL_002d: Expected O, but got Unknown
 			//IL_009d: Unknown result type (might be due to invalid IL or missing references)
 			//IL_00a4: Expected O, but got Unknown
-			RemoteSensingProject.Models.SubOrdinate.main.DashboardCount obj = null;
+			main.DashboardCount obj = null;
 			try
 			{
 				((DbConnection)(object)con).Open();
@@ -273,7 +328,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
 								{
 									while (((DbDataReader)(object)sdr).Read())
 									{
-										obj = new RemoteSensingProject.Models.SubOrdinate.main.DashboardCount();
+										obj = new main.DashboardCount();
 										obj.TotalAssignProject = Convert.ToInt32(((DbDataReader)(object)sdr)["TotalProject"]);
 										obj.InternalProject = Convert.ToInt32(((DbDataReader)(object)sdr)["InternalProject"]);
 										obj.ExternalProject = Convert.ToInt32(((DbDataReader)(object)sdr)["ExternalProject"]);

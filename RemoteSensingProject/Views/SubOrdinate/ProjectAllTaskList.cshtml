@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewBag.Title = "ProjectAllTaskList";
+    Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
+    var data = ViewData["TaskList"] as List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task>;
+}
+
+<style>
+    .link-icon {
+        height: 16px;
+    }
+</style>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <form class="forms-sample">
+        <div class="row align-items-center">
+            <div class="col-lg-3">
+                <h5>All Tasks Lists</h5>
+            </div>
+            @*<div class="col-lg-6 col-md-6">
+                    <input type="text" id="searchProjectBy" name="searchByProjectName" placeholder="Search by project name" class="form-control">
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <select id="filterProjectStatus" class="form-select form-select-lg">
+                        <option selected value="">Project Status</option>
+                        <option value="Ongoing">Ongoing</option>
+                        <option value="delay">Delay</option>
+                        <option value="Complete">Completed</option>
+                    </select>
+                </div>*@
+        </div>
+    </form>
+</div>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="projectTable1" class="dataTableExample" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Project Name</th>
+                                <th>Task</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           @if(data != null && data.Count > 0)
+            {
+                               int i = 1;
+                foreach(var item in data)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@item.projectName</td>
+                        <td><a class="cursor-pointer viewTaskDetail" data-description="@item.Description">@item.Title</a></td>
+                        <td> @if (!item.CompleteStatus) {
+
+
+<span class="badge bg-primary">Pending</span>
+}
+else
+                    {
+                        <span class="badge bg-success">Completed</span>
+                    }
+                        </td>
+                    </tr>
+                                   i++;
+                               }
+                           }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="viewProjectModal" tabindex="-1" aria-labelledby="viewProjectModal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header d-flex">
+                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Detail</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="viewProjectModalBody">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $(document).on("click", ".viewTaskDetail", function () {
+        const description = $(this).data('description');
+
+        Swal.fire({
+            title: '<strong>Task Details</strong>',
+            html: `<div style="max-height:250px; overflow-y:auto; text-align:left;">
+            ${description || 'No description available.'}
+           </div>`,
+            icon: 'info',
+            confirmButtonText: 'Close',
+            confirmButtonColor: '#3085d6',
+            width: '500px',
+            padding: '1.5em',
+            backdrop: `
+        rgba(0,0,0,0.6)
+    `,
+            customClass: {
+                popup: 'rounded-3 shadow-lg'
+            }
+        });
+    });
+</script>
