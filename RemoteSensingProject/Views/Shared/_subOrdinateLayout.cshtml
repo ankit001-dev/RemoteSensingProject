@@ -162,10 +162,30 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="/SubOrdinate/Assigned_Project" class="nav-link">
-                            <i class="link-icon" data-feather="clipboard"></i>
+                        <a class="nav-link" data-bs-toggle="collapse" href="#category" role="button" aria-expanded="false" aria-controls="category">
+                            <i class="link-icon" data-feather="list"></i>
+                            <span class="link-title">Task Management</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                        <div class="collapse" id="category">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">
+                                    <a href="/SubOrdinate/ProjectAllTaskList" class="nav-link">All Tasks</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/SubOrdinate/ProjectPendingTaskList" class="nav-link">Pending Tasks</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/SubOrdinate/ProjectCompleteTaskList" class="nav-link">Completed Tasks</a>
+                                </li>
 
-                            <span class="link-title">Assigned Project</span>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/SubOrdinate/Meeting_List" class="nav-link">
+                            <i class="link-icon" data-feather="calendar"></i>
+                            <span class="link-title">Meeting List</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -180,12 +200,7 @@
                             <span class="link-title">Support</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="/SubOrdinate/Meeting_List" class="nav-link">
-                            <i class="link-icon" data-feather="calendar"></i>
-                            <span class="link-title">Meeting List</span>
-                        </a>
-                    </li>
+
 
 
                 </ul>
@@ -314,17 +329,23 @@
                     });
                 });
         }
+
+        function initDatatable(context = document) {
+            $(context).find('table').each(function () {
+                const $table = $(this);
+                if ($.fn.DataTable.isDataTable(this)) {
+                    // Optional: destroy and reinitialize if needed
+                    $table.DataTable().destroy();
+                }
+
+                $table.DataTable();
+            })
+        }
         $(document).on('shown.bs.modal', '.modal', function () {
             initSelect2(this);
         });
         $(document).ready(function () {
-            $('#dataTableExample').DataTable({
-                paging: true,
-                searching: true,
-                ordering: true,
-                info: true,
-                lengthMenu: [10, 25, 50, 100],
-            });
+            initDatatable();
             $("img").on("error", function () {
                 $(this).attr("src", "/assets/no-pictures.png")
             })
