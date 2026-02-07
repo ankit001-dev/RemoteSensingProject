@@ -5,104 +5,10 @@
     var data = Model as RemoteSensingProject.Models.Admin.main.DashboardCount;
     var graphdata = ViewData["physical"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
 }
-
-
-
 <style>
-    .uniform-card {
-        /*        height: 200px;
-    */ width: 160px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        text-align: center;
+    a:hover {
+        color: #029e9d!important;
     }
-
-        .uniform-card .card-body {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 15px;
-        }
-
-        .uniform-card .card-title {
-            font-size: 15px;
-            font-weight: bold;
-        }
-
-        .uniform-card p.text-success {
-            font-size: 13px;
-        }
-
-        .uniform-card img {
-            margin: 0 auto;
-        }
-
-    /*    .grid-margin .w-100 .card {
-        background: #0a6d9d6b;
-    }*/
-
-    .align-items-baseline .text-success {
-        color: #000 !important;
-    }
-
-    .grid-margin {
-        margin: 3px 0px !important;
-    }
-
-    .card .card-body .justify-content-between {
-        padding-bottom: 3px !important;
-    }
-
-
-    /*Trae*/
-    .uniform-card {
-        height: 120px !important; /* Fixed height for all cards */
-        overflow: hidden;
-    }
-
-    .card-body {
-        height: 100%;
-        overflow-y: auto;
-    }
-
-        /* Hide scrollbar but keep functionality */
-        .card-body::-webkit-scrollbar {
-            display: none;
-        }
-    /*Trae*/
-</style>
-<!--Trae-->
-<!--trae-->
-
-<style>
-
-    .text-success span {
-        display: flex;
-        align-items: center;
-    }
-
-    .text-success span {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 0px;
-    }
-
-        .text-success span span.text-dark {
-            min-width: 110px;
-            text-align: left;
-        }
-
-    .card-body {
-        height: 100%;
-        overflow-y: auto;
-    }
-
-        /* Hide scrollbar but keep functionality */
-        .card-body::-webkit-scrollbar {
-            display: none;
-        }
 </style>
 <div class="row mx-0">
     <div class="col-12 col-xl-12">
@@ -205,17 +111,17 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/All_Projects?statusFilter=Ongoing">
+                                        <a href="/admin/All_Projects?statusFilter=Ongoing&typeFilter=Internal">
                                             <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @data.TotalOngoingProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/All_Projects?statusFilter=Complete">
+                                        <a href="/admin/All_Projects?statusFilter=Complete&typeFilter=Internal">
                                             <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@data.TotalCompleteProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/All_Projects?statusFilter=delay">
+                                        <a href="/admin/All_Projects?statusFilter=delay&typeFilter=Internal">
                                             <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @data.TotalDelayproject</span></p>
                                         </a>
                                     </div>
@@ -241,18 +147,18 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/All_Projects?statusFilter=Ongoing">
-                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @data.TotalOngoingProject</span></p>
+                                        <a href="/admin/All_Projects?statusFilter=Ongoing&typeFilter=External">
+                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @data.ExternalOngoingProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/All_Projects?statusFilter=Complete">
-                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@data.TotalCompleteProject</span></p>
+                                        <a href="/admin/All_Projects?statusFilter=Complete&typeFilter=External">
+                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@data.ExternalCompletedProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/admin/All_Projects?statusFilter=delay">
-                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @data.TotalDelayproject</span></p>
+                                        <a href="/admin/All_Projects?statusFilter=delay&typeFilter=External">
+                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @data.ExternalDelayProject</span></p>
                                         </a>
                                     </div>
                                 </div>
