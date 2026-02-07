@@ -79,7 +79,7 @@
                                         {
                                             if (item != null)
                                             {
-                                                <option value="@item.Id">@item.EmployeeName - @item.EmployeeRole</option>
+                                                <option value="@item.Id">@item.EmployeeName (@string.Join(", ", item.EmployeeRole))</option>
                                             }
                                         }
                                     }

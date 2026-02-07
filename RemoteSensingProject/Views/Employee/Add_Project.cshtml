@@ -54,12 +54,12 @@
 
 
                         <div class="col-lg-4 mb-3">
-                            <label for="title" class="form-label">Sub-Ordinate</label>
+                            <label for="title" class="form-label">Project Staff</label>
                             <select class="form-control form-control-sm select2-validated" name="pm.pm.SubOrdinate" multiple required>
                                 <option value="">Select an Option</option>
-                                @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
+                                @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.ProjectManager.OuterSource>)
                                 {
-                                    <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
+                                    <option value="@item.Id">@item.EmpName</option>
                                 }
                             </select>
                         </div>
