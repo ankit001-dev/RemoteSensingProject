@@ -59,21 +59,21 @@ namespace RemoteSensingProject.Models.ProjectManager
 									obj.EmpMeeting = ((DbDataReader)(object)sdr)["EmpMeeting"].ToString();
 									obj.AdminMeeting = ((DbDataReader)(object)sdr)["AdminMeeting"].ToString();
 									obj.TotalReimbursement = ((DbDataReader)(object)sdr)["TotalReimbursement"].ToString();
-									//obj.TotalTourProposal = ((DbDataReader)(object)sdr)["TotalTourProposal"].ToString();
-									//obj.TotalHiring = ((DbDataReader)(object)sdr)["TotalHiring"].ToString();
 									obj.ReimbursementPendingRequest = ((DbDataReader)(object)sdr)["ReimbursementPendingRequest"].ToString();
 									obj.ReimbursementApprovedRequest = ((DbDataReader)(object)sdr)["ReimbursementApprovedRequest"].ToString();
 									obj.ReimbursementRejectedRequest = ((DbDataReader)(object)sdr)["ReimbursementRejectedRequest"].ToString();
-									//obj.TourPendingRequest = ((DbDataReader)(object)sdr)["TourPendingRequest"].ToString();
-									//obj.TourApprovedRequest = ((DbDataReader)(object)sdr)["TourApprovedRequest"].ToString();
-									//obj.TourRejectedRequest = ((DbDataReader)(object)sdr)["TourRejectedRequest"].ToString();
-									//obj.HiringPendingRequest = ((DbDataReader)(object)sdr)["HiringPendingRequest"].ToString();
-									//obj.HiringApprovedRequest = ((DbDataReader)(object)sdr)["HiringApprovedRequest"].ToString();
-									//obj.HiringRejectedRequest = ((DbDataReader)(object)sdr)["HiringRejectedRequest"].ToString();
 									obj.TotalTask = ((DbDataReader)(object)sdr)["TotalTask"].ToString();
 									obj.CompletedTask = ((DbDataReader)(object)sdr)["CompletedTask"].ToString();
 									obj.OutSource = ((DbDataReader)(object)sdr)["OutSource"].ToString();
 									obj.ProjectProblem = ((DbDataReader)(object)sdr)["ProjectProblem"].ToString();
+									obj.ExternalOngoingProject = ((DbDataReader)(object)sdr)["ExternalOngoingProject"].ToString();
+									obj.ExternalCompletedProject = ((DbDataReader)(object)sdr)["ExternalCompletedProject"].ToString();
+									obj.ExternalDelayProject = ((DbDataReader)(object)sdr)["ExternalDelayProject"].ToString();
+									obj.InternalOngoingProject = ((DbDataReader)(object)sdr)["InternalOngoingProject"].ToString();
+									obj.InternalCompletedProject = ((DbDataReader)(object)sdr)["InternalCompletedProject"].ToString();
+									obj.InternalDelayProject = ((DbDataReader)(object)sdr)["InternalDelayProject"].ToString();
+									obj.TotalManpowerRequest = ((DbDataReader)(object)sdr)["TotalManpowerRequest"].ToString();
+									obj.TotalOutsourceCount = ((DbDataReader)(object)sdr)["TotalOutsourceCount"].ToString();
 								}
 							}
 							finally

@@ -1,4 +1,5 @@
 ﻿using RemoteSensingProject.Models.Admin;
+using System;
 using System.Linq;
 using System.Security.Policy;
 using System.Web.Mvc;
@@ -15,7 +16,13 @@ namespace RemoteSensingProject.Controllers
         // GET: CGP
         public ActionResult Dashboard()
         {
-            return View();
+            RemoteSensingProject.Models.Admin.main.DashboardCount TotalCount = _adminServices.DashboardCount();
+            DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
+            ((ControllerBase)this).ViewData["physical"] = (from d in _adminServices.Project_List()
+                                                           where d.AssignDate >= twoYearsAgo
+                                                           select d).ToList();
+            ((ControllerBase)this).ViewData["budgetGraph"] = _adminServices.ViewProjectExpenditure();
+            return View((object)TotalCount);
         }
         public ActionResult AllProject(string searchTerm = null, string statusFilter = null, int? projectManager = null)
         {

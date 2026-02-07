@@ -67,6 +67,10 @@ namespace RemoteSensingProject.Controllers
                     {
                         url = "/Prashasan/Dashboard"; 
                     }
+					else if (role.Contains("cgp"))
+					{
+						url = "/cgp/Dashboard";
+					}
                 }
 
                 FormsAuthentication.SetAuthCookie(username, createPersistentCookie: false);
