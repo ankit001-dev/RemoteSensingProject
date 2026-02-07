@@ -53,10 +53,16 @@
                     <tr>
                         <td>@i</td>
                         <td>@item.projectName</td>
-                        <td>@item.Title</td>
+                        <td><a class="cursor-pointer viewTaskDetail" data-description="@item.Description">@item.Title</a></td>
                         <td> @if (!item.CompleteStatus) {
-                            <span class="badge bg-primary">Pending</span>
-                        }
+
+
+<span class="badge bg-primary">Pending</span>
+}
+else
+                    {
+                        <span class="badge bg-success">Completed</span>
+                    }
                         </td>
                     </tr>
                                    i++;
@@ -85,36 +91,26 @@
     </div>
 </div>
 
-<div class="modal fade" id="viewStatusModal" tabindex="-1" aria-labelledby="viewStatusModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header text-center text-white">
-                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+<script>
+    $(document).on("click", ".viewTaskDetail", function () {
+        const description = $(this).data('description');
 
-                <h5 class="modal-title float-start" id="viewStatusModalLabel">Raise Problem</h5>
-            </div>
-            <div class="modal-body">
-                <form class="forms-sample" id="problemForm">
-                    <input type="hidden" id="projectId" name="Project_Id" />
-                    <div class="mb-3">
-                        <label for="upload" class="form-label">Title</label>
-                        <input class="form-control" type="text" id="title" name="Title" placeholder="Enter Problem Title">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="delayReason" class="form-label">Description</label>
-                        <textarea class="form-control form-control-sm" name="Description" id="description" rows="4" placeholder="Enter Problem Description"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="upload" class="form-label">Upload Image</label>
-                        <input class="form-control" type="file" id="attachment" name="Attachment">
-                    </div>
-
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Problem</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+        Swal.fire({
+            title: '<strong>Task Details</strong>',
+            html: `<div style="max-height:250px; overflow-y:auto; text-align:left;">
+            ${description || 'No description available.'}
+           </div>`,
+            icon: 'info',
+            confirmButtonText: 'Close',
+            confirmButtonColor: '#3085d6',
+            width: '500px',
+            padding: '1.5em',
+            backdrop: `
+        rgba(0,0,0,0.6)
+    `,
+            customClass: {
+                popup: 'rounded-3 shadow-lg'
+            }
+        });
+    });
+</script>

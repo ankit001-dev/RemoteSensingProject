@@ -115,8 +115,8 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult GetMemberResponse(getMemberResponse mr)
 		{
-			UserCredential userId = _managerServices.getManagerDetails(((Controller)this).User.Identity.Name);
-			mr.MemberId = int.Parse(userId.userId);
+            var userData = _subOrdinate.GetOutSourceId(User.Identity.Name);
+            mr.MemberId = int.Parse(userData.userId);
 			bool res = _managerServices.GetResponseFromMember(mr);
 			return Json((object)res);
 		}
