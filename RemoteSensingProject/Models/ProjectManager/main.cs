@@ -9,8 +9,14 @@ namespace RemoteSensingProject.Models.ProjectManager
 
     public class DashboardCount
     {
+        public string ExternalOngoingProject { get; set; }
+        public string ExternalCompletedProject { get; set; }
+        public string ExternalDelayProject { get; set; }
+        public string InternalOngoingProject { get; set; }
+        public string InternalCompletedProject { get; set; }
+        public string InternalDelayProject { get; set; }
         public string ProjectProblem { get; set; }
-
+        public string TotalOutsourceCount { get; set; }
         public string OutSource { get; set; }
 
         public string CompletedTask { get; set; }
@@ -58,6 +64,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string TotalOngoingProject { get; set; }
 
         public string TotalNotice { get; set; }
+        public string TotalManpowerRequest { get; set; }
     }
 
 
