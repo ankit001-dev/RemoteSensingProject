@@ -2,26 +2,23 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Controllers.SubOrdinateController
+using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.SubOrdinate;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
-using RemoteSensingProject.Models.Admin;
-using RemoteSensingProject.Models.ProjectManager;
-using RemoteSensingProject.Models.SubOrdinate;
 
 namespace RemoteSensingProject.Controllers
 {
-	[Authorize(Roles = "subOrdinate")]
+	[Authorize(Roles = "outSource")]
 	public class SubOrdinateController : Controller
 	{
 		private readonly SubOrinateService _subOrdinate;
-
 		private readonly AdminServices _adminServices;
-
 		private readonly ManagerService _managerServices;
-
 		public SubOrdinateController()
 		{
 			_subOrdinate = new SubOrinateService();
@@ -92,7 +89,7 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult Meeting_List(string searchTerm = null, string statusFilter = null)
 		{
-			UserCredential userId = _managerServices.getManagerDetails(((Controller)this).User.Identity.Name);
+			var userId = _subOrdinate.GetOutSourceId(User.Identity.Name);
 			List<RemoteSensingProject.Models.Admin.main.Meeting_Model> res = _subOrdinate.getAllSubordinatemeeting(int.Parse(userId.userId), null, null, searchTerm, statusFilter);
 			return View((object)res);
 		}
@@ -118,11 +115,49 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult GetMemberResponse(getMemberResponse mr)
 		{
-			UserCredential userId = _managerServices.getManagerDetails(((Controller)this).User.Identity.Name);
-			mr.MemberId = int.Parse(userId.userId);
+            var userData = _subOrdinate.GetOutSourceId(User.Identity.Name);
+            mr.MemberId = int.Parse(userData.userId);
 			bool res = _managerServices.GetResponseFromMember(mr);
 			return Json((object)res);
 		}
+
+		public ActionResult ProjectAllTaskList()
+		{
+			var userData = _subOrdinate.GetOutSourceId(User.Identity.Name);
+
+            ViewData["TaskList"] = _subOrdinate.getOutSourceTask(Convert.ToInt32(userData.userId));
+
+            return View();
+		}
+		public ActionResult ProjectPendingTaskList()
+		{
+            var userData = _subOrdinate.GetOutSourceId(User.Identity.Name);
+
+            ViewData["TaskList"] = _subOrdinate.getOutSourceTask(Convert.ToInt32(userData.userId), statusFilter: "Pending");
+
+            return View();
+		}
+		public ActionResult ProjectCompleteTaskList()
+		{
+            var userData = _subOrdinate.GetOutSourceId(User.Identity.Name);
+
+            ViewData["TaskList"] = _subOrdinate.getOutSourceTask(Convert.ToInt32(userData.userId), statusFilter: "Complete");
+
+            return View();
+		}
+
+		[HttpPost]
+		public JsonResult CompleteTask(Models.SubOrdinate.main.OutSource_Task task)
+		{
+            var userData = _subOrdinate.GetOutSourceId(User.Identity.Name);
+			task.EmpId = Convert.ToInt32(userData.userId);
+			bool result = _subOrdinate.AddOutSourceTask(task);
+			return Json(new
+			{
+				status = result,
+				message = result ? "Task Completed successfully. Please wait for admin approval." : "some issue found while updating task status"
+			}, JsonRequestBehavior.AllowGet);
+        }
 
 		public ActionResult RejectList()
 		{
