@@ -1,10 +1,10 @@
 ﻿
 @{
-    ViewBag.Title = "All_Projects";
-    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    ViewBag.Title = "AllProject";
+    Layout = "~/Views/Shared/_cgpLayout.cshtml";
     int i = 1;
 }
-<link href="~/assets/css/ExternalPrjStyle.css" rel="stylesheet" />
+
 <style>
     .link-icon {
         height: 16px;
@@ -69,7 +69,7 @@
     <form class="forms-sample">
         <div class="row align-items-center">
             <div class="col-lg-2">
-                <h5>All Project</h5>
+                <h5>@ViewBag.pageTitle</h5>
             </div>
             <div class="col-lg-4 col-md-6">
                 <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
@@ -102,7 +102,7 @@
                 <div>
                     <a href="/admin/ProjectReport?type=Excel"><button class="btn btn-success">Excel</button></a>
                     <a href="/admin/ProjectReport?type=pdf"><button class="btn btn-danger">Pdf</button></a>
-</div>
+                </div>
                 <div class="table-responsive">
                     <table class="table" id="AllProjectList">
                         <thead>
@@ -119,7 +119,6 @@
                                 <th>Financial in %</th>
                                 <th>Overall in %</th>
                                 <th>Project Status</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -164,27 +163,12 @@
                                         }
                                         else if (item.StartDate <= DateTime.Now)
                                         {
-                                    <span class="badge bg-warning">Ongoing</span>
+                                            <span class="badge bg-warning">Ongoing</span>
                                         }
                                         else
                                         {
                                             <span class="badge bg-primary">Upcoming</span>
                                         }
-                                    </td>
-
-                                    <td class="text-center">
-                                        <ul class="d-flex list-unstyled mb-0 justify-content-center">
-                                            <li class="me-2">
-                                                <a href="#" data-title="Report" class="monthlyReport" data-prjType="@item.ProjectType" data-prjId="@item.Id">
-                                                    <i class="link-icon " data-feather="calendar" style="color:orangered"> </i>
-                                                </a>
-                                            </li>
-                                            <li class="me-2">
-                                                <a href="/Admin/View_Expenses?Id=@item.Id" data-title="View Expenses">
-                                                    <i class="link-icon text-danger" data-feather="file-plus"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
                                     </td>
                                 </tr>
                                 i++;
@@ -343,6 +327,7 @@
 
     </div>
 </div>
+
 <script>
     $(".viewProject").click(function () {
         let id = $(this).attr("data-Id");
@@ -357,7 +342,7 @@
             }
         })
         $.ajax({
-            url: "/admin/GetProjecDatatById",
+            url: "/cgp/GetProjecDatatById",
             type: "get",
             data: { Id: id },
             success: function (res) {
@@ -476,11 +461,11 @@
              ${subOrdinates}
          </ul>
      </div>
- 
+
      <hr />
  </div>
  ${res.data.pm.ProjectStage ? stages : ""}
- 
+
      <div class="row">
          <div class="col-sm-4 mb-2">
         <label class="form-label fw-bolder">Stage</label>
@@ -786,74 +771,58 @@
 
     })
 
-    // Search by text
-    $('#searchProjectBy').on('keyup', function () {
-        let value = $(this).val().trim();
-        const url = new URL(window.location.href);
-        url.searchParams.set("searchTerm", value);
+    $(document).ready(function () {
 
-        const division = $("#filterProjectStatus").val();
-        if (division && division !== "null") url.searchParams.set("statusFilter", division);
-        else url.searchParams.delete("statusFilter");
+        function applyProjectFilters(options = {}) {
+            const url = new URL(window.location.href);
 
-        const manager = $("#searchByProjectManager").val();
-        if (manager && manager !== "null") url.searchParams.set("projectManagerFilter", manager);
-        else url.searchParams.delete("projectManagerFilter");
+            const searchValue = options.searchTerm ?? $('#searchProjectBy').val()?.trim();
+            if (searchValue) url.searchParams.set("searchTerm", searchValue);
+            else url.searchParams.delete("searchTerm");
 
-        clearTimeout(window.searchTimer);
-        window.searchTimer = setTimeout(() => {
+            const status = options.statusFilter ?? $("#filterProjectStatus").val();
+            if (status && status !== "null") url.searchParams.set("statusFilter", status);
+            else url.searchParams.delete("statusFilter");
+
+            const manager = options.projectManager ?? $("#searchByProjectManager").val();
+            if (manager && manager !== "null") url.searchParams.set("projectManager", manager);
+            else url.searchParams.delete("projectManager");
+
             showLoader();
             window.location.href = url.toString();
-        }, 500);
+        }
+
+        // 🔍 Search
+        $('#searchProjectBy').on('keyup', function () {
+            clearTimeout(window.searchTimer);
+            window.searchTimer = setTimeout(() => {
+                applyProjectFilters({ searchTerm: $(this).val().trim() });
+            }, 500);
+        });
+
+        // 📌 Status filter
+        $('#filterProjectStatus').on('change', function () {
+            applyProjectFilters({ statusFilter: $(this).val() });
+        });
+
+        // 👤 Manager filter
+        $('#searchByProjectManager').on('change', function () {
+            applyProjectFilters({ projectManager: $(this).val() });
+        });
+
     });
 
-    // Filter by status
-    $("#filterProjectStatus").on("change", function () {
-        const url = new URL(window.location.href);
-
-        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
-        else url.searchParams.delete("statusFilter");
-
-        const searchValue = $('#searchProjectBy').val().trim();
-        if (searchValue) url.searchParams.set("searchTerm", searchValue);
-
-        const manager = $("#searchByProjectManager").val();
-        if (manager) url.searchParams.set("projectManagerFilter", manager);
-
-        showLoader();
-        window.location.href = url.toString();
-    });
-
-    // Filter by Project Manager
-    $("#searchByProjectManager").on("change", function () {
-        const url = new URL(window.location.href);
-
-        if ($(this).val()) url.searchParams.set("projectManagerFilter", $(this).val());
-        else url.searchParams.delete("projectManagerFilter");
-
-        const searchValue = $('#searchProjectBy').val().trim();
-        if (searchValue) url.searchParams.set("searchTerm", searchValue);
-
-        const division = $("#filterProjectStatus").val();
-        if (division) url.searchParams.set("statusFilter", division);
-
-        showLoader();
-        window.location.href = url.toString();
-    });
-
-    // Set values on page load
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
 
         const search = urlParams.get('searchTerm');
         const division = urlParams.get('statusFilter');
-        const manager = urlParams.get('projectManagerFilter');
+        const manager = urlParams.get('projectManager');
 
         if (search) $('#searchProjectBy').val(search).focus();
         if (division) $('#filterProjectStatus').val(division);
         if (manager) $('#searchByProjectManager').val(manager);
     });
 
+
 </script>
-
-

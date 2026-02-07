@@ -16,6 +16,7 @@ using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
+using static RemoteSensingProject.Models.CommonHelper;
 
 [JwtAuthorize(Roles = "admin,account,projectManager,subOrdinate,outSource,prashasan")]
 public class CommonController : ApiController
@@ -35,8 +36,8 @@ public class CommonController : ApiController
 		_managerservice = new ManagerService();
 		_accountService = new AccountService();
 	}
-
-	[RoleAuthorize("admin,projectManager")]
+    #region Manage Project
+    [RoleAuthorize("admin,projectManager")]
 	[HttpPost]
 	[Route("api/adminCreateProject")]
 	public IHttpActionResult CreateProject()
@@ -175,7 +176,7 @@ public class CommonController : ApiController
 			return CommonHelper.Error((ApiController)(object)this, ex.Message);
 		}
 	}
-
+	[System.Web.Mvc.AllowAnonymous]
 	[RoleAuthorize("admin,projectManager")]
 	[HttpGet]
 	[Route("api/GetadminProjectDetailById")]
@@ -201,7 +202,10 @@ public class CommonController : ApiController
 		}
 	}
 
-	[RoleAuthorize("admin,projectManager")]
+    #endregion
+
+    #region Manage Meetings
+    [RoleAuthorize("admin,projectManager")]
 	[HttpPost]
 	[Route("api/adminCreateMeeting")]
 	public IHttpActionResult CreateMeeting()
@@ -356,7 +360,31 @@ public class CommonController : ApiController
 		});
 	}
 
-	[HttpPost]
+    [RoleAuthorize("projectManager,subOrdinate")]
+    [HttpGet]
+    [Route("api/getAllmeeting")]
+    public IHttpActionResult getAllmeeting(int managerId, int? page, int? limit, string searchTerm = null, string statusFilter = null)
+    {
+        try
+        {
+            List<RemoteSensingProject.Models.Admin.main.Meeting_Model> res = _managerservice.getAllmeeting(managerId, limit, page, searchTerm, statusFilter);
+            string[] selectprop = new string[10] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "AppStatus", "memberId", "CreaterId", "MeetingDate", "createdBy" };
+            List<object> data = CommonHelper.SelectProperties(res, selectprop);
+            if (data.Count > 0)
+            {
+                return CommonHelper.Success((ApiController)(object)this, data, "Data fetched successfully", 200, res[0].Pagination);
+            }
+            return CommonHelper.NoData((ApiController)(object)this);
+        }
+        catch (Exception ex)
+        {
+            return CommonHelper.Error((ApiController)(object)this, ex.Message);
+        }
+    }
+    #endregion
+
+    #region Manage Employee
+    [HttpPost]
 	[Route("api/updateEmployeeData")]
 	public IHttpActionResult Update_Employee()
 	{
@@ -497,6 +525,8 @@ public class CommonController : ApiController
 		}
 	}
 
+    #endregion
+
     #region Manage Designation
     [RoleAuthorize("admin,prashasan")]
     [HttpPost]
@@ -592,6 +622,7 @@ public class CommonController : ApiController
     }
     #endregion
 
+    #region Manage Attendance
     [RoleAuthorize("admin,projectManager")]
 	[HttpGet]
 	[Route("api/getattendancebyIdofEmp")]
@@ -627,29 +658,128 @@ public class CommonController : ApiController
 		}
 	}
 
-	[RoleAuthorize("projectManager,subOrdinate")]
-	[HttpGet]
-	[Route("api/getAllmeeting")]
-	public IHttpActionResult getAllmeeting(int managerId, int? page, int? limit, string searchTerm = null, string statusFilter = null)
-	{
-		try
-		{
-			List<RemoteSensingProject.Models.Admin.main.Meeting_Model> res = _managerservice.getAllmeeting(managerId, limit, page, searchTerm, statusFilter);
-			string[] selectprop = new string[10] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "AppStatus", "memberId", "CreaterId", "MeetingDate", "createdBy" };
-			List<object> data = CommonHelper.SelectProperties(res, selectprop);
-			if (data.Count > 0)
-			{
-				return CommonHelper.Success((ApiController)(object)this, data, "Data fetched successfully", 200, res[0].Pagination);
-			}
-			return CommonHelper.NoData((ApiController)(object)this);
-		}
-		catch (Exception ex)
-		{
-			return CommonHelper.Error((ApiController)(object)this, ex.Message);
-		}
-	}
+    #endregion
 
-	private IHttpActionResult BadRequest(object value)
+    #region Manage Hiring & Tour Proposal
+    // Hiring By id
+    // Get Hiring BY ID
+    [System.Web.Mvc.AllowAnonymous]
+    [HttpGet]
+    [Route("api/getHiringById")]
+    public IHttpActionResult GetHiringById(int id)
+    {
+        try
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = "Id is not valid"
+                });
+            }
+            List<HiringVehicle> data = _managerservice.GetHiringVehicles(id: id, type: "GETBYID");
+            return Ok(new
+            {
+                status = data.Any(),
+                data = data
+            });
+        }
+        catch (Exception ex)
+        {
+            return Ok(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+
+    //All Hirings
+    [HttpGet]
+    [Route("api/getAllHiringList")]
+    public IHttpActionResult getAllHiringList(int? limit = null, int? page = null, int? projectFilter = null)
+    {
+        try
+        {
+            List<HiringVehicle> data = _managerservice.GetHiringVehicles(type: "ALLDATA", projectFilter: projectFilter, limit: limit, page: page);
+            if (data.Count > 0)
+            {
+                return Success(this, data, "Data fetched successfully", 200, data[0].Pagination);
+            }
+            return NoData(this);
+        }
+        catch (Exception ex)
+        {
+            return Ok(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+
+    // Tourproposal By Id
+    [Route("api/getTourById")]
+    [HttpGet]
+    public IHttpActionResult TourById(int id)
+    {
+        try
+        {
+			if (id <= 0)
+			{
+				return BadRequest(new
+				{
+					status = false,
+					message = "Id is not valid"
+				});
+			}
+            List<tourProposal> data = _managerservice.GetTourList(type: "GETBYID", id: id);
+            return Ok(new
+            {
+                status = data.Any(),
+                data = data
+            });
+        }
+        catch
+        {
+            return Ok(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = "Data not found"
+            });
+        }
+    }
+    // All TourProposal
+    [HttpGet]
+    [Route("api/getAllTourproposalList")]
+    public IHttpActionResult GetAllTourProposal(int? limit = null, int? page = null, int? projectFilter = null)
+    {
+        try
+        {
+            var data = _managerservice.GetTourList(type: "ALLDATA", projectFilter: projectFilter, limit: limit, page: page);
+            if (data.Count > 0)
+            {
+                return Success(this, data, "Data fetched successfully", 200, data[0].Pagination);
+            }
+            return NoData(this);
+        }
+        catch (Exception ex)
+        {
+            return Ok(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+    #endregion
+
+    private IHttpActionResult BadRequest(object value)
 	{
 		return Content<object>(HttpStatusCode.BadRequest, value);
 	}

@@ -2,16 +2,17 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.ApiServices.AccountController
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Accounts;
+using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Http;
-using RemoteSensingProject.Models;
-using RemoteSensingProject.Models.Accounts;
 using static RemoteSensingProject.Models.CommonHelper;
-using RemoteSensingProject.Models.ProjectManager;
 
 namespace RemoteSensingProject.ApiServices
 {
@@ -27,8 +28,8 @@ namespace RemoteSensingProject.ApiServices
 			_accountSerivce = new AccountService();
 			_mangerServices = new ManagerService();
 		}
-
-		[Route("api/getProjectList")]
+        #region Manage Project
+        [Route("api/getProjectList")]
 		[HttpGet]
 		public IHttpActionResult GetProjectList(int? page = null, int? limit = null, string searchTerm = null)
 		{
@@ -53,8 +54,10 @@ namespace RemoteSensingProject.ApiServices
 				message = "data retrieved"
 			});
 		}
+        #endregion
 
-		[Route("api/ProjectBudgetList")]
+        #region Manage Budget & Expense
+        [Route("api/ProjectBudgetList")]
 		[HttpGet]
 		public IHttpActionResult ProjectBudgetList(int projectId)
 		{
@@ -118,8 +121,10 @@ namespace RemoteSensingProject.ApiServices
 				message = "data retrieved"
 			});
 		}
+        #endregion
 
-		[Route("api/getAccountDashboards")]
+        #region Manage Dashboard
+        [Route("api/getAccountDashboards")]
 		[HttpGet]
 		public IHttpActionResult getAccountDashboards()
 		{
@@ -139,58 +144,81 @@ namespace RemoteSensingProject.ApiServices
 			});
 		}
 
-		[System.Web.Mvc.AllowAnonymous]
-		[Route("api/getTourById")]
-		[HttpGet]
-		public IHttpActionResult TourById(int id)
-		{
-			try
-			{
-				ManagerService mangerServices = _mangerServices;
-				int? id2 = id;
-				List<tourProposal> data = mangerServices.GetTourList(type:"GETBYID",id:id);
-				return Ok(new
-				{
-					status = data.Any(),
-					data = data
-				});
-			}
-			catch
-			{
-				return Ok(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = "Data not found"
-				});
-			}
-		}
+        [HttpGet]
+        [Route("api/getDashboardCounts")]
+        public IHttpActionResult DashboardCount()
+        {
+            try
+            {
+                RemoteSensingProject.Models.Accounts.main.DashboardCount data = _accountSerivce.DashboardCount();
+                return Ok(new
+                {
+                    status = true,
+                    data = data
+                });
+            }
+            catch
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = "Data not found"
+                });
+            }
+        }
 
-		[Route("api/getAllTour")]
-		[HttpGet]
-		public IHttpActionResult getAllTour()
-		{
-			try
-			{
-				List<RemoteSensingProject.Models.Accounts.main.tourProposal> data = _accountSerivce.getTourList();
-				return Ok(new
-				{
-					status = data.Any(),
-					data = data
-				});
-			}
-			catch
-			{
-				return Ok(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = "Data not found"
-				});
-			}
-		}
+        [HttpGet]
+        [Route("api/graphData")]
+        public IHttpActionResult GraphData()
+        {
+            try
+            {
+                RemoteSensingProject.Models.Accounts.main.GraphData data = _accountSerivce.ExpencesListforgraph();
+                return Ok(new
+                {
+                    status = true,
+                    data = data
+                });
+            }
+            catch
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = "Data not found"
+                });
+            }
+        }
 
-		[AllowAnonymous]
+        [HttpGet]
+        [Route("api/budgetGraphData")]
+        public IHttpActionResult BudgetGraphData()
+        {
+            try
+            {
+                List<RemoteSensingProject.Models.Accounts.main.GraphData> data = _accountSerivce.budgetdataforgraph();
+                return Ok(new
+                {
+                    status = true,
+                    data = data
+                });
+            }
+            catch
+            {
+                return Ok(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = "Data not found"
+                });
+            }
+        }
+        #endregion
+
+        #region Manage Reimbursement
+        [AllowAnonymous]
 		[HttpPost]
 		[Route("api/approveReinbursementAmtRequest")]
 		public IHttpActionResult InsertReinbursementForm()
@@ -257,77 +285,6 @@ namespace RemoteSensingProject.ApiServices
 		{
 			return Content<object>(HttpStatusCode.BadRequest, value);
 		}
-		[HttpGet]
-		[Route("api/getDashboardCounts")]
-		public IHttpActionResult DashboardCount()
-		{
-			try
-			{
-				RemoteSensingProject.Models.Accounts.main.DashboardCount data = _accountSerivce.DashboardCount();
-				return Ok(new
-				{
-					status = true,
-					data = data
-				});
-			}
-			catch
-			{
-				return Ok(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = "Data not found"
-				});
-			}
-		}
-
-		[HttpGet]
-		[Route("api/graphData")]
-		public IHttpActionResult GraphData()
-		{
-			try
-			{
-				RemoteSensingProject.Models.Accounts.main.GraphData data = _accountSerivce.ExpencesListforgraph();
-				return Ok(new
-				{
-					status = true,
-					data = data
-				});
-			}
-			catch
-			{
-				return Ok(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = "Data not found"
-				});
-			}
-		}
-
-		[HttpGet]
-		[Route("api/budgetGraphData")]
-		public IHttpActionResult BudgetGraphData()
-		{
-			try
-			{
-				List<RemoteSensingProject.Models.Accounts.main.GraphData> data = _accountSerivce.budgetdataforgraph();
-				return Ok(new
-				{
-					status = true,
-					data = data
-				});
-			}
-			catch
-			{
-				return Ok(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = "Data not found"
-				});
-			}
-		}
 
 		[HttpGet]
 		[Route("api/getAccountReinbursement")]
@@ -353,21 +310,41 @@ namespace RemoteSensingProject.ApiServices
 				return Error(this, ex.Message);
 			}
 		}
+        #endregion
 
-        #region Manage Hiring Vehicle
-        // Get Hiring BY ID
-        [System.Web.Mvc.AllowAnonymous]
-        [HttpGet]
-        [Route("api/getHiringList")]
-        public IHttpActionResult GetHiringById(int id)
+        #region Add Hiring Vehicle & Tour Propoal
+
+        // Add Hiring Vehicle
+        [Route("api/addHiringRequest")]
+        [HttpPost]
+        public IHttpActionResult addHiringRequest()
         {
             try
             {
-                List<HiringVehicle> data = _mangerServices.GetHiringVehicles(id: id, type: "GETBYID");
+                HttpRequest request = HttpContext.Current.Request;
+                HiringVehicle formdata = new HiringVehicle
+                {
+                    headId = Convert.ToInt32(request.Form.Get("headId")),
+                    amount = Convert.ToDecimal(request.Form.Get("amount")),
+                    projectId = Convert.ToInt32(request.Form.Get("projectId")),
+                    dateFrom = Convert.ToDateTime(request.Form.Get("dateFrom")),
+                    dateTo = Convert.ToDateTime(request.Form.Get("dateTo")),
+                    proposedPlace = request.Form.Get("proposedPlace"),
+                    purposeOfVisit = request.Form.Get("purposeOfVisit"),
+                    totalDaysNight = Convert.ToString(request.Form.Get("totalDaysNight")),
+                    totalPlainHills = Convert.ToString(request.Form.Get("totalPlanHills")),
+                    taxi = request.Form.Get("taxi"),
+                    BookAgainstCentre = request.Form.Get("BookAgainstCentre"),
+                    availbilityOfFund = request.Form.Get("availabilityOfFund"),
+                    note = request.Form.Get("note"),
+                    id = !string.IsNullOrEmpty(request.Form.Get("id")) ? Convert.ToInt32(request.Form.Get("id")) : 0
+                };
+                bool res = _mangerServices.insertHiring(formdata);
                 return Ok(new
                 {
-                    status = data.Any(),
-                    data = data
+                    status = res,
+                    StatusCode = (res ? 200 : 500),
+                    message = res ?(formdata.id >0 ?"Updated Successfully": "Added successfully!" ): "Error Occured"
                 });
             }
             catch (Exception ex)
@@ -380,19 +357,73 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
-		//All Hirings
-        [HttpGet]
-        [Route("api/getAllHiringList")]
-        public IHttpActionResult getAllHiringList(int? limit = null, int? page = null, int? projectFilter = null)
+
+		// Add TourProposal
+        [HttpPost]
+        [Route("api/submitTourProposal")]
+        public IHttpActionResult toursubmit()
         {
             try
             {
-                List<HiringVehicle> data = _mangerServices.GetHiringVehicles(type:"ALLDATA",projectFilter:projectFilter,limit:limit,page:page);
-                if (data.Count > 0)
+                HttpRequest request = HttpContext.Current.Request;
+                NameValueCollection form = request.Form;
+                List<string> errors = new List<string>();
+                if (string.IsNullOrWhiteSpace(form["projectId"]) || !int.TryParse(form["projectId"], out var _))
                 {
-                    return Success(this, data, "Data fetched successfully", 200, data[0].Pagination);
+                    errors.Add("Valid Project ID is required.");
                 }
-                return NoData(this);
+                string dateOfDeptStr = form["dateOfDept"];
+                if (string.IsNullOrWhiteSpace(dateOfDeptStr) || !DateTime.TryParse(dateOfDeptStr, out var _))
+                {
+                    errors.Add("Valid Date of Departure is required.");
+                }
+                string place = form["place"];
+                if (string.IsNullOrWhiteSpace(place))
+                {
+                    errors.Add("Place is required.");
+                }
+                string periodFromStr = form["periodFrom"];
+                if (string.IsNullOrWhiteSpace(periodFromStr) || !DateTime.TryParse(periodFromStr, out var _))
+                {
+                    errors.Add("Valid Period From date is required.");
+                }
+                string periodToStr = form["periodTo"];
+                if (string.IsNullOrWhiteSpace(periodToStr) || !DateTime.TryParse(periodToStr, out var _))
+                {
+                    errors.Add("Valid Period To date is required.");
+                }
+                string returnDateStr = form["returnDate"];
+                if (string.IsNullOrWhiteSpace(returnDateStr) || !DateTime.TryParse(returnDateStr, out var _))
+                {
+                    errors.Add("Valid Return Date is required.");
+                }
+                string purpose = form["purpose"];
+                if (string.IsNullOrWhiteSpace(purpose))
+                {
+                    errors.Add("Purpose is required.");
+                }
+                if (errors.Count > 0)
+                {
+                    return Error((ApiController)(object)this, string.Join(", ", errors));
+                }
+                tourProposal formdata = new tourProposal
+                {
+                    projectId = Convert.ToInt32(request.Form.Get("projectId")),
+                    dateOfDept = Convert.ToDateTime(request.Form.Get("dateOfDept")),
+                    place = request.Form.Get("place"),
+                    periodFrom = Convert.ToDateTime(request.Form.Get("periodFrom")),
+                    periodTo = Convert.ToDateTime(request.Form.Get("periodTo")),
+                    returnDate = Convert.ToDateTime(request.Form.Get("returnDate")),
+                    purpose = request.Form.Get("purpose"),
+                    id = !string.IsNullOrEmpty(request.Form.Get("id")) ? Convert.ToInt32(request.Form.Get("id")):0
+                };
+                bool res = _mangerServices.insertTour(formdata);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = (res ? 200 : 500),
+                    message = res ? (formdata.id > 0 ? "Updated Successfully" : "Added successfully!") : "Error Occured"
+                });
             }
             catch (Exception ex)
             {
@@ -405,5 +436,6 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
     }
 }

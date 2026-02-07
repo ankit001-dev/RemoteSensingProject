@@ -12,7 +12,7 @@
     .modal-body .sliderimages img {
         width: 20% !important;
         height: 20%;
-        border-radius: 10px; 
+        border-radius: 10px;
     }
 
     svg {
@@ -22,10 +22,10 @@
     .link-icon {
         height: 16px;
     }
+
     #addEmployeeform .form-group {
         padding: 8px 0;
     }
-
 </style>
 
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
@@ -74,8 +74,12 @@
                                         <td>@item.email</td>
                                         <td>@item.designationname</td>
                                         <td>@item.gender</td>
-                                        <td><button title="Deallocate" data-id="@item.Id" class="deallocate border-0 bg-white"><i class="fa-solid fa-user-minus fs-6" style="color:rgb(2 158 157) !important"></i></button></td>
-                                    </tr>   
+                                        <td class="text-center">
+                                            <button title="Deallocate" data-id="@item.Id" class="deallocate border-0 bg-white"><i class="fa-solid fa-user-minus fs-6" style="color:rgb(2 158 157) !important"></i></button> |
+                                            <a class="cursor-pointer sendoutsourceattour" data-id="@item.Id">&nbsp; <i class="fa-solid fa-tent-arrow-turn-left" style="color:rgb(2 158 157) !important"></i></a>
+                                        </td>
+                                    </tr>
+
                                     count++;
                                 }
 
@@ -89,7 +93,52 @@
     </div>
 </div>
 
+<div class="modal fade" id="addslider" data-backdrop="static" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Send OutSource At Tour</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="outSourceTourForm">
+
+                    <input type="hidden" name="outsourceid" id="outsourceId" />
+
+                    <div class="form-group mt-2">
+                        <label id="fromDate" class="form-label">From</label>
+                        <input type="date" class="form-control" name="fromDate" id="fromDate" />
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label for="toDate" class="form-label">To</label>
+                        <input type="date" class="form-control" name="toDate" id="toDate" />
+                    </div>
+
+                    <div class="form-group mt-2">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea rows="2" placeholder="write something here..." class="form-control" id="description" name="description" ></textarea>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+
+    $('.sendoutsourceattour').on('click', function () {
+        const id = $(this).data("id");
+        $('#outsourceId').val(id);
+        $('#addslider').modal('show');
+    })
 
     $('#searchByEmployeeName').on('keyup', function () {
         let value = $(this).val().trim();
@@ -117,6 +166,13 @@
 
     $('.deallocate').on('click', function () {
         const id = $(this).data("id");
+        Swal.fire({
+            title: 'Plaese wait',
+            text: 'We are processign your request...',
+            didOpen: () => { Swal.showLoading(); },
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+        });
         $.ajax({
             url: `DeAllocateOutsource?outsourceid=${id}`,
             type: 'put',
@@ -131,6 +187,36 @@
             }, error: function (xhr) {
                 console.log(xhr);
                 Swal.fire('Error', 'Server error occured', 'error');
+            }
+        });
+    });
+
+    $("#outSourceTourForm").on("submit", function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Please wait',
+            text: 'We are processing your request...',
+            didOpen: () => { Swal.showLoading(); },
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        var formData = $(this).serializeArray();
+
+        $.ajax({
+            url: '/employee/InsertOutSourceTour',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.status) {
+                    Swal.fire('Success', response.message, 'success');
+                    location.reload(true);
+                } else {
+                    Swal.fire('Error', response.message, 'error');
+                }
+            },
+            error: function (xhr) {
+                console.log(xhr);
+                Swal.fire('Error','Server error occured','error')
             }
         });
     });
