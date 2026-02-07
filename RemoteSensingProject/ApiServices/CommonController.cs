@@ -97,10 +97,6 @@ public class CommonController : ApiController
 				model.pm.ProjectDepartment = form["ProjectDepartment"];
 				model.pm.Address = form["Address"];
 			}
-			if (!string.IsNullOrEmpty(form["SubOrdinate"]))
-			{
-				model.pm.SubOrdinate = form["SubOrdinate"].Split(',').Select(int.Parse).ToArray();
-			}
 			if (!string.IsNullOrEmpty(form["budgets"]))
 			{
 				model.budgets = JsonConvert.DeserializeObject<List<RemoteSensingProject.Models.Admin.main.Project_Budget>>(form["budgets"]);

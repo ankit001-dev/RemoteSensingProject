@@ -688,22 +688,22 @@ namespace RemoteSensingProject.Models.Admin
                         ExecuteProjectAction(stageParams, tran);
                     }
                 }
-                if (pm.pm.SubOrdinate != null && pm.pm.SubOrdinate.Length != 0)
-                {
-                    int[] subOrdinate = pm.pm.SubOrdinate;
-                    foreach (int subId in subOrdinate)
-                    {
-                        int SubProjectManager;
-                        Dictionary<string, object> subParams = new Dictionary<string, object>
-                        {
-                            ["p_action"] = ((pm.pm.Id <= 0) ? "insertSubOrdinate" : "updateSubOrdinate"),
-                            ["p_project_id"] = ((pm.pm.Id > 0) ? pm.pm.Id : projectId),
-                            ["p_id"] = subId,
-                            ["p_projectmanager"] = (int.TryParse(pm.pm.ProjectManager, out SubProjectManager) ? SubProjectManager : 0)
-                        };
-                        ExecuteProjectAction(subParams, tran);
-                    }
-                }
+                //if (pm.pm.SubOrdinate != null && pm.pm.SubOrdinate.Length != 0)
+                //{
+                //    int[] subOrdinate = pm.pm.SubOrdinate;
+                //    foreach (int subId in subOrdinate)
+                //    {
+                //        int SubProjectManager;
+                //        Dictionary<string, object> subParams = new Dictionary<string, object>
+                //        {
+                //            ["p_action"] = ((pm.pm.Id <= 0) ? "insertSubOrdinate" : "updateSubOrdinate"),
+                //            ["p_project_id"] = ((pm.pm.Id > 0) ? pm.pm.Id : projectId),
+                //            ["p_id"] = subId,
+                //            ["p_projectmanager"] = (int.TryParse(pm.pm.ProjectManager, out SubProjectManager) ? SubProjectManager : 0)
+                //        };
+                //        ExecuteProjectAction(subParams, tran);
+                //    }
+                //}
                 if (pm.pm.ProjectType.Equals("External") && (projectId > 0 || pm.pm.Id > 0))
                 {
                     Dictionary<string, object> extParams = new Dictionary<string, object>
@@ -978,15 +978,15 @@ namespace RemoteSensingProject.Models.Admin
                             pm.ProjectDepartment = ((DbDataReader)(object)rd)["departmentname"].ToString();
                             pm.ContactPerson = ((DbDataReader)(object)rd)["contactperson"].ToString();
                         }
-                        if (((DbDataReader)(object)rd)["SubordinateLinkId"] != DBNull.Value)
-                        {
-                            subList.Add(new main.Project_Subordination
-                            {
-                                Id = Convert.ToInt32(((DbDataReader)(object)rd)["SubordinateLinkId"]),
-                                Name = ((DbDataReader)(object)rd)["subName"].ToString(),
-                                EmpCode = ((DbDataReader)(object)rd)["subCode"].ToString()
-                            });
-                        }
+                        //if (((DbDataReader)(object)rd)["SubordinateLinkId"] != DBNull.Value)
+                        //{
+                        //    subList.Add(new main.Project_Subordination
+                        //    {
+                        //        Id = Convert.ToInt32(((DbDataReader)(object)rd)["SubordinateLinkId"]),
+                        //        Name = ((DbDataReader)(object)rd)["subName"].ToString(),
+                        //        EmpCode = ((DbDataReader)(object)rd)["subCode"].ToString()
+                        //    });
+                        //}
                         pm.CompletionDatestring = pm.CompletionDate?.ToString("dd-MM-yyyy") ?? "N/A";
                         pm.AssignDateString = pm.AssignDate?.ToString("dd-MM-yyyy") ?? "N/A";
                         pm.StartDateString = pm.StartDate?.ToString("dd-MM-yyyy") ?? "N/A";
@@ -1573,6 +1573,7 @@ namespace RemoteSensingProject.Models.Admin
                                     .Select(r => r.Trim())
                                     .ToArray()
                                 : Array.Empty<string>();
+                            empObj.EmployeeCode = reader["employeeCode"].ToString();
                             empList.Add(empObj);
                         }
                     }

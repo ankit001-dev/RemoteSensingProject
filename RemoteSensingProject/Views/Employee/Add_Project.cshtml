@@ -52,17 +52,6 @@
                             </div>
                         </div>
 
-
-                        <div class="col-lg-4 mb-3">
-                            <label for="title" class="form-label">Project Staff</label>
-                            <select class="form-control form-control-sm select2-validated" name="pm.pm.SubOrdinate" multiple required>
-                                <option value="">Select an Option</option>
-                                @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.ProjectManager.OuterSource>)
-                                {
-                                    <option value="@item.Id">@item.EmpName</option>
-                                }
-                            </select>
-                        </div>
                         <div class="col-lg-4 mb-3">
                             <div class="d-flex justify-content-between">
                                 <label for="humanResourcesCount" class="form-label">Human Resources</label><label class="form-label" id="addHRItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Designations</a></label>
@@ -680,10 +669,6 @@
                 required: true,
                 after: "#startDate"
             },
-            "pm.pm.SubOrdinate": {
-                required: true,
-                minimumOne: true
-            },
             "pm.pm.hrCount": {
                 required: true,
                 number: true,
@@ -721,9 +706,6 @@
             "pm.pm.CompletionDate": {
                 required: "Please select completion date.",
                 after: "Completion date must be after start date."
-            },
-            "pm.pm.SubOrdinate": {
-                required: "Please select at least one sub-ordinate."
             },
             "pm.pm.hrCount": {
                 required: "Please enter human resource count.",
@@ -768,15 +750,15 @@
             $(element).removeClass("is-invalid");
         },
 
-        submitHandler: function (form) {
-            Swal.fire({
-                icon: "success",
-                title: "Validation Passed",
-                text: "Form is ready to submit!"
-            });
+        //submitHandler: function (form) {
+        //    Swal.fire({
+        //        icon: "success",
+        //        title: "Validation Passed",
+        //        text: "Form is ready to submit!"
+        //    });
 
-            // form.submit(); // enable when ready
-        }
+        //    // form.submit(); // enable when ready
+        //}
     });
 
     // Custom validation method for select2 multiple
@@ -844,14 +826,17 @@
         =============================== */
         let budgetIndex = 0;
 
-        $(".budgetRow").each(function (index) {
-            let budgetId = $(this).find("input[name^='pm.budgets']").first().val();
-            let headId = $(this).find(".budget-head-select").val();
-            let amount = $(this).find(".amnt").val();
+        $(".budgetRow").each(function () {
 
-            formData.append(`pm.budgets[${index}].Id`, budgetId);
-            formData.append(`pm.budgets[${index}].HeadId`, headId);
-            formData.append(`pm.budgets[${index}].ProjectAmount`, amount);
+            let budgetIdInput = $(this).find("input[name$='.Id']");
+            let headSelect = $(this).find(".budget-head-select");
+            let amountInput = $(this).find(".amnt");
+
+            if (!headSelect.val() || !amountInput.val()) return;
+
+            formData.append(budgetIdInput.attr("name"), budgetIdInput.val());
+            formData.append(headSelect.attr("name"), headSelect.val());
+            formData.append(amountInput.attr("name"), amountInput.val());
         });
 
         /* ===============================
@@ -1030,11 +1015,6 @@
         bindHumanResources(response);
     }
 
-    function bindSubOrdinate(response) {
-        const ids = response.SubOrdinate.map(x => x.Id);
-        $("select[name='pm.pm.SubOrdinate']").val(ids).trigger("change");
-    }
-
     function refreshBudgetHeadDropdowns() {
 
         let selectedValues = [];
@@ -1171,7 +1151,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const projectId = urlParams.get("id");
 
-    if (projectId != null && projectUD != '') {
+    if (projectId != null && projectId != '') {
         $.ajax({
             url: "/Employee/GetProjecDatatById",
             type: "get",
@@ -1181,7 +1161,6 @@
                 if (res.status) {
 
                     bindProjectData(res.data);
-                    bindSubOrdinate(res.data);
                     bindBudgets(res.data);
                     bindStages(res.data);
                     $("#pageTitle").text("Update Project");

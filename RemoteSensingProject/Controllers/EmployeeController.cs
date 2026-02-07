@@ -136,7 +136,7 @@ namespace RemoteSensingProject.Controllers
             });
         }
 
-        public ActionResult InsertProject(RemoteSensingProject.Models.Admin.main.createProjectModel pm)
+        public ActionResult InsertProject(Models.Admin.main.createProjectModel pm)
         {
             string filePage = Server.MapPath("~/ProjectContent/ProjectManager/ProjectDocs/");
             if (!Directory.Exists(filePage))
@@ -231,7 +231,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult GetProjecDatatById(int Id)
         {
-            RemoteSensingProject.Models.Admin.main.createProjectModel data = _adminServices.GetProjectById(Id);
+            Models.Admin.main.createProjectModel data = _adminServices.GetProjectById(Id);
             return Json((object)new
             {
                 status = true,

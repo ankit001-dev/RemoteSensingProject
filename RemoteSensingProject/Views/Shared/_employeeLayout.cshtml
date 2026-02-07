@@ -168,19 +168,25 @@
                     </li>
                     @if (User.IsInRole("divisionHead"))
                     {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#divisionHead" role="button" aria-expanded="false" aria-controls="divisionHead">
+                                <i class="link-icon" data-feather="list"></i>
+                                <span class="link-title">Division Head</span>
+                                <i class="link-arrow" data-feather="chevron-down"></i>
+                            </a>    
+                            <div class="collapse" id="divisionHead">
+                                <ul class="nav sub-menu">
+                                    <li class="nav-item">
+                                        <a href="/Employee/DivisionHead" class="nav-link">Manpower Request</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/Employee/manpower" class="nav-link">Manage Manpower</a>
+                                    </li>
 
-                        <li class="nav-item">
-                            <a href="/Employee/DivisionHead" class="nav-link">
-                                <i class="link-icon" data-feather="box"></i>
-                                <span class="link-title">Manpower Request</span>
-                            </a>
+                                </ul>
+                            </div>
                         </li>
-                        <li class="nav-item">
-                            <a href="/Employee/manpower" class="nav-link">
-                                <i class="link-icon" data-feather="box"></i>
-                                <span class="link-title">Manage Manpower</span>
-                            </a>
-                        </li>
+
                     }
                     @if (User.IsInRole("cmDashboard"))
                     {
@@ -198,15 +204,6 @@
                             <span class="link-title">Assigned Projects</span>
                         </a>
                     </li>
-
-                    <li class="nav-item">
-                        <a href="/Employee/DivisionHead" class="nav-link">
-                            <i class="link-icon" data-feather="user"></i>
-                            <span class="link-title">Division Head
-                            </span>
-                        </a>
-                    </li>
-
                     <li class="nav-item">
                         <a href="/employee/OutSource" class="nav-link">
                             <i class="link-icon" data-feather="user"></i>
