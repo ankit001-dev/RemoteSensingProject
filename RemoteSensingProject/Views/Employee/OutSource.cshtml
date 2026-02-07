@@ -167,28 +167,41 @@
     $('.deallocate').on('click', function () {
         const id = $(this).data("id");
         Swal.fire({
-            title: 'Plaese wait',
-            text: 'We are processign your request...',
-            didOpen: () => { Swal.showLoading(); },
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-        });
-        $.ajax({
-            url: `DeAllocateOutsource?outsourceid=${id}`,
-            type: 'put',
-            success: function (res) {
-                if (res.status) {
-                    Swal.fire('Success', res.message, 'success').then(() => {
-                        location.reload(true);
-                    });
-                } else {
-                    Swal.fire('Error', 'Something went wrong. Try again later', 'error');
-                }
-            }, error: function (xhr) {
-                console.log(xhr);
-                Swal.fire('Error', 'Server error occured', 'error');
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, remove it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Plaese wait',
+                    text: 'We are processign your request...',
+                    didOpen: () => { Swal.showLoading(); },
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+                $.ajax({
+                    url: `DeAllocateOutsource?outsourceid=${id}`,
+                    type: 'post',
+                    success: function (res) {
+                        if (res.status) {
+                            Swal.fire('Success', res.message, 'success').then(() => {
+                                location.reload(true);
+                            });
+                        } else {
+                            Swal.fire('Error', 'Something went wrong. Try again later', 'error');
+                        }
+                    }, error: function (xhr) {
+                        console.log(xhr);
+                        Swal.fire('Error', 'Server error occured', 'error');
+                    }
+                });
             }
         });
+      
     });
 
     $("#outSourceTourForm").on("submit", function (e) {

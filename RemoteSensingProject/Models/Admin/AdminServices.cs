@@ -1650,7 +1650,7 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         if (member != 0)
                         {
-                            NpgsqlCommand cmd2 = new NpgsqlCommand("CALL public.sp_managemeeting(p_employee => @p_employee, p_meeting => @p_meeting,p_appstatus => @p_appstatus, p_action => @p_action)", con, transaction);
+                            NpgsqlCommand cmd2 = new NpgsqlCommand("CALL public.sp_managemeeting(p_employee => @p_employee, p_meeting => @p_meeting,p_appstatus => @p_appstatus, p_action => @p_action, p_userRole => @p_userRole)", con, transaction);
                             try
                             {
                                 ((DbCommand)(object)cmd2).CommandType = CommandType.Text;
@@ -1658,6 +1658,7 @@ namespace RemoteSensingProject.Models.Admin
                                 cmd2.Parameters.AddWithValue("@p_meeting", (NpgsqlDbType)9, (object)meetingId);
                                 cmd2.Parameters.AddWithValue("@p_appstatus", (NpgsqlDbType)9, (object)0);
                                 cmd2.Parameters.AddWithValue("@p_action", (NpgsqlDbType)22, (object)"addMeetingMember");
+                                cmd2.Parameters.AddWithValue("@p_userRole", (object)((obj.CreaterId > 0) ? "outSource" : "projectManager"));
                                 ((DbCommand)(object)cmd2).ExecuteNonQuery();
                             }
                             finally
@@ -1715,7 +1716,7 @@ namespace RemoteSensingProject.Models.Admin
             NpgsqlTransaction transaction = con.BeginTransaction();
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("\r\n                    CALL public.sp_managemeeting(\r\n                        p_id => @p_id,\r\n                        p_meetingtype => @p_meetingtype,\r\n                        p_meetinglink => @p_meetinglink,\r\n                        p_meetingtitle => @p_meetingtitle,\r\n                        p_meetingtime => @p_meetingtime,\r\n                        p_meetingdocument => @p_meetingdocument,\r\n                        p_createdby => NULL,\r\n                        p_updateddate => NULL,\r\n                        p_createrid => NULL,\r\n                        p_conclusionid => NULL,\r\n                        p_employee => 0,\r\n                        p_meeting => 0,\r\n                        p_appstatus => 0,\r\n                        p_keypoint => NULL,\r\n                        p_reason => NULL,\r\n                        p_meetingid => NULL,\r\n                        p_status => 0,\r\n                        p_action => @p_action\r\n                    );", con, transaction);
+                NpgsqlCommand cmd = new NpgsqlCommand("CALL public.sp_managemeeting(p_id => @p_id,p_meetingtype => @p_meetingtype,p_meetinglink => @p_meetinglink,p_meetingtitle => @p_meetingtitle,p_meetingtime => @p_meetingtime,p_meetingdocument => @p_meetingdocument,p_createdby => NULL,p_updateddate => NULL,p_createrid => NULL,p_conclusionid => NULL,p_employee => 0,p_meeting => 0,p_appstatus => 0,p_keypoint => NULL,p_reason => NULL,p_meetingid => NULL,p_status => 0,p_action => @p_action, p_userrole => NULL);", con, transaction);
                 try
                 {
                     ((DbCommand)(object)cmd).CommandType = CommandType.Text;
@@ -1723,7 +1724,7 @@ namespace RemoteSensingProject.Models.Admin
                     cmd.Parameters.AddWithValue("@p_meetingtype", (NpgsqlDbType)22, ((object)obj.MeetingType) ?? ((object)DBNull.Value));
                     cmd.Parameters.AddWithValue("@p_meetinglink", (NpgsqlDbType)19, (object)((obj.MeetingType?.ToLower() == "offline") ? (obj.MeetingAddress ?? "") : (obj.MeetingLink ?? "")));
                     cmd.Parameters.AddWithValue("@p_meetingtitle", (NpgsqlDbType)22, ((object)obj.MeetingTitle) ?? ((object)DBNull.Value));
-                    cmd.Parameters.AddWithValue("@p_meetingtime", (NpgsqlDbType)22, ((object)obj.MeetingTime.ToString()) ?? ((object)DBNull.Value));
+                    cmd.Parameters.AddWithValue("@p_meetingtime", ((object)obj.MeetingTime) ?? ((object)DBNull.Value));
                     cmd.Parameters.AddWithValue("@p_meetingdocument", (NpgsqlDbType)19, ((object)obj.Attachment_Url) ?? ((object)DBNull.Value));
                     cmd.Parameters.AddWithValue("@p_action", (NpgsqlDbType)22, (object)"updateMeeting");
                     ((DbCommand)(object)cmd).ExecuteNonQuery();
@@ -1738,7 +1739,7 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         if (memberId != 0)
                         {
-                            NpgsqlCommand cmdMember = new NpgsqlCommand("\r\n                                CALL public.sp_managemeeting(\r\n                                    p_employee => @p_employee,\r\n                                    p_meeting => @p_meeting,\r\n                                    p_id => 0,\r\n                                    p_meetingtype => NULL,\r\n                                    p_meetinglink => NULL,\r\n                                    p_meetingtitle => NULL,\r\n                                    p_meetingtime => NULL,\r\n                                    p_meetingdocument => NULL,\r\n                                    p_createdby => NULL,\r\n                                    p_updateddate => NULL,\r\n                                    p_createrid => NULL,\r\n                                    p_conclusionid => NULL,\r\n                                    p_appstatus => 0,\r\n                                    p_keypoint => NULL,\r\n                                    p_reason => NULL,\r\n                                    p_meetingid => 0,\r\n                                    p_status => 0,\r\n                                    p_action => @p_action\r\n                                );", con, transaction);
+                            NpgsqlCommand cmdMember = new NpgsqlCommand("        CALL public.sp_managemeeting(            p_employee => @p_employee,            p_meeting => @p_meeting,            p_id => 0,            p_meetingtype => NULL,            p_meetinglink => NULL,            p_meetingtitle => NULL,            p_meetingtime => NULL,            p_meetingdocument => NULL,            p_createdby => NULL,            p_updateddate => NULL,            p_createrid => NULL,            p_conclusionid => NULL,            p_appstatus => 0,            p_keypoint => NULL,            p_reason => NULL,            p_meetingid => 0,            p_status => 0,            p_action => @p_action, p_userrole => NULL        );", con, transaction);
                             try
                             {
                                 ((DbCommand)(object)cmdMember).CommandType = CommandType.Text;
@@ -1760,7 +1761,7 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         if (!string.IsNullOrWhiteSpace(obj.KeypointId[j]?.ToString()) && !string.IsNullOrWhiteSpace(obj.keyPointList[j]?.ToString()))
                         {
-                            NpgsqlCommand cmdKey = new NpgsqlCommand("\r\n                                CALL public.sp_managemeeting(\r\n                                    p_meeting => @p_meeting,\r\n                                    p_keypoint => @p_keypoint,\r\n                                    p_action => @p_action,\r\n                                    p_id => @p_id\r\n                                );", con, transaction);
+                            NpgsqlCommand cmdKey = new NpgsqlCommand("        CALL public.sp_managemeeting(            p_meeting => @p_meeting,            p_keypoint => @p_keypoint,            p_action => @p_action,            p_id => @p_id        );", con, transaction);
                             try
                             {
                                 ((DbCommand)(object)cmdKey).CommandType = CommandType.Text;
@@ -2051,7 +2052,7 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         if (!string.IsNullOrEmpty(memberId))
                         {
-                            NpgsqlCommand memberCmd = new NpgsqlCommand("\r\n                        CALL public.sp_meetingconslusion(\r\n                            @v_id::integer,\r\n                            0::integer,\r\n                            NULL::text,\r\n                            NULL::varchar,\r\n                            @v_memberid::integer,\r\n                            NULL::text,\r\n                            false::boolean,\r\n                            0::integer,\r\n                            @v_conclusionid::integer,\r\n                            NULL::text,\r\n                            @v_action::varchar,\r\n                            NULL::refcursor\r\n                        )", con, transaction);
+                            NpgsqlCommand memberCmd = new NpgsqlCommand("CALL public.sp_meetingconslusion(    @v_id::integer,    0::integer,    NULL::text,    NULL::varchar,    @v_memberid::integer,    NULL::text,    false::boolean,    0::integer,    @v_conclusionid::integer,    NULL::text,    @v_action::varchar,    NULL::refcursor)", con, transaction);
                             ((DbCommand)(object)memberCmd).CommandType = CommandType.Text;
                             memberCmd.Parameters.AddWithValue("v_id", (object)conclusionId);
                             memberCmd.Parameters.AddWithValue("v_memberid", (object)Convert.ToInt32(memberId));
@@ -2065,7 +2066,7 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     for (int i = 0; i < mc.KeyPointId.Count; i++)
                     {
-                        NpgsqlCommand keyCmd = new NpgsqlCommand("\r\n                    CALL public.sp_meetingconslusion(\r\n                        @v_id::integer,\r\n                        0::integer,\r\n                        NULL::text,\r\n                        NULL::varchar,\r\n                        0::integer,\r\n                        @v_response::text,\r\n                        false::boolean,\r\n                        @v_keyid::integer,\r\n                        @v_conclusionid::integer,\r\n                        NULL::text,\r\n                        @v_action::varchar,\r\n                        NULL::refcursor\r\n                    )", con, transaction);
+                        NpgsqlCommand keyCmd = new NpgsqlCommand("CALL public.sp_meetingconslusion(@v_id::integer,0::integer,NULL::text,NULL::varchar,0::integer,@v_response::text,false::boolean,@v_keyid::integer,@v_conclusionid::integer,NULL::text,@v_action::varchar,NULL::refcursor)", con, transaction);
                         ((DbCommand)(object)keyCmd).CommandType = CommandType.Text;
                         keyCmd.Parameters.AddWithValue("v_id", (object)conclusionId);
                         keyCmd.Parameters.AddWithValue("v_keyid", (object)mc.KeyPointId[i]);
@@ -2081,7 +2082,7 @@ namespace RemoteSensingProject.Models.Admin
                     {
                         if (individualMember != 0)
                         {
-                            NpgsqlCommand memberCmd2 = new NpgsqlCommand("\r\n                        CALL sp_ManageMeeting(\r\n                           p_action=> @v_action::varchar,\r\n                           p_employee=> @v_employee::integer,\r\n                           p_meeting=> @v_meeting::integer\r\n                        )", con, transaction);
+                            NpgsqlCommand memberCmd2 = new NpgsqlCommand("CALL sp_ManageMeeting(   p_action=> @v_action::varchar,   p_employee=> @v_employee::integer,   p_meeting=> @v_meeting::integer)", con, transaction);
                             ((DbCommand)(object)memberCmd2).CommandType = CommandType.Text;
                             memberCmd2.Parameters.AddWithValue("@v_action", (object)"addMeetingMember");
                             memberCmd2.Parameters.AddWithValue("@v_employee", (object)individualMember);

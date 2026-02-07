@@ -710,7 +710,7 @@
                         res.forEach(function (d, i) {
                             $("#joiningMemberContainer").append(` <tr>
 <td>${i + 1}</td>
-    <td><img src="${d.Image_url}" alt="sliderimages" style="height: 20px;width: 20px;"> ${d.EmployeeName}	<span class="text-secondary">(${d.EmployeeRole})</span></td>
+    <td>${d.EmployeeName}	<span class="text-secondary">(${d.EmployeeRole})</span></td>
     <td>${d.AppStatus == 0 ? "Pending" : d.AppStatus == 1 ? "Accepted" : "Rejected"}</td>
     <td>${d.Reason}</td>
 </tr>`)

@@ -4,101 +4,7 @@
     var data = ViewData["emplist"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
 }
 
-<style>
-    .uniform-card {
-        /*        height: 200px;
-    */ width: 160px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        text-align: center;
-    }
 
-        .uniform-card .card-body {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 15px;
-        }
-
-        .uniform-card .card-title {
-            font-size: 15px;
-            font-weight: bold;
-        }
-
-        .uniform-card p.text-success {
-            font-size: 13px;
-        }
-
-        .uniform-card img {
-            margin: 0 auto;
-        }
-
-    /*    .grid-margin .w-100 .card {
-        background: #0a6d9d6b;
-    }*/
-
-    .align-items-baseline .text-success {
-        color: #000 !important;
-    }
-
-    .grid-margin {
-        margin: 3px 0px !important;
-    }
-
-    .card .card-body .justify-content-between {
-        padding-bottom: 3px !important;
-    }
-
-
-    /*Trae*/
-    .uniform-card {
-        height: 120px !important; /* Fixed height for all cards */
-        overflow: hidden;
-    }
-
-    .card-body {
-        height: 100%;
-        overflow-y: auto;
-    }
-
-        /* Hide scrollbar but keep functionality */
-        .card-body::-webkit-scrollbar {
-            display: none;
-        }
-    /*Trae*/
-</style>
-
-
-<style>
-
-    .text-success span {
-        display: flex;
-        align-items: center;
-    }
-
-    .text-success span {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 0px;
-    }
-
-        .text-success span span.text-dark {
-            min-width: 110px;
-            text-align: left;
-        }
-
-    .card-body {
-        height: 100%;
-        overflow-y: auto;
-    }
-
-        /* Hide scrollbar but keep functionality */
-        .card-body::-webkit-scrollbar {
-            display: none;
-        }
-</style>
 
 
 
@@ -110,7 +16,7 @@
             <!-- Project's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 shadow-lg">
+                    <div class="card uniform-card w-100 ">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Project's</h6>
@@ -145,7 +51,7 @@
             <!-- Project's Status Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 shadow-lg">
+                    <div class="card uniform-card w-100 ">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Project's Status</h6>
@@ -183,7 +89,7 @@
             <!-- Meeting's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 shadow-lg">
+                    <div class="card uniform-card w-100 ">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
@@ -219,7 +125,7 @@
             <!-- Task Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
-                    <div class="card uniform-card w-100 shadow-lg">
+                    <div class="card uniform-card w-100 ">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0 text-nowrap">Task's</h6>
@@ -257,7 +163,7 @@
 </div>
 
 <!--Mini charts-->
-<div class="row mx-0">
+<div class="row mx-0 mb-1">
     <div class="col-sm-4 px-1">
         <div class="card ">
             <div class="card-header">Task</div>
