@@ -717,7 +717,8 @@ public class CommonController : ApiController
         }
     }
 
-    // Tourproposal By Id
+	// Tourproposal By Id
+	[System.Web.Mvc.AllowAnonymous]
     [Route("api/getTourById")]
     [HttpGet]
     public IHttpActionResult TourById(int id)
