@@ -11,18 +11,17 @@
 <div class="row mx-0">
     <div class="col-12 col-xl-12">
         <div class="row flex-grow-1">
-
-
             <!-- Project's Card -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 grid-margin stretch-card px-1">
                 <div class="w-100" style="text-decoration: none; color: inherit;">
                     <div class="card uniform-card w-100 ">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0">Project's</h6>
+                                <h6 class="card-title mb-0 text-nowrap">Project's</h6>
                             </div>
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
+                                    <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/All_project_list">
                                             <p class="text-success w-100"><span><span class="text-dark">Total Project's :  </span> @(Convert.ToInt32(Model.SelfCreatedProject) + Convert.ToInt32(Model.TotalAssignProject))</span></p>
@@ -158,10 +157,120 @@
                 </div>
             </div>
 
+            <!-- Project's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 grid-margin stretch-card px-1">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 ">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Internal Project's</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <h6 class="mb-2 text-success"></h6>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/All_project_list">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total Project's :  </span> @(Convert.ToInt32(Model.SelfCreatedProject) + Convert.ToInt32(Model.TotalAssignProject))</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/Assigned_project">
+                                            <p class="text-success w-100"><span><span class="text-dark">Assigned Project's :  </span> @Model.TotalAssignProject</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/project_list">
+                                            <p class="text-success w-100"><span><span class="text-dark">My Project's :  </span> @Model.SelfCreatedProject</span></p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <img src="~/assets/gif/project.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project's Status Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 grid-margin stretch-card px-1">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 ">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Enternal Projects</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <h6 class="mb-2 text-success"></h6>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/all_project_report?statusFilter=Complete">
+                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@Model.TotaCompleteProject</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/all_project_report?statusFilter=delay">
+                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @Model.TotalDelayProject</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/all_project_report?statusFilter=Ongoing">
+                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @Model.TotalOngoingProject</span></p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-5 pt-2">
+                                    <img src="~/assets/gif/file.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!-- Meeting's Card -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4 grid-margin stretch-card px-1">
+                <div class="w-100" style="text-decoration: none; color: inherit;">
+                    <div class="card uniform-card w-100 ">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-baseline">
+                                <h6 class="card-title mb-0 text-nowrap">Project Staff</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 col-md-12 col-xl-7">
+                                    <h3 class="mb-2 text-success"></h3>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/meetings">
+                                            <p class="text-success w-100"><span><span class="text-dark">Total :  </span> @Model.TotalMeeting</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/meetings?req=admin">
+                                            <p class="text-success w-100"><span><span class="text-dark">Admin :  </span> @Model.AdminMeeting</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/meetings?req=projectmanager">
+                                            <p class="text-success w-100"><span><span class="text-dark">Project Manager :  </span> @Model.EmpMeeting</span></p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-12 col-xl-5">
+                                    <img src="~/assets/gif/discussion.gif" height="60" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
         </div>
     </div>
 </div>
-
 <!--Mini charts-->
 <div class="row mx-0 mb-1">
     <div class="col-sm-4 px-1">
