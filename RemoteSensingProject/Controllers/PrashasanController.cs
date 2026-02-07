@@ -78,6 +78,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Monthly_ManPower_Allocation_Report()
         {
+            ViewData["DivisionList"] = _adminServices.ListDivison();
             return View();
         }
         public ActionResult AddManpower(int id, string searchTerm = null)

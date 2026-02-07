@@ -2,7 +2,77 @@
 @{
     ViewBag.Title = "Monthly_ManPower_Allocation_Report";
     Layout = "~/Views/Shared/_prashasanLayout.cshtml";
+    var divisionList = ViewData["DivisionList"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
 }
+<div class="row align-items-center">
+    <div class="col-lg-2">
+        <h5>All Project</h5>
+    </div>
+    <div class="col-lg-4 col-md-6">
+        <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <select class="form-select form-select-lg" id="searchByDivision">
+            <option selected value="">Filter by Division</option>
+            @foreach (var item in divisionList)
+            {
+                <option value="@item.id">@item.name</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <select class="form-select form-select-lg" id="searchByMonth">
+            <option selected value="">Filter by Month</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <input class="form-control" placeholder="Enter year...." id="filterByYear"/>
+    </div>
 
-<h2>Monthly_ManPower_Allocation_Report</h2>
+</div>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Sr. No.</th>
+                                <th>Project Name</th>
+                                <th>Staff Name</th>
+                                <th>Division</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<script>
+    $(document).on('input', "#filterByYear", function () {
+        console.log("input year trigger" + $(this).val())
+    })
+    $(document).on('change', "#searchByDivision", function () {
+        console.log("filter by division trigger" + $(this).val())
+    })
+    $(document).on('change', "#searchByMonth", function () {
+        console.log("filter by month trigger" + $(this).val())
+    })
+
+</script>
