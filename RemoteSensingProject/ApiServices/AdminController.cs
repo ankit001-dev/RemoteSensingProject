@@ -1350,7 +1350,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpGet]
 		[Route("api/getRaisedProblemById")]
 		public IHttpActionResult getRaisedProblemById(int id, int? managerId = 0)
@@ -1554,7 +1554,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpGet]
 		[Route("api/getOutsourceByPm")]
 		public IHttpActionResult getOutsourceByProjectManager(int projectManager, string searchTerm = null)
@@ -1582,7 +1582,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpGet]
 		[Route("api/getAttendanceListByEmp")]
 		public IHttpActionResult getAttendanceListByEmp(int projectManager, int EmpId)
@@ -1633,7 +1633,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpGet]
 		[Route("api/getAttendanceByEmp")]
 		public IHttpActionResult getAttendanceByEmp(int projectManager, int EmpId)
@@ -1659,7 +1659,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpGet]
 		[Route("api/getAttendanceRepo")]
 		public IHttpActionResult getAttendanceRepo(int month, int year, int projectManager, int? EmpId = null)
@@ -1711,7 +1711,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpGet]
 		[Route("api/getbudgetheads")]
 		public IHttpActionResult GetBudgetHeads()
@@ -1737,7 +1737,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[AllowAnonymous]
+		[System.Web.Mvc.AllowAnonymous]
 		[HttpGet]
 		[Route("api/GetCMDashboard")]
 		public IHttpActionResult GetCMDashboard(int? id = null, bool? status = true, int? startYear = null, string statusFilter = null)

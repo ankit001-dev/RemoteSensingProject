@@ -17,7 +17,6 @@
         <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
         <li class="breadcrumb-item active" aria-current="page">/Employee Registration</li>
     </ol>
-    @*<button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Employee</button>*@
 </nav>
 
 
@@ -47,7 +46,7 @@
                                         <td class="text-start">@count</td>
                                         <td>@item.EmployeeCode</td>
                                         <td><a href="#" data-title="View Attendance" data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider">@item.EmployeeName</a></td>
-                                        <td>@item.EmployeeRole</td>
+                                        <td>@string.Join(", ", item.EmployeeRole)</td>
                                         <td>@item.DevisionName</td>
                                         <td>@item.DesignationName</td>
                                     </tr>
@@ -87,9 +86,6 @@
                                 <tbody id="outsourcelist">
                                 </tbody>
                             </table>
-                            <div class="text-end mt-3">
-                                <button type="button" class="btn btn-sm btn-danger rounded-0" data-bs-dismiss="modal">Close</button>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -157,9 +153,6 @@
                         <tbody id="attendancelist">
                         </tbody>
                     </table>
-                    <div class="text-end mt-3">
-                        <button type="button" class="btn btn-sm btn-danger rounded-0" data-bs-dismiss="modal">Close</button>
-                    </div>
                 </div>
             </div>
         </div>

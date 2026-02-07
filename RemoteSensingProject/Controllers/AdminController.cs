@@ -284,13 +284,17 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult Min_Of_Meeting()
 		{
-			List<RemoteSensingProject.Models.Admin.main.Employee_model> empList = _adminServices.BindEmployee();
-			return View((object)empList);
+            List<Models.Admin.main.Employee_model> empList =
+    _adminServices.BindEmployee()
+    .Where(n => n.EmployeeRole != null &&
+                n.EmployeeRole.Contains("projectManager"))
+    .ToList();
+            return View((object)empList);
 		}
 
 		public ActionResult GetConclusions(int id)
 		{
-			List<RemoteSensingProject.Models.Admin.main.MeetingConclusion> res = _adminServices.getConclusion(id);
+			List<Models.Admin.main.MeetingConclusion> res = _adminServices.getConclusion(id);
 			return Json((object)res, (JsonRequestBehavior)0);
 		}
 
@@ -303,7 +307,7 @@ namespace RemoteSensingProject.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult AddMeeting(RemoteSensingProject.Models.Admin.main.AddMeeting_Model formData)
+		public ActionResult AddMeeting(Models.Admin.main.AddMeeting_Model formData)
 		{
 			try
 			{
@@ -616,51 +620,11 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
 
-		[HttpPost]
-		public ActionResult TravelRequest(bool status, int id, string remark)
+		public ActionResult HiringRequest(int? projectFilter = null)
 		{
-			bool res = _adminServices.Tourapproval(id, status, remark);
-			if (res)
-			{
-				return Json((object)new
-				{
-					status = res,
-					message = ((res && status) ? "Approved Successfully" : "Rejected Successfully")
-				});
-			}
-			return Json((object)new
-			{
-				status = res,
-				message = "Some error Occured"
-			});
-		}
-
-		public ActionResult HiringRequest(int? managerFilter = null, int? projectFilter = null)
-		{
-			((ControllerBase)this).ViewData["hiringList"] = _adminServices.HiringList(null, null, managerFilter, projectFilter);
+			((ControllerBase)this).ViewData["hiringList"] = _managerServices.GetHiringVehicles(type:"ALLDATA", projectFilter:projectFilter);
 			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
 			return View();
-		}
-
-		[HttpPost]
-		public ActionResult HiringRequest(bool status, int id, string remark, string latitude, string longitude)
-		{
-			dynamic location = _adminServices.GetCityStateAsync(latitude, longitude).GetAwaiter().GetResult();
-			bool res = _adminServices.HiringApproval(id, status, remark, location);
-			if (res)
-			{
-				return Json((object)new
-				{
-					status = res,
-					message = ((res && status) ? "Approved Successfully" : "Rejected Successfully")
-				});
-			}
-			return Json((object)new
-			{
-				status = res,
-				message = "Some error Occured"
-			});
 		}
 
 		public ActionResult Reimbursement_Report(int? projectManagerFilter = null, string typeFilter = null, string statusFilter = null)
