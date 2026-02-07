@@ -20,7 +20,7 @@
                             {
                                 foreach (var proman in projManager)
                                 {
-                                    if (proman.EmployeeRole == "projectManager")
+                                    if (proman.EmployeeRole.Contains("projectManager"))
                                     {
                                         <option value="@proman.Id">@proman.EmployeeName</option>
                                     }

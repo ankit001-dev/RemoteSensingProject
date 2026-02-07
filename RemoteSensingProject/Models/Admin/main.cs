@@ -513,7 +513,11 @@ namespace RemoteSensingProject.Models.Admin
 			public string ExternalCompletedProject { get; set; }
 			public string ExternalDelayProject { get; set; }
 			public decimal expenditure { get; set; }
-
+			public string TotalEmployeesCount { get; set; }
+			public string TotalProjectManagerCount { get; set; }
+			public string TotalDivisionHeadCount { get; set; }
+			public string TotalDivisionCount { get; set; }
+			public string TotalDesignationCount { get; set; }
 			public string Title { get; set; }
 
 			public string OverallCompletionPercentage { get; set; }

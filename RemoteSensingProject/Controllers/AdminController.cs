@@ -1,4 +1,4 @@
-// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
+﻿// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Controllers.AdminController
@@ -12,7 +12,6 @@ using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
-using RemoteSensingProject.Models.SubOrdinate;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -123,18 +122,30 @@ namespace RemoteSensingProject.Controllers
             }, (JsonRequestBehavior)0);
         }
 
-		public ActionResult Employee_Registration(int? division = null, string searchTerm = null)
-		{
-			ViewBag.division = _adminServices.ListDivison();
-			ViewBag.designation = _adminServices.ListDesgination();
-			List<RemoteSensingProject.Models.Admin.main.Employee_model> empList = new List<RemoteSensingProject.Models.Admin.main.Employee_model>();
-			empList = _adminServices.SelectEmployeeRecord(null, null, searchTerm, division);
-			ViewData["EmployeeList"] = empList;
-			return View();
-		}
+        public ActionResult Employee_Registration(int? division = null, string searchTerm = null, string filterType = null)
+        {
+            ViewBag.division = _adminServices.ListDivison();
+            ViewBag.designation = _adminServices.ListDesgination();
 
-		[HttpPost]
-		public ActionResult Employee_Registration(RemoteSensingProject.Models.Admin.main.Employee_model emp)
+			List<Models.Admin.main.Employee_model> empList =
+				_adminServices.SelectEmployeeRecord(null, null, searchTerm, division);
+
+            // 🔥 filter by role if filterType is provided
+            if (!string.IsNullOrEmpty(filterType))
+            {
+                empList = empList
+                    .Where(e =>
+                        e.EmployeeRole.Any(r =>
+                    r.Equals(filterType, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+            }
+
+            ViewData["EmployeeList"] = empList;
+            return View();
+        }
+
+        [HttpPost]
+		public ActionResult Employee_Registration(Models.Admin.main.Employee_model emp)
 		{
 			string filePage = ((Controller)this).Server.MapPath("~/ProjectContent/Admin/Employee_Images/");
 			if (!Directory.Exists(filePage))
@@ -648,7 +659,7 @@ namespace RemoteSensingProject.Controllers
 		public ActionResult Reimbursement_Report(int? projectManagerFilter = null, string typeFilter = null, string statusFilter = null)
 		{
 			((ControllerBase)this).ViewData["totalProjectManager"] = (from d in _adminServices.SelectEmployeeRecord()
-																	  where d.EmployeeRole.Equals("projectManager")
+																	  where d.EmployeeRole.Contains("projectManager")
 																	  select d).ToList();
 			ManagerService managerServices = _managerServices;
 			int? managerId = projectManagerFilter;
