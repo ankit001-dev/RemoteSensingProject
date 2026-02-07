@@ -1361,7 +1361,12 @@ namespace RemoteSensingProject.Models.Admin
                                         totalReinbursementapprovedRequest = ((DbDataReader)(object)sdr)["totalReinbursementapprovedRequest"].ToString(),
                                         totalReinbursementRejectRequest = ((DbDataReader)(object)sdr)["totalReinbursementRejectRequest"].ToString(),
                                         TotalBudget = Convert.ToDecimal((((DbDataReader)(object)sdr)["totalBudgets"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["totalBudgets"] : ((object)0)),
-                                        PendingBudget = Convert.ToDecimal((((DbDataReader)(object)sdr)["pendingBudget"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["pendingBudget"] : ((object)0))
+                                        PendingBudget = Convert.ToDecimal((((DbDataReader)(object)sdr)["pendingBudget"] != DBNull.Value) ? ((DbDataReader)(object)sdr)["pendingBudget"] : ((object)0)),
+                                        TotalEmployeesCount = ((DbDataReader)(object)sdr)["TotalEmployeesCount"].ToString(),
+                                        TotalProjectManagerCount = ((DbDataReader)(object)sdr)["TotalProjectManagerCount"].ToString(),
+                                        TotalDivisionHeadCount = ((DbDataReader)(object)sdr)["TotalDivisionHeadCount"].ToString(),
+                                        TotalDivisionCount = ((DbDataReader)(object)sdr)["TotalDivisionCount"].ToString(),
+                                        TotalDesignationCount = ((DbDataReader)(object)sdr)["TotalDesignationCount"].ToString(),
                                     };
                                 }
                             }

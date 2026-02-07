@@ -1,7 +1,7 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Emp_Category";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var activeTab = Request.QueryString["tab"] ?? "designation";
 }
 <style>
     /*spinner section start here*/
@@ -48,45 +48,57 @@
 <div class="row" id="mainContainer">
 </div>
 
-
 <script>
     $(document).ready(function () {
-        loadPartialContent("_desgination")
+
+        var activeTab = '@activeTab'; // designation / division
+
+        if (activeTab === 'division') {
+            activateDivision();
+        } else {
+            activateDesignation();
+        }
+
         $("#desginationTab").click(function () {
-            checkActiveTab();
-            $(this).addClass("active")
-            loadPartialContent("_desgination")
-            $("#modalTitle").text("Desgination")
-            $("#formTypes").val("Desgination")
+            activateDesignation();
         });
 
         $("#divisonTab").click(function () {
-            checkActiveTab()
-            loadPartialContent("_divison")
-            $("#modalTitle").text("Divison")
-            $("#formTypes").val("Divison");
-            $(this).addClass("active")
+            activateDivision();
         });
 
+        function activateDesignation() {
+            checkActiveTab();
+            $("#desginationTab").addClass("active");
+            $("#modalTitle").text("Desgination");
+            $("#formTypes").val("Desgination");
+            loadPartialContent("_desgination");
+        }
+
+        function activateDivision() {
+            checkActiveTab();
+            $("#divisonTab").addClass("active");
+            $("#modalTitle").text("Divison");
+            $("#formTypes").val("Divison");
+            loadPartialContent("_divison");
+        }
+
         function checkActiveTab() {
-            $(".nav-link").each(function () {
-                if ($(this).hasClass("active")) {
-                    $(this).removeClass("active")
-                }
-            })
+            $(".nav-link").removeClass("active");
         }
 
         function loadPartialContent(partialView) {
             $("#loading").show();
-            $.get("/admin/getCategoryPartial", { partial: partialView }).done(function (res) {
-                $("#mainContainer").html(res)
-            }).fail(function () {
-                alert("Failed to load content.");
-            })
+            $.get("/admin/getCategoryPartial", { partial: partialView })
+                .done(function (res) {
+                    $("#mainContainer").html(res);
+                })
+                .fail(function () {
+                    alert("Failed to load content.");
+                })
                 .always(function () {
                     $("#loading").hide();
                 });
         }
-
-    })
+    });
 </script>
