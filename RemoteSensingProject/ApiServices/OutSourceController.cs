@@ -41,10 +41,10 @@ namespace RemoteSensingProject.ApiServices
 			try
 			{
 				List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task> data = _subordinate.getOutSourceTask(id, limit, page, searchTerm, statusFilter);
-				string[] selectprop = new string[5] { "id", "Title", "Description", "CompleteStatus", "Status" };
+				string[] selectprop = new string[9] { "id", "Title", "Description", "CompleteStatus", "Status", "ApprovalStatus", "projectName", "projectId", "AssignTaskId" };
 				List<object> newdata = CommonHelper.SelectProperties(data, selectprop);
 				if (data.Count > 0)
-				{
+				{	
 					return CommonHelper.Success((ApiController)(object)this, newdata, "Data fetched successfully", 200, data[0].Pagination);
 				}
 				return CommonHelper.NoData((ApiController)(object)this);
