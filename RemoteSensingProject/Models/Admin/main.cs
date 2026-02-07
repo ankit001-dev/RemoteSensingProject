@@ -509,6 +509,9 @@ namespace RemoteSensingProject.Models.Admin
 
 		public class DashboardCount
 		{
+			public string ExternalOngoingProject { get; set; }
+			public string ExternalCompletedProject { get; set; }
+			public string ExternalDelayProject { get; set; }
 			public decimal expenditure { get; set; }
 
 			public string Title { get; set; }
