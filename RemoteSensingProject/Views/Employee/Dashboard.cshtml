@@ -20,7 +20,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Project's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-8">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/project_list">
@@ -40,7 +40,7 @@
 
 
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-4">
                                     <img src="~/assets/gif/project.gif" height="60" />
                                 </div>
                             </div>
@@ -62,17 +62,17 @@
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/all_project_report?statusFilter=Ongoing">
-                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @Model.TotalOngoingProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing :  </span> @Model.TotalOngoingProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/all_project_report?statusFilter=Complete">
-                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@Model.TotaCompleteProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Complete : </span>@Model.TotaCompleteProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/all_project_report?statusFilter=delay">
-                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @Model.TotalDelayProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Delay :  </span> @Model.TotalDelayProject</span></p>
                                         </a>
                                     </div>
 
@@ -97,7 +97,7 @@
                                 <h6 class="card-title mb-0 text-nowrap">Meeting's</h6>
                             </div>
                             <div class="row">
-                                <div class="col-6 col-md-12 col-xl-7">
+                                <div class="col-6 col-md-12 col-xl-8">
                                     <h3 class="mb-2 text-success"></h3>
 
                                     <div class="d-flex align-items-baseline ">
@@ -116,7 +116,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                <div class="col-6 col-md-12 col-xl-5">
+                                <div class="col-6 col-md-12 col-xl-4">
                                     <img src="~/assets/gif/discussion.gif" height="60" />
                                 </div>
                             </div>
@@ -175,17 +175,17 @@
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/all_project_report?statusFilter=Ongoing">
-                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @Model.TotalOngoingProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @Model.InternalOngoingProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/all_project_report?statusFilter=Complete">
-                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@Model.TotaCompleteProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@Model.InternalCompletedProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/all_project_report?statusFilter=delay">
-                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @Model.TotalDelayProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @Model.InternalDelayProject</span></p>
                                         </a>
                                     </div>
                                 </div>
@@ -211,17 +211,17 @@
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/all_project_report?statusFilter=Ongoing">
-                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @Model.TotalOngoingProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Ongoing Project :  </span> @Model.ExternalOngoingProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/all_project_report?statusFilter=Complete">
-                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@Model.TotaCompleteProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Complete Project: </span>@Model.ExternalCompletedProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/all_project_report?statusFilter=delay">
-                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @Model.TotalDelayProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Delay Project :  </span> @Model.ExternalDelayProject</span></p>
                                         </a>
                                     </div>
                                 </div>
@@ -249,13 +249,13 @@
                                     <h3 class="mb-2 text-success"></h3>
 
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/employee/meetings?req=admin">
-                                            <p class="text-success w-100"><span><span class="text-dark">Out Source :  </span> @Model.AdminMeeting</span></p>
+                                        <a href="/employee/outsource">
+                                            <p class="text-success w-100"><span><span class="text-dark">Out Source :  </span> @Model.TotalOutsourceCount</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/employee/meetings">
-                                            <p class="text-success w-100"><span><span class="text-dark">Man Power Request :  </span> @Model.TotalMeeting</span></p>
+                                        <a href="#">
+                                            <p class="text-success w-100"><span><span class="text-dark">Man Power Request :  </span> @Model.TotalManpowerRequest</span></p>
                                         </a>
                                     </div>
                                 </div>
