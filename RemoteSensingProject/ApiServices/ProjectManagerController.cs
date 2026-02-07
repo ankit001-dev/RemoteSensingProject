@@ -828,7 +828,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        [AllowAnonymous]
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/ViewTaskId")]
         public IHttpActionResult ViewTaskList(int taskId)
