@@ -177,19 +177,38 @@ namespace RemoteSensingProject.Controllers
 		[HttpGet]
 		public ActionResult SelectEmployeeRecordById(int id)
 		{
-			RemoteSensingProject.Models.Admin.main.Employee_model res = _adminServices.SelectEmployeeRecordById(id);
+			Models.Admin.main.Employee_model res = _adminServices.SelectEmployeeRecordById(id);
 			return Json((object)res, (JsonRequestBehavior)0);
 		}
+		[HttpGet]
+        public ActionResult ProjectStaff(int projectManagerId)
+        {
+			try
+			{
+				var data = _managerServices.GetAllocatedOutSOurceList(projectManagerId, null, null, null);
+				return Json(new
+				{
+					status = true,
+					data = data
+				},JsonRequestBehavior.AllowGet);
+			}
+			catch(Exception ex)
+			{
+				return Json(new
+				{
+					status = false,
+					message = ex.Message
+				});
+			}
+        }
 
-		public ActionResult Add_Project()
+        public ActionResult Add_Project()
 		{
-			RemoteSensingProject.Models.Admin.main.DashboardCount TotalCount = _adminServices.DashboardCount();
+			Models.Admin.main.DashboardCount TotalCount = _adminServices.DashboardCount();
 			((dynamic)((ControllerBase)this).ViewBag).pendingBudget = TotalCount.PendingBudget;
 			decimal b = Convert.ToDecimal(((dynamic)((ControllerBase)this).ViewBag).pendingBudget);
-			List<RemoteSensingProject.Models.Admin.main.Employee_model> data = _adminServices.SelectEmployeeRecord();
-			((dynamic)((ControllerBase)this).ViewBag).projectManager = data.Where((RemoteSensingProject.Models.Admin.main.Employee_model d) => d.EmployeeRole.Equals("projectManager")).ToList();
-			((dynamic)((ControllerBase)this).ViewBag).subOrdinateList = data.Where((RemoteSensingProject.Models.Admin.main.Employee_model d) => d.EmployeeRole.Equals("subOrdinate")).ToList();
-			List<RemoteSensingProject.Models.Admin.main.BudgetHeadModel> budgetHeads = _adminServices.GetBudgetHeads();
+			((dynamic)((ControllerBase)this).ViewBag).projectManager = _adminServices.BindEmployee().Where(n => n.EmployeeRole != null &&           n.EmployeeRole.Contains("projectManager")).ToList();
+            List<Models.Admin.main.BudgetHeadModel> budgetHeads = _adminServices.GetBudgetHeads();
 			((ControllerBase)this).ViewData["Designations"] = _adminServices.ListDesgination();
 			((ControllerBase)this).ViewData["BudgetHeads"] = budgetHeads;
 			return View();
@@ -197,7 +216,7 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult GetProjecDatatById(int Id)
 		{
-			RemoteSensingProject.Models.Admin.main.createProjectModel data = _adminServices.GetProjectById(Id);
+			Models.Admin.main.createProjectModel data = _adminServices.GetProjectById(Id);
 			return Json((object)new
 			{
 				status = true,
@@ -211,7 +230,7 @@ namespace RemoteSensingProject.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult InsertProject(RemoteSensingProject.Models.Admin.main.createProjectModel pm)
+		public ActionResult InsertProject(Models.Admin.main.createProjectModel pm)
 		{
 			string filePage = ((Controller)this).Server.MapPath("~/ProjectContent/Admin/ProjectDocs/");
 			if (!Directory.Exists(filePage))
@@ -225,7 +244,7 @@ namespace RemoteSensingProject.Controllers
 			}
 			if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
 			{
-				foreach (RemoteSensingProject.Models.Admin.main.Project_Statge item in pm.stages)
+				foreach (Models.Admin.main.Project_Statge item in pm.stages)
 				{
 					if (item.Stage_Document != null && item.Stage_Document.FileName != "")
 					{
@@ -244,7 +263,7 @@ namespace RemoteSensingProject.Controllers
 				}
 				if (pm.stages != null && pm.stages.Count > 0 && pm.pm.ProjectStage)
 				{
-					foreach (RemoteSensingProject.Models.Admin.main.Project_Statge item2 in pm.stages)
+					foreach (Models.Admin.main.Project_Statge item2 in pm.stages)
 					{
 						if (item2.Stage_Document != null && item2.Stage_Document.FileName != "")
 						{
