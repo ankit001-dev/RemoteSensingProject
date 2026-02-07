@@ -36,11 +36,11 @@ namespace RemoteSensingProject.ApiServices
 
 		[HttpGet]
 		[Route("api/getOutSourceTask")]
-		public IHttpActionResult getOutSourceAssignTask(int id, int? limit = null, int? page = null, string searchTerm = null)
+		public IHttpActionResult getOutSourceAssignTask(int id, int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null)
 		{
 			try
 			{
-				List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task> data = _subordinate.getOutSourceTask(id, limit, page, searchTerm);
+				List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task> data = _subordinate.getOutSourceTask(id, limit, page, searchTerm, statusFilter);
 				string[] selectprop = new string[5] { "id", "Title", "Description", "CompleteStatus", "Status" };
 				List<object> newdata = CommonHelper.SelectProperties(data, selectprop);
 				if (data.Count > 0)
@@ -305,5 +305,26 @@ namespace RemoteSensingProject.ApiServices
 				});
 			}
 		}
-	}
+
+		[HttpGet]
+        [Route("api/ProjectStaffMeetingList")]
+        public IHttpActionResult getAllmeeting(int userid, int? page, int? limit, string searchTerm = null, string statusFilter = null)
+        {
+            try
+            {
+                List<RemoteSensingProject.Models.Admin.main.Meeting_Model> res = _subordinate.getAllSubordinatemeeting(userid, limit, page, searchTerm, statusFilter);
+                string[] selectprop = new string[10] { "Id", "CompleteStatus", "MeetingType", "MeetingLink", "MeetingTitle", "AppStatus", "memberId", "CreaterId", "MeetingDate", "createdBy" };
+                List<object> data = CommonHelper.SelectProperties(res, selectprop);
+                if (data.Count > 0)
+                {
+                    return CommonHelper.Success((ApiController)(object)this, data, "Data fetched successfully", 200, res[0].Pagination);
+                }
+                return CommonHelper.NoData((ApiController)(object)this);
+            }
+            catch (Exception ex)
+            {
+                return CommonHelper.Error((ApiController)(object)this, ex.Message);
+            }
+        }
+    }
 }
