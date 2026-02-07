@@ -83,19 +83,9 @@
 
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label mb-1">Project Manager</label>
-                            <select class="form-select form-select-sm" required name="pm.pm.ProjectManager">
+                            <select class="form-select form-select-sm" id="projectManagerSelect" required name="pm.pm.ProjectManager">
                                 <option value="">Select an Option</option>
                                 @foreach (var item in ViewBag.projectManager as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
-                                {
-                                    <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label for="title" class="form-label mb-1">Sub-Ordinate</label>
-                            <select class="form-select form-select-sm" required name="pm.pm.SubOrdinate" multiple>
-                                <option value="">Select an Option</option>
-                                @foreach (var item in ViewBag.subOrdinateList as List<RemoteSensingProject.Models.Admin.main.Employee_model>)
                                 {
                                     <option value="@item.Id">@item.EmployeeName (@item.EmployeeCode)</option>
                                 }
@@ -138,16 +128,6 @@
                                    placeholder="Enter total HR count" required min="0">
                         </div>
 
-
-                        <div class="col-lg-12 mb-3" id="humanResourcesContainer" style="display:none;">
-                            <fieldset>
-                                <legend style="font-size:15px;">
-                                    Human Resources Details
-                                </legend>
-                                <div id="hrRows"></div>
-                            </fieldset>
-                        </div>
-
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Project Type</label>
                             <br />
@@ -172,54 +152,24 @@
 
                         </div>
                     </div>
+
                     <div id="budgetContainerBox" style="display:none;">
                         <fieldset>
                             <legend style="font-size:15px;"> <label class="form-label my-2 fw-bolder"><a href="#">Project Budget Detail</a></label></legend>
 
-
-                            <div class="row budgetList">
-
-                                <!--<div class="col-lg-5 mb-3">
-                                <label for="title" class="form-label">Heads</label>-->
-                                @*<input type="text" class="form-control form-control-sm" name="pm.budgets[0].ProjectHeads" id="" placeholder="Enter Key Point">*@
-                                <!--<select class="form-select form-select-sm"
-                                            name="pm.budgets[0].ProjectHeads">
-                                        <option value="">-- Select Budget Head --</option>
-
-                                    </select>
-
-                                </div>-->
-                                <div class="col-lg-5 mb-3">
-                                    <label class="form-label">Heads</label>
-                                    <select class="form-select form-select-sm no-select2 budgetHeadSelect"
-                                            name="pm.budgets[0].HeadId">
-                                        @Html.Raw(budgetOptions)
-                                    </select>
-
-                                </div>
-
-                                <div class="col-lg-5 mb-3">
-                                    <label for="title" class="form-label">Amount</label>
-                                    <input type="number" class="form-control form-control-s amnt" name="pm.budgets[0].ProjectAmount" placeholder="Enter amount...">
-                                    <span id="_person" class="ms-2 text-danger"></span>
-                                </div>
-                            </div>
-
-                            @*<div class="row" id="miscList">
-                                    <div class="col-lg-5 mb-3">
-                                        <label for="title" class="form-label">
-                                            Miscellaneous
-                                        </label>
-                                        <input type="text" class="form-control form-control-sm" name="pm.budgets[1].ProjectHeads" readonly id="" value="Miscellaneous" placeholder="Enter Key Point">
-                                    </div>
-                                    <div class="col-lg-5 mb-3">
-                                        <label for="misAmount" class="form-label">Amount</label>
-                                        <input type="number" readonly class="form-control form-control-sm" id="misAmount" name="pm.budgets[1].ProjectAmount" placeholder="Enter amount">
-                                    </div>
-                                </div>*@
-
+                            <div class="row" id="budgetRows"></div>
                         </fieldset>
                     </div>
+
+                    <div class="col-lg-12 mb-3" id="humanResourcesContainer" style="display:none;">
+                        <fieldset>
+                            <legend style="font-size:15px;">
+                                <label class="form-label my-2 fw-bolder"><a href="#">Human Resources Details</a></label>                                
+                            </legend>
+                            <div id="hrRows"></div>
+                        </fieldset>
+                    </div>
+
                     <div id="projectTypeDetailContainer" style="display:none;">
                         <fieldset>
                             <legend style="font-size:15px;">  <label class="form-label my-2 fw-bolder"><a href="#">External Project Detail</a></label></legend>
@@ -298,7 +248,13 @@
 <script>
     $(document).ready(function () {
 
-
+        function moveOtherRowToLast() {
+            let otherRow = $("#hrRows .hrRow").has(".hr-other");
+            if (otherRow.length) {
+                otherRow.remove();
+                $("#hrRows").append(otherRow);
+            }
+        }
 
         // HR Count input validation
         $("#humanResourcesCount").on("input", function () {
@@ -339,6 +295,7 @@
                 $("#hrRows").append(newRow);
             }
 
+            moveOtherRowToLast();
             // Update other count
             updateOtherCount();
         }
@@ -382,6 +339,7 @@
         $("#humanResourcesContainer").on("click", ".deleteHRRow", function (e) {
             e.preventDefault();
             $(this).closest(".hrRow").remove();
+            moveOtherRowToLast();
             updateOtherCount();
 
             // Hide container if no rows left
@@ -443,6 +401,7 @@
                     $(this).find(".hr-count").val(remaining);
                 }
             });
+            moveOtherRowToLast();
         }
 
         // Update HR display based on count
@@ -876,10 +835,6 @@
                 "pm.pm.ProjectManager": {
                     required: true
                 },
-                "pm.pm.SubOrdinate": {
-                    required: true,
-                    minimumOne: true
-                },
                 "pm.pm.letterNo": {
                     required: true,
                     minlength: 2,
@@ -936,9 +891,6 @@
 
                 "pm.pm.ProjectManager": {
                     required: "Please select a project manager"
-                },
-                "pm.pm.SubOrdinate": {
-                    required: "Please select at least one sub-ordinate"
                 },
                 "pm.pm.letterNo": {
                     required: "Please enter letter number",
