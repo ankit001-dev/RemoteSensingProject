@@ -1,0 +1,282 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Logistics Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- ✅ REQUIRED FOR ICONS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #dfe5ec 0%, #cfd8e3 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        /* Main Card */
+        .main-card {
+            width: 1080px;
+            min-height: 520px;
+            background-color: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 18px 38px rgba(0, 33, 71, 0.12);
+            overflow: hidden;
+            display: flex;
+        }
+
+            .main-card .row {
+                height: 100%;
+            }
+
+        /* Illustration */
+        .bg-illustration {
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden;
+        }
+
+            .bg-illustration img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+        /* Form Side */
+        .form-side {
+            padding: 28px 32px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Headings */
+        h5 {
+            letter-spacing: 0.4px;
+            color: #002147;
+        }
+
+        .Content-Form {
+            font-size: 15px;
+            color: #4b5563;
+            line-height: 1.3;
+        }
+
+        /* Logo */
+        .brand-logo {
+            height: 4rem;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Inputs */
+        .form-label {
+            margin-bottom: 4px;
+        }
+
+        .form-control {
+            background-color: #f6f8fb !important;
+            border: 1px solid #e2e6ec !important;
+            padding: 10px 14px;
+            font-size: 0.88rem;
+            border-radius: 8px;
+        }
+
+            .form-control:focus {
+                background-color: #ffffff !important;
+                border-color: #002147 !important;
+                box-shadow: 0 0 0 3px rgba(0, 33, 71, 0.12) !important;
+            }
+
+        /* Input group icons */
+        .input-group-text {
+            background-color: #f6f8fb;
+            border: 1px solid #e2e6ec;
+            color: #002147;
+        }
+
+        /* Checkbox */
+        .form-check-input:checked {
+            background-color: #002147;
+            border-color: #002147;
+        }
+
+        /* Button */
+        .btn-primary {
+            background-color: #002147;
+            border: none;
+            padding: 11px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.25s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #013064;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 14px rgba(0, 33, 71, 0.25);
+            }
+
+        /* Links */
+        a.text-primary {
+            color: #002147 !important;
+        }
+
+            a.text-primary:hover {
+                text-decoration: underline;
+            }
+
+        /* Muted text */
+        .text-muted,
+        .text-muted-small {
+            color: #6b7280 !important;
+            font-size: 0.85rem;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .bg-illustration {
+                display: none !important;
+            }
+
+            .form-side {
+                width: 100% !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-card shadow-lg">
+        <div class="container-fluid p-0">
+            <div class="row g-0">
+
+
+                <div class="col-md-5 bg-white form-side">
+                    <div class="form-container">
+
+                        <div class="d-flex align-items-center justify-content-between pb-4">
+
+                            <!-- Left: PMS + content -->
+                            <div class="">
+                                <h3 class="fw-bold text-primary m-0">
+                                    PMS
+                                </h3>
+                                <span class="Content-Form d-block mt-1">
+                                    Remote Sensing Application Centre, UP
+                                </span>
+                            </div>
+
+                            <!-- Right: Logo (center aligned to both lines) -->
+                            <img src="/assets/images/remote_sensing_logo.jfif"
+                                 class="brand-logo ms-1"
+                                 alt="Logo">
+
+                        </div>
+
+
+
+
+
+
+                        <form action="#" method="post">
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold">User Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent">
+                                        <i class="bi bi-envelope text-primary"></i>
+                                    </span>
+                                    <input type="email"
+                                           class="form-control"
+                                           placeholder="yatingzang0215@gmail.com"
+                                           required>
+                                </div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent">
+                                        <i class="bi bi-lock text-primary"></i>
+                                    </span>
+                                    <input type="password"
+                                           class="form-control"
+                                           id="password"
+                                           placeholder="••••••••••••"
+                                           required>
+                                    <span class="input-group-text bg-transparent toggle-password"
+                                          data-target="#password"
+                                          style="cursor:pointer;">
+                                        <i class="bi bi-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Checkbox -->
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="terms" checked>
+                                <label class="form-check-label small text-muted" for="terms">
+                                    Remember me
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">
+                                Create Account
+                            </button>
+
+                        </form>
+
+                        <p class="mt-4 text-center small text-muted">
+                            Created by <a href="https://macreel.co.in/homepage" class="text-primary text-decoration-none fw-bold">Macreel Infosoft Pvt. Ltd.</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-7 bg-illustration">
+                    <img src="/loginAssets/images/newformimage.png" alt="Logistics Illustration" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+    document.querySelectorAll('.toggle-password').forEach(function (toggle) {
+        toggle.addEventListener('click', function () {
+
+            const target = document.querySelector(this.getAttribute('data-target'));
+            const icon = this.querySelector('i');
+
+            if (target.type === 'password') {
+                target.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                target.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+    });
+    </script>
+
+</body>
+
+
+
+</html>
