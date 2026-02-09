@@ -20,7 +20,7 @@ using RemoteSensingProject.Models.SubOrdinate;
 
 namespace RemoteSensingProject.ApiServices
 {
-	[JwtAuthorize(Roles = "admin,accounts")]
+	[JwtAuthorize(Roles = "admin,accounts,cgp")]
 	public class AdminController : ApiController
 	{
 		private readonly AdminServices _adminServices;
@@ -503,7 +503,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[HttpPost]
+        [HttpPost]
 		[Route("api/adminAddBudgets")]
 		public IHttpActionResult AddBudgets()
 		{

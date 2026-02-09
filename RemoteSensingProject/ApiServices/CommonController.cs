@@ -18,7 +18,7 @@ using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
 using static RemoteSensingProject.Models.CommonHelper;
 
-[JwtAuthorize(Roles = "admin,account,projectManager,subOrdinate,outSource,prashasan")]
+[JwtAuthorize(Roles = "admin,account,projectManager,subOrdinate,outSource,prashasan,cgp")]
 public class CommonController : ApiController
 {
 	private readonly AdminServices _adminServices;
@@ -173,7 +173,7 @@ public class CommonController : ApiController
 		}
 	}
 	[System.Web.Mvc.AllowAnonymous]
-	[RoleAuthorize("admin,projectManager")]
+	[RoleAuthorize("admin,projectManager,cgp,accounts")]
 	[HttpGet]
 	[Route("api/GetadminProjectDetailById")]
 	public IHttpActionResult GetProjectById(int Id)
@@ -774,8 +774,36 @@ public class CommonController : ApiController
             });
         }
     }
-    #endregion
+	#endregion
 
+	#region All Project List
+	[JwtAuthorize(Roles ="cgp")]	
+    [HttpGet]
+    [Route("api/cgpProjectList")]
+    public IHttpActionResult GetCgpProjectList(int? page, int? limit, string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null, string filterType = null)
+    {
+        try
+        {
+            string[] selectProperties = new string[23]
+            {
+                "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
+                "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
+                "ProjectDepartment", "ContactPerson", "Address"
+            };
+            var data = _managerservice.All_Project_List(projectManagerFilter, limit, page, filterType, null, searchTerm, statusFilter);
+            List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
+            if (data.Count > 0)
+            {
+                return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+            }
+            return CommonHelper.NoData((ApiController)(object)this);
+        }
+        catch (Exception ex)
+        {
+            return CommonHelper.Error((ApiController)(object)this, ex.Message);
+        }
+    }
+    #endregion
     private IHttpActionResult BadRequest(object value)
 	{
 		return Content<object>(HttpStatusCode.BadRequest, value);

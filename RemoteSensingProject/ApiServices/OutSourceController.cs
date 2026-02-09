@@ -326,5 +326,29 @@ namespace RemoteSensingProject.ApiServices
                 return CommonHelper.Error((ApiController)(object)this, ex.Message);
             }
         }
+
+		[HttpGet]
+		[Route("api/is-attendance-mark")]
+		public IHttpActionResult IsAttendanceMark(int outsourceid)
+		{
+			try
+			{
+				bool res = true;
+				return Ok(new
+				{
+					status = res,
+					StatusCode = res?200:400,
+					isAttendanceMark = res?true:false
+				});
+			}
+			catch(Exception ex)
+			{
+				return BadRequest(new
+				{
+					status = false,
+					message = ex.Message
+				});
+			}
+		}
     }
 }
