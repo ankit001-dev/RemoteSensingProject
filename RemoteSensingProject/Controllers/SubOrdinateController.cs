@@ -90,7 +90,7 @@ namespace RemoteSensingProject.Controllers
 		public ActionResult Meeting_List(string searchTerm = null, string statusFilter = null)
 		{
 			var userId = _subOrdinate.GetOutSourceId(User.Identity.Name);
-			List<RemoteSensingProject.Models.Admin.main.Meeting_Model> res = _subOrdinate.getAllSubordinatemeeting(int.Parse(userId.userId), null, null, searchTerm, statusFilter);
+			List<Models.Admin.main.Meeting_Model> res = _subOrdinate.getAllSubordinatemeeting(int.Parse(userId.userId), null, null, searchTerm, statusFilter);
 			return View((object)res);
 		}
 

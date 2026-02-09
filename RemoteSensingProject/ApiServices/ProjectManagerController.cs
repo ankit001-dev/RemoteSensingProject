@@ -167,7 +167,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        [AllowAnonymous]
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getFinancialReport")]
         public IHttpActionResult getFinancialReport(int projectId)
@@ -193,7 +193,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        [AllowAnonymous]
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/getWeeklyUpdate")]
         public IHttpActionResult getWeeklyUpdate(int projectId)
@@ -1021,7 +1021,7 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        [AllowAnonymous]
+        [System.Web.Mvc.AllowAnonymous]
         [HttpGet]
         [Route("api/ViewReinbursementBytype")]
         public IHttpActionResult viewReinbursement(int userId, string type, int id, int? page = null, int? limit = null)
