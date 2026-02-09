@@ -18,7 +18,7 @@ using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
 using static RemoteSensingProject.Models.CommonHelper;
 
-[JwtAuthorize(Roles = "admin,account,projectManager,subOrdinate,outSource,prashasan,cgp")]
+[JwtAuthorize(Roles = "admin,accounts,projectManager,subOrdinate,outSource,prashasan,cgp")]
 public class CommonController : ApiController
 {
 	private readonly AdminServices _adminServices;
