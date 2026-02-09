@@ -804,19 +804,21 @@
         let hrIndex = 0;
 
         $("#hrRows .hrRow").each(function (index) {
-            let hrId = $(this).find(".hr-id").val();
-            formData.append(`pm.hr[${index}].id`, hrId);
+            if (index > 0) {
+                let hrId = $(this).find(".hr-id").val();
+                formData.append(`pm.hr[${index}].id`, hrId);
 
-            let designationId = $(this).find(".hr-designation-select").length ?
-                $(this).find(".hr-designation-select").val() :
-                $(this).find(".hr-designation-id").val();
+                let designationId = $(this).find(".hr-designation-select").length ?
+                    $(this).find(".hr-designation-select").val() :
+                    $(this).find(".hr-designation-id").val();
 
-            let count = $(this).find(".hr-count").val();
+                let count = $(this).find(".hr-count").val();
 
-            if (!designationId || designationId === "" || count === "" || count === "0") return;
+                if (!designationId || designationId === "" || count === "" || count === "0") return;
 
-            formData.append(`pm.hr[${index}].designationId`, designationId);
-            formData.append(`pm.hr[${index}].designationCount`, count);
+                formData.append(`pm.hr[${index}].designationId`, designationId);
+                formData.append(`pm.hr[${index}].designationCount`, count);
+            }
         });
 
 

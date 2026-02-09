@@ -445,17 +445,17 @@ namespace RemoteSensingProject.Models.Accounts
 									((DbDataReader)(object)sdr).Read();
 									obj = new main.DashboardCount();
 									obj.TotalReinbursementReq = ((DbDataReader)(object)sdr)["TotalReinbursementReq"].ToString();
-									obj.TotalTourProposalReq = ((DbDataReader)(object)sdr)["TotalTourProposalReq"].ToString();
-									obj.totalVehicleHiringRequest = ((DbDataReader)(object)sdr)["totalVehicleHiringRequest"].ToString();
+									//obj.TotalTourProposalReq = ((DbDataReader)(object)sdr)["TotalTourProposalReq"].ToString();
+									//obj.totalVehicleHiringRequest = ((DbDataReader)(object)sdr)["totalVehicleHiringRequest"].ToString();
 									obj.totalReinbursementPendingRequest = ((DbDataReader)(object)sdr)["totalReinbursementPendingRequest"].ToString();
 									obj.totalReinbursementapprovedRequest = ((DbDataReader)(object)sdr)["totalReinbursementapprovedRequest"].ToString();
 									obj.totalReinbursementRejectRequest = ((DbDataReader)(object)sdr)["totalReinbursementRejectRequest"].ToString();
-									obj.totalTourProposalApprReque = ((DbDataReader)(object)sdr)["totalTourProposalApprReque"].ToString();
-									obj.totalTourProposalRejectReque = ((DbDataReader)(object)sdr)["totalTourProposalRejectReque"].ToString();
-									obj.totaTourProposalPendingReque = ((DbDataReader)(object)sdr)["totaTourProposalPendingReque"].ToString();
-									obj.totalPendingHiringVehicle = ((DbDataReader)(object)sdr)["totalPendingHiringVehicle"].ToString();
-									obj.totalApproveHiringVehicle = ((DbDataReader)(object)sdr)["totalApproveHiringVehicle"].ToString();
-									obj.totalRejectHiringVehicle = ((DbDataReader)(object)sdr)["totalRejectHiringVehicle"].ToString();
+									//obj.totalTourProposalApprReque = ((DbDataReader)(object)sdr)["totalTourProposalApprReque"].ToString();
+									//obj.totalTourProposalRejectReque = ((DbDataReader)(object)sdr)["totalTourProposalRejectReque"].ToString();
+									//obj.totaTourProposalPendingReque = ((DbDataReader)(object)sdr)["totaTourProposalPendingReque"].ToString();
+									//obj.totalPendingHiringVehicle = ((DbDataReader)(object)sdr)["totalPendingHiringVehicle"].ToString();
+									//obj.totalApproveHiringVehicle = ((DbDataReader)(object)sdr)["totalApproveHiringVehicle"].ToString();
+									//obj.totalRejectHiringVehicle = ((DbDataReader)(object)sdr)["totalRejectHiringVehicle"].ToString();
 								}
 								((DbDataReader)(object)sdr).Close();
 							}
