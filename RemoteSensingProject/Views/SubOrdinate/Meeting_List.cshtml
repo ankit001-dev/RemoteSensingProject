@@ -421,33 +421,32 @@
         const meetingName = $("#searchByMeetingName").val().trim();
         const meetingStatus = $("#meetingStatus").val();
 
-        // Set or remove meeting name search
         if (meetingName) url.searchParams.set("searchTerm", meetingName);
         else url.searchParams.delete("searchTerm");
 
-        // Set or remove status filter
         if (meetingStatus) url.searchParams.set("statusFilter", meetingStatus);
         else url.searchParams.delete("statusFilter");
 
-        showLoader(); // optional loader function
+        showLoader(); // optional
         window.location.href = url.toString();
     }
 
-    // Search on typing
-    $("#searchByMeetingName").on("keyup", function () {
-        clearTimeout(window.searchTimer);
-        window.searchTimer = setTimeout(() => {
-            applyMeetingFilters();
-        }, 500);  // debounce
-    });
-
-    // Meeting status change
-    $("#meetingStatus").on("change", function () {
-        applyMeetingFilters();
-    });
-
-    // Restore values on page load
     $(document).ready(function () {
+
+        // Search on typing (debounced)
+        $("#searchByMeetingName").on("keyup", function () {
+            clearTimeout(window.searchTimer);
+            window.searchTimer = setTimeout(() => {
+                applyMeetingFilters();
+            }, 500);
+        });
+
+        // Meeting status change
+        $("#meetingStatus").on("change", function () {
+            applyMeetingFilters();
+        });
+
+        // Restore values on page load
         const urlParams = new URLSearchParams(window.location.search);
 
         const searchMeeting = urlParams.get("searchTerm");
