@@ -6,182 +6,243 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Logistics Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- ✅ REQUIRED FOR ICONS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+
 
     <style>
         body {
-            /*            background-image: url('../../loginassets/images/newloginpagetwo.png');*/
-            /*                        background: linear-gradient(to top, #3b82f6, #93c5fd, white);*/
-            /*                        background: linear-gradient(to bottom, #2563eb, #bfdbfe, #ffffff);*/
-            /*                        background: linear-gradient(225deg, #3b82f6, #93c5fd, #ffffff);*/
-            background: linear-gradient(315deg, #ffffff, #93c5fd, #3b82f6);
-            /*            background: linear-gradient(315deg, #2563eb, #bfdbfe, #ffffff);*/
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #dfe5ec 0%, #cfd8e3 100%);
             min-height: 100vh;
             display: flex;
-            align-items: flex-start; /* Card top aligned */
+            align-items: center;
             justify-content: center;
-            padding-top: 50px; /* Top gap */
             margin: 0;
         }
 
-        .login-container {
-            max-width: 1000px;
-            width: 95%;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        /* Main Card */
+        .main-card {
+            width: 1080px;
+            min-height: 520px;
+            background-color: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 18px 38px rgba(0, 33, 71, 0.12);
             overflow: hidden;
-            margin-top: 30px;
+            display: flex;
         }
 
-        .image-section img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            min-height: 250px; /* Mobile friendly */
-        }
-
-        .form-section {
-            padding: 40px;
-            background-color: white;
-        }
-
-            .form-section h3 {
-                font-weight: 700;
-                margin-bottom: 30px;
-                color: #0d47a1;
+            .main-card .row {
+                height: 100%;
             }
 
-        .input-group-text {
-            background: transparent;
-            border-right: none;
+        /* Illustration */
+        .bg-illustration {
+            padding: 0 !important;
+            margin: 0 !important;
+            overflow: hidden;
+        }
+
+            .bg-illustration img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+
+        /* Form Side */
+        .form-side {
+            padding: 28px 32px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Headings */
+        h5 {
+            letter-spacing: 0.4px;
+            color: #002147;
+        }
+
+        .Content-Form {
+            font-size: 15px;
+            color: #4b5563;
+            line-height: 1.3;
+        }
+
+        /* Logo */
+        .brand-logo {
+            height: 4rem;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Inputs */
+        .form-label {
+            margin-bottom: 4px;
         }
 
         .form-control {
-            border-left: none;
+            background-color: #f6f8fb !important;
+            border: 1px solid #e2e6ec !important;
+            padding: 10px 14px;
+            font-size: 0.88rem;
+            border-radius: 8px;
         }
 
             .form-control:focus {
-                box-shadow: none;
-                border-color: #dee2e6;
+                background-color: #ffffff !important;
+                border-color: #002147 !important;
+                box-shadow: 0 0 0 3px rgba(0, 33, 71, 0.12) !important;
             }
 
-        .login-btn {
-            background: linear-gradient(90deg, #2196f3, #1976d2);
+        /* Input group icons */
+        .input-group-text {
+            background-color: #f6f8fb;
+            border: 1px solid #e2e6ec;
+            color: #002147;
+        }
+
+        /* Checkbox */
+        .form-check-input:checked {
+            background-color: #002147;
+            border-color: #002147;
+        }
+
+        /* Button */
+        .btn-primary {
+            background-color: #002147;
             border: none;
-            border-radius: 25px;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            transition: 0.3s;
+            padding: 11px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.25s ease;
         }
 
-            .login-btn:hover {
-                opacity: 0.9;
+            .btn-primary:hover {
+                background-color: #013064;
                 transform: translateY(-1px);
+                box-shadow: 0 6px 14px rgba(0, 33, 71, 0.25);
             }
 
-        .forgot {
-            text-decoration: none;
-            color: #666;
-            font-size: 14px;
+        /* Links */
+        a.text-primary {
+            color: #002147 !important;
         }
 
-            .forgot:hover {
-                color: #0d47a1;
-            }
-
-        /* Brand Header */
-
-
-        .brand-subtitle-main {
-            font-size: 21px; /* 22px → 28px for bigger text */
-            font-weight: 1000; /* 600 → 700 for bolder */
-            color: #37474f;
-            letter-spacing: 0.5px;
-        }
-
-        .brand-title {
-            font-size: 36px; /* 32px → 36px for bigger PMS text */
-            font-weight: 900; /* 800 → 900 for bolder PMS */
-            color: #0d47a1;
-            letter-spacing: 2px;
-        }
-
-        .brand-logo {
-            height: 65px;
-        }
-
-        .footer-link {
-            color: #0d47a1;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-            .footer-link:hover {
+            a.text-primary:hover {
                 text-decoration: underline;
-                color: #1976d2;
             }
+
+        /* Muted text */
+        .text-muted,
+        .text-muted-small {
+            color: #6b7280 !important;
+            font-size: 0.85rem;
+        }
+
+        .logo-h6 {
+            height: 4rem; /* h6 ke barabar */
+            width: auto; /* aspect ratio safe */
+            object-fit: contain;
+        }
+
+
+        /* Mobile */
+        @@media (max-width: 768px) {
+            .bg-illustration {
+                display: none !important;
+            }
+
+            .form-side {
+                width: 100% !important;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="login-container">
-        <div class="row g-0">
-            <!-- Left Image -->
-            <div class="col-md-6 image-section">
-                <img src="~/loginAssets/images/newloginpage.png" />
-            </div>
-            <!-- Right Form -->
-            <div class="col-md-6 form-section d-flex flex-column justify-content-center">
-                <!-- Brand Header -->
-                <div class="brand-header mb-4 text-center text-md-start">
-                    <p class="brand-subtitle-main mb-3 fw-bold">
-                        Remote Sensing Application Centre, UP
-                    </p>
+    <div class="main-card shadow-lg">
+        <div class="container-fluid p-0">
+            <div class="row g-0">
+                <div class="col-md-5 bg-white form-side">
+                    <div class="d-flex justify-content-between mb-4">
+                        <div class="">
+                            <img src="/assets/images/RemoteLogo.png"
+                                 class="logo-h6"
+                                 alt="RSAC Logo">
+                        </div>
+                        <div class="">
+                            <p class="fw-bold"><span style="font-size: 21px;">Project Management System </span><br /> <span class="text-primary small mb-4" style="font-size: 12px;">Remote Sensing Applications Center , Uttar Pradesh</span></p>
 
-                    <div class="d-flex justify-content-center align-items-center gap-3">
-                        <img src="~/assets/images/remote_sensing_logo.jfif" alt="logo" class="brand-logo">
-                        <h2 class="brand-title mb-0">PMS</h2>
+                        </div>
                     </div>
+                    <div class="form-container">
+                        <form id="login-form" method="post">
 
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold">User Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent">
+                                        <i class="bi bi-envelope text-primary"></i>
+                                    </span>
+                                    <input type="text"
+                                           id="username" name="username"
+                                           class="form-control"
+                                           placeholder="example@gmail.com"
+                                           required>
+                                </div>
+                            </div>
 
+                            <!-- Password -->
+                            <div class="mb-3">
+                                <label class="form-label text-muted small fw-bold">Password</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent">
+                                        <i class="bi bi-lock text-primary"></i>
+                                    </span>
+                                    <input type="password"
+                                           class="form-control"
+                                           id="password" name="password"
+                                           placeholder="••••••••••••"
+                                           required>
+                                    <span class="input-group-text bg-transparent toggle-password"
+                                          data-target="#password"
+                                          style="cursor:pointer;">
+                                        <i class="bi bi-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Checkbox -->
+                            <div class="form-check mb-4 text-end">
+                                <a href="/login/ForgotPassword">Forget Password ?</a>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">
+                                Login
+                            </button>
+
+                        </form>
+
+                        <p class="mt-4 text-center small text-muted">
+                            Developed by <a href="https://macreel.co.in/homepage" class="text-primary text-decoration-none fw-bold">Macreel Infosoft Pvt. Ltd.</a>
+                        </p>
+                        <p class="text-center text-muted fw-bold"> &copy; 2026 Remote Sensing Applications Centre , U.P.</p>
+                    </div>
                 </div>
-                <!-- Login Form -->
-                <form id="login-form">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">
-                            <i class="bi bi-person text-primary"></i>
-                        </span>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Email Address" required>
-                    </div>
 
-                    <div class="input-group mb-4">
-                        <span class="input-group-text">
-                            <i class="bi bi-lock text-primary"></i>
-                        </span>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100 login-btn mb-3">LOGIN</button>
-
-                    <div class="text-center">
-                        <a href="#" class="forgot">Forgot Password?</a>
-                    </div>
-                </form>
-                <!-- Footer -->
-                <div class="text-center mt-3 mb-3 footer-text">
-                    Created by
-                    <a href="https://macreel.co.in/homepage" target="_blank" class="footer-link">
-                        macreel infosoft pvt. ltd.
-                    </a>
+                <div class="col-md-7 bg-illustration">
+                    <img src="/loginAssets/images/newformimage.png" class="img-fluid" alt="Logistics Illustration" />
                 </div>
 
             </div>
@@ -190,7 +251,6 @@
     <script src="~/Scripts/jquery-3.7.1.min.js"></script>
     <script src="~/assets/js/sweetalert.min.js"></script>
     <script>
-
         $("#login-form").on("submit", function () {
 
 
@@ -292,34 +352,22 @@
             return false;
 
         });
-        window.onload = function () {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function (position) {
-                    var latitude = position.coords.latitude;
-                    var longitude = position.coords.longitude;
+        document.querySelectorAll('.toggle-password').forEach(function (toggle) {
+            toggle.addEventListener('click', function () {
 
-                    // ✅ Cookies set karo (session cookie - browser band hone tak)
-                    document.cookie = "latitude=" + latitude + "; path=/;";
-                    document.cookie = "longitude=" + longitude + "; path=/;";
-                });
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
+                const target = document.querySelector(this.getAttribute('data-target'));
+                const icon = this.querySelector('i');
 
-
-        };
-        $(".toggle-password").on("click", function () {
-            debugger
-            const input = $($(this).data("target"));
-            const icon = $(this).find("i");
-
-            if (input.attr("type") === "password") {
-                input.attr("type", "text");
-                icon.removeClass("bi-eye").addClass("bi-eye-slash");
-            } else {
-                input.attr("type", "password");
-                icon.removeClass("bi-eye-slash").addClass("bi-eye");
-            }
+                if (target.type === 'password') {
+                    target.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    target.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            });
         });
     </script>
 
