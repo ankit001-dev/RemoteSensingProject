@@ -1,8 +1,10 @@
-// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
+﻿// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Models.ProjectManager.ManagerService
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Npgsql;
 using NpgsqlTypes;
 using System;
@@ -13,6 +15,7 @@ using System.Data.Common;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace RemoteSensingProject.Models.ProjectManager
 {
@@ -1885,12 +1888,13 @@ namespace RemoteSensingProject.Models.ProjectManager
             NpgsqlTransaction tran = con.BeginTransaction();
             try
             {
-                cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(v_action=>@v_action,v_id=> @v_id,v_empid=> @v_empid,v_title=>@v_title, v_description=>@v_description,v_taskid=> @v_taskid)", con, tran);
+                cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(v_action=>@v_action,v_id=> @v_id,v_empid=> @v_empid,v_title=>@v_title, v_description=>@v_description,v_taskid=> @v_taskid,v_completiondate => @v_completiondate)", con, tran);
                 ((DbCommand)(object)cmd).CommandType = CommandType.Text;
                 cmd.Parameters.AddWithValue("@v_action", (object)"createTask");
                 cmd.Parameters.AddWithValue("@v_id", ost.projectId);
                 cmd.Parameters.AddWithValue("@v_empid", (object)ost.empId);
                 cmd.Parameters.AddWithValue("@v_title", (object)ost.title);
+                cmd.Parameters.AddWithValue("@v_completiondate", (object)ost.completionDate);
                 cmd.Parameters.AddWithValue("@v_description", (object)ost.description);
                 NpgsqlParameter val = new NpgsqlParameter("@v_taskid", (NpgsqlDbType)9);
                 ((DbParameter)val).Direction = ParameterDirection.InputOutput;
@@ -1973,7 +1977,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                                             title = ((DbDataReader)(object)rd)["title"].ToString(),
                                             description = ((DbDataReader)(object)rd)["description"].ToString(),
                                             completeStatus = Convert.ToBoolean(((DbDataReader)(object)rd)["completeStatus"]),
-                                            projectName = rd["projectName"].ToString()
+                                            projectName = rd["projectName"].ToString(),
+                                            completionDate = rd["completiondate"]!=DBNull.Value ? Convert.ToDateTime(rd["completiondate"]) :DateTime.MinValue
                                         };
                                         if (firstRow)
                                         {
@@ -2156,37 +2161,69 @@ namespace RemoteSensingProject.Models.ProjectManager
         #region Manage Tour Proposal
         public bool insertTour(tourProposal data)
         {
-            //IL_000e: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0018: Expected O, but got Unknown
             try
             {
-                cmd = new NpgsqlCommand("CALL sp_Tourproposal(v_id=> @v_id,v_userid => null::INT, v_projectid => @projectId, v_dateofdept => @dateOfDept, v_place => @place, v_periodfrom => @periodFrom, v_periodto => @periodTo, v_returndate => @returnDate, v_purpose => @purpose, v_action => @action)", con);
-                cmd.Parameters.AddWithValue("@projectId", (object)data.proposalType);
-                cmd.Parameters.AddWithValue("@projectId", (object)data.outsource);
-                cmd.Parameters.AddWithValue("@projectId", (object)data.projectId);
-                cmd.Parameters.AddWithValue("@dateOfDept", (object)data.dateOfDept);
-                cmd.Parameters.AddWithValue("@place", (object)data.place);
-                cmd.Parameters.AddWithValue("@periodFrom", (object)data.periodFrom);
-                cmd.Parameters.AddWithValue("@periodTo", (object)data.periodTo);
-                cmd.Parameters.AddWithValue("@returnDate", (object)data.returnDate);
-                cmd.Parameters.AddWithValue("@purpose", (object)data.purpose);
-                cmd.Parameters.AddWithValue("@action", data.id > 0 ? "update" : (object)"insert");
-                cmd.Parameters.AddWithValue("@v_id", data.id);
-                ((DbConnection)(object)con).Open();
-                ((DbCommand)(object)cmd).ExecuteNonQuery();
+                con.Open();
+
+                // 🔹 Transaction (strongly recommended)
+                var tx = con.BeginTransaction();
+
+                // 1️⃣ TourProposal insert/update
+                using (var cmd = new NpgsqlCommand(
+                    "CALL sp_Tourproposal(v_id=> @v_id, v_projectid => @projectId, v_dateofdept => @dateOfDept, v_place => @place, v_periodfrom => @periodFrom, v_periodto => @periodTo, v_returndate => @returnDate, v_purpose => @purpose, v_action => @action,v_tourtype => @v_tourtype)",
+                    con, tx))
+                {
+                    var idParam = new NpgsqlParameter("@v_id", DbType.Int32)
+                    {
+                        Direction = ParameterDirection.InputOutput,
+                        Value = data.id
+                    };
+
+                    cmd.Parameters.Add(idParam);
+                    cmd.Parameters.AddWithValue("@projectId", data.projectId);
+                    cmd.Parameters.AddWithValue("@dateOfDept", data.dateOfDept);
+                    cmd.Parameters.AddWithValue("@place", data.place);
+                    cmd.Parameters.AddWithValue("@periodFrom", data.periodFrom);
+                    cmd.Parameters.AddWithValue("@periodTo", data.periodTo);
+                    cmd.Parameters.AddWithValue("@returnDate", data.returnDate);
+                    cmd.Parameters.AddWithValue("@purpose", data.purpose);
+                    cmd.Parameters.AddWithValue("@v_tourtype", data.proposalType);
+                    cmd.Parameters.AddWithValue("@action", data.id > 0 ? "update" : "insert");
+
+                    cmd.ExecuteNonQuery();
+
+                    data.id = Convert.ToInt32(idParam.Value);
+
+                    // 2️⃣ Outsource insert via procedure
+                    if (data.id > 0 && data.outsource != null && data.outsource.Count > 0)
+                    {
+                        foreach (var outsourceId in data.outsource)
+                        {
+                            using (var cmdOut = new NpgsqlCommand(
+                                "CALL sp_Tourproposal(v_id => @tourid, v_userid => @outsourceid, v_action => @v_action)",
+                                con, tx))
+                            {
+                                cmdOut.Parameters.AddWithValue("@tourid", data.id);
+                                cmdOut.Parameters.AddWithValue("@outsourceid", outsourceId);
+                                cmdOut.Parameters.AddWithValue("@v_action", "insertprojectstafftour");
+
+                                int res = cmdOut.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
+
+                tx.Commit();
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
                 return false;
             }
             finally
             {
-                if (((DbConnection)(object)con).State == ConnectionState.Open)
-                {
-                    ((DbConnection)(object)con).Close();
-                }
-                ((Component)(object)cmd).Dispose();
+                if (con.State == ConnectionState.Open)
+                    con.Close();
             }
         }
 
@@ -2236,7 +2273,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                                             periodTo = Convert.ToDateTime(((DbDataReader)(object)res)["periodTo"]),
                                             returnDate = Convert.ToDateTime(((DbDataReader)(object)res)["returnDate"]),
                                             purpose = Convert.ToString(((DbDataReader)(object)res)["purpose"]),
-                                            projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A")
+                                            proposalType = res["tourtype"]!= DBNull.Value? Convert.ToBoolean(((DbDataReader)(object)res)["tourtype"]):false,
+                                            projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A"),
+                                            outsource = new List<int>()
                                         };
                                         if (firstRow)
                                         {
@@ -2248,6 +2287,26 @@ namespace RemoteSensingProject.Models.ProjectManager
                                                 PageNumber = page.GetValueOrDefault()
                                             };
                                             firstRow = false;
+                                        }
+                                        // outsource_list JSON
+                                        if (res["outsource_list"] != DBNull.Value)
+                                        {
+                                            string json = res["outsource_list"].ToString();
+
+                                            if (!string.IsNullOrWhiteSpace(json) && json != "[]")
+                                            {
+                                                var doc = JsonDocument.Parse(json);
+                                                data.outsourceList = new List<OutsourceInfo>();
+
+                                                foreach (var item in doc.RootElement.EnumerateArray())
+                                                {
+                                                    data.outsourceList.Add(new OutsourceInfo
+                                                    {
+                                                        outsourceId = item.GetProperty("outsourceId").GetInt32(),
+                                                        outsourceName = item.GetProperty("outsourceName").GetString()
+                                                    });
+                                                }
+                                            }
                                         }
                                         getlist.Add(data);
                                     }
@@ -3375,6 +3434,57 @@ namespace RemoteSensingProject.Models.ProjectManager
                     ((DbConnection)(object)con).Close();
                 }
                 ((Component)(object)cmd).Dispose();
+            }
+        }
+
+        public bool IsAttendanceMark(int outsourceId)
+        {
+            try
+            {
+                con.Open();
+
+                using (var tran = con.BeginTransaction())
+                using (var cmd = new NpgsqlCommand("fn_manageOutsource_cursor", con, tran))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@v_action", "isAttendanceMark");
+                    cmd.Parameters.AddWithValue("@v_id", outsourceId);
+                    cmd.Parameters.AddWithValue("@v_limit", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_page", DBNull.Value);
+                    cmd.Parameters.AddWithValue("@v_searchterm", DBNull.Value);
+
+                    // 🔥 cursor name returned here
+                    string cursorName = Convert.ToString(cmd.ExecuteScalar());
+
+                    if (string.IsNullOrEmpty(cursorName))
+                    {
+                        tran.Commit();
+                        return false;
+                    }
+
+                    using (var fetchCmd =
+                        new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\";", con, tran))
+                    using (var reader = fetchCmd.ExecuteReader())
+                    {
+                        bool hasData = reader.HasRows;
+                        reader.Close();
+
+                        using (var closeCmd =
+                            new NpgsqlCommand($"CLOSE \"{cursorName}\";", con, tran))
+                        {
+                            closeCmd.ExecuteNonQuery();
+                        }
+
+                        tran.Commit();
+                        return hasData;
+                    }
+                }
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
             }
         }
 
@@ -4622,6 +4732,96 @@ namespace RemoteSensingProject.Models.ProjectManager
                     ((DbConnection)(object)con).Close();
                 }
                 ((Component)(object)base.cmd).Dispose();
+            }
+        }
+        #endregion
+
+        #region Manage Manpower report
+        public List<DivisionOutsourceReport> GetManpowerMonthlyReport(int? divisionId= null, int? year = null, int? month = null)
+        {
+            try
+            {
+                ((DbConnection)(object)con).Open();
+                List<DivisionOutsourceReport> list = new List<DivisionOutsourceReport>();
+
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageprshasanpanel", con, tran);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("v_id", divisionId);
+                        cmd.Parameters.AddWithValue("v_limit", year);
+                        cmd.Parameters.AddWithValue("v_page", month);
+                        cmd.Parameters.AddWithValue("v_action", "monthlymanpowerreport");
+
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+
+                        NpgsqlCommand fetchCmd =
+                            new NpgsqlCommand($"fetch all from \"{cursorName}\";", con, tran);
+
+                        try
+                        {
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                while (rd.Read())
+                                {
+                                    DivisionOutsourceReport data = new DivisionOutsourceReport
+                                    {
+                                        DivisionId = Convert.ToInt32(rd["division_id"]),
+                                        DivisionName = rd["division_name"].ToString(),
+
+                                        ProjectId = Convert.ToInt32(rd["project_id"]),
+                                        ProjectName = rd["project_name"].ToString(),
+
+                                        OutsourceId = Convert.ToInt32(rd["outsource_id"]),
+                                        OutsourceName = rd["outsource_name"].ToString(),
+
+                                        DesignationName = rd["designation_name"].ToString()
+                                    };
+
+                                    list.Add(data);
+                                }
+                            }
+                            finally
+                            {
+                                rd.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            fetchCmd.Dispose();
+                        }
+
+                        NpgsqlCommand closeCmd =
+                            new NpgsqlCommand($"close \"{cursorName}\";", con, tran);
+
+                        closeCmd.ExecuteNonQuery();
+                        tran.Commit();
+                    }
+                    finally
+                    {
+                        cmd.Dispose();
+                    }
+                }
+                finally
+                {
+                    tran.Dispose();
+                }
+
+                return list;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                    con.Close();
             }
         }
         #endregion

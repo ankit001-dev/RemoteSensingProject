@@ -2,16 +2,17 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.ApiServices.OutSourceController
-using System;
-using System.Collections.Generic;
-using System.Web;
-using System.Web.Http;
 using Microsoft.AspNet.SignalR;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.SubOrdinate;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Web;
+using System.Web.Http;
 
 namespace RemoteSensingProject.ApiServices
 {
@@ -95,7 +96,7 @@ namespace RemoteSensingProject.ApiServices
 
 		private IHttpActionResult BadRequest(object value)
 		{
-			throw new NotImplementedException();
+            return Content<object>(HttpStatusCode.BadRequest, value); 
 		}
 
 		[HttpPost]
@@ -333,7 +334,7 @@ namespace RemoteSensingProject.ApiServices
 		{
 			try
 			{
-				bool res = true;
+				bool res = _managerservice.IsAttendanceMark(outsourceid);
 				return Ok(new
 				{
 					status = res,

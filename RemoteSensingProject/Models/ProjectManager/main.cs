@@ -265,6 +265,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
 
     public class OutSourceTask { 
+        public DateTime completionDate { get; set; }
         public int projectId { get; set; }
         public int Id { get; set; }
         public int empId { get; set; }
@@ -275,9 +276,16 @@ namespace RemoteSensingProject.Models.ProjectManager
         public PaginationInfo Pagination { get; set; }
         public string projectName { get; set; }
     }
+    public class OutsourceInfo
+    {
+        public int outsourceId { get; set; }
+        public string outsourceName { get; set; }
+    }
+
     public class tourProposal
     {
-        public int outsource { get; set; }
+        public List<OutsourceInfo> outsourceList { get; set; }
+        public List<int> outsource { get; set; }
         public bool proposalType { get; set; }
         public string projectCode { get; set; }
         public string remark { get; set; }
@@ -406,4 +414,18 @@ namespace RemoteSensingProject.Models.ProjectManager
         public int totalRemaining { get; set; }
         public int totalDesignation { get; set; }
     }
+    public class DivisionOutsourceReport
+    {
+        public int DivisionId { get; set; }
+        public string DivisionName { get; set; }
+
+        public int ProjectId { get; set; }
+        public string ProjectName { get; set; }
+
+        public int OutsourceId { get; set; }
+        public string OutsourceName { get; set; }
+
+        public string DesignationName { get; set; }
+    }
+
 }

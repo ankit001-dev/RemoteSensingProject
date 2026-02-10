@@ -3,6 +3,7 @@
     ViewBag.Title = "Monthly_ManPower_Allocation_Report";
     Layout = "~/Views/Shared/_prashasanLayout.cshtml";
     var divisionList = ViewData["DivisionList"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
+    var reportdata = ViewData["reportdata"] as List<RemoteSensingProject.Models.ProjectManager.DivisionOutsourceReport>;
 }
 <div class="row align-items-center">
     <div class="col-lg-2">
@@ -38,41 +39,97 @@
         </select>
     </div>
     <div class="col-lg-3 col-md-6">
-        <input class="form-control" placeholder="Enter year...." id="filterByYear"/>
+        <input class="form-control" placeholder="Enter year...." id="filterByYear" />
     </div>
 
 </div>
-<div class="row mx-0">
-    <div class="col-md-12 grid-margin stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table id="dataTableExample" class="table">
-                        <thead>
-                            <tr>
-                                <th class="text-center">Sr. No.</th>
-                                <th>Project Name</th>
-                                <th>Staff Name</th>
-                                <th>Division</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
+
+<div class="container my-4">
+    <div class="card">
+        <div class="card-body">
+
+            <!-- Header -->
+            <div class="row mb-3">
+                <div class="col-md-8 fw-bold">
+                    प्रभाग का नाम : @(reportdata !=null && reportdata.Count>0? reportdata[0].DivisionName:"")
+                </div>
+                <div class="col-md-4 text-end fw-bold">
+                    माह : दिसम्बर, 2025
                 </div>
             </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle">
+                    <thead class="text-center fw-bold">
+                        <tr>
+                            <th style="width:80px">क्रम सं.</th>
+                            <th>
+                                परियोजना का नाम<br>
+                                <small>(बाह्य सहायक / गैर वेतन मद)</small>
+                            </th>
+                            <th>परियोजना में आबद्ध मानवशक्ति का नाम</th>
+                            <th>पदनाम</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int srNo = 1;
+
+                            var groupedProjects = reportdata
+                                .GroupBy(x => x.ProjectId)
+                                .ToList();
+                        }
+
+                        @foreach (var project in groupedProjects)
+                        {
+                            bool firstRow = true;
+                            int rowSpan = project.Count();
+
+                            foreach (var item in project)
+                            {
+                                <tr>
+                                    @if (firstRow)
+                                    {
+                                        <td class="text-center fw-bold" rowspan="@rowSpan">
+                                            @srNo
+                                        </td>
+                                        <td rowspan="@rowSpan" class="fw-bold">
+                                            @item.ProjectName
+                                        </td>
+                                    }
+
+                                    <td>@item.OutsourceName</td>
+                                    <td>@item.DesignationName</td>
+                                </tr>
+
+                                firstRow = false;
+                            }
+
+                            srNo++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+
         </div>
     </div>
 </div>
 
+
 <script>
-    $(document).on('input', "#filterByYear", function () {
-        console.log("input year trigger" + $(this).val())
-    })
-    $(document).on('change', "#searchByDivision", function () {
-        console.log("filter by division trigger" + $(this).val())
-    })
-    $(document).on('change', "#searchByMonth", function () {
-        console.log("filter by month trigger" + $(this).val())
-    })
+    function loadReport() {
+        let division = $("#searchByDivision").val();
+        let month = $("#searchByMonth").val();
+        let year = $("#filterByYear").val();
+
+        if (division && month && year) {
+            window.location.href =
+                `/prashasan/Monthly_ManPower_Allocation_Report?divisionId=${division}&month=${month}&year=${year}`;
+        }
+    }
+
+    $("#searchByDivision, #searchByMonth").change(loadReport);
+    $("#filterByYear").on("blur", loadReport);
 
 </script>
