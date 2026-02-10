@@ -1,0 +1,630 @@
+﻿
+@{
+    ViewBag.Title = "Reimbursement_Form";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["reimlist"] as List<RemoteSensingProject.Models.ProjectManager.Reimbursement>;
+    int i = 1;
+    string baseUrl = $"{Request.Url.Scheme}://{Request.Url.Authority}";
+
+}
+
+<style>
+    #reimbursementForm {
+        display: none;
+    }
+    #dataTableExample thead tr:first-child {
+        width: 10px !important;
+    }
+</style>
+<link href="~/assets/css/reinbursementCssDesign.css" rel="stylesheet" />
+<nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item active" aria-current="page">Reimburserment</li>
+    </ol>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Reimbursement</button>
+</nav>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <select id="typeFilter" class="form-select form-select-sm">
+                            <option selected value="">Filter By Type</option>
+                            <option value="contigency">Contigency</option>
+                            <option value="pi_adjustment">P.I.Adjustment</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Reimbursement Form </h1>
+                <p class="text-danger ps-4"><b>Note :</b> Contingency limit is 50,000, PI Adjustment limit is 5,000*.</p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="createProjectForm">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="type" class="form-label">Type</label>
+                            <select class="form-select form-select-sm" id="type" name="data[0].type" required>
+                                <option value="" selected>Select Option</option>
+                                <option value="contigency">Contigency</option>
+                                <option value="pi_adjustment">P.I adjustment</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="vr_no" class="form-label">Vr. No.</label>
+                            <input type="text" name="data[0].vrNo" class="form-control form-control-sm" id="vr_no" placeholder="Enter Voucher Number" required>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="vrdate" class="form-label">Date</label>
+                            <input type="date" name="data[0].date" class="form-control form-control-sm" id="vrdate" placeholder="Enter Date" required>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="particular" class="form-label">Particulars</label>
+                            <input type="text" name="data[0].particulars" class="form-control form-control-sm" id="particulars" placeholder="Enter Particular" required>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="items" class="form-label">Items</label>
+                            <input type="text" name="data[0].items" class="form-control form-control-sm" id="items" placeholder="Enter Items" required>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="purpose" class="form-label">Purpose</label>
+                            <input type="text" name="data[0].purpose" class="form-control form-control-sm" id="purpose" placeholder="Enter Purpose" required>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" name="data[0].amount" class="form-control form-control-sm" id="amount" placeholder="Enter Amount" step="any" required>
+                            <span class="text-danger" id="amountMsg"></span>
+                        </div>
+                    </div>
+                    <div id="anotherFormData"></div>
+                    <div class="text-center">
+                        <button type="submit" id="btnreim" class="btn btn-primary">Save</button>
+                        <button type="button" id="addAnotherRow" data-count="1" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i>Add Reimbursement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mx-0">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <table class="table-bordered table-striped" id="dataTableExample">
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (data != null)
+                        {
+                            foreach (var items in data)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@items.type</td>
+                                    <td>₹ @Convert.ToDecimal(items.amount).ToString("N2")</td>
+
+                                    <td class="text-center">
+                                        <a href="#" data-title="View" class="viewSanctionreciept" data-type="@items.type" data-userId="@items.userId" data-id="@items.id" data-chequeNum="@items.chequeNum" data-chequeDate="@items.chequeDate" data-apprAmt="@items.approveAmount">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </a>
+                                        @{
+
+                                            if (!items.subStatus && items.type.Equals("pi_adjustment") && items.amount >= 5000)
+                                            {
+                                                <span>&nbsp; | &nbsp;</span>
+                                                <a href="#" class="saveSanctionReciept" data-type="@items.type" data-id="@items.id">
+                                                    <i class="fa-solid fa-floppy-disk"></i>
+                                                </a>
+                                            }
+                                            else if (!items.subStatus && items.type.Equals("contigency"))
+                                            {
+                                                <a href="#" data-title="Save" class="saveSanctionReciept" data-type="@items.type" data-id="@items.id"> <span>&nbsp; | &nbsp;</span>
+                                                    <i class="fa-solid fa-floppy-disk"></i>
+                                                </a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ViewReinburseMentReciept" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="ViewReinburseMentRecieptLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="ViewReinburseMentRecieptLabel">Reimbursement Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="form-container py-3">
+                        <div class="text-center mb-3">
+                            <h4>REMOTE SENSING APPLICATIONS CENTRE</h4>
+                            <h5>UTTAR PRADESH</h5>
+                            <div class="px-4 mt-1 d-flex justify-content-between">
+                                <span>
+                                    <p>
+                                        <img src="@baseUrl/assets/images/remote_sensing_logo.jfif" width="50" />
+                                    </p><b>S.F.A.O/Director</b>
+                                </span>
+                                <span>
+                                    <p>
+                                        <b>
+                                            Name of Project/Centre
+                                        </b>
+                                    </p>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-header-text w-100 text-center">
+                            <p>
+                                The following expenditure of Rs. <span class="dots"></span> have been incurred against Contingent/Advance of
+                                Rs. <span class="dots"></span> taken as on <span class="dots"></span> kindly accord the sanction for adjustment/payment in accordance
+                                with the enclosed contingent advance approval.
+                            </p>
+                        </div>
+
+
+                        <div class="table-responsive mb-0 px-5">
+                            <table class="table table-bordered mb-0">
+                                <thead class="text-center">
+                                    <tr>
+                                        <th>S.N.</th>
+                                        <th>Vr. No. & Date</th>
+                                        <th>Particulars</th>
+                                        <th>Items</th>
+                                        <th>Purpose</th>
+                                        <th>Amount Rs. P.</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="viewReinburseRecieptListBody">
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bottom-section mt-0 mx-5">
+                            <div class="row mt-0">
+                                <div class="col-md-6">
+                                    <p>Balance Rs. <span class="dots" id="apprAmttext"></span> (Rupees <span class="dots"></span>Only)</p>
+                                    <p>paid vide cheque No. <span class="dots" id="chequeNumberText"></span> Date<span class="dots" id="chequeDatetext"></span></p>
+
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <p>Signature <span class="dots"></span></p>
+                                    <p>Name : <span class="dots"></span></p>
+                                    <p>Designation : <span class="dots"></span></p>
+                                </div>
+                            </div>
+
+                            <div class="officers-section">
+                                <div class="row ps-3">
+                                    <p class="pt-2">Checked for Rs. <span class="dots"></span> Rs.<span class="dots"></span></p>
+                                    <div class="col-md-4 mt-3">
+                                        <p>Asstt. Actt./Acctt./O.S. (Acctts)</p>
+                                    </div>
+                                    <div class="col-md-4 text-center mt-3">
+                                        <p>A.O./S.F.A.O.</p>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <span class="approved-text">pending</span>
+                                        <p>Sanctioning Authority</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="final-section pt-1 mt-0">
+                                <p style="margin-right: 15px;">Passed for Rs. <span class="dots"></span> (RS. <span class="dots"></span>)</p>
+                                <p style="margin-right: 15px;">Drawing & Disbursing Officer</p>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        //$("#typeFilter").on("change", function () {
+        //    let tp = $(this).val();
+        //    let table = $("#dataTableExample").DataTable();
+        //    table.column(1).search(tp).draw();
+        //});
+
+        $("#printBtn").click(function () {
+
+            Swal.fire({
+                title: "Please wait !",
+                text: "Processing your request....",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            })
+            var formContent = document.getElementById("formToPrint").outerHTML;
+
+            var style = `<link href="${window.location.origin}/assets/css/reinbursementCssDesign.css" rel="stylesheet" type="text/css"/>
+<link href="${window.location.origin}/assets/css/style.css" rel="stylesheet" type="text/css"/>`;
+            let htmlContentToPdf = `<html><head>${style}</head><body><div>${formContent}</div></body></html>`;
+
+            fetch("/login/ExportHtmlToPdf", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ HtmlText: htmlContentToPdf }) // Ensure case matches C# model
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to generate PDF");
+                    }
+
+                    // Extract filename from Content-Disposition header
+                    const contentDisposition = response.headers.get("Content-Disposition");
+                    let fileName = "Generated.pdf"; // Default fallback filename
+
+                    if (contentDisposition) {
+                        const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                        if (match && match[1]) {
+                            fileName = match[1];
+                        }
+                    }
+
+                    return response.blob().then(blob => ({ blob, fileName }));
+                })
+                .then(({ blob, fileName }) => {
+                    Swal.fire({
+                        title: "Successfully !",
+                        text: "Reinbursement pdf generated successfully.",
+                        icon: "success"
+                    })
+                    const link = document.createElement("a");
+                    const url = URL.createObjectURL(blob);
+                    link.href = url;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+                    URL.revokeObjectURL(url); // Free up memory
+                })
+                .catch(error => {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: "Some issue occured while processing your request.",
+                        icon: "error"
+                    })
+                    console.error("Error:", error)
+                });
+
+        })
+    });
+
+    $(document).ready(function () {
+
+        $("#addAnotherRow").on("click", function () {
+            let count = $(this).attr("data-count");
+            let element = `
+
+            <div class="row">
+            <div class="col-sm-12">
+             <hr />
+            </div>
+            <div class="col-sm-12">
+            <div class="d-flex justify-content-end">
+                <div><a href="#" class="removeCurrentRowElement"><i class="fa-solid fa-trash text-danger"></i></a></div>
+            </div>
+            </div>
+      <div class="col-lg-4 mb-3">
+          <label for="type" class="form-label">Type</label>
+          <select class="form-select form-select-sm" id="type" name="data[${count}].type" required>
+              <option value="" selected>Select Option</option>
+              <option value="contigency">Contigency</option>
+              <option value="pi_adjustment">P.I adjustment</option>
+          </select>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="vr_no" class="form-label">Vr. No.</label>
+          <input type="text" name="data[${count}].vrNo" class="form-control form-control-sm" id="vr_no" placeholder="Enter Voucher Number" required>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="vrdate" class="form-label">Date</label>
+          <input type="date" name="data[${count}].date" class="form-control form-control-sm" id="vrdate" placeholder="Enter Date" required>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="particular" class="form-label">Particulars</label>
+          <input type="text" name="data[${count}].particulars" class="form-control form-control-sm" id="particulars" placeholder="Enter Particular" required>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="items" class="form-label">Items</label>
+          <input type="text" name="data[${count}].items" class="form-control form-control-sm" id="items" placeholder="Enter Items" required>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="purpose" class="form-label">Purpose</label>
+          <input type="text" name="data[${count}].purpose" class="form-control form-control-sm" id="purpose" placeholder="Enter Purpose" required>
+      </div>
+      <div class="col-lg-4 mb-3">
+          <label for="amount" class="form-label">Amount</label>
+          <input type="number" name="data[${count}].amount" class="form-control form-control-sm" id="amount" placeholder="Enter Amount" step="any" required>
+          <span class="text-danger" id="amountMsg"></span>
+      </div>
+  </div>`
+            $("#anotherFormData").append(element)
+            count++;
+            $(this).attr("data-count", count);
+        })
+
+        $("#anotherFormData").on("click", ".removeCurrentRowElement", function () {
+            let count = $("#addAnotherRow").attr("data-count");
+            if (count > 1) {
+                count--;
+            }
+            $("#addAnotherRow").attr("data-count", count);
+            $(this).closest(".row").remove();
+        })
+
+        $("#createProjectForm").submit(function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Please Wait!',
+                text: 'Your request under process Please wait.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => { Swal.showLoading() }
+            });
+            let formData = new FormData(this);
+            $.ajax({
+                url: '/employee/Reimbursement_Form',
+                type: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload() }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'warning',
+                            text: res.message,
+                            icon: 'warning'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'error',
+                        text: 'Server busy Please try after sometime.',
+                        icon: 'error'
+                    })
+                }
+            })
+        })
+
+
+        $(".viewSanctionreciept").click(function () {
+            Swal.fire({
+                title: "Please wait !",
+                text: "Processing your request ....",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            let type = $(this).attr("data-type");
+            let userId = $(this).attr("data-userId");
+            let Id = $(this).attr("data-id");
+            let chequeNum = $(this).attr("data-chequeNum")
+            let chequeDate = $(this).attr("data-chequeDate")
+            let apprvAmt = $(this).attr("data-apprAmt")
+            $.ajax({
+                url: "/api/ViewReinbursementBytype",
+                type: "Get",
+                data: { "userId": userId, "type": type, id: Id, page: null, limit:null },
+                success: function (result) {
+                    if (result.Status) {
+                        $("#apprAmttext").text(apprvAmt);
+                        $("#chequeNumberText").text(chequeNum);
+                        $("#chequeDatetext").text(chequeDate);
+                        $("#viewReinburseRecieptListBody").empty();
+                        Swal.close();
+                        let totalAmout = 0;
+                        let apprStatus = false;
+                        let newStatus = false;
+                        let element = "";
+                        $.each(result.data, function (i, d) {
+                            apprStatus = d.adminappr;
+                            newStatus = d.newRequest
+                            element += `
+   <tr>
+   <td>${i + 1}</td>
+   <td>${d.vrNo} & ${convertToDate(d.date)}</td>
+   <td>${d.particulars}</td>
+   <td>${d.items}</td>
+   <td>${d.purpose}</td>
+   <td>${d.amount}</td>
+   </tr>
+   `
+                            totalAmout += d.amount;
+                        });
+
+                        $(".approved-text").text(apprStatus && !newStatus ? "Approved" : !apprStatus && !newStatus ? "Rejected" : "Pending");
+                        element += ` <tr>
+    <td colspan="5" class="text-end"><b>Total</b></td>
+    <td>${totalAmout}</td>
+</tr>`;
+
+
+
+                        $("#viewReinburseRecieptListBody").append(element);
+                        $("#ViewReinburseMentReciept").modal("show");
+                    }
+                    else {
+                        Swal.fire({
+                            title: "Sorry !",
+                            text: "Some issue occured !",
+                            icon: "warning"
+                        })
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Server issue !",
+                        text: "Server is busy ! Please try after sometime.",
+                        icon: "error",
+                        didClose: () => {
+                            location.reload(true);
+                        }
+                    })
+                }
+            })
+        })
+
+
+        function convertToDate(timestamp) {
+            const parsedTimestamp = parseInt(timestamp.match(/\d+/)[0], 10);
+            const date = new Date(parsedTimestamp);
+            return date.toLocaleDateString();
+        }
+
+
+        $(".saveSanctionReciept").click(function () {
+            let type = $(this).attr("data-type");
+            let id = $(this).attr("data-id");
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-danger"
+                },
+                buttonsStyling: false
+            });
+            swalWithBootstrapButtons.fire({
+                title: "Are you sure?",
+                text: "You want a final submit !",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes, Submit!",
+                cancelButtonText: "No, cancel!",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Please wait !",
+                        text: "Processing your request ....",
+                        allowEscapeKey: false,
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    })
+
+                    $.ajax({
+                        url: "/employee/submitReinbursementFormType",
+                        type: "post",
+                        data: { type: type, Id: id },
+                        success: function (res) {
+                            if (res.status) {
+                                Swal.fire({
+                                    title: "Successfully !",
+                                    text: "Submitted successfully !",
+                                    icon: "success",
+                                    didClose: () => {
+                                        location.reload(true);
+                                    }
+                                })
+                            }
+                            else {
+                                Swal.fire({
+                                    title: "Sorry !",
+                                    text: "Some issue occured ! Please try after sometime.",
+                                    icon: "warning",
+                                    didClose: () => {
+                                        location.reload(true);
+                                    }
+                                });
+                            }
+                        },
+                        error: function () {
+                            Swal.fire({
+                                title: "Server busy !",
+                                text: "Server is busy ! Please try after sometime.",
+                                icon: "error",
+                                didClose: () => {
+                                    location.reload(true);
+                                }
+                            })
+                        }
+                    })
+                    swalWithBootstrapButtons.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire({
+                        title: "Cancelled",
+                        text: "Your imaginary data is safe :)",
+                        icon: "error"
+                    });
+                }
+            });
+        })
+    })
+
+    // Filter by Type
+    $("#typeFilter").on("change", function () {
+        const url = new URL(window.location.href);
+        const type = $(this).val();
+
+        if (type) url.searchParams.set("typeFilter", type);
+        else url.searchParams.delete("typeFilter");
+
+        showLoader(); // optional loader function
+        window.location.href = url.toString();
+    });
+
+    // Set dropdowns on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('typeFilter');
+
+        if (type) $("#typeFilter").val(type);
+    });
+</script>
