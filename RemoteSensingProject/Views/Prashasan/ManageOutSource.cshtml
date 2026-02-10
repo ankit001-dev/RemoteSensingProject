@@ -31,7 +31,7 @@
         <li class="breadcrumb-item active"><a href="/">Dashboard</a></li>
         <li class="breadcrumb-item" aria-current="page">/Out Source</li>
     </ol>
-    <button class="btn btn-primary" id="addEmployeeBtn" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Out Source</button>
+    <button class="btn btn-primary" id="addEmployeeBtn" ><i class="link-icon" data-feather="plus"></i> Add Out Source</button>
 </nav>
 <div class="search-box p-4 bg-white rounded mb-3 mx-3 box-shadow">
     <div class="row align-items-center">
@@ -164,11 +164,11 @@
 </div>
 
 <script>
+    $('#addEmployeeBtn').on('click', function () {
+        $("#addEmployeeform")[0].reset();
+        $('#addslider').modal("show");
+    })
     $(document).ready(function () {
-        //$("#searchByEmployeeName").on("input", function () {
-        //    var table = $("#dataTableExample").DataTable();
-        //    table.column(1).search($(this).val()).draw();
-        //});
 
         $(function () {
             $('.mobileval').on('input', function () {
