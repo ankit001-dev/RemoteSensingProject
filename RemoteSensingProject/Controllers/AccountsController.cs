@@ -72,8 +72,8 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult RequestHistory(string searchTerm = null)
 		{
-			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(0, null, null, "AccountApproved", null, searchTerm);
-			return View();
+			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(userId: null, searchTerm:searchTerm, filterType: "External");
+            return View();
 		}
 
 		public ActionResult Meeting_List()
@@ -101,18 +101,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult FundReport(string statusFilter = null)
 		{
-			List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerServices.All_Project_List(0);
-			if (!string.IsNullOrWhiteSpace(statusFilter))
-			{
-				if (statusFilter.ToLower().Equals("complete"))
-				{
-					data = _managerServices.All_Project_List(0, null, null, "AccountApproved");
-				}
-				else if (statusFilter.ToLower().Equals("pending"))
-				{
-					data = _managerServices.All_Project_List(0, null, null, "AccountPending");
-				}
-			}
+			List<Models.Admin.main.Project_model> data = _managerServices.All_Project_List(userId:null, statusFilter:statusFilter,filterType:"Internal");
 			((dynamic)((ControllerBase)this).ViewBag).ProjectList = data;
 			return View();
 		}

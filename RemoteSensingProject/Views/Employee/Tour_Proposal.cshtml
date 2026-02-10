@@ -56,8 +56,8 @@
                             <label for="proposalType" class="form-label">Project</label>
                             <select class="form-select form-select-sm" id="proposalType" name="proposalType">
                                 <option disabled selected>--select type--</option>
-                                <option value="0">Self</option>
-                                <option value="1">Project staff</option>
+                                <option value="false">Self</option>
+                                <option value="true">Project staff</option>
                             </select>
                         </div>
                         <div class="col-lg-4 mb-3">
@@ -75,7 +75,7 @@
                         </div>
                         <div class="col-lg-4 mb-3" id="selectOutsource">
                             <label for="outsource" class="form-label">Outsource</label>
-                            <select class="form-select" name="outSourceId" id="outsource">
+                            <select class="form-select" name="outsource" multiple id="outsource">
                                 <option disabled>--Select Option--</option>
                                 @if (outSourceList != null && outSourceList.Count > 0)
                                 {
@@ -134,6 +134,7 @@
                     <th>Period From</th>
                     <th>Period To</th>
                     <th>Date of return</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -152,6 +153,7 @@
                             <td>@item.periodFrom</td>
                             <td>@item.periodTo</td>
                             <td>@item.returnDate</td>
+                            <td><a class="edit-btn" data-id="@item.id"><i class="fa-solid fa-pencil"></i></a></td>
                         </tr>
                         i++;
                     }
@@ -286,6 +288,8 @@
 
 <script>
     $(document).ready(function () {
+
+        $('#outsource').select2();
 
         //Filter
         $("#printBtn").click(function () {
@@ -428,7 +432,7 @@
 
     function setEditTour(data) {
 
-        // text / date fields
+        // 📝 text / date fields
         $("#dateOfDept").val(data.dateOfDept.split('T')[0]);
         $("#place").val(data.place);
         $("#periodFrom").val(data.periodFrom.split('T')[0]);
@@ -436,16 +440,39 @@
         $("#returnDate").val(data.returnDate.split('T')[0]);
         $("#purpose").val(data.purpose);
 
-        // 🔥 project select – delay added
+        // proposal type (0/1)
+        $("#proposalType").val(data.proposalType ? 'true' : 'false').trigger("change");
+
+        // 📌 Project
         setTimeout(function () {
             $("#project").val(data.projectId).trigger("change");
         }, 300);
 
-        // hidden id (for update)
+        // 👥 Outsource MULTI SELECT
+        if (data.proposalType && data.outsourceList && data.outsourceList.length > 0) {
+
+            // show outsource section
+            $("#selectOutsource").show();
+
+            // extract outsource ids
+            let outsourceIds = data.outsourceList.map(x => x.outsourceId.toString());
+
+            // set after dropdown rendered
+            setTimeout(function () {
+                $("#outsource").val(outsourceIds).trigger("change");
+            }, 400);
+        }
+        else {
+            $("#outsource").val([]).trigger("change");
+            $("#selectOutsource").hide();
+        }
+
+        // 🔑 hidden id for update
         if ($("#tourId").length === 0) {
             $("#tourForm").append(`<input type="hidden" id="tourId" name="id">`);
         }
         $("#tourId").val(data.id);
+
         $('#submitBtn').text("Update");
         $("#staticBackdrop").modal("show");
     }
