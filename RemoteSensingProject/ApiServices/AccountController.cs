@@ -218,146 +218,7 @@ namespace RemoteSensingProject.ApiServices
         }
         #endregion
 
-        #region Manage Reimbursement
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("api/approveReinbursementAmtRequest")]
-        public IHttpActionResult InsertReinbursementForm()
-        {
-            try
-            {
-                HttpRequest request = HttpContext.Current.Request;
-                RemoteSensingProject.Models.Accounts.main.Reimbursement formData = new RemoteSensingProject.Models.Accounts.main.Reimbursement
-                {
-                    chequeNumber = request.Form.Get("chequeNum"),
-                    date = Convert.ToDateTime(request.Form.Get("chequeDate")),
-                    amount = Convert.ToDecimal(request.Form.Get("sanctionAmt")),
-                    apprAmt = Convert.ToDecimal(request.Form.Get("apprAmount")),
-                    id = Convert.ToInt32(request.Form.Get("id"))
-                };
-                bool res = _accountSerivce.reinbursementRequestAmt(formData);
-                return Ok(new
-                {
-                    status = res,
-                    StatusCode = (res ? 200 : 500),
-                    message = (res ? "Amount approved successfully !" : "Some issue occured while processing reuqest..")
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
-            }
-        }
-
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("api/rejectReinbursementAmountRequest")]
-        public IHttpActionResult RejectReinbursementForm()
-        {
-            try
-            {
-                HttpRequest request = HttpContext.Current.Request;
-                string reason = request.Form.Get("reason");
-                int sanctionId = Convert.ToInt32(request.Form.Get("sanctionId"));
-                bool res = _accountSerivce.rejectReinbursementRequestAmt(sanctionId, reason);
-                return Json(new
-                {
-                    status = res,
-                    message = (res ? "Reinbursement rejected successfully !" : "Some issue occured while processing your request.")
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
-            }
-        }
-
-        private IHttpActionResult BadRequest(object value)
-        {
-            return Content<object>(HttpStatusCode.BadRequest, value);
-        }
-
-        [HttpGet]
-        [Route("api/getAccountReinbursement")]
-        public IHttpActionResult getAccountReinbursement(int? page = null, int? limit = null, int? projectMangerFilter = null)
-        {
-            try
-            {
-                List<Reimbursement> data = _mangerServices.GetReimbursements(page, limit, null, projectMangerFilter, "selectApprovedReinbursement");
-                string[] selectProperties = new string[14]
-                {
-                "EmpName", "type", "id", "amount", "userId", "apprstatus", "subStatus", "adminappr", "status", "chequeNum",
-                "accountNewRequest", "chequeDate", "newRequest", "approveAmount"
-                };
-                List<object> filterData = SelectProperties(data, selectProperties);
-                if (data.Count > 0)
-                {
-                    return Success(this, filterData, "Data fetched successfully", 200, data[0].Pagination);
-                }
-                return NoData(this);
-            }
-            catch (Exception ex)
-            {
-                return Error(this, ex.Message);
-            }
-        }
-        #endregion
-
-        #region Add Hiring Vehicle & Tour Propoal
-
-        // Add Hiring Vehicle
-        [Route("api/addHiringRequest")]
-        [HttpPost]
-        public IHttpActionResult addHiringRequest()
-        {
-            try
-            {
-                HttpRequest request = HttpContext.Current.Request;
-                HiringVehicle formdata = new HiringVehicle
-                {
-                    headId = Convert.ToInt32(request.Form.Get("headId")),
-                    amount = Convert.ToDecimal(request.Form.Get("amount")),
-                    projectId = Convert.ToInt32(request.Form.Get("projectId")),
-                    dateFrom = Convert.ToDateTime(request.Form.Get("dateFrom")),
-                    dateTo = Convert.ToDateTime(request.Form.Get("dateTo")),
-                    proposedPlace = request.Form.Get("proposedPlace"),
-                    purposeOfVisit = request.Form.Get("purposeOfVisit"),
-                    totalDaysNight = Convert.ToString(request.Form.Get("totalDaysNight")),
-                    totalPlainHills = Convert.ToString(request.Form.Get("totalPlanHills")),
-                    taxi = request.Form.Get("taxi"),
-                    BookAgainstCentre = request.Form.Get("BookAgainstCentre"),
-                    availbilityOfFund = request.Form.Get("availabilityOfFund"),
-                    note = request.Form.Get("note"),
-                    id = !string.IsNullOrEmpty(request.Form.Get("id")) ? Convert.ToInt32(request.Form.Get("id")) : 0
-                };
-                bool res = _mangerServices.insertHiring(formdata);
-                return Ok(new
-                {
-                    status = res,
-                    StatusCode = (res ? 200 : 500),
-                    message = res ? (formdata.id > 0 ? "Updated Successfully" : "Added successfully!") : "Error Occured"
-                });
-            }
-            catch (Exception ex)
-            {
-                return Ok(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
-            }
-        }
+        #region Add Tour Propoal
 
         // Add TourProposal
         [HttpPost]
@@ -519,5 +380,9 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+        private IHttpActionResult BadRequest(object value)
+        {
+            return Content<object>(HttpStatusCode.BadRequest, value);
+        }
     }
 }

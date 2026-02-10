@@ -1047,94 +1047,6 @@ namespace RemoteSensingProject.ApiServices
 		}
 
 		[HttpGet]
-		[Route("api/GetReimbursementList")]
-		public IHttpActionResult GetReimbursementList(int? page = null, int? limit = null, int? managerId = null, string typeFilter = null, string statusFilter = null)
-		{
-			try
-			{
-				List<Reimbursement> data = _managerservice.GetReimbursements(page, limit, null, managerId, "selectAll", typeFilter, statusFilter);
-				if (data.Count > 0)
-				{
-					return CommonHelper.Success((ApiController)(object)this, data, "Data fetched successfully", 200, data[0].Pagination);
-				}
-				return CommonHelper.NoData((ApiController)(object)this);
-			}
-			catch (Exception ex)
-			{
-				return CommonHelper.Error((ApiController)(object)this, ex.Message);
-			}
-		}
-
-		[HttpGet]
-		[Route("api/ApproveReimbursement")]
-		public IHttpActionResult ApproveReimbursement(int id, bool status, string type, string remark)
-		{
-			try
-			{
-				bool res = _adminServices.ReimbursementApproval(status, id, type, remark);
-				return Ok(new
-				{
-					status = res,
-					StatusCode = (res ? 200 : 500),
-					message = ((res && status) ? "Approved Successfully" : (res ? "Rejected  Successfully" : "Something went wrong"))
-				});
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = ex.Message
-				});
-			}
-		}
-
-		[HttpGet]
-		[Route("api/ApprovalHiring")]
-		public IHttpActionResult ApproveHiring(int id, bool status, string remark, string location)
-		{
-			try
-			{
-				bool res = _adminServices.HiringApproval(id, status, remark, location);
-				return Ok(new
-				{
-					status = res,
-					StatusCode = (res ? 200 : 500),
-					message = ((res && status) ? "Approved Successfully" : (res ? "Rejected  Successfully" : "Something went wrong"))
-				});
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = ex.Message
-				});
-			}
-		}
-
-		[HttpGet]
-		[Route("api/GetAllHiring")]
-		public IHttpActionResult AllHiring(int? page = null, int? limit = null, int? managerFilter = null, int? projectFilter = null)
-		{
-			try
-			{
-				List<RemoteSensingProject.Models.Admin.main.HiringVehicle1> data = _adminServices.HiringList(page, limit, managerFilter, projectFilter).ToList();
-				if (data.Count > 0)
-				{
-					return CommonHelper.Success((ApiController)(object)this, data, "Data fetched successfully", 200, data[0].Pagination);
-				}
-				return CommonHelper.NoData((ApiController)(object)this);
-			}
-			catch (Exception ex)
-			{
-				return CommonHelper.Error((ApiController)(object)this, ex.Message);
-			}
-		}
-
-		[HttpGet]
 		[Route("api/ViewAlltourAdminView")]
 		public IHttpActionResult AllTour(int? page = null, int? limit = null, int? managerFilter = null, int? projectFilter = null)
 		{
@@ -1198,83 +1110,6 @@ namespace RemoteSensingProject.ApiServices
 					status = false,
 					StatusCode = 500,
 					Message = ex.Message
-				});
-			}
-		}
-
-		[HttpGet]
-		[Route("api/ReimbursementReport")]
-		public IHttpActionResult ReimbursementReport(int? limit = null, int? page = null, int? projectManagerFilter = null, string typeFilter = null, string statusFilter = null)
-		{
-			try
-			{
-				List<Reimbursement> data = _managerservice.GetReimbursements(page, limit, null, projectManagerFilter, "selectReinbursementReport", typeFilter, statusFilter);
-				return Ok(new
-				{
-					status = data.Any(),
-					StatuCode = (data.Any() ? 200 : 500),
-					data = data
-				});
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = ex.Message
-				});
-			}
-		}
-
-		[HttpGet]
-		[Route("api/HiringReportProjects")]
-		public IHttpActionResult HiringReportProjects()
-		{
-			try
-			{
-				List<RemoteSensingProject.Models.Admin.main.HiringVehicle1> data = _adminServices.hiringreportprojects();
-				return Ok(new
-				{
-					status = data.Any(),
-					StatuCode = (data.Any() ? 200 : 500),
-					data = data
-				});
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = ex.Message
-				});
-			}
-		}
-
-		[HttpGet]
-		[Route("api/HiringReportByProject")]
-		public IHttpActionResult HiringReportByProject(int projectId)
-		{
-			try
-			{
-				ManagerService managerservice = _managerservice;
-				int? id = projectId;
-				List<HiringVehicle> data = managerservice.GetHiringVehicles(projectId);
-				return Ok(new
-				{
-					status = data.Any(),
-					StatuCode = (data.Any() ? 200 : 500),
-					data = data
-				});
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(new
-				{
-					status = false,
-					StatusCode = 500,
-					message = ex.Message
 				});
 			}
 		}
@@ -1458,26 +1293,6 @@ namespace RemoteSensingProject.ApiServices
 					StatusCode = 500,
 					message = ex.Message
 				});
-			}
-		}
-
-		[JwtAuthorize(Roles = "admin,accounts")]
-		[HttpGet]
-		[Route("api/allhiringreport")]
-		public IHttpActionResult AllHiringReport(int? limit = null, int? page = null, int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
-		{
-			try
-			{
-				List<RemoteSensingProject.Models.Admin.main.HiringVehicle1> data = _adminServices.HiringReort(limit, page, managerFilter, projectFilter, statusFilter);
-				if (data.Count > 0)
-				{
-					return CommonHelper.Success((ApiController)(object)this, data, "Data fetched successfully");
-				}
-				return CommonHelper.NoData((ApiController)(object)this);
-			}
-			catch (Exception ex)
-			{
-				return CommonHelper.Error((ApiController)(object)this, ex.Message);
 			}
 		}
 

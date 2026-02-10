@@ -12,29 +12,14 @@ namespace RemoteSensingProject.Models.Accounts
 	{
 		public class DashboardCount
 		{
-			public string TotalReinbursementReq { get; set; }
 
 			public string TotalTourProposalReq { get; set; }
-
-			public string totalVehicleHiringRequest { get; set; }
-
-			public string totalReinbursementPendingRequest { get; set; }
-
-			public string totalReinbursementapprovedRequest { get; set; }
-
-			public string totalReinbursementRejectRequest { get; set; }
 
 			public string totalTourProposalApprReque { get; set; }
 
 			public string totalTourProposalRejectReque { get; set; }
 
 			public string totaTourProposalPendingReque { get; set; }
-
-			public string totalPendingHiringVehicle { get; set; }
-
-			public string totalApproveHiringVehicle { get; set; }
-
-			public string totalRejectHiringVehicle { get; set; }
 		}
 
 		public class Project_model
@@ -139,51 +124,6 @@ namespace RemoteSensingProject.Models.Accounts
 			public string ApproveAmount { get; set; }
 		}
 
-		public class Reimbursement
-		{
-			public string chequeNum { get; set; }
-
-			public string chequeDate { get; set; }
-
-			public bool accountNewRequest { get; set; }
-
-			public bool apprstatus { get; set; }
-
-			public decimal approveAmount { get; set; }
-
-			public bool newRequest { get; set; }
-
-			public bool status { get; set; }
-
-			public string remark { get; set; }
-
-			public DateTime date { get; set; }
-
-			public int id { get; set; }
-
-			public int userId { get; set; }
-
-			public string EmpName { get; set; }
-
-			public string type { get; set; }
-
-			public string chequeNumber { get; set; }
-
-			public string vrNo { get; set; }
-
-			public string particulars { get; set; }
-
-			public string items { get; set; }
-
-			public string purpose { get; set; }
-
-			public decimal amount { get; set; }
-
-			public decimal apprAmt { get; set; }
-
-			public bool appr_status { get; set; }
-		}
-
 		public class tourProposal
 		{
 			public string statusLabel { get; set; }
@@ -219,43 +159,6 @@ namespace RemoteSensingProject.Models.Accounts
 			public string purpose { get; set; }
 
 			public bool newRequest { get; set; }
-		}
-
-		public class HiringVehicle
-		{
-			public int projectId { get; set; }
-
-			public int id { get; set; }
-
-			public int userId { get; set; }
-
-			public string projectName { get; set; }
-
-			public DateTime dateFrom { get; set; }
-
-			public DateTime dateTo { get; set; }
-
-			public string purposeOfVisit { get; set; }
-
-			public string totalDaysNight { get; set; }
-
-			public string totalPlainHills { get; set; }
-
-			public string taxi { get; set; }
-
-			public string BookAgainstCentre { get; set; }
-
-			public string availbilityOfFund { get; set; }
-
-			public string taxiReportTo { get; set; }
-
-			public TimeSpan taxiReportAt { get; set; }
-
-			public string taxiReportPlace { get; set; }
-
-			public DateTime taxiReportOn { get; set; }
-
-			public string proposedPlace { get; set; }
 		}
 	}
 

@@ -532,80 +532,7 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Reimbursement_Form(string typeFilter = null)
-        {
-            int id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            List<Reimbursement> res = _managerServices.GetReimbursements(null, null, null, id, "getSpecificUserData", typeFilter);
-            ((ControllerBase)this).ViewData["reimlist"] = res;
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult Reimbursement_Form(List<Reimbursement> data)
-        {
-            try
-            {
-                int i = 0;
-                if (data.Any())
-                {
-                    foreach (Reimbursement item in data)
-                    {
-                        item.userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-                        if (_managerServices.insertReimbursement(item))
-                        {
-                            i++;
-                        }
-                    }
-                }
-                return Json((object)new
-                {
-                    status = (i == data.Count),
-                    message = ((i == data.Count) ? "Added Successfully" : "Some issue occured while processing some data .")
-                });
-            }
-            catch (Exception ex)
-            {
-                return Json((object)new
-                {
-                    status = false,
-                    message = ex.Message
-                });
-            }
-        }
-
-        public ActionResult ViewReinbursementListByType(string type, int id)
-        {
-            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            List<Reimbursement> data = _managerServices.GetReimbursements(null, null, id, userId, type);
-            return Json((object)new
-            {
-                status = data.Any(),
-                data = data
-            }, (JsonRequestBehavior)0);
-        }
-
-        public ActionResult SubmitReinbursementFormType(string type, int Id)
-        {
-            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            bool res = _managerServices.submitReinbursementForm(type, userId, Id);
-            return Json((object)new
-            {
-                status = res,
-                message = (res ? "Submitted successfully !" : "Some issue occured !")
-            }, (JsonRequestBehavior)0);
-        }
-
-        public ActionResult Hiring_Vehicle(int? projectFilter = null)
-        {
-            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            List<RemoteSensingProject.Models.Admin.main.Project_model> res = _managerServices.All_Project_List(userid);
-            ((ControllerBase)this).ViewData["projectlist"] = res;
-            ManagerService managerServices = _managerServices;
-            List<HiringVehicle> res2 = managerServices.GetHiringVehicles(type: "GETBYMANAGER", id: userid, projectFilter: projectFilter);
-            ((ControllerBase)this).ViewData["hiringList"] = res2;
-            return View();
-        }
-
+        #region Manage Tourproposal
         public ActionResult Tour_Proposal(int? projectFilter = null)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
@@ -614,45 +541,29 @@ namespace RemoteSensingProject.Controllers
             List<RemoteSensingProject.Models.Admin.main.Project_model> res2 = _managerServices.All_Project_List(userid);
             ((ControllerBase)this).ViewData["projectList"] = res2;
             ((ControllerBase)this).ViewData["tourList"] = res;
+            ViewData["OutSourceList"] = _managerServices.GetAllocatedOutSOurceList(userid);
             return View();
         }
 
-        public ActionResult Reimbursement_Report(string typeFilter = null, string statusFilter = null)
+        [HttpPost]
+        public ActionResult Tour_Proposal(tourProposal data)
         {
-            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-            ManagerService managerServices = _managerServices;
-            int? managerId = userId;
-            viewData["totalReinursementReport"] = managerServices.GetReimbursements(null, null, null, managerId, "selectReinbursementforUserReport", typeFilter, statusFilter);
-            return View();
+            bool res = _managerServices.insertTour(data);
+            if (res)
+            {
+                return Json((object)new
+                {
+                    status = res,
+                    message = data.id > 0 ? "Updated Successfully" : "Added Successfully"
+                });
+            }
+            return Json((object)new
+            {
+                status = res,
+                message = "Something went wrong"
+            });
         }
-
-        //public ActionResult TourProposal_Report(int? projectFilter = null, string statusFilter = null)
-        //{
-        //	int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-        //	ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-        //	ManagerService managerServices = _managerServices;
-        //	int? userId = userid;
-        //	int? projectFilter2 = projectFilter;
-        //	viewData["tourList"] = managerServices.getTourList(userId, null, "specificUser", null, null, projectFilter2, statusFilter);
-        //	((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-        //	((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-        //	return View();
-        //}
-
-        //public ActionResult Hiring_Report(int? projectFilter = null, string statusFilter = null)
-        //{
-        //	int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-        //	List<RemoteSensingProject.Models.Admin.main.Project_model> res = _managerServices.All_Project_List(userid);
-        //	((ControllerBase)this).ViewData["projectlist"] = res;
-        //	ManagerService managerServices = _managerServices;
-        //	int? userId = userid;
-        //	int? projectFilter2 = projectFilter;
-        //	List<HiringVehicle> res2 = managerServices.GetHiringVehicles(userId, null, "projectManager", null, null, projectFilter2, statusFilter);
-        //	((ControllerBase)this).ViewData["hiringList"] = res2;
-        //	((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-        //	return View();
-        //}
+        #endregion
 
         public ActionResult RaiseProblem()
         {
@@ -1153,66 +1064,6 @@ namespace RemoteSensingProject.Controllers
             }
         }
 
-        public ActionResult DownloadReimbursementReport(string type, string typeFilter = null, string statusFilter = null)
-        {
-            //IL_01b4: Unknown result type (might be due to invalid IL or missing references)
-            //IL_01bb: Expected O, but got Unknown
-            //IL_0041: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0048: Expected O, but got Unknown
-            //IL_019e: Unknown result type (might be due to invalid IL or missing references)
-            //IL_01a5: Expected O, but got Unknown
-            try
-            {
-                UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
-                int projectManagerFilter = Convert.ToInt32(userData.userId);
-                if (string.IsNullOrWhiteSpace(type))
-                {
-                    return (ActionResult)new HttpStatusCodeResult(500, "Report type is required");
-                }
-                List<ApiCommon.ColumnMapping> columnMappings = new List<ApiCommon.ColumnMapping>
-            {
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Type",
-                    PropertyName = "type"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Amount",
-                    PropertyName = "amount"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Remark",
-                    PropertyName = "remark"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Status",
-                    PropertyName = "statusLabel"
-                }
-            };
-                ManagerService managerServices = _managerServices;
-                int? managerId = projectManagerFilter;
-                List<Reimbursement> data = managerServices.GetReimbursements(null, null, null, managerId, "selectReinbursementReport", typeFilter, statusFilter);
-                if (type.Equals("pdf", StringComparison.OrdinalIgnoreCase))
-                {
-                    byte[] pdfBytes = ReportGenerator.CreatePdf(columnMappings, data, "Reimbursement Report");
-                    return File(pdfBytes, "application/pdf", "Reimbursement_report.pdf");
-                }
-                if (type.Equals("excel", StringComparison.OrdinalIgnoreCase))
-                {
-                    byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Reimbursement Report");
-                    return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Reimbursement_report.xlsx");
-                }
-                return (ActionResult)new HttpStatusCodeResult(400, "Invalid report type. Use Excel or Pdf.");
-            }
-            catch (Exception)
-            {
-                return (ActionResult)new HttpStatusCodeResult(500, "Error while generating project expenses report.");
-            }
-        }
-
         public ActionResult DownloadTourProposalReport(string type, int? projectFilter = null, string statusFilter = null)
         {
             //IL_027d: Unknown result type (might be due to invalid IL or missing references)
@@ -1294,101 +1145,6 @@ namespace RemoteSensingProject.Controllers
                 {
                     byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Tourproposal Report");
                     return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Tour_Proposal_Report.xlsx");
-                }
-                return (ActionResult)new HttpStatusCodeResult(400, "Invalid report type. Use Excel or Pdf.");
-            }
-            catch (Exception)
-            {
-                return (ActionResult)new HttpStatusCodeResult(500, "Error while generating project expenses report.");
-            }
-        }
-
-        public ActionResult DownloadHiringVehicleReport(string type, int? projectFilter = null, string statusFilter = null)
-        {
-            //IL_02a1: Unknown result type (might be due to invalid IL or missing references)
-            //IL_02a8: Expected O, but got Unknown
-            //IL_0041: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0048: Expected O, but got Unknown
-            //IL_028b: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0292: Expected O, but got Unknown
-            try
-            {
-                UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
-                int managerFilter = Convert.ToInt32(userData.userId);
-                if (string.IsNullOrWhiteSpace(type))
-                {
-                    return (ActionResult)new HttpStatusCodeResult(500, "Report type is required");
-                }
-                List<ApiCommon.ColumnMapping> columnMappings = new List<ApiCommon.ColumnMapping>
-            {
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Project Code",
-                    PropertyName = "projectCode"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Project",
-                    PropertyName = "projectName"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Head Name",
-                    PropertyName = "headName"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Date From",
-                    PropertyName = "dateFrom"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Date To",
-                    PropertyName = "dateTo"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Proposed Place",
-                    PropertyName = "proposedPlace"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Purpose of Visit",
-                    PropertyName = "purposeOfVisit"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Total Day & Night",
-                    PropertyName = "totalDaysNight"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Availability of Fund",
-                    PropertyName = "availbilityOfFund"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Remark",
-                    PropertyName = "remark"
-                },
-                new ApiCommon.ColumnMapping
-                {
-                    Header = "Status",
-                    PropertyName = "statusLabel"
-                }
-            };
-                AdminServices adminServices = _adminServices;
-                int? managerFilter2 = managerFilter;
-                List<RemoteSensingProject.Models.Admin.main.HiringVehicle1> data = adminServices.HiringReort(null, null, managerFilter2, projectFilter, statusFilter);
-                if (type.Equals("pdf", StringComparison.OrdinalIgnoreCase))
-                {
-                    byte[] pdfBytes = ReportGenerator.CreatePdf(columnMappings, data, "Hiring Report");
-                    return File(pdfBytes, "application/pdf", "Hiring_Report.pdf");
-                }
-                if (type.Equals("excel", StringComparison.OrdinalIgnoreCase))
-                {
-                    byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Hiring Report");
-                    return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Hiring_Report.xlsx");
                 }
                 return (ActionResult)new HttpStatusCodeResult(400, "Invalid report type. Use Excel or Pdf.");
             }

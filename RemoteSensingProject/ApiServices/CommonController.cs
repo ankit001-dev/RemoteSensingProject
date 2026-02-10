@@ -656,67 +656,7 @@ public class CommonController : ApiController
 
     #endregion
 
-    #region Manage Hiring & Tour Proposal
-    // Hiring By id
-    // Get Hiring BY ID
-    [System.Web.Mvc.AllowAnonymous]
-    [HttpGet]
-    [Route("api/getHiringById")]
-    public IHttpActionResult GetHiringById(int id)
-    {
-        try
-        {
-            if (id <= 0)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    message = "Id is not valid"
-                });
-            }
-            List<HiringVehicle> data = _managerservice.GetHiringVehicles(id: id, type: "GETBYID");
-            return Ok(new
-            {
-                status = data.Any(),
-                data = data
-            });
-        }
-        catch (Exception ex)
-        {
-            return Ok(new
-            {
-                status = false,
-                StatusCode = 500,
-                message = ex.Message
-            });
-        }
-    }
-
-    //All Hirings
-    [HttpGet]
-    [Route("api/getAllHiringList")]
-    public IHttpActionResult getAllHiringList(int? limit = null, int? page = null, int? projectFilter = null)
-    {
-        try
-        {
-            List<HiringVehicle> data = _managerservice.GetHiringVehicles(type: "ALLDATA", projectFilter: projectFilter, limit: limit, page: page);
-            if (data.Count > 0)
-            {
-                return Success(this, data, "Data fetched successfully", 200, data[0].Pagination);
-            }
-            return NoData(this);
-        }
-        catch (Exception ex)
-        {
-            return Ok(new
-            {
-                status = false,
-                StatusCode = 500,
-                message = ex.Message
-            });
-        }
-    }
-
+    #region Manage Tour Proposal
 	// Tourproposal By Id
 	[System.Web.Mvc.AllowAnonymous]
     [Route("api/getTourById")]

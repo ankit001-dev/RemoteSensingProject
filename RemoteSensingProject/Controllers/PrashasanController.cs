@@ -54,7 +54,7 @@ namespace RemoteSensingProject.Controllers
             return Json((object)new
             {
                 status = res,
-                message = (res ? "Outsource created succesfully !" : message)
+                message = (res ? (os.Id>0?"Outsouce updated successfully": "Outsource created succesfully !") : message)
             });
         }
         [HttpPost]
