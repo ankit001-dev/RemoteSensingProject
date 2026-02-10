@@ -155,49 +155,6 @@ namespace RemoteSensingProject.Models.Accounts
 			}
 		}
 
-		public List<main.Reimbursement> GetReimbursements()
-		{
-			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0018: Expected O, but got Unknown
-			try
-			{
-				cmd = new NpgsqlCommand("sp_Reimbursement", con);
-				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-				cmd.Parameters.AddWithValue("@action", (object)"selectApprovedReinbursement");
-				((DbConnection)(object)con).Open();
-				List<main.Reimbursement> getlist = new List<main.Reimbursement>();
-				NpgsqlDataReader res = cmd.ExecuteReader();
-				if (((DbDataReader)(object)res).HasRows)
-				{
-					while (((DbDataReader)(object)res).Read())
-					{
-						getlist.Add(new main.Reimbursement
-						{
-							type = ((DbDataReader)(object)res)["type"].ToString(),
-							EmpName = ((DbDataReader)(object)res)["name"].ToString() + "(" + ((DbDataReader)(object)res)["employeeCode"].ToString() + ")",
-							amount = Convert.ToDecimal(((DbDataReader)(object)res)["amount"]),
-							userId = Convert.ToInt32(((DbDataReader)(object)res)["userId"]),
-							id = Convert.ToInt32(((DbDataReader)(object)res)["id"]),
-							appr_status = Convert.ToBoolean(((DbDataReader)(object)res)["Apprstatus"])
-						});
-					}
-				}
-				return getlist;
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (((DbConnection)(object)con).State == ConnectionState.Open)
-				{
-					((DbConnection)(object)con).Close();
-				}
-				((Component)(object)cmd).Dispose();
-			}
-		}
-
 		public List<main.tourProposal> getTourList(int? limit = null, int? page = null, int? managerFilter = null, int? projectFilter = null, string statusFilter = null)
 		{
 			//IL_002c: Unknown result type (might be due to invalid IL or missing references)
@@ -361,30 +318,6 @@ namespace RemoteSensingProject.Models.Accounts
 			}
 		}
 
-		public bool reinbursementRequestAmt(main.Reimbursement rs)
-		{
-			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0013: Expected O, but got Unknown
-			try
-			{
-				NpgsqlCommand cmd = new NpgsqlCommand("call sp_Reimbursement(p_action=>@p_action,p_chequenum=>@p_chequenum,p_chequedate=>@p_chequedate,p_sanctionamt=>@p_sanctionamt,p_appramt=>@p_appramt,p_rejectamt=>@p_rejectamt,p_id=>@p_id)", con);
-				cmd.Parameters.AddWithValue("@p_action", (object)"approveReinburseAmt");
-				cmd.Parameters.AddWithValue("@p_chequenum", (object)rs.chequeNumber);
-				cmd.Parameters.AddWithValue("@p_chequedate", (object)Convert.ToDateTime(rs.date));
-				cmd.Parameters.AddWithValue("@p_sanctionamt", (object)rs.amount);
-				cmd.Parameters.AddWithValue("@p_appramt", (object)rs.apprAmt);
-				cmd.Parameters.AddWithValue("@p_rejectamt", (object)(rs.amount - rs.apprAmt));
-				cmd.Parameters.AddWithValue("@p_id", (object)rs.id);
-				((DbConnection)(object)con).Open();
-				((DbCommand)(object)cmd).ExecuteNonQuery();
-				return true;
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-
 		public bool rejectReinbursementRequestAmt(int id, string reason)
 		{
 			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
@@ -444,18 +377,6 @@ namespace RemoteSensingProject.Models.Accounts
 								{
 									((DbDataReader)(object)sdr).Read();
 									obj = new main.DashboardCount();
-									obj.TotalReinbursementReq = ((DbDataReader)(object)sdr)["TotalReinbursementReq"].ToString();
-									//obj.TotalTourProposalReq = ((DbDataReader)(object)sdr)["TotalTourProposalReq"].ToString();
-									//obj.totalVehicleHiringRequest = ((DbDataReader)(object)sdr)["totalVehicleHiringRequest"].ToString();
-									obj.totalReinbursementPendingRequest = ((DbDataReader)(object)sdr)["totalReinbursementPendingRequest"].ToString();
-									obj.totalReinbursementapprovedRequest = ((DbDataReader)(object)sdr)["totalReinbursementapprovedRequest"].ToString();
-									obj.totalReinbursementRejectRequest = ((DbDataReader)(object)sdr)["totalReinbursementRejectRequest"].ToString();
-									//obj.totalTourProposalApprReque = ((DbDataReader)(object)sdr)["totalTourProposalApprReque"].ToString();
-									//obj.totalTourProposalRejectReque = ((DbDataReader)(object)sdr)["totalTourProposalRejectReque"].ToString();
-									//obj.totaTourProposalPendingReque = ((DbDataReader)(object)sdr)["totaTourProposalPendingReque"].ToString();
-									//obj.totalPendingHiringVehicle = ((DbDataReader)(object)sdr)["totalPendingHiringVehicle"].ToString();
-									//obj.totalApproveHiringVehicle = ((DbDataReader)(object)sdr)["totalApproveHiringVehicle"].ToString();
-									//obj.totalRejectHiringVehicle = ((DbDataReader)(object)sdr)["totalRejectHiringVehicle"].ToString();
 								}
 								((DbDataReader)(object)sdr).Close();
 							}
@@ -637,60 +558,5 @@ namespace RemoteSensingProject.Models.Accounts
 				((Component)(object)base.cmd).Dispose();
 			}
 		}
-
-		public List<main.Reimbursement> getReimbursementrepo()
-		{
-			//IL_0014: Unknown result type (might be due to invalid IL or missing references)
-			//IL_001e: Expected O, but got Unknown
-			try
-			{
-				List<main.Reimbursement> list = new List<main.Reimbursement>();
-				cmd = new NpgsqlCommand("sp_Reimbursement", con);
-				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-				cmd.Parameters.AddWithValue("@action", (object)"accountrepo");
-				((DbConnection)(object)con).Open();
-				NpgsqlDataReader res = cmd.ExecuteReader();
-				if (((DbDataReader)(object)res).HasRows)
-				{
-					while (((DbDataReader)(object)res).Read())
-					{
-						list.Add(new main.Reimbursement
-						{
-							type = ((DbDataReader)(object)res)["type"].ToString(),
-							EmpName = ((DbDataReader)(object)res)["name"].ToString() + "(" + ((DbDataReader)(object)res)["employeeCode"].ToString() + ")",
-							amount = Convert.ToDecimal(((DbDataReader)(object)res)["amount"]),
-							approveAmount = Convert.ToDecimal((((DbDataReader)(object)res)["apprAmt"] != DBNull.Value) ? ((DbDataReader)(object)res)["apprAmt"] : ((object)0)),
-							userId = Convert.ToInt32(((DbDataReader)(object)res)["userId"]),
-							id = Convert.ToInt32(((DbDataReader)(object)res)["id"]),
-							appr_status = Convert.ToBoolean(((DbDataReader)(object)res)["Apprstatus"]),
-							newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newStatus"]),
-							status = Convert.ToBoolean((((DbDataReader)(object)res)["apprAmountStatus"] != DBNull.Value) ? ((DbDataReader)(object)res)["apprAmountStatus"] : ((object)false)),
-							remark = ((DbDataReader)(object)res)["remark"].ToString(),
-							apprstatus = Convert.ToBoolean(((DbDataReader)(object)res)["ApprStatus"]),
-							accountNewRequest = Convert.ToBoolean(((DbDataReader)(object)res)["accountNewRequest"]),
-							chequeNum = ((DbDataReader)(object)res)["chequeNum"].ToString(),
-							chequeDate = ((((DbDataReader)(object)res)["chequeDate"] != DBNull.Value) ? Convert.ToDateTime(((DbDataReader)(object)res)["chequeDate"]).ToString("dd/MM/yyyy") : "")
-						});
-					}
-				}
-				return list;
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (((DbConnection)(object)con).State == ConnectionState.Open)
-				{
-					((DbConnection)(object)con).Close();
-				}
-				((Component)(object)cmd).Dispose();
-			}
-		}
-
-        #region Manage Hiring Vehicle
-
-        #endregion
     }
 }
