@@ -69,7 +69,7 @@
                     <div class="card uniform-card w-100 shadow-lg">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-baseline">
-                                <h6 class="card-title mb-0 text-nowrap">Project's</h6>
+                                <h6 class="card-title mb-0 text-nowrap">Total Project's</h6>
                             </div>
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-7">
@@ -757,7 +757,7 @@
 <script>
     $(document).ready(function () {
         debugger
-        var bgdata = @Html.Raw(Json.Encode(ViewData["budgetGraph"]));
+        var bgdata = @Html.Raw(Json.Encode(ViewData["budgetGraph"])) 
         console.log("bgdata", bgdata[0].remaining);
         Chart.defaults.font.size = 13;
         Chart.defaults.font.family = "'Segoe UI', sans-serif";
