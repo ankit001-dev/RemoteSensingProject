@@ -8,9 +8,9 @@ using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static RemoteSensingProject.Models.Accounts.main;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -32,31 +32,23 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult Dashboard()
 		{
-			((dynamic)((ControllerBase)this).ViewBag).CompleteRequest = _managerServices.All_Project_List(0, null, null, "AccountApproved").Count();
-			((dynamic)((ControllerBase)this).ViewBag).PendingStatus = _managerServices.All_Project_List(0, null, null, "AccountPending").Count();
-			((dynamic)((ControllerBase)this).ViewBag).TotalFunRequest = _managerServices.All_Project_List(0).Count();
-			//RemoteSensingProject.Models.Accounts.main.DashboardCount TotalCount = _accountSerivce.DashboardCount();
-			((ControllerBase)this).ViewData["projectlist"] = _managerServices.All_Project_List(0, 1, 5, "AccountApproved").Take(5).ToList();
-			((ControllerBase)this).ViewData["graphdata"] = _accountSerivce.ExpencesListforgraph();
+			ViewData["dashboardCount"] = _accountSerivce.DashboardCount();
 			((ControllerBase)this).ViewData["budgetdataforgraph"] = _accountSerivce.budgetdataforgraph();
 			return View();
 		}
 
-		public ActionResult Requests()
+        #region Manage Projects
+		public ActionResult InternalProject(string searchTerm = null)
 		{
-			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(0, null, null, "AccountApproved");
-			return View();
+            ViewBag.ProjectList = _managerServices.All_Project_List(userId: null, searchTerm: searchTerm, filterType: "Internal");
+            return View();
 		}
-
-		public ActionResult GetProjecDatatById(int Id)
-		{
-			RemoteSensingProject.Models.Admin.main.createProjectModel data = _adminServices.GetProjectById(Id);
-			return Json((object)new
-			{
-				status = true,
-				data = data
-			}, (JsonRequestBehavior)0);
-		}
+        public ActionResult ExternalProject(string searchTerm = null)
+        {
+            ViewBag.ProjectList = _managerServices.All_Project_List(userId: null, searchTerm: searchTerm, filterType: "External");
+            return View();
+        }
+        #endregion
 
 		public ActionResult Expenses(int Id)
 		{
@@ -68,12 +60,6 @@ namespace RemoteSensingProject.Controllers
 		{
 			bool res = _accountSerivce.UpdateExpensesResponse(he);
 			return Json((object)res);
-		}
-
-		public ActionResult RequestHistory(string searchTerm = null)
-		{
-			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(userId: null, searchTerm:searchTerm, filterType: "External");
-            return View();
 		}
 
 		public ActionResult Meeting_List()
@@ -143,6 +129,35 @@ namespace RemoteSensingProject.Controllers
                 status = false,
                 message = "Server is busy !"
             });
+        }
+        #endregion
+
+        #region New Module Adhisthan
+        public ActionResult Adhisthan()
+        {
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult InsertAdhisthan(AdhisthanModel model)
+        {
+            try
+            {
+                bool res = _accountSerivce.InsertAdhisthan(model);
+                return Json((object)new
+                {
+                    status = res,
+                    message = (res ? "Data inserted successfully !" : "Some issue occured !")
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Server is busy !"
+                });
+            }
         }
         #endregion
     }

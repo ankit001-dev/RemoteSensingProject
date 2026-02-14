@@ -2,73 +2,23 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Models.Accounts.AccountService
+using Npgsql;
+using NpgsqlTypes;
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Accounts;
+using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
-using Npgsql;
-using RemoteSensingProject.Models;
-using RemoteSensingProject.Models.Accounts;
+using System.Linq;
+using static RemoteSensingProject.Models.Accounts.main;
 
 namespace RemoteSensingProject.Models.Accounts
 {
 	public class AccountService : DataFactory
 	{
-		public List<main.Project_model> Project_List()
-		{
-			//IL_0014: Unknown result type (might be due to invalid IL or missing references)
-			//IL_001e: Expected O, but got Unknown
-			try
-			{
-				List<main.Project_model> list = new List<main.Project_model>();
-				cmd = new NpgsqlCommand("sp_adminAddproject", con);
-				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-				cmd.Parameters.AddWithValue("@action", (object)"getAllManagerProject");
-				((DbConnection)(object)con).Open();
-				NpgsqlDataReader rd = cmd.ExecuteReader();
-				if (((DbDataReader)(object)rd).HasRows)
-				{
-					while (((DbDataReader)(object)rd).Read())
-					{
-						list.Add(new main.Project_model
-						{
-							Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
-							ProjectTitle = ((DbDataReader)(object)rd)["title"].ToString(),
-							AssignDate = Convert.ToDateTime(((DbDataReader)(object)rd)["assignDate"]),
-							CompletionDate = Convert.ToDateTime(((DbDataReader)(object)rd)["completionDate"]),
-							ApproveStatus = (bool)((DbDataReader)(object)rd)["ApproveStatus"],
-							StartDate = Convert.ToDateTime(((DbDataReader)(object)rd)["startDate"]),
-							ProjectManager = ((DbDataReader)(object)rd)["name"].ToString(),
-							ProjectBudget = Convert.ToDecimal(((DbDataReader)(object)rd)["budget"]),
-							ProjectDescription = ((DbDataReader)(object)rd)["description"].ToString(),
-							projectDocumentUrl = ((DbDataReader)(object)rd)["ProjectDocument"].ToString(),
-							ProjectType = ((DbDataReader)(object)rd)["projectType"].ToString(),
-							ProjectStage = Convert.ToBoolean(((DbDataReader)(object)rd)["stage"]),
-							CompletionDatestring = Convert.ToDateTime(((DbDataReader)(object)rd)["completionDate"]).ToString("dd-MM-yyyy"),
-							ProjectStatus = Convert.ToBoolean(((DbDataReader)(object)rd)["CompleteStatus"]),
-							AssignDateString = Convert.ToDateTime(((DbDataReader)(object)rd)["assignDate"]).ToString("dd-MM-yyyy"),
-							StartDateString = Convert.ToDateTime(((DbDataReader)(object)rd)["startDate"]).ToString("dd-MM-yyyy"),
-							projectCode = ((((DbDataReader)(object)rd)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)rd)["projectCode"].ToString() : "N/A")
-						});
-					}
-				}
-				return list;
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (((DbConnection)(object)con).State == ConnectionState.Open)
-				{
-					((DbConnection)(object)con).Close();
-				}
-				((Component)(object)cmd).Dispose();
-			}
-		}
-
 		public bool UpdateExpensesResponse(main.HeadExpenses he)
 		{
 			//IL_0014: Unknown result type (might be due to invalid IL or missing references)
@@ -93,53 +43,6 @@ namespace RemoteSensingProject.Models.Accounts
 				((DbConnection)(object)con).Open();
 				((DbCommand)(object)cmd).ExecuteNonQuery();
 				return true;
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (((DbConnection)(object)con).State == ConnectionState.Open)
-				{
-					((DbConnection)(object)con).Close();
-				}
-				((Component)(object)cmd).Dispose();
-			}
-		}
-
-		public List<main.Project_Budget> ProjectBudgetList(int Id)
-		{
-			//IL_0014: Unknown result type (might be due to invalid IL or missing references)
-			//IL_001e: Expected O, but got Unknown
-			try
-			{
-				List<main.Project_Budget> list = new List<main.Project_Budget>();
-				cmd = new NpgsqlCommand("sp_ManageProjectSubstaces", con);
-				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-				cmd.Parameters.AddWithValue("@action", (object)"GetBudgetByProjectId");
-				cmd.Parameters.AddWithValue("@id", (object)Id);
-				if (((DbConnection)(object)con).State == ConnectionState.Closed)
-				{
-					((DbConnection)(object)con).Open();
-				}
-				NpgsqlDataReader rd = cmd.ExecuteReader();
-				if (((DbDataReader)(object)rd).HasRows)
-				{
-					while (((DbDataReader)(object)rd).Read())
-					{
-						list.Add(new main.Project_Budget
-						{
-							Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
-							Project_Id = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
-							ProjectHeads = ((DbDataReader)(object)rd)["heads"].ToString(),
-							TotalAskAmount = ((DbDataReader)(object)rd)["totalAskAmount"].ToString(),
-							ApproveAmount = ((DbDataReader)(object)rd)["approveAmount"].ToString(),
-							ProjectAmount = Convert.ToDecimal((((DbDataReader)(object)rd)["headsAmount"] != DBNull.Value) ? ((DbDataReader)(object)rd)["headsAmount"] : ((object)0))
-						});
-					}
-				}
-				return list;
 			}
 			catch (Exception ex)
 			{
@@ -269,89 +172,9 @@ namespace RemoteSensingProject.Models.Accounts
 			}
 		}
 
-		public List<main.tourProposal> getTourOne(int? id)
+        #region Manage Dashboard Data
+        public main.DashboardCount DashboardCount()
 		{
-			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0018: Expected O, but got Unknown
-			try
-			{
-				cmd = new NpgsqlCommand("sp_Tourproposal", con);
-				((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-				cmd.Parameters.AddWithValue("@action", (object)"selecttourOne");
-				cmd.Parameters.AddWithValue("id", (object)id);
-				((DbConnection)(object)con).Open();
-				List<main.tourProposal> getlist = new List<main.tourProposal>();
-				NpgsqlDataReader res = cmd.ExecuteReader();
-				if (((DbDataReader)(object)res).HasRows)
-				{
-					while (((DbDataReader)(object)res).Read())
-					{
-						getlist.Add(new main.tourProposal
-						{
-							id = Convert.ToInt32(((DbDataReader)(object)res)["id"]),
-							projectManager = Convert.ToString(((DbDataReader)(object)res)["name"]),
-							projectName = Convert.ToString(((DbDataReader)(object)res)["title"]),
-							dateOfDept = Convert.ToDateTime(((DbDataReader)(object)res)["dateOfDept"]),
-							place = Convert.ToString(((DbDataReader)(object)res)["place"]),
-							periodFrom = Convert.ToDateTime(((DbDataReader)(object)res)["periodFrom"]),
-							periodTo = Convert.ToDateTime(((DbDataReader)(object)res)["periodTo"]),
-							returnDate = Convert.ToDateTime(((DbDataReader)(object)res)["returnDate"]),
-							purpose = Convert.ToString(((DbDataReader)(object)res)["purpose"]),
-							newRequest = Convert.ToBoolean(((DbDataReader)(object)res)["newRequest"]),
-							adminappr = Convert.ToBoolean(((DbDataReader)(object)res)["adminappr"])
-						});
-					}
-				}
-				return getlist;
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (((DbConnection)(object)con).State == ConnectionState.Open)
-				{
-					((DbConnection)(object)con).Close();
-				}
-				((Component)(object)cmd).Dispose();
-			}
-		}
-
-		public bool rejectReinbursementRequestAmt(int id, string reason)
-		{
-			//IL_000e: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0018: Expected O, but got Unknown
-			try
-			{
-				cmd = new NpgsqlCommand("CALL sp_Reimbursement(p_rejectreason => @rejectReason, p_action => @action, p_id => @id)", con);
-				cmd.Parameters.AddWithValue("@action", (object)"rejectReinbursementAmtRequest");
-				cmd.Parameters.AddWithValue("@rejectReason", (object)reason);
-				cmd.Parameters.AddWithValue("@id", (object)id);
-				((DbConnection)(object)con).Open();
-				((DbCommand)(object)cmd).ExecuteNonQuery();
-				return true;
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (((DbConnection)(object)con).State == ConnectionState.Open)
-				{
-					((DbConnection)(object)con).Close();
-				}
-				((Component)(object)cmd).Dispose();
-			}
-		}
-
-		public main.DashboardCount DashboardCount()
-		{
-			//IL_0027: Unknown result type (might be due to invalid IL or missing references)
-			//IL_002d: Expected O, but got Unknown
-			//IL_009d: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00a4: Expected O, but got Unknown
 			main.DashboardCount obj = null;
 			try
 			{
@@ -377,6 +200,15 @@ namespace RemoteSensingProject.Models.Accounts
 								{
 									((DbDataReader)(object)sdr).Read();
 									obj = new main.DashboardCount();
+									obj.TotalTourCount = sdr["TotalTourCount"] != DBNull.Value ? Convert.ToInt32(sdr["TotalTourCount"]) : 0;
+									obj.TotalInternalProjectCount = sdr["TotalInternalProjectCount"] != DBNull.Value ? Convert.ToInt32(sdr["TotalInternalProjectCount"]) : 0;
+									obj.TotalInternalProjectFund = sdr["TotalInternalProjectFund"] != DBNull.Value ? Convert.ToInt32(sdr["TotalInternalProjectFund"]) : 0;
+									obj.TotalInternalExpense = sdr["TotalInternalExpense"] != DBNull.Value ? Convert.ToInt32(sdr["TotalInternalExpense"]) : 0;
+									obj.TotalInternalCompletedProject = sdr["TotalInternalCompletedProject"] != DBNull.Value ? Convert.ToInt32(sdr["TotalInternalCompletedProject"]) : 0;
+									obj.TotalExternalProjectCount = sdr["TotalExternalProjectCount"] != DBNull.Value ? Convert.ToInt32(sdr["TotalExternalProjectCount"]) : 0;
+									obj.TotalExternalProjectFund = sdr["TotalExternalProjectFund"] != DBNull.Value ? Convert.ToInt32(sdr["TotalExternalProjectFund"]) : 0;
+									obj.TotalExternalExpense = sdr["TotalExternalExpense"] != DBNull.Value ? Convert.ToInt32(sdr["TotalExternalExpense"]) : 0;
+									obj.TotalExternalCompletedProject = sdr["TotalExternalCompletedProject"] != DBNull.Value ? Convert.ToInt32(sdr["TotalExternalCompletedProject"]) : 0;
 								}
 								((DbDataReader)(object)sdr).Close();
 							}
@@ -411,84 +243,8 @@ namespace RemoteSensingProject.Models.Accounts
 			}
 		}
 
-		public main.GraphData ExpencesListforgraph()
+		public GraphGrouped budgetdataforgraph()
 		{
-			//IL_0027: Unknown result type (might be due to invalid IL or missing references)
-			//IL_002d: Expected O, but got Unknown
-			//IL_009d: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00a4: Expected O, but got Unknown
-			main.GraphData obj = null;
-			try
-			{
-				((DbConnection)(object)con).Open();
-				NpgsqlTransaction tran = con.BeginTransaction();
-				try
-				{
-					NpgsqlCommand cmd = new NpgsqlCommand("fn_managedashboard_cursor", con);
-					try
-					{
-						((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-						cmd.Parameters.AddWithValue("v_action", (object)"selectExpensesforgraph");
-						cmd.Parameters.AddWithValue("v_projectmanager", (object)0);
-						cmd.Parameters.AddWithValue("v_sid", (object)0);
-						string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
-						NpgsqlCommand fetchCmd = new NpgsqlCommand("FETCH ALL FROM \"" + cursorName + "\";", con, tran);
-						try
-						{
-							NpgsqlDataReader rd = fetchCmd.ExecuteReader();
-							try
-							{
-								if (((DbDataReader)(object)rd).HasRows)
-								{
-									while (((DbDataReader)(object)rd).Read())
-									{
-										obj = new main.GraphData();
-										obj.ApprAmount = ((((DbDataReader)(object)rd)["appamount"] != DBNull.Value) ? Convert.ToDecimal(((DbDataReader)(object)rd)["appamount"]) : 0m);
-										obj.amount = ((((DbDataReader)(object)rd)["totalamount"] != DBNull.Value) ? Convert.ToDecimal(((DbDataReader)(object)rd)["totalamount"]) : 0m);
-									}
-								}
-							}
-							finally
-							{
-								((IDisposable)rd)?.Dispose();
-							}
-						}
-						finally
-						{
-							((IDisposable)fetchCmd)?.Dispose();
-						}
-						return obj;
-					}
-					finally
-					{
-						((IDisposable)cmd)?.Dispose();
-					}
-				}
-				finally
-				{
-					((IDisposable)tran)?.Dispose();
-				}
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-			finally
-			{
-				if (((DbConnection)(object)con).State == ConnectionState.Open)
-				{
-					((DbConnection)(object)con).Close();
-				}
-				((Component)(object)base.cmd).Dispose();
-			}
-		}
-
-		public List<main.GraphData> budgetdataforgraph()
-		{
-			//IL_002b: Unknown result type (might be due to invalid IL or missing references)
-			//IL_0031: Expected O, but got Unknown
-			//IL_00a1: Unknown result type (might be due to invalid IL or missing references)
-			//IL_00a8: Expected O, but got Unknown
 			try
 			{
 				List<main.GraphData> list = new List<main.GraphData>();
@@ -516,11 +272,12 @@ namespace RemoteSensingProject.Models.Accounts
 									{
 										list.Add(new main.GraphData
 										{
-											months = ((DbDataReader)(object)rd)["months"].ToString(),
-											amount = Convert.ToDecimal(((DbDataReader)(object)rd)["amount"]),
-											ApprAmount = Convert.ToDecimal(((DbDataReader)(object)rd)["appramount"]),
-											pendingamount = Convert.ToDecimal(((DbDataReader)(object)rd)["pending"])
-										});
+											ProjectCode = ((DbDataReader)(object)rd)["projectCode"].ToString(),
+											TotalFund = Convert.ToDecimal(((DbDataReader)(object)rd)["totalfund"]),
+											TotalExpense = Convert.ToDecimal(((DbDataReader)(object)rd)["totalexpense"]),
+											TotalRemaining = Convert.ToDecimal(((DbDataReader)(object)rd)["totalremaining"]),
+                                            ProjectType = rd["projectType"].ToString(),
+                                        });
 									}
 								}
 							}
@@ -533,7 +290,18 @@ namespace RemoteSensingProject.Models.Accounts
 						{
 							((IDisposable)fetchCmd)?.Dispose();
 						}
-						return list;
+                        // RESTRUCTURE HERE
+						GraphGrouped result = new GraphGrouped
+						{
+							Internal = list
+								.Where(x => x.ProjectType == "Internal")
+								.ToList(),
+
+							External = list
+								.Where(x => x.ProjectType == "External")
+								.ToList()
+						};
+                        return result;
 					}
 					finally
 					{
@@ -558,5 +326,133 @@ namespace RemoteSensingProject.Models.Accounts
 				((Component)(object)base.cmd).Dispose();
 			}
 		}
+        #endregion
+
+        #region Manage Adhisthan
+        public bool InsertAdhisthan(AdhisthanModel ad)
+		{
+            ((DbConnection)(object)con).Open();
+            using (var transaction = con.BeginTransaction())
+            {
+                try
+                {
+                    using (var cmd = new NpgsqlCommand(
+                        "CALL sp_manageadhisthan(p_action=>@p_action, p_id=>@p_id, p_headname=>@p_headname, p_budgetprovision=>@p_budgetprovision)",
+                        con, transaction))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = ad.Id>0? "updateadhisthan" : "insertadhisthan";
+                        cmd.Parameters.Add("@p_id", NpgsqlDbType.Integer).Value = ad.Id;
+                        cmd.Parameters.Add("@p_headname", NpgsqlDbType.Integer).Value = ad.HeadName;
+                        cmd.Parameters.Add("@p_budgetprovision", NpgsqlDbType.Integer).Value = ad.BudgetProvision;
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (PostgresException pgEx)
+                {
+                    transaction.Rollback();
+
+                    // Stored procedure ka exact error message
+                    throw new Exception(pgEx.MessageText);
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+                finally
+                {
+                    if (con.State == ConnectionState.Open)
+                        con.Close();
+                }
+            }
+        }
+
+		public List<AdhisthanModel> GetAdhisthanList(int? id = null,int? limit = null,int? page = null,string searchTerm = null)
+		{
+            try
+            {
+                ((DbConnection)(object)con).Open();
+                List<AdhisthanModel> data = new List<AdhisthanModel>();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageadhisthan", con, tran);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("v_action", (object)"selectadhisthan");
+                        cmd.Parameters.AddWithValue("@v_limit", limit);
+                        cmd.Parameters.AddWithValue("@v_page", page);
+                        cmd.Parameters.AddWithValue("@v_searchterm", searchTerm);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+										data.Add(new AdhisthanModel {
+											Id = Convert.ToInt32(rd["id"]),
+											HeadName = rd["headname"].ToString(),
+											BudgetProvision = rd["budgetprovision"] != null ? Convert.ToDecimal(rd["budgetprovision"]) : 0
+										});
+									}
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)base.cmd).Dispose();
+            }
+        }
+        #endregion
     }
 }
