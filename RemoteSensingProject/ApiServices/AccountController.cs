@@ -170,36 +170,12 @@ namespace RemoteSensingProject.ApiServices
         }
 
         [HttpGet]
-        [Route("api/graphData")]
-        public IHttpActionResult GraphData()
-        {
-            try
-            {
-                RemoteSensingProject.Models.Accounts.main.GraphData data = _accountSerivce.ExpencesListforgraph();
-                return Ok(new
-                {
-                    status = true,
-                    data = data
-                });
-            }
-            catch
-            {
-                return Ok(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = "Data not found"
-                });
-            }
-        }
-
-        [HttpGet]
         [Route("api/budgetGraphData")]
         public IHttpActionResult BudgetGraphData()
         {
             try
             {
-                List<RemoteSensingProject.Models.Accounts.main.GraphData> data = _accountSerivce.budgetdataforgraph();
+                var data = _accountSerivce.budgetdataforgraph();
                 return Ok(new
                 {
                     status = true,

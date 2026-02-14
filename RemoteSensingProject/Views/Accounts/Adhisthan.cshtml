@@ -1,0 +1,133 @@
+﻿
+@{
+    ViewBag.Title = "Adhisthan";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">/adhisthan</li>
+    </ol>
+    <button class="btn btn-primary" id="addAdhisthanModalBtn"><i class="link-icon" data-feather="plus"></i>Add Adhisthan</button>
+</nav>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <div class="row align-items-center">
+        <div class="col-lg-3">
+            <h5>Adhisthan</h5>
+        </div>
+        <div class="col-lg-6 col-md-6">
+            <input type="search" placeholder="Search by head name" id="searchByHead" class="form-control">
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-baseline mb-2">
+            <h6 class="card-title mb-0">Projects</h6>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover mb-0" id="dataTableExample">
+                <thead>
+                    <tr>
+                        <th class="pt-0">#</th>
+                        <th class="pt-0">Head Name</th>
+                        <th class="pt-0">Budghet Provision</th>
+                        <th class="pt-0">Expenditure Amount</th>
+                        <th class="pt-0">Expenditure Percentage</th>
+                        <th class="pt-0">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="adhisthanModal" tabindex="-1" aria-labelledby="createTaskModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Manage Adhisthan</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="addAdhisthanForm">
+
+                    <div class="form-group">
+                        <label for="headName" class="form-label">Head Name</label>
+                        <input type="text" class="form-control" name="HeadName" required id="headName" placeholder="Enter Head Name">
+                    </div>
+                    <div class="form-group mt-1">
+                        <label for="budgetProvision" class="form-label">Budget Provision (in Lakhs)</label>
+                        <input type="text" class="form-control" name="BudgetProvision" required id="budgetProvision" placeholder="Enter Budget">
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Submit</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#addAdhisthanModalBtn').on('click', function () {
+        $('#adhisthanModal').modal('show');
+    });
+
+    $("#createTaskForm").on("submit", function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        let data = new FormData(this);
+        $.ajax({
+            url: "/accounts/addadhisthan",
+            type: "Post",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Successfuly !",
+                        text: res.message,
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: res.message,
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue",
+                    text: "Server is not respondig. Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
+    })
+</script>
