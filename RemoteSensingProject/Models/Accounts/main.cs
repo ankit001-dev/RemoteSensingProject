@@ -2,9 +2,11 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Models.Accounts.main
+using Antlr.Runtime.Tree;
 using System;
+using System.Collections.Generic;
+using System.Security.Policy;
 using System.Web;
-using RemoteSensingProject.Models;
 
 namespace RemoteSensingProject.Models.Accounts
 {
@@ -13,13 +15,15 @@ namespace RemoteSensingProject.Models.Accounts
 		public class DashboardCount
 		{
 
-			public string TotalTourProposalReq { get; set; }
-
-			public string totalTourProposalApprReque { get; set; }
-
-			public string totalTourProposalRejectReque { get; set; }
-
-			public string totaTourProposalPendingReque { get; set; }
+			public int TotalTourCount { get; set; }
+			public int TotalInternalProjectCount { get; set; }
+			public int TotalExternalProjectCount { get; set; }
+			public int TotalInternalProjectFund { get; set; }
+			public int TotalInternalCompletedProject { get; set; }
+			public int TotalExternalProjectFund { get; set; }
+			public int TotalInternalExpense { get; set; }
+			public int TotalExternalExpense { get; set; }
+			public int TotalExternalCompletedProject { get; set; }
 		}
 
 		public class Project_model
@@ -77,18 +81,21 @@ namespace RemoteSensingProject.Models.Accounts
 
 		public class GraphData
 		{
-			public decimal ApprAmount { get; set; }
+			public decimal TotalFund { get; set; }
 
-			public string title { get; set; }
+			public string ProjectCode { get; set; }
 
-			public decimal amount { get; set; }
+			public decimal TotalExpense { get; set; }
 
-			public string months { get; set; }
-
-			public decimal pendingamount { get; set; }
+			public decimal TotalRemaining { get; set; }
+			public string ProjectType { get; set; }
 		}
-
-		public class HeadExpenses
+        public class GraphGrouped
+        {
+            public List<GraphData> Internal { get; set; }
+            public List<GraphData> External { get; set; }
+        }
+        public class HeadExpenses
 		{
 			public int Id { get; set; }
 
@@ -160,6 +167,16 @@ namespace RemoteSensingProject.Models.Accounts
 
 			public bool newRequest { get; set; }
 		}
-	}
+
+		public class AdhisthanModel
+		{
+			public int Id { get; set; }
+			public string HeadName { get; set; }
+			public decimal BudgetProvision { get; set; }
+			public decimal ExpenditureAmount { get; set; }
+			public decimal ExpenditurePercentage { get; set; }
+		}
+
+    }
 
 }

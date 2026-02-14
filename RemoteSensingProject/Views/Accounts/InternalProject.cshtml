@@ -1,19 +1,13 @@
 ﻿
 @{
-    ViewBag.Title = "RequestHistory";
+    ViewBag.Title = "InternalProject";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
 
-
-<style>
-    body {
-        padding: 0 !important;
-    }
-</style>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <div class="row align-items-center">
         <div class="col-lg-3">
-            <h5>Project Lists</h5>
+            <h5>Internal Projects</h5>
         </div>
         <div class="col-lg-6 col-md-6">
             <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
@@ -270,4 +264,3 @@
         if (search) $('#searchProjectBy').val(search).focus();
     });
 </script>
-
