@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["tourlist"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
     var dta = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    var outSourceList = ViewData["OutSourceList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
 }
 <link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
 <style>
@@ -16,6 +17,7 @@
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item active" aria-current="page">Tour Proposal</li>
     </ol>
+    <button class="btn btn-primary" id="openModal">Add Tour Proposal</button>
 </nav>
 <div class="row mx-0">
     <div class="col-md-12 grid-margin stretch-card">
@@ -40,6 +42,84 @@
     </div>
 </div>
 
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Proposal Form </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="tourForm">
+                    <div class="row">
+                        <div class="col-lg-4 mb-3">
+                            <label for="proposalType" class="form-label">Project</label>
+                            <select class="form-select form-select-sm" id="proposalType" name="proposalType">
+                                <option disabled selected>--select type--</option>
+                                <option value="false">Self</option>
+                                <option value="true">Project staff</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="project" class="form-label">Project</label>
+                            <select class="form-select form-select-sm" id="project" name="projectId">
+                                <option disabled selected>--select project--</option>
+                                @if (dta != null)
+                                {
+                                    foreach (var item in dta)
+                                    {
+                                        <option value="@item.Id">@item.ProjectTitle</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3" id="selectOutsource">
+                            <label for="outsource" class="form-label">Outsource</label>
+                            <select class="form-select" name="outsource" multiple id="outsource">
+                                <option disabled>--Select Option--</option>
+                                @if (outSourceList != null && outSourceList.Count > 0)
+                                {
+                                    foreach (var item in outSourceList)
+                                    {
+                                        <option value="@item.Id">@item.EmpName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="dateOfDept" class="form-label">Date of Departure</label>
+                            <input type="date" class="form-control form-control-sm" id="dateOfDept" name="dateOfDept" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="place" class="form-label">Place</label>
+                            <input type="text" class="form-control form-control-sm" id="place" name="place" placeholder="Enter Place" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="periodFrom" class="form-label">Period: From</label>
+                            <input type="date" class="form-control form-control-sm" id="periodFrom" name="periodFrom" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="periodTo" class="form-label">Period: To</label>
+                            <input type="date" class="form-control form-control-sm" id="periodTo" name="periodTo" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="returnDate" class="form-label">Date of return</label>
+                            <input type="date" class="form-control form-control-sm" id="returnDate" name="returnDate" />
+                        </div>
+                        <div class="col-lg-4 mb-3">
+                            <label for="purpose" class="form-label">Purpose</label>
+                            <textarea class="form-control form-control-sm" id="purpose" name="purpose" placeholder="Write Purpose"></textarea>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row mx-0">
     <div class="col-sm-12">
         <table class="table-bordered table-striped" id="dataTableExample">
@@ -54,6 +134,7 @@
                     <th>Period From</th>
                     <th>Period To</th>
                     <th>Date of return</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -72,6 +153,7 @@
                             <td>@item.periodFrom</td>
                             <td>@item.periodTo</td>
                             <td>@item.returnDate</td>
+                            <td><a class="edit-btn" data-id="@item.id"><i class="fa-solid fa-pencil"></i></a></td>
                         </tr>
                         i++;
                     }
@@ -207,6 +289,8 @@
 <script>
     $(document).ready(function () {
 
+        $('#outsource').select2();
+
         //Filter
         $("#printBtn").click(function () {
 
@@ -319,6 +403,177 @@
 </script>
 
 <script>
+    $('#openModal').on('click', function () {
+        $('#submitBtn').text('Submit');
+        $('#tourForm')[0].reset();
+        $("#staticBackdrop").modal("show");
+    })
+    function getTourById(id) {
+        return $.ajax({
+            url: '/api/getTourById',
+            type: 'get',
+            data: { id: id }
+        });
+    }
+    function setViewTour(data) {
+
+        $("#projectMan").text(data.projectManager);
+        $("#project").text(data.projectName);
+
+        $("#i1").text(data.purpose);
+        $("#i2").text(data.dateOfDept);
+        $("#i3").text(data.place);
+        $("#i4").text(data.periodFrom);
+        $("#i5").text(data.periodTo);
+        $("#i6").text(data.returnDate);
+
+        $("#staticBackdrop1").modal("show");
+    }
+
+    function setEditTour(data) {
+
+        // 📝 text / date fields
+        $("#dateOfDept").val(data.dateOfDept.split('T')[0]);
+        $("#place").val(data.place);
+        $("#periodFrom").val(data.periodFrom.split('T')[0]);
+        $("#periodTo").val(data.periodTo.split('T')[0]);
+        $("#returnDate").val(data.returnDate.split('T')[0]);
+        $("#purpose").val(data.purpose);
+
+        // proposal type (0/1)
+        $("#proposalType").val(data.proposalType ? 'true' : 'false').trigger("change");
+
+        // 📌 Project
+        setTimeout(function () {
+            $("#project").val(data.projectId).trigger("change");
+        }, 300);
+
+        // 👥 Outsource MULTI SELECT
+        if (data.proposalType && data.outsourceList && data.outsourceList.length > 0) {
+
+            // show outsource section
+            $("#selectOutsource").show();
+
+            // extract outsource ids
+            let outsourceIds = data.outsourceList.map(x => x.outsourceId.toString());
+
+            // set after dropdown rendered
+            setTimeout(function () {
+                $("#outsource").val(outsourceIds).trigger("change");
+            }, 400);
+        }
+        else {
+            $("#outsource").val([]).trigger("change");
+            $("#selectOutsource").hide();
+        }
+
+        // 🔑 hidden id for update
+        if ($("#tourId").length === 0) {
+            $("#tourForm").append(`<input type="hidden" id="tourId" name="id">`);
+        }
+        $("#tourId").val(data.id);
+
+        $('#submitBtn').text("Update");
+        $("#staticBackdrop").modal("show");
+    }
+
+    $(document).on("click", ".action", function (e) {
+        e.preventDefault();
+
+        const id = $(this).closest("td").data("id");
+
+        Swal.fire({
+            title: "Please Wait!",
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        getTourById(id)
+            .done(function (res) {
+                setViewTour(res.data[0]);
+                Swal.close();
+            })
+            .fail(function () {
+                Swal.fire("Error", "Unable to fetch details", "error");
+            });
+    });
+
+    $(document).on("click", ".edit-btn", function () {
+
+        const id = $(this).data("id");
+
+        Swal.fire({
+            title: "Please Wait!",
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        getTourById(id)
+            .done(function (res) {
+                setEditTour(res.data[0]);
+                Swal.close();
+            })
+            .fail(function () {
+                Swal.fire("Error", "Unable to fetch details", "error");
+            });
+    });
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#selectOutsource').hide();
+        $('#proposalType').on('change', function () {
+            const val = $(this).val();
+            if (val == 1) {
+                $('#selectOutsource').show();
+            } else {
+                $('#selectOutsource').hide();
+            }
+        })
+
+        $("#tourForm").submit(function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Please Wait',
+                text: 'Your request under process. Please wait!',
+                didOpen: () => { Swal.showLoading(); }
+            })
+            let formData = new FormData(this);
+            $.ajax({
+                url: '/employee/Tour_proposal',
+                type: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success',
+                            didClose: () => { location.reload() }
+                        })
+                    }
+                    else {
+                        Swal.fire({
+                            title: 'warning',
+                            text: res.message,
+                            icon: 'warning'
+                        })
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        title: 'error',
+                        text: 'Server busy Please try after sometime.',
+                        icon: 'error'
+                    })
+                }
+            })
+        })
+    });
 
     // Project Filter
     $("#Filter2").on("change", function () {

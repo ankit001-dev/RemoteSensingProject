@@ -54,7 +54,7 @@ namespace RemoteSensingProject.Controllers
             return Json((object)new
             {
                 status = res,
-                message = (res ? "Outsource created succesfully !" : message)
+                message = (res ? (os.Id>0?"Outsouce updated successfully": "Outsource created succesfully !") : message)
             });
         }
         [HttpPost]
@@ -76,9 +76,15 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Monthly_ManPower_Allocation_Report()
+        public ActionResult Monthly_ManPower_Allocation_Report(int? divisionid = null,int? year = null,int? month = null)
         {
             ViewData["DivisionList"] = _adminServices.ListDivison();
+            var data = new List<DivisionOutsourceReport>();
+            if (divisionid.HasValue)
+            {
+               data = _managerServices.GetManpowerMonthlyReport(divisionid, year, month);
+            }
+            ViewData["reportdata"] = data;
             return View();
         }
         public ActionResult AddManpower(int id, string searchTerm = null)

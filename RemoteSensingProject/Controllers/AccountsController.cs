@@ -72,8 +72,8 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult RequestHistory(string searchTerm = null)
 		{
-			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(0, null, null, "AccountApproved", null, searchTerm);
-			return View();
+			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(userId: null, searchTerm:searchTerm, filterType: "External");
+            return View();
 		}
 
 		public ActionResult Meeting_List()
@@ -88,25 +88,7 @@ namespace RemoteSensingProject.Controllers
 			ViewData["tourproposal"] = _managerServices.GetTourList(type:"ALLDATA",projectFilter:projectFilter);
 			return View();
 		}
-
-        [HttpPost]
-        public ActionResult Tour_Proposal(tourProposal data)
-        {
-            bool res = _managerServices.insertTour(data);
-            if (res)
-            {
-                return Json((object)new
-                {
-                    status = res,
-                    message = data.id > 0 ? "Updated Successfully" : "Added Successfully"
-                });
-            }
-            return Json((object)new
-            {
-                status = res,
-                message = "Something went wrong"
-            });
-        }
+        
 		public ActionResult TourProposal_Report(int? projectFilter = null)
 		{
 			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
@@ -117,80 +99,12 @@ namespace RemoteSensingProject.Controllers
 
         #endregion
 
-        public ActionResult ReinbursementRequest()
-		{
-			((ControllerBase)this).ViewData["ReimBurseData"] = _managerServices.GetReimbursements(null, null, null, null, "selectApprovedReinbursement");
-			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-			return View();
-		}
-
-        #region Manage Hiring
-        public ActionResult HiringRequest(int? projectFilter = null)
-		{
-			ViewData["hiringList"] = _managerServices.GetHiringVehicles(type: "ALLDATA", projectFilter: projectFilter);
-            ((ControllerBase)this).ViewData["projectlist"] = _adminServices.Project_List();
-			return View();
-		}
-
-        [HttpPost]
-        public ActionResult Hiring_Vehicle(HiringVehicle data)
-        {
-            bool res = _managerServices.insertHiring(data);
-            if (res)
-            {
-                return Json((object)new
-                {
-                    status = res,
-                    message = data.id > 0 ? "Updated Successfully" : "Added Successfully"
-                });
-            }
-            return Json((object)new
-            {
-                status = res,
-                message = "Something went wrong"
-            });
-        }
-		public ActionResult Hiring_Report(int? projectFilter = null)
-		{
-			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-			AdminServices adminServices = _adminServices;
-			viewData["hiringList"] = _managerServices.GetHiringVehicles(type: "ALLDATA", projectFilter: projectFilter);
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-			return View();
-		}
-        #endregion
-
         public ActionResult FundReport(string statusFilter = null)
 		{
-			List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerServices.All_Project_List(0);
-			if (!string.IsNullOrWhiteSpace(statusFilter))
-			{
-				if (statusFilter.ToLower().Equals("complete"))
-				{
-					data = _managerServices.All_Project_List(0, null, null, "AccountApproved");
-				}
-				else if (statusFilter.ToLower().Equals("pending"))
-				{
-					data = _managerServices.All_Project_List(0, null, null, "AccountPending");
-				}
-			}
+			List<Models.Admin.main.Project_model> data = _managerServices.All_Project_List(userId:null, statusFilter:statusFilter,filterType:"Internal");
 			((dynamic)((ControllerBase)this).ViewBag).ProjectList = data;
 			return View();
 		}
-
-		public ActionResult Reimbursement_Report(int? projectManagerFilter = null, string typeFilter = null, string statusFilter = null)
-		{
-			((ControllerBase)this).ViewData["totalProjectManager"] = (from d in _adminServices.SelectEmployeeRecord()
-																	  where d.EmployeeRole.Equals("projectManager")
-																	  select d).ToList();
-			ManagerService managerServices = _managerServices;
-			int? managerId = projectManagerFilter;
-			List<Reimbursement> data = managerServices.GetReimbursements(null, null, null, managerId, "accountrepo", typeFilter, statusFilter);
-			((ControllerBase)this).ViewData["totalReinursementReport"] = data;
-			return View();
-		}
-
-
 
 		#region New Expense Changes
 		[HttpPost]

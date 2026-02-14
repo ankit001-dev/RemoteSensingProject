@@ -23,18 +23,6 @@ namespace RemoteSensingProject.Models.ProjectManager
 
         public string TotalTask { get; set; }
 
-        public string ReimbursementPendingRequest { get; set; }
-
-        public string ReimbursementApprovedRequest { get; set; }
-
-        public string ReimbursementRejectedRequest { get; set; }
-
-        public string HiringPendingRequest { get; set; }
-
-        public string HiringApprovedRequest { get; set; }
-
-        public string HiringRejectedRequest { get; set; }
-
         public string TourPendingRequest { get; set; }
 
         public string TourApprovedRequest { get; set; }
@@ -43,11 +31,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 
         public string EmpMeeting { get; set; }
 
-        public string TotalReimbursement { get; set; }
-
         public string TotalTourProposal { get; set; }
-
-        public string TotalHiring { get; set; }
 
         public string AdminMeeting { get; set; }
 
@@ -281,6 +265,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
 
     public class OutSourceTask { 
+        public DateTime completionDate { get; set; }
         public int projectId { get; set; }
         public int Id { get; set; }
         public int empId { get; set; }
@@ -291,34 +276,17 @@ namespace RemoteSensingProject.Models.ProjectManager
         public PaginationInfo Pagination { get; set; }
         public string projectName { get; set; }
     }
-    public class Reimbursement
+    public class OutsourceInfo
     {
-        public string statusLabel { get; set; }
-        public bool apprstatus { get; set; }
-        public bool submitstatus { get; set; }
-        public string remark { get; set; }
-        public bool status { get; set; }
-        public string chequeNum { get; set; }
-        public string chequeDate { get; set; }
-        public bool adminappr { get; set; }
-        public bool newRequest { get; set; }
-        public bool accountNewRequest { get; set; }
-        public int id { get; set; }
-        public int userId { get; set; }
-        public string EmpName { get; set; }
-        public string type { get; set; }
-        public string vrNo { get; set; }
-        public DateTime date { get; set; }
-        public string particulars { get; set; }
-        public string items { get; set; }
-        public string purpose { get; set; }
-        public decimal amount { get; set; }
-        public bool subStatus { get; set; }
-        public decimal approveAmount { get; set; }
-        public PaginationInfo Pagination { get; set; }
+        public int outsourceId { get; set; }
+        public string outsourceName { get; set; }
     }
+
     public class tourProposal
     {
+        public List<OutsourceInfo> outsourceList { get; set; }
+        public List<int> outsource { get; set; }
+        public bool proposalType { get; set; }
         public string projectCode { get; set; }
         public string remark { get; set; }
         public bool newRequest { get; set; }
@@ -334,32 +302,6 @@ namespace RemoteSensingProject.Models.ProjectManager
         public DateTime periodTo { get; set; }
         public DateTime returnDate { get; set; }
         public string purpose { get; set; }
-        public PaginationInfo Pagination { get; set; }
-    }
-    public class HiringVehicle
-    {
-        public string remark { get; set; }
-        public string projectCode { get; set; }
-        public string projectManager { get; set; }
-        public bool adminappr { get; set; }
-        public bool newRequest { get; set; }
-        public decimal amount { get; set; }
-        public int headId { get; set; }
-        public string headName { get; set; }
-        public int projectId { get; set; }
-        public int id { get; set; }
-        public int userId { get; set; }
-        public string projectName { get; set; }
-        public DateTime dateFrom { get; set; }
-        public DateTime dateTo { get; set; }
-        public string purposeOfVisit { get; set; }
-        public string totalDaysNight { get; set; }
-        public string totalPlainHills { get; set; }
-        public string taxi { get; set; }
-        public string BookAgainstCentre { get; set; }
-        public string availbilityOfFund { get; set; }
-        public string note { get; set; }
-        public string proposedPlace { get; set; }
         public PaginationInfo Pagination { get; set; }
     }
     public class RaiseProblem
@@ -472,4 +414,18 @@ namespace RemoteSensingProject.Models.ProjectManager
         public int totalRemaining { get; set; }
         public int totalDesignation { get; set; }
     }
+    public class DivisionOutsourceReport
+    {
+        public int DivisionId { get; set; }
+        public string DivisionName { get; set; }
+
+        public int ProjectId { get; set; }
+        public string ProjectName { get; set; }
+
+        public int OutsourceId { get; set; }
+        public string OutsourceName { get; set; }
+
+        public string DesignationName { get; set; }
+    }
+
 }

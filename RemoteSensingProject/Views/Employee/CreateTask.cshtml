@@ -50,6 +50,7 @@
                                 <th>Project</th>
                                 <th>Title</th>
                                 <th>Description</th>
+                                <th>Completion Date</th>
                                 <th>Task Status</th>
                                 <th class="text-center">Action</th>
                             </tr>
@@ -66,6 +67,7 @@
                                             <a href="#" data-title="View Details" class="viewAssignedSource" data-taskId="@item.Id">@item.title</a>
                                         </td>
                                         <td>@item.description</td>
+                                        <td>@item.completionDate.ToString("dd-MM-yyyy")</td>
                                         <td>
                                             <span class="badge bg-@(item.completeStatus ? "success" : "primary")">@(item.completeStatus ? "completed" : "pending")</span>
                                         </td>
@@ -137,6 +139,10 @@
                                 }
                             }
                         </select>
+                    </div>
+                    <div class="form-group mt-1">
+                        <label for="completionDate" class="form-label">Completion Date</label>
+                        <input type="date" class="form-control" name="completionDate" required id="completionDate">
                     </div>
                     <div class="text-center mt-3">
                         <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Add</span> Task</button>
