@@ -51,7 +51,12 @@
                                 <input type="date" class="form-control form-control-sm" name="pm.pm.CompletionDate" id="completionDate" required>
                             </div>
                         </div>
-
+                        <div class="col-lg-4 mb-3">
+                            <div class="d-flex justify-content-between">
+                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
+                            </div>
+                            <input type="text" class="form-control form-control-sm" name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget" required>
+                        </div>
                         <div class="col-lg-4 mb-3">
                             <div class="d-flex justify-content-between">
                                 <label for="humanResourcesCount" class="form-label">Human Resources</label><label class="form-label" id="addHRItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Designations</a></label>
@@ -61,12 +66,7 @@
 
                     </div>
                     <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <div class="d-flex justify-content-between">
-                                <label for="title" class="form-label">Budget</label><label class="form-label" id="addBudgetItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Budget Heads</a></label>
-                            </div>
-                            <input type="text" class="form-control form-control-sm" name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget" required>
-                        </div>
+                        
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Project Document</label>
                             <input type="file" class="form-control form-control-sm" name="" id="projectDocumentFile">
@@ -227,7 +227,7 @@
             } else {
                 return `
         <div class="row hrRow mb-2 align-items-center">
-            <div class="col-lg-6">
+            <div class="col-lg-4">
                 <select class="form-control form-control-sm hr-designation-select">
                     <option value="">Select Designation</option>
                     ${designations
@@ -237,10 +237,16 @@
                         .join('')}
                 </select>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <input type="number"
                        class="form-control form-control-sm hr-count"
-                       placeholder="Count"
+                       placeholder="Emter Requirement"
+                       min="0">
+            </div>
+            <div class="col-lg-3">
+                <input type="number"
+                       class="form-control form-control-sm hr-count"
+                       placeholder="Enter Already have ...."
                        min="0">
             </div>
             <div class="col-lg-2 text-center">
@@ -613,37 +619,7 @@
 
 <script>
 
-    // Current date ya future date
-    $.validator.addMethod("todayOrAfter", function (value, element) {
-        if (!value) return true;
-
-        let selectedDate = new Date(value);
-        let today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        return selectedDate >= today;
-    }, "Date cannot be in the past.");
-
-    // StartDate >= AssignDate
-    $.validator.addMethod("afterOrEqual", function (value, element, param) {
-        let startDate = new Date(value);
-        let compareDate = new Date($(param).val());
-
-        if (!value || !$(param).val()) return true;
-
-        return startDate >= compareDate;
-    }, "Date must be after or equal.");
-
-    // CompletionDate > StartDate
-    $.validator.addMethod("after", function (value, element, param) {
-        let completionDate = new Date(value);
-        let startDate = new Date($(param).val());
-
-        if (!value || !$(param).val()) return true;
-
-        return completionDate > startDate;
-    }, "Date must be after start date.");
-
+   
 
     $("#createProjectForm").validate({
         ignore: [],
@@ -663,7 +639,7 @@
             "pm.pm.StartDate": {
                 required: true,
                 todayOrAfter: true,
-                afterOrEqual: "#assignDate"
+                afterOrEqual: "#assignDateassignDate"
             },
             "pm.pm.CompletionDate": {
                 required: true,
