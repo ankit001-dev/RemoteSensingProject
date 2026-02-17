@@ -329,6 +329,7 @@ namespace RemoteSensingProject.Models.Accounts
         #endregion
 
         #region Manage Adhisthan
+		//Add Adhisthan
         public bool InsertAdhisthan(AdhisthanModel ad)
 		{
             ((DbConnection)(object)con).Open();
@@ -337,15 +338,16 @@ namespace RemoteSensingProject.Models.Accounts
                 try
                 {
                     using (var cmd = new NpgsqlCommand(
-                        "CALL sp_manageadhisthan(p_action=>@p_action, p_id=>@p_id, p_headname=>@p_headname, p_budgetprovision=>@p_budgetprovision)",
+                        "CALL sp_manageadhisthan(p_action=>@p_action, p_id=>@p_id, p_headname=>@p_headname, p_budgetprovision=>@p_budgetprovision,p_committed=>@p_committed)",
                         con, transaction))
                     {
                         cmd.CommandType = CommandType.Text;
 
                         cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = ad.Id>0? "updateadhisthan" : "insertadhisthan";
                         cmd.Parameters.Add("@p_id", NpgsqlDbType.Integer).Value = ad.Id;
-                        cmd.Parameters.Add("@p_headname", NpgsqlDbType.Integer).Value = ad.HeadName;
-                        cmd.Parameters.Add("@p_budgetprovision", NpgsqlDbType.Integer).Value = ad.BudgetProvision;
+                        cmd.Parameters.Add("@p_headname", NpgsqlDbType.Varchar).Value = ad.HeadName;
+                        cmd.Parameters.Add("@p_budgetprovision", NpgsqlDbType.Numeric).Value = ad.BudgetProvision;
+                        cmd.Parameters.Add("@p_committed", NpgsqlDbType.Numeric).Value = ad.Committed;
 
                         cmd.ExecuteNonQuery();
                     }
@@ -373,7 +375,51 @@ namespace RemoteSensingProject.Models.Accounts
             }
         }
 
-		public List<AdhisthanModel> GetAdhisthanList(int? id = null,int? limit = null,int? page = null,string searchTerm = null)
+        //Add Expenditure
+        public bool InsertExpenditure(AdhisthanModel ad)
+        {
+            ((DbConnection)(object)con).Open();
+            using (var transaction = con.BeginTransaction())
+            {
+                try
+                {
+                    using (var cmd = new NpgsqlCommand(
+                        "CALL sp_manageadhisthan(p_action=>@p_action, p_id=>@p_id, p_budgetprovision=>@p_budgetprovision)",
+                        con, transaction))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = "addExpenditure";
+                        cmd.Parameters.Add("@p_id", NpgsqlDbType.Integer).Value = ad.Id;
+                        cmd.Parameters.Add("@p_budgetprovision", NpgsqlDbType.Numeric).Value = ad.ExpenditureAmount;
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (PostgresException pgEx)
+                {
+                    transaction.Rollback();
+
+                    // Stored procedure ka exact error message
+                    throw new Exception(pgEx.MessageText);
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+                finally
+                {
+                    if (con.State == ConnectionState.Open)
+                        con.Close();
+                }
+            }
+        }
+
+        public List<AdhisthanModel> GetAdhisthanList(int? id = null,int? limit = null,int? page = null,string searchTerm = null)
 		{
             try
             {
@@ -387,9 +433,10 @@ namespace RemoteSensingProject.Models.Accounts
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("v_action", (object)"selectadhisthan");
-                        cmd.Parameters.AddWithValue("@v_limit", limit);
-                        cmd.Parameters.AddWithValue("@v_page", page);
-                        cmd.Parameters.AddWithValue("@v_searchterm", searchTerm);
+                        cmd.Parameters.AddWithValue("@v_id",id.HasValue? (object)id:DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_limit",limit.HasValue? (object)limit:DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_page", page.HasValue? (object)page:DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_searchterm", !string.IsNullOrEmpty(searchTerm) ?(object)searchTerm:DBNull.Value);
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
                         try
@@ -404,8 +451,17 @@ namespace RemoteSensingProject.Models.Accounts
 										data.Add(new AdhisthanModel {
 											Id = Convert.ToInt32(rd["id"]),
 											HeadName = rd["headname"].ToString(),
-											BudgetProvision = rd["budgetprovision"] != null ? Convert.ToDecimal(rd["budgetprovision"]) : 0
-										});
+											BudgetProvision = rd["budgetprovision"] != null ? Convert.ToDecimal(rd["budgetprovision"]) : 0,
+											Committed = rd["committed"] != null ? Convert.ToDecimal(rd["committed"]) : 0,
+											ExpenditureAmount = rd["expenditure"] != null ? Convert.ToDecimal(rd["expenditure"]) : 0,
+											ExpenditurePercentage = (rd["budgetprovision"] != DBNull.Value &&
+																 Convert.ToDecimal(rd["budgetprovision"]) > 0 &&
+																 rd["expenditure"] != DBNull.Value)
+																	? Math.Round(
+																		(Convert.ToDecimal(rd["expenditure"])
+																		/ Convert.ToDecimal(rd["budgetprovision"])) * 100, 2)
+																	: 0
+                                        });
 									}
                                 }
                             }
