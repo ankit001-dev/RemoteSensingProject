@@ -2,51 +2,73 @@
 @{
     ViewBag.Title = "Adhisthan";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    var list = ViewData["adhisthanList"] as List<RemoteSensingProject.Models.Accounts.main.AdhisthanModel>;
 }
-
-<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
-    <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">/adhisthan</li>
-    </ol>
+<style>
+    tr{
+        border:2px solid black !important;
+    }
+</style>
+<nav class="page-breadcrumb d-flex align-items-center justify-content-end">
     <button class="btn btn-primary" id="addAdhisthanModalBtn"><i class="link-icon" data-feather="plus"></i>Add Adhisthan</button>
 </nav>
-<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
-    <div class="row align-items-center">
-        <div class="col-lg-3">
-            <h5>Adhisthan</h5>
-        </div>
-        <div class="col-lg-6 col-md-6">
-            <input type="search" placeholder="Search by head name" id="searchByHead" class="form-control">
-        </div>
-    </div>
-</div>
-<div class="card">
-    <div class="card-body">
-        <div class="d-flex justify-content-between align-items-baseline mb-2">
-            <h6 class="card-title mb-0">Projects</h6>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-hover mb-0" id="dataTableExample">
+<div class="table-responsive">
+            <div class="pt-2">
+                <h4 class="text-center">रिमोट सेन्सिंग एप्लीकेशन्स सेन्टर, उत्तर प्रदेश</h4>
+                <p class="fw-boldest text-center">वित्तीय वर्ष 2025-26 में अधिष्ठान मद के अन्तर्गत प्राविधान धनराशि का विवरण (माह 28 जनवरी 2026 तक)</p>
+                <p class="text-end pe-4">(रू0 लाख में)</p>
+            </div>
+            <table class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th class="pt-0">#</th>
-                        <th class="pt-0">Head Name</th>
-                        <th class="pt-0">Budghet Provision</th>
-                        <th class="pt-0">Expenditure Amount</th>
-                        <th class="pt-0">Expenditure Percentage</th>
-                        <th class="pt-0">Action</th>
+                        <th class="pt-0 border border-dark border-r fw-bold">क्र0सं0</th>
+                        <th class="pt-0 border border-dark border-r fw-bold">मद का नाम</th>
+                        <th class="pt-0 border border-dark border-r fw-bold">बजट प्राविधान</th>
+                        <th class="pt-0 border border-dark border-r fw-bold">व्यय धनराशि</th>
+                        <th class="pt-0 border border-dark border-r fw-bold">व्यय प्रतिशत</th>
+                        <th class="pt-0 border border-dark border-r fw-bold">Committed</th>
+                        <th class="pt-0 border border-dark border-r fw-bold">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                   
+                    @if (list != null && list.Count > 0)
+                     {
+                        int count = 1;
+                        foreach (var d in list)
+                        {
+                            <tr>
+                                <td class="border border-dark border-r">@count</td>
+                                <td class="border border-dark border-r">
+                                    <a data-id="@d.Id"
+                                       data-headname="@d.HeadName"
+                                       data-budget="@d.BudgetProvision"
+                                       class="addExpenditure cursor-pointer" title="Add Expenditure">@d.HeadName</a>
+                                </td>
+                                <td class="border border-dark border-r">@d.BudgetProvision.ToString("N2")</td>
+                                <td class="border border-dark border-r">@d.ExpenditureAmount.ToString("N2")</td>
+                                <td class="border border-dark border-r">@d.ExpenditurePercentage</td>
+                                <td class="border border-dark border-r">@d.Committed.ToString("N2")</td>
+                                <td class="border border-dark border-r">
+                                    <a class="cursor-pointer editAdhisthanBtn"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#addslider"
+                                       data-id="@d.Id"
+                                       data-name="@d.HeadName"
+                                       data-committed="@d.Committed.ToString("N2")"
+                                       title="Edit Adhisthan"
+                                       data-budget="@d.BudgetProvision.ToString("N2")">
+                                        <i class="link-icon" data-feather="edit"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                     }
                 </tbody>
             </table>
         </div>
-    </div>
-</div>
 
-<div class="modal fade" id="adhisthanModal" tabindex="-1" aria-labelledby="createTaskModal" aria-hidden="true">
+<!--Add Adhisthan Modal-->
+<div class="modal fade" id="adhisthanModal" tabindex="-1" aria-labelledby="adhisthanModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
 
@@ -58,6 +80,7 @@
             </div>
             <div class="modal-body">
                 <form id="addAdhisthanForm">
+                    <input type="hidden" id="adhisthanId" name="Id" value="0" />
 
                     <div class="form-group">
                         <label for="headName" class="form-label">Head Name</label>
@@ -66,6 +89,46 @@
                     <div class="form-group mt-1">
                         <label for="budgetProvision" class="form-label">Budget Provision (in Lakhs)</label>
                         <input type="text" class="form-control" name="BudgetProvision" required id="budgetProvision" placeholder="Enter Budget">
+                    </div>
+                    <div class="form-group mt-1">
+                        <label for="committed" class="form-label">Committed Amount (in Lakhs)</label>
+                        <input type="text" class="form-control" name="Committed" required id="committed" placeholder="Enter committed amount">
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Submit</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Add Expenditure Modal-->
+<div class="modal fade" id="addExpenditureModal" tabindex="-1" aria-labelledby="addExpenditureModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Add Expenditure</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="addExpenditureForm">
+                    <input type="hidden" id="adhisthan" name="Id" value="0" />
+
+                    <div class="form-group">
+                        <label for="heads" class="form-label">Head Name</label>
+                        <input type="text" class="form-control" readonly id="heads">
+                    </div>
+                    <div class="form-group mt-1">
+                        <label for="budget" class="form-label">Budget Provision (in Lakhs)</label>
+                        <input type="text" class="form-control" id="budget" readonly>
+                    </div>
+                    <div class="form-group mt-1">
+                        <label for="Expenditure" class="form-label">Expenditure (in Lakhs)</label>
+                        <input type="text" class="form-control" name="ExpenditureAmount" id="budgetProvision" placeholder="Enter expediture">
                     </div>
                     <div class="text-center mt-3">
                         <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i><span class="actionType">Submit</span></button>
@@ -78,10 +141,44 @@
 
 <script>
     $('#addAdhisthanModalBtn').on('click', function () {
+
+        $("#adhisthanId").val(0);
+        $("#addAdhisthanForm")[0].reset();
+        $(".actionType").text("Submit");
+
         $('#adhisthanModal').modal('show');
     });
 
-    $("#createTaskForm").on("submit", function (e) {
+    $('.addExpenditure').on('click', function () {
+        let id = $(this).data('id');
+        let headname = $(this).data('headname');
+        let budget = $(this).data('budget');
+        $('#adhisthan').val(id);
+        $('#heads').val(headname);
+        $('#budget').val(budget);
+
+        $('#addExpenditureModal').modal('show');
+    });
+
+    $(document).on('click', '.editAdhisthanBtn', function () {
+
+        let id = $(this).data('id');
+        let name = $(this).data('name');
+        let budget = $(this).data('budget');
+        let committed = $(this).data('committed');
+
+        $("#adhisthanId").val(id);
+        $("#headName").val(name);
+        $("#budgetProvision").val(budget);
+        $("#committed").val(committed);
+
+        $(".actionType").text("Update");
+
+        $("#adhisthanModal").modal('show');
+    });
+
+    //Add Adhisthan 
+    $("#addAdhisthanForm").on("submit", function (e) {
         e.preventDefault();
         Swal.fire({
             title: "Please wait !",
@@ -95,7 +192,58 @@
         });
         let data = new FormData(this);
         $.ajax({
-            url: "/accounts/addadhisthan",
+            url: "/accounts/InsertAdhisthan",
+            type: "Post",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Successfuly !",
+                        text: res.message,
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: res.message,
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue",
+                    text: "Server is not respondig. Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
+    })
+
+    //Add Expenditure
+    $("#addExpenditureForm").on("submit", function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        let data = new FormData(this);
+        $.ajax({
+            url: "/accounts/InsertExpenditure",
             type: "Post",
             data: data,
             contentType: false,

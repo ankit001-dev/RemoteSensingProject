@@ -132,10 +132,10 @@ namespace RemoteSensingProject.Controllers
         }
         #endregion
 
-        #region New Module Adhisthan
+        #region New Module Adhisthan 
         public ActionResult Adhisthan()
         {
-
+            ViewData["adhisthanList"] = _accountSerivce.GetAdhisthanList();
             return View();
         }
         [HttpPost]
@@ -147,7 +147,28 @@ namespace RemoteSensingProject.Controllers
                 return Json((object)new
                 {
                     status = res,
-                    message = (res ? "Data inserted successfully !" : "Some issue occured !")
+                    message = (res ?(model.Id>0?"Data updated successfully": "Data added successfully !") : "Some issue occured !")
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Server is busy !"
+                });
+            }
+        }
+        [HttpPost]
+        public ActionResult InsertExpenditure(AdhisthanModel model)
+        {
+            try
+            {
+                bool res = _accountSerivce.InsertExpenditure(model);
+                return Json((object)new
+                {
+                    status = res,
+                    message = (res ?(model.Id>0?"Data updated successfully": "Data added successfully !") : "Some issue occured !")
                 });
             }
             catch (Exception ex)
