@@ -175,6 +175,7 @@ namespace RemoteSensingProject.Models.Accounts
 			public decimal BudgetProvision { get; set; }
 			public decimal ExpenditureAmount { get; set; }
 			public decimal ExpenditurePercentage { get; set; }
+			public decimal Committed { get; set; }
 		}
 
     }
