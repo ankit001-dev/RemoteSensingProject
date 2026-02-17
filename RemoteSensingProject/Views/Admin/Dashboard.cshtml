@@ -7,7 +7,7 @@
 }
 <style>
     a:hover {
-        color: #029e9d!important;
+        color: #029e9d !important;
     }
 </style>
 <div class="row mx-0">
@@ -306,7 +306,7 @@
             </div>
         </div>
     </div>
-   
+
 </div>
 <!--Mini charts-->
 
@@ -377,582 +377,149 @@
     </div>
 </div>
 
-
-@*<div class="row mx-0">
-        <div class="col-lg-7 col-xl-12 stretch-card">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-baseline mb-2">
-                        <h6 class="card-title mb-0">Projects</h6>
-                        <div class="dropdown mb-2">
-                            <button class="btn p-0" type="button" id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
-                                <a class="dropdown-item d-flex align-items-center"><i data-feather="eye" class="icon-sm me-2"></i> <span>View</span></a>
-                                <a class="dropdown-item d-flex align-items-center"><i data-feather="edit-2" class="icon-sm me-2"></i> <span>Edit</span></a>
-                                <a class="dropdown-item d-flex align-items-center"><i data-feather="trash" class="icon-sm me-2"></i> <span>Delete</span></a>
-                                <a class="dropdown-item d-flex align-items-center"><i data-feather="printer" class="icon-sm me-2"></i> <span>Print</span></a>
-                                <a class="dropdown-item d-flex align-items-center"><i data-feather="download" class="icon-sm me-2"></i> <span>Download</span></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th class="pt-0">#</th>
-                                    <th class="pt-0">Project Name</th>
-                                    <th class="pt-0">Start Date</th>
-                                    <th class="pt-0">Completion Date</th>
-                                    <th class="pt-0">Assign</th>
-                                    <th class="pt-0">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (graphdata != null)
-                                {
-                                    int i = 1;
-                                    foreach (var item in graphdata)
-                                    {
-                                        <tr>
-                                            <td>@i</td>
-                                            <td>@item.ProjectTitle</td>
-                                            <td>@item.StartDateString</td>
-                                            <td>@item.CompletionDatestring</td>
-                                            <td>@item.AssignDateString</td>
-                                            <td>
-                                                @if (item.ProjectStatus || item.physicalcomplete == 100)
-                                                {
-                                                    <span class="badge bg-success">Completed</span>
-                                                }
-                                                else if (item.CompletionDate < DateTime.Now)
-                                                {
-                                                    <span class="badge bg-danger">Delay</span>
-                                                }
-                                                else if (item.StartDate < DateTime.Now)
-                                                {
-                                                    <span class="badge bg-warning">Work in Progress</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge bg-primary">Not Started</span>
-                                                }
-                                            </td>
-                                        </tr>
-                                        if (i == 5)
-                                        {
-                                            break;
-                                        }
-                                        i++;
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>*@
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="~/Scripts/jquery-3.7.1.min.js"></script>
 @*<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>*@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<script>
+    const graphData = @Html.Raw(Json.Encode(graphdata));
+    const budgetData = @Html.Raw(Json.Encode(ViewData["budgetGraph"] ?? new List<object>()));
+    const totalComplete = @data.TotalCompleteProject;
 
+    function initRadialChart() {
 
+        if (!$('#storageChart').length) return;
 
-
-<script defer>
-    $(document).ready(function () {
-
-
-        if ($('#storageChart').length) {
-            var colors = {
-                primary: '#029e9d', // Set the primary color to #029e9d
-                light: '#f3f3f3',   // You can define other colors like light, muted, etc.
-                muted: '#6c757d',
-                bodyColor: '#212529'
-            };
-            var options = {
-                chart: {
-                    height: 260,
-                    type: "radialBar",
-                    events: {
-                        // Listen for click event on the chart
-                        click: function (event, chartContext, config) {
-                            // Redirect based on the click event
-                            window.location.href = "/Admin/All_Projects";  // Change this to your desired URL
-                        }
+        var options = {
+            chart: {
+                height: 260,
+                type: "radialBar",
+                events: {
+                    click: function () {
+                        window.location.href = "/Admin/All_Projects";
                     }
-                },
-                series: [@data.TotalCompleteProject],
-                colors: [colors.primary],
-                plotOptions: {
-                    radialBar: {
-                        hollow: {
-                            margin: 15,
-                            size: "70%"
-                        },
-                        track: {
-                            show: true,
-                            background: colors.light,
-                            strokeWidth: '100%',
-                            opacity: 1,
-                            margin: 5,
-                        },
-                        dataLabels: {
-                            showOn: "always",
-                            name: {
-                                offsetY: -11,
-                                show: true,
-                                color: colors.muted,
-                                fontSize: "13px"
-                            },
-                            value: {
-                                color: colors.bodyColor,
-                                fontSize: "30px",
-                                show: true
-                            }
-                        }
+                }
+            },
+            series: [totalComplete],
+            colors: ['#029e9d'],
+            plotOptions: {
+                radialBar: {
+                    hollow: { size: "70%" },
+                    dataLabels: {
+                        name: { show: true },
+                        value: { fontSize: "30px" }
                     }
-                },
-                fill: {
-                    opacity: 1
-                },
-                stroke: {
-                    lineCap: "round",
-                },
-                labels: ["Project Data"]
-            };
+                }
+            },
+            labels: ["Project Data"]
+        };
 
-            var chart = new ApexCharts(document.querySelector("#storageChart"), options);
-            chart.render();
-        }
+        new ApexCharts(document.querySelector("#storageChart"), options).render();
+    }
+    function initPhysicalChart() {
 
-    });
-</script>
+        if (!graphData || graphData.length === 0) return;
 
-<!--Physical Chart-->
-<script defer>
-    let data = @Html.Raw(Json.Encode(graphdata))
-
-    window.onload = function () {
-
-        if (data != null) {
-            $("#monthlySalesChart").empty();
-
-            var categories = [];
-            var overallData = [];
-
-            $.each(data, function (index, item) {
-                categories.push(item.ProjectTitle);
-                overallData.push(item.overallPercentage);
-            });
-
-            console.log(categories)
-            console.log(overallData)
-
-            var options = {
-                chart: {
-                    type: 'bar',
-                    height: '318',
-                    parentHeightOffset: 0,
-                    foreColor: '#6c757d',
-                    background: '#ffffff',
-                    toolbar: {
-                        show: false
-                    },
-                },
-                theme: {
-                    mode: 'light'
-                },
-                tooltip: {
-                    theme: 'light'
-                },
-                colors: ['#1aa7a6'],
-                fill: {
-                    opacity: .9
-                },
-                grid: {
-                    padding: {
-                        bottom: -4
-                    },
-                    borderColor: '#D6E9E9',
-                    xaxis: {
-                        lines: {
-                            show: true
-                        }
-                    }
-                },
-                series: [{
-                    name: 'Completed',
-                    data: overallData // Dynamic data
-                }],
-                xaxis: {
-                    type: 'category',
-                    categories: categories, // Dynamic categories
-                    axisBorder: {
-                        color: '#dee2e6',
-                    },
-                    axisTicks: {
-                        color: '#dee2e6',
-                    },
-                },
-                yaxis: {
-                    min: 0,
-                    max: 100,
-                    tickAmount: 5,
-                    title: {
-                        text: 'Project Completion',
-                        style: {
-                            fontSize: '12px',
-                            color: '#adb5bd',
-                            fontFamily: 'inherit',
-                        }
-                    },
-                },
-                legend: {
-                    show: true,
-                    position: "top",
-                    horizontalAlign: 'center',
-                    fontFamily: 'inherit',
-                    itemMargin: {
-                        horizontal: 8,
-                        vertical: 0
-                    },
-                },
-                stroke: {
-                    width: 0
-                },
-                dataLabels: {
-                    enabled: true,
+        var options = {
+            chart: {
+                type: 'bar',
+                height: graphData.length * 40
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    borderRadius: 4
+                }
+            },
+            series: [{
+                data: graphData.map(x => ({
+                    x: x.ProjectTitle,
+                    y: x.overallPercentage
+                }))
+            }],
+            xaxis: {
+                max: 100
+            },
+            yaxis: {
+                labels: {
                     style: {
-                        fontSize: '10px',
-                        fontFamily: 'inherit',
-                    },
-                    offsetY: -27
-                },
-                plotOptions: {
-                    bar: {
-                        columnWidth: "50%",
-                        borderRadius: 4,
-                        dataLabels: {
-                            position: 'top',
-                            orientation: 'vertical',
-                        }
-                    },
-                },
-            };
+                        fontSize: '11px'
+                    }
+                }
+            }
+        };
 
-            // Render the chart
-            var apexBarChart = new ApexCharts(document.querySelector("#monthlySalesChart"), options);
-            apexBarChart.render();
-        }
+        new ApexCharts(document.querySelector("#monthlySalesChart"), options).render();
+    }
 
-        var ctx = document.getElementById('myBarChart').getContext('2d');
-        var myBarChart = new Chart(ctx, {
+    function initFinancialChart() {
+
+        if (!graphData || graphData.length === 0) return;
+
+        new Chart(document.getElementById('stackedBarLineChart'), {
             type: 'bar',
             data: {
-                labels: data.map(prname => prname.ProjectTitle),
+                labels: graphData.map(x => x.ProjectTitle),
                 datasets: [{
-                    label: '',
-                    data: data.map(per => per.physicalcomplete),
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
+                    data: graphData.map(x => x.Percentage),
+                    backgroundColor: 'rgba(255,99,132,0.5)'
                 }]
             },
             options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (tooltipItem) {
-                                return tooltipItem.raw ;
-                            }
-                        }
-                    }
-                },
-
+                responsive: true
             }
         });
-    };
-</script>
+    }
+    function initRadarChart() {
 
-<!--Financial Chart-->
+        if (!budgetData || budgetData.length === 0) return;
 
-<script defer>
-    $(document).ready(function () {
-        let data = @Html.Raw(Json.Encode(graphdata));
-        var ctx = document.getElementById('stackedBarLineChart').getContext('2d');
-
-        var chartData = {
-            labels: data.map(prname => prname.ProjectTitle),
-            datasets: [
-                {
-                    label: '',
-                    data: data.map(per => per.Percentage),
-                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                    stack: 'Stack 0',
-                }
-            ]
-        };
-
-        var chartOptions = {
-            responsive: true,
-            scales: {
-                x: {
-                    stacked: true,
-                },
-                y: {
-                    stacked: true,
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false,
-                }
-            }
-        };
-
-        var myChart = new Chart(ctx, {
-            type: 'bar',
-            data: chartData,
-            options: chartOptions
-        });
-    });
-</script>
-
-<!--Mini charts Budget-->
-
-<script>
-    $(document).ready(function () {
-        debugger
-        var bgdata = @Html.Raw(Json.Encode(ViewData["budgetGraph"])) 
-        console.log("bgdata", bgdata[0].remaining);
-        Chart.defaults.font.size = 13;
-        Chart.defaults.font.family = "'Segoe UI', sans-serif";
-        Chart.defaults.color = '#000';
-
-        var ctx = document.getElementById('bbchart').getContext('2d');
-
-        if (bgdata != null && bgdata.length > 0) {
-            // 👇 radarLabels me har project ka naam aa jayega
-            var radarLabels = bgdata.map(item => item.ProjectName);
-
-            // 👇 3 alag-alag datasets ban rahe — ek for Total, ek for Expenditure, ek for Pending
-            var projectData = [
-                {
-                    name: "Total Budget",
-                    data: bgdata.map(item => item.ProjectBudget)
-                },
-                {
-                    name: "Expenditure",
-                    data: bgdata.map(item => item.expenditure)
-                },
-                {
-                    name: "Pending Budget",
-                    data: bgdata.map(item => item.remaining)
-                }
-            ];
-        }
-
-
-        var datasets = projectData.map((project, index) => {
-            const colors = ['rgba(54, 162, 235, 0.2)', 'rgba(255, 99, 132, 0.2)', 'rgba(255, 206, 86, 0.2)'];
-            const borderColors = ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)', 'rgba(255, 206, 86, 1)'];
-            return {
-                label: project.name,
-                data: project.data,
-                fill: true,
-                backgroundColor: colors[index % colors.length],
-                borderColor: borderColors[index % borderColors.length],
-                pointBackgroundColor: borderColors[index % borderColors.length],
-                pointBorderColor: '#fff',
-                pointHoverBackgroundColor: '#fff',
-                pointHoverBorderColor: borderColors[index % borderColors.length]
-            };
-        });
-
-        var radarChart = new Chart(ctx, {
+        new Chart(document.getElementById('bbchart'), {
             type: 'radar',
             data: {
-                labels: radarLabels,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                elements: {
-                    line: {
-                        borderWidth: 2
-                    }
-                },
-                scales: {
-                    r: {
-                        angleLines: {
-                            display: true
-                        },
-                        grid: {
-                            color: '#e0e0e0'
-                        },
-                        pointLabels: {
-                            font: {
-                                size: 13
-                            },
-                            color: '#000'
-                        },
-                        ticks: {
-                            display: false
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            font: {
-                                size: 12
-                            }
-                        }
+                labels: budgetData.map(x => x.ProjectName),
+                datasets: [
+                    {
+                        label: "Total Budget",
+                        data: budgetData.map(x => x.ProjectBudget)
                     },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return `${context.dataset.label}: ₹${context.formattedValue}`;
-                            }
-                        }
+                    {
+                        label: "Expenditure",
+                        data: budgetData.map(x => x.expenditure)
+                    },
+                    {
+                        label: "Pending Budget",
+                        data: budgetData.map(x => x.remaining)
                     }
-                },
-                interaction: {
-                    intersect: false
-                },
-                onClick: function (e, elements) {
-                    if (elements.length > 0) {
-                        const clickedLabel = elements[0].dataset.label;
-                        window.location.href = "/Admin/ViewExpenditureAmount?project=" + encodeURIComponent(clickedLabel);
-                    }
-                }
+                ]
             }
         });
-    });
-</script>
+    }
+function initPieChart() {
 
-
-
-<!--Mini charts-->
-<script>
-
-  $(document).ready(function () {
-      // Pass the Razor data as JSON to the JavaScript context
-      Chart.defaults.font.size = 13;
-      Chart.defaults.font.family = "'Arial', sans-serif";
-      Chart.defaults.color = '#000';
-    var yearlyData = [
-       @Convert.ToInt32(data.TotalProject),
-       @Convert.ToInt32(data.TotalInternalProject),
-       @Convert.ToInt32(data.TotalExternalProject)
-    ];
-
-    @*var monthlyData = [@Convert.ToInt32(@data.monTotalProject),@Convert.ToInt32(data.monInternalProject), @Convert.ToInt32(data.monExternalProject)];  // Example monthly data*@
-
-      // Set the initial data for the chart (monthly by default)
-      var datac = yearlyData;
-
-    // Get the chart context
-    var ctx = document.getElementById('pichart').getContext('2d');
-
-    // Initialize chart with default data (monthly)
-    var pichart = new Chart(ctx, {
+    new Chart(document.getElementById('pichart'), {
         type: 'pie',
         data: {
             labels: ['Total', 'Internal', 'External'],
             datasets: [{
-                label: 'Project Overview',
-                data: datac,
-                backgroundColor: ['#4bd6e7', '#84a0eb', '#9db4c7'],
-                hoverOffset: 4
+                data: [
+                    @Convert.ToInt32(data.TotalProject),
+                    @Convert.ToInt32(data.TotalInternalProject),
+                    @Convert.ToInt32(data.TotalExternalProject)
+                ]
             }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    enabled: true
-                }
-            },
-            radius: '85%',
-            onClick: function (e, elements) {
-                // If a slice is clicked
-                if (elements.length > 0) {
-                    var clickedElementIndex = elements[0].index;  // Get the index of the clicked segment
-                    var clickedLabel = pichart.data.labels[clickedElementIndex];  // Get the label of the clicked segment
-
-                    // Redirect based on the clicked label
-                    if (clickedLabel === 'Total') {
-                        window.location.href = '/Admin/All_Projects';  // Redirect to the page for total projects
-                    } else if (clickedLabel === 'Internal') {
-                        window.location.href = '/Admin/All_Projects?statusFilter=Internal';  // Redirect to the page for internal projects
-                    } else if (clickedLabel === 'External') {
-                        window.location.href = '/Admin/All_Projects?statusFilter=External';  // Redirect to the page for external projects
-                    }
-                }
-            }
         }
     });
+}
 
-    // Handle the filter change
-    $(".filter1").on("change", function () {
-        var opt = $(this).val();
+    $(document).ready(function () {
 
-        // Update the data based on the selected filter
-        if (opt === "yearly") {
-            datac = yearlyData;  // Use the Razor data for the yearly option
-        } else if (opt === "monthly") {
-            datac = monthlyData;  // Use the monthly data for the monthly option
-        }
+        initRadialChart();
+        initPhysicalChart();
+        initFinancialChart();
+        initRadarChart();
+        initPieChart();
 
-        // Update the chart with new data
-        pichart.data.datasets[0].data = datac;
-        pichart.update();
     });
-});
-
 
 </script>
-
-
-@*<span class="reim">@data.TotalReinbursementReq, @data.totalReinbursementapprovedRequest,@data.totalReinbursementPendingRequest,@data.totalReinbursementRejectRequest</span>
-    <span class="tour">@data.TotalTourProposalReq,@data.totalTourProposalApprReque,@data.totaTourProposalPendingReque, @data.totalTourProposalRejectReque</span>
-    <span class="hirin">@data.totalVehicleHiringRequest,@data.totalApproveHiringVehicle,@data.totalPendingHiringVehicle,@data.totalRejectHiringVehicle</span>*@

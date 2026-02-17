@@ -208,17 +208,6 @@ namespace RemoteSensingProject.Controllers
             ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, null, null, searchTerm, statusFilter);
             return View();
         }
-
-        public ActionResult Assigned_Project(string searchTerm = null, string statusFilter = null)
-        {
-            string managerName = User.Identity.Name;
-            UserCredential userObj = new UserCredential();
-            userObj = _managerServices.getManagerDetails(managerName);
-            List<ProjectList> _list = new List<ProjectList>();
-            ((ControllerBase)this).ViewData["AssignedProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, "AssignedProject", null, searchTerm, statusFilter);
-            return View();
-        }
-
         public ActionResult GetAllProjectByManager()
         {
             string managerName = User.Identity.Name;

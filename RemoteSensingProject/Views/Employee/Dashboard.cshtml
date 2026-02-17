@@ -61,12 +61,12 @@
                                 <div class="col-6 col-md-12 col-xl-7">
                                     <h6 class="mb-2 text-success"></h6>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/employee/all_project_report?statusFilter=Ongoing">
+                                        <a href="@Url.EncryptedAction("all_project_report", "employee", new {statusFilter="Ongoing"})">
                                             <p class="text-success w-100"><span><span class="text-dark">Ongoing :  </span> @Model.TotalOngoingProject</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
-                                        <a href="/employee/all_project_report?statusFilter=Complete">
+                                        <a href="@Url.EncryptedAction("all_project_report", "employee", new {statusFilter = "Complete"})">
                                             <p class="text-success w-100"><span><span class="text-dark">Complete : </span>@Model.TotaCompleteProject</span></p>
                                         </a>
                                     </div>

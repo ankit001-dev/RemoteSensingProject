@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using RemoteSensingProject.Helpers;
+using System.Web;
 using System.Web.Mvc;
 
 namespace RemoteSensingProject
@@ -8,6 +9,7 @@ namespace RemoteSensingProject
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new DecryptQueryStringAttribute());
         }
     }
 }

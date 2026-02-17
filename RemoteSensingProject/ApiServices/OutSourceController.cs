@@ -2,7 +2,7 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.ApiServices.OutSourceController
-using Microsoft.AspNet.SignalR;
+
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
@@ -282,31 +282,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[HttpGet]
-		[Route("api/getDateTime")]
-		public IHttpActionResult GetDateTime()
-		{
-			try
-			{
-				string currentDateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-				IHubContext context = GlobalHost.ConnectionManager.GetHubContext<RealtimeDateTime>();
-				((dynamic)context.Clients.All).receiveTime(currentDateTime);
-				return Ok(new
-				{
-					time = currentDateTime
-				});
-			}
-			catch (Exception ex)
-			{
-				return BadRequest(new
-				{
-					status = false,
-					StatusCode = 404,
-					message = ex.Message
-				});
-			}
-		}
-
+		
 		[HttpGet]
         [Route("api/ProjectStaffMeetingList")]
         public IHttpActionResult getAllmeeting(int userid, int? page, int? limit, string searchTerm = null, string statusFilter = null)
