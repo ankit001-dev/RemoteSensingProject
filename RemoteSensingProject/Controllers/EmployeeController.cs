@@ -66,9 +66,9 @@ namespace RemoteSensingProject.Controllers
         public ActionResult CreateTask(string req)
         {
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["projectlist"] = _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "AssignedProject");
-            ((ControllerBase)this).ViewData["OutSourceList"] = _managerServices.GetAllocatedOutSOurceList(userObj);
-            ((ControllerBase)this).ViewData["TaskList"] = ((req == "completed") ? (from d in _managerServices.taskList(userObj)
+            ViewData["projectlist"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj), filterType:"ManagerProject");
+            ViewData["OutSourceList"] = _managerServices.GetAllocatedOutSOurceList(userObj);
+            ViewData["TaskList"] = ((req == "completed") ? (from d in _managerServices.taskList(userObj)
                                                                                    where d.completeStatus
                                                                                    select d).ToList() : ((req == "pending") ? (from d in _managerServices.taskList(userObj)
                                                                                                                                where !d.completeStatus

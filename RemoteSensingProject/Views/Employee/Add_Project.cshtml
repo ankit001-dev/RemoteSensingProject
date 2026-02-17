@@ -59,7 +59,7 @@
                         </div>
                         <div class="col-lg-4 mb-3">
                             <div class="d-flex justify-content-between">
-                                <label for="humanResourcesCount" class="form-label">Human Resources</label><label class="form-label" id="addHRItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Designations</a></label>
+                                <label for="humanResourcesCount" class="form-label">Project Staff</label><label class="form-label" id="addHRItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Project Staff</a></label>
                             </div>
                             <input type="number" class="form-control form-control-sm" name="pm.pm.hrCount" id="humanResourcesCount" placeholder="Enter total HR count" required min="0">
                         </div>
@@ -109,7 +109,7 @@
                             <legend style="font-size:15px;">
                                 <label class="form-label my-2 fw-bolder">
                                     <a href="#">
-                                        Human Resources Details
+                                        Project Staff Details
                                     </a>
                                 </label>
                             </legend>
@@ -180,10 +180,11 @@
 
             if (count === 0) {
                 // First click: show default 2 rows
-                let row1 = generateHRRow(false);
+                //let row1 = generateHRRow(false);
                 let row2 = generateHRRow(true, totalHR);
 
-                $("#hrRows").append(row1 + row2);
+                //$("#hrRows").append(row1 + row2);
+                $("#hrRows").append(row2);
             } else {
                 // Add new designation row
                 let newRow = generateHRRow(false);
@@ -191,74 +192,97 @@
             }
 
             updateOtherCount();
+            InItSelect2();
         });
-
         function generateHRRow(isOther = false, value = 0) {
-            // Find "Other" designation
-            debugger
-            const otherDesignation = designations.find(
-                d => d.name.toLowerCase() == 'other'
-            );
-            const otherId = otherDesignation ? otherDesignation.id : 0;
-
-            if (isOther) {
-                return `
-        <div class="row hrRow mb-2 align-items-center">
-            <div class="col-lg-6">
-                <!-- Show Other -->
-                <input type="text"
-                       class="form-control form-control-sm hr-other"
-                       value="Other"
-                       readonly>
-
-                <!-- Bind Other ID -->
-                <input type="hidden"
-                       class="hr-designation-id"
-                       value="${otherId}">
-            </div>
-            <div class="col-lg-4">
-                <input type="number"
-                       class="form-control form-control-sm hr-count"
-                       value="${value}"
-                       readonly>
-            </div>
-            <div class="col-lg-2"></div>
-        </div>`;
-            } else {
-                return `
-        <div class="row hrRow mb-2 align-items-center">
-            <div class="col-lg-4">
-                <select class="form-control form-control-sm hr-designation-select">
-                    <option value="">Select Designation</option>
-                    ${designations
-                        // ❌ Remove "Other" from dropdown
-                        .filter(d => d.name.toLowerCase() !== 'other')
-                        .map(d => `<option value="${d.id}">${d.name}</option>`)
-                        .join('')}
-                </select>
-            </div>
-            <div class="col-lg-3">
-                <input type="number"
-                       class="form-control form-control-sm hr-count"
-                       placeholder="Emter Requirement"
-                       min="0">
-            </div>
-            <div class="col-lg-3">
-                <input type="number"
-                       class="form-control form-control-sm hr-count"
-                       placeholder="Enter Already have ...."
-                       min="0">
-            </div>
-            <div class="col-lg-2 text-center">
-                <a href="#" class="deleteHRRow">
-                    <i class="fa-solid fa-trash text-danger fs-4"></i>
-                </a>
-            </div>
-        </div>`;
-            }
+            return `
+<div class="row hrRow mb-2 align-items-center">
+    <div class="col-lg-4">
+    <label>Project Staff Designation</label>
+        <select class="form-control form-control-sm hr-designation-select">
+            <option value="">Select Designation</option>
+            ${designations.map(d => `<option value="${d.id}">${d.name}</option>`)
+                    .join('')}
+        </select>
+    </div>
+    
+    <div class="col-lg-3">
+    <label>Existing Project Staff</label>
+        <input type="number"
+               class="form-control form-control-sm hr-count"
+               placeholder="Enter Existing Project Staff"
+               min="0">
+    </div>
+    <div class="col-lg-3">
+<label>Project Staff Requirement</label>
+    <input type="number"
+           class="form-control form-control-sm hr-requirement"
+           placeholder="Enter Project Staff Requirement"
+           min="0">
+</div>
+    <div class="col-lg-2 text-center">
+        <a href="#" class="deleteHRRow">
+            <i class="fa-solid fa-trash text-danger fs-4"></i>
+        </a>
+    </div>
+</div>`;
         }
 
+        //function generateHRRow(isOther = false, value = 0) {
+        //    // Find "Other" designation
+        //    debugger
+        //    const otherDesignation = designations.find(
+        //        d => d.name.toLowerCase() == 'other'
+        //    );
+        //    const otherId = otherDesignation ? otherDesignation.id : 0;
 
+        //    if (isOther) {
+        //        return `
+        //<div class="row hrRow mb-2 align-items-center">
+        //    <div class="col-lg-6">
+        //        <!-- Show Other -->
+        //        <input type="text"
+        //               class="form-control form-control-sm hr-other"
+        //               value="Other"
+        //               readonly>
+
+        //        <!-- Bind Other ID -->
+        //        <input type="hidden"
+        //               class="hr-designation-id"
+        //               value="${otherId}">
+        //    </div>
+        //    <div class="col-lg-4">
+        //        <input type="number"
+        //               class="form-control form-control-sm hr-count"
+        //               value="${value}"
+        //               readonly>
+        //    </div>
+        //    <div class="col-lg-2"></div>
+        //</div>`;
+        //    } else {
+                
+                
+        //    }
+        //}
+
+        function InItSelect2(context = document) {
+            $(context).find('select')
+                .not('.dataTables_length select')
+                .not('.dataTables_filter select')
+                .not('[name$="_length"]')
+                .not('.dataTables_paginate select')
+                .each(function () {
+
+                    const $select = $(this);
+
+                    // destroy if already initialized
+                    if ($select.hasClass('select2-hidden-accessible')) {
+                        $select.select2('destroy');
+                    }
+                    $select.select2();
+                });
+                
+        };
         $("#humanResourcesContainer").on("click", ".deleteHRRow", function (e) {
             e.preventDefault();
             $(this).closest(".hrRow").remove();
@@ -266,7 +290,7 @@
         });
 
         // Input validation
-        $(document).on("input", ".hr-count", function () {
+        $(document).on("input", ".hr-count,.hr-requirement", function () {
             let totalHR = parseInt($("#humanResourcesCount").val()) || 0;
             let sum = 0;
 
@@ -274,6 +298,7 @@
             $("#hrRows .hrRow").each(function () {
                 if (!$(this).find(".hr-other").length) {
                     let val = parseInt($(this).find(".hr-count").val()) || 0;
+                    val += parseInt($(this).find(".hr-requirement").val()) || 0;
                     sum += val;
                 }
             });
@@ -300,6 +325,7 @@
             $("#hrRows .hrRow").each(function () {
                 if (!$(this).find(".hr-other").length) {
                     let val = parseInt($(this).find(".hr-count").val()) || 0;
+                    val += parseInt($(this).find(".hr-requirement").val()) || 0;
                     sum += val;
                 }
             });
@@ -724,17 +750,7 @@
 
         unhighlight: function (element) {
             $(element).removeClass("is-invalid");
-        },
-
-        //submitHandler: function (form) {
-        //    Swal.fire({
-        //        icon: "success",
-        //        title: "Validation Passed",
-        //        text: "Form is ready to submit!"
-        //    });
-
-        //    // form.submit(); // enable when ready
-        //}
+        }
     });
 
     // Custom validation method for select2 multiple
@@ -789,11 +805,12 @@
                     $(this).find(".hr-designation-id").val();
 
                 let count = $(this).find(".hr-count").val();
-
+                let requirement = $(this).find(".hr-requirement").val();
                 if (!designationId || designationId === "" || count === "" || count === "0") return;
 
                 formData.append(`pm.hr[${index}].designationId`, designationId);
                 formData.append(`pm.hr[${index}].designationCount`, count);
+                formData.append(`pm.hr[${index}].designationRequirement`, requirement);
             }
         });
 

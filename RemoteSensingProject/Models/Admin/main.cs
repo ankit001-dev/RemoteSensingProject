@@ -160,6 +160,7 @@ namespace RemoteSensingProject.Models.Admin
 
 			public int designationCount { get; set; }
 
+			public int designationRequirement {get;set;}
 			public string designationName { get; set; }
 		}
 
