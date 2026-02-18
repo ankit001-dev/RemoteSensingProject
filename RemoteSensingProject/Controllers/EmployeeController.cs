@@ -77,24 +77,6 @@ namespace RemoteSensingProject.Controllers
         }
 
         [HttpPost]
-        public ActionResult InsertOutSourceTour(OutsourceAtTour at)
-        {
-            try
-            {
-                bool res = _managerServices.SendOutSourceAtTour(at);
-                return Json(new
-                {
-                    status = res,
-                    message = res ? "Submitted successfully" : "Something went wrong"
-                });
-            }
-            catch(Exception ex)
-            {
-                return Json(new { status = false, message = ex.Message });
-            }
-        }
-
-        [HttpPost]
         public ActionResult CreateTaskJson(OutSourceTask ost)
         {
             ost.empId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
@@ -537,6 +519,14 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult Tour_Proposal(tourProposal data)
         {
+            if (data.proposalType != "self" && data.proposalType != "projectstaff")
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "Invalid proposal type. Only 'self' or 'projectstaff' allowed."
+                });
+            }
             bool res = _managerServices.insertTour(data);
             if (res)
             {

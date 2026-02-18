@@ -1402,47 +1402,6 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        [HttpPost]
-        [Route("api/insert-outsource-tour")]
-        public IHttpActionResult InsertOutsourceTour(OutsourceAtTour at)
-        {
-            try
-            {
-                List<string> error = new List<string>();
-                if (at == null)
-                {
-                    error.Add("Invalid Data");
-                }
-                else if (at.outsourceid <= 0)
-                    error.Add("outsource id is invalid");
-                else if (at.fromDate == null)
-                    error.Add("from date is invalid");
-                else if (at.toDate == null)
-                    error.Add("to date is invalid");
-
-                if (error.Count > 0)
-                {
-                    return CommonHelper.Error((ApiController)(object)this, string.Join(", ", error));
-                }
-                bool res = _managerService.SendOutSourceAtTour(at);
-                return Ok(new
-                {
-                    status = res,
-                    StatusCode = res ? 200 : 400,
-                    message = res ? "Submitted Successfully" : "Something went wrong"
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 400,
-                    message = ex.Message
-                });
-            }
-        }
-
         #region Manage Division Head
         [JwtAuthorize(Roles = "divisionHead")]
         [Route("api/manpower-request")]

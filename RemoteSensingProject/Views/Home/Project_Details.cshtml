@@ -1,0 +1,358 @@
+﻿
+@{
+    ViewBag.Title = "Project_Details";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    if (User.IsInRole("admin"))
+    {
+        Layout = "~/Views/Shared/_adminLayout.cshtml";
+    }
+    else if (User.IsInRole("employee"))
+    {
+        Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    }
+    else if (User.IsInRole("accounts"))
+    {
+        Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    }
+    else if (User.IsInRole("cgp"))
+    {
+        Layout = "~/Views/Shared/_cgpLayout.cshtml";
+    }
+    var data = @Model as RemoteSensingProject.Models.Admin.main.createProjectModel;
+}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h4 class="fw-bold mb-1">
+                        @data.pm.ProjectTitle
+                    </h4>
+                    <small class="text-muted">Project Code : <strong>@data.projectCode</strong></small>
+                </div>
+
+                <div>
+                    <span class="badge bg-success me-1">@data.pm.ProjectStatus</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Basic Project Details -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header fw-semibold bg-light">
+            Basic Project Details
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <small class="text-muted">Project Type</small>
+                    <div class="fw-semibold">@data.pm.ProjectType</div>
+                </div>
+
+                <div class="col-md-3">
+                    <small class="text-muted">Project Manager</small>
+                    <div class="fw-semibold">@data.pm.ProjectManager</div>
+                </div>
+
+                <div class="col-md-3">
+                    <small class="text-muted">Assign Date</small>
+                    <div>@data.pm.AssignDateString</div>
+                </div>
+
+                <div class="col-md-3">
+                    <small class="text-muted">Completion Date</small>
+                    <div>@data.pm.CompletionDatestring</div>
+                </div>
+
+                <div class="col-md-3">
+                    <small class="text-muted">Current Stage</small>
+                    <div>Execution</div>
+                </div>
+
+                <div class="col-md-3">
+                    <small class="text-muted">Project Staff Required</small>
+                    <div>@data.pm.hrCount</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Stages -->
+    @if (data.pm.ProjectType == "External")
+    {
+
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header fw-semibold bg-light">
+                Project Stages
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-bordered table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width:50px;" class="text-center">#</th>
+                            <th>Key Point</th>
+                            <th>Complete Date</th>
+                            <th>Document</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (data.stages.Count > 0)
+                        {
+                            int stage = 1;
+                            foreach (var item in data.stages)
+                            {
+                                <tr>
+                                    <td class="text-center">@stage</td>
+                                    <td>@item.KeyPoint</td>
+                                    <td>@item.CompletionDatestring</td>
+                                    <td>
+                                        <a title="Download Document" target="_blank" class="cursor-pointer" href="@item.Document_Url"><i class="link-icon text-primary" data-feather="download"></i></a>
+                                    </td>
+                                </tr>
+                                stage++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    <!-- External Department Details -->
+    @if (data.pm.ProjectType == "External")
+    {
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header fw-semibold bg-light">
+                Department Details (External Project)
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <small class="text-muted">Department Name</small>
+                        <div class="fw-semibold">@data.pm.ProjectDepartment</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <small class="text-muted">Contact Person</small>
+                        <div class="fw-semibold">@data.pm.ContactPerson</div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <small class="text-muted">Department Address</small>
+                        <div>
+                            @data.pm.Address
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Financial Overview -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header fw-semibold bg-light">
+            Financial Overview
+        </div>
+        <div class="card-body">
+            <h5 class="text-success mb-0">₹ @data.pm.ProjectBudget (in Lacs)</h5>
+            <small class="text-muted">Total Project Budget</small>
+        </div>
+    </div>
+
+    <!-- Budget Head Wise -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header fw-semibold bg-light">
+            Budget Allocation (Head Wise)
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Head</th>
+                        <th class="text-end">Budget (₹ in Lacs)</th>
+                        <th class="text-end">Expense (₹ in Lacs)</th>
+                        <th class="text-end">Remaining (₹ in Lacs)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (data.budgets.Count > 0)
+                    {
+                        int budgetcount = 1;
+                        foreach (var item in data.budgets)
+                        {
+                            <tr>
+                                <td>@budgetcount</td>
+                                <td><a href=""  class="headExpense" data-Id="@item.Id">@item.ProjectHeads</a></td>
+                                <td class="text-end">@item.ProjectAmount</td>
+                                <td class="text-end">@item.TotalAskAmount</td>
+                                <td class="text-end">@(item.ProjectAmount - Convert.ToDecimal(item.TotalAskAmount))</td>
+                            </tr>
+                            budgetcount++;
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Human Resource Requirement -->
+    @if (data.pm.hrCount > 0)
+    {
+
+
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header fw-semibold bg-light">
+                Project Staff Requirement
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-bordered mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Designation</th>
+                            <th>Required</th>
+                            <th>Full fill</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (data.hr.Count > 0)
+                        {
+                            int hrcount = 1;
+                            foreach (var item in data.hr)
+                            {
+                                <tr>
+                                    <td>@hrcount</td>
+                                    <td>@item.designationName</td>
+                                    <td>@item.designationCount</td>
+                                    <td>@item.designationCount</td>
+                                </tr>
+                                hrcount++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    <!-- Project Description -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header fw-semibold bg-light">
+            Project Description
+        </div>
+        <div class="card-body">
+            <p>@data.pm.ProjectDescription</p>
+        </div>
+    </div>
+
+</div>
+
+<!--Expense Modal-->
+<div class="modal fade" id="ViewBudgetExpenses" tabindex="-1" aria-labelledby="ViewBudgetExpenses" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header d-flex">
+                <h1 class="modal-title fs-5 text-light" id="ViewBudgetExpensesModal">Equipment Expenses</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Reciept</th>
+                                <th>Approve Amount</th>
+                                <th>Date</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="viewBudgetExpensesBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(".headExpense").click(function () {
+        let headId = $(this).attr("data-Id");
+        let projectId = @Request.QueryString["Id"];
+
+            Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request...",
+            timer: 100000,
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: "/api/getProjectExpencesList",
+            type: "get",
+            data: { projectId: projectId, headId: headId },
+            success: function (res) {
+                $("#viewBudgetExpensesBody").empty();
+                if (res.status) {
+
+                    let element = "";
+                    $.each(res.data, function (i, d) {
+                        element += `  <tr>
+                             <td>${i + 1}</td>
+<td>${d.title}</td>
+<td>${d.description}</td>
+<td>₹${d.amount}</td>
+<td><a target='_blank' href="${d.attatchment_url}">Reciept</a></td>
+<td>₹${d.AppAmount}</td>
+<td>${convertToDate(d.date)}</td>
+<td>${d.reason && d.reason == "null" ? "N/A" : d.reason}</td>
+<td>${d.AppStatus == 0 ? "<span class='text-light bg-warning px-2 rounded-1 border'>Pending</span>" : d.AppStatus == 1 ? "<span class='text-light px-2 bg-success rounded-1 border'>Accepted</span>" : `<span class='text-light px-2 bg-danger rounded-1 border'>Rejected</span> (₹${d.amount - d.AppAmount})`}</td>
+
+                         </tr>`
+                    });
+                    $("#viewBudgetExpensesBody").append(element);
+                    $("#ViewBudgetExpenses").modal("show");
+                }
+                else {
+                    $("#ViewBudgetExpenses").modal("show");
+                }
+
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue !",
+                    text: "Server is busy. Please try after sometime.",
+                    icon: "error"
+                });
+            },
+            complete: function () {
+                Swal.close();
+            }
+        })
+    })
+
+    function convertToDate(date) {
+        let dateObj = new Date(date);
+        return dateObj.toLocaleDateString();
+    }
+</script>
