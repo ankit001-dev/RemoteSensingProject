@@ -666,7 +666,8 @@ namespace RemoteSensingProject.Models.Admin
                             ["p_action"] = ((item2.id <= 0) ? "insertHumanResources" : "updateHumanResources"),
                             ["p_project_id"] = ((pm.pm.Id > 0) ? pm.pm.Id : projectId),
                             ["p_id"] = item2.designationId,
-                            ["p_hrcount"] = item2.designationCount,
+                            ["p_hrcount"] = item2.designationRequirement,
+                            ["p_hrExisting"] = item2.designationCount,
                             ["p_projectmanager"] = item2.id
                         };
                         ExecuteProjectAction(hrparams, tran);
@@ -739,7 +740,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             //IL_000d: Unknown result type (might be due to invalid IL or missing references)
             //IL_0013: Expected O, but got Unknown
-            NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_adminaddproject(\r\n    @p_action,\r\n    @p_letterno,\r\n    @p_id,\r\n    @p_title,\r\n    @p_assigndate,\r\n    @p_startdate,\r\n    @p_completiondate,\r\n    @p_projectmanager,\r\n    @p_subordinate,\r\n    @p_budget,\r\n    @p_description,\r\n    @p_projectdocument,\r\n    @p_projecttype,\r\n    @p_stage,\r\n    @p_projectcode,\r\n    @p_approvestatus,\r\n    @p_createdby,\r\n    @p_status,\r\n    @p_heads,\r\n    @p_headsamount,\r\n    @p_keypoint,\r\n    @p_stagedocument,\r\n    @p_departmentname,\r\n    @p_contactperson,\r\n    @p_address,\r\n    @p_hrcount,\r\n    @p_project_id\r\n)", con, tran);
+            NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_adminaddproject(\r\n    @p_action,\r\n    @p_letterno,\r\n    @p_id,\r\n    @p_title,\r\n    @p_assigndate,\r\n    @p_startdate,\r\n    @p_completiondate,\r\n    @p_projectmanager,\r\n    @p_subordinate,\r\n    @p_budget,\r\n    @p_description,\r\n    @p_projectdocument,\r\n    @p_projecttype,\r\n    @p_stage,\r\n    @p_projectcode,\r\n    @p_approvestatus,\r\n    @p_createdby,\r\n    @p_status,\r\n    @p_heads,\r\n    @p_headsamount,\r\n    @p_keypoint,\r\n    @p_stagedocument,\r\n    @p_departmentname,\r\n    @p_contactperson,\r\n    @p_address,\r\n    @p_hrcount,\r\n @p_hrExisting,  @p_project_id\r\n)", con, tran);
             try
             {
                 ((DbCommand)(object)cmd).CommandType = CommandType.Text;
@@ -747,7 +748,7 @@ namespace RemoteSensingProject.Models.Admin
             {
                 "p_action", "p_letterno", "p_id", "p_title", "p_assigndate", "p_startdate", "p_completiondate", "p_projectmanager", "p_subordinate", "p_budget",
                 "p_description", "p_projectdocument", "p_projecttype", "p_stage", "p_projectcode", "p_approvestatus", "p_createdby", "p_status", "p_heads", "p_headsamount",
-                "p_keypoint", "p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_hrcount", "p_project_id"
+                "p_keypoint", "p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_hrcount", "p_hrExisting", "p_project_id"
             };
                 foreach (string paramName in allParams)
                 {
@@ -1182,15 +1183,16 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     while (((DbDataReader)(object)rd).Read())
                     {
+                        var id = rd["id"];
                         list.Add(new main.Project_Budget
                         {
-                            Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
-                            Project_Id = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
-                            ProjectHeads = ((DbDataReader)(object)rd)["heads"].ToString(),
-                            HeadId = Convert.ToInt32((((DbDataReader)(object)rd)["budgethead"] != DBNull.Value) ? ((DbDataReader)(object)rd)["budgethead"] : ((object)0)),
-                            TotalAskAmount = ((DbDataReader)(object)rd)["totalAskAmount"].ToString(),
-                            ApproveAmount = ((DbDataReader)(object)rd)["approveAmount"].ToString(),
-                            ProjectAmount = Convert.ToDecimal((((DbDataReader)(object)rd)["headsAmount"] != DBNull.Value) ? ((DbDataReader)(object)rd)["headsAmount"] : ((object)0))
+                            Id = Convert.ToInt32(rd["id"]),
+                            Project_Id = Convert.ToInt32(rd["project_id"]),
+                            ProjectHeads = rd["heads"].ToString(),
+                            HeadId = Convert.ToInt32((rd["budgethead"] != DBNull.Value) ? rd["budgethead"] : ((object)0)),
+                            TotalAskAmount = rd["totalAskAmount"].ToString(),
+                            ApproveAmount = rd["approveAmount"].ToString(),
+                            ProjectAmount = Convert.ToDecimal((rd["headsAmount"] != DBNull.Value) ? rd["headsAmount"] : ((object)0))
                         });
                     }
                 }

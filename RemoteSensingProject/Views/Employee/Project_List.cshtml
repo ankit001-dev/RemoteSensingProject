@@ -79,7 +79,7 @@
                                 }
                             </td>
                             <td>
-                                <a href="#" class="edit-project" data-id="@item.Id">
+                                <a href="@Url.EncryptedAction("Add_Project", "Employee", new {id=item.Id})">
                                     <i class="link-icon" data-feather="edit"></i>
                                 </a>
                             </td>
@@ -312,15 +312,6 @@
     });
 </script>
 
-<script>
-    $(document).on("click", ".edit-project", function (e) {
-        e.preventDefault();
 
-        var projectId = $(this).data("id");
-
-        // Redirect to AddProject page with query string
-        window.location.href = "/Employee/Add_Project?id=" + projectId;
-    });
-</script>
 
 
