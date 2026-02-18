@@ -129,7 +129,7 @@
                                     <td class="text-center">@i</td>
                                     <td>@item.projectCode</td>
                                     <td>
-                                        <a href="#" class="viewProject" data-title="View" data-Id="@item.Id">
+                                        <a href="/home/Project_Details?id=@item.Id" data-title="View" data-Id="@item.Id">
                                             @item.ProjectTitle
                                         </a>
                                     </td>
@@ -195,20 +195,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="modal fade" id="viewProjectModal" tabindex="-1" aria-labelledby="viewProjectModal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header d-flex">
-                        <h1 class="modal-title fs-5 text-success" id="exampleModalLabel"> Project Details</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" id="viewProjectModalBody">
-                    </div>
-                </div>
-            </div>
-        </div>
-
 
         <div class="modal fade" id="viewMonthlyReportExternalPrj" tabindex="-1" aria-labelledby="viewMonthlyReportExternalPrjLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered">

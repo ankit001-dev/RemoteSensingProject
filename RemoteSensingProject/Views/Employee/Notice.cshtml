@@ -56,7 +56,7 @@
                                     <tr>
                                         <td class="text-start">@count</td>
                       
-                                        <td><a href="#"  data-title="View Details" data-bs-toggle="modal" class="showProjectDetail" data-id="@item.ProjectId" data-bs-target="#addslider">@item.ProjectName</a></td>
+                                        <td><a href="/home/Project_Details?id=@item.Id"  data-title="View Details">@item.ProjectName</a></td>
                                         <td>@item.noticeDate</td>
                                         <td> <a href="@item.Attachment_Url" target="_blank"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a></td>
                                         <td class="text-center">
@@ -299,128 +299,6 @@
             Swal.close();
         }
     }
-
-    $(".showProjectDetail").click(function () {
-        showLoading(true)
-        let id = $(this).attr("data-id");
-        debugger
-        $.ajax({
-            url: "/Employee/GetProjectById",
-            type: "get",
-            data: { id: id },
-            success: function (res) {
-                console.log(res)
-                if (res != null) {
-                    let subordinates=[]
-                    $(".projectTitle").text(res.pm.ProjectTitle || "N/A")
-                    $(".managerName").text(res.pm.ProjectManager || "N/A")
-                    $(".assignDate").text(res.pm.AssignDateString || "N/A")
-                    $(".startDate").text(res.pm.StartDateString || "N/A")
-                    $(".completeDate").text(res.pm.CompletionDatestring || "N/A")
-                    $(".projectType").text(res.pm.ProjectType || "N/A")
-                    $(".departmentName").text(res.pm.ProjectDepartment || "N/A")
-                    $(".contantPerson").text(res.pm.ContactPerson || "N/A")
-                    $(".address").text(res.pm.Address || "N/A")
-                    $(".budget").text(res.pm.ProjectBudget)
-                    $(".stageValue").text(res.pm.ProjectStage ? "Yes" : "No")
-                    $(".projectDescription").text(res.pm.ProjectDescription || "N/A")
-                    $(".projectstageContainer").empty();
-                    $(".projectBudgetContainer").empty();
-                    if (res.stages.length > 0) {
-                        res.stages.forEach(function (d, i) {
-                            $(".projectstageContainer").append(`
-     <label class="form-label"><a href="stage1">Stage ${i + 1}</a></label>
- <div class="row">
-     <div class="col-sm-4 mb-2">
-         <label class="form-label fw-bolder">Key</label>
-         <br />
-         <span>${d.KeyPoint}</span>
-     </div>
-     <div class="col-sm-4 mb-2">
-         <label class="form-label fw-bolder">Pdf Document</label>
-         <br />
-         <a href="${d.Document_Url}"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a>
-     </div>
-     <div class="col-sm-4 mb-2">
-         <label class="form-label fw-bolder">Completion Date</label>
-         <br />
-         <span>${d.CompletionDatestring}</span>
-     </div>
-     <hr />
- </div>
-                            `)
-                        })
-                    }
-                    if (res.budgets.length > 0) {
-                        res.budgets.forEach(function (d, i) {
-                            $(".projectstageContainer").append(`
-    <label class="form-label"><a href="stage1">Budget Head ${i + 1}</a></label>
-<div class="row">
-    <div class="col-sm-4 mb-2">
-        <label class="form-label fw-bolder">Key</label>
-        <br />
-        <span>${d.ProjectHeads}</span>
-    </div>
-    <div class="col-sm-4 mb-2">
-        <label class="form-label fw-bolder">Amount</label>
-        <br />
-       <span>${d.ProjectAmount}</span>
-    </div>
-
-    <hr />
-</div>
-                           `)
-                        })
-                        if (res.budgets[0].Miscellaneous != null) {
-                            $(".projectstageContainer").append(`
-    <label class="form-label"><a href="stage1">Miscellaneous</a></label>
-<div class="row">
-    <div class="col-sm-4 mb-2">
-        <label class="form-label fw-bolder">Key</label>
-        <br />
-        <span>${res.budgets[0].Miscellaneous}</span>
-    </div>
-    <div class="col-sm-4 mb-2">
-        <label class="form-label fw-bolder">Amount</label>
-        <br />
-       <span>${res.budgets[0].Miscell_amt}</span>
-    </div>
-
-    <hr />
-</div>
-                           `)
-                            if (res.SubOrdinate.length > 0) {
-                                res.SubOrdinate.forEach(function (e) {
-                                    subordinates.push(e.Name)
-                                })
-
-                                $(".subMember").text(subordinates.toString())
-                            } else {
-                                $(".subMember").text("N/A")
-
-                            }
-                        }
-
-                    }
-                }
-                showLoading(false)
-
-            }, error: function (xhr) {
-                Swal.fire({
-                    title: "error",
-                    text: "something went wrong",
-                    icon: "error"
-                })
-            }
-        })
-    })
-
-
-
-    //$('#searchbyProjecManager').on('keyup', function () {
-    //    let table = $("#dataTableExample").DataTable();
-    //    table.columns(2).search(this.value).draw();
-    //});
 
     function shownotice(data) {
         // Create hidden iframe

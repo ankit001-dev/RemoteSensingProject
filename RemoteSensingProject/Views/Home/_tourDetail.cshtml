@@ -1,0 +1,90 @@
+﻿@model List<RemoteSensingProject.Models.ProjectManager.TourProposalDto>
+
+@if (Model != null && Model.Count > 0)
+{
+    var d = Model.First();
+
+    <div class="card shadow-sm mb-2">
+        <div class="card-body px-4">
+
+            <!-- Project Section -->
+            <div class="mb-4">
+                <h6 class="text-muted mb-3">Project Information</h6>
+                <div class="row g-4">
+                    <div class="col-md-12">
+                        <label class="text-muted small">Project Name</label>
+                        <div class="fw-semibold">@d.ProjectName</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tour Dates -->
+            <div class="mb-4">
+                <h6 class="text-muted mb-3">Tour Schedule</h6>
+                <div class="row g-4">
+                    <div class="col-md-3">
+                        <label class="text-muted small">Date of Departure</label>
+                        <div class="fw-semibold">@d.DateOfDept.ToString("dd MMM yyyy")</div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-muted small">From</label>
+                        <div class="fw-semibold">@d.PeriodFrom.ToString("dd MMM yyyy")</div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-muted small">To</label>
+                        <div class="fw-semibold">@d.PeriodTo.ToString("dd MMM yyyy")</div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="text-muted small">Return Date</label>
+                        <div class="fw-semibold">@d.ReturnDate.ToString("dd MMM yyyy")</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location & Type -->
+            <div class="mb-4">
+                <h6 class="text-muted mb-3">Location & Type</h6>
+                <div class="row g-4 align-items-center">
+                    <div class="col-md-6">
+                        <label class="text-muted small">Place</label>
+                        <div class="fw-semibold">@d.Place</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted small">Proposal Type</label><br />
+                        <span class="px-3 py-2">@d.ProposalType.ToString().ToUpper()</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purpose -->
+            <div class="mb-2">
+                <h6 class="text-muted mb-2">Purpose</h6>
+                <p class="mb-0 text-secondary">@d.Purpose</p>
+            </div>
+
+            <!-- Staff List -->
+            @if (d.ProposalType == "projectstaff")
+            {
+                <hr class="my-2" />
+                <h6 class="text-muted mb-3">Project Staff</h6>
+
+                <ul class="list-group list-group-flush">
+                    @foreach (var item in Model)
+                    {
+                        <li class="list-group-item px-0">
+                            <i class="bi bi-person me-2 text-primary"></i>
+                            @item.ProjectStaffName
+                        </li>
+                    }
+                </ul>
+            }
+
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-light text-center">
+        No tour details available
+    </div>
+}

@@ -2,6 +2,14 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Models.Admin.AdminServices
+using DocumentFormat.OpenXml.Math;
+using Newtonsoft.Json.Linq;
+using Npgsql;
+using NpgsqlTypes;
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.MailService;
+using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,12 +19,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using Npgsql;
-using NpgsqlTypes;
-using RemoteSensingProject.Models;
-using RemoteSensingProject.Models.Admin;
-using RemoteSensingProject.Models.MailService;
 
 namespace RemoteSensingProject.Models.Admin
 {
@@ -994,6 +996,7 @@ namespace RemoteSensingProject.Models.Admin
                     }
                     ((DbDataReader)(object)rd).Close();
                 }
+                ((Component)(object)cmd).Dispose();
                 cpm.pm = pm;
                 cpm.SubOrdinate = subList;
                 cpm.budgets = ProjectBudgetList(id);
@@ -1011,7 +1014,6 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     ((DbConnection)(object)con).Close();
                 }
-                ((Component)(object)cmd).Dispose();
             }
         }
 
@@ -1164,37 +1166,90 @@ namespace RemoteSensingProject.Models.Admin
 
         public List<main.Project_Budget> ProjectBudgetList(int Id)
         {
-            //IL_0014: Unknown result type (might be due to invalid IL or missing references)
-            //IL_001e: Expected O, but got Unknown
             try
             {
-                List<main.Project_Budget> list = new List<main.Project_Budget>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
-                cmd.Parameters.AddWithValue("@action", (object)"GetBudgetByProjectId");
-                cmd.Parameters.AddWithValue("@v_id", (object)Id);
-                cmd.Parameters.AddWithValue("@v_limit", (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", (object)DBNull.Value);
-                if (((DbConnection)(object)con).State == ConnectionState.Closed)
+                
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
                 {
-                    ((DbConnection)(object)con).Open();
+                    con.Close();
                 }
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (((DbDataReader)(object)rd).HasRows)
+                    ((DbConnection)(object)con).Open();
+                List<main.Project_Budget> list = new List<main.Project_Budget>();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
                 {
-                    while (((DbDataReader)(object)rd).Read())
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_getprojectstagesandbudget", con, tran);
+                    try
                     {
-                        var id = rd["id"];
-                        list.Add(new main.Project_Budget
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"GetBudgetByProjectId");
+                        cmd.Parameters.AddWithValue("@v_id", (object)Id);
+                        cmd.Parameters.AddWithValue("@v_limit", (object)0);
+                        cmd.Parameters.AddWithValue("@v_page", (object)0);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
                         {
-                            Id = Convert.ToInt32(rd["id"]),
-                            Project_Id = Convert.ToInt32(rd["project_id"]),
-                            ProjectHeads = rd["heads"].ToString(),
-                            HeadId = Convert.ToInt32((rd["budgethead"] != DBNull.Value) ? rd["budgethead"] : ((object)0)),
-                            TotalAskAmount = rd["totalAskAmount"].ToString(),
-                            ApproveAmount = rd["approveAmount"].ToString(),
-                            ProjectAmount = Convert.ToDecimal((rd["headsAmount"] != DBNull.Value) ? rd["headsAmount"] : ((object)0))
-                        });
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    //bool firstRow = true;
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+                                        list.Add(new main.Project_Budget
+                                        {
+                                            Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+                                            Project_Id = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
+                                            ProjectHeads = ((DbDataReader)(object)rd)["heads"].ToString(),
+                                            HeadId = Convert.ToInt32((((DbDataReader)(object)rd)["budgethead"] != DBNull.Value) ? ((DbDataReader)(object)rd)["budgethead"] : ((object)0)),
+                                            TotalAskAmount = ((DbDataReader)(object)rd)["totalAskAmount"].ToString(),
+                                            ApproveAmount = ((DbDataReader)(object)rd)["approveAmount"].ToString(),
+                                            ProjectAmount = Convert.ToDecimal((((DbDataReader)(object)rd)["headsAmount"] != DBNull.Value) ? ((DbDataReader)(object)rd)["headsAmount"] : ((object)0))
+                                        });
+                                        //if (firstRow)
+                                        //{
+                                        //    list.Pagination = new ApiCommon.PaginationInfo
+                                        //    {
+                                        //        TotalPages = Convert.ToInt32(((DbDataReader)(object)rd)["totalpages"]),
+                                        //        TotalRecords = Convert.ToInt32(((DbDataReader)(object)rd)["totalrecords"]),
+                                        //        PageNumber = page.GetValueOrDefault(),
+                                        //        PageSize = limit.GetValueOrDefault()
+                                        //    };
+                                        //    firstRow = false;
+                                        //}
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
                     }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
                 }
                 return list;
             }
@@ -1208,43 +1263,95 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     ((DbConnection)(object)con).Close();
                 }
-                ((Component)(object)cmd).Dispose();
+                ((Component)(object)base.cmd).Dispose();
             }
         }
 
         public List<main.Project_Statge> ProjectStagesList(int Id)
         {
-            //IL_0014: Unknown result type (might be due to invalid IL or missing references)
-            //IL_001e: Expected O, but got Unknown
             try
             {
-                List<main.Project_Statge> list = new List<main.Project_Statge>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
-                cmd.Parameters.AddWithValue("@action", (object)"GetProjectStageByProjectId");
-                cmd.Parameters.AddWithValue("@v_id", (object)Id);
-                cmd.Parameters.AddWithValue("@v_limit", (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", (object)DBNull.Value);
                 if (((DbConnection)(object)con).State == ConnectionState.Closed)
                 {
                     ((DbConnection)(object)con).Open();
                 }
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (((DbDataReader)(object)rd).HasRows)
+                List<main.Project_Statge> list = new List<main.Project_Statge>();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
                 {
-                    while (((DbDataReader)(object)rd).Read())
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_getprojectstagesandbudget", con, tran);
+                    try
                     {
-                        list.Add(new main.Project_Statge
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"GetProjectStageByProjectId");
+                        cmd.Parameters.AddWithValue("@v_id", (object)Id);
+                        cmd.Parameters.AddWithValue("@v_limit", (object)0);
+                        cmd.Parameters.AddWithValue("@v_page", (object)0);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
                         {
-                            Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
-                            Project_Id = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
-                            KeyPoint = ((DbDataReader)(object)rd)["keyPoint"].ToString(),
-                            CompletionDate = Convert.ToDateTime(((DbDataReader)(object)rd)["completeDate"]),
-                            CompletionDatestring = Convert.ToDateTime(((DbDataReader)(object)rd)["completeDate"]).ToString("dd-MM-yyyy"),
-                            Status = ((DbDataReader)(object)rd)["StagesStatus"].ToString(),
-                            Document_Url = ((DbDataReader)(object)rd)["stageDocument"].ToString(),
-                            completionStatus = Convert.ToInt32(((DbDataReader)(object)rd)["completionStatus"])
-                        });
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    //bool firstRow = true;
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+                                        list.Add(new main.Project_Statge
+                                        {
+                                            Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+                                            Project_Id = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
+                                            KeyPoint = ((DbDataReader)(object)rd)["keyPoint"].ToString(),
+                                            CompletionDate = Convert.ToDateTime(((DbDataReader)(object)rd)["completeDate"]),
+                                            CompletionDatestring = Convert.ToDateTime(((DbDataReader)(object)rd)["completeDate"]).ToString("dd-MM-yyyy"),
+                                            Status = ((DbDataReader)(object)rd)["StagesStatus"].ToString(),
+                                            Document_Url = ((DbDataReader)(object)rd)["stageDocument"].ToString(),
+                                            completionStatus = Convert.ToInt32(((DbDataReader)(object)rd)["completionStatus"])
+                                        });
+                                        //if (firstRow)
+                                        //{
+                                        //    list.Pagination = new ApiCommon.PaginationInfo
+                                        //    {
+                                        //        TotalPages = Convert.ToInt32(((DbDataReader)(object)rd)["totalpages"]),
+                                        //        TotalRecords = Convert.ToInt32(((DbDataReader)(object)rd)["totalrecords"]),
+                                        //        PageNumber = page.GetValueOrDefault(),
+                                        //        PageSize = limit.GetValueOrDefault()
+                                        //    };
+                                        //    firstRow = false;
+                                        //}
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
                     }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
                 }
                 return list;
             }
@@ -1258,39 +1365,91 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     ((DbConnection)(object)con).Close();
                 }
-                ((Component)(object)cmd).Dispose();
+                ((Component)(object)base.cmd).Dispose();
             }
         }
 
-        public List<main.HumanResources> ProjectHumanResourcesList(int Id)
+        public List<main.HumanResources>  ProjectHumanResourcesList(int Id)
         {
-            //IL_0014: Unknown result type (might be due to invalid IL or missing references)
-            //IL_001e: Expected O, but got Unknown
             try
             {
-                List<main.HumanResources> list = new List<main.HumanResources>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_getProjectStagesAndBudget(@action,@v_id,@v_limit,@v_page)", con);
-                cmd.Parameters.AddWithValue("@action", (object)"GetProjectHumanResources");
-                cmd.Parameters.AddWithValue("@v_id", (object)Id);
-                cmd.Parameters.AddWithValue("@v_limit", (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", (object)DBNull.Value);
                 if (((DbConnection)(object)con).State == ConnectionState.Closed)
                 {
                     ((DbConnection)(object)con).Open();
                 }
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (((DbDataReader)(object)rd).HasRows)
+                List<main.HumanResources> list = new List<main.HumanResources>();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
                 {
-                    while (((DbDataReader)(object)rd).Read())
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_getprojectstagesandbudget", con, tran);
+                    try
                     {
-                        list.Add(new main.HumanResources
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"GetProjectHumanResources");
+                        cmd.Parameters.AddWithValue("@v_id", (object)Id);
+                        cmd.Parameters.AddWithValue("@v_limit", (object)0);
+                        cmd.Parameters.AddWithValue("@v_page", (object)0);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
                         {
-                            id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
-                            designationId = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
-                            designationCount = Convert.ToInt32(((DbDataReader)(object)rd)["approveAmount"]),
-                            designationName = ((DbDataReader)(object)rd)["stageDocument"].ToString()
-                        });
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    //bool firstRow = true;
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+                                        list.Add(new main.HumanResources
+                                        {
+                                            id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+                                            designationId = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
+                                            designationCount = Convert.ToInt32(((DbDataReader)(object)rd)["approveAmount"]),
+                                            designationName = ((DbDataReader)(object)rd)["stageDocument"].ToString()
+                                        });
+                                        //if (firstRow)
+                                        //{
+                                        //    list.Pagination = new ApiCommon.PaginationInfo
+                                        //    {
+                                        //        TotalPages = Convert.ToInt32(((DbDataReader)(object)rd)["totalpages"]),
+                                        //        TotalRecords = Convert.ToInt32(((DbDataReader)(object)rd)["totalrecords"]),
+                                        //        PageNumber = page.GetValueOrDefault(),
+                                        //        PageSize = limit.GetValueOrDefault()
+                                        //    };
+                                        //    firstRow = false;
+                                        //}
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
                     }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
                 }
                 return list;
             }
@@ -1304,7 +1463,7 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     ((DbConnection)(object)con).Close();
                 }
-                ((Component)(object)cmd).Dispose();
+                ((Component)(object)base.cmd).Dispose();
             }
         }
 
