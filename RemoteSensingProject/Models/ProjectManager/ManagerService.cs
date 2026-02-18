@@ -265,31 +265,31 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<RemoteSensingProject.Models.Admin.main.Project_model> All_Project_List(int? userId, int? limit = null, int? page = null, string filterType = null, int? id = null, string searchTerm = null, string statusFilter = null)
+        public List<RemoteSensingProject.Models.Admin.main.Project_model> All_Project_List(int? userId = null, int? limit = null, int? page = null, string filterBy = null, string projectTypeFilter = null, int? id = null, string searchTerm = null, string statusFilter = null)
         {
             //IL_0020: Unknown result type (might be due to invalid IL or missing references)
             //IL_002a: Expected O, but got Unknown
             try
             {
                 ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
                 List<RemoteSensingProject.Models.Admin.main.Project_model> list = new List<RemoteSensingProject.Models.Admin.main.Project_model>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_filterType,@v_limit,@v_page,@v_searchTerm,@v_statusFilter)", con);
-                cmd.Parameters.AddWithValue("@action", (object)"GetAllProject");
-                cmd.Parameters.AddWithValue("@v_projectManager", userId.HasValue ? ((object)userId) : ((object)0));
-                if (string.IsNullOrWhiteSpace(filterType))
-                {
-                    cmd.Parameters.AddWithValue("@v_filterType", (object)DBNull.Value);
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@v_filterType", (object)filterType);
-                }
-                cmd.Parameters.AddWithValue("@v_id", (object)(id ?? new int?(0)));
-                cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_searchTerm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
-                cmd.Parameters.AddWithValue("@v_statusFilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
-                NpgsqlDataReader rd = cmd.ExecuteReader();
+
+                NpgsqlCommand cmd = new NpgsqlCommand("fn_get_all_projects", con, tran);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("v_action", (object)"GetAllProject");
+                cmd.Parameters.AddWithValue("v_id", (object)(id ?? new int?(0)));
+                cmd.Parameters.AddWithValue("v_userid", userId.HasValue ? ((object)userId) : ((object)0));
+                cmd.Parameters.AddWithValue("v_filterby", (object)(string.IsNullOrEmpty(filterBy) ? ((IConvertible)DBNull.Value) : ((IConvertible)filterBy)));
+                cmd.Parameters.AddWithValue("v_projecttypefilter", (object)(string.IsNullOrEmpty(projectTypeFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)projectTypeFilter)));
+                cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+                cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                cmd.Parameters.AddWithValue("v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+                cmd.Parameters.AddWithValue("v_statusfilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
+
+                string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                NpgsqlDataReader rd = fetchCmd.ExecuteReader();
                 if (((DbDataReader)(object)rd).HasRows)
                 {
                     while (((DbDataReader)(object)rd).Read())

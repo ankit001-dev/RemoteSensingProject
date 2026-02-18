@@ -161,7 +161,7 @@ public class ReportApiController : ApiController
 			{
 				AdminServices adminServices = _adminServices;
 				int? projectManager = projectManagerFilter;
-				data = adminServices.Project_List(null, null, null, searchTerm, statusFilter, projectManager);
+				data = _managerservice.All_Project_List(userId: projectManager, filterBy:(projectManager.HasValue ? "ProjectManager": ""), searchTerm:searchTerm, statusFilter:statusFilter);
 			}
 			else
 			{
@@ -171,7 +171,7 @@ public class ReportApiController : ApiController
 				}
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
-				data = _managerservice.All_Project_List(userId, null, null, null, null, searchTerm, statusFilter);
+				data = _managerservice.All_Project_List(userId: userId, searchTerm: searchTerm, statusFilter: statusFilter);
 			}
 			byte[] pdfBytes = ReportGenerator.CreatePdf(columnMappings, data, "Project Report");
 			return (IHttpActionResult)(object)new PdfResult(pdfBytes, "ProjectsReport.pdf", ((ApiController)this).Request);
@@ -252,7 +252,7 @@ public class ReportApiController : ApiController
 			{
 				AdminServices adminServices = _adminServices;
 				int? projectManager = projectManagerFilter;
-				data = adminServices.Project_List(null, null, null, searchTerm, statusFilter, projectManager);
+				data = _managerservice.All_Project_List(userId:projectManager, filterBy:(projectManager.HasValue ? "ProjectManager" : ""), searchTerm: searchTerm, statusFilter: statusFilter);
 			}
 			else
 			{
@@ -262,7 +262,7 @@ public class ReportApiController : ApiController
 				}
 				ClaimsIdentity identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
 				int userId = int.Parse(identity.Claims.FirstOrDefault((Claim c) => c.Type == "userId")?.Value);
-				data = _managerservice.All_Project_List(userId, null, null, null, null, searchTerm, statusFilter);
+				data = _managerservice.All_Project_List(userId: userId, searchTerm: searchTerm, statusFilter: statusFilter);
 			}
 			byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Project Report");
 			return (IHttpActionResult)(object)new PdfResult(excelBytes, "ProjectsReport.xlsx", ((ApiController)this).Request);

@@ -730,7 +730,7 @@ public class CommonController : ApiController
                 "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
                 "ProjectDepartment", "ContactPerson", "Address"
             };
-            var data = _managerservice.All_Project_List(projectManagerFilter, limit, page, filterType, null, searchTerm, statusFilter);
+            var data = _managerservice.All_Project_List(userId:projectManagerFilter, limit, page, filterBy:filterType, searchTerm:searchTerm, statusFilter:statusFilter);
             List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
             if (data.Count > 0)
             {

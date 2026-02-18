@@ -36,7 +36,7 @@ namespace RemoteSensingProject.Controllers
 			ManagerService managerServices = _managerServices;
 			int? userId2 = 0;
 			int? id = userId;
-			viewData["AssignedProjectList"] = managerServices.All_Project_List(userId2, null, null, "SubordinateProject", id);
+			//viewData["AssignedProjectList"] = managerServices.All_Project_List(userId2, null, null, "SubordinateProject", id);
 			return View((object)dcount);
 		}
 
@@ -45,7 +45,7 @@ namespace RemoteSensingProject.Controllers
 			string managerName = ((Controller)this).User.Identity.Name;
 			int userId = Convert.ToInt32(_managerServices.getManagerDetails(managerName).userId);
 			List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList> _list = new List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList>();
-			List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerServices.All_Project_List(0, null, null, "SubordinateProject", userId, searchTerm, statusFilter);
+			List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerServices.All_Project_List(filterBy:"SubordinateProject", id:userId, searchTerm:searchTerm, statusFilter:statusFilter);
 			if (!string.IsNullOrEmpty(filterType))
 			{
 				data = data.Where((RemoteSensingProject.Models.Admin.main.Project_model d) => d.ProjectType.ToLower() == filterType.ToLower()).ToList();

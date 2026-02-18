@@ -32,7 +32,7 @@ namespace RemoteSensingProject.Controllers
         {
             RemoteSensingProject.Models.Admin.main.DashboardCount TotalCount = _adminServices.DashboardCount();
             DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
-            ((ControllerBase)this).ViewData["physical"] = (from d in _adminServices.Project_List()
+            ((ControllerBase)this).ViewData["physical"] = (from d in _managerServices.All_Project_List()
                                                            where d.AssignDate >= twoYearsAgo
                                                            select d).ToList();
             ((ControllerBase)this).ViewData["budgetGraph"] = _adminServices.ViewProjectExpenditure();
@@ -287,7 +287,7 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult Project_List(string searchTerm = null, string statusFilter = null)
 		{
-			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _adminServices.Project_List(null, null, "ManagerProject", searchTerm, statusFilter);
+			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(searchTerm:searchTerm, statusFilter:statusFilter);
 			return View();
 		}
 
@@ -298,8 +298,7 @@ namespace RemoteSensingProject.Controllers
 																	 select d).ToList();
 			object viewBag = ((ControllerBase)this).ViewBag;
 			AdminServices adminServices = _adminServices;
-			int? projectManager = projectManagerFilter;
-			((dynamic)viewBag).ProjectList = adminServices.Project_List(null, null, typeFilter, searchTerm, statusFilter, projectManager);
+			((dynamic)viewBag).ProjectList = _managerServices.All_Project_List(projectTypeFilter:typeFilter, searchTerm:searchTerm, statusFilter:statusFilter, userId: projectManagerFilter, filterBy:(projectManagerFilter.HasValue ? "ProjectManager" : ""));
 			return View();
 		}
 
@@ -505,7 +504,7 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult Generate_Notice()
 		{
-			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _adminServices.Project_List();
+			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List();
 			return View();
 		}
 
@@ -515,8 +514,8 @@ namespace RemoteSensingProject.Controllers
 			dynamic projectManager = null;
 			if (id.HasValue)
 			{
-				projectManager = (from e in _adminServices.Project_List()
-								  where e.Id == id
+				projectManager = (from e in _managerServices.All_Project_List()
+                                  where e.Id == id
 								  select e).FirstOrDefault();
 			}
 			return (ActionResult)Json(projectManager, (JsonRequestBehavior)0);
@@ -560,7 +559,7 @@ namespace RemoteSensingProject.Controllers
 			AdminServices adminServices = _adminServices;
 			int? id = projectManager;
 			noticeList = adminServices.getNoticeList(null, null, id, null, searchTerm);
-			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _adminServices.Project_List();
+			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List();
 			((dynamic)((ControllerBase)this).ViewBag).EmployeeList = _adminServices.SelectEmployeeRecord();
 			((ControllerBase)this).ViewData["NoticeList"] = noticeList;
 			return View();
@@ -573,7 +572,7 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult Expense_Report()
 		{
-			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _adminServices.Project_List();
+			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List();
 			return View();
 		}
 
@@ -611,7 +610,7 @@ namespace RemoteSensingProject.Controllers
 			AdminServices adminServices = _adminServices;
 			var res = _managerServices.GetTourList(type: "ALLDATA", projectFilter: projectFilter);
 			((ControllerBase)this).ViewData["allTourList"] = res;
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+			((ControllerBase)this).ViewData["projects"] = _managerServices.All_Project_List();
 			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
 			return View();
 		}
@@ -620,7 +619,7 @@ namespace RemoteSensingProject.Controllers
 		{
 			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
 			viewData["allTourList"] = _managerServices.GetTourList(type: "ALLDATA", projectFilter: projectFilter);
-            ((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+            ((ControllerBase)this).ViewData["projects"] = _managerServices.All_Project_List();
 			return View();
 		}
 
@@ -770,7 +769,7 @@ namespace RemoteSensingProject.Controllers
 					PropertyName = "projectStatusLabel"
 				}
 			};
-				IEnumerable<RemoteSensingProject.Models.Admin.main.Project_model> data = _adminServices.Project_List(null, null, null, searchTerm, statusFilter, projectManagerFilter);
+				IEnumerable<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerServices.All_Project_List(searchTerm:searchTerm, statusFilter:statusFilter, userId:projectManagerFilter, filterBy:(projectManagerFilter.HasValue ? "ProjectManager" : ""));
 				if (type.Equals("Excel", StringComparison.OrdinalIgnoreCase))
 				{
 					byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Project Report");

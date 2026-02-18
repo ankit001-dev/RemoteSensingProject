@@ -213,7 +213,7 @@ $(function () {
     <label>Project Staff Designation</label>
         <select class="form-control form-control-sm hr-designation-select">
             <option value="">Select Designation</option>
-            ${designations.map(d => `<option value="${d.id}">${d.name}</option>`)
+            ${designations.map(d => `<option value="${d.id}" ${hr?.designationId == d.id ? "selected" : ""}>${d.name}</option>`)
                 .join('')}
         </select>
     </div>
@@ -598,9 +598,8 @@ $(function () {
     if (projectId) {
 
         $.ajax({
-            url: "/Employee/GetProjecDatatById",
+            url: "@Url.EncryptedAction("GetProjecDatatById", "Employee", new {Id = ViewBag.projectId })",
             type: "GET",
-            data: { Id: projectId },
             success: function (res) {
                 if (!res.status) return;
 

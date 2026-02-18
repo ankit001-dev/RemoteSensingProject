@@ -1,0 +1,351 @@
+﻿
+@{
+    ViewBag.Title = "Internal_Projects";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["ProjectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    int i = 1;
+}
+
+<style>
+    .link-icon {
+        height: 16px;
+    }
+    .progress-bar {
+        width: 100% !important;
+        background-color: #f3f3f3 !important;
+        border-radius: 5px !important;
+        height: 20px !important;
+    }
+
+    .progress {
+        height: 100% !important;
+        width: 70%;
+        background-color: #4caf50 !important;
+        border-radius: 5px !important;
+        text-align: center !important;
+        line-height: 20px !important; /* Aligns text in the middle */
+        color: white !important;
+        justify-content: center;
+    }
+</style>
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <form class="forms-sample">
+        <div class="row align-items-center">
+            <div class="col-lg-2">
+                <h5>All Project Lists</h5>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <input type="text" id="searchProjectBy" name="searchByProjectName" placeholder="Search by project name" class="form-control">
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <select id="filterProjectStatus" class="form-select form-select-lg">
+                    <option selected value="">Project Status</option>
+                    <option value="Ongoing">Ongoing</option>
+                    <option value="Upcoming">Upcoming</option>
+                    <option value="delay">Delay</option>
+                    <option value="Complete">Completed</option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="row mx-0">
+    <div class="col-md-12 grid-margin p-0 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="dataTableExample">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Project Code</th>
+                                <th>Project Name</th>
+                                <th>Assign Date</th>
+                                <th>Start Date</th>
+                                <th>Completion Date</th>
+                                <th>Physical Status</th>
+                                <th>Financial Status</th>
+                                <th>Overall Status</th>
+                                <th>Project Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (data != null && data.Count > 0)
+                            {
+                                var currentDate = DateTime.Now.Date;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.projectCode</td>
+                                        <td> <a href=" @Url.EncryptedAction("Project_Details", "home", new {id=item.Id})" data-title="View Details">@item.ProjectTitle</a></td>
+                                        <td>@item.AssignDateString</td>
+                                        <td>@item.StartDateString</td>
+                                        <td>@item.CompletionDatestring</td>
+                                        <td>
+                                            <div class="progress-bar">
+                                                <div class="progress" style="width:@item.physicalcomplete%;">@item.physicalcomplete%</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress-bar">
+                                                <div class="progress" style="width:@item.Percentage%;">@item.Percentage%</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="progress-bar">
+                                                <div class="progress" style="width:@item.overallPercentage%;">@item.overallPercentage%</div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            @if (item.ProjectStatus && (item.CompletionDate < currentDate || item.CompletionDate > currentDate))
+                                            {
+                                                <span class="badge bg-success">Completed</span>
+                                            }
+                                            else if (item.StartDate > currentDate && item.CompletionDate > currentDate)
+                                            {
+                                                <span class="badge bg-secondary">Not Started</span>
+                                            }
+                                            else if (!item.ProjectStatus && item.CompletionDate > currentDate)
+                                            {
+                                                <span class="badge bg-warning text-dark">Work in Progress</span>
+                                            }
+
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Delay</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            <ul class="d-flex list-unstyled mb-0 justify-content-center">
+                                                <li class="me-2">
+                                                    <a href="@Url.EncryptedAction("Weekly_Update_Project", "Employee", new {Id=item.Id})" data-title="Weekly Update">
+                                                        <i class="link-icon" data-feather="calendar" style="color:orangered"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="me-2">
+                                                    <a href="javascript:void(0);"
+                                                       class="updateStageBtn"
+                                                       data-id="@item.Id"
+                                                       data-projectstage="@item.ProjectStage">
+                                                        <i class="link-icon text-info" data-feather="plus-circle"></i>
+                                                    </a>
+                                                </li>
+                                                <li class="me-2">
+                                                    <a href="@Url.EncryptedAction("Add_Expenses", "Employee", new {Id=item.Id})" data-title="View Expenses">
+                                                        <i class="link-icon text-primary" data-feather="list"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!--Update project Stage status MOdal-->
+        <div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header text-center text-light">
+                        <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                        <h5 class="modal-title float-start" id="exampleModalLabel">Update Project Status</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form class="forms-sample" id="statusForm">
+                            <input type="hidden" id="projectId" name="projectId" />
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="projectStatus">
+                                    <option value="">Select Status</option>
+                                    <option value="true">Completed</option>
+                                    <option value="false">Pending</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="completion" class="form-label">Completion in %</label>
+                                <input type="number" class="form-control" id="completion" name="CompletionPrecentage" placeholder="Enter Completion Percentage" min="0" max="100">
+                            </div>
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Remark</label>
+                                <textarea class="form-control form-control-sm" name="remark" id="remark" rows="3" placeholder="Enter Remark"></textarea>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Add Status</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var table = $("#projectTable").DataTable();
+    })
+</script>
+
+<script>
+    $(document).on("click", ".updateStageBtn", function () {
+
+        var projectStage = $(this).data("projectstage");
+        var id = $(this).data("id");
+
+        var $completionInput = $("#completion"); // your percentage input
+
+        // Always set default min=0, max=100
+        $completionInput.attr("min", 0);
+        $completionInput.attr("max", 100);
+        $completionInput.val(''); // clear previous value
+        $("#percentageAlert").remove(); // remove old alert
+
+        if (projectStage === true || projectStage === "True") {
+            window.location.href = "/Employee/Update_Project_Stage?Id=" + id;
+        } else {
+            $("#projectId").val(id); // hidden field
+
+            $.ajax({
+                url: '/Employee/LastProjectStatusPrencentage',
+                type: 'get',
+                data: { projectid: id },
+                success: function (response) {
+
+                    if (response.status && response.data.length > 0) {
+                        // Get the highest last completed percentage
+                        var lastPercentage = Math.max(...response.data.map(d => d.CompletionPrecentage));
+
+                        // Show alert inside modal
+                        $("#addslider .modal-body").prepend(
+                            `<div class="alert alert-warning" id="percentageAlert">
+                            You already have <strong>${lastPercentage}%</strong> completed. Enter a higher percentage.
+                        </div>`
+                        );
+
+                        // Set min to lastPercentage (cannot go lower than it)
+                        $completionInput.attr("min", lastPercentage);
+                        $completionInput.val(lastPercentage); // optional: prefill
+                    }
+
+                    // Show modal
+                    $("#addslider").modal("show");
+                },
+                error: function () {
+                    alert("Something went wrong while fetching data.");
+                }
+            });
+        }
+    });
+
+
+    $("#statusForm").on("submit", function (e) {
+        e.preventDefault();
+
+        var $completionInput = $("#completion");
+        var val = parseFloat($completionInput.val());
+        var min = parseFloat($completionInput.attr("min") || 0);
+        var max = parseFloat($completionInput.attr("max") || 100);
+
+        if (isNaN(val)) {
+            Swal.fire("Warning","Please enter a valid percentage","warning");
+            return false;
+        }
+
+        if (val < min) {
+            Swal.fire("Warning","You must enter a value higher than " + min + "%","warning");
+            return false;
+        }
+
+        if (val > max) {
+            Swal.fire("Warning","You cannot enter more than " + max + "%","warning");
+            return false;
+        }
+
+        // Submit via AJAX
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: "/Employee/UpdateProjectStatus",
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            beforeSend: function () {
+                Swal.fire({
+                    title: "Please wait...",
+                    text: "Updating project status",
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+            },
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire("Success", res.message, "success").then(() => {
+                        $("#addslider").modal("hide");
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire("Error", res.message, "error");
+                }
+            },
+            error: function () {
+                Swal.fire("Error", "Something went wrong!", "error");
+            }
+        });
+    });
+
+</script>
+
+<script>
+
+    // Search by text
+    $('#searchProjectBy').on('keyup', function () {
+        let value = $(this).val().trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set("searchTerm", value);
+
+        const division = $("#filterProjectStatus").val();
+        if (division && division !== "null") url.searchParams.set("statusFilter", division);
+        else url.searchParams.delete("statusFilter");
+
+        clearTimeout(window.searchTimer);
+        window.searchTimer = setTimeout(() => {
+            showLoader();
+            window.location.href = url.toString();
+        }, 500);
+    });
+
+    // Filter by status
+    $("#filterProjectStatus").on("change", function () {
+        const url = new URL(window.location.href);
+
+        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        else url.searchParams.delete("statusFilter");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+    // Set values on page load
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('statusFilter');
+
+        if (search) $('#searchProjectBy').val(search).focus();
+        if (division) $('#filterProjectStatus').val(division);
+    });
+
+</script>

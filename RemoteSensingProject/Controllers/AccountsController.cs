@@ -40,12 +40,12 @@ namespace RemoteSensingProject.Controllers
         #region Manage Projects
 		public ActionResult InternalProject(string searchTerm = null)
 		{
-            ViewBag.ProjectList = _managerServices.All_Project_List(userId: null, searchTerm: searchTerm, filterType: "Internal");
+            ViewBag.ProjectList = _managerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "Internal");
             return View();
 		}
         public ActionResult ExternalProject(string searchTerm = null)
         {
-            ViewBag.ProjectList = _managerServices.All_Project_List(userId: null, searchTerm: searchTerm, filterType: "External");
+            ViewBag.ProjectList = _managerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "External");
             return View();
         }
         #endregion
@@ -70,7 +70,7 @@ namespace RemoteSensingProject.Controllers
         #region Manage TourProposal
         public ActionResult TourProposalRequest(int? projectFilter = null)
 		{
-			((ControllerBase)this).ViewData["projectList"] = _adminServices.Project_List();
+			((ControllerBase)this).ViewData["projectList"] = _managerServices.All_Project_List();
 			ViewData["tourproposal"] = _managerServices.GetTourList(type:"ALLDATA",projectFilter:projectFilter);
 			return View();
 		}
@@ -79,7 +79,7 @@ namespace RemoteSensingProject.Controllers
 		{
 			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
 			viewData["allTourList"] = _managerServices.GetTourList(type: "ALLDATA", projectFilter:projectFilter);
-			((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
+			((ControllerBase)this).ViewData["projects"] = _managerServices.All_Project_List();
 			return View();
 		}
 
@@ -87,7 +87,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult FundReport(string statusFilter = null)
 		{
-			List<Models.Admin.main.Project_model> data = _managerServices.All_Project_List(userId:null, statusFilter:statusFilter,filterType:"Internal");
+			List<Models.Admin.main.Project_model> data = _managerServices.All_Project_List(statusFilter:statusFilter, projectTypeFilter: "Internal");
 			((dynamic)((ControllerBase)this).ViewBag).ProjectList = data;
 			return View();
 		}

@@ -489,7 +489,7 @@ namespace RemoteSensingProject.ApiServices
 				"ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
 				"ProjectDepartment", "ContactPerson", "Address"
 				};
-				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(projectManagerFilter, limit, page, null, null, searchTerm, statusFilter);
+				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(userId:projectManagerFilter, limit, page, filterBy: (projectManagerFilter > 0 ? "ProjectManager" : ""), searchTerm:searchTerm, statusFilter:statusFilter);
 				List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
 				if (data.Count > 0)
 				{
@@ -1348,7 +1348,7 @@ namespace RemoteSensingProject.ApiServices
 			try
 			{
 				DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
-				List<RemoteSensingProject.Models.Admin.main.Project_model> data = (from d in _adminServices.Project_List(page, limit)
+				List<RemoteSensingProject.Models.Admin.main.Project_model> data = (from d in _managerservice.All_Project_List(page:page, limit:limit)
 																				   where d.AssignDate >= twoYearsAgo
 																				   select d).ToList();
 				string[] selectProperties = new string[20]

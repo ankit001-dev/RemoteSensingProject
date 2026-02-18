@@ -34,7 +34,7 @@ namespace RemoteSensingProject.ApiServices
         [HttpGet]
         public IHttpActionResult GetProjectList(int? page = null, int? limit = null, string searchTerm = null)
         {
-            List<RemoteSensingProject.Models.Admin.main.Project_model> res = _mangerServices.All_Project_List(0, limit, page, "AccountPending", null, searchTerm);
+            List<RemoteSensingProject.Models.Admin.main.Project_model> res = _mangerServices.All_Project_List(limit:limit,page:page, filterBy:"AccountPending", searchTerm:searchTerm);
             return Ok(new
             {
                 status = true,
@@ -47,7 +47,7 @@ namespace RemoteSensingProject.ApiServices
         [HttpGet]
         public IHttpActionResult GetProjectHistoryList(int? page = null, int? limit = null, string searchTerm = null)
         {
-            List<RemoteSensingProject.Models.Admin.main.Project_model> res = _mangerServices.All_Project_List(0, limit, page, "AccountApproved", null, searchTerm);
+            List<RemoteSensingProject.Models.Admin.main.Project_model> res = _mangerServices.All_Project_List(limit:limit, page:page, filterBy:"AccountApproved", searchTerm: searchTerm);
             return Ok(new
             {
                 status = true,
