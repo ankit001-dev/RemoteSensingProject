@@ -106,13 +106,14 @@ namespace RemoteSensingProject.Controllers
             });
         }
 
-        public ActionResult Add_Project()
+        public ActionResult Add_Project(int?id)
         {
+            ViewBag.projectId = id;
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             var data = _managerServices.GetAllocatedOutSOurceList(id:userid);
-            ((dynamic)((ControllerBase)this).ViewBag).subOrdinateList = data;
-            ((ControllerBase)this).ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
-            ((ControllerBase)this).ViewData["Designations"] = _adminServices.ListDesgination();
+            ViewBag.subOrdinateList = data;
+            ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
+            ViewData["Designations"] = _adminServices.ListDesgination();
             return View();
         }
 
