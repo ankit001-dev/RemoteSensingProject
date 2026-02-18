@@ -286,7 +286,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     {
         public List<OutsourceInfo> outsourceList { get; set; }
         public List<int> outsource { get; set; }
-        public bool proposalType { get; set; }
+        public string proposalType { get; set; } 
         public string projectCode { get; set; }
         public string remark { get; set; }
         public bool newRequest { get; set; }
@@ -304,6 +304,38 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string purpose { get; set; }
         public PaginationInfo Pagination { get; set; }
     }
+    public class TourProposalDto
+    {
+        // Project & Proposal Info
+        public int Id { get; set; }
+        public int ProjectId { get; set; }
+        public string ProjectCode { get; set; }
+        public string ProjectName { get; set; }
+        public string ProposalType { get; set; }
+        public bool NewRequest { get; set; }
+        public bool AdminAppr { get; set; }
+
+        // User / Staff Info 
+        public int UserId { get; set; }
+        public string ProjectManager { get; set; }
+        public string ProjectStaffName { get; set; }  
+        public string Mobile { get; set; }    
+
+        // Tour Details
+        public DateTime DateOfDept { get; set; }
+        public DateTime PeriodFrom { get; set; }
+        public DateTime PeriodTo { get; set; }
+        public DateTime ReturnDate { get; set; }
+        public string Place { get; set; }
+        public string Purpose { get; set; }
+
+        // Remarks
+        public string Remark { get; set; }
+
+        // Pagination (if required for listing)
+        public PaginationInfo Pagination { get; set; }
+    }
+
     public class RaiseProblem
     {
         public PaginationInfo Pagination { get; set; }

@@ -5,15 +5,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Web;
 using System.Web.Mvc;
 using RemoteSensingProject.Controllers;
+using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
 
 namespace RemoteSensingProject.Controllers
 {
 	public class HomeController : Controller
 	{
-		public class usersModel
+		private readonly AdminServices _adminServices;
+		private readonly ManagerService _managerServices;
+
+        public HomeController()
+        {
+			_adminServices = new AdminServices();
+			_managerServices = new ManagerService();
+        }
+
+        #region Models
+        public class usersModel
 		{
 			public string name { get; set; }
 
@@ -48,8 +61,10 @@ namespace RemoteSensingProject.Controllers
 
 			public string id { get; set; }
 		}
+        #endregion
 
-		public ActionResult Login()
+
+        public ActionResult Login()
 		{
 			return View();
 		}
@@ -173,5 +188,18 @@ namespace RemoteSensingProject.Controllers
 			userlist.Add(SubCoordinate);
 			return userlist;
 		}
-	}
+
+        #region Project Details & Tour Detail View
+		public ActionResult Project_Details(int id)
+		{
+			var data = _adminServices.GetProjectById(id);
+			return View(data);
+		}
+		public ActionResult TourDetails(int id)
+		{
+			var data = _managerServices.GetTourDetails(id);
+            return PartialView("_tourDetail",data);
+		}
+        #endregion
+    }
 }

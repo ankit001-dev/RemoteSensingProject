@@ -53,11 +53,11 @@
                 <form class="forms-sample" id="tourForm">
                     <div class="row">
                         <div class="col-lg-4 mb-3">
-                            <label for="proposalType" class="form-label">Project</label>
+                            <label for="proposalType" class="form-label">Tour Type</label>
                             <select class="form-select form-select-sm" id="proposalType" name="proposalType">
                                 <option disabled selected>--select type--</option>
-                                <option value="false">Self</option>
-                                <option value="true">Project staff</option>
+                                <option value="self">Self</option>
+                                <option value="projectstaff">Project staff</option>
                             </select>
                         </div>
                         <div class="col-lg-4 mb-3">
@@ -126,14 +126,11 @@
             <thead>
                 <tr>
                     <th>Sr. No.</th>
-                    <th>Project Code</th>
                     <th>Project Name</th>
                     <th>Purpose</th>
-                    <th>Date of Depart</th>
                     <th>Place Visit</th>
                     <th>Period From</th>
                     <th>Period To</th>
-                    <th>Date of return</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -145,14 +142,11 @@
                     {
                         <tr>
                             <td>@i</td>
-                            <td>@item.projectCode</td>
-                            <td data-id="@item.id"><a data-title="View Details" class="action" href="#">@item.projectName</a></td>
+                            <td><a title="View Detail" class="cursor-pointer viewTourDetails" data-id="@item.id">@item.projectName</a></td>
                             <td>@item.purpose</td>
-                            <td>@item.dateOfDept</td>
                             <td>@item.place</td>
                             <td>@item.periodFrom</td>
                             <td>@item.periodTo</td>
-                            <td>@item.returnDate</td>
                             <td><a class="edit-btn" data-id="@item.id"><i class="fa-solid fa-pencil"></i></a></td>
                         </tr>
                         i++;
@@ -162,6 +156,23 @@
         </table>
     </div>
 </div>
+
+<div class="modal fade" id="tourdetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Details </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="tourDetailContainer">
+                    <!-- Partial view will load here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -360,6 +371,33 @@
 
         })
     });
+
+    $(document).on("click", ".viewTourDetails", function () {
+
+        let id = $(this).data("id");
+
+        Swal.fire({
+            title: "Please wait!",
+            text: "Loading tour details...",
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        $.ajax({
+            url: '/home/TourDetails',
+            type: 'GET',
+            data: { id: id },
+            success: function (html) {
+
+                $("#tourDetailContainer").html(html);
+                $("#tourdetailModal").modal("show");
+                Swal.close();
+            },
+            error: function () {
+                Swal.fire("Error", "Unable to load tour details", "error");
+            }
+        });
+    });
 </script>
 
 <script>
@@ -441,7 +479,7 @@
         $("#purpose").val(data.purpose);
 
         // proposal type (0/1)
-        $("#proposalType").val(data.proposalType ? 'true' : 'false').trigger("change");
+        $("#proposalType").val(data.proposalType.trim() ? 'projectstaff' : 'self').trigger("change");
 
         // 📌 Project
         setTimeout(function () {
@@ -449,7 +487,7 @@
         }, 300);
 
         // 👥 Outsource MULTI SELECT
-        if (data.proposalType && data.outsourceList && data.outsourceList.length > 0) {
+        if (data.proposalType.trim() && data.outsourceList && data.outsourceList.length > 0) {
 
             // show outsource section
             $("#selectOutsource").show();
@@ -526,7 +564,7 @@
         $('#selectOutsource').hide();
         $('#proposalType').on('change', function () {
             const val = $(this).val();
-            if (val == 1) {
+            if (val == 'projectstaff') {
                 $('#selectOutsource').show();
             } else {
                 $('#selectOutsource').hide();

@@ -37,10 +37,8 @@
                         <thead>
                             <tr>
                                 <th class="text-center">Sr. No.</th>
-                                <th>Project Code</th>
                                 <th>Project</th>
                                 <th>Purpose</th>
-                                <th>Date of Depart</th>
                                 <th>Place Visit</th>
                                 <th>Period From</th>
                                 <th>Period To</th>
@@ -54,14 +52,12 @@
                                 {
                                     <tr>
                                         <td>@i</td>
-                                        <td>@item.projectCode</td>
                                         <td>
-                                            <a href="#" data-title="View Details" class="action" data-id="@item.id">
+                                            <a title="View Detail" class="cursor-pointer viewTourDetails" data-id="@item.id">
                                                 @item.projectName
                                             </a>
                                         </td>
                                         <td>@item.purpose</td>
-                                        <td>@Convert.ToDateTime(item.dateOfDept).ToString("dd-MM-yyyy")</td>
                                         <td>@item.place</td>
                                         <td>@Convert.ToDateTime(item.periodFrom).ToString("dd-MM-yyyy")</td>
                                         <td>@Convert.ToDateTime(item.periodTo).ToString("dd-MM-yyyy")</td>
@@ -199,7 +195,51 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="tourdetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Details </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="tourDetailContainer">
+                    <!-- Partial view will load here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    $(document).on("click", ".viewTourDetails", function () {
+
+        let id = $(this).data("id");
+
+        Swal.fire({
+            title: "Please wait!",
+            text: "Loading tour details...",
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        $.ajax({
+            url: '/home/TourDetails',
+            type: 'GET',
+            data: { id: id },
+            success: function (html) {
+
+                $("#tourDetailContainer").html(html);
+                $("#tourdetailModal").modal("show");
+                Swal.close();
+            },
+            error: function () {
+                Swal.fire("Error", "Unable to load tour details", "error");
+            }
+        });
+    });
+
+
     $(document).ready(function () {
 
 

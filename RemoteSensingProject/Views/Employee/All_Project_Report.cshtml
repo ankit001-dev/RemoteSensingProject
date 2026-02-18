@@ -86,7 +86,11 @@
                                     <tr>
                                         <td>@i</td>
                                         <td>@item.projectCode</td>
-                                        <td>@item.ProjectTitle</td>
+                                        <td>
+                                            <a href="/home/Project_Details?id=@item.Id" data-title="View" data-Id="@item.Id">
+                                                @item.ProjectTitle
+                                            </a>
+                                        </td>
                                         <td>@item.devisionName</td>
                                         <td>@item.AssignDateString</td>
                                         <td>@item.StartDateString</td>
