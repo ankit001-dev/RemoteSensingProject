@@ -616,14 +616,6 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
 
-		public ActionResult TourProposal_Report( int? projectFilter = null)
-		{
-			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-			viewData["allTourList"] = _managerServices.GetTourList(type: "ALLDATA", projectFilter: projectFilter);
-            ((ControllerBase)this).ViewData["projects"] = _adminServices.Project_List();
-			return View();
-		}
-
 		public ActionResult RaisedProblem()
 		{
 			((ControllerBase)this).ViewData["problemList"] = _adminServices.getProblemList();

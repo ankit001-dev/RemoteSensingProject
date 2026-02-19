@@ -391,14 +391,16 @@ namespace RemoteSensingProject.Models.ProjectManager
         // Project & Unit Section
         public int PmId { get; set; }
         public int ProjectId { get; set; }
+        public int ProjectStaffId { get; set; }
+        public string ProjectStaffName { get; set; }
         public string ProjectName { get; set; }
         public string Unit { get; set; }
-        public int AnnualTarget { get; set; }
+        public string AnnualTarget { get; set; }
 
         // Target Section
-        public int TargetUptoReviewMonth { get; set; }
-        public int AchievementDuringReviewMonth { get; set; }
-        public int CumulativeAchievement { get; set; }
+        public string TargetUptoReviewMonth { get; set; }
+        public string AchievementDuringReviewMonth { get; set; }
+        public string CumulativeAchievement { get; set; }
 
         // Departments Benefiting & Remarks
         public string BenefitingDepartments { get; set; }

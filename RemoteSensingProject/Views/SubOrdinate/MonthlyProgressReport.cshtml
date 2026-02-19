@@ -1,8 +1,8 @@
 ﻿
 @{
-    ViewBag.Title = "EmpMonthlyReport";
-    Layout = "~/Views/Shared/_employeeLayout.cshtml";
-    var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    ViewBag.Title = "MonthlyProgressReport";
+    Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
+    var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task>;
     var reports = ViewData["ReportList"] as List<RemoteSensingProject.Models.ProjectManager.EmpReportModel>;
 }
 
@@ -119,7 +119,7 @@
                                 {
                                     foreach (var item in projects)
                                     {
-                                        <option value="@item.Id">@item.ProjectTitle</option>
+                                        <option value="@item.projectId">@item.projectName</option>
                                     }
                                 }
                             </select>
@@ -167,7 +167,7 @@
 
                         <div class="col-lg-4 mb-3">
                             <label for="remarks" class="form-label">Remarks</label>
-                            <textarea class="form-control form-control-sm" name="Remarks" rows="3" placeholder="Enter Remarks or Observations"></textarea>
+                            <textarea class="form-control form-control-sm" name="Remarks" rows="2" placeholder="Enter Remarks or Observations"></textarea>
                         </div>
 
                     </div>
@@ -213,7 +213,7 @@
             let formdata = $(this).serialize();
 
             $.ajax({
-                url: '/employee/InsertEmpReport',
+                url: '/subordinate/InsertMonthlyProgress',
                 type: 'post',
                 data: formdata,
                 success: function (res) {
@@ -317,6 +317,4 @@
     });
 
 </script>
-
-
 
