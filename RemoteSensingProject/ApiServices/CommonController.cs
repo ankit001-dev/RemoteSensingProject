@@ -716,7 +716,7 @@ public class CommonController : ApiController
     }
 	#endregion
 
-	#region All Project List
+	#region CGP Api's
 	[JwtAuthorize(Roles ="cgp")]	
     [HttpGet]
     [Route("api/cgpProjectList")]
@@ -737,6 +737,21 @@ public class CommonController : ApiController
                 return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
             }
             return CommonHelper.NoData((ApiController)(object)this);
+        }
+        catch (Exception ex)
+        {
+            return CommonHelper.Error((ApiController)(object)this, ex.Message);
+        }
+    }
+	[JwtAuthorize(Roles ="cgp")]	
+    [HttpGet]
+    [Route("api/cgp-dashboard")]
+    public IHttpActionResult GetCgpDashbaordCount()
+    {
+        try
+        {
+            var data = _adminServices.DashboardCount();
+            return CommonHelper.Success((ApiController)(object)this, data, "Data fetched successfully", 200);
         }
         catch (Exception ex)
         {

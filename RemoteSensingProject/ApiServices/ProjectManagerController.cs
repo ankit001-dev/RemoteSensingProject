@@ -1270,10 +1270,10 @@ namespace RemoteSensingProject.ApiServices
                     PmId = Convert.ToInt32(req.Form.Get("PmId")),
                     ProjectId = Convert.ToInt32(req.Form.Get("ProjectId")),
                     Unit = req.Form.Get("Unit").ToString(),
-                    AnnualTarget = Convert.ToInt32(req.Form.Get("AnnualTarget")),
-                    TargetUptoReviewMonth = Convert.ToInt32(req.Form.Get("TargetUptoReviewMonth")),
-                    AchievementDuringReviewMonth = Convert.ToInt32(req.Form.Get("AchievementDuringReviewMonth")),
-                    CumulativeAchievement = Convert.ToInt32(req.Form.Get("CumulativeAchievement")),
+                    AnnualTarget = req.Form.Get("AnnualTarget").ToString(),
+                    TargetUptoReviewMonth = req.Form.Get("TargetUptoReviewMonth").ToString(),
+                    AchievementDuringReviewMonth = req.Form.Get("AchievementDuringReviewMonth").ToString(),
+                    CumulativeAchievement = req.Form.Get("CumulativeAchievement").ToString(),
                     BenefitingDepartments = req.Form.Get("BenefitingDepartments").ToString(),
                     Remarks = req.Form.Get("Remarks").ToString()
                 };

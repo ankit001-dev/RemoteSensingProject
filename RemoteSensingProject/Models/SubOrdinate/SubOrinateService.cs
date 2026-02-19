@@ -2,6 +2,12 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // SubOrinateService
+using DocumentFormat.OpenXml.Office.Word;
+using Npgsql;
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.SubOrdinate;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,11 +15,6 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Web.UI;
-using DocumentFormat.OpenXml.Office.Word;
-using Npgsql;
-using RemoteSensingProject.Models;
-using RemoteSensingProject.Models.Admin;
-using RemoteSensingProject.Models.SubOrdinate;
 
 namespace RemoteSensingProject.Models.SubOrdinate
 {
@@ -445,5 +446,141 @@ namespace RemoteSensingProject.Models.SubOrdinate
 				((DbConnection)(object)con).Close();
 			}
 		}
-	}
+
+        #region Manage Monthly Report
+        public bool InsertStaffMonthlyReport(EmpReportModel model, out string message)
+        {
+            message = string.Empty;
+            try
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand("call sp_ManageEmpReport(@v_action,NULL,@v_id,@v_ProjectId,@v_unit,@v_annualtarget,@v_targetuptoreviewmonth,@v_achievementduringreviewmonth,@v_cumulativeachievement,@v_benefitingdepartments,@v_remarks,Null);", con);
+                try
+                {
+                    ((DbCommand)(object)cmd).CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("@v_action", (object)"insertstaffmonthlyreport");
+                    cmd.Parameters.AddWithValue("@v_ProjectId", (object)model.ProjectId);
+                    cmd.Parameters.AddWithValue("@v_id", (object)model.ProjectStaffId);
+                    cmd.Parameters.AddWithValue("@v_unit", (object)model.Unit);
+                    cmd.Parameters.AddWithValue("@v_annualtarget", (object)model.AnnualTarget);
+                    cmd.Parameters.AddWithValue("@v_targetuptoreviewmonth", (object)model.TargetUptoReviewMonth);
+                    cmd.Parameters.AddWithValue("@v_achievementduringreviewmonth", (object)model.AchievementDuringReviewMonth);
+                    cmd.Parameters.AddWithValue("@v_cumulativeachievement", (object)model.CumulativeAchievement);
+                    cmd.Parameters.AddWithValue("@v_benefitingdepartments", (object)model.BenefitingDepartments);
+                    cmd.Parameters.AddWithValue("@v_remarks", (object)(model.Remarks ?? string.Empty));
+                    ((DbConnection)(object)con).Open();
+                    ((DbCommand)(object)cmd).ExecuteNonQuery();
+                    return true;
+                }
+                finally
+                {
+                    ((IDisposable)cmd)?.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
+
+        public List<EmpReportModel> GetStaffMonthlyReport(int userid, int? limit = null, int? page = null, int? id = null, int? month = null, int? year = null)
+        {
+            try
+            {
+                List<EmpReportModel> list = new List<EmpReportModel>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageempreport_cursor", con);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"getstaffreport");
+                        cmd.Parameters.AddWithValue("@v_projectmanager", (object)userid);
+                        cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_month", month.HasValue ? ((object)month.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_year", year.HasValue ? ((object)year.Value) : DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader res = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)res).HasRows)
+                                {
+                                    while (((DbDataReader)(object)res).Read())
+                                    {
+                                        list.Add(new EmpReportModel
+                                        {
+                                            ProjectId = ((((DbDataReader)(object)res)["ProjectId"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["ProjectId"]) : 0),
+                                            ProjectStaffId = ((((DbDataReader)(object)res)["projectstaffid"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["projectstaffid"]) : 0),
+                                            ProjectName = ((((DbDataReader)(object)res)["title"] != DBNull.Value) ? ((DbDataReader)(object)res)["title"].ToString() : ""),
+                                            ProjectStaffName = ((((DbDataReader)(object)res)["emp_name"] != DBNull.Value) ? ((DbDataReader)(object)res)["emp_name"].ToString() : ""),
+                                            Unit = ((((DbDataReader)(object)res)["Unit"] != DBNull.Value) ? ((DbDataReader)(object)res)["Unit"].ToString() : ""),
+                                            AnnualTarget = ((((DbDataReader)(object)res)["AnnualTarget"] != DBNull.Value) ? ((DbDataReader)(object)res)["AnnualTarget"].ToString() : null),
+                                            TargetUptoReviewMonth = ((((DbDataReader)(object)res)["TargetUptoReviewMonth"] != DBNull.Value) ? ((DbDataReader)(object)res)["TargetUptoReviewMonth"].ToString() : null),
+                                            AchievementDuringReviewMonth = ((((DbDataReader)(object)res)["AchievementDuringReviewMonth"] != DBNull.Value) ? ((DbDataReader)(object)res)["AchievementDuringReviewMonth"].ToString() : null),
+                                            CumulativeAchievement = ((((DbDataReader)(object)res)["CumulativeAchievement"] != DBNull.Value) ? ((DbDataReader)(object)res)["CumulativeAchievement"].ToString() : null),
+                                            BenefitingDepartments = ((((DbDataReader)(object)res)["BenefitingDepartments"] != DBNull.Value) ? ((DbDataReader)(object)res)["BenefitingDepartments"].ToString() : ""),
+                                            Remarks = ((((DbDataReader)(object)res)["Remarks"] != DBNull.Value) ? ((DbDataReader)(object)res)["Remarks"].ToString() : ""),
+                                            CreatedAt = Convert.ToDateTime(((DbDataReader)(object)res)["CreatedAt"]).ToString("dd-mm-yyyy")
+                                        });
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)res)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
+        #endregion
+    }
 }
