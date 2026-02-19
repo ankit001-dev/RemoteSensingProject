@@ -1896,13 +1896,12 @@ namespace RemoteSensingProject.Models.ProjectManager
             NpgsqlTransaction tran = con.BeginTransaction();
             try
             {
-                cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(v_action=>@v_action,v_id=> @v_id,v_empid=> @v_empid,v_title=>@v_title, v_description=>@v_description,v_taskid=> @v_taskid,v_completiondate => @v_completiondate)", con, tran);
+                cmd = new NpgsqlCommand("CALL sp_manageoutsourcetask(v_action=>@v_action,v_id=> @v_id,v_empid=> @v_empid,v_title=>@v_title, v_description=>@v_description,v_taskid=> @v_taskid)", con, tran);
                 ((DbCommand)(object)cmd).CommandType = CommandType.Text;
                 cmd.Parameters.AddWithValue("@v_action", (object)"createTask");
                 cmd.Parameters.AddWithValue("@v_id", ost.projectId);
                 cmd.Parameters.AddWithValue("@v_empid", (object)ost.empId);
                 cmd.Parameters.AddWithValue("@v_title", (object)ost.title);
-                cmd.Parameters.AddWithValue("@v_completiondate", (object)ost.completionDate);
                 cmd.Parameters.AddWithValue("@v_description", (object)ost.description);
                 NpgsqlParameter val = new NpgsqlParameter("@v_taskid", (NpgsqlDbType)9);
                 ((DbParameter)val).Direction = ParameterDirection.InputOutput;

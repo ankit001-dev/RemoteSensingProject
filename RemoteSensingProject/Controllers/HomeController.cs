@@ -192,7 +192,8 @@ namespace RemoteSensingProject.Controllers
         #region Project Details & Tour Detail View
 		public ActionResult Project_Details(int id)
 		{
-			var data = _adminServices.GetProjectById(id);
+			ViewBag.projectId = id;
+            var data = _adminServices.GetProjectById(id);
 			return View(data);
 		}
 		public ActionResult TourDetails(int id)

@@ -338,11 +338,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getManagerProject")]
-        public IHttpActionResult GetProjectList(int userId, int? page = null, int? limit = null, string searchTerm = null, string statusFilter = null)
+        public IHttpActionResult GetProjectList(int userId, int? page = null, int? limit = null, string searchTerm = null, string statusFilter = null, string projectTypeFilter = null)
         {
             try
             {
-                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId:userId, limit: limit, page: page, filterBy:"ManagerProject", searchTerm: searchTerm, statusFilter:statusFilter);
+                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId:userId, limit: limit, page: page, filterBy:"ProjectManager", searchTerm: searchTerm, statusFilter:statusFilter, projectTypeFilter:projectTypeFilter);
                 string[] selectProperties = new string[20]
                 {
                 "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
@@ -360,107 +360,6 @@ namespace RemoteSensingProject.ApiServices
                 return CommonHelper.Error((ApiController)(object)this, ex.Message);
             }
         }
-
-        [HttpGet]
-        [Route("api/getManagerCompleteProject")]
-        public IHttpActionResult GetCompleteProject(int userId, int page, int limit)
-        {
-            try
-            {
-                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId, limit, page, "Complete");
-                string[] selectProperties = new string[20]
-                {
-                "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
-                "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode"
-                };
-                List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
-                if (data.Count > 0)
-                {
-                    return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
-                }
-                return CommonHelper.NoData((ApiController)(object)this);
-            }
-            catch (Exception ex)
-            {
-                return CommonHelper.Error((ApiController)(object)this, ex.Message);
-            }
-        }
-
-        [HttpGet]
-        [Route("api/getmanagerdelayProject")]
-        public IHttpActionResult getmanagerDelay(int userId, int? limit, int? page)
-        {
-            try
-            {
-                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId, limit, page, "delay");
-                string[] selectProperties = new string[20]
-                {
-                "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
-                "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode"
-                };
-                List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
-                if (data.Count > 0)
-                {
-                    return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
-                }
-                return CommonHelper.NoData((ApiController)(object)this);
-            }
-            catch (Exception ex)
-            {
-                return CommonHelper.Error((ApiController)(object)this, ex.Message);
-            }
-        }
-
-        [HttpGet]
-        [Route("api/getmanagerOngoingProject")]
-        public IHttpActionResult onGoingProject(int userId, int? limit, int? page)
-        {
-            try
-            {
-                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId, limit, page, "Ongoing");
-                string[] selectProperties = new string[20]
-                {
-                "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
-                "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode"
-                };
-                List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
-                if (data.Count > 0)
-                {
-                    return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
-                }
-                return CommonHelper.NoData((ApiController)(object)this);
-            }
-            catch (Exception ex)
-            {
-                return CommonHelper.Error((ApiController)(object)this, ex.Message);
-            }
-        }
-
-        [HttpGet]
-        [Route("api/getAllProjectList")]
-        public IHttpActionResult getAllProjectList(int userId, int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null)
-        {
-            try
-            {
-                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId: userId, limit: limit, page:page,searchTerm: searchTerm, statusFilter: statusFilter);
-                string[] selectProperties = new string[20]
-                {
-                "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
-                "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode"
-                };
-                List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
-                if (data.Count > 0)
-                {
-                    return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
-                }
-                return CommonHelper.NoData((ApiController)(object)this);
-            }
-            catch (Exception ex)
-            {
-                return CommonHelper.Error((ApiController)(object)this, ex.Message);
-            }
-        }
-
         [HttpGet]
         [Route("api/getManagerNotice")]
         public IHttpActionResult NoticeList(int managerId, int? page = null, int? limit = null, string searchTerm = null)

@@ -294,7 +294,7 @@
 
     $(".headExpense").click(function () {
         let headId = $(this).attr("data-Id");
-        let projectId = @Request.QueryString["Id"];
+        let projectId = @ViewBag.projectId;
 
             Swal.fire({
             title: "Please wait !",
