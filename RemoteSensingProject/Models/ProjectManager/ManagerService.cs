@@ -23,10 +23,6 @@ namespace RemoteSensingProject.Models.ProjectManager
     {
         public DashboardCount DashboardCount(int userId)
         {
-            //IL_0027: Unknown result type (might be due to invalid IL or missing references)
-            //IL_002d: Expected O, but got Unknown
-            //IL_009d: Unknown result type (might be due to invalid IL or missing references)
-            //IL_00a4: Expected O, but got Unknown
             DashboardCount obj = null;
             try
             {
@@ -52,13 +48,14 @@ namespace RemoteSensingProject.Models.ProjectManager
                                 {
                                     ((DbDataReader)(object)sdr).Read();
                                     obj = new DashboardCount();
-                                    obj.TotalAssignProject = ((DbDataReader)(object)sdr)["TotalAssignProject"].ToString();
+                                    obj.TotalExternalProject = sdr["TotalExternalProject"].ToString();
+                                    obj.TotalInternalProject = sdr["TotalInternalProject"].ToString();
                                     obj.TotaCompleteProject = ((DbDataReader)(object)sdr)["TotalCompleteProject"].ToString();
                                     obj.TotalDelayProject = ((DbDataReader)(object)sdr)["TotalDelayproject"].ToString();
                                     obj.TotalNotice = ((DbDataReader)(object)sdr)["TotalNotice"].ToString();
                                     obj.TotalOngoingProject = ((DbDataReader)(object)sdr)["TotalOngoingProject"].ToString();
                                     obj.TotalMeeting = ((DbDataReader)(object)sdr)["totalMeetings"].ToString();
-                                    obj.SelfCreatedProject = ((DbDataReader)(object)sdr)["SelfCreatedProject"].ToString();
+                                    obj.SelfCreatedProject = ((DbDataReader)(object)sdr)["TotalProject"].ToString();
                                     obj.EmpMeeting = ((DbDataReader)(object)sdr)["EmpMeeting"].ToString();
                                     obj.AdminMeeting = ((DbDataReader)(object)sdr)["AdminMeeting"].ToString();
                                     obj.TotalTask = ((DbDataReader)(object)sdr)["TotalTask"].ToString();

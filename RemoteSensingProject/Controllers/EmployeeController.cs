@@ -489,7 +489,9 @@ namespace RemoteSensingProject.Controllers
         public ActionResult All_Project_Report(string searchTerm = null, string statusFilter = null)
         {
             UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), searchTerm: searchTerm, statusFilter: statusFilter);
+            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy:"ProjectManager", searchTerm: searchTerm, statusFilter: statusFilter);
+            ViewBag.statusFilter = statusFilter;
+            ViewBag.searchTerm = searchTerm;
             return View();
         }
 
