@@ -15,7 +15,8 @@ namespace RemoteSensingProject.Helpers
 
             foreach(var item in Dict)
             {
-                queryString[item.Key] = item.Value.ToString();
+                queryString[item.Key] = item.Value?.ToString() ?? string.Empty;
+
             }
 
             string plainQuery = queryString.ToString();

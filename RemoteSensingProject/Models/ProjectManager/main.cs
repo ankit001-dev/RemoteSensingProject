@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Security.Policy;
 using System.Web;
 using static RemoteSensingProject.Models.ApiCommon;
@@ -18,37 +19,20 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string ProjectProblem { get; set; }
         public string TotalOutsourceCount { get; set; }
         public string OutSource { get; set; }
-
         public string CompletedTask { get; set; }
-
         public string TotalTask { get; set; }
-
-        public string TourPendingRequest { get; set; }
-
-        public string TourApprovedRequest { get; set; }
-
-        public string TourRejectedRequest { get; set; }
-
         public string EmpMeeting { get; set; }
-
-        public string TotalTourProposal { get; set; }
-
         public string AdminMeeting { get; set; }
-
         public string SelfCreatedProject { get; set; }
-
         public string TotalAssignProject { get; set; }
-
         public string TotaCompleteProject { get; set; }
-
         public string TotalDelayProject { get; set; }
-
         public string TotalMeeting { get; set; }
-
         public string TotalOngoingProject { get; set; }
-
         public string TotalNotice { get; set; }
         public string TotalManpowerRequest { get; set; }
+        public string TotalInternalProject { get; set; }
+        public string TotalExternalProject { get; set; }
     }
 
 

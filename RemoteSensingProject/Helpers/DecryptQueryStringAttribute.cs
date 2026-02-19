@@ -18,18 +18,30 @@ namespace RemoteSensingProject.Helpers
                 {
                     string decryptedQuery = UrlEncryption.Decrypt(encrypted);
 
-                    var query = HttpUtility.ParseQueryString(decryptedQuery);
+                    var query = HttpUtility.ParseQueryString(decryptedQuery);  // Check this.
                     var parameters = filterContext.ActionDescriptor
                                .GetParameters();
                     foreach (string key in query.AllKeys)
                     {
                         var param = parameters.FirstOrDefault(p => p.ParameterName == key);
+
                         if (param != null)
                         {
-                            var convertedValue = Convert.ChangeType(
-                                query[key],
-                                param.ParameterType
-                            );
+                            var targetType = param.ParameterType;
+
+                            // Handle Nullable<T>
+                            if (Nullable.GetUnderlyingType(targetType) != null)
+                            {
+                                targetType = Nullable.GetUnderlyingType(targetType);
+
+                                if (string.IsNullOrEmpty(query[key]))
+                                {
+                                    filterContext.ActionParameters[key] = null;
+                                    return;
+                                }
+                            }
+
+                            var convertedValue = Convert.ChangeType(query[key], targetType);
 
                             filterContext.ActionParameters[key] = convertedValue;
                         }

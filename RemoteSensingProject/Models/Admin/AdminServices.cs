@@ -668,7 +668,8 @@ namespace RemoteSensingProject.Models.Admin
                             ["p_action"] = ((item2.id <= 0) ? "insertHumanResources" : "updateHumanResources"),
                             ["p_project_id"] = ((pm.pm.Id > 0) ? pm.pm.Id : projectId),
                             ["p_id"] = item2.designationId,
-                            ["p_hrcount"] = item2.designationCount,
+                            ["p_hrcount"] = item2.designationRequirement,
+                            ["p_hrExisting"] = item2.designationCount,
                             ["p_projectmanager"] = item2.id
                         };
                         ExecuteProjectAction(hrparams, tran);
@@ -741,7 +742,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             //IL_000d: Unknown result type (might be due to invalid IL or missing references)
             //IL_0013: Expected O, but got Unknown
-            NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_adminaddproject(\r\n    @p_action,\r\n    @p_letterno,\r\n    @p_id,\r\n    @p_title,\r\n    @p_assigndate,\r\n    @p_startdate,\r\n    @p_completiondate,\r\n    @p_projectmanager,\r\n    @p_subordinate,\r\n    @p_budget,\r\n    @p_description,\r\n    @p_projectdocument,\r\n    @p_projecttype,\r\n    @p_stage,\r\n    @p_projectcode,\r\n    @p_approvestatus,\r\n    @p_createdby,\r\n    @p_status,\r\n    @p_heads,\r\n    @p_headsamount,\r\n    @p_keypoint,\r\n    @p_stagedocument,\r\n    @p_departmentname,\r\n    @p_contactperson,\r\n    @p_address,\r\n    @p_hrcount,\r\n    @p_project_id\r\n)", con, tran);
+            NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_adminaddproject(\r\n    @p_action,\r\n    @p_letterno,\r\n    @p_id,\r\n    @p_title,\r\n    @p_assigndate,\r\n    @p_startdate,\r\n    @p_completiondate,\r\n    @p_projectmanager,\r\n    @p_subordinate,\r\n    @p_budget,\r\n    @p_description,\r\n    @p_projectdocument,\r\n    @p_projecttype,\r\n    @p_stage,\r\n    @p_projectcode,\r\n    @p_approvestatus,\r\n    @p_createdby,\r\n    @p_status,\r\n    @p_heads,\r\n    @p_headsamount,\r\n    @p_keypoint,\r\n    @p_stagedocument,\r\n    @p_departmentname,\r\n    @p_contactperson,\r\n    @p_address,\r\n    @p_hrcount,\r\n @p_hrExisting,  @p_project_id\r\n)", con, tran);
             try
             {
                 ((DbCommand)(object)cmd).CommandType = CommandType.Text;
@@ -749,7 +750,7 @@ namespace RemoteSensingProject.Models.Admin
             {
                 "p_action", "p_letterno", "p_id", "p_title", "p_assigndate", "p_startdate", "p_completiondate", "p_projectmanager", "p_subordinate", "p_budget",
                 "p_description", "p_projectdocument", "p_projecttype", "p_stage", "p_projectcode", "p_approvestatus", "p_createdby", "p_status", "p_heads", "p_headsamount",
-                "p_keypoint", "p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_hrcount", "p_project_id"
+                "p_keypoint", "p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_hrcount", "p_hrExisting", "p_project_id"
             };
                 foreach (string paramName in allParams)
                 {
@@ -805,99 +806,7 @@ namespace RemoteSensingProject.Models.Admin
             return null;
         }
 
-        public List<main.Project_model> Project_List(int? page = null, int? limit = null, string filterType = null, string searchTerm = null, string statusFilter = null, int? projectManager = null)
-        {
-            //IL_0014: Unknown result type (might be due to invalid IL or missing references)
-            //IL_001e: Expected O, but got Unknown
-            try
-            {
-                List<main.Project_model> list = new List<main.Project_model>();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_projectManager,@v_filterType,@v_limit,@v_page,@v_searchTerm,@v_statusFilter)", con);
-                cmd.Parameters.AddWithValue("@action", (object)"GetAllProject");
-                cmd.Parameters.AddWithValue("@v_id", (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_projectManager", projectManager.HasValue ? ((object)projectManager) : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_filterType", (object)(string.IsNullOrEmpty(filterType) ? ((IConvertible)DBNull.Value) : ((IConvertible)filterType)));
-                cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_searchTerm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
-                cmd.Parameters.AddWithValue("@v_statusFilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
-                ((DbConnection)(object)con).Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (((DbDataReader)(object)rd).HasRows)
-                {
-                    bool firstRow = true;
-                    while (((DbDataReader)(object)rd).Read())
-                    {
-                        main.Project_model project = new main.Project_model
-                        {
-                            Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
-                            ProjectTitle = ((DbDataReader)(object)rd)["title"].ToString(),
-                            AssignDate = GetDateSafe((IDataReader)rd, "assignDate"),
-                            CompletionDate = GetDateSafe((IDataReader)rd, "completionDate"),
-                            StartDate = GetDateSafe((IDataReader)rd, "startDate"),
-                            ProjectManager = ((DbDataReader)(object)rd)["name"].ToString(),
-                            Percentage = ((((DbDataReader)(object)rd)["financialStatusPercentage"] != DBNull.Value) ? ((DbDataReader)(object)rd)["financialStatusPercentage"].ToString() : ""),
-                            ProjectBudget = Convert.ToDecimal((((DbDataReader)(object)rd)["budget"] != DBNull.Value) ? ((DbDataReader)(object)rd)["budget"] : ((object)0)),
-                            ProjectDescription = ((DbDataReader)(object)rd)["description"].ToString(),
-                            projectDocumentUrl = ((DbDataReader)(object)rd)["ProjectDocument"].ToString(),
-                            ProjectType = ((DbDataReader)(object)rd)["projectType"].ToString(),
-                            physicalcomplete = Math.Round(Convert.ToDecimal(((DbDataReader)(object)rd)["completionPercentage"]), 2),
-                            overallPercentage = Convert.ToDecimal(((DbDataReader)(object)rd)["overallPercentage"]),
-                            ProjectStage = Convert.ToBoolean(((DbDataReader)(object)rd)["stage"]),
-                            ProjectStatus = Convert.ToBoolean(((DbDataReader)(object)rd)["CompleteStatus"]),
-                            createdBy = ((DbDataReader)(object)rd)["createdBy"].ToString(),
-                            projectCode = ((((DbDataReader)(object)rd)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)rd)["projectCode"].ToString() : "N/A"),
-                            devisionName = ((DbDataReader)(object)rd)["devisionname"].ToString()
-                        };
-                        project.CompletionDatestring = project.CompletionDate?.ToString("dd-MM-yyyy") ?? "N/A";
-                        project.AssignDateString = project.AssignDate?.ToString("dd-MM-yyyy") ?? "N/A";
-                        project.StartDateString = project.StartDate?.ToString("dd-MM-yyyy") ?? "N/A";
-                        if (project.ProjectStatus || project.physicalcomplete == 100m)
-                        {
-                            project.projectStatusLabel = "Completed";
-                        }
-                        else if (project.CompletionDate < DateTime.Now)
-                        {
-                            project.projectStatusLabel = "Delay";
-                        }
-                        else if (project.StartDate < DateTime.Now)
-                        {
-                            project.projectStatusLabel = "Ongoing";
-                        }
-                        else if (project.StartDate > DateTime.Now)
-                        {
-                            project.projectStatusLabel = "Upcoming";
-                        }
-                        if (firstRow)
-                        {
-                            project.Pagination = new ApiCommon.PaginationInfo
-                            {
-                                PageNumber = page.GetValueOrDefault(),
-                                TotalPages = Convert.ToInt32((((DbDataReader)(object)rd)["totalpages"] != DBNull.Value) ? ((DbDataReader)(object)rd)["totalpages"] : ((object)0)),
-                                TotalRecords = Convert.ToInt32((((DbDataReader)(object)rd)["totalrecords"] != DBNull.Value) ? ((DbDataReader)(object)rd)["totalrecords"] : ((object)0)),
-                                PageSize = limit.GetValueOrDefault()
-                            };
-                            firstRow = false;
-                        }
-                        list.Add(project);
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            finally
-            {
-                if (((DbConnection)(object)con).State == ConnectionState.Open)
-                {
-                    ((DbConnection)(object)con).Close();
-                }
-                ((Component)(object)cmd).Dispose();
-            }
-        }
-
+       
         public List<main.Project_model> getHeadByProject(int projectId, int? page = null, int? limit = null)
         {
             //IL_0021: Unknown result type (might be due to invalid IL or missing references)
@@ -906,13 +815,17 @@ namespace RemoteSensingProject.Models.Admin
             {
                 List<main.Project_model> _headList = new List<main.Project_model>();
                 ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
                 main.Project_model obj = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@v_action,@v_id,@v_limit ,@v_page)", con);
-                cmd.Parameters.AddWithValue("@v_action", (object)"getHeadByProject");
-                cmd.Parameters.AddWithValue("@v_id", (object)projectId);
-                cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlCommand cmd = new NpgsqlCommand("fn_get_all_projects", con, tran);
+                cmd.CommandType = CommandType.StoredProcedure; 
+                cmd.Parameters.AddWithValue("v_action", (object)"getHeadByProject");
+                cmd.Parameters.AddWithValue("v_id", (object)projectId);
+                cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+                cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                string cursorName = cmd.ExecuteScalar().ToString();
+                NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                NpgsqlDataReader sdr = fetchCmd.ExecuteReader();
                 if (((DbDataReader)(object)sdr).HasRows)
                 {
                     while (((DbDataReader)(object)sdr).Read())
@@ -946,13 +859,17 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 main.createProjectModel cpm = new main.createProjectModel();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_limit,@v_page)", con);
-                cmd.Parameters.AddWithValue("@action", (object)"GetProjectById");
-                cmd.Parameters.AddWithValue("@v_id", (object)id);
-                cmd.Parameters.AddWithValue("@v_limit", (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", (object)DBNull.Value);
                 ((DbConnection)(object)con).Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                cmd = new NpgsqlCommand("fn_get_all_projects", con, tran);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("v_action", (object)"GetProjectById");
+                cmd.Parameters.AddWithValue("v_id", (object)id);
+                cmd.Parameters.AddWithValue("v_limit", (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("v_page", (object)DBNull.Value);
+                string cursorName = cmd.ExecuteScalar().ToString();
+                NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                NpgsqlDataReader rd = fetchCmd.ExecuteReader();
                 List<main.Project_Subordination> subList = new List<main.Project_Subordination>();
                 main.Project_model pm = new main.Project_model();
                 if (((DbDataReader)(object)rd).HasRows)
@@ -1016,84 +933,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public bool createApiProject(main.Project_model pm)
-        {
-            NpgsqlTransaction tran = null;
-            NpgsqlCommand cmd = null;
-            try
-            {
-                ((DbConnection)(object)con).Open();
-                tran = con.BeginTransaction();
-                Random rand = new Random();
-                pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
-                int letterNo;
-                int ProjectManager;
-                Dictionary<string, object> projectParams = new Dictionary<string, object>
-                {
-                    ["p_action"] = ((pm.Id > 0) ? "updateProject" : "insertProject"),
-                    ["p_letterno"] = (int.TryParse(pm.letterNo, out letterNo) ? letterNo : 0),
-                    ["p_title"] = pm.ProjectTitle,
-                    ["p_assigndate"] = pm.AssignDate,
-                    ["p_startdate"] = pm.StartDate,
-                    ["p_completiondate"] = pm.CompletionDate,
-                    ["p_projectmanager"] = (int.TryParse(pm.ProjectManager, out ProjectManager) ? ProjectManager : 0),
-                    ["p_budget"] = pm.ProjectBudget,
-                    ["p_description"] = pm.ProjectDescription,
-                    ["p_projectdocument"] = pm.projectDocumentUrl,
-                    ["p_projecttype"] = pm.ProjectType,
-                    ["p_stage"] = pm.ProjectStage,
-                    ["p_createdby"] = "admin",
-                    ["p_status"] = true,
-                    ["p_approvestatus"] = true,
-                    ["p_projectcode"] = pm.projectCode
-                };
-                int projectId = ExecuteProjectAction(projectParams, tran);
-                if (pm.SubOrdinate != null && pm.SubOrdinate.Length != 0)
-                {
-                    int[] subOrdinate = pm.SubOrdinate;
-                    foreach (int subId in subOrdinate)
-                    {
-                        int SubProjectManager;
-                        Dictionary<string, object> subParams = new Dictionary<string, object>
-                        {
-                            ["p_action"] = "insertSubOrdinate",
-                            ["p_project_id"] = projectId,
-                            ["p_id"] = subId,
-                            ["p_projectmanager"] = (int.TryParse(pm.ProjectManager, out SubProjectManager) ? SubProjectManager : 0)
-                        };
-                        ExecuteProjectAction(subParams, tran);
-                    }
-                }
-                if (pm.ProjectType.Equals("External") && projectId > 0)
-                {
-                    Dictionary<string, object> extParams = new Dictionary<string, object>
-                    {
-                        ["p_action"] = ((pm.Id > 0) ? "updateExternalProject" : "insertExternalProject"),
-                        ["p_project_id"] = projectId,
-                        ["p_departmentname"] = pm.ProjectDepartment,
-                        ["p_contactperson"] = pm.ContactPerson,
-                        ["p_address"] = pm.Address
-                    };
-                    ExecuteProjectAction(extParams, tran);
-                }
-                ((DbTransaction)(object)tran).Commit();
-                return true;
-            }
-            catch (Exception)
-            {
-                ((DbTransaction)(object)tran).Rollback();
-                return false;
-            }
-            finally
-            {
-                if (((DbConnection)(object)con).State == ConnectionState.Open)
-                {
-                    ((DbConnection)(object)con).Close();
-                }
-                ((Component)(object)cmd).Dispose();
-            }
-        }
-
+       
         public bool insertProjectStages(main.Project_Statge stg)
         {
             NpgsqlTransaction tran = null;
@@ -1405,7 +1245,8 @@ namespace RemoteSensingProject.Models.Admin
                                             id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
                                             designationId = Convert.ToInt32(((DbDataReader)(object)rd)["project_id"]),
                                             designationCount = Convert.ToInt32(((DbDataReader)(object)rd)["approveAmount"]),
-                                            designationName = ((DbDataReader)(object)rd)["stageDocument"].ToString()
+                                            designationName = ((DbDataReader)(object)rd)["stageDocument"].ToString(),
+                                            designationRequirement = Convert.ToInt32(rd["ExistingCount"] != DBNull.Value ? rd["ExistingCount"] : 0)
                                         });
                                         //if (firstRow)
                                         //{

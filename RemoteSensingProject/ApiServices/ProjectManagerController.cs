@@ -126,7 +126,7 @@ namespace RemoteSensingProject.ApiServices
                     return BadRequest(new
                     {
                         status = false,
-                        StatusCode = 404,
+                        StatusCode = 200,   
                         message = "Data not found !"
                     });
                 }
@@ -317,7 +317,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId, limit, page, "AssignedProject", null, searchTerm, statusFilter);
+                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId:userId, limit:limit, page:page, filterBy:"AssignedProject", searchTerm:searchTerm, statusFilter:statusFilter);
                 string[] selectProperties = new string[20]
                 {
                 "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
@@ -342,7 +342,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId, limit, page, "ManagerProject", null, searchTerm, statusFilter);
+                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId:userId, limit: limit, page: page, filterBy:"ManagerProject", searchTerm: searchTerm, statusFilter:statusFilter);
                 string[] selectProperties = new string[20]
                 {
                 "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
@@ -442,7 +442,7 @@ namespace RemoteSensingProject.ApiServices
         {
             try
             {
-                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId, limit, page, null, null, searchTerm, statusFilter);
+                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId: userId, limit: limit, page:page,searchTerm: searchTerm, statusFilter: statusFilter);
                 string[] selectProperties = new string[20]
                 {
                 "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",

@@ -4,16 +4,14 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["ProjectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     int i = 1;
-    string searchTerm = Request.QueryString["searchTerm"];
-    string statusFilter = Request.QueryString["statusFilter"];
+    string searchTerm = ViewBag.statusFilter;
+    string statusFilter = ViewBag.searchTerm;
 }
 
 <style>
     .link-icon {
         height: 16px;
     }
-</style>
-<style>
     .progress-bar {
         width: 100% !important;
         background-color: #f3f3f3 !important;
@@ -45,10 +43,10 @@
             <div class="col-lg-3 col-md-6">
                 <select id="filterProjectStatus" class="form-select form-select-lg">
                     <option selected value="">Project Status</option>
-                    <option value="Ongoing">Ongoing</option>
-                    <option value="Upcoming">Upcoming</option>
-                    <option value="delay">Delay</option>
-                    <option value="Complete">Completed</option>
+                    <option value="Ongoing" @(statusFilter.Equals("Ongoing") ? "selected" : "")>Ongoing</option>
+                    <option value="Upcoming" @(statusFilter.Equals("Upcoming") ? "selected" : "")>Upcoming</option>
+                    <option value="delay" @(statusFilter.Equals("delay") ? "selected" : "")>Delay</option>
+                    <option value="Complete" @(statusFilter.Equals("Complete") ? "selected" : "")>Completed</option>
                 </select>
             </div>
         </div>

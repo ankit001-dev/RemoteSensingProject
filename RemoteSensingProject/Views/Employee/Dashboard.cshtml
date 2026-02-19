@@ -4,10 +4,6 @@
     var data = ViewData["emplist"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
 }
 
-
-
-
-
 <div class="row mx-0">
     <div class="col-12 col-xl-12">
         <div class="row flex-grow-1">
@@ -22,22 +18,22 @@
                             <div class="row">
                                 <div class="col-6 col-md-12 col-xl-8">
                                     <h6 class="mb-2 text-success"></h6>
+
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/External_Projects">
+                                            <p class="text-success w-100"><span><span class="text-dark">External Project's :  </span> @Model.TotalExternalProject</span></p>
+                                        </a>
+                                    </div>
+                                    <div class="d-flex align-items-baseline ">
+                                        <a href="/employee/Internal_Projects">
+                                            <p class="text-success w-100"><span><span class="text-dark">Internal Project's :  </span> @Model.TotalInternalProject</span></p>
+                                        </a>
+                                    </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/employee/project_list">
-                                            <p class="text-success w-100"><span><span class="text-dark">My Project's :  </span> @Model.SelfCreatedProject</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">All Project's :  </span> @Model.SelfCreatedProject</span></p>
                                         </a>
                                     </div>
-                                    <div class="d-flex align-items-baseline ">
-                                        <a href="/employee/Assigned_project">
-                                            <p class="text-success w-100"><span><span class="text-dark">Assigned Project's :  </span> @Model.TotalAssignProject</span></p>
-                                        </a>
-                                    </div>
-                                    <div class="d-flex align-items-baseline ">
-                                        <a href="/employee/All_project_list">
-                                            <p class="text-success w-100"><span><span class="text-dark">Total Project's :  </span> @(Convert.ToInt32(Model.SelfCreatedProject) + Convert.ToInt32(Model.TotalAssignProject))</span></p>
-                                        </a>
-                                    </div>
-
 
                                 </div>
                                 <div class="col-6 col-md-12 col-xl-4">

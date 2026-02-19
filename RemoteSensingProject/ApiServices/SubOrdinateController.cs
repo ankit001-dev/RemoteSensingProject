@@ -42,7 +42,7 @@ namespace RemoteSensingProject.ApiServices
 		{
 			try
 			{
-				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(0, limit, page, "SubordinateProject", subId, searchTerm, statusFilter);
+				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List( limit, page, searchTerm:searchTerm, statusFilter:statusFilter);
 				return Ok(new
 				{
 					status = data.Any(),
