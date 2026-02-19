@@ -1227,6 +1227,10 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
+        public ActionResult AllProjectList()
+        {
+            return View();
+        }
         #endregion
 
         #region Manage CM Dashboard

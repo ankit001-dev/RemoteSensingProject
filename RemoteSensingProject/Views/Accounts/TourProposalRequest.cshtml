@@ -15,7 +15,7 @@
 
 <nav class="page-breadcrumb mx-0 d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
-        <li class="breadcrumb-item active" aria-current="page">Tour Proposal</li>
+        <li class="breadcrumb-item active" aria-current="page">Tour List</li>
     </ol>
 </nav>
 <div class="row mx-0">
@@ -47,14 +47,11 @@
             <thead>
                 <tr>
                     <th>Sr. No.</th>
-                    <th>Project Code</th>
                     <th>Project Name</th>
                     <th>Purpose</th>
-                    <th>Date of Depart</th>
                     <th>Place Visit</th>
                     <th>Period From</th>
                     <th>Period To</th>
-                    <th>Date of return</th>
                     
                 </tr>
             </thead>
@@ -66,14 +63,11 @@
                     {
                         <tr>
                             <td>@i</td>
-                            <td>@item.projectCode</td>
-                            <td data-id="@item.id"><a data-title="View Details" class="action" href="#">@item.projectName</a></td>
+                            <td><a title="View Detail" class="cursor-pointer viewTourDetails" data-id="@item.id">@item.projectName</a></td>
                             <td>@item.purpose</td>
-                            <td>@item.dateOfDept</td>
                             <td>@item.place</td>
                             <td>@item.periodFrom</td>
                             <td>@item.periodTo</td>
-                            <td>@item.returnDate</td>
                         </tr>
                         i++;
                     }
@@ -206,8 +200,51 @@
     </div>
 </div>
 
+<div class="modal fade" id="tourdetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-100" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header d-flex justify-content-between">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Tour Details </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="tourDetailContainer">
+                    <!-- Partial view will load here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     $(document).ready(function () {
+
+        $(document).on("click", ".viewTourDetails", function () {
+
+            let id = $(this).data("id");
+
+            Swal.fire({
+                title: "Please wait!",
+                text: "Loading tour details...",
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            $.ajax({
+                url: '/home/TourDetails',
+                type: 'GET',
+                data: { id: id },
+                success: function (html) {
+
+                    $("#tourDetailContainer").html(html);
+                    $("#tourdetailModal").modal("show");
+                    Swal.close();
+                },
+                error: function () {
+                    Swal.fire("Error", "Unable to load tour details", "error");
+                }
+            });
+        });
 
         //Filter
         $("#printBtn").click(function () {

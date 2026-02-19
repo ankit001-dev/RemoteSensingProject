@@ -10,9 +10,11 @@ using RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.SubOrdinate;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Http;
+using static RemoteSensingProject.Models.CommonHelper;
 
 namespace RemoteSensingProject.ApiServices
 {
@@ -35,7 +37,39 @@ namespace RemoteSensingProject.ApiServices
 			_subordinate = new SubOrinateService();
 		}
 
-		[HttpGet]
+        [Route("api/getprofileofoutsource")]
+        [HttpGet]
+        public IHttpActionResult GetOutsourceList(int? id = null)
+        {
+            try
+            {
+                var data = _managerservice.selectAllOutSOurceList(id: id);
+
+                if (data != null && data.Any())
+                {
+                    string[] selectprop = new string[7] { "Id", "EmpName", "mobileNo", "email", "gender", "designationname", "designationid" };
+                    dynamic newdata = SelectProperties(data, selectprop);
+                    if (id.HasValue)
+                    {
+                        newdata = newdata[0];
+                    }
+					return Ok(new
+					{
+						data = newdata
+					});
+                }
+                else
+                {
+                    return NoData(this);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Error(this, ex.Message);
+            }
+        }
+
+        [HttpGet]
 		[Route("api/getOutSourceTask")]
 		public IHttpActionResult getOutSourceAssignTask(int id, int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null)
 		{

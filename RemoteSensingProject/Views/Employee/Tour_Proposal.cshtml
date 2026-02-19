@@ -469,6 +469,7 @@
     }
 
     function setEditTour(data) {
+        debugger
 
         // 📝 text / date fields
         $("#dateOfDept").val(data.dateOfDept.split('T')[0]);
@@ -479,7 +480,7 @@
         $("#purpose").val(data.purpose);
 
         // proposal type (0/1)
-        $("#proposalType").val(data.proposalType.trim() ? 'projectstaff' : 'self').trigger("change");
+        $("#proposalType").val(data.proposalType.trim()).trigger("change");
 
         // 📌 Project
         setTimeout(function () {
@@ -487,7 +488,7 @@
         }, 300);
 
         // 👥 Outsource MULTI SELECT
-        if (data.proposalType.trim() && data.outsourceList && data.outsourceList.length > 0) {
+        if (data.outsourceList && data.outsourceList.length > 0) {
 
             // show outsource section
             $("#selectOutsource").show();

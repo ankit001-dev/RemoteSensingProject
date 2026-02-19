@@ -2,6 +2,8 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Controllers.SubOrdinateController
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Spreadsheet;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.SubOrdinate;
@@ -168,5 +170,47 @@ namespace RemoteSensingProject.Controllers
 		{
 			return View();
 		}
-	}
+
+        #region Monthly Progress Report
+		public ActionResult MonthlyProgressReport(int? month = null, int? year = null)
+		{
+            var userId = Convert.ToInt32(_subOrdinate.GetOutSourceId(User.Identity.Name).userId);
+            ViewData["ReportList"] = _subOrdinate.GetStaffMonthlyReport(userId, null, null, null, month, year);
+            return View();
+		}
+
+        [HttpPost]
+        public ActionResult InsertMonthlyProgress(EmpReportModel model)
+        {
+            try
+            {
+                string message = "";
+                int userid = Convert.ToInt32(_subOrdinate.GetOutSourceId(User.Identity.Name).userId);
+                model.ProjectStaffId = userid;
+                bool res = _subOrdinate.InsertStaffMonthlyReport(model, out message);
+                if (res)
+                {
+                    return Json((object)new
+                    {
+                        status = res,
+                        message = "Report added successfully!"
+                    });
+                }
+                return Json((object)new
+                {
+                    status = res,
+                    message = message
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Server error occurred: " + ex.Message
+                });
+            }
+        }
+        #endregion
+    }
 }

@@ -75,14 +75,6 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
         
-		public ActionResult TourProposal_Report(int? projectFilter = null)
-		{
-			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
-			viewData["allTourList"] = _managerServices.GetTourList(type: "ALLDATA", projectFilter:projectFilter);
-			((ControllerBase)this).ViewData["projects"] = _managerServices.All_Project_List();
-			return View();
-		}
-
         #endregion
 
         public ActionResult FundReport(string statusFilter = null)
