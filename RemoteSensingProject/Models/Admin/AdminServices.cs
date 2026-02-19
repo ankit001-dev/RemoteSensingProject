@@ -815,13 +815,17 @@ namespace RemoteSensingProject.Models.Admin
             {
                 List<main.Project_model> _headList = new List<main.Project_model>();
                 ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
                 main.Project_model obj = null;
-                NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@v_action,@v_id,@v_limit ,@v_page)", con);
-                cmd.Parameters.AddWithValue("@v_action", (object)"getHeadByProject");
-                cmd.Parameters.AddWithValue("@v_id", (object)projectId);
-                cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
-                NpgsqlDataReader sdr = cmd.ExecuteReader();
+                NpgsqlCommand cmd = new NpgsqlCommand("fn_get_all_projects", con, tran);
+                cmd.CommandType = CommandType.StoredProcedure; 
+                cmd.Parameters.AddWithValue("v_action", (object)"getHeadByProject");
+                cmd.Parameters.AddWithValue("v_id", (object)projectId);
+                cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+                cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                string cursorName = cmd.ExecuteScalar().ToString();
+                NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                NpgsqlDataReader sdr = fetchCmd.ExecuteReader();
                 if (((DbDataReader)(object)sdr).HasRows)
                 {
                     while (((DbDataReader)(object)sdr).Read())
@@ -855,13 +859,17 @@ namespace RemoteSensingProject.Models.Admin
             try
             {
                 main.createProjectModel cpm = new main.createProjectModel();
-                cmd = new NpgsqlCommand("SELECT * FROM fn_get_all_projects(@action,@v_id,@v_limit,@v_page)", con);
-                cmd.Parameters.AddWithValue("@action", (object)"GetProjectById");
-                cmd.Parameters.AddWithValue("@v_id", (object)id);
-                cmd.Parameters.AddWithValue("@v_limit", (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@v_page", (object)DBNull.Value);
                 ((DbConnection)(object)con).Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                cmd = new NpgsqlCommand("fn_get_all_projects", con, tran);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("v_action", (object)"GetProjectById");
+                cmd.Parameters.AddWithValue("v_id", (object)id);
+                cmd.Parameters.AddWithValue("v_limit", (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("v_page", (object)DBNull.Value);
+                string cursorName = cmd.ExecuteScalar().ToString();
+                NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                NpgsqlDataReader rd = fetchCmd.ExecuteReader();
                 List<main.Project_Subordination> subList = new List<main.Project_Subordination>();
                 main.Project_model pm = new main.Project_model();
                 if (((DbDataReader)(object)rd).HasRows)
@@ -925,84 +933,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public bool createApiProject(main.Project_model pm)
-        {
-            NpgsqlTransaction tran = null;
-            NpgsqlCommand cmd = null;
-            try
-            {
-                ((DbConnection)(object)con).Open();
-                tran = con.BeginTransaction();
-                Random rand = new Random();
-                pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
-                int letterNo;
-                int ProjectManager;
-                Dictionary<string, object> projectParams = new Dictionary<string, object>
-                {
-                    ["p_action"] = ((pm.Id > 0) ? "updateProject" : "insertProject"),
-                    ["p_letterno"] = (int.TryParse(pm.letterNo, out letterNo) ? letterNo : 0),
-                    ["p_title"] = pm.ProjectTitle,
-                    ["p_assigndate"] = pm.AssignDate,
-                    ["p_startdate"] = pm.StartDate,
-                    ["p_completiondate"] = pm.CompletionDate,
-                    ["p_projectmanager"] = (int.TryParse(pm.ProjectManager, out ProjectManager) ? ProjectManager : 0),
-                    ["p_budget"] = pm.ProjectBudget,
-                    ["p_description"] = pm.ProjectDescription,
-                    ["p_projectdocument"] = pm.projectDocumentUrl,
-                    ["p_projecttype"] = pm.ProjectType,
-                    ["p_stage"] = pm.ProjectStage,
-                    ["p_createdby"] = "admin",
-                    ["p_status"] = true,
-                    ["p_approvestatus"] = true,
-                    ["p_projectcode"] = pm.projectCode
-                };
-                int projectId = ExecuteProjectAction(projectParams, tran);
-                if (pm.SubOrdinate != null && pm.SubOrdinate.Length != 0)
-                {
-                    int[] subOrdinate = pm.SubOrdinate;
-                    foreach (int subId in subOrdinate)
-                    {
-                        int SubProjectManager;
-                        Dictionary<string, object> subParams = new Dictionary<string, object>
-                        {
-                            ["p_action"] = "insertSubOrdinate",
-                            ["p_project_id"] = projectId,
-                            ["p_id"] = subId,
-                            ["p_projectmanager"] = (int.TryParse(pm.ProjectManager, out SubProjectManager) ? SubProjectManager : 0)
-                        };
-                        ExecuteProjectAction(subParams, tran);
-                    }
-                }
-                if (pm.ProjectType.Equals("External") && projectId > 0)
-                {
-                    Dictionary<string, object> extParams = new Dictionary<string, object>
-                    {
-                        ["p_action"] = ((pm.Id > 0) ? "updateExternalProject" : "insertExternalProject"),
-                        ["p_project_id"] = projectId,
-                        ["p_departmentname"] = pm.ProjectDepartment,
-                        ["p_contactperson"] = pm.ContactPerson,
-                        ["p_address"] = pm.Address
-                    };
-                    ExecuteProjectAction(extParams, tran);
-                }
-                ((DbTransaction)(object)tran).Commit();
-                return true;
-            }
-            catch (Exception)
-            {
-                ((DbTransaction)(object)tran).Rollback();
-                return false;
-            }
-            finally
-            {
-                if (((DbConnection)(object)con).State == ConnectionState.Open)
-                {
-                    ((DbConnection)(object)con).Close();
-                }
-                ((Component)(object)cmd).Dispose();
-            }
-        }
-
+       
         public bool insertProjectStages(main.Project_Statge stg)
         {
             NpgsqlTransaction tran = null;
