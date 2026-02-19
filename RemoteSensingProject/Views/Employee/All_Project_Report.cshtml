@@ -4,8 +4,8 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["ProjectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     int i = 1;
-    string searchTerm = ViewBag.statusFilter;
-    string statusFilter = ViewBag.searchTerm;
+    string statusFilter = ViewBag.statusFilter ?? "";
+    string searchTerm= ViewBag.searchTerm ?? "";
 }
 
 <style>
