@@ -250,6 +250,7 @@ namespace RemoteSensingProject.Models.Admin
 		{
 			public int Id { get; set; }
 			public DateTime Date { get; set; }
+			public string DateString { get; set; }
 			public int ProjectId { get; set; }
 			public string ProjectName { get; set; }
 			public string FinancialYearlyAim { get; set; }

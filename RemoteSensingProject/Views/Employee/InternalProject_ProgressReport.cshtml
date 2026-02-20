@@ -302,6 +302,49 @@ max="@lastDayLastMonth.ToString("yyyy-MM-dd")"/>
 
     });
 
+    $('#projectname').on('change', function () {
+        const id = $(this).val();
+
+        if (id > 0) {
+            $.ajax({
+                url: '/employee/GetInternalProjectReport',
+                type: 'get',
+                data: { id: id },
+                success: function (res) {
+                    if (res.status && res.data.length > 0) {
+                        function formatDate(dateStr) {
+                            // "03-01-2026" -> "2026-01-03"
+                            const parts = dateStr.split('-');
+                            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                        }
+
+                        const d = res.data[0]; // first object
+
+                        // modal show
+
+                        // values set
+                        $('input[name="Date"]').val(formatDate(d.DateString));
+                        $('select[name="ProjectId"]').val(d.ProjectId);
+
+                        $('input[name="FinancialYearlyAim"]').val(d.FinancialYearlyAim);
+                        $('input[name="PhysicalYearlyAim"]').val(d.PhysicalYearlyAim);
+
+                        $('input[name="MonthAim"]').val(d.MonthAim);
+                        $('input[name="MonthlyStatus"]').val(d.MonthlyStatus);
+
+                        $('input[name="SquenceStatus"]').val(d.SquenceStatus);
+                        $('input[name="SequenceStatusPerc"]').val(d.SequenceStatusPerc);
+
+                        $('input[name="Statebeneficiary"]').val(d.Statebeneficiary);
+                        $('textarea[name="Remark"]').val(d.Remark);
+                    } else { return; }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        }
+    })
 
     function populateYear() {
 

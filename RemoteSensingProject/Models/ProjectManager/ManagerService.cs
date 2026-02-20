@@ -752,8 +752,9 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public bool AddOrUpdateMonthlyInternalProgressReport(InternalProject_ProgressModel pm)
+        public bool AddOrUpdateMonthlyInternalProgressReport(InternalProject_ProgressModel pm,out string message)
         {
+            message = string.Empty;
             try
             {
                 using (NpgsqlConnection conn = con)
@@ -802,11 +803,109 @@ namespace RemoteSensingProject.Models.ProjectManager
 
                 return true;
             }
+            catch (NpgsqlException npgsqlEx)
+            {
+                message = "Database error: " + npgsqlEx.Message;
+                return false;
+            }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+
+        public List<InternalProject_ProgressModel> GetMonthlyProjectReport(int? id = null, int? month = null, int? year = null)
+        {
+            try
+            {
+                List<InternalProject_ProgressModel> list = new List<InternalProject_ProgressModel>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageprojectmonthlyreports", con);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"getInternalprojectReport");
+                        cmd.Parameters.AddWithValue("@v_projectmanager", (object)0);
+                        cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_year", year.HasValue ? ((object)year.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_month", month.HasValue ? ((object)month.Value) : DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader res = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)res).HasRows)
+                                {
+                                    while (((DbDataReader)(object)res).Read())
+                                    {
+                                        list.Add(new InternalProject_ProgressModel
+                                        {
+                                            ProjectId = ((((DbDataReader)(object)res)["project_id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["project_id"]) : 0),
+                                            ProjectName = ((((DbDataReader)(object)res)["title"] != DBNull.Value) ? ((DbDataReader)(object)res)["title"].ToString() : ""),
+                                            DateString = res["w_date"] != DBNull.Value ? Convert.ToDateTime(res["w_date"]).ToString("dd-MM-yyyy") : "N/A",
+                                            FinancialYearlyAim = res["financialyearlyaim"].ToString(),
+                                            PhysicalYearlyAim = res["physicalyearlyaim"].ToString(),
+                                            MonthAim = res["monthaim"].ToString(),
+                                            MonthlyStatus = res["monthlystatus"].ToString(),
+                                            SquenceStatus = res["squencestatus"].ToString(),
+                                            SequenceStatusPerc = res["sequencestatusperc"] != DBNull.Value ? Convert.ToInt32(res["sequencestatusperc"]):0,
+                                            Statebeneficiary = res["statebeneficiary"].ToString(),
+                                            Remark = res["remark"].ToString(),
+                                            CreaterRole = res["createdby"].ToString(),
+                                            CreaterId = res["createruserid"].ToString()
+                                        });
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)res)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
+
         public List<RemoteSensingProject.Models.Admin.main.Project_MonthlyUpdate> MonthlyProjectUpdate(int projectId)
         {
             //IL_0038: Unknown result type (might be due to invalid IL or missing references)
