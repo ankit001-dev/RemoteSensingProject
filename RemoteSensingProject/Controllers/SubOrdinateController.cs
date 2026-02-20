@@ -176,6 +176,7 @@ namespace RemoteSensingProject.Controllers
 		{
             var userId = Convert.ToInt32(_subOrdinate.GetOutSourceId(User.Identity.Name).userId);
             ViewData["ReportList"] = _subOrdinate.GetStaffMonthlyReport(userId, null, null, null, month, year);
+			ViewData["projectList"] = _subOrdinate.getOutSourceTask(userId);
             return View();
 		}
 
