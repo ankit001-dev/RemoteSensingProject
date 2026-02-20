@@ -47,7 +47,7 @@
                                         <td class="text-start">@count</td>
                                         <td>@item.divisionName</td>
                                         <td>@item.manpoweradded</td>
-                                        <td><a href="/employee/ManageManpower?id=@item.id" data-title="View Details">@item.manpowerrequests</a></td>
+                                        <td><a href="@Url.EncryptedAction("ManageManpower", "DivisionHead", new {id = item.id})" data-title="View Details">@item.manpowerrequests</a></td>
                                     </tr>
 
                                     count++;

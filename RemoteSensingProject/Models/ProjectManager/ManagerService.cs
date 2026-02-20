@@ -1,10 +1,4 @@
-﻿// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
-// for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
-// RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// RemoteSensingProject.Models.ProjectManager.ManagerService
-using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Office2010.Excel;
+﻿using ClosedXML.Excel;
 using Npgsql;
 using NpgsqlTypes;
 using System;
@@ -16,6 +10,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.Models.ProjectManager
 {
@@ -757,6 +752,61 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
+        public bool AddOrUpdateMonthlyInternalProgressReport(InternalProject_ProgressModel pm)
+        {
+            try
+            {
+                using (NpgsqlConnection conn = con)
+                {
+                    conn.Open();
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(@"
+                        CALL public.sp_manageprojectreport(
+                            v_action := @v_action,
+                            v_id := @v_id,
+                            v_project_id := @v_project_id,
+                            v_w_date := @v_w_date,
+                            v_financialyearlyaim := @v_financialyearlyaim,
+                            v_physicalyearlyaim := @v_physicalyearlyaim,
+                            v_monthaim := @v_monthaim,
+                            v_monthlystatus := @v_monthlystatus,
+                            v_squencestatus := @v_squencestatus,
+                            v_sequencestatusperc := @v_sequencestatusperc,
+                            v_statebeneficiary := @v_statebeneficiary,
+                            v_remark := @v_remark,
+                            v_createdby := @v_createdby,
+                            v_createruserid := @v_createruserid,
+                            v_status := @v_status
+                        )", conn))
+                    {
+                        var date = pm.Date.Date;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("v_action", pm.Id > 0 ? "UPDATE" : "INSERT");
+                        cmd.Parameters.AddWithValue("v_id", pm.Id);
+                        cmd.Parameters.AddWithValue("v_project_id", pm.ProjectId);
+                        cmd.Parameters.AddWithValue("v_w_date", date);
+                        cmd.Parameters.AddWithValue("v_FinancialYearlyAim", pm.FinancialYearlyAim ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_PhysicalYearlyAim", pm.PhysicalYearlyAim ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_MonthAim", pm.MonthAim ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_MonthlyStatus", pm.MonthlyStatus ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_SquenceStatus", pm.SquenceStatus ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_SequenceStatusPerc", pm.SequenceStatusPerc);
+                        cmd.Parameters.AddWithValue("v_Statebeneficiary", pm.Statebeneficiary ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_Remark", pm.Remark ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_CreatedBy", pm.CreaterRole ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_CreaterUserId", Convert.ToInt32(pm.CreaterId));
+                        cmd.Parameters.AddWithValue("v_status", true);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public List<RemoteSensingProject.Models.Admin.main.Project_MonthlyUpdate> MonthlyProjectUpdate(int projectId)
         {
             //IL_0038: Unknown result type (might be due to invalid IL or missing references)

@@ -2,23 +2,25 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.ApiServices.CommonController
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Web;
-using System.Web.Http;
 using Newtonsoft.Json;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.ProjectManager;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Security.Policy;
+using System.Web;
+using System.Web.Http;
+using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.CommonHelper;
 
-[JwtAuthorize(Roles = "admin,accounts,projectManager,subOrdinate,outSource,prashasan,cgp")]
+[JwtAuthorize(Roles = "admin,accounts,projectManager,subOrdinate,outSource,prashasan,cgp,divisionHead")]
 public class CommonController : ApiController
 {
 	private readonly AdminServices _adminServices;
@@ -172,8 +174,7 @@ public class CommonController : ApiController
 			return CommonHelper.Error((ApiController)(object)this, ex.Message);
 		}
 	}
-	[System.Web.Mvc.AllowAnonymous]
-	[RoleAuthorize("admin,projectManager,cgp,accounts")]
+	[RoleAuthorize("admin,projectManager,cgp,accounts,divisionHead")]
 	[HttpGet]
 	[Route("api/GetadminProjectDetailById")]
 	public IHttpActionResult GetProjectById(int Id)
@@ -758,6 +759,17 @@ public class CommonController : ApiController
             return CommonHelper.Error((ApiController)(object)this, ex.Message);
         }
     }
+    #endregion
+
+    #region Progress Report add
+	[HttpPost]
+	[System.Web.Mvc.AllowAnonymous]
+	[Route("api/Add_Update_InternalProgress_Report")]
+    public IHttpActionResult AddInternalProgressReport(InternalProject_ProgressModel data)
+	{
+		bool result = _managerservice.AddOrUpdateMonthlyInternalProgressReport(data);
+        return Ok(result);
+	}
     #endregion
     private IHttpActionResult BadRequest(object value)
 	{

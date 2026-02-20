@@ -177,23 +177,18 @@
                             <div class="collapse" id="divisionHead">
                                 <ul class="nav sub-menu">
                                     <li class="nav-item">
-                                        <a href="/Employee/DivisionHead" class="nav-link">Manpower Request</a>
+                                        <a href="/DivisionHead/DivisionHead" class="nav-link">Manpower Request</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/Employee/manpower" class="nav-link">Manage Manpower</a>
+                                        <a href="/DivisionHead/manpower" class="nav-link">Manage Manpower</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/DivisionHead/DivisionHeadAllProjectList" class="nav-link">Division Project List</a>
                                     </li>
 
                                 </ul>
                             </div>
                         </li>
-
-                        <li class="nav-item">
-                            <a href="/Employee/AllProjectList" class="nav-link">
-                                <i class="link-icon" data-feather="user"></i>
-                                <span class="link-title">All Project List</span>
-                            </a>
-                        </li>
-
                     }
                     @if (User.IsInRole("cmDashboard"))
                     {
@@ -278,6 +273,23 @@
                             <i class="link-icon" data-feather="calendar"></i>
                             <span class="link-title">Raise Problem</span>
                         </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="collapse" href="#category" role="button" aria-expanded="false" aria-controls="category">
+                            <i class="link-icon" data-feather="list"></i>
+                            <span class="link-title">Progress Report</span>
+                            <i class="link-arrow" data-feather="chevron-down"></i>
+                        </a>
+                        <div class="collapse" id="category">
+                            <ul class="nav sub-menu">
+                                <li class="nav-item">
+                                    <a href="/Employee/InternalProject_ProgressReport" class="nav-link">Internal Project</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/Employee/ExternalProject_ProgressReport" class="nav-link">External Project</a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                     <li class="nav-item">
                         <a href="/Employee/EmpMonthlyReport" class="nav-link">

@@ -248,9 +248,12 @@ namespace RemoteSensingProject.Controllers
             });
         }
 
-        public JsonResult UpdateWeekly(RemoteSensingProject.Models.Admin.main.Project_MonthlyUpdate pwu)
+        public JsonResult UpdateWeekly(RemoteSensingProject.Models.Admin.main.InternalProject_ProgressModel data)
         {
-            bool res = _managerServices.UpdateMonthlyStatus(pwu);
+            UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
+            data.CreaterId = userObj.userId;
+            data.CreaterRole = userObj.userRole;
+            bool res = _managerServices.AddOrUpdateMonthlyInternalProgressReport(data);
             return Json((object)new
             {
                 status = res,
@@ -1148,89 +1151,18 @@ namespace RemoteSensingProject.Controllers
 
         #endregion Reports End
 
-        #region Division Head
-
-        [Authorize(Roles = "divisionHead")]
-        public ActionResult DivisionHead(string searchTerm)
+        #region Progress Report
+        public ActionResult InternalProject_ProgressReport()
         {
-            int divisionid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).divisionId);
-            ViewData["data"] = _managerServices.GetManpowerRequestsInDesignationPmWise(id: divisionid, searchTerm: searchTerm);
+            UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
+            ViewData["projectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userData.userId), filterBy:"ProjectManager", projectTypeFilter:"Internal");
+            return View();
+        }
+        public ActionResult ExternalProject_ProgressReport()
+        {
             return View();
         }
 
-        [Authorize(Roles = "divisionHead")]
-        public ActionResult ManPower(string searchTerm = null)
-        {
-            int divisionid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).divisionId);
-            ViewData["manpowerrequestsindesignation"] = _managerServices.GetManpowerRequestsInDesignation(id: divisionid, searchTerm: searchTerm);
-            return View();
-        }
-        [Authorize(Roles = "divisionHead")]
-        public ActionResult ManageManpower(int id, string searchTerm = null)
-        {
-            int divisionid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).divisionId);
-            ViewData["data"] = _managerServices.GetManpowerRequestsInDesignationPmWise(id: divisionid, designationid: id, searchTerm: searchTerm);
-            return View();
-        }
-        [Authorize(Roles = "divisionHead")]
-        public ActionResult GetOutsouceOfDivision(int designationid)
-        {
-            try
-            {
-                int divisionid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).divisionId);
-                var data = _managerServices.OutsourceOfDivision(divisionid, designationid);
-                return Json(new
-                {
-                    status = data.Any(),
-                    data = data
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new
-                {
-                    status = false,
-                    message = ex.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-        }
-        [Authorize(Roles = "divisionHead")]
-        [HttpPost]
-        public ActionResult AllocateManPower(AddManPower model)
-        {
-            try
-            {
-                // Basic validation
-                if (
-                    model.PmId == 0 ||
-                    model.Outsource == null ||
-                    !model.Outsource.Any())
-                {
-                    return Json(new { status = false, message = "Invalid data" });
-                }
-
-                _managerServices.AllocateManpower(model);
-
-                return Json(new
-                {
-                    status = true,
-                    message = "Manpower allocated successfully"
-                });
-            }
-            catch (Exception ex)
-            {
-                // DB validation / business rule message
-                return Json(new
-                {
-                    status = false,
-                    message = ex.Message
-                });
-            }
-        }
-        public ActionResult AllProjectList()
-        {
-            return View();
-        }
         #endregion
 
         #region Manage CM Dashboard

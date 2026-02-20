@@ -6,7 +6,7 @@
     {
         Layout = "~/Views/Shared/_adminLayout.cshtml";
     }
-    else if (User.IsInRole("employee"))
+    else if (User.IsInRole("projectManager"))
     {
         Layout = "~/Views/Shared/_employeeLayout.cshtml";
     }
@@ -344,9 +344,6 @@
                     text: "Server is busy. Please try after sometime.",
                     icon: "error"
                 });
-            },
-            complete: function () {
-                Swal.close();
             }
         })
     })

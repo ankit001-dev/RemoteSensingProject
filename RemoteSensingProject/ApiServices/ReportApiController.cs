@@ -14,7 +14,7 @@ using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 
-[JwtAuthorize(Roles = "admin,projectManager,accounts")]
+[JwtAuthorize(Roles = "admin,projectManager,accounts,divisionHead")]
 public class ReportApiController : ApiController
 {
 	private readonly AdminServices _adminServices;

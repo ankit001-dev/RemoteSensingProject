@@ -1,14 +1,7 @@
-// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
-// for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
-// RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// RemoteSensingProject.Models.Admin.main
 using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
-using RemoteSensingProject.Models;
-using RemoteSensingProject.Models.Admin;
-
 namespace RemoteSensingProject.Models.Admin
 {
 	public class main
@@ -240,28 +233,35 @@ namespace RemoteSensingProject.Models.Admin
 		public class Project_MonthlyUpdate
 		{
 			public int Id { get; set; }
-
 			public string projectName { get; set; }
-
 			public string comments { get; set; }
-
 			public int ProjectId { get; set; }
-
 			public int completionPerc { get; set; }
-
 			public string unit { get; set; }
-
 			public string annual { get; set; }
-
 			public string monthEnd { get; set; }
-
 			public string reviewMonth { get; set; }
-
 			public string MonthEndSequentially { get; set; }
-
 			public string StateBeneficiaries { get; set; }
-
 			public DateTime date { get; set; }
+		}
+
+		public class InternalProject_ProgressModel
+		{
+			public int Id { get; set; }
+			public DateTime Date { get; set; }
+			public int ProjectId { get; set; }
+			public string ProjectName { get; set; }
+			public string FinancialYearlyAim { get; set; }
+			public string PhysicalYearlyAim { get; set; }
+			public string MonthAim { get; set; }
+			public string MonthlyStatus { get; set; }
+			public string SquenceStatus { get; set; }
+			public int SequenceStatusPerc { get; set; }
+			public string Statebeneficiary { get; set; }
+			public string Remark { get; set; }
+			public string CreaterId { get; set; }
+			public string CreaterRole { get; set; }
 		}
 
 		public class Project_Budget
