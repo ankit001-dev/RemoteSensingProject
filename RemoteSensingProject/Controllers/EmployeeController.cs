@@ -252,15 +252,49 @@ namespace RemoteSensingProject.Controllers
 
         public JsonResult UpdateWeekly(RemoteSensingProject.Models.Admin.main.InternalProject_ProgressModel data)
         {
-            UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            data.CreaterId = userObj.userId;
-            data.CreaterRole = userObj.userRole;
-            bool res = _managerServices.AddOrUpdateMonthlyInternalProgressReport(data);
-            return Json((object)new
+            try
             {
-                status = res,
-                message = (res ? "Monthly updated successfully !" : "Some issue conflicted !")
-            });
+                UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
+                data.CreaterId = userObj.userId;
+                data.CreaterRole = userObj.userRole;
+                string message = string.Empty;
+                bool res = _managerServices.AddOrUpdateMonthlyInternalProgressReport(data, out message);
+                return Json((object)new
+                {
+                    status = res,
+                    message = (res ? "Monthly updated successfully !" : message)
+                });
+            }
+            catch(Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Error: " + ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public ActionResult GetInternalProjectReport(int id)
+        {
+            try
+            {
+                var data = _managerServices.GetMonthlyProjectReport(id);
+                return Json((object)new
+                {
+                    status = data.Count>0?true:false,
+                    data = data
+                }, (JsonRequestBehavior)0);
+            }
+            catch(Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Error: " + ex.Message
+                }, (JsonRequestBehavior)0);
+            }
         }
 
         public ActionResult Update_Project_Stage(int Id)
