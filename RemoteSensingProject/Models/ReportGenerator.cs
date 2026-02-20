@@ -1,11 +1,14 @@
+using DocumentFormat.OpenXml.Bibliography;
 using OfficeOpenXml;
 using QuestPDF.Drawing;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using RemoteSensingProject.Models.ProjectManager;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -293,6 +296,125 @@ namespace RemoteSensingProject.Models
             return ms.ToArray();
         }
 
+        #endregion
+
+        #region Manpower Monthly Report
+        public static byte[] CreateManpowerMonthlyPdf(List<DivisionOutsourceReport> data, string month, int year)
+        {
+            QuestPDF.Settings.License = LicenseType.Community;
+
+            if (data == null || data.Count == 0)
+                return Array.Empty<byte>();
+
+            // Hindi font (same pattern as your other report)
+            var fontPath = HttpContext.Current.Server.MapPath(
+                "~/assets/NotoSansDevanagari-Regular.ttf"
+            );
+            FontManager.RegisterFont(File.OpenRead(fontPath));
+
+            var document = Document.Create(container =>
+            {
+                container.Page(page =>
+                {
+                    page.Size(PageSizes.A4);
+                    page.Margin(20);
+
+                    page.DefaultTextStyle(t => t
+                        .FontFamily("NotoSansDevanagari")
+                        .FontSize(11)
+                    );
+
+                    // ---------- HEADER ----------
+                    page.Header().Row(row =>
+                    {
+                        row.RelativeItem()
+                            .Text($"प्रभाग का नाम : {data[0].DivisionName}")
+                            .SemiBold();
+
+                        row.RelativeItem()
+         .AlignRight()
+         .Column(col =>
+         {
+             col.Item()
+                 .AlignRight()
+                 .Text("प्रारुप")
+                 .SemiBold();
+
+             col.Item()
+                 .AlignRight()
+                 .Text($"माह : {month} {year}")
+                 .SemiBold();
+         });
+                    });
+
+                    // ---------- TABLE ----------
+                    page.Content().Table(table =>
+                    {
+                        table.ColumnsDefinition(c =>
+                        {
+                            c.ConstantColumn(40); // क्रम सं.
+                            c.RelativeColumn(3);  // परियोजना
+                            c.RelativeColumn(3);  // मानवशक्ति
+                            c.RelativeColumn(2);  // पदनाम
+                        });
+
+                        // Table Header
+                        table.Header(h =>
+                        {
+                            h.Cell().Border(1).Background(Colors.Grey.Lighten3).Padding(5).AlignCenter().Text("क्रम सं.").SemiBold();
+                            h.Cell().Border(1).Background(Colors.Grey.Lighten3).Padding(5).Text("परियोजना का नाम\n(बाह्य सहायक / गैर वेतन मद)").SemiBold();
+                            h.Cell().Border(1).Background(Colors.Grey.Lighten3).Padding(5).Text("परियोजना में आबद्ध मानवशक्ति का नाम").SemiBold();
+                            h.Cell().Border(1).Background(Colors.Grey.Lighten3).Padding(5).Text("पदनाम").SemiBold();
+                        });
+
+                        int srNo = 1;
+
+                        var grouped = data.GroupBy(x => x.ProjectId).ToList();
+
+                        foreach (var project in grouped)
+                        {
+                            bool firstRow = true;
+                            int rowSpan = project.Count();
+
+                            foreach (var item in project)
+                            {
+                                if (firstRow)
+                                {
+                                    table.Cell().RowSpan(Convert.ToUInt16(rowSpan))
+                                        .Border(1).Padding(5)
+                                        .AlignCenter()
+                                        .Text(srNo.ToString())
+                                        .SemiBold();
+
+                                    table.Cell().RowSpan(Convert.ToUInt16(rowSpan))
+                                        .Border(1).Padding(5)
+                                        .Text(item.ProjectName)
+                                        .SemiBold();
+                                }
+
+                                table.Cell()
+                                    .Border(1).Padding(5)
+                                    .Text(item.OutsourceName);
+
+                                table.Cell()
+                                    .Border(1).Padding(5)
+                                    .Text(item.DesignationName);
+
+                                firstRow = false;
+                            }
+
+                            srNo++;
+                        }
+                    });
+                });
+            });
+
+            using (var ms = new MemoryStream())
+            {
+                document.GeneratePdf(ms);
+                return ms.ToArray();
+            }
+        }
         #endregion
     }
 

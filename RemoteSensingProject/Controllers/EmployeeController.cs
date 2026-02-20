@@ -2,12 +2,12 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Controllers.EmployeeController
-using DocumentFormat.OpenXml.ExtendedProperties;
 using Newtonsoft.Json;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.SubOrdinate;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,12 +24,14 @@ namespace RemoteSensingProject.Controllers
         private readonly AdminServices _adminServices;
 
         private readonly AccountService _accountService;
+        private readonly SubOrinateService _subordinateServices;
 
         public EmployeeController()
         {
             _managerServices = new ManagerService();
             _adminServices = new AdminServices();
             _accountService = new AccountService();
+            _subordinateServices = new SubOrinateService();
         }
 
         public ActionResult Dashboard()
@@ -39,7 +41,7 @@ namespace RemoteSensingProject.Controllers
             userObj = _managerServices.getManagerDetails(managerName);
             DashboardCount TotalCount = _managerServices.DashboardCount(Convert.ToInt32(userObj.userId));
             DateTime twoYearsAgo = DateTime.Now.AddYears(-2);
-            ((ControllerBase)this).ViewData["emplist"] = (from d in _managerServices.All_Project_List(userId:Convert.ToInt32(userObj.userId), filterBy: "ProjectManager")
+            ((ControllerBase)this).ViewData["emplist"] = (from d in _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager")
                                                           where d.AssignDate >= twoYearsAgo
                                                           select d).ToList();
             return View((object)TotalCount);
@@ -67,13 +69,13 @@ namespace RemoteSensingProject.Controllers
         public ActionResult CreateTask(string req)
         {
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ViewData["projectlist"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj), filterBy: "ProjectManager");
+            ViewData["projectlist"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj), filterBy: "ProjectManager");
             ViewData["OutSourceList"] = _managerServices.GetAllocatedOutSOurceList(userObj);
             ViewData["TaskList"] = ((req == "completed") ? (from d in _managerServices.taskList(userObj)
-                                                                                   where d.completeStatus
-                                                                                   select d).ToList() : ((req == "pending") ? (from d in _managerServices.taskList(userObj)
-                                                                                                                               where !d.completeStatus
-                                                                                                                               select d).ToList() : _managerServices.taskList(userObj)));
+                                                            where d.completeStatus
+                                                            select d).ToList() : ((req == "pending") ? (from d in _managerServices.taskList(userObj)
+                                                                                                        where !d.completeStatus
+                                                                                                        select d).ToList() : _managerServices.taskList(userObj)));
             return View();
         }
 
@@ -89,11 +91,11 @@ namespace RemoteSensingProject.Controllers
             });
         }
 
-        public ActionResult Add_Project(int?id)
+        public ActionResult Add_Project(int? id)
         {
             ViewBag.projectId = id;
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            var data = _managerServices.GetAllocatedOutSOurceList(id:userid);
+            var data = _managerServices.GetAllocatedOutSOurceList(id: userid);
             ViewBag.subOrdinateList = data;
             ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
             ViewData["Designations"] = _adminServices.ListDesgination();
@@ -183,7 +185,7 @@ namespace RemoteSensingProject.Controllers
             string managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
-            ((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj.userId), filterBy:"ProjectManager",searchTerm:searchTerm, statusFilter: statusFilter);
+            ((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", searchTerm: searchTerm, statusFilter: statusFilter);
             return View();
         }
 
@@ -196,13 +198,13 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Internal_Projects(string searchTerm = null, string statusFilter = null)
         {
             UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", projectTypeFilter: "Internal", searchTerm:searchTerm, statusFilter:statusFilter);
+            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", projectTypeFilter: "Internal", searchTerm: searchTerm, statusFilter: statusFilter);
             return View();
         }
         public ActionResult External_Projects(string searchTerm = null, string statusFilter = null)
         {
             UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", projectTypeFilter : "External", searchTerm: searchTerm, statusFilter: statusFilter);
+            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", projectTypeFilter: "External", searchTerm: searchTerm, statusFilter: statusFilter);
             return View();
         }
 
@@ -301,7 +303,7 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Min_Of_Meeting()
         {
-            int userid =Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             var empList = _managerServices.GetAllocatedOutSOurceList(userid);
             return View((object)empList);
         }
@@ -492,7 +494,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult All_Project_Report(string searchTerm = null, string statusFilter = null)
         {
             UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy:"ProjectManager", searchTerm: searchTerm, statusFilter: statusFilter);
+            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", searchTerm: searchTerm, statusFilter: statusFilter);
             ViewBag.statusFilter = statusFilter;
             ViewBag.searchTerm = searchTerm;
             return View();
@@ -912,6 +914,29 @@ namespace RemoteSensingProject.Controllers
             }
         }
 
+        #region Manage Project Staff Report
+        public ActionResult ProjectStaffMonthlyReport(int id, int? year = null, int? month = null)
+        {
+            try
+            {
+                var data = _subordinateServices.GetStaffMonthlyReport(id,year:year,month:month);
+                return Json((object)new
+                {
+                    status = (data != null),
+                    data = data
+                }, (JsonRequestBehavior)0);
+            }
+            catch (Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
         #region reports Start
         public ActionResult ProjectReport(string type, string searchTerm = null, string statusFilter = null)
         {
@@ -984,7 +1009,7 @@ namespace RemoteSensingProject.Controllers
             };
                 AdminServices adminServices = _adminServices;
                 int? projectManager = managerId;
-                IEnumerable<RemoteSensingProject.Models.Admin.main.Project_model> data =  _managerServices.All_Project_List(searchTerm: searchTerm, statusFilter: statusFilter, userId: projectManager, filterBy: (projectManager.HasValue ? "ProjectManager" : ""));
+                IEnumerable<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerServices.All_Project_List(searchTerm: searchTerm, statusFilter: statusFilter, userId: projectManager, filterBy: (projectManager.HasValue ? "ProjectManager" : ""));
                 if (type.Equals("Excel", StringComparison.OrdinalIgnoreCase))
                 {
                     byte[] excelBytes = ReportGenerator.CreateExcel(columnMappings, data, "Project Report");

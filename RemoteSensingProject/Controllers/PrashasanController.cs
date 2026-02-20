@@ -78,6 +78,9 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult Monthly_ManPower_Allocation_Report(int? divisionid = null,int? year = null,int? month = null)
         {
+            ViewBag.SelectedDivision = divisionid;
+            ViewBag.SelectedMonth = month;
+            ViewBag.SelectedYear = year;
             ViewData["DivisionList"] = _adminServices.ListDivison();
             var data = new List<DivisionOutsourceReport>();
             if (divisionid.HasValue)
