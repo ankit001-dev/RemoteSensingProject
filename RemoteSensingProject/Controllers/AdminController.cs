@@ -74,6 +74,34 @@ namespace RemoteSensingProject.Controllers
             return PartialView(partial, (object)list);
         }
 
+        #region Manage Budget Head
+		public ActionResult Budget_Head()
+		{
+			ViewData["headlist"] = _adminServices.GetBudgetHeads();
+			return View();
+        }
+        [HttpPost]
+        public ActionResult InsertBudgetHead(RemoteSensingProject.Models.Admin.main.CommonResponse cr)
+        {
+            bool res = _adminServices.InsertBudgetHead(cr);
+            return Json((object)new
+            {
+                status = res,
+                message = (res ?(cr.id>0?"Head updated successfully": "Head inserted successfully!" ): "Some issue found while processing your request !")
+            }, (JsonRequestBehavior)0);
+        }
+        [HttpDelete]
+        public ActionResult RemoveBudgetHead(int id)
+        {
+            bool res = _adminServices.DeleteBudgetHead(id);
+            return Json((object)new
+            {
+                status = res,
+                message = (res ? "Head removed successfully !" : "Some issue occred ")
+            }, (JsonRequestBehavior)0);
+        }
+        #endregion
+
         [HttpPost]
         public ActionResult InsertDesgination(RemoteSensingProject.Models.Admin.main.CommonResponse cr)
         {
