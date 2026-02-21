@@ -767,7 +767,8 @@ public class CommonController : ApiController
 	[Route("api/Add_Update_InternalProgress_Report")]
     public IHttpActionResult AddInternalProgressReport(InternalProject_ProgressModel data)
 	{
-		bool result = _managerservice.AddOrUpdateMonthlyInternalProgressReport(data);
+		string message = string.Empty;	
+        bool result = _managerservice.AddOrUpdateMonthlyInternalProgressReport(data,out message);
         return Ok(result);
 	}
     #endregion
