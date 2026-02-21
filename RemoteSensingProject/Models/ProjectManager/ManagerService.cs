@@ -896,23 +896,18 @@ NULL::text,
                             v_project_id := @v_project_id,
                             v_w_date := @v_w_date,
                             v_financialyearlyaim := @v_financialyearlyaim,
-                            v_physicalyearlyaim := @v_physicalyearlyaim,
-                            v_monthaim := @v_monthaim,
-                            v_monthlystatus := @v_monthlystatus,
-                            v_squencestatus := @v_squencestatus,
-                            v_sequencestatusperc := @v_sequencestatusperc,
-                            v_totaltarget := @v_totaltarget,
-                            v_previousfinancialyear := @v_previousfinancialyear,
+                            v_EndMonthReview := @v_EndMonthReview,
+                            v_InMonthReview := @v_InMonthReview,
+                            v_SequentiallyMonthReview := @v_SequentiallyMonthReview,
+                            v_Amount := @v_Amount,
                             v_statebeneficiary := @v_statebeneficiary,
                             v_remark := @v_remark,
-                            v_createdby := @v_createdby,
-                            v_createruserid := @v_createruserid,
                             v_status := @v_status
                         )", conn))
                     {
                         var date = pm.Date.Date;
                         cmd.CommandType = CommandType.Text;
-                        cmd.Parameters.AddWithValue("v_action", pm.Id > 0 ? "UPDATEEXTERNAL" : "INSERTEXTERNAL");
+                        cmd.Parameters.AddWithValue("v_action", pm.Id > 0 ? "UPDATE" : "INSERT");
                         cmd.Parameters.AddWithValue("v_id", pm.Id);
                         cmd.Parameters.AddWithValue("v_project_id", pm.ProjectId);
                         cmd.Parameters.AddWithValue("v_w_date", date);
@@ -988,6 +983,97 @@ NULL::text,
                                             Remark = res["remark"].ToString(),
                                             CreaterRole = res["createdby"].ToString(),
                                             CreaterId = res["createruserid"].ToString()
+                                        });
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)res)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
+        public List<TechnicalInternalMonthlyReport>  GetMonthlyTechnicalInternalProjectReport(int? id = null,int? projectid=null, int? month = null, int? year = null,int? divisionid = null, int? projectmanager = null)
+        {
+            try
+            {
+                List<TechnicalInternalMonthlyReport> list = new List<TechnicalInternalMonthlyReport>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageprojectmonthlyreports", con);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"gettechnicalinternalprojectReport");
+                        cmd.Parameters.AddWithValue("@v_projectmanager", projectmanager.HasValue ? (object)projectmanager.Value : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_projectid", projectid.HasValue ? ((object)projectid.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_divisionid", divisionid.HasValue ? ((object)divisionid.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_year", year.HasValue ? ((object)year.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_month", month.HasValue ? ((object)month.Value) : DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader res = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)res).HasRows)
+                                {
+                                    while (((DbDataReader)(object)res).Read())
+                                    {
+                                        list.Add(new TechnicalInternalMonthlyReport
+                                        {
+                                            Id = ((((DbDataReader)(object)res)["id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["id"]) : 0),
+                                            ProjectId = ((((DbDataReader)(object)res)["projectid"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["projectid"]) : 0),
+                                            ProjectName = ((((DbDataReader)(object)res)["title"] != DBNull.Value) ? ((DbDataReader)(object)res)["title"].ToString() : ""),
+                                            DateString = res["w_date"] != DBNull.Value ? Convert.ToDateTime(res["w_date"]).ToString("dd-MM-yyyy") : "N/A",
+                                            FinancialYearlyAim = res["financialyearlyaim"].ToString(),
+                                            EndMonthReview = res["endmonthreview"].ToString(),
+                                            InMonthReview = res["inmonthreview"].ToString(),
+                                            SequentiallyMonthReview = res["sequentiallymonthreview"].ToString(),
+                                            Amount = res["amount"].ToString(),
+                                            Statebeneficiary = res["statebeneficiary"].ToString(),
+                                            Remark = res["remark"].ToString(),
                                         });
                                     }
                                 }
