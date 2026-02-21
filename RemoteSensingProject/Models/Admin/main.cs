@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Bibliography;
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -245,8 +246,23 @@ namespace RemoteSensingProject.Models.Admin
 			public string StateBeneficiaries { get; set; }
 			public DateTime date { get; set; }
 		}
-
-		public class InternalProject_ProgressModel
+        public class TechnicalInternalMonthlyReport
+        {
+            public int Id { get; set; }
+            public DateTime Date { get; set; }
+            public int ProjectId { get; set; }
+			public string ProjectName { get; set; } = string.Empty;
+            public string FinancialYearlyAim { get; set; }
+            public string EndMonthReview { get; set; }
+            public string InMonthReview { get; set; }
+            public string SequentiallyMonthReview { get; set; }
+            public string Amount { get; set; }
+            public string Statebeneficiary { get; set; }
+            public string Remark { get; set; }
+            public string CreaterId { get; set; }
+            public string CreaterRole { get; set; }
+        }
+        public class InternalProject_ProgressModel
 		{
 			public int Id { get; set; }
 			public DateTime Date { get; set; }
@@ -264,8 +280,27 @@ namespace RemoteSensingProject.Models.Admin
 			public string CreaterId { get; set; }
 			public string CreaterRole { get; set; }
 		}
-
-		public class Project_Budget
+        public class ExternalProject_ProgressModel
+        {
+			public string ProjectName { get; set; }
+			public string DateString { get; set; }
+			public string CreaterRole { get; set; }
+			public string CreaterId { get; set; }
+            public int Id { get; set; }
+            public DateTime Date { get; set; }
+            public int ProjectId { get; set; }
+            public string AnnualTarget { get; set; }
+            public string TargetOfMonth { get; set; }
+            public string AchievementOfMonth { get; set; }
+            public string CurrentFinancialYear { get; set; }
+            public string FinancialInstitution { get; set; }
+            public int TotalCost { get; set; }
+            public string TotalTarget { get; set; }
+            public string PreviousFinancialYear { get; set; }
+            public string Statebeneficiary { get; set; }
+            public string Remark { get; set; }
+        }
+        public class Project_Budget
 		{
 			public int Id { get; set; }
 

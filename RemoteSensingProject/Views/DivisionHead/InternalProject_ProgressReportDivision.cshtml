@@ -1,12 +1,14 @@
 ﻿
 @{
-    ViewBag.Title = "InternalProject_ProgressReport";
+    ViewBag.Title = "InternalProject_ProgressReportDivision";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var firstDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
     var lastDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
     var data = ViewData["reportdata"] as List<RemoteSensingProject.Models.Admin.main.InternalProject_ProgressModel>;
 }
+
+
 
 <style>
     .modal-body .sliderimages img {
@@ -74,8 +76,8 @@
                 <option value="12">दिसंबर</option>
             </select>
         </div>
-        </div>
-        <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
+    </div>
+    <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
 </nav>
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -180,7 +182,7 @@
                         <div class="mb-3 col-md-6">
                             <label for="subtitle" class="form-label">Date</label>
                             <input type="date" class="form-control form-control-sm" name="Date" min="@firstDayLastMonth.ToString("yyyy-MM-dd")"
-max="@lastDayLastMonth.ToString("yyyy-MM-dd")"/>
+                                   max="@lastDayLastMonth.ToString("yyyy-MM-dd")" />
 
                         </div>
                         <div class="mb-3 col-md-6">
@@ -201,17 +203,17 @@ max="@lastDayLastMonth.ToString("yyyy-MM-dd")"/>
                         <div class="row">
                             <div class="col-sm-6">
                                 <label>वित्तीय</label>
-                                <input type="text" class="form-control" placeholder="वित्तीय" name="FinancialYearlyAim"/>
+                                <input type="text" class="form-control" placeholder="वित्तीय" name="FinancialYearlyAim" />
                             </div>
                             <div class="col-sm-6">
                                 <label>भौतिक</label>
-                                <input type="text" class="form-control" placeholder="भौतिक" name="PhysicalYearlyAim"/>
+                                <input type="text" class="form-control" placeholder="भौतिक" name="PhysicalYearlyAim" />
                             </div>
                         </div>
 
                         <hr />
                         <div class="mb-3 col-md-12">
-                            
+
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label">मासिक लक्ष्य</label>

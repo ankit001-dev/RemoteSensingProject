@@ -773,6 +773,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                             v_monthlystatus := @v_monthlystatus,
                             v_squencestatus := @v_squencestatus,
                             v_sequencestatusperc := @v_sequencestatusperc,
+                            NULL::text,
+NULL::text,
                             v_statebeneficiary := @v_statebeneficiary,
                             v_remark := @v_remark,
                             v_createdby := @v_createdby,
@@ -813,8 +815,133 @@ namespace RemoteSensingProject.Models.ProjectManager
                 throw ex;
             }
         }
+        public bool AddOrUpdateMonthlyExternalProgressReport(ExternalProject_ProgressModel pm,out string message)
+        {
+            message = string.Empty;
+            try
+            {
+                using (NpgsqlConnection conn = con)
+                {
+                    conn.Open();
 
-        public List<InternalProject_ProgressModel> GetMonthlyProjectReport(int? id = null, int? month = null, int? year = null)
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(@"
+                        CALL public.sp_manageprojectreport(
+                            v_action := @v_action,
+                            v_id := @v_id,
+                            v_project_id := @v_project_id,
+                            v_w_date := @v_w_date,
+                            v_financialyearlyaim := @v_financialyearlyaim,
+                            v_physicalyearlyaim := @v_physicalyearlyaim,
+                            v_monthaim := @v_monthaim,
+                            v_monthlystatus := @v_monthlystatus,
+                            v_squencestatus := @v_squencestatus,
+                            v_sequencestatusperc := @v_sequencestatusperc,
+                            v_totaltarget := @v_totaltarget,
+                            v_previousfinancialyear := @v_previousfinancialyear,
+                            v_statebeneficiary := @v_statebeneficiary,
+                            v_remark := @v_remark,
+                            v_createdby := @v_createdby,
+                            v_createruserid := @v_createruserid,
+                            v_status := @v_status
+                        )", conn))
+                    {
+                        var date = pm.Date.Date;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("v_action", pm.Id > 0 ? "UPDATEEXTERNAL" : "INSERTEXTERNAL");
+                        cmd.Parameters.AddWithValue("v_id", pm.Id);
+                        cmd.Parameters.AddWithValue("v_project_id", pm.ProjectId);
+                        cmd.Parameters.AddWithValue("v_w_date", date);
+                        cmd.Parameters.AddWithValue("v_FinancialYearlyAim", pm.AnnualTarget ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_PhysicalYearlyAim", pm.TargetOfMonth ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_MonthAim", pm.AchievementOfMonth ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_MonthlyStatus", pm.CurrentFinancialYear ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_SquenceStatus", pm.FinancialInstitution ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_SequenceStatusPerc", pm.TotalCost);
+                        cmd.Parameters.AddWithValue("v_totaltarget", pm.TotalTarget);
+                        cmd.Parameters.AddWithValue("v_previousfinancialyear", pm.PreviousFinancialYear);
+                        cmd.Parameters.AddWithValue("v_Statebeneficiary", pm.Statebeneficiary ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_Remark", pm.Remark ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_CreatedBy", pm.CreaterRole ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_CreaterUserId", Convert.ToInt32(pm.CreaterId));
+                        cmd.Parameters.AddWithValue("v_status", true);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (NpgsqlException npgsqlEx)
+            {
+                message = "Database error: " + npgsqlEx.Message;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool AddOrUpdateMonthlyInternalProgressReportTechnical(TechnicalInternalMonthlyReport pm,out string message)
+        {
+            message = string.Empty;
+            try
+            {
+                using (NpgsqlConnection conn = con)
+                {
+                    conn.Open();
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(@"
+                        CALL public.sp_manageprojectreporttechnical(
+                            v_action := @v_action,
+                            v_id := @v_id,
+                            v_project_id := @v_project_id,
+                            v_w_date := @v_w_date,
+                            v_financialyearlyaim := @v_financialyearlyaim,
+                            v_physicalyearlyaim := @v_physicalyearlyaim,
+                            v_monthaim := @v_monthaim,
+                            v_monthlystatus := @v_monthlystatus,
+                            v_squencestatus := @v_squencestatus,
+                            v_sequencestatusperc := @v_sequencestatusperc,
+                            v_totaltarget := @v_totaltarget,
+                            v_previousfinancialyear := @v_previousfinancialyear,
+                            v_statebeneficiary := @v_statebeneficiary,
+                            v_remark := @v_remark,
+                            v_createdby := @v_createdby,
+                            v_createruserid := @v_createruserid,
+                            v_status := @v_status
+                        )", conn))
+                    {
+                        var date = pm.Date.Date;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("v_action", pm.Id > 0 ? "UPDATEEXTERNAL" : "INSERTEXTERNAL");
+                        cmd.Parameters.AddWithValue("v_id", pm.Id);
+                        cmd.Parameters.AddWithValue("v_project_id", pm.ProjectId);
+                        cmd.Parameters.AddWithValue("v_w_date", date);
+                        cmd.Parameters.AddWithValue("v_FinancialYearlyAim", pm.FinancialYearlyAim ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_EndMonthReview", pm.EndMonthReview ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_InMonthReview", pm.InMonthReview ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_SequentiallyMonthReview", pm.SequentiallyMonthReview ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_Amount", pm.Amount ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_Statebeneficiary", pm.Statebeneficiary ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_Remark", pm.Remark ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_status", true);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (NpgsqlException npgsqlEx)
+            {
+                message = "Database error: " + npgsqlEx.Message;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<InternalProject_ProgressModel>  GetMonthlyProjectReport(int? id = null,int? projectid=null, int? month = null, int? year = null,int? divisionid = null, int? projectmanager = null)
         {
             try
             {
@@ -828,8 +955,10 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@v_action", (object)"getInternalprojectReport");
-                        cmd.Parameters.AddWithValue("@v_projectmanager", (object)0);
+                        cmd.Parameters.AddWithValue("@v_projectmanager", projectmanager.HasValue ? (object)projectmanager.Value : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_projectid", projectid.HasValue ? ((object)projectid.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_divisionid", divisionid.HasValue ? ((object)divisionid.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_year", year.HasValue ? ((object)year.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_month", month.HasValue ? ((object)month.Value) : DBNull.Value);
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
@@ -845,6 +974,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                                     {
                                         list.Add(new InternalProject_ProgressModel
                                         {
+                                            Id = ((((DbDataReader)(object)res)["id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["id"]) : 0),
                                             ProjectId = ((((DbDataReader)(object)res)["project_id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["project_id"]) : 0),
                                             ProjectName = ((((DbDataReader)(object)res)["title"] != DBNull.Value) ? ((DbDataReader)(object)res)["title"].ToString() : ""),
                                             DateString = res["w_date"] != DBNull.Value ? Convert.ToDateTime(res["w_date"]).ToString("dd-MM-yyyy") : "N/A",
@@ -906,6 +1036,103 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
+
+        public List<ExternalProject_ProgressModel> GetMonthlyExternalProjectReport(int? id = null, int? projectid = null, int? month = null, int? year = null,int? divisionid = null,int?projectmanager = null)
+        {
+            try
+            {
+                List<ExternalProject_ProgressModel> list = new List<ExternalProject_ProgressModel>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageprojectmonthlyreports", con);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"getExternalprojectReport");
+                        cmd.Parameters.AddWithValue("@v_projectmanager", projectmanager.HasValue?(object)projectmanager.Value:DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_projectid", projectid.HasValue ? ((object)projectid.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_divisionid", divisionid.HasValue ? ((object)divisionid.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_year", year.HasValue ? ((object)year.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_month", month.HasValue ? ((object)month.Value) : DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader res = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)res).HasRows)
+                                {
+                                    while (((DbDataReader)(object)res).Read())
+                                    {
+                                        list.Add(new ExternalProject_ProgressModel
+                                        {
+                                            Id = ((((DbDataReader)(object)res)["id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["id"]) : 0),
+                                            ProjectId = ((((DbDataReader)(object)res)["projectid"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["projectid"]) : 0),
+                                            ProjectName = ((((DbDataReader)(object)res)["title"] != DBNull.Value) ? ((DbDataReader)(object)res)["title"].ToString() : ""),
+                                            DateString = res["w_date"] != DBNull.Value ? Convert.ToDateTime(res["w_date"]).ToString("dd-MM-yyyy") : "N/A",
+                                            AnnualTarget = res["annualtarget"].ToString(),
+                                            TargetOfMonth = res["targetofmonth"].ToString(),
+                                            AchievementOfMonth = res["achievementofmonth"].ToString(),
+                                            CurrentFinancialYear = res["currentfinancialyear"].ToString(),
+                                            FinancialInstitution = res["financialinstitution"].ToString(),
+                                            TotalTarget = res["totaltarget"].ToString(),
+                                            PreviousFinancialYear = res["previousfinancialyear"].ToString(),
+                                            TotalCost = res["totalcost"] != DBNull.Value ? Convert.ToInt32(res["totalcost"]) : 0,
+                                            Statebeneficiary = res["statebeneficiary"].ToString(),
+                                            Remark = res["remark"].ToString(),
+                                            CreaterRole = res["createdby"].ToString(),
+                                            CreaterId = res["createruserid"].ToString()
+                                        });
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)res)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
         public List<RemoteSensingProject.Models.Admin.main.Project_MonthlyUpdate> MonthlyProjectUpdate(int projectId)
         {
             //IL_0038: Unknown result type (might be due to invalid IL or missing references)

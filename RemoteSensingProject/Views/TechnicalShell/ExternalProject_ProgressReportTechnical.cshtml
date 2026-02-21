@@ -1,0 +1,452 @@
+﻿
+@{
+    ViewBag.Title = "ExternalProject_ProgressReportTechnical";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>
+    ;
+    var data = ViewData["reportdata"] as List<RemoteSensingProject.Models.Admin.main.ExternalProject_ProgressModel>;
+    var firstDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
+    var lastDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
+    var today = DateTime.Now;
+    int financialYearEnd;
+
+    // Financial year: 1 April – 31 March
+    if (today.Month >= 4)
+    {
+        financialYearEnd = today.Year + 1;
+    }
+    else
+    {
+        financialYearEnd = today.Year;
+    }
+
+    int fyStartYear = today.Month >= 4
+        ? today.Year
+        : today.Year - 1;
+}
+
+<style>
+    .modal-body .sliderimages img {
+        width: 20% !important;
+        height: 20%;
+        border-radius: 10px;
+    }
+
+    svg {
+        height: 20px;
+    }
+
+    .custom-table {
+        border: 2px solid #000;
+    }
+
+        .custom-table th,
+        .custom-table td {
+            border: 1px solid #000;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        .custom-table thead th {
+            background-color: #d9d9d9;
+            font-weight: 600;
+        }
+
+    .small-text {
+        font-size: 12px;
+    }
+</style>
+
+<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
+    <div class="row align-items-end w-100">
+
+        <!-- Year Dropdown -->
+        <div class="col-md-3">
+            <label class="form-label">वर्ष चुनें</label>
+            <select class="form-select" id="yearFilter">
+                <option value="">सभी</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+            </select>
+        </div>
+
+        <!-- Month Dropdown -->
+        <div class="col-md-3">
+            <label class="form-label">माह चुनें</label>
+            <select class="form-select" id="monthFilter">
+                <option value="">सभी</option>
+                <option value="1">जनवरी</option>
+                <option value="2">फरवरी</option>
+                <option value="3">मार्च</option>
+                <option value="4">अप्रैल</option>
+                <option value="5">मई</option>
+                <option value="6">जून</option>
+                <option value="7">जुलाई</option>
+                <option value="8">अगस्त</option>
+                <option value="9">सितंबर</option>
+                <option value="10">अक्टूबर</option>
+                <option value="11">नवंबर</option>
+                <option value="12">दिसंबर</option>
+            </select>
+        </div>
+    </div>
+    <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
+</nav>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <p class="text-center">
+                    <h2 class="text-center">प्रभागीय मासिक प्रगति आख्या : माह फरवरी 2026 </h2>
+                    <h2 class="text-center">रिमोट सेन्सिंग ऍप्लिकेशन्स सेन्टर, उत्तर प्रदेश</h2>
+                    <h2 class="text-center">बाह्य सहायतित परियोजनाओं की भौतिक उपतब्धियों का विवरण </h2>
+                </p>
+                <div class="table-responsive">
+                    <table class="table custom-table">
+
+                        <thead>
+                            <!-- First Header Row -->
+                            <tr>
+                                <th rowspan="2">क्रम सं०</th>
+                                <th rowspan="2">परियोजना का नाम</th>
+                                <th rowspan="2">वित्त पोषक संस्था</th>
+                                <th rowspan="2">कुल लागत</th>
+                                <th rowspan="2">कुल लक्ष्य </th>
+                                <th rowspan="2">30-03-@financialYearEnd की उपलब्धि </th>
+                                <th colspan="4">
+                                    वर्ष @(DateTime.Now.Year - 1) - @(DateTime.Now.Year)
+                                </th>
+                                <th rowspan="2">
+                                    सरकार के लाभान्वित होने वाले विभाग
+                                </th>
+                                <th rowspan="2">
+                                    लाभान्वित होने वाले विभागों से किए गए संपर्क की वस्तुस्थिति
+                                </th>
+                                <th rowspan="2">Action</th>
+                            </tr>
+
+                            <!-- Second Header Row -->
+                            <tr>
+                                <th>वार्षिक लक्ष्य </th>
+                                <th>माह का लक्ष्य </th>
+                                <th>माह की उपलब्धि </th>
+                                <th>01.04.@fyStartYear  से क्रमिक उपलब्धि </th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                            @if (data != null && data.Count > 0)
+                            {
+                                int count = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@count</td>
+                                        <td>@item.ProjectName</td>
+                                        <td>@item.FinancialInstitution</td>
+                                        <td>@item.TotalCost</td>
+                                        <td>@item.TotalTarget</td>
+                                        <td>@item.PreviousFinancialYear</td>
+                                        <td>@item.AnnualTarget</td>
+                                        <td>@item.TargetOfMonth</td>
+                                        <td>@item.AchievementOfMonth</td>
+                                        <td>@item.CurrentFinancialYear</td>
+                                        <td>@item.Statebeneficiary</td>
+                                        <td>@item.Remark</td>
+                                        <td>
+                                            <a class="cursor-pointer edit-btn" data-id="@item.Id">
+                                                <i class="link-icon" data-feather="edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    count++;
+                                }
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title" id="exampleModalLabel">Add Monthly Progress Report</h5>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="weeklyUpdateForm">
+                    <input type="hidden" id="editid" name="Id" value="" />
+                    <div class="row">
+                        <div class="mb-3 col-md-6">
+                            <label for="subtitle" class="form-label">Date</label>
+                            <input type="date" class="form-control form-control-sm" name="Date" min="@firstDayLastMonth.ToString(" yyyy-MM-dd")"
+                                   max="@lastDayLastMonth.ToString(" yyyy-MM-dd")" />
+
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label for="projectHead" class="form-label">परियोजना का नाम </label>
+                            <select class="form-select form-select-sm" id="projectname" name="ProjectId" required>
+                                <option value="" selected>मद / परियोजना का नाम</option>
+                                @if (projects != null)
+                                {
+                                    foreach (var item in projects)
+                                    {
+                                        <option value="@item.Id">@item.ProjectTitle</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <label>वर्ष @(DateTime.Now.Year - 1) - @(DateTime.Now.Year)</label>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>वार्षिक लक्ष्य </label>
+                                <input type="text" class="form-control" placeholder="वार्षिक लक्ष्य" name="AnnualTarget" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label>माह  का लक्ष्य </label>
+                                <input type="text" class="form-control" placeholder="माह  का लक्ष्य" name="TargetOfMonth" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label>माह  की उपलब्धि </label>
+                                <input type="text" class="form-control" placeholder="माह  की उपलब्धि" name="AchievementOfMonth" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label>01.04.@fyStartYear से क्रमिक उपलब्धि </label>
+                                <input type="text" class="form-control" placeholder="01.04.@fyStartYear से क्रमिक उपलब्धि" name="CurrentFinancialYear" />
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="mb-3 col-md-12">
+
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">वित्त पोषक संस्था</label>
+                                    <input type="text" name="FinancialInstitution" class="form-control form-control-sm" placeholder="वित्त पोषक संस्था" />
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">कुल लागत </label>
+                                    <input type="number" name="TotalCost" class="form-control form-control-sm" placeholder="कुल लागत" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-md-12">
+                            <div class="row">
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">
+                                        कुल लक्ष्य
+                                    </label>
+                                    <input type="text" name="TotalTarget" class="form-control form-control-sm" placeholder="कुल लक्ष्य " />
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">31.03.@financialYearEnd की उपलब्धि </label>
+                                    <input type="text" name="PreviousFinancialYear" class="form-control form-control-sm" placeholder="31.03.@financialYearEnd की उपलब्धि" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label for="subtitle" class="form-label"> लाभान्वित होने वाले विभाग</label>
+                            <input class="form-control form-control-sm" name="Statebeneficiary" id="tinymceExample" rows="10" placeholder="लाभान्वित होने वाले विभाग" />
+                        </div>
+
+                        <div class="mb-3 col-md-12">
+                            <label for="subtitle" class="form-label">लाभान्वित होने वाले विभागों से किए गए संपर्क की वस्तु स्थिति</label>
+                            <textarea class="form-control form-control-sm" name="Remark" id="tinymceExample" rows="5" placeholder="लाभान्वित होने वाले विभागों से किए गए संपर्क की वस्तुस्थिति"></textarea>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Update Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+     $("#weeklyUpdateForm").on("submit", function (e) {
+         e.preventDefault();
+         Swal.fire({
+             title: "Please wait ...",
+             text: "Processing your request...",
+             timer: 100000,
+             allowOutsideClick: false,
+             allowEscapeKey: false,
+             didOpen: () => {
+                 Swal.showLoading();
+             }
+         })
+
+         let formData = $(this).serialize();
+         $.ajax({
+             url: "/employee/UpdateExternalProject",
+             type: "post",
+             data: formData,
+             success: function (res) {
+                 if (res.status) {
+                     Swal.fire({
+                         title: "Successfully !",
+                         text: res.message,
+                         icon: "success",
+                         didClose: () => {
+                             location.reload(true)
+                         }
+                     })
+                 }
+                 else {
+                     Swal.fire({
+                         title: "Sorry !",
+                         text: res.message,
+                         icon: "warning"
+                     })
+                 }
+             },
+             error: function () {
+                 Swal.fire({
+                     title: "Server busy !",
+                     text: "Server is busy ! Please try after sometime.",
+                     icon: "error",
+                     didClose: () => {
+                         //location.reload(true)
+                     }
+                 })
+             }
+         })
+     })
+     $(document).ready(function () {
+
+         populateYear();
+         populateMonth();
+
+         // When year changes → reload months
+         $("#yearFilter").on("change", function () {
+             populateMonth();
+         });
+
+     });
+
+     $('#projectname').on('change', function () {
+         const id = $(this).val();
+
+         if (id > 0) {
+             BindData(id, "projectid");
+         }
+     });
+
+     $('.edit-btn').on('click', function () {
+         const id = $(this).data("id");
+         if (id > 0) {
+             BindData(id, "editid")
+         }
+     })
+
+     function BindData(id, type) {
+         debugger
+         $.ajax({
+             url: '/employee/GetExternalProjectReport',
+             type: 'get',
+             data: { id: id, type: type },
+             success: function (res) {
+                 if (res.status && res.data.length > 0) {
+                     function formatDate(dateStr) {
+                         // "03-01-2026" -> "2026-01-03"
+                         const parts = dateStr.split('-');
+                         return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                     }
+
+                     const d = res.data[0]; // first object
+
+                     // modal show
+
+                     // values set
+                     $('input[name="Date"]').val(formatDate(d.DateString));
+                     $('select[name="ProjectId"]').val(d.ProjectId);
+
+                     $('input[name="AnnualTarget"]').val(d.AnnualTarget);
+                     $('input[name="TargetOfMonth"]').val(d.TargetOfMonth);
+                     $('input[name="AchievementOfMonth"]').val(d.AchievementOfMonth);
+                     $('input[name="CurrentFinancialYear"]').val(d.CurrentFinancialYear);
+
+                     $('input[name="FinancialInstitution"]').val(d.FinancialInstitution);
+                     $('input[name="TotalCost"]').val(d.TotalCost);
+                     $('input[name="TotalTarget"]').val(d.TotalTarget);
+
+                     $('input[name="PreviousFinancialYear"]').val(d.PreviousFinancialYear);
+
+                     $('input[name="Statebeneficiary"]').val(d.Statebeneficiary);
+                     $('textarea[name="Remark"]').val(d.Remark);
+
+                     if (type == "editid") {
+                         $('input[name="Id"]').val(d.Id);
+                         $('#addslider').modal('show');
+                     }
+                 } else { return; }
+             },
+             error: function (err) {
+                 console.log(err);
+             }
+         })
+     }
+
+     function populateYear() {
+
+         const $yearSelect = $('#yearFilter');
+         const currentYear = new Date().getFullYear();
+
+         $yearSelect.empty();
+
+         for (let y = currentYear - 4; y <= currentYear; y++) {
+             $yearSelect.append(`<option value="${y}">${y}</option>`);
+         }
+
+         // ✅ Auto select current year
+         $yearSelect.val(currentYear);
+     }
+
+
+     function populateMonth() {
+
+         const $monthSelect = $("#monthFilter");
+         const selectedYear = parseInt($("#yearFilter").val());
+
+         const currentDate = new Date();
+         const currentYear = currentDate.getFullYear();
+         const currentMonth = currentDate.getMonth() + 1;
+
+         $monthSelect.empty();
+
+         let maxMonth = 12;
+
+         // ✅ If current year → show till current month
+         if (selectedYear === currentYear) {
+             maxMonth = currentMonth;
+         }
+
+         const monthNames = [
+             "जनवरी", "फरवरी", "मार्च", "अप्रैल",
+             "मई", "जून", "जुलाई", "अगस्त",
+             "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"
+         ];
+
+         for (let m = 1; m <= maxMonth; m++) {
+             $monthSelect.append(
+                 `<option value="${m}">${monthNames[m - 1]}</option>`
+             );
+         }
+
+         // ✅ Auto select current month (if current year)
+         if (selectedYear === currentYear) {
+             $monthSelect.val(currentMonth);
+         }
+     }
+</script>
+

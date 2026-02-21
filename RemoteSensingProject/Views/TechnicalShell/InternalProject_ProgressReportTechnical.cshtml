@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "InternalProject_ProgressReport";
+    ViewBag.Title = "InternalProject_ProgressReportTechnical";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var firstDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
@@ -74,17 +74,17 @@
                 <option value="12">दिसंबर</option>
             </select>
         </div>
-        </div>
-        <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
+    </div>
+    <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
 </nav>
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <p class="text-center">
-                    <h2 class="text-center">प्रभागीय मासिक प्रगति आख्या : माह फरवरी 2026 </h2>
-                    <h2 class="text-center">रिमोट सेन्सिंग ऍप्लिकेशन्स सेन्टर, उत्तर प्रदेश</h2>
-                    <h2 class="text-center">शासन से गैर वेतन मद में प्राप्त धनराषि से संचालित योजना / कार्यक्रमों की भौतिक उपलब्धियों का विवरण </h2>
+                    <h2 class="text-center">मासिक समीक्षा : रूप पत्र - 2 </h2>
+                    <h2 class="text-center">शासन से गैर वेतन मद में प्राप्त धनराषि से संचालित योजना / कार्यक्रमों की भौतिक उपलब्धियों का विवरण</h2>
+                    <h2 class="text-center">विभाग का नाम : रिमोटे सेन्सिंग एप्लीकेसन्स सेंटर, उत्तर प्रदेश, विज्ञान एवं प्रोद्योगिकी विभाग, उत्तर प्रदेश  </h2>
                 </p>
                 <div class="table-responsive">
                     <table class="table custom-table">
@@ -94,26 +94,20 @@
                             <tr>
                                 <th rowspan="2">क्रम सं०</th>
                                 <th rowspan="2">मद / परियोजना का नाम</th>
-                                <th colspan="2">वार्षिक लक्ष्य</th>
-                                <th rowspan="2">मासिक लक्ष्य</th>
-                                <th rowspan="2">मासिक प्रगति</th>
-                                <th rowspan="2">क्रमिक प्रगति</th>
-                                <th rowspan="2">
-                                    क्रमिक<br>प्रगति (%)
-                                </th>
-                                <th rowspan="2">
-                                    सरकार के लाभान्वित होने वाले विभाग
-                                </th>
-                                <th rowspan="2">
-                                    लाभान्वित होने वाले विभागों से किए गए संपर्क की वस्तुस्थिति
-                                </th>
+                                <th rowspan="2">इकाई (लाख मे)</th>
+                                <th colspan="2">लक्ष्य</th>
+                                <th colspan="2">उपलब्धि </th>
+                                <th rowspan="2">प्रदेश  सरकार के लाभान्वित होने वाले विभाग </th>                                
+                                <th rowspan="2">अभ्युक्ति</th>
                                 <th rowspan="2">Action</th>
                             </tr>
 
                             <!-- Second Header Row -->
                             <tr>
-                                <th>वित्तीय</th>
-                                <th>भौतिक</th>
+                                <th>आलोच्य माह में  </th>
+                                <th>आलोच्य मासांत तक क्रमिक </th>
+                                <th>वार्षिक </th>
+                                <th>आलोच्य मासांत तक</th>
                             </tr>
 
                             <!-- Column Number Row -->
@@ -128,12 +122,20 @@
                                 <th>8</th>
                                 <th>9</th>
                                 <th>10</th>
-                                <th>11</th>
+                            </tr>
+                            <!--Full collapse row-->
+                            <tr>
+                                <td class="fw-bold">1.0</td>
+                                <td colspan="9">
+                                    <h4>
+                                        रीमोट सेन्सिंग तकनीक से प्रदेश के समस्त प्रकार्तिक संसधानों का अनुश्रवण एवं आलंकान 
+                                    </h4>
+                                </td>
                             </tr>
                         </thead>
 
                         <tbody>
-                            @if (data != null && data.Count > 0)
+                            @*@if (data != null && data.Count > 0)
                             {
                                 int count = 1;
                                 foreach (var item in data)
@@ -157,7 +159,7 @@
                                     </tr>
                                     count++;
                                 }
-                            }
+                            }*@
                         </tbody>
 
                     </table>
@@ -180,7 +182,7 @@
                         <div class="mb-3 col-md-6">
                             <label for="subtitle" class="form-label">Date</label>
                             <input type="date" class="form-control form-control-sm" name="Date" min="@firstDayLastMonth.ToString("yyyy-MM-dd")"
-max="@lastDayLastMonth.ToString("yyyy-MM-dd")"/>
+                                   max="@lastDayLastMonth.ToString("yyyy-MM-dd")" />
 
                         </div>
                         <div class="mb-3 col-md-6">
@@ -201,50 +203,46 @@ max="@lastDayLastMonth.ToString("yyyy-MM-dd")"/>
                         <div class="row">
                             <div class="col-sm-6">
                                 <label>वित्तीय</label>
-                                <input type="text" class="form-control" placeholder="वित्तीय" name="FinancialYearlyAim"/>
+                                <input type="text" class="form-control" placeholder="वित्तीय" name="FinancialYearlyAim" />
                             </div>
                             <div class="col-sm-6">
-                                <label>भौतिक</label>
-                                <input type="text" class="form-control" placeholder="भौतिक" name="PhysicalYearlyAim"/>
+                                <label>आलोच्य मासांत तक </label>
+                                <input type="text" class="form-control" placeholder="आलोच्य मासांत तक" name="EndMonthReview" />
+                            </div>
+                        </div>
+                        <hr />
+                        <label>उपलब्धि</label>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>आलोच्य माह में </label>
+                                <input type="text" class="form-control" placeholder="आलोच्य माह में" name="InMonthReview" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label>आलोच्य मासांत तक क्रमिक</label>
+                                <input type="text" class="form-control" placeholder="आलोच्य मासांत तक क्रमिक" name="SequentiallyMonthReview" />
                             </div>
                         </div>
 
                         <hr />
-                        <div class="mb-3 col-md-12">
-                            
-                            <div class="row">
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label">मासिक लक्ष्य</label>
-                                    <input type="text" name="MonthAim" class="form-control form-control-sm" placeholder="मासिक लक्ष्य" />
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label">मासिक प्रगति</label>
-                                    <input type="text" name="MonthlyStatus" class="form-control form-control-sm" placeholder="मासिक प्रगति" />
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="mb-3 col-md-12">
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label">
-                                        क्रमिक प्रगति
+                                        इकाई (लाख में)
                                     </label>
-                                    <input type="text" name="SquenceStatus" class="form-control form-control-sm" placeholder="क्रमिक प्रगति" />
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label">क्रमिक प्रगति (%)</label>
-                                    <input type="number" name="SequenceStatusPerc" class="form-control form-control-sm" placeholder="क्रमिक प्रगति (%)" />
+                                    <input type="text" name="Amount" class="form-control form-control-sm" placeholder="इकाई (लाख में)" />
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-3 col-md-12">
-                            <label for="subtitle" class="form-label">सरकार के लाभान्वित होने वाले विभाग</label>
-                            <input class="form-control form-control-sm" name="Statebeneficiary" id="tinymceExample" rows="10" placeholder="सरकार के लाभान्वित होने वाले विभाग" />
+                            <label for="subtitle" class="form-label">प्रदेश सरकार के लाभान्वित होने वाले विभाग</label>
+                            <input class="form-control form-control-sm" name="Statebeneficiary" id="tinymceExample" rows="10" placeholder="प्रदेश सरकार के लाभान्वित होने वाले विभाग" />
                         </div>
 
                         <div class="mb-3 col-md-12">
-                            <label for="subtitle" class="form-label">लाभान्वित होने वाले विभागों से किए गए संपर्क की वस्तुस्थिति</label>
+                            <label for="subtitle" class="form-label">अभियुक्ति</label>
                             <textarea class="form-control form-control-sm" name="Remark" id="tinymceExample" rows="10" placeholder="लाभान्वित होने वाले विभागों से किए गए संपर्क की वस्तुस्थिति"></textarea>
                         </div>
                     </div>
@@ -432,3 +430,4 @@ max="@lastDayLastMonth.ToString("yyyy-MM-dd")"/>
         }
     }
 </script>
+

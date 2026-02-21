@@ -185,10 +185,37 @@
                                     <li class="nav-item">
                                         <a href="/DivisionHead/DivisionHeadAllProjectList" class="nav-link">Division Project List</a>
                                     </li>
-
+                                    <li class="nav-item">
+                                        <a href="/DivisionHead/InternalProject_ProgressReportDivision" class="nav-link">Internal Project</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/DivisionHead/ExternalProject_ProgressReportDivision" class="nav-link">External Project</a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>
+
+                    }
+                    @if (User.IsInRole("technicalShell"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="collapse" href="#technicalShell" role="button" aria-expanded="false" aria-controls="technicalShell">
+                                <i class="link-icon" data-feather="list"></i>
+                                <span class="link-title">Technical Shell</span>
+                                <i class="link-arrow" data-feather="chevron-down"></i>
+                            </a>
+                            <div class="collapse" id="technicalShell">
+                                <ul class="nav sub-menu">
+                                    <li class="nav-item">
+                                        <a href="/TechnicalShell/InternalProject_ProgressReportTechnical" class="nav-link">Internal Project</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/TechnicalShell/ExternalProject_ProgressReportTechnical" class="nav-link">External Project</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
                     }
                     @if (User.IsInRole("cmDashboard"))
                     {
