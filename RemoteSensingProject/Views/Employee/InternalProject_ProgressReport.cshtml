@@ -5,6 +5,7 @@
     var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var firstDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
     var lastDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
+    var data = ViewData["reportdata"] as List<RemoteSensingProject.Models.Admin.main.InternalProject_ProgressModel>;
 }
 
 <style>
@@ -74,7 +75,7 @@
             </select>
         </div>
         </div>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
+        <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
 </nav>
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -106,6 +107,7 @@
                                 <th rowspan="2">
                                     लाभान्वित होने वाले विभागों से किए गए संपर्क की वस्तुस्थिति
                                 </th>
+                                <th rowspan="2">Action</th>
                             </tr>
 
                             <!-- Second Header Row -->
@@ -126,22 +128,36 @@
                                 <th>8</th>
                                 <th>9</th>
                                 <th>10</th>
+                                <th>11</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>—</td>
-                                <td>—</td>
-                                <td>—</td>
-                                <td>—</td>
-                                <td>—</td>
-                                <td>—</td>
-                                <td>—</td>
-                                <td>—</td>
-                                <td>—</td>
-                            </tr>
+                            @if (data != null && data.Count > 0)
+                            {
+                                int count = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@count</td>
+                                        <td>@item.ProjectName</td>
+                                        <td>@item.FinancialYearlyAim</td>
+                                        <td>@item.MonthAim</td>
+                                        <td>@item.MonthlyStatus</td>
+                                        <td>@item.SquenceStatus</td>
+                                        <td>@item.Statebeneficiary</td>
+                                        <td>@item.SequenceStatusPerc</td>
+                                        <td>@item.Remark</td>
+                                        <td>@item.PhysicalYearlyAim</td>
+                                        <td>
+                                            <a class="cursor-pointer edit-btn" data-id="@item.Id">
+                                                <i class="link-icon" data-feather="edit"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    count++;
+                                }
+                            }
                         </tbody>
 
                     </table>
@@ -159,6 +175,7 @@
             </div>
             <div class="modal-body">
                 <form class="forms-sample" id="weeklyUpdateForm">
+                    <input type="hidden" id="editid" name="Id" value="" />
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label for="subtitle" class="form-label">Date</label>
@@ -306,45 +323,62 @@ max="@lastDayLastMonth.ToString("yyyy-MM-dd")"/>
         const id = $(this).val();
 
         if (id > 0) {
-            $.ajax({
-                url: '/employee/GetInternalProjectReport',
-                type: 'get',
-                data: { id: id },
-                success: function (res) {
-                    if (res.status && res.data.length > 0) {
-                        function formatDate(dateStr) {
-                            // "03-01-2026" -> "2026-01-03"
-                            const parts = dateStr.split('-');
-                            return `${parts[2]}-${parts[1]}-${parts[0]}`;
-                        }
+            BindData(id, "projectid");
+        }
+    });
 
-                        const d = res.data[0]; // first object
-
-                        // modal show
-
-                        // values set
-                        $('input[name="Date"]').val(formatDate(d.DateString));
-                        $('select[name="ProjectId"]').val(d.ProjectId);
-
-                        $('input[name="FinancialYearlyAim"]').val(d.FinancialYearlyAim);
-                        $('input[name="PhysicalYearlyAim"]').val(d.PhysicalYearlyAim);
-
-                        $('input[name="MonthAim"]').val(d.MonthAim);
-                        $('input[name="MonthlyStatus"]').val(d.MonthlyStatus);
-
-                        $('input[name="SquenceStatus"]').val(d.SquenceStatus);
-                        $('input[name="SequenceStatusPerc"]').val(d.SequenceStatusPerc);
-
-                        $('input[name="Statebeneficiary"]').val(d.Statebeneficiary);
-                        $('textarea[name="Remark"]').val(d.Remark);
-                    } else { return; }
-                },
-                error: function (err) {
-                    console.log(err);
-                }
-            })
+    $('.edit-btn').on('click', function () {
+        const id = $(this).data("id");
+        if (id > 0) {
+            BindData(id,"editid")
         }
     })
+
+    function BindData(id, type) {
+        debugger
+        $.ajax({
+            url: '/employee/GetInternalProjectReport',
+            type: 'get',
+            data: { id: id,type:type },
+            success: function (res) {
+                if (res.status && res.data.length > 0) {
+                    function formatDate(dateStr) {
+                        // "03-01-2026" -> "2026-01-03"
+                        const parts = dateStr.split('-');
+                        return `${parts[2]}-${parts[1]}-${parts[0]}`;
+                    }
+
+                    const d = res.data[0]; // first object
+
+                    // modal show
+
+                    // values set
+                    $('input[name="Date"]').val(formatDate(d.DateString));
+                    $('select[name="ProjectId"]').val(d.ProjectId);
+
+                    $('input[name="FinancialYearlyAim"]').val(d.FinancialYearlyAim);
+                    $('input[name="PhysicalYearlyAim"]').val(d.PhysicalYearlyAim);
+
+                    $('input[name="MonthAim"]').val(d.MonthAim);
+                    $('input[name="MonthlyStatus"]').val(d.MonthlyStatus);
+
+                    $('input[name="SquenceStatus"]').val(d.SquenceStatus);
+                    $('input[name="SequenceStatusPerc"]').val(d.SequenceStatusPerc);
+
+                    $('input[name="Statebeneficiary"]').val(d.Statebeneficiary);
+                    $('textarea[name="Remark"]').val(d.Remark);
+
+                    if (type == "editid") {
+                        $('input[name="Id"]').val(d.Id);
+                        $('#addslider').modal('show');
+                    }
+                } else { return; }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+    }
 
     function populateYear() {
 
