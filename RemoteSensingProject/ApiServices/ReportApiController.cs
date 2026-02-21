@@ -864,16 +864,32 @@ public class ReportApiController : ApiController
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, "ManpowerMonthlyReport.docx", ((ApiController)this).Request);
     }
     [HttpGet]
-    [Route("api/report/DivisionalMonthlyreportpdf")]
+    [System.Web.Mvc.AllowAnonymous]
+    [Route("api/report/InternalProject_ProgressReport")]
     public IHttpActionResult DivisionalMonthlyReportPdf(int month, int year, int? id = null)
     {
         var data = GetDummyData();
         string monthName = CultureInfo.CurrentCulture
         .DateTimeFormat
         .GetMonthName(month);
-        byte[] pdfBytes = DocxGenerator.CreateMonthlyProgressDocx(data, monthName, year,"xyz");
+        byte[] pdfBytes = DocxGenerator.CreateMonthlyInternalProjectProgressDocx(data, monthName, year,"xyz");
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, "DivisionalMonthlyReport.docx", ((ApiController)this).Request);
     }
+
+    [HttpGet]
+    [System.Web.Mvc.AllowAnonymous]
+    [Route("api/report/ExternalProject_ProgressReport")]
+    public IHttpActionResult ExternalProject_ProgressReport(int month, int year, int? id = null)
+    {
+        var data = GetDummyData();
+        string monthName = CultureInfo.CurrentCulture
+        .DateTimeFormat
+        .GetMonthName(month);
+        byte[] pdfBytes = DocxGenerator.CreateExternalProjectPhysicalAchievementReport(null, monthName,"xyz");
+        return (IHttpActionResult)(object)new PdfResult(pdfBytes, "DivisionalMonthlyReport.docx", ((ApiController)this).Request);
+    }
+
+
     public static List<MonthlyProgressRow> GetDummyData()
     {
         return new List<MonthlyProgressRow>
