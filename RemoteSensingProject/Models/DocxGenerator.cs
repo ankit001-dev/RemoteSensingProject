@@ -1,12 +1,14 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using OfficeOpenXml.Interfaces.Drawing.Text;
 using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Http.Results;
+using static RemoteSensingProject.Models.Accounts.main;
 namespace RemoteSensingProject.Models
 {
     public class DocxGenerator
@@ -586,7 +588,7 @@ namespace RemoteSensingProject.Models
 
 
         #region Accounts Reports formate
-        public static byte[] AccountsInternalProjectReport(List<object> data, string financialYear, string month) {
+        public static byte[] AccountsInternalProjectReport(List<AdhisthanModel> data, string financialYear, string month) {
             using (var ms = new MemoryStream())
             {
                 using (WordprocessingDocument doc = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document, true))
@@ -612,7 +614,7 @@ namespace RemoteSensingProject.Models
                     );
 
                     body.Append(CreateReportHeading("रिमोट सेंसिंग ऍप्लिकेशन्स सेण्टर, उत्तर प्रदेश"));
-                    body.Append(CreateReportHeading("वर्ष 2025 - 2026  में शासन से प्राप्त धनराशि का आवंटित / व्यय विवरण माह जनवरी, 2026 तक"));
+                    body.Append(CreateReportHeading($"वर्ष {financialYear} में शासन से प्राप्त धनराशि का आवंटित / व्यय विवरण माह {month}, {DateTime.Now.Year} तक"));
                     body.Append(CreateReportHeadingAlignment("(रु० लाख में)"));
                     Table table = new Table(
                         new TableProperties(
@@ -653,6 +655,31 @@ namespace RemoteSensingProject.Models
                         CreateHeaderCell("व्यय प्रतिशत ")
                     ));
 
+                    int index = 1;
+                    foreach(var item in data)
+                    {
+                        table.Append(new TableRow(
+                             CreateHeaderCell(index.ToString()),
+                             CreateHeaderCell(item.HeadName),
+                             CreateHeaderCell(item.BudgetProvision.ToString()),
+                             CreateHeaderCell(item.ExpenditureAmount.ToString()),
+                             CreateHeaderCell(item.ExpenditurePercentage.ToString())
+
+                         ));
+
+                        if(index == data.Count)
+                        {
+                            table.Append(new TableRow(
+                             CreateHeaderCell(""),
+                             CreateHeaderCell("कुल धनराशि "),
+                             CreateHeaderCell(data.Sum(d=> d.BudgetProvision).ToString()),
+                             CreateHeaderCell(data.Sum(d=> d.ExpenditureAmount).ToString()),
+                             CreateHeaderCell("")
+                         ));
+                        }
+                        index++;
+                    }
+
                     body.Append(table);
                     body.Append(sectionProps);
                     mainPart.Document.Append(body);
@@ -662,7 +689,7 @@ namespace RemoteSensingProject.Models
             }
         }
 
-        public static byte[] AdhisthanAccountReportGenerator(List<object> data, string financialYear, string date)
+        public static byte[] AdhisthanAccountReportGenerator(List<AdhisthanModel> data)
         {
             using (var ms = new MemoryStream())
             {
@@ -689,7 +716,7 @@ namespace RemoteSensingProject.Models
                     );
 
                     body.Append(CreateReportHeading("रिमोट सेंसिंग ऍप्लिकेशन्स सेण्टर, उत्तर प्रदेश"));
-                    body.Append(CreateReportHeading("वित्तीय वर्ष 2025-2026 में अधिष्ठान मद के अंतरगर्त प्राविधानित धनराशि का विवरण माह 28 जनवरी 2026 तक "));
+                    body.Append(CreateReportHeading($"वित्तीय वर्ष {GetCurrentFinancialYear()} में अधिष्ठान मद के अंतरगर्त प्राविधानित धनराशि का विवरण माह {DateTime.Now.Day} {GetHindiMonthName(DateTime.Now.Month)} 2026 तक "));
                     body.Append(CreateReportHeadingAlignment("(रु० लाख में)"));
                     Table table = new Table(
                         new TableProperties(
@@ -731,7 +758,19 @@ namespace RemoteSensingProject.Models
                         CreateHeaderCell("व्यय प्रतिशत "),
                         CreateHeaderCell("Commited")
                     ));
-
+                    int index = 1;
+                    foreach (var item in data)
+                    {
+                        table.Append(new TableRow(
+                        CreateHeaderCell(index.ToString()),
+                        CreateHeaderCell(item.HeadName),
+                        CreateHeaderCell(item.BudgetProvision.ToString("N2")),
+                        CreateHeaderCell(item.ExpenditureAmount.ToString("N2")),
+                        CreateHeaderCell(item.ExpenditurePercentage.ToString("N2")),
+                        CreateHeaderCell(item.Committed.ToString("N2"))
+                    ));
+                        index++;
+                    }
                     body.Append(table);
                     body.Append(sectionProps);
                     mainPart.Document.Append(body);
@@ -772,7 +811,7 @@ namespace RemoteSensingProject.Models
                     ));
 
                     body.Append(CreateReportHeading(
-                        "TENTATIVE FINANCIAL STATEMENT OF ONGOING OTHER PROJECTS HANDLED BY THE CENTRE UP TO 30 NOVEMBER 2025"
+                        $"TENTATIVE FINANCIAL STATEMENT OF ONGOING OTHER PROJECTS HANDLED BY THE CENTRE UP TO {DateTime.Now.ToString("dd MMMM yyyy")}"
                     ));
                     body.Append(CreateReportHeadingAlignment(
                         "(Rs.In Lacs)"
@@ -1017,6 +1056,54 @@ namespace RemoteSensingProject.Models
                 bold ? new Bold() : null,
                 new FontSize() { Val = fontSize }
             );
+        }
+        #endregion
+
+
+        #region datetime handler
+        private static string GetHindiMonthName(int month)
+        {
+            string[] monthList = new string[12]
+            {
+        "जनवरी",
+        "फ़रवरी",
+        "मार्च",
+        "अप्रैल",
+        "मई",
+        "जून",
+        "जुलाई",
+        "अगस्त",
+        "सितंबर",
+        "अक्टूबर",
+        "नवंबर",
+        "दिसंबर"
+            };
+
+            if (month >= 1 && month <= 12)
+                return monthList[month - 1];
+
+            return "";
+        }
+
+        public static string GetCurrentFinancialYear()
+        {
+            DateTime today = DateTime.Now;
+
+            int startYear;
+            int endYear;
+
+            if (today.Month >= 4) // April or later
+            {
+                startYear = today.Year;
+                endYear = today.Year + 1;
+            }
+            else
+            {
+                startYear = today.Year - 1;
+                endYear = today.Year;
+            }
+
+            return $"{startYear}-{endYear}";
         }
         #endregion
     }

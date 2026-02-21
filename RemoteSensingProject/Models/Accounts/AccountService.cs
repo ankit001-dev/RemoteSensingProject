@@ -455,13 +455,91 @@ namespace RemoteSensingProject.Models.Accounts
 											BudgetProvision = rd["budgetprovision"] != null ? Convert.ToDecimal(rd["budgetprovision"]) : 0,
 											Committed = rd["committed"] != null ? Convert.ToDecimal(rd["committed"]) : 0,
 											ExpenditureAmount = rd["expenditure"] != null ? Convert.ToDecimal(rd["expenditure"]) : 0,
-											ExpenditurePercentage = (rd["budgetprovision"] != DBNull.Value &&
-																 Convert.ToDecimal(rd["budgetprovision"]) > 0 &&
-																 rd["expenditure"] != DBNull.Value)
-																	? Math.Round(
-																		(Convert.ToDecimal(rd["expenditure"])
-																		/ Convert.ToDecimal(rd["budgetprovision"])) * 100, 2)
-																	: 0
+											ExpenditurePercentage = Convert.ToDecimal(rd["expense_percentage"] ?? 0)
+                                        });
+									}
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return data;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)base.cmd).Dispose();
+            }
+        }
+        public List<AdhisthanModel> GetInternalProjectExpenses(int? id = null,int? limit = null,int? page = null,string searchTerm = null)
+		{
+            try
+            {
+                ((DbConnection)(object)con).Open();
+                List<AdhisthanModel> data = new List<AdhisthanModel>();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageadhisthan", con, tran);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("v_action", (object)"SelectInternalHeadExpensesReport");
+                        cmd.Parameters.AddWithValue("@v_id",id.HasValue? (object)id:DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_limit",limit.HasValue? (object)limit:DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_page", page.HasValue? (object)page:DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_searchterm", !string.IsNullOrEmpty(searchTerm) ?(object)searchTerm:DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+										data.Add(new AdhisthanModel {
+											Id = Convert.ToInt32(rd["id"]),
+											HeadName = rd["title"].ToString(),
+											BudgetProvision = rd["budget"] != null ? Convert.ToDecimal(rd["budget"]) : 0,
+											//Committed = rd["committed"] != null ? Convert.ToDecimal(rd["committed"]) : 0,
+											ExpenditureAmount = rd["expenditure"] != null ? Convert.ToDecimal(rd["expenditure"]) : 0,
+											ExpenditurePercentage = Convert.ToDecimal(rd["expense_percentage"] ?? 0)
                                         });
 									}
                                 }

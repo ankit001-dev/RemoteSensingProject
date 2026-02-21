@@ -10,12 +10,13 @@
     }
 </style>
 <nav class="page-breadcrumb d-flex align-items-center justify-content-end">
+    <button class="btn btn-inverse-primary" id="downloadDocx"><i class="link-icon" data-feather="download"></i>Export Docx</button> &nbsp; &nbsp;
     <button class="btn btn-primary" id="addAdhisthanModalBtn"><i class="link-icon" data-feather="plus"></i>Add Adhisthan</button>
 </nav>
 <div class="table-responsive">
             <div class="pt-2">
                 <h4 class="text-center">रिमोट सेन्सिंग एप्लीकेशन्स सेन्टर, उत्तर प्रदेश</h4>
-                <p class="fw-boldest text-center">वित्तीय वर्ष 2025-26 में अधिष्ठान मद के अन्तर्गत प्राविधान धनराशि का विवरण (माह 28 जनवरी 2026 तक)</p>
+                <p class="fw-boldest text-center">वित्तीय वर्ष 2025-26 में अधिष्ठान मद के अन्तर्गत प्राविधान धनराशि का विवरण</p>
                 <p class="text-end pe-4">(रू0 लाख में)</p>
             </div>
             <table class="table table-hover mb-0">
@@ -61,8 +62,9 @@
                                     </a>
                                 </td>
                             </tr>
+                            count++;
                         }
-                     }
+                    }
                 </tbody>
             </table>
         </div>
@@ -277,5 +279,45 @@
                 })
             }
         })
+    }) 
+
+    $("#downloadDocx").click(function () {
+        $.ajax({
+            url: '/api/report/AdhisthanAccountReportGenerator',
+            type: 'GET',
+            data: { month: 2, year: 2026},
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (data, status, xhr) {
+
+                var contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                var fileName = "Report.docx"; // fallback
+
+                if (contentDisposition) {
+
+                    var fileNameMatch = contentDisposition.match(/filename\*=utf-8''(.+)/i);
+
+                    if (fileNameMatch && fileNameMatch.length > 1) {
+                        fileName = decodeURIComponent(fileNameMatch[1]);
+                    }
+                }
+
+                var blob = new Blob([data], {
+                    type: xhr.getResponseHeader("Content-Type")
+                });
+
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            },
+            error: function (err) {
+                console.log(err);
+                alert("Error downloading file");
+            }
+        });
     })
 </script>

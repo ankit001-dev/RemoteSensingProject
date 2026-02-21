@@ -908,40 +908,54 @@ public class ReportApiController : ApiController
     [Route("api/report/AccountInternalProjectBudgetReport")]
     public IHttpActionResult AccountInternalProjectBudgetReport(int month, int year, int? id = null)
     {
-        var data = GetDummyData();
-        string monthName = CultureInfo.CurrentCulture
+        var data = _accountService.GetInternalProjectExpenses();
+        string monthName = new CultureInfo("hi-IN")
         .DateTimeFormat
-        .GetMonthName(month);
-        byte[] pdfBytes = DocxGenerator.AccountsInternalProjectReport(null, monthName,"xyz");
-        return (IHttpActionResult)(object)new PdfResult(pdfBytes, "DivisionalMonthlyReport.docx", ((ApiController)this).Request);
+        .GetMonthName(DateTime.Now.Month);
+
+        // ✅ Get financial year
+        string financialYear = DocxGenerator.GetCurrentFinancialYear();
+
+        byte[] pdfBytes = DocxGenerator.AccountsInternalProjectReport(data, financialYear, monthName);
+        string filename = $"Account_Internal_Project_{monthName}_{financialYear}.docx";
+        return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
 
     
     [HttpGet]
     [System.Web.Mvc.AllowAnonymous]
     [Route("api/report/AdhisthanAccountReportGenerator")]
-    public IHttpActionResult AdhisthanAccountReportGenerator(int month, int year, int? id = null)
+    public IHttpActionResult AdhisthanAccountReportGenerator()
     {
-        var data = GetDummyData();
-        string monthName = CultureInfo.CurrentCulture
+        var data = _accountService.GetAdhisthanList();
+        byte[] pdfBytes = DocxGenerator.AdhisthanAccountReportGenerator(data);
+        string monthName = new CultureInfo("hi-IN")
         .DateTimeFormat
-        .GetMonthName(month);
-        byte[] pdfBytes = DocxGenerator.AdhisthanAccountReportGenerator(null, monthName,"xyz");
-        return (IHttpActionResult)(object)new PdfResult(pdfBytes, "DivisionalMonthlyReport.docx", ((ApiController)this).Request);
+        .GetMonthName(DateTime.Now.Month);
+
+        // ✅ Get financial year
+        string financialYear = DocxGenerator.GetCurrentFinancialYear();
+
+        // ✅ Create file name
+        string fileName = $"Adhisthan_Account_Report_{monthName}_{financialYear}.docx";
+        return (IHttpActionResult)(object)new PdfResult(pdfBytes, fileName, ((ApiController)this).Request);
     }
 
-    
     [HttpGet]
     [System.Web.Mvc.AllowAnonymous]
     [Route("api/report/AccountExternalProjectReport")]
     public IHttpActionResult AccountExternalProjectReport(int month, int year, int? id = null)
     {
         var data = GetDummyData();
-        string monthName = CultureInfo.CurrentCulture
-        .DateTimeFormat
-        .GetMonthName(month);
+        string monthName = new CultureInfo("hi-IN")
+      .DateTimeFormat
+      .GetMonthName(DateTime.Now.Month);
+
+        // ✅ Get financial year
+        string financialYear = DocxGenerator.GetCurrentFinancialYear();
+        string fileName = $"ExternalProject_Account_Report_{monthName}_{financialYear}.docx";
         byte[] pdfBytes = DocxGenerator.AccountExternalProjectReport(null, monthName,"xyz");
-        return (IHttpActionResult)(object)new PdfResult(pdfBytes, "DivisionalMonthlyReport.docx", ((ApiController)this).Request);
+        return (IHttpActionResult)(object)new PdfResult(pdfBytes, fileName, ((ApiController)this).Request);
     }
 
     

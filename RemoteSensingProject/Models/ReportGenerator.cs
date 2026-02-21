@@ -451,6 +451,10 @@ namespace RemoteSensingProject.Models
                     contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     break;
 
+                case ".docx":   // ✅ ADD THIS
+                    contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    break;
+
                 default:
                     contentType = "application/octet-stream"; // fallback
                     break;
@@ -462,7 +466,7 @@ namespace RemoteSensingProject.Models
             response.Content.Headers.ContentDisposition =
                 new ContentDispositionHeaderValue("attachment")
                 {
-                    FileName = _fileName
+                    FileNameStar = _fileName
                 };
 
             return Task.FromResult(response);
