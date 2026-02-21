@@ -5,7 +5,7 @@
     var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var firstDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
     var lastDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
-    var data = ViewData["reportdata"] as List<RemoteSensingProject.Models.Admin.main.InternalProject_ProgressModel>;
+    var data = ViewData["reportdata"] as List<RemoteSensingProject.Models.Admin.main.TechnicalInternalMonthlyReport>;
 }
 
 <style>
@@ -135,7 +135,7 @@
                         </thead>
 
                         <tbody>
-                            @*@if (data != null && data.Count > 0)
+                            @if (data != null && data.Count > 0)
                             {
                                 int count = 1;
                                 foreach (var item in data)
@@ -143,14 +143,13 @@
                                     <tr>
                                         <td>@count</td>
                                         <td>@item.ProjectName</td>
+                                        <td>@item.Amount</td>
+                                        <td>@item.InMonthReview</td>
+                                        <td>@item.EndMonthReview</td>
                                         <td>@item.FinancialYearlyAim</td>
-                                        <td>@item.MonthAim</td>
-                                        <td>@item.MonthlyStatus</td>
-                                        <td>@item.SquenceStatus</td>
+                                        <td>@item.SequentiallyMonthReview</td>
                                         <td>@item.Statebeneficiary</td>
-                                        <td>@item.SequenceStatusPerc</td>
                                         <td>@item.Remark</td>
-                                        <td>@item.PhysicalYearlyAim</td>
                                         <td>
                                             <a class="cursor-pointer edit-btn" data-id="@item.Id">
                                                 <i class="link-icon" data-feather="edit"></i>
@@ -159,7 +158,7 @@
                                     </tr>
                                     count++;
                                 }
-                            }*@
+                            }
                         </tbody>
 
                     </table>
@@ -271,7 +270,7 @@
 
         let formData = $(this).serialize();
         $.ajax({
-            url: "/employee/UpdateWeekly",
+            url: "/TechnicalShell/UpdateTechnicalInternalProject",
             type: "post",
             data: formData,
             success: function (res) {
@@ -335,7 +334,7 @@
     function BindData(id, type) {
         debugger
         $.ajax({
-            url: '/employee/GetInternalProjectReport',
+            url: '/TechnicalShell/GetInternalTechnicalProjectReport',
             type: 'get',
             data: { id: id,type:type },
             success: function (res) {
@@ -355,13 +354,12 @@
                     $('select[name="ProjectId"]').val(d.ProjectId);
 
                     $('input[name="FinancialYearlyAim"]').val(d.FinancialYearlyAim);
-                    $('input[name="PhysicalYearlyAim"]').val(d.PhysicalYearlyAim);
+                    $('input[name="EndMonthReview"]').val(d.EndMonthReview);
 
-                    $('input[name="MonthAim"]').val(d.MonthAim);
-                    $('input[name="MonthlyStatus"]').val(d.MonthlyStatus);
+                    $('input[name="InMonthReview"]').val(d.InMonthReview);
+                    $('input[name="SequentiallyMonthReview"]').val(d.SequentiallyMonthReview);
 
-                    $('input[name="SquenceStatus"]').val(d.SquenceStatus);
-                    $('input[name="SequenceStatusPerc"]').val(d.SequenceStatusPerc);
+                    $('input[name="Amount"]').val(d.Amount);
 
                     $('input[name="Statebeneficiary"]').val(d.Statebeneficiary);
                     $('textarea[name="Remark"]').val(d.Remark);

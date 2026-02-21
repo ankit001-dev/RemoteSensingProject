@@ -1,8 +1,6 @@
-﻿using RemoteSensingProject.Models.ProjectManager;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using RemoteSensingProject.Models.ProjectManager;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace RemoteSensingProject.Controllers
@@ -16,7 +14,7 @@ namespace RemoteSensingProject.Controllers
         }
         // GET: TechnicalShell
         #region Progress Report
-        public JsonResult UpdateInternalProject(RemoteSensingProject.Models.Admin.main.TechnicalInternalMonthlyReport data)
+        public JsonResult UpdateTechnicalInternalProject(RemoteSensingProject.Models.Admin.main.TechnicalInternalMonthlyReport data)
         {
             try
             {
@@ -38,11 +36,32 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
+        [HttpGet]
+        public ActionResult GetInternalTechnicalProjectReport(int id, string type)
+        {
+            try
+            {
+                var data = type.Trim().Equals("editid") ? _managerServices.GetMonthlyTechnicalInternalProjectReport(id) : _managerServices.GetMonthlyTechnicalInternalProjectReport(projectid: id);
+                return Json((object)new
+                {
+                    status = data.Count > 0 ? true : false,
+                    data = data
+                }, (JsonRequestBehavior)0);
+            }
+            catch (Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Error: " + ex.Message
+                }, (JsonRequestBehavior)0);
+            }
+        }
         public ActionResult InternalProject_ProgressReportTechnical()
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "Internal");
-            ViewData["reportdata"] = _managerServices.GetMonthlyProjectReport();
+            ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReport();
             return View();
         }
         public ActionResult ExternalProject_ProgressReportTechnical()
