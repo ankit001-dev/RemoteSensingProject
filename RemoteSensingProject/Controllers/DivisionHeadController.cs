@@ -94,5 +94,23 @@ namespace RemoteSensingProject.Controllers
             ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.divisionId), filterBy: "DivisionHead", searchTerm: searchTerm, statusFilter: statusFilter);
             return View();
         }
+
+        #region Progress Report
+        public ActionResult InternalProject_ProgressReportDivision()
+        {
+            UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
+            ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.divisionId), filterBy: "DivisionHead",projectTypeFilter:"Internal", searchTerm: null, statusFilter: null);
+            ViewData["reportdata"] = _managerServices.GetMonthlyProjectReport(divisionid:userData.divisionId);
+            return View();
+        }
+        public ActionResult ExternalProject_ProgressReportDivision()
+        {
+            UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
+            ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.divisionId), filterBy: "DivisionHead",projectTypeFilter:"External", searchTerm: null, statusFilter: null);
+            ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(divisionid: userData.divisionId);
+            return View();
+        }
+
+        #endregion
     }
 }

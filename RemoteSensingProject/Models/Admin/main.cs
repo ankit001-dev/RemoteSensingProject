@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Bibliography;
 using System;
 using System.Collections.Generic;
 using System.Web;
@@ -245,8 +246,23 @@ namespace RemoteSensingProject.Models.Admin
 			public string StateBeneficiaries { get; set; }
 			public DateTime date { get; set; }
 		}
-
-		public class InternalProject_ProgressModel
+        public class TechnicalInternalMonthlyReport
+        {
+            public int Id { get; set; }
+            public DateTime Date { get; set; }
+            public int ProjectId { get; set; }
+			public string ProjectName { get; set; } = string.Empty;
+            public string FinancialYearlyAim { get; set; }
+            public string EndMonthReview { get; set; }
+            public string InMonthReview { get; set; }
+            public string SequentiallyMonthReview { get; set; }
+            public string Amount { get; set; }
+            public string Statebeneficiary { get; set; }
+            public string Remark { get; set; }
+            public string CreaterId { get; set; }
+            public string CreaterRole { get; set; }
+        }
+        public class InternalProject_ProgressModel
 		{
 			public int Id { get; set; }
 			public DateTime Date { get; set; }
