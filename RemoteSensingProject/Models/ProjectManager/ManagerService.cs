@@ -880,8 +880,68 @@ NULL::text,
                 throw ex;
             }
         }
+        public bool AddOrUpdateMonthlyInternalProgressReportTechnical(TechnicalInternalMonthlyReport pm,out string message)
+        {
+            message = string.Empty;
+            try
+            {
+                using (NpgsqlConnection conn = con)
+                {
+                    conn.Open();
 
-        public List<InternalProject_ProgressModel> GetMonthlyProjectReport(int? id = null,int? projectid=null, int? month = null, int? year = null)
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(@"
+                        CALL public.sp_manageprojectreporttechnical(
+                            v_action := @v_action,
+                            v_id := @v_id,
+                            v_project_id := @v_project_id,
+                            v_w_date := @v_w_date,
+                            v_financialyearlyaim := @v_financialyearlyaim,
+                            v_physicalyearlyaim := @v_physicalyearlyaim,
+                            v_monthaim := @v_monthaim,
+                            v_monthlystatus := @v_monthlystatus,
+                            v_squencestatus := @v_squencestatus,
+                            v_sequencestatusperc := @v_sequencestatusperc,
+                            v_totaltarget := @v_totaltarget,
+                            v_previousfinancialyear := @v_previousfinancialyear,
+                            v_statebeneficiary := @v_statebeneficiary,
+                            v_remark := @v_remark,
+                            v_createdby := @v_createdby,
+                            v_createruserid := @v_createruserid,
+                            v_status := @v_status
+                        )", conn))
+                    {
+                        var date = pm.Date.Date;
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("v_action", pm.Id > 0 ? "UPDATEEXTERNAL" : "INSERTEXTERNAL");
+                        cmd.Parameters.AddWithValue("v_id", pm.Id);
+                        cmd.Parameters.AddWithValue("v_project_id", pm.ProjectId);
+                        cmd.Parameters.AddWithValue("v_w_date", date);
+                        cmd.Parameters.AddWithValue("v_FinancialYearlyAim", pm.FinancialYearlyAim ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_EndMonthReview", pm.EndMonthReview ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_InMonthReview", pm.InMonthReview ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_SequentiallyMonthReview", pm.SequentiallyMonthReview ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_Amount", pm.Amount ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_Statebeneficiary", pm.Statebeneficiary ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_Remark", pm.Remark ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_status", true);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (NpgsqlException npgsqlEx)
+            {
+                message = "Database error: " + npgsqlEx.Message;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<InternalProject_ProgressModel>  GetMonthlyProjectReport(int? id = null,int? projectid=null, int? month = null, int? year = null,int? divisionid = null, int? projectmanager = null)
         {
             try
             {
@@ -895,9 +955,10 @@ NULL::text,
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@v_action", (object)"getInternalprojectReport");
-                        cmd.Parameters.AddWithValue("@v_projectmanager", (object)0);
+                        cmd.Parameters.AddWithValue("@v_projectmanager", projectmanager.HasValue ? (object)projectmanager.Value : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_projectid", projectid.HasValue ? ((object)projectid.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_divisionid", divisionid.HasValue ? ((object)divisionid.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_year", year.HasValue ? ((object)year.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_month", month.HasValue ? ((object)month.Value) : DBNull.Value);
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
@@ -976,7 +1037,7 @@ NULL::text,
         }
 
 
-        public List<ExternalProject_ProgressModel> GetMonthlyExternalProjectReport(int? id = null, int? projectid = null, int? month = null, int? year = null)
+        public List<ExternalProject_ProgressModel> GetMonthlyExternalProjectReport(int? id = null, int? projectid = null, int? month = null, int? year = null,int? divisionid = null,int?projectmanager = null)
         {
             try
             {
@@ -990,9 +1051,10 @@ NULL::text,
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@v_action", (object)"getExternalprojectReport");
-                        cmd.Parameters.AddWithValue("@v_projectmanager", (object)0);
+                        cmd.Parameters.AddWithValue("@v_projectmanager", projectmanager.HasValue?(object)projectmanager.Value:DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_projectid", projectid.HasValue ? ((object)projectid.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_divisionid", divisionid.HasValue ? ((object)divisionid.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_year", year.HasValue ? ((object)year.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_month", month.HasValue ? ((object)month.Value) : DBNull.Value);
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();

@@ -1260,14 +1260,14 @@ namespace RemoteSensingProject.Controllers
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userData.userId), filterBy:"ProjectManager", projectTypeFilter:"Internal");
-            ViewData["reportdata"] = _managerServices.GetMonthlyProjectReport();
+            ViewData["reportdata"] = _managerServices.GetMonthlyProjectReport(projectmanager: Convert.ToInt32(userData.userId));
             return View();
         }
         public ActionResult ExternalProject_ProgressReport()
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "External");
-            ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport();
+            ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(projectmanager: Convert.ToInt32(userData.userId));
             return View();
         }
 
