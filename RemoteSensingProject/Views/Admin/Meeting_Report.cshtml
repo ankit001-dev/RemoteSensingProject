@@ -3,6 +3,7 @@
     ViewBag.Title = "Meeting_Report";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
     int i = 1;
+    string statusFilter = Request.QueryString["statusFilter"] ?? "";
 }
 <style>
     .link-icon {
@@ -224,7 +225,7 @@
 
     function loadMeetings() {
         let searchTerm = $("#searchmeetingName").val().trim();
-        let statusFilter = $("#searchByMeetingStatus").val();
+        let statusFilter = $("#searchByMeetingStatus").val() ?? "@statusFilter";
         let meetingMode = $("#searchmeetingMode").val();
         updateDownloadLinks();
         $.ajax({

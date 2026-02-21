@@ -2,6 +2,7 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Controllers.EmployeeController
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
@@ -377,6 +378,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Add_Expenses(int Id)
         {
             ((ControllerBase)this).ViewData["ProjectStages"] = _adminServices.ProjectBudgetList(Id);
+            ViewBag.projectId = Id;
             return View();
         }
 
@@ -524,7 +526,7 @@ namespace RemoteSensingProject.Controllers
             string managerName = User.Identity.Name;
             UserCredential userObj = _managerServices.getManagerDetails(managerName);
             noticeList = _adminServices.getNoticeList(null, null, projectId, Convert.ToInt32(userObj.userId), searchTerm);
-            ((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List();
+            ((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj.userId), filterBy:"ProjectManager");
             ((ControllerBase)this).ViewData["NoticeList"] = noticeList;
             return View();
         }
@@ -573,7 +575,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult All_Project_Report(string searchTerm = null, string statusFilter = null)
         {
             UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", searchTerm: searchTerm, statusFilter: statusFilter);
+            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", searchTerm: searchTerm, statusFilter: statusFilter);
             ViewBag.statusFilter = statusFilter;
             ViewBag.searchTerm = searchTerm;
             return View();
@@ -582,21 +584,21 @@ namespace RemoteSensingProject.Controllers
         public ActionResult Pending_Project_Report()
         {
             string userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-            ((ControllerBase)this).ViewData["NotStartedProject"] = _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "Upcoming");
+            ((ControllerBase)this).ViewData["NotStartedProject"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj),statusFilter:"Upcoming", filterBy: "ProjectManager");
             return View();
         }
 
         public ActionResult Complete_Project_Report()
         {
             string userObj = _managerServices.getManagerDetails(User.Identity.Name).userId;
-            ((ControllerBase)this).ViewData["CompleteProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj), null, null, "Complete");
+            ((ControllerBase)this).ViewData["CompleteProjectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj), statusFilter:"Complete", filterBy:"ProjectManager");
             return View();
         }
 
         public ActionResult Expense_Report()
         {
             UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId));
+            ((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj.userId), filterBy:"ProjectManager");
             return View();
         }
 
@@ -606,7 +608,7 @@ namespace RemoteSensingProject.Controllers
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             ManagerService managerServices = _managerServices;
             List<tourProposal> res = managerServices.GetTourList(type: "GETBYMANAGER", id: userid, projectFilter: projectFilter);
-            List<RemoteSensingProject.Models.Admin.main.Project_model> res2 = _managerServices.All_Project_List(userid);
+            List<RemoteSensingProject.Models.Admin.main.Project_model> res2 = _managerServices.All_Project_List(userId:userid, filterBy:"ProjectManager");
             ((ControllerBase)this).ViewData["projectList"] = res2;
             ((ControllerBase)this).ViewData["tourList"] = res;
             ViewData["OutSourceList"] = _managerServices.GetAllocatedOutSOurceList(userid);
@@ -644,7 +646,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult RaiseProblem()
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ((ControllerBase)this).ViewData["projectList"] = _managerServices.All_Project_List(userid);
+            ((ControllerBase)this).ViewData["projectList"] = _managerServices.All_Project_List(userId:userid, filterBy:"ProjectManager");
             ((ControllerBase)this).ViewData["ProblemList"] = _managerServices.getProblems(userid);
             return View();
         }
@@ -653,7 +655,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult RaiseProblem(RaiseProblem dt)
         {
             dt.id = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            if (dt.document.ContentLength > 0)
+            if (dt.document != null && dt.document.ContentLength > 0)
             {
                 dt.documentname = $"/ProjectContent/ProjectManager/raisedproblem/{Guid.NewGuid()}{dt.document.FileName}";
             }
@@ -855,11 +857,12 @@ namespace RemoteSensingProject.Controllers
         public ActionResult EmpMonthlyReport(int? month = null, int? year = null)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ((ControllerBase)this).ViewData["projectList"] = _managerServices.All_Project_List(userid);
+            ((ControllerBase)this).ViewData["projectList"] = _managerServices.All_Project_List(userId: userid, filterBy: "ProjectManager");
             ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
             ManagerService managerServices = _managerServices;
             int? month2 = month;
             viewData["ReportList"] = managerServices.GetEmpReport(userid, null, null, null, month2, year);
+            return View();
             return View();
         }
 

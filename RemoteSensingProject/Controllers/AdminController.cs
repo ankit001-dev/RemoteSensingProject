@@ -294,7 +294,7 @@ namespace RemoteSensingProject.Controllers
 		public ActionResult All_Projects(string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null,string typeFilter = null)
 		{
 			((dynamic)((ControllerBase)this).ViewBag).ManagerList = (from d in _adminServices.SelectEmployeeRecord()
-																	 where d.EmployeeRole.Equals("projectManager")
+																	 where d.EmployeeRole.Contains("projectManager")
 																	 select d).ToList();
 			object viewBag = ((ControllerBase)this).ViewBag;
 			AdminServices adminServices = _adminServices;

@@ -342,8 +342,6 @@
 
             var categories = [];
             var data = [];
-            debugger
-
             $.each(empProjectDataList, function (index, item) {
                 categories.push(item.ProjectTitle);
                 data.push(item.overallPercentage);
@@ -421,7 +419,7 @@
                     type: 'category',
                     categories: categories, // Dynamic categories
                     labels: {
-                        rotate: 0,
+                        rotate: -70,
                         trim: false,
                         formatter: function (value) {
                             if (value.length > 18) {
