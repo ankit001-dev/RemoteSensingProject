@@ -3,6 +3,7 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>
         ;
+    var data = ViewData["reportdata"] as List<RemoteSensingProject.Models.Admin.main.ExternalProject_ProgressModel>;
     var firstDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
     var lastDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
     var today = DateTime.Now;
@@ -137,7 +138,7 @@
                             </thead>
 
                             <tbody>
-                                @*@if (data != null && data.Count > 0)
+                                @if (data != null && data.Count > 0)
                                 {
                                 int count = 1;
                                 foreach (var item in data)
@@ -145,14 +146,16 @@
                                 <tr>
                                     <td>@count</td>
                                     <td>@item.ProjectName</td>
-                                    <td>@item.FinancialYearlyAim</td>
-                                    <td>@item.MonthAim</td>
-                                    <td>@item.MonthlyStatus</td>
-                                    <td>@item.SquenceStatus</td>
+                                    <td>@item.FinancialInstitution</td>
+                                    <td>@item.TotalCost</td>
+                                    <td>@item.TotalTarget</td>
+                                    <td>@item.PreviousFinancialYear</td>
+                                    <td>@item.AnnualTarget</td>
+                                    <td>@item.TargetOfMonth</td>
+                                    <td>@item.AchievementOfMonth</td>
+                                    <td>@item.CurrentFinancialYear</td>
                                     <td>@item.Statebeneficiary</td>
-                                    <td>@item.SequenceStatusPerc</td>
                                     <td>@item.Remark</td>
-                                    <td>@item.PhysicalYearlyAim</td>
                                     <td>
                                         <a class="cursor-pointer edit-btn" data-id="@item.Id">
                                             <i class="link-icon" data-feather="edit"></i>
@@ -161,7 +164,7 @@
                                 </tr>
                                 count++;
                                 }
-                                }*@
+                                }
                             </tbody>
 
                         </table>
@@ -349,7 +352,7 @@
         function BindData(id, type) {
             debugger
             $.ajax({
-                url: '/employee/GetInternalProjectReport',
+                url: '/employee/GetExternalProjectReport',
                 type: 'get',
                 data: { id: id, type: type },
                 success: function (res) {
@@ -368,14 +371,16 @@
                         $('input[name="Date"]').val(formatDate(d.DateString));
                         $('select[name="ProjectId"]').val(d.ProjectId);
 
-                        $('input[name="FinancialYearlyAim"]').val(d.FinancialYearlyAim);
-                        $('input[name="PhysicalYearlyAim"]').val(d.PhysicalYearlyAim);
+                        $('input[name="AnnualTarget"]').val(d.AnnualTarget);
+                        $('input[name="TargetOfMonth"]').val(d.TargetOfMonth);
+                        $('input[name="AchievementOfMonth"]').val(d.AchievementOfMonth);
+                        $('input[name="CurrentFinancialYear"]').val(d.CurrentFinancialYear);
 
-                        $('input[name="MonthAim"]').val(d.MonthAim);
-                        $('input[name="MonthlyStatus"]').val(d.MonthlyStatus);
+                        $('input[name="FinancialInstitution"]').val(d.FinancialInstitution);
+                        $('input[name="TotalCost"]').val(d.TotalCost);
+                        $('input[name="TotalTarget"]').val(d.TotalTarget);
 
-                        $('input[name="SquenceStatus"]').val(d.SquenceStatus);
-                        $('input[name="SequenceStatusPerc"]').val(d.SequenceStatusPerc);
+                        $('input[name="PreviousFinancialYear"]').val(d.PreviousFinancialYear);
 
                         $('input[name="Statebeneficiary"]').val(d.Statebeneficiary);
                         $('textarea[name="Remark"]').val(d.Remark);

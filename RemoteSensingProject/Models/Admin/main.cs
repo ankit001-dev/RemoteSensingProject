@@ -266,6 +266,8 @@ namespace RemoteSensingProject.Models.Admin
 		}
         public class ExternalProject_ProgressModel
         {
+			public string ProjectName { get; set; }
+			public string DateString { get; set; }
 			public string CreaterRole { get; set; }
 			public string CreaterId { get; set; }
             public int Id { get; set; }

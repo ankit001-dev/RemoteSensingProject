@@ -320,6 +320,27 @@ namespace RemoteSensingProject.Controllers
                 }, (JsonRequestBehavior)0);
             }
         }
+        [HttpGet]
+        public ActionResult GetExternalProjectReport(int id,string type)
+        {
+            try
+            {
+                var data = type.Trim().Equals("editid")? _managerServices.GetMonthlyExternalProjectReport(id): _managerServices.GetMonthlyExternalProjectReport(projectid:id);
+                return Json((object)new
+                {
+                    status = data.Count>0?true:false,
+                    data = data
+                }, (JsonRequestBehavior)0);
+            }
+            catch(Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Error: " + ex.Message
+                }, (JsonRequestBehavior)0);
+            }
+        }
 
         public ActionResult Update_Project_Stage(int Id)
         {
@@ -1246,6 +1267,7 @@ namespace RemoteSensingProject.Controllers
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "External");
+            ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport();
             return View();
         }
 
