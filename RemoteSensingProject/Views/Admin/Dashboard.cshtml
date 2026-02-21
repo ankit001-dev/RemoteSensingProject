@@ -306,42 +306,14 @@
             </div>
         </div>
     </div>
-
 </div>
 <!--Mini charts-->
 
 <div class="row mx-0 mt-1">
-    <div class="col-lg-7 col-xl-8 px-1 ">
+    <div class="col-12 px-1 ">
         <div class="card ">
             <div class="card-body">
                 <div id="monthlySalesChart"></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-5 col-xl-4 px-1 ">
-        <div class="card ">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-baseline">
-                    <h6 class="card-title mb-0">Project Data</h6>
-                </div>
-                <div id="storageChart"></div>
-                <div class="row mb-4">
-                    <div class="col-6 d-flex justify-content-end">
-                        <div>
-                            <label class="d-flex align-items-center justify-content-end tx-10 text-uppercase fw-bolder">Total Projects <span class="p-1 ms-1 rounded-circle bg-secondary"></span></label>
-                            <h5 class="fw-bolder mb-0 text-end">@data.TotalProject</h5>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div>
-                            <label class="d-flex align-items-center tx-10 text-uppercase fw-bolder"><span class="p-1 me-1 rounded-circle bg-primary"></span> Completed Projects</label>
-                            <h5 class="fw-bolder mb-0">@data.TotalCompleteProject</h5>
-                        </div>
-                    </div>
-                </div>
-                @*<div class="d-grid">
-                        <button class="btn btn-primary">View More</button>
-                    </div>*@
             </div>
         </div>
     </div>
@@ -351,7 +323,7 @@
 
 
 <div class="row mx-0 my-1">
-    <div class="col-sm-6 px-1">
+    <div class="col-sm-12 px-1">
         <div class="card ">
             <div class="card-header">
                 <b>Physical Chart</b>
@@ -363,7 +335,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-6 px-1">
+    <div class="col-sm-12 px-1">
         <div class="card ">
             <div class="card-header">
                 <b>Financial Chart</b>
@@ -377,149 +349,200 @@
     </div>
 </div>
 
-<script src="~/Scripts/jquery-3.7.1.min.js"></script>
-@*<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>*@
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script>
+
+
+
+<script defer>
+document.addEventListener("DOMContentLoaded", function () {
+
+    /* =======================
+       GLOBAL DEFAULTS
+    ======================== */
+    Chart.defaults.font.size = 13;
+    Chart.defaults.font.family = "'Segoe UI', sans-serif";
+    Chart.defaults.color = '#000';
+
     const graphData = @Html.Raw(Json.Encode(graphdata));
-    const budgetData = @Html.Raw(Json.Encode(ViewData["budgetGraph"] ?? new List<object>()));
-    const totalComplete = @data.TotalCompleteProject;
+    const budgetData = @Html.Raw(Json.Encode(ViewData["budgetGraph"]));
 
-    function initRadialChart() {
-
-        if (!$('#storageChart').length) return;
-
-        var options = {
+    /* =======================
+       1️⃣ Radial Chart
+    ======================== */
+    const storageChartEl = document.querySelector("#storageChart");
+    if (storageChartEl) {
+        new ApexCharts(storageChartEl, {
             chart: {
                 height: 260,
                 type: "radialBar",
                 events: {
-                    click: function () {
-                        window.location.href = "/Admin/All_Projects";
-                    }
+                    click: () => window.location.href = "/Admin/All_Projects"
                 }
             },
-            series: [totalComplete],
+            series: [@data.TotalCompleteProject],
             colors: ['#029e9d'],
             plotOptions: {
                 radialBar: {
                     hollow: { size: "70%" },
                     dataLabels: {
-                        name: { show: true },
                         value: { fontSize: "30px" }
                     }
                 }
             },
             labels: ["Project Data"]
-        };
-
-        new ApexCharts(document.querySelector("#storageChart"), options).render();
+        }).render();
     }
-    function initPhysicalChart() {
 
-        if (!graphData || graphData.length === 0) return;
+    /* =======================
+       2️⃣ Apex Bar Chart
+    ======================== */
+    const monthlyChartEl = document.querySelector("#monthlySalesChart");
 
-        var options = {
+    if (monthlyChartEl && graphData) {
+
+        const fullLabels = graphData.map(x => x.ProjectTitle);
+        const overall = graphData.map(x => x.overallPercentage);
+
+        new ApexCharts(monthlyChartEl, {
             chart: {
                 type: 'bar',
-                height: graphData.length * 40
+                height: 318
             },
-            plotOptions: {
-                bar: {
-                    horizontal: true,
-                    borderRadius: 4
-                }
-            },
+            colors: ['#1aa7a6'],
             series: [{
-                data: graphData.map(x => ({
-                    x: x.ProjectTitle,
-                    y: x.overallPercentage
-                }))
+                name: 'Completed',
+                data: overall
             }],
             xaxis: {
-                max: 100
-            },
-            yaxis: {
+                categories: fullLabels,
                 labels: {
-                    style: {
-                        fontSize: '11px'
+                    formatter: function (value) {
+                        return value.length > 18
+                            ? value.substring(0, 18) + "..."
+                            : value;
                     }
                 }
+            },
+            tooltip: {
+                x: {
+                    formatter: function (value, { dataPointIndex }) {
+                        return fullLabels[dataPointIndex]; // 👈 full label on hover
+                    }
+                }
+            },
+            yaxis: {
+                min: 0,
+                max: 100
             }
-        };
-
-        new ApexCharts(document.querySelector("#monthlySalesChart"), options).render();
+        }).render();
     }
 
-    function initFinancialChart() {
+    /* =======================
+       3️⃣ Physical Chart
+    ======================== */
+    createBarChart("myBarChart", graphData, "physicalcomplete", "rgba(54,162,235,0.5)", "Physical %");
 
-        if (!graphData || graphData.length === 0) return;
+    createBarChart("stackedBarLineChart", graphData, "Percentage", "rgba(255,99,132,0.5)", "Financial %");
 
-        new Chart(document.getElementById('stackedBarLineChart'), {
+    function createBarChart(elementId, dataArray, valueKey, color, labelName) {
+
+        const el = document.getElementById(elementId);
+        if (!el || !dataArray) return;
+
+        const fullLabels = dataArray.map(x => x.ProjectTitle);
+
+        new Chart(el, {
             type: 'bar',
             data: {
-                labels: graphData.map(x => x.ProjectTitle),
+                labels: fullLabels,
                 datasets: [{
-                    data: graphData.map(x => x.Percentage),
-                    backgroundColor: 'rgba(255,99,132,0.5)'
+                    label: labelName,
+                    data: dataArray.map(x => x[valueKey]),
+                    backgroundColor: color
                 }]
             },
             options: {
-                responsive: true
-            }
-        });
-    }
-    function initRadarChart() {
-
-        if (!budgetData || budgetData.length === 0) return;
-
-        new Chart(document.getElementById('bbchart'), {
-            type: 'radar',
-            data: {
-                labels: budgetData.map(x => x.ProjectName),
-                datasets: [
-                    {
-                        label: "Total Budget",
-                        data: budgetData.map(x => x.ProjectBudget)
-                    },
-                    {
-                        label: "Expenditure",
-                        data: budgetData.map(x => x.expenditure)
-                    },
-                    {
-                        label: "Pending Budget",
-                        data: budgetData.map(x => x.remaining)
+                responsive: true,
+                scales: {
+                    x: {
+                        ticks: {
+                            callback: function (value, index) {
+                                const label = fullLabels[index];
+                                return label.length > 18
+                                    ? label.substring(0, 18) + '...'
+                                    : label;
+                            }
+                        }
                     }
-                ]
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: function (tooltipItems) {
+                                return fullLabels[tooltipItems[0].dataIndex];
+                            }
+                        }
+                    }
+                }
             }
         });
     }
-function initPieChart() {
+    /* =======================
+       5️⃣ Budget Radar
+    ======================== */
+    const budgetEl = document.getElementById("bbchart");
+    if (budgetEl && budgetData && budgetData.length > 0) {
 
-    new Chart(document.getElementById('pichart'), {
-        type: 'pie',
-        data: {
-            labels: ['Total', 'Internal', 'External'],
-            datasets: [{
-                data: [
-                    @Convert.ToInt32(data.TotalProject),
-                    @Convert.ToInt32(data.TotalInternalProject),
-                    @Convert.ToInt32(data.TotalExternalProject)
-                ]
-            }]
-        }
-    });
-}
+        const labels = budgetData.map(x => x.ProjectName);
 
-    $(document).ready(function () {
+        const datasets = [
+            {
+                label: "Total Budget",
+                data: budgetData.map(x => x.ProjectBudget),
+                backgroundColor: 'rgba(54,162,235,0.2)',
+                borderColor: 'rgba(54,162,235,1)'
+            },
+            {
+                label: "Expenditure",
+                data: budgetData.map(x => x.expenditure),
+                backgroundColor: 'rgba(255,99,132,0.2)',
+                borderColor: 'rgba(255,99,132,1)'
+            },
+            {
+                label: "Pending Budget",
+                data: budgetData.map(x => x.remaining),
+                backgroundColor: 'rgba(255,206,86,0.2)',
+                borderColor: 'rgba(255,206,86,1)'
+            }
+        ];
 
-        initRadialChart();
-        initPhysicalChart();
-        initFinancialChart();
-        initRadarChart();
-        initPieChart();
+        new Chart(budgetEl, {
+            type: 'radar',
+            data: { labels, datasets }
+        });
+    }
 
-    });
+    /* =======================
+       6️⃣ Pie Chart
+    ======================== */
+    const pieEl = document.getElementById("pichart");
+    if (pieEl) {
+        new Chart(pieEl, {
+            type: 'pie',
+            data: {
+                labels: ['Total', 'Internal', 'External'],
+                datasets: [{
+                    data: [
+                        @Convert.ToInt32(data.TotalProject),
+                        @Convert.ToInt32(data.TotalInternalProject),
+                        @Convert.ToInt32(data.TotalExternalProject)
+                    ],
+                    backgroundColor: ['#4bd6e7', '#84a0eb', '#9db4c7']
+                }]
+            }
+        });
+    }
 
+});
 </script>
+
