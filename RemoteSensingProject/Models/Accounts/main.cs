@@ -82,7 +82,7 @@ namespace RemoteSensingProject.Models.Accounts
 		public class GraphData
 		{
 			public decimal TotalFund { get; set; }
-
+			public string ProjectName { get; set; }
 			public string ProjectCode { get; set; }
 
 			public decimal TotalExpense { get; set; }

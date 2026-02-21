@@ -134,7 +134,7 @@
     <div class="row g-3 align-items-stretch">
 
         <!-- ========== INTERNAL PROJECT LEFT ========== -->
-        <div class="col-lg-7">
+        <div class="col-lg-12">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body d-flex flex-column">
 
@@ -155,7 +155,7 @@
         </div>
 
         <!-- ========== INTERNAL PROJECT RIGHT ========== -->
-        <div class="col-lg-5">
+        <div class="col-lg-6">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body d-flex flex-column">
 
@@ -180,29 +180,8 @@
             </div>
         </div>
 
-        <!-- ========== EXTERNAL PROJECT LEFT ========== -->
-        <div class="col-lg-7">
-            <div class="card shadow-sm border-0 h-100">
-                <div class="card-body d-flex flex-column">
-
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold text-primary mb-0">External Project</h5>
-                    </div>
-
-                    <p class="text-muted small">
-                        Check the current fund status on the dashboard for detailed updates.
-                    </p>
-
-                    <div class="flex-grow-1">
-                        <div id="externalMonthlyChart" style="height:100%; min-height:280px;"></div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
         <!-- ========== EXTERNAL PROJECT RIGHT ========== -->
-        <div class="col-lg-5">
+        <div class="col-lg-6">
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body d-flex flex-column">
 
@@ -227,6 +206,28 @@
             </div>
         </div>
 
+        <!-- ========== EXTERNAL PROJECT LEFT ========== -->
+        <div class="col-lg-12">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body d-flex flex-column">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold text-primary mb-0">External Project</h5>
+                    </div>
+
+                    <p class="text-muted small">
+                        Check the current fund status on the dashboard for detailed updates.
+                    </p>
+
+                    <div class="flex-grow-1">
+                        <div id="externalMonthlyChart" style="height:100%; min-height:280px;"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 
@@ -248,7 +249,36 @@
                 chart: {
                     type: 'bar',
                     height: 318,
-                    toolbar: { show: false }
+                    toolbar: { show: false },
+                    events: {
+                        mounted: function (chartContext) {
+
+                            setTimeout(function () {
+
+                                var labels = document.querySelectorAll('.apexcharts-xaxis-label');
+
+                                labels.forEach(function (label, index) {
+
+                                    var title = label.querySelector('title');
+
+                                    if (title) {
+                                        title.textContent = internalData.map(x => x.ProjectName)[index]; // full text
+                                    }
+
+                                });
+
+                            }, 500);
+                        }
+                    },
+                    
+                },
+                tooltip: {
+                    theme: 'light',
+                    x: {
+                        formatter: function (val, opts) {
+                            return internalData.map(x => x.ProjectName)[opts.dataPointIndex]; // always full text
+                        }
+                    }
                 },
 
                 colors: ['#1aa7a6', '#ffb22b', '#f17a7a'],
@@ -266,9 +296,22 @@
                 ],
 
                 xaxis: {
-                    categories: internalData.map(x => x.ProjectCode), // check casing here
-                    title: { text: "Project Code" },
-                    labels: { rotate: -45 }
+                    categories: internalData.map(x => x.ProjectName), // check casing here
+                    title: { text: "Project Name" },
+                    labels: {
+                        rotate: -70,
+                        trim: false,
+                        formatter: function (value) {
+                            if (value.length > 18) {
+                                return value.substring(0, 18) + "... (More)";
+                            }
+                            return value;
+                        },
+                        style: {
+                            fontSize: '11px',
+                            fontFamily: 'inherit'
+                        }
+                    },
                 },
 
                 yaxis: {
@@ -276,7 +319,12 @@
                 },
 
                 dataLabels: {
-                    enabled: true
+                    enabled: true,
+                    style: {
+                        fontSize: '10px',
+                        fontFamily: 'inherit'
+                    },
+                    offsetY: -20
                 },
 
                 plotOptions: {
@@ -286,6 +334,7 @@
                     }
                 }
             };
+
 
             new ApexCharts(document.querySelector("#internalMonthlyChart"), options).render();
         }
@@ -299,9 +348,36 @@
                 chart: {
                     type: 'bar',
                     height: 318,
-                    toolbar: { show: false }
-                },
+                    toolbar: { show: false },
+                    events: {
+                        mounted: function (chartContext) {
 
+                            setTimeout(function () {
+
+                                var labels = document.querySelectorAll('.apexcharts-xaxis-label');
+
+                                labels.forEach(function (label, index) {
+
+                                    var title = label.querySelector('title');
+
+                                    if (title) {
+                                        title.textContent = externalData.map(x => x.ProjectName)[index]; // full text
+                                    }
+
+                                });
+
+                            }, 500);
+                        }
+                    },
+                },
+                tooltip: {
+                    theme: 'light',
+                    x: {
+                        formatter: function (val, opts) {
+                            return externalData.map(x => x.ProjectName)[opts.dataPointIndex]; // always full text
+                        }
+                    }
+                },
                 colors: ['#1aa7a6', '#ffb22b', '#f17a7a'],
 
                 legend: {
@@ -317,9 +393,22 @@
                 ],
 
                 xaxis: {
-                    categories: externalData.map(x => x.ProjectCode), // check casing here
-                    title: { text: "Project Code" },
-                    labels: { rotate: -45 }
+                    categories: externalData.map(x => x.ProjectName), // check casing here
+                    title: { text: "Project Name" },
+                    labels: {
+                        rotate: -70,
+                        trim: false,
+                        formatter: function (value) {
+                            if (value.length > 18) {
+                                return value.substring(0, 18) + "... (More)";
+                            }
+                            return value;
+                        },
+                        style: {
+                            fontSize: '11px',
+                            fontFamily: 'inherit'
+                        }
+                    },
                 },
 
                 yaxis: {

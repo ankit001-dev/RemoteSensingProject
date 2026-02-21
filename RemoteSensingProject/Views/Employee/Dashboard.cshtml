@@ -306,12 +306,6 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-baseline">
                     <h6 class="card-title mb-0">Project Data</h6>
-                    <div class="dropdown mb-2">
-                        <button class="btn p-0" type="button" id="dropdownMenuButton5" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
-                        </button>
-
-                    </div>
                 </div>
                 <div id="storageChart"></div>
                 <div class="row mb-3">
@@ -358,24 +352,54 @@
             var options = {
                 chart: {
                     type: 'bar',
-                    height: '318',
+                    height: 318,
                     parentHeightOffset: 0,
                     foreColor: '#6c757d',
                     background: '#ffffff',
                     toolbar: {
                         show: false
                     },
+                    events: {
+                        mounted: function (chartContext) {
+
+                            setTimeout(function () {
+
+                                var labels = document.querySelectorAll('.apexcharts-xaxis-label');
+
+                                labels.forEach(function (label, index) {
+
+                                    var title = label.querySelector('title');
+
+                                    if (title) {
+                                        title.textContent = categories[index]; // full text
+                                    }
+
+                                });
+
+                            }, 500);
+                        }
+                    }
                 },
+
                 theme: {
                     mode: 'light'
                 },
+
                 tooltip: {
-                    theme: 'light'
+                    theme: 'light',
+                    x: {
+                        formatter: function (val, opts) {
+                            return categories[opts.dataPointIndex]; // always full text
+                        }
+                    }
                 },
+
                 colors: ['#1aa7a6'],
+
                 fill: {
-                    opacity: .9
+                    opacity: 0.9
                 },
+
                 grid: {
                     padding: {
                         bottom: -4
@@ -387,20 +411,37 @@
                         }
                     }
                 },
+
                 series: [{
                     name: 'Completed',
                     data: data // Dynamic data
                 }],
+
                 xaxis: {
                     type: 'category',
                     categories: categories, // Dynamic categories
+                    labels: {
+                        rotate: 0,
+                        trim: false,
+                        formatter: function (value) {
+                            if (value.length > 18) {
+                                return value.substring(0, 18) + "... (More)";
+                            }
+                            return value;
+                        },
+                        style: {
+                            fontSize: '11px',
+                            fontFamily: 'inherit'
+                        }
+                    },
                     axisBorder: {
                         color: '#dee2e6',
                     },
                     axisTicks: {
                         color: '#dee2e6',
-                    },
+                    }
                 },
+
                 yaxis: {
                     min: 0,
                     max: 100,
@@ -410,10 +451,11 @@
                         style: {
                             fontSize: '12px',
                             color: '#adb5bd',
-                            fontFamily: 'inherit',
+                            fontFamily: 'inherit'
                         }
-                    },
+                    }
                 },
+
                 legend: {
                     show: true,
                     position: "top",
@@ -422,29 +464,31 @@
                     itemMargin: {
                         horizontal: 8,
                         vertical: 0
-                    },
+                    }
                 },
+
                 stroke: {
                     width: 0
                 },
+
                 dataLabels: {
                     enabled: true,
                     style: {
                         fontSize: '10px',
-                        fontFamily: 'inherit',
+                        fontFamily: 'inherit'
                     },
-                    offsetY: -27
+                    offsetY: -20
                 },
+
                 plotOptions: {
                     bar: {
                         columnWidth: "50%",
                         borderRadius: 4,
                         dataLabels: {
-                            position: 'top',
-                            orientation: 'vertical',
+                            position: 'top'
                         }
-                    },
-                },
+                    }
+                }
             };
         }
         // Render the chart
@@ -465,7 +509,7 @@
                         // Listen for click event on the chart
                         click: function (event, chartContext, config) {
                             // Redirect based on the click event
-                            window.location.href = "/employee/All_Project_list";  // Change this to your desired URL
+                            window.location.href = "/employee/project_list";  // Change this to your desired URL
                         }
                     }
                 },

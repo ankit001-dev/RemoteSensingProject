@@ -273,6 +273,7 @@ namespace RemoteSensingProject.Models.Accounts
 										list.Add(new main.GraphData
 										{
 											ProjectCode = ((DbDataReader)(object)rd)["projectCode"].ToString(),
+											ProjectName = rd["title"].ToString(),
 											TotalFund = Convert.ToDecimal(((DbDataReader)(object)rd)["totalfund"]),
 											TotalExpense = Convert.ToDecimal(((DbDataReader)(object)rd)["totalexpense"]),
 											TotalRemaining = Convert.ToDecimal(((DbDataReader)(object)rd)["totalremaining"]),

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web.Http.Results;
 namespace RemoteSensingProject.Models
 {
     public class DocxGenerator
@@ -325,10 +326,7 @@ namespace RemoteSensingProject.Models
             }
         }
 
-        public static byte[] CreateExternalProjectPhysicalAchievementReport(
-    List<object> data,   // you can replace with your model
-    string financialYear,
-    string divisionName)
+        public static byte[] CreateExternalProjectPhysicalAchievementReport(List<object> data, string financialYear,string divisionName)
         {
             using (var ms = new MemoryStream())
             {
@@ -463,6 +461,413 @@ namespace RemoteSensingProject.Models
                 return ms.ToArray();
             }
         }
+
+
+        public static byte[] CreateInternalProjectCombinedReport(List<object> data, string financialYear, string divisionName)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (WordprocessingDocument doc = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document, true))
+                {
+                    MainDocumentPart mainPart = doc.AddMainDocumentPart();
+                    mainPart.Document = new Document();
+                    Body body = new Body();
+
+                    SectionProperties sectionProps = new SectionProperties(
+                        new PageSize()
+                        {
+                            Width = 16838,
+                            Height = 11906,
+                            Orient = PageOrientationValues.Landscape
+                        },
+                        new PageMargin()
+                        {
+                            Top = 720,
+                            Right = 720,
+                            Bottom = 720,
+                            Left = 720
+                        }
+                    );
+
+                    body.Append(CreateReportHeading(
+                        "मासिक समिक्षा: रूप पत्र -2 "
+                    ));
+
+                    body.Append(CreateReportHeading(
+                        "शासन से गैर वेतन मद मे प्राप्त धनराशि से संचालित योजना/कार्यक्रमों की भौतिक उपलब्धियों का विवरण"
+                    ));
+
+                    body.Append(CreateReportHeading(
+                        "विभाग का नाम: रिमोट सेन्सिंग ऍप्लिकेशन्स सेन्टर, उत्तर प्रदेश, विज्ञान एवं प्रौद्योगिकी विभाग, उत्तर प्रदेश"
+                    ));
+
+                    body.Append(CreateReportHeadingAlignment(
+                        "माह...............202........."
+                    ));
+
+                    body.Append(new Paragraph(new Run(new Text(""))));
+
+                    // ==========================
+                    // TABLE
+                    // ==========================
+                    Table table = new Table(
+                        new TableProperties(
+                            new TableWidth()
+                            {
+                                Width = "5000",
+                                Type = TableWidthUnitValues.Pct
+                            },
+                            new TableLayout() { Type = TableLayoutValues.Fixed },
+                            new TableBorders(
+                                new TopBorder { Val = BorderValues.Single, Size = 6 },
+                                new BottomBorder { Val = BorderValues.Single, Size = 6 },
+                                new LeftBorder { Val = BorderValues.Single, Size = 6 },
+                                new RightBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideHorizontalBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideVerticalBorder { Val = BorderValues.Single, Size = 6 }
+                            )
+                        )
+                    );
+
+                    // Column Grid
+                    table.Append(new TableGrid(
+                        new GridColumn() { Width = "600" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "1500" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1200" },
+                        new GridColumn() { Width = "1200" },
+                        new GridColumn() { Width = "1200" },
+                        new GridColumn() { Width = "1200" },
+                        new GridColumn() { Width = "1200" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "2500" }
+                    ));
+
+                    // ==========================
+                    // HEADER ROW 1
+                    // ==========================
+                    table.Append(new TableRow(
+                        CreateHeaderCell("क्र.सं.", 1, 2),
+                        CreateHeaderCell("मद/परियोजना का नाम", 1, 2),
+                        CreateHeaderCell("इकाई ", 1, 2),
+                        CreateHeaderCell("लक्ष्य", 2 , 1 ),
+                        CreateHeaderCell("उपलब्धि", 2 , 1 ),
+                        CreateHeaderCell("प्रदेश सरकार के लाभान्वित होने वाले विभाग", 1, 2),
+                        CreateHeaderCell("अभ्युक्ति", 1, 2)
+                    ));
+
+                    // ==========================
+                    // HEADER ROW 2
+                    // ==========================
+                    table.Append(new TableRow(
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                        CreateHeaderCell("वार्षिक"),
+                        CreateHeaderCell("आलोच्य माशान्त तक"),
+                        CreateHeaderCell("आलोच्य माह मे"),
+                        CreateHeaderCell("आलोच्य मासांत तक क्रमिक"),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center)
+                    ));
+
+                    // You can append data rows here later
+
+                    body.Append(table);
+                    body.Append(sectionProps);
+                    mainPart.Document.Append(body);
+                    mainPart.Document.Save();
+                }
+                return ms.ToArray();
+            }
+        }
+
+
+        #region Accounts Reports formate
+        public static byte[] AccountsInternalProjectReport(List<object> data, string financialYear, string month) {
+            using (var ms = new MemoryStream())
+            {
+                using (WordprocessingDocument doc = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document, true))
+                {
+                    MainDocumentPart mainPart = doc.AddMainDocumentPart();
+                    mainPart.Document = new Document();
+                    Body body = new Body();
+
+                    SectionProperties sectionProps = new SectionProperties(
+                        new PageSize()
+                        {
+                            Width = 11906,
+                            Height = 16838,
+                            Orient = PageOrientationValues.Portrait
+                        },
+                        new PageMargin()
+                        {
+                            Top = 720,
+                            Right = 720,
+                            Bottom = 720,
+                            Left = 720
+                        }
+                    );
+
+                    body.Append(CreateReportHeading("रिमोट सेंसिंग ऍप्लिकेशन्स सेण्टर, उत्तर प्रदेश"));
+                    body.Append(CreateReportHeading("वर्ष 2025 - 2026  में शासन से प्राप्त धनराशि का आवंटित / व्यय विवरण माह जनवरी, 2026 तक"));
+                    body.Append(CreateReportHeadingAlignment("(रु० लाख में)"));
+                    Table table = new Table(
+                        new TableProperties(
+                            new TableWidth()
+                            {
+                                Width = "5000",
+                                Type = TableWidthUnitValues.Pct
+                            },
+                            new TableLayout() { Type = TableLayoutValues.Fixed },
+                            new TableBorders(
+                                new TopBorder { Val = BorderValues.Single, Size = 6 },
+                                new BottomBorder { Val = BorderValues.Single, Size = 6 },
+                                new LeftBorder { Val = BorderValues.Single, Size = 6 },
+                                new RightBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideHorizontalBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideVerticalBorder { Val = BorderValues.Single, Size = 6 }
+                            )
+                        )
+                    );
+
+                    // Column Grid
+                    table.Append(new TableGrid(
+                        new GridColumn() { Width = "600" },
+                        new GridColumn() { Width = "5000" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "2000" }
+                    ));
+
+                    // ==========================
+                    // HEADER ROW 1
+                    // ==========================
+                    table.Append(new TableRow(
+                        CreateHeaderCell("क्र.सं."),
+                        CreateHeaderCell("योजना / परियोजना का नाम"),
+                        CreateHeaderCell("आवंटित धनराशि"),
+                        CreateHeaderCell("व्यय धनराशि"),
+                        CreateHeaderCell("व्यय प्रतिशत ")
+                    ));
+
+                    body.Append(table);
+                    body.Append(sectionProps);
+                    mainPart.Document.Append(body);
+                    mainPart.Document.Save();
+                }
+                return ms.ToArray();
+            }
+        }
+
+        public static byte[] AdhisthanAccountReportGenerator(List<object> data, string financialYear, string date)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (WordprocessingDocument doc = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document, true))
+                {
+                    MainDocumentPart mainPart = doc.AddMainDocumentPart();
+                    mainPart.Document = new Document();
+                    Body body = new Body();
+
+                    SectionProperties sectionProps = new SectionProperties(
+                        new PageSize()
+                        {
+                            Width = 11906,
+                            Height = 16838,
+                            Orient = PageOrientationValues.Portrait
+                        },
+                        new PageMargin()
+                        {
+                            Top = 720,
+                            Right = 720,
+                            Bottom = 720,
+                            Left = 720
+                        }
+                    );
+
+                    body.Append(CreateReportHeading("रिमोट सेंसिंग ऍप्लिकेशन्स सेण्टर, उत्तर प्रदेश"));
+                    body.Append(CreateReportHeading("वित्तीय वर्ष 2025-2026 में अधिष्ठान मद के अंतरगर्त प्राविधानित धनराशि का विवरण माह 28 जनवरी 2026 तक "));
+                    body.Append(CreateReportHeadingAlignment("(रु० लाख में)"));
+                    Table table = new Table(
+                        new TableProperties(
+                            new TableWidth()
+                            {
+                                Width = "5000",
+                                Type = TableWidthUnitValues.Pct
+                            },
+                            new TableLayout() { Type = TableLayoutValues.Fixed },
+                            new TableBorders(
+                                new TopBorder { Val = BorderValues.Single, Size = 6 },
+                                new BottomBorder { Val = BorderValues.Single, Size = 6 },
+                                new LeftBorder { Val = BorderValues.Single, Size = 6 },
+                                new RightBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideHorizontalBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideVerticalBorder { Val = BorderValues.Single, Size = 6 }
+                            )
+                        )
+                    );
+
+                    // Column Grid
+                    table.Append(new TableGrid(
+                        new GridColumn() { Width = "600" },
+                        new GridColumn() { Width = "5000" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "2000" }
+                    ));
+
+                    // ==========================
+                    // HEADER ROW 1
+                    // ==========================
+                    table.Append(new TableRow(
+                        CreateHeaderCell("क्र.सं."),
+                        CreateHeaderCell("मद का नाम"),
+                        CreateHeaderCell("बजट प्राविधान"),
+                        CreateHeaderCell("व्यय धनराशि"),
+                        CreateHeaderCell("व्यय प्रतिशत "),
+                        CreateHeaderCell("Commited")
+                    ));
+
+                    body.Append(table);
+                    body.Append(sectionProps);
+                    mainPart.Document.Append(body);
+                    mainPart.Document.Save();
+                }
+                return ms.ToArray();
+            }
+        }
+
+        public static byte[] AccountExternalProjectReport(List<object> data, string financialYear, string divisionName)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (WordprocessingDocument doc = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document, true))
+                {
+                    MainDocumentPart mainPart = doc.AddMainDocumentPart();
+                    mainPart.Document = new Document();
+                    Body body = new Body();
+
+                    SectionProperties sectionProps = new SectionProperties(
+                        new PageSize()
+                        {
+                            Width = 16838,
+                            Height = 11906,
+                            Orient = PageOrientationValues.Landscape
+                        },
+                        new PageMargin()
+                        {
+                            Top = 720,
+                            Right = 720,
+                            Bottom = 720,
+                            Left = 720
+                        }
+                    );
+
+                    body.Append(CreateReportHeading(
+                        "REMOTE SENSING APPLICATIONS CENTRE, UTTAR PRADESH, LUCKNOW"
+                    ));
+
+                    body.Append(CreateReportHeading(
+                        "TENTATIVE FINANCIAL STATEMENT OF ONGOING OTHER PROJECTS HANDLED BY THE CENTRE UP TO 30 NOVEMBER 2025"
+                    ));
+                    body.Append(CreateReportHeadingAlignment(
+                        "(Rs.In Lacs)"
+                    ));
+                    // ==========================
+                    // TABLE
+                    // ==========================
+                    Table table = new Table(
+                        new TableProperties(
+                            new TableWidth()
+                            {
+                                Width = "5000",
+                                Type = TableWidthUnitValues.Pct
+                            },
+                            new TableLayout() { Type = TableLayoutValues.Fixed },
+                            new TableBorders(
+                                new TopBorder { Val = BorderValues.Single, Size = 6 },
+                                new BottomBorder { Val = BorderValues.Single, Size = 6 },
+                                new LeftBorder { Val = BorderValues.Single, Size = 6 },
+                                new RightBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideHorizontalBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideVerticalBorder { Val = BorderValues.Single, Size = 6 }
+                            )
+                        )
+                    );
+
+                    // Column Grid
+                    table.Append(new TableGrid(
+                        new GridColumn() { Width = "500" },
+                        new GridColumn() { Width = "3000" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1000" }
+                    ));
+
+                    // ==========================
+                    // HEADER ROW 1
+                    // ==========================
+                    table.Append(new TableRow(
+                        CreateHeaderCell("SI. No.", 1, 2),
+                        CreateHeaderCell("Name of Project & Project Manager", 1, 2),
+                        CreateHeaderCell("Name of funding agency", 1, 2),
+                        CreateHeaderCell("Total cost of Project", 1, 2),
+                        CreateHeaderCell("Project Duration", 2, 1),
+                        CreateHeaderCell("Amount Rec. upto March 2025(Exvluding)", 1, 2),
+                        CreateHeaderCell("Amt rec dur. 2025-26(Exvluding GST)", 1, 2),
+                        CreateHeaderCell("Total rec. upto 30 Nov.-25(Exvluding GST)", 1, 2),
+                        CreateHeaderCell("Total Exp. Uptoi Mar-2025", 1, 2),
+                        CreateHeaderCell("Exp. Dur. The Year", 1, 2),
+                        CreateHeaderCell("Total Exp. Upto 30 November-25", 1, 2),
+                        CreateHeaderCell("Balance Upto 30 November-25", 1, 2),
+                        CreateHeaderCell("Expenditure Percent", 1, 2)
+                    ));
+
+                    // ==========================
+                    // HEADER ROW 2
+                    // ==========================
+                    table.Append(new TableRow(
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                        CreateHeaderCell("From"),
+                        CreateHeaderCell("To"),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Center)
+                    ));
+
+                    // You can append data rows here later
+
+                    body.Append(table);
+                    body.Append(sectionProps);
+                    mainPart.Document.Append(body);
+                    mainPart.Document.Save();
+                }
+                return ms.ToArray();
+            }
+        }
+
+        #endregion
         #region Helper Method
         private static TableCell CreateHeaderCell(
      string text,
@@ -552,6 +957,29 @@ namespace RemoteSensingProject.Models
                     new Run(new Text(text))
                 )
             );
+        }
+
+        private static Paragraph CreateReportHeadingAlignment(string text)
+        {
+            return new Paragraph(
+                new ParagraphProperties(
+                    new Justification() { Val = JustificationValues.End},
+                    new SpacingBetweenLines()
+                    {
+                        Before = "0",
+                        After = "0",
+                        Line = "340",
+                        LineRule = LineSpacingRuleValues.Exact
+                    }
+                    ),
+                 new Run(
+                    GetMangalFont(true, "20"),
+                    new Text(text)
+                    {
+                        Space = SpaceProcessingModeValues.Preserve
+                    }
+                )
+                );
         }
 
         private static Paragraph CreateReportHeading(string text)
