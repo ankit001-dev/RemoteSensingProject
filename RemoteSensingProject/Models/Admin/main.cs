@@ -264,8 +264,25 @@ namespace RemoteSensingProject.Models.Admin
 			public string CreaterId { get; set; }
 			public string CreaterRole { get; set; }
 		}
-
-		public class Project_Budget
+        public class ExternalProject_ProgressModel
+        {
+			public string CreaterRole { get; set; }
+			public string CreaterId { get; set; }
+            public int Id { get; set; }
+            public DateTime Date { get; set; }
+            public int ProjectId { get; set; }
+            public string AnnualTarget { get; set; }
+            public string TargetOfMonth { get; set; }
+            public string AchievementOfMonth { get; set; }
+            public string CurrentFinancialYear { get; set; }
+            public string FinancialInstitution { get; set; }
+            public int TotalCost { get; set; }
+            public string TotalTarget { get; set; }
+            public string PreviousFinancialYear { get; set; }
+            public string Statebeneficiary { get; set; }
+            public string Remark { get; set; }
+        }
+        public class Project_Budget
 		{
 			public int Id { get; set; }
 

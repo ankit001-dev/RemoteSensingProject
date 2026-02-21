@@ -274,13 +274,37 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
-
-        [HttpGet]
-        public ActionResult GetInternalProjectReport(int id)
+        public JsonResult UpdateExternalProject(RemoteSensingProject.Models.Admin.main.ExternalProject_ProgressModel data)
         {
             try
             {
-                var data = _managerServices.GetMonthlyProjectReport(id);
+                UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
+                data.CreaterId = userObj.userId;
+                data.CreaterRole = userObj.userRole;
+                string message = string.Empty;
+                bool res = _managerServices.AddOrUpdateMonthlyExternalProgressReport(data, out message);
+                return Json((object)new
+                {
+                    status = res,
+                    message = (res ? "Monthly updated successfully !" : message)
+                });
+            }
+            catch(Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Error: " + ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        public ActionResult GetInternalProjectReport(int id,string type)
+        {
+            try
+            {
+                var data = type.Trim().Equals("editid")? _managerServices.GetMonthlyProjectReport(id): _managerServices.GetMonthlyProjectReport(projectid:id);
                 return Json((object)new
                 {
                     status = data.Count>0?true:false,
@@ -1215,10 +1239,13 @@ namespace RemoteSensingProject.Controllers
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userData.userId), filterBy:"ProjectManager", projectTypeFilter:"Internal");
+            ViewData["reportdata"] = _managerServices.GetMonthlyProjectReport();
             return View();
         }
         public ActionResult ExternalProject_ProgressReport()
         {
+            UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
+            ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "External");
             return View();
         }
 
