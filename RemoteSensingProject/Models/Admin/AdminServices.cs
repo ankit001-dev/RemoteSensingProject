@@ -74,6 +74,73 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
+        #region Manage Budget Heads
+        public bool InsertBudgetHead(main.CommonResponse cr)
+        {
+            try
+            {
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_managebudgethead(:v_action,:v_id, :v_budgethead )", con);
+                try
+                {
+                    ((DbCommand)(object)cmd).CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("v_id", (cr.id == 0) ? DBNull.Value : ((object)cr.id));
+                    cmd.Parameters.AddWithValue("v_budgethead", ((object)cr.name) ?? ((object)DBNull.Value));
+                    cmd.Parameters.AddWithValue("v_action", (object)((cr.id > 0) ? "UPDATE" : "INSERT"));
+                    ((DbCommand)(object)cmd).ExecuteNonQuery();
+                    return true;
+                }
+                finally
+                {
+                    ((IDisposable)cmd)?.Dispose();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
+
+        public bool DeleteBudgetHead(int id)
+        {
+            try
+            {
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_managebudgethead(:v_action,:v_id, :v_budgethead )", con);
+                try
+                {
+                    ((DbCommand)(object)cmd).CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("v_id", (id == 0) ? DBNull.Value : ((object)id));
+                    cmd.Parameters.AddWithValue("v_budgethead", ((object)DBNull.Value));
+                    cmd.Parameters.AddWithValue("v_action", "DELETE");
+                    ((DbCommand)(object)cmd).ExecuteNonQuery();
+                    return true;
+                }
+                finally
+                {
+                    ((IDisposable)cmd)?.Dispose();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
+        #endregion
         public bool InsertDivison(main.CommonResponse cr)
         {
             //IL_000d: Unknown result type (might be due to invalid IL or missing references)
@@ -3051,7 +3118,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public List<main.BudgetHeadModel> GetBudgetHeads()
+        public List<main.BudgetHeadModel> GetBudgetHeads(int? id = null)
         {
             //IL_002b: Unknown result type (might be due to invalid IL or missing references)
             //IL_0031: Expected O, but got Unknown
@@ -3072,7 +3139,7 @@ namespace RemoteSensingProject.Models.Admin
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("v_action", (object)"getbudgetHeads");
                         cmd.Parameters.AddWithValue("v_projectmanager", (object)0);
-                        cmd.Parameters.AddWithValue("v_id", (object)0);
+                        cmd.Parameters.AddWithValue("v_id", id.HasValue?(object)id:(object)0);
                         cmd.Parameters.AddWithValue("v_limit", (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("v_page", (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("v_year", (object)DBNull.Value);

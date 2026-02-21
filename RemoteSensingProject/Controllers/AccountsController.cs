@@ -84,8 +84,36 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
 
-		#region New Expense Changes
-		[HttpPost]
+        #region Manage Budget Heads
+        public ActionResult Budget_Head()
+        {
+            ViewData["headlist"] = _adminServices.GetBudgetHeads();
+            return View();
+        }
+        [HttpPost]
+        public ActionResult InsertBudgetHead(RemoteSensingProject.Models.Admin.main.CommonResponse cr)
+        {
+            bool res = _adminServices.InsertBudgetHead(cr);
+            return Json((object)new
+            {
+                status = res,
+                message = (res ? (cr.id > 0 ? "Head updated successfully" : "Head inserted successfully!") : "Some issue found while processing your request !")
+            }, (JsonRequestBehavior)0);
+        }
+        [HttpDelete]
+        public ActionResult RemoveBudgetHead(int id)
+        {
+            bool res = _adminServices.DeleteBudgetHead(id);
+            return Json((object)new
+            {
+                status = res,
+                message = (res ? "Head removed successfully !" : "Some issue occred ")
+            }, (JsonRequestBehavior)0);
+        }
+        #endregion
+
+        #region New Expense Changes
+        [HttpPost]
         public ActionResult InsertExpenses(List<ProjectExpenses> list)
         {
             string filePage = Server.MapPath("~/ProjectContent/ProjectManager/HeadsSlip/");
