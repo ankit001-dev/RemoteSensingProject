@@ -199,6 +199,20 @@ public class CommonController : ApiController
 		}
 	}
 
+	[HttpGet]
+	[Route("api/DeleteProject")]
+	[System.Web.Mvc.AllowAnonymous]
+	public IHttpActionResult DeleteProejct(int projectId)
+	{
+		bool result = _adminServices.DeleteProject(projectId);
+		return Ok(new
+		{
+			status = result,
+			message = result ? "Project Deleted successfully !" : "Some issue found while delete project.",
+			 
+		});
+
+    }
     #endregion
 
     #region Manage Meetings

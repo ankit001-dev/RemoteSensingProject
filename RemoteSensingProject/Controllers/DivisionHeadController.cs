@@ -101,6 +101,7 @@ namespace RemoteSensingProject.Controllers
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.divisionId), filterBy: "DivisionHead",projectTypeFilter:"Internal", searchTerm: null, statusFilter: null);
             ViewData["reportdata"] = _managerServices.GetMonthlyProjectReport(divisionid:userData.divisionId);
+            ViewBag.divisionId = Convert.ToInt32(userData.divisionId);
             return View();
         }
         public ActionResult ExternalProject_ProgressReportDivision()
@@ -108,6 +109,7 @@ namespace RemoteSensingProject.Controllers
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.divisionId), filterBy: "DivisionHead",projectTypeFilter:"External", searchTerm: null, statusFilter: null);
             ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(divisionid: userData.divisionId);
+            ViewBag.divisionId = Convert.ToInt32(userData.divisionId);
             return View();
         }
 

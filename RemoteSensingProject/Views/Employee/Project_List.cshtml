@@ -82,6 +82,12 @@
                                 <a href="@Url.EncryptedAction("Add_Project", "Employee", new {id=item.Id})">
                                     <i class="link-icon" data-feather="edit"></i>
                                 </a>
+
+                                <a class="cursor-pointer deleteProject" data-projectId="@item.Id">
+                                    <i class="link-icon text-danger" data-feather="delete"></i>
+                                </a>
+
+
                             </td>
                         </tr>
                         i++;
@@ -135,6 +141,69 @@
 
         if (search) $('#searchProjectBy').val(search).focus();
         if (division) $('#filterProjectStatus').val(division);
+    });
+    $(document).on("click", ".deleteProject", function () {
+
+        let projectId = $(this).data("projectid"); // fixed line
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+        });
+        swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/api/DeleteProject",
+                    type: "GET", // better in uppercase
+                    data: { projectId: projectId },
+                    success: function (res) {
+                        Swal.fire({
+                            title: res.status ? "Successfully!" : "Sorry!",
+                            text: res.message,
+                            icon: res.status ? "success" : "warning",
+                            didClose: () => {
+                                if (res.status) {
+                                    location.reload();
+                                }
+                            }
+                        });
+                    },
+                    error: function () {
+                        Swal.fire({
+                            title: "Server Error!",
+                            text: "Some internal server issue found.",
+                            icon: "error",
+                            didClose: () => {
+                                location.reload();
+                            }
+                        });
+                    }
+                });
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire({
+                    title: "Cancelled",
+                    text: "Your imaginary file is safe :)",
+                    icon: "error"
+                });
+            }
+        });
+
+   
+
     });
 </script>
 

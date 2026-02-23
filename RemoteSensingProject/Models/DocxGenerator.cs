@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Web.Http.Results;
 using static RemoteSensingProject.Models.Accounts.main;
+using static RemoteSensingProject.Models.Admin.main;
 namespace RemoteSensingProject.Models
 {
     public class DocxGenerator
@@ -194,7 +195,7 @@ namespace RemoteSensingProject.Models
             public decimal StateShare { get; set; }
             public decimal BeneficiaryShare { get; set; }
         }
-        public static byte[] CreateMonthlyInternalProjectProgressDocx(List<MonthlyProgressRow> data,string month,int year,string divisionName)
+        public static byte[] CreateMonthlyInternalProjectProgressDocx(List<InternalProject_ProgressModel> data,string month,int year,string divisionName)
         {
             using (var ms = new MemoryStream())
             {
@@ -235,7 +236,7 @@ namespace RemoteSensingProject.Models
                     ));
 
                     body.Append(CreateReportHeading(
-                        "भासन से गैर वेतन मद मे प्राप्त धनराशि से संचालित योजना/ कार्यक्रम की उपलब्धियों का विवरण"
+                        "शासन से गैर वेतन मद मे प्राप्त धनराशि से संचालित योजना/ कार्यक्रम की उपलब्धियों का विवरण"
                     ));
 
                     // ===== TABLE =====
@@ -307,15 +308,15 @@ namespace RemoteSensingProject.Models
                     {
                         table.Append(new TableRow(
                             CreateNormalCell(sr.ToString()),
-                            CreateNormalCell(item.SchemeName),
-                            CreateNormalCell(item.AnnualFinancial.ToString()),
-                            CreateNormalCell(item.AnnualPhysical.ToString()),
-                            CreateNormalCell(item.MonthlyTarget.ToString()),
-                            CreateNormalCell(item.MonthlyProgress.ToString()),
-                            CreateNormalCell(item.CumulativeProgress.ToString()),
-                            CreateNormalCell(item.ProgressPercent.ToString()),
-                            CreateNormalCell(item.StateShare.ToString()),
-                            CreateNormalCell(item.BeneficiaryShare.ToString())
+                            CreateNormalCell(item.ProjectName),
+                            CreateNormalCell(item.FinancialYearlyAim),
+                            CreateNormalCell(item.PhysicalYearlyAim),
+                            CreateNormalCell(item.MonthAim),
+                            CreateNormalCell(item.MonthlyStatus),
+                            CreateNormalCell(item.SquenceStatus),
+                            CreateNormalCell(item.SequenceStatusPerc.ToString()),
+                            CreateNormalCell(item.Statebeneficiary.ToString()),
+                            CreateNormalCell(item.Remark.ToString())
                         ));
                         sr++;
                     }
@@ -328,7 +329,7 @@ namespace RemoteSensingProject.Models
             }
         }
 
-        public static byte[] CreateExternalProjectPhysicalAchievementReport(List<object> data, string financialYear,string divisionName)
+        public static byte[] CreateExternalProjectPhysicalAchievementReport(List<ExternalProject_ProgressModel> data, string financialYear,string divisionName)
         {
             using (var ms = new MemoryStream())
             {
@@ -451,7 +452,26 @@ namespace RemoteSensingProject.Models
                          CreateMergedCell("", false, JustificationValues.Center),
                          CreateMergedCell("", false, JustificationValues.Center)
                     ));
+                    int i = 1;
+                    foreach(var item in data)
+                    {
+                        table.Append(new TableRow(
+                            CreateNormalCell(i.ToString()),
+                            CreateNormalCell(item.ProjectName),
+                            CreateNormalCell(item.FinancialInstitution),
+                            CreateNormalCell(item.TotalCost.ToString()),
+                            CreateNormalCell(item.TotalTarget),
+                            CreateNormalCell(item.PreviousFinancialYear),
+                            CreateNormalCell(item.AnnualTarget),
+                            CreateNormalCell(item.TargetOfMonth),
+                            CreateNormalCell(item.AchievementOfMonth),
+                            CreateNormalCell(item.CurrentFinancialYear),
+                            CreateNormalCell(item.Statebeneficiary),
+                            CreateNormalCell(item.Remark)
+                            ));
 
+                        i++;
+                    }
                     // You can append data rows here later
 
                     body.Append(table);
@@ -465,7 +485,7 @@ namespace RemoteSensingProject.Models
         }
 
 
-        public static byte[] CreateInternalProjectCombinedReport(List<object> data, string financialYear, string divisionName)
+        public static byte[] CreateInternalProjectCombinedReport(List<TechnicalInternalMonthlyReport> data, string financialYear, string divisionName)
         {
             using (var ms = new MemoryStream())
             {
@@ -553,7 +573,7 @@ namespace RemoteSensingProject.Models
                     table.Append(new TableRow(
                         CreateHeaderCell("क्र.सं.", 1, 2),
                         CreateHeaderCell("मद/परियोजना का नाम", 1, 2),
-                        CreateHeaderCell("इकाई ", 1, 2),
+                        CreateHeaderCell("इकाई (लाख में)", 1, 2),
                         CreateHeaderCell("लक्ष्य", 2 , 1 ),
                         CreateHeaderCell("उपलब्धि", 2 , 1 ),
                         CreateHeaderCell("प्रदेश सरकार के लाभान्वित होने वाले विभाग", 1, 2),
@@ -574,6 +594,23 @@ namespace RemoteSensingProject.Models
                          CreateMergedCell("", false, JustificationValues.Center),
                          CreateMergedCell("", false, JustificationValues.Center)
                     ));
+
+                    int i = 1;
+                    foreach(var item in data)
+                    {
+                        table.Append(new TableRow(
+                            CreateNormalCell(i.ToString()),
+                            CreateNormalCell(item.ProjectName),
+                            CreateNormalCell(item.Amount),
+                            CreateNormalCell(item.InMonthReview),
+                            CreateNormalCell(item.EndMonthReview),
+                            CreateNormalCell(item.FinancialYearlyAim),
+                            CreateNormalCell(item.SequentiallyMonthReview),
+                            CreateNormalCell(item.Statebeneficiary),
+                            CreateNormalCell(item.Remark)
+                            ));
+                        i++;
+                    }
 
                     // You can append data rows here later
 

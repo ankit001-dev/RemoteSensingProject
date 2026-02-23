@@ -873,7 +873,27 @@ namespace RemoteSensingProject.Models.Admin
             return null;
         }
 
-       
+        public bool DeleteProject(int projectId)
+        {
+            try
+            {
+                using (NpgsqlConnection conn = con)
+                {
+                    conn.Open();
+                    using (NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_adminaddproject(p_action => @action, p_id => @id)", con))
+                    {
+                        cmd.Parameters.AddWithValue("@action", "removeProject");
+                        cmd.Parameters.AddWithValue("@id", projectId);
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public List<main.Project_model> getHeadByProject(int projectId, int? page = null, int? limit = null)
         {
             //IL_0021: Unknown result type (might be due to invalid IL or missing references)
