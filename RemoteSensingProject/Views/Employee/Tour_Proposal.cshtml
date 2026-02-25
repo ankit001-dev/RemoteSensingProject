@@ -53,10 +53,10 @@
                 <form class="forms-sample" id="tourForm">
                     <div class="row">
                         <div class="col-lg-4 mb-3">
-                            <label for="proposalType" class="form-label">Tour Type</label>
+                            <label for="proposalType" class="form-label">Tour For</label>
                             <select class="form-select form-select-sm" id="proposalType" name="proposalType">
                                 <option disabled selected>--select type--</option>
-                                <option value="self">Self</option>
+                                <option value="self">Regular</option>
                                 <option value="projectstaff">Project staff</option>
                             </select>
                         </div>
@@ -82,6 +82,20 @@
                                     foreach (var item in outSourceList)
                                     {
                                         <option value="@item.Id">@item.EmpName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3" id="selectEmployee">
+                            <label for="employee" class="form-label">Employee</label>
+                            <select class="form-select" name="outsource" multiple id="employee">
+                                <option disabled>--Select Employee--</option>
+                                @if (ViewData["EmployeeList"] != null)
+                                {
+                                    var empList = ViewData["EmployeeList"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
+                                    foreach (var item in empList)
+                                    {
+                                        <option value="@item.Id">@item.EmployeeName</option>
                                     }
                                 }
                             </select>
@@ -299,8 +313,14 @@
 
 <script>
     $(document).ready(function () {
+        $("#periodFrom").on("change", function () {
+            $("#periodTo").attr("min", $(this).val());
+        });
+
+        $('#selectEmployee').hide();
 
         $('#outsource').select2();
+        $('#employee').select2();
 
         //Filter
         $("#printBtn").click(function () {
@@ -491,15 +511,30 @@
         if (data.outsourceList && data.outsourceList.length > 0) {
 
             // show outsource section
-            $("#selectOutsource").show();
+            if (data.proposalType.trim() == "projectstaff") {
+                $("#selectOutsource").show();
+                $('#selectEmployee').hide();
+                // extract outsource ids
+                let outsourceIds = data.outsourceList.map(x => x.outsourceId.toString());
 
-            // extract outsource ids
-            let outsourceIds = data.outsourceList.map(x => x.outsourceId.toString());
+                // set after dropdown rendered
+                setTimeout(function () {
+                    $("#outsource").val(outsourceIds).trigger("change");
+                }, 400);
+            }
+            else if (data.proposalType.trim() == "self") {
+                $("#selectOutsource").hide();
+                $('#selectEmployee').show();
+                // extract outsource ids
+                let outsourceIds = data.outsourceList.map(x => x.outsourceId.toString());
 
-            // set after dropdown rendered
-            setTimeout(function () {
-                $("#outsource").val(outsourceIds).trigger("change");
-            }, 400);
+                // set after dropdown rendered
+                setTimeout(function () {
+                    $("#employee").val(outsourceIds).trigger("change");
+                }, 400);
+            }
+
+            
         }
         else {
             $("#outsource").val([]).trigger("change");
@@ -565,12 +600,22 @@
         $('#selectOutsource').hide();
         $('#proposalType').on('change', function () {
             const val = $(this).val();
+
             if (val == 'projectstaff') {
                 $('#selectOutsource').show();
-            } else {
-                $('#selectOutsource').hide();
+                $('#selectEmployee').hide();
+                $('#employee').val([]).trigger("change");
             }
-        })
+            else if (val == 'self') {
+                $('#selectEmployee').show();
+                $('#selectOutsource').hide();
+                $('#outsource').val([]).trigger("change");
+            }
+            else {
+                $('#selectOutsource').hide();
+                $('#selectEmployee').hide();
+            }
+        });
 
         $("#tourForm").submit(function (e) {
             e.preventDefault();
@@ -578,7 +623,27 @@
                 title: 'Please Wait',
                 text: 'Your request under process. Please wait!',
                 didOpen: () => { Swal.showLoading(); }
-            })
+            });
+            var fromDate = $("#periodFrom").val();
+            var toDate = $("#periodTo").val();
+
+            if (fromDate && toDate) {
+
+                if (new Date(toDate) < new Date(fromDate)) {
+                    e.preventDefault();
+                    Swal.fire('Error', 'Period To date cannot be before From date.', 'error').then(() => {
+                        $("#periodTo").focus();
+                    });
+                    
+                }
+            }
+            if ($('#proposalType').val() == "self") {
+                $('#employee').attr("name", "outsource");
+                $('#outsource').removeAttr("name");
+            } else {
+                $('#outsource').attr("name", "outsource");
+                $('#employee').removeAttr("name");
+            }
             let formData = new FormData(this);
             $.ajax({
                 url: '/employee/Tour_proposal',

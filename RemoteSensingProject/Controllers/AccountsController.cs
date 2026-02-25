@@ -201,5 +201,29 @@ namespace RemoteSensingProject.Controllers
             }
         }
         #endregion
+
+        #region Manage Update Committed
+        [HttpPost]
+        public ActionResult UpdateCommitted(UpdateCommitted model)
+        {
+            try
+            {
+                bool res = _accountSerivce.UpdateExpenseCommitted(model);
+                return Json((object)new
+                {
+                    status = res,
+                    message = (res ? "Data updated successfully"  : "Some issue occured !")
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Server is busy !"
+                });
+            }
+        }
+        #endregion
     }
 }

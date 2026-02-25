@@ -48,7 +48,10 @@
                                 <td class="border border-dark border-r">@d.BudgetProvision.ToString("N2")</td>
                                 <td class="border border-dark border-r">@d.ExpenditureAmount.ToString("N2")</td>
                                 <td class="border border-dark border-r">@d.ExpenditurePercentage</td>
-                                <td class="border border-dark border-r">@d.Committed.ToString("N2")</td>
+                                <td class="border border-dark border-r">
+                                    <a data-id="@d.Id"
+                                       class="edit-expensecommitt cursor-pointer" title="Update Committed">@d.Committed.ToString("N2")</a>
+                                </td>
                                 <td class="border border-dark border-r">
                                     <a class="cursor-pointer editAdhisthanBtn"
                                        data-bs-toggle="modal"
@@ -141,7 +144,45 @@
     </div>
 </div>
 
+<!---Update Committed Amount Modal-->
+<div class="modal fade" id="updatecommittedamountmodal" tabindex="-1" aria-labelledby="updatecommittedamountmodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Update Committed</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="addexpensecommittedForm">
+                    <input type="hidden" id="adhisthanidi" name="AdhisthanId" value="0" />
+
+                    <div class="form-group">
+                        <label for="heads" class="form-label">Title</label>
+                        <input type="text" class="form-control" name="Title" id="title" placeholder="Enter title">
+                    </div>
+                    <div class="form-group mt-1">
+                        <label for="Expenditure" class="form-label">Expense Committed (in Lakhs)</label>
+                        <input type="text" class="form-control" name="ExpenseCommitted" id="expensecommitted" placeholder="Enter expense committed">
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary"><span class="actionType">Update</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    $('.edit-expensecommitt').on('click', function () {
+        const id = $(this).data('id');
+        $('#adhisthanidi').val(id)
+        $('#updatecommittedamountmodal').modal('show');
+    })
+
     $('#addAdhisthanModalBtn').on('click', function () {
 
         $("#adhisthanId").val(0);
@@ -246,6 +287,57 @@
         let data = new FormData(this);
         $.ajax({
             url: "/accounts/InsertExpenditure",
+            type: "Post",
+            data: data,
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                if (res.status) {
+                    Swal.fire({
+                        title: "Successfuly !",
+                        text: res.message,
+                        icon: "success",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    })
+                } else {
+                    Swal.fire({
+                        title: "Sorry !",
+                        text: res.message,
+                        icon: "warning"
+                    })
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    title: "Server issue",
+                    text: "Server is not respondig. Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload(true)
+                    }
+                })
+            }
+        })
+    }) 
+
+    //Update Committed
+    $("#addexpensecommittedForm").on("submit", function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: "Please wait !",
+            text: "Processing your request....",
+            timer: 100000,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+        let data = new FormData(this);
+        $.ajax({
+            url: "/accounts/UpdateCommitted",
             type: "Post",
             data: data,
             contentType: false,

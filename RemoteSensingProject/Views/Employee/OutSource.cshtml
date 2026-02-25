@@ -58,6 +58,7 @@
                                 <th>Email</th>
                                 <th>Designations</th>
                                 <th>Gender</th>
+                                <th>Tasks</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -74,6 +75,9 @@
                                         <td>@item.email</td>
                                         <td>@item.designationname</td>
                                         <td>@item.gender</td>
+                                        <td>
+                                            <a class="viewtaskbtn cursor-pointer" title="View Task" data-id="@item.Id">@item.taskCount</a>
+                                        </td>
                                         <td class="text-center">
                                             <button title="Deallocate" data-id="@item.Id" class="deallocate border-0 bg-white"><i class="fa-solid fa-user-minus fs-6" style="color:rgb(2 158 157) !important"></i></button> | 
                                             <a class="cursor-pointer monthlyReport" data-prjId="@item.Id">&nbsp; <i class="fa-regular fa-calendar text-danger"></i></a>
@@ -232,7 +236,118 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="taskshowmodal" tabindex="-1" aria-labelledby="taskshowmodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Task List</h5>
+
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive p-4">
+                    <table id="projectTable1" class="dataTableExample" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Project Name</th>
+                                <th>Task</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @*@if (data != null && data.Count > 0)
+                            {
+                                int i = 1;
+                                foreach (var item in data)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@item.projectName</td>
+                                        <td><a class="cursor-pointer viewTaskDetail" data-description="@item.Description">@item.Title</a></td>
+                                        <td>
+                                            @if (!item.CompleteStatus)
+                                            {
+
+
+                                                <span class="badge bg-primary">Pending</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success">Completed</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }*@
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+
+    $('.viewtaskbtn').on('click', function () {
+        const id = $(this).data('id')
+        if (id > 0) {
+            $.ajax({
+                url: '/employee/GetOutsourceTaskList',
+                type: 'get',
+                data: { id: id },
+                success: function (res) {
+                    if (res.status) {
+                        console.log('Data',res.data);
+                        let tbody = $('#projectTable1 tbody');
+                        tbody.empty(); // clear previous data
+
+                        let i = 1;
+
+                        $.each(res.data, function (index, item) {
+
+                            let statusBadge = item.CompleteStatus
+                                ? '<span class="badge bg-success">Completed</span>'
+                                : '<span class="badge bg-primary">Pending</span>';
+
+                            let row = `
+                            <tr>
+                                <td>${i}</td>
+                                <td>${item.projectName}</td>
+                                <td>
+                                    <a class="cursor-pointer viewTaskDetail" 
+                                       data-description="${item.Description}">
+                                       ${item.Title}
+                                    </a>
+                                </td>
+                                <td>${statusBadge}</td>
+                            </tr>
+                        `;
+
+                            tbody.append(row);
+                            $('#taskshowmodal').modal('show');
+
+                            i++;
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Warning',
+                            text: 'No Data Found',
+                            icon: 'warning'
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        }
+    })
 
     function loadInternalProjectDetail() {
         debugger

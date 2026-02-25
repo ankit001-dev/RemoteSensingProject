@@ -11,6 +11,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http;
+using static RemoteSensingProject.Models.Admin.main;
 using static RemoteSensingProject.Models.CommonHelper;
 
 namespace RemoteSensingProject.ApiServices
@@ -292,7 +293,7 @@ namespace RemoteSensingProject.ApiServices
                         message = "Invalid userid !"
                     });
                 }
-                DashboardCount data = _managerService.DashboardCount(Convert.ToInt32(userId));
+                Models.ProjectManager.DashboardCount data = _managerService.DashboardCount(Convert.ToInt32(userId));
                 return Ok(new
                 {
                     status = true,
@@ -1301,6 +1302,77 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
+        #region Manage Progress Report
+        [HttpPost]
+        [Route("api/add-progress-report-int")]
+        public IHttpActionResult AddInternalProgressReport(InternalProject_ProgressModel ip)
+        {
+            try
+            {
+                List<string> errors = new List<string>();
+                if (ip.ProjectId <=0)
+                {
+                    errors.Add("Project ID is required.");
+                }
+                if (errors.Count > 0)
+                {
+                    return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
+                }
+                string message = null;
+                bool res = _managerService.AddOrUpdateMonthlyInternalProgressReport(ip,out message);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = (res ? 200 : 500),
+                    message = (res ? "Progress report added successfully!" : "Some issue occured!")
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("api/add-progress-report-ext")]
+        public IHttpActionResult AddExternalProgressReport(ExternalProject_ProgressModel ep)
+        {
+            try
+            {
+                List<string> errors = new List<string>();
+                if (ep.ProjectId <= 0)
+                {
+                    errors.Add("Project ID is required.");
+                }
+                if (errors.Count > 0)
+                {
+                    return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
+                }
+                string message = null;
+                bool res = _managerService.AddOrUpdateMonthlyExternalProgressReport(ep, out message);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = (res ? 200 : 500),
+                    message = (res ? "Progress report added successfully!" : "Some issue occured!")
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
         #region Manage Division Head
         [JwtAuthorize(Roles = "divisionHead")]
         [Route("api/manpower-request")]
@@ -1411,6 +1483,32 @@ namespace RemoteSensingProject.ApiServices
             {
                 int divisionid = _adminServices.SelectEmployeeRecordById(userid).Division;
                 var data = _managerService.OutsourceOfDivision(divisionid, designationid);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    StatusCode = data.Count > 0 ? 200 : 400,
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 400,
+                    message = ex.Message
+                });
+            }
+        }
+        [JwtAuthorize(Roles = "divisionHead")]
+        [Route("api/get-division-project")]
+        [HttpGet]
+        public IHttpActionResult GetDivisionProject(int userid,string searchTerm = null,string statusFilter = null)
+        {
+            try
+            {
+                int divisionid = _adminServices.SelectEmployeeRecordById(userid).Division;
+                var data = _managerService.All_Project_List(userId: divisionid, filterBy: "DivisionHead", searchTerm: searchTerm, statusFilter: statusFilter);
                 return Ok(new
                 {
                     status = data.Any(),

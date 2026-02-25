@@ -246,6 +246,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         public bool completeStatus { get; set; }
         public string message { get; set; }
         public PaginationInfo Pagination { get; set; }
+        public int taskCount { get; set; }
     }
 
     public class OutSourceTask { 

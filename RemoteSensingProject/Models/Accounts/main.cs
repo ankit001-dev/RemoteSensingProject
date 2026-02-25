@@ -177,7 +177,14 @@ namespace RemoteSensingProject.Models.Accounts
 			public decimal ExpenditurePercentage { get; set; }
 			public decimal Committed { get; set; }
 		}
+		public class UpdateCommitted
+		{
+			public int Id { get; set; }
+			public string Title { get; set; }
+			public decimal ExpenseCommitted { get; set; }
+			public int AdhisthanId { get; set; }
 
+        }
     }
 
 }

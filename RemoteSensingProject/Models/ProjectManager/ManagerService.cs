@@ -2011,7 +2011,8 @@ NULL::text,
                                             email = ((DbDataReader)(object)rd)["emp_email"].ToString(),
                                             gender = ((DbDataReader)(object)rd)["emp_gender"].ToString(),
                                             designationname = ((DbDataReader)(object)rd)["designationname"].ToString(),
-                                            designationid = Convert.ToInt32(rd["designationid"])
+                                            designationid = Convert.ToInt32(rd["designationid"]),
+                                            taskCount = Convert.ToInt32(((DbDataReader)(object)rd)["taskcount"]),
                                         };
                                         if (firstRow)
                                         {
@@ -2669,11 +2670,13 @@ NULL::text,
                         foreach (var outsourceId in data.outsource)
                         {
                             using (var cmdOut = new NpgsqlCommand(
-                                "CALL sp_Tourproposal(v_id => @tourid, v_userid => @outsourceid, v_action => @v_action)",
+                                "CALL sp_Tourproposal(v_id => @tourid, v_userid => @outsourceid, v_action => @v_action,v_tourtype => @v_tourtype)",
                                 con, tx))
                             {
                                 cmdOut.Parameters.AddWithValue("@tourid", data.id);
                                 cmdOut.Parameters.AddWithValue("@outsourceid", outsourceId);
+                                cmdOut.Parameters.AddWithValue("@outsourceid", outsourceId);
+                                cmdOut.Parameters.AddWithValue("@v_tourtype", data.proposalType);
                                 cmdOut.Parameters.AddWithValue("@v_action", "insertprojectstafftour");
 
                                 int res = cmdOut.ExecuteNonQuery();
@@ -2771,8 +2774,8 @@ NULL::text,
                                                 {
                                                     data.outsourceList.Add(new OutsourceInfo
                                                     {
-                                                        outsourceId = item.GetProperty("outsourceId").GetInt32(),
-                                                        outsourceName = item.GetProperty("outsourceName").GetString()
+                                                        outsourceId = item.GetProperty("personId").GetInt32(),
+                                                        outsourceName = item.GetProperty("personName").GetString()
                                                     });
                                                 }
                                             }
@@ -2862,6 +2865,7 @@ NULL::text,
                                             ProposalType = res["tourtype"] != DBNull.Value ? ((DbDataReader)(object)res)["tourtype"].ToString() : "N/A",
                                             ProjectStaffName = Convert.ToString(((DbDataReader)(object)res)["emp_name"]),
                                             Mobile = Convert.ToString(((DbDataReader)(object)res)["emp_mobile"]),
+                                            ProjectManager = Convert.ToString(((DbDataReader)(object)res)["name"]),
                                         };
                                         getlist.Add(data);
                                     }

@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Web.Mvc;
 
 namespace RemoteSensingProject.Controllers
@@ -66,6 +67,27 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult GetOutsourceTaskList(int id)
+        {
+            try
+            {
+                var data = _subordinateServices.getOutSourceTask(id);
+                return Json(new
+                {
+                    status = true,
+                    data = data
+                },JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = "server error"
+                });
+            }
+        }
 
         public ActionResult CreateTask(string req)
         {
@@ -611,6 +633,7 @@ namespace RemoteSensingProject.Controllers
             List<RemoteSensingProject.Models.Admin.main.Project_model> res2 = _managerServices.All_Project_List(userId:userid, filterBy:"ProjectManager");
             ((ControllerBase)this).ViewData["projectList"] = res2;
             ((ControllerBase)this).ViewData["tourList"] = res;
+            ViewData["EmployeeList"] = _adminServices.BindEmployee();
             ViewData["OutSourceList"] = _managerServices.GetAllocatedOutSOurceList(userid);
             return View();
         }

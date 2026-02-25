@@ -51,7 +51,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="text-muted small">Proposal Type</label><br />
-                        <span class="px-3 py-2">@d.ProposalType.ToString().ToUpper()</span>
+                        <span class="px-3 py-2">@(d.ProposalType == "self"? "REGULAR":d.ProposalType.ToString().ToUpper())</span>
                     </div>
                 </div>
             </div>
@@ -74,6 +74,21 @@
                         <li class="list-group-item px-0">
                             <i class="bi bi-person me-2 text-primary"></i>
                             @item.ProjectStaffName
+                        </li>
+                    }
+                </ul>
+            }
+            @if (d.ProposalType == "self")
+            {
+                <hr class="my-2" />
+                <h6 class="text-muted mb-3">Employees</h6>
+
+                <ul class="list-group list-group-flush">
+                    @foreach (var item in Model)
+                    {
+                        <li class="list-group-item px-0">
+                            <i class="bi bi-person me-2 text-primary"></i>
+                            @item.ProjectManager
                         </li>
                     }
                 </ul>
