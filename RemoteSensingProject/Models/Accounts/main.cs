@@ -179,6 +179,8 @@ namespace RemoteSensingProject.Models.Accounts
 		}
 		public class UpdateCommitted
 		{
+			public int HeadId { get; set; }
+			public int ProjectId { get; set; }
 			public int Id { get; set; }
 			public string Title { get; set; }
 			public decimal ExpenseCommitted { get; set; }

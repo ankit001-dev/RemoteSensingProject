@@ -392,6 +392,18 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string Remarks { get; set; }
         public string CreatedAt { get; set; }
     }
+    public class ProjectStaffProgressReport
+    {
+        public string ProjectName { get; set; }
+        public string ProjectStaffName { get; set; }
+        public int ProjectId { get; set; }
+        public int ProjectStaffId { get; set; }
+        public int Id { get; set; }
+        public string MonthAim { get; set; }
+        public string MonthAchievement { get; set; }
+        public string GradualAchievement { get; set; }
+        public DateTime Date { get; set; }
+    }
     public class FeedbackModel
     {
         public string Title { get; set; }

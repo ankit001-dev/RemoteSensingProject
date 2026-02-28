@@ -213,6 +213,32 @@ public class CommonController : ApiController
 		});
 
     }
+    [RoleAuthorize("admin,technicalShell")]
+    [HttpGet]
+    [Route("api/adminProjectList")]
+    public IHttpActionResult getProjectList(int? page, int? limit, string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null)
+    {
+        try
+        {
+            string[] selectProperties = new string[23]
+            {
+                "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
+                "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
+                "ProjectDepartment", "ContactPerson", "Address"
+            };
+            List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(userId: projectManagerFilter, limit, page, filterBy: (projectManagerFilter > 0 ? "ProjectManager" : ""), searchTerm: searchTerm, statusFilter: statusFilter);
+            List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
+            if (data.Count > 0)
+            {
+                return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+            }
+            return CommonHelper.NoData((ApiController)(object)this);
+        }
+        catch (Exception ex)
+        {
+            return CommonHelper.Error((ApiController)(object)this, ex.Message);
+        }
+    }
     #endregion
 
     #region Manage Meetings
@@ -745,7 +771,7 @@ public class CommonController : ApiController
                 "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
                 "ProjectDepartment", "ContactPerson", "Address"
             };
-            var data = _managerservice.All_Project_List(userId:projectManagerFilter, limit, page, filterBy:filterType, searchTerm:searchTerm, statusFilter:statusFilter);
+            var data = _managerservice.All_Project_List(userId:projectManagerFilter, limit, page, projectTypeFilter:filterType, searchTerm:searchTerm, statusFilter:statusFilter);
             List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
             if (data.Count > 0)
             {
@@ -775,17 +801,257 @@ public class CommonController : ApiController
     }
     #endregion
 
-    #region Progress Report add
+ //   #region Progress Report add
+	//[HttpPost]
+	//[System.Web.Mvc.AllowAnonymous]
+	//[Route("api/Add_Update_InternalProgress_Report")]
+ //   public IHttpActionResult AddInternalProgressReport(InternalProject_ProgressModel data)
+	//{
+	//	string message = string.Empty;	
+ //       bool result = _managerservice.AddOrUpdateMonthlyInternalProgressReport(data,out message);
+ //       return Ok(result);
+	//}
+	//#endregion
+
+	#region Manage Budget Head
+	[RoleAuthorize("admin,employee")]
+	[Route("api/add-budgethead")]
 	[HttpPost]
-	[System.Web.Mvc.AllowAnonymous]
-	[Route("api/Add_Update_InternalProgress_Report")]
-    public IHttpActionResult AddInternalProgressReport(InternalProject_ProgressModel data)
+	public IHttpActionResult AddBudgetHead(CommonResponse cr)
 	{
-		string message = string.Empty;	
-        bool result = _managerservice.AddOrUpdateMonthlyInternalProgressReport(data,out message);
-        return Ok(result);
+		try
+		{
+			string message = string.Empty;
+            if (string.IsNullOrEmpty(cr.name))
+			{
+				return Ok(new
+				{
+					status = false,
+					message = "Budget Head Name Required"
+				});
+			}
+			bool res = _adminServices.InsertBudgetHead(cr,out message);
+			return Ok(new
+			{
+				status = res,
+				message = res ? "Head added successfully" : message
+			});
+		}
+		catch(Exception ex)
+		{
+			return BadRequest(new
+			{
+				status = false,
+				message = ex.Message
+			});
+		}
 	}
+    [RoleAuthorize("admin,employee")]
+	[Route("api/budgetheadlist")]
+	[HttpGet]
+	public IHttpActionResult BudgetHeadList()
+	{
+		try
+		{
+			var data = _adminServices.GetBudgetHeads();
+			return Ok(new
+			{
+				status = data.Any(),
+				data = data,
+				message = data.Any() ? "Data found" : "Data not found"
+			});
+        }
+		catch (Exception ex)
+		{
+			return BadRequest(new
+			{
+				status = false,
+				message = ex.Message
+			});
+        }
+
+    }
     #endregion
+
+    #region Manage Project Scheme
+    [RoleAuthorize("admin")]
+    [Route("api/add-projectscheme")]
+    [HttpPost]
+    public IHttpActionResult AddProjectScheme(CommonResponse cr)
+    {
+        try
+        {
+            string message = string.Empty;
+            if (string.IsNullOrEmpty(cr.name))
+            {
+                return Ok(new
+                {
+                    status = false,
+                    message = "Project Scheme Name Required"
+                });
+            }
+            bool res = _adminServices.InsertBudgetHead(cr, out message);
+            return Ok(new
+            {
+                status = res,
+                message = res ? "Project Scheme added successfully" : message
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                message = ex.Message
+            });
+        }
+    }
+    [RoleAuthorize("admin")]
+    [Route("api/projectscheme-list")]
+    [HttpGet]
+    public IHttpActionResult ProjectSchemeList()
+    {
+        try
+        {
+            var data = _adminServices.GetProjectSchemes();
+            return Ok(new
+            {
+                status = data.Any(),
+                data = data,
+                message = data.Any() ? "Data found" : "Data not found"
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                message = ex.Message
+            });
+        }
+
+    }
+    #endregion
+
+    #region Manage Progress Report
+    [HttpPost]
+    [Route("api/add-progress-report-int")]
+    public IHttpActionResult AddInternalProgressReport(InternalProject_ProgressModel ip)
+    {
+        try
+        {
+            List<string> errors = new List<string>();
+            if (ip.ProjectId <= 0)
+            {
+                errors.Add("Project ID is required.");
+            }
+            if (errors.Count > 0)
+            {
+                return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
+            }
+            string message = null;
+            bool res = _managerservice.AddOrUpdateMonthlyInternalProgressReport(ip, out message);
+            return Ok(new
+            {
+                status = res,
+                StatusCode = (res ? 200 : 500),
+                message = (res ? "Progress report added successfully!" : "Some issue occured!")
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+    [HttpPost]
+    [Route("api/add-progress-report-ext")]
+    public IHttpActionResult AddExternalProgressReport(ExternalProject_ProgressModel ep)
+    {
+        try
+        {
+            List<string> errors = new List<string>();
+            if (ep.ProjectId <= 0)
+            {
+                errors.Add("Project ID is required.");
+            }
+            if (errors.Count > 0)
+            {
+                return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
+            }
+            string message = null;
+            bool res = _managerservice.AddOrUpdateMonthlyExternalProgressReport(ep, out message);
+            return Ok(new
+            {
+                status = res,
+                StatusCode = (res ? 200 : 500),
+                message = (res ? "Progress report added successfully!" : "Some issue occured!")
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+    [HttpGet]
+    [Route("api/get-progress-report-int-byid")]
+    public IHttpActionResult GetInternalProgressReportById(int id)
+    {
+        try
+        {
+            var data = _managerservice.GetMonthlyProjectReport(projectid: id);
+            return Ok(new
+            {
+                status = (data != null),
+                message = ((data != null) ? "Data found!" : "Data not found!"),
+                data = data
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+    [HttpGet]
+    [Route("api/get-progress-report-ext-byid")]
+    public IHttpActionResult GetExternalProgressReportById(int id)
+    {
+        try
+        {
+            var data = _managerservice.GetMonthlyExternalProjectReport(projectid: id);
+            return Ok(new
+            {
+                status = (data != null),
+                message = ((data != null) ? "Data found!" : "Data not found!"),
+                data = data
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+    #endregion
+
     private IHttpActionResult BadRequest(object value)
 	{
 		return Content<object>(HttpStatusCode.BadRequest, value);

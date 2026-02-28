@@ -1,7 +1,10 @@
+using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Newtonsoft.Json;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.SubOrdinate;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -22,11 +25,13 @@ namespace RemoteSensingProject.ApiServices
         private readonly AdminServices _adminServices;
 
         private readonly ManagerService _managerService;
+        private readonly SubOrinateService _subordinateServices;
 
         public ProjectManagerController()
         {
             _adminServices = new AdminServices();
             _managerService = new ManagerService();
+            _subordinateServices = new SubOrinateService();
         }
 
         [System.Web.Mvc.AllowAnonymous]
@@ -1277,6 +1282,29 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [HttpGet]
+        [Route("api/get-outsourcetasklist")]
+        public IHttpActionResult GetOutSourceTask(int outsourceid)
+        {
+            try
+            {
+                var data = _subordinateServices.getOutSourceTask(outsourceid);
+                return Ok(new
+                {
+                    status = (data.Count > 0),
+                    message = ((data.Count > 0) ? "data recived" : "data not found"),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
 
         [HttpGet]
         [Route("api/deallocate-outsourece")]
@@ -1302,29 +1330,18 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        #region Manage Progress Report
-        [HttpPost]
-        [Route("api/add-progress-report-int")]
-        public IHttpActionResult AddInternalProgressReport(InternalProject_ProgressModel ip)
+        [HttpGet]
+        [Route("api/get-raiseproblem-byid")]
+        public IHttpActionResult GetRaiseProblemById(int id,int userid)
         {
             try
             {
-                List<string> errors = new List<string>();
-                if (ip.ProjectId <=0)
-                {
-                    errors.Add("Project ID is required.");
-                }
-                if (errors.Count > 0)
-                {
-                    return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
-                }
-                string message = null;
-                bool res = _managerService.AddOrUpdateMonthlyInternalProgressReport(ip,out message);
+                var data = _adminServices.getProblemList(null,null,id,userid);
                 return Ok(new
                 {
-                    status = res,
-                    StatusCode = (res ? 200 : 500),
-                    message = (res ? "Progress report added successfully!" : "Some issue occured!")
+                    status = (data.Count > 0),
+                    message = ((data.Count > 0) ? "data recived" : "data not found"),
+                    data = data
                 });
             }
             catch (Exception ex)
@@ -1332,38 +1349,137 @@ namespace RemoteSensingProject.ApiServices
                 return BadRequest(new
                 {
                     status = false,
-                    StatusCode = 500,
                     message = ex.Message
                 });
             }
         }
-        [HttpPost]
-        [Route("api/add-progress-report-ext")]
-        public IHttpActionResult AddExternalProgressReport(ExternalProject_ProgressModel ep)
+        [HttpGet]
+        [Route("api/deleteraiseproblem")]
+        public IHttpActionResult GetOutSourceTask(int id,int userid)
         {
             try
             {
-                List<string> errors = new List<string>();
-                if (ep.ProjectId <= 0)
-                {
-                    errors.Add("Project ID is required.");
-                }
-                if (errors.Count > 0)
-                {
-                    return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
-                }
-                string message = null;
-                bool res = _managerService.AddOrUpdateMonthlyExternalProgressReport(ep, out message);
+                bool res = _managerService.deleteRaisedProblem(id,userid);
                 return Ok(new
                 {
                     status = res,
-                    StatusCode = (res ? 200 : 500),
-                    message = (res ? "Progress report added successfully!" : "Some issue occured!")
+                    StatusCode = res?200:400,
+                    message = res?"Delete Successfully":"Something went wrong"
                 });
             }
             catch (Exception ex)
             {
                 return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        #region Add Tour Propoal
+
+        // Add TourProposal
+        [HttpPost]
+        [Route("api/submitTourProposal")]
+        public IHttpActionResult toursubmit()
+        {
+            try
+            {
+                HttpRequest request = HttpContext.Current.Request;
+                NameValueCollection form = request.Form;
+                List<string> errors = new List<string>();
+                if (string.IsNullOrWhiteSpace(form["projectId"]) || !int.TryParse(form["projectId"], out var _))
+                {
+                    errors.Add("Valid Project ID is required.");
+                }
+                string dateOfDeptStr = form["dateOfDept"];
+                if (string.IsNullOrWhiteSpace(dateOfDeptStr) || !DateTime.TryParse(dateOfDeptStr, out var _))
+                {
+                    errors.Add("Valid Date of Departure is required.");
+                }
+                string place = form["place"];
+                if (string.IsNullOrWhiteSpace(place))
+                {
+                    errors.Add("Place is required.");
+                }
+                string periodFromStr = form["periodFrom"];
+                if (string.IsNullOrWhiteSpace(periodFromStr) || !DateTime.TryParse(periodFromStr, out var _))
+                {
+                    errors.Add("Valid Period From date is required.");
+                }
+                string periodToStr = form["periodTo"];
+                if (string.IsNullOrWhiteSpace(periodToStr) || !DateTime.TryParse(periodToStr, out var _))
+                {
+                    errors.Add("Valid Period To date is required.");
+                }
+                string returnDateStr = form["returnDate"];
+                if (string.IsNullOrWhiteSpace(returnDateStr) || !DateTime.TryParse(returnDateStr, out var _))
+                {
+                    errors.Add("Valid Return Date is required.");
+                }
+                string purpose = form["purpose"];
+                if (string.IsNullOrWhiteSpace(purpose))
+                {
+                    errors.Add("Purpose is required.");
+                }
+                string proposalType = form["proposalType"];
+                if (string.IsNullOrWhiteSpace(proposalType) ||
+                    (proposalType != "self" && proposalType != "projectstaff"))
+                {
+                    errors.Add("Proposal Type must be either 'self' or 'projectstaff'.");
+                }
+                string outsourceStr = form["employees"];
+                List<int> outsourceList = new List<int>();
+
+                if (string.IsNullOrWhiteSpace(outsourceStr))
+                {
+                    errors.Add("Outsource array is required.");
+                }
+                else
+                {
+                    try
+                    {
+                        outsourceList = JsonConvert.DeserializeObject<List<int>>(outsourceStr);
+
+                        if (outsourceList == null || outsourceList.Count == 0)
+                        {
+                            errors.Add("Outsource must contain at least one integer value.");
+                        }
+                    }
+                    catch
+                    {
+                        errors.Add("Outsource must be a valid integer array like [1,2,5,4].");
+                    }
+                }
+                if (errors.Count > 0)
+                {
+                    return Error((ApiController)(object)this, string.Join(", ", errors));
+                }
+                tourProposal formdata = new tourProposal
+                {
+                    projectId = Convert.ToInt32(request.Form.Get("projectId")),
+                    dateOfDept = Convert.ToDateTime(request.Form.Get("dateOfDept")),
+                    place = request.Form.Get("place"),
+                    periodFrom = Convert.ToDateTime(request.Form.Get("periodFrom")),
+                    periodTo = Convert.ToDateTime(request.Form.Get("periodTo")),
+                    returnDate = Convert.ToDateTime(request.Form.Get("returnDate")),
+                    purpose = request.Form.Get("purpose"),
+                    proposalType = proposalType,
+                    outsource = outsourceList,
+                    id = !string.IsNullOrEmpty(request.Form.Get("id")) ? Convert.ToInt32(request.Form.Get("id")) : 0
+                };
+                bool res = _managerService.insertTour(formdata);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = (res ? 200 : 500),
+                    message = res ? (formdata.id > 0 ? "Updated Successfully" : "Added successfully!") : "Error Occured"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Ok(new
                 {
                     status = false,
                     StatusCode = 500,

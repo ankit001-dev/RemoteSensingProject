@@ -1,4 +1,6 @@
-﻿using RemoteSensingProject.Models.ProjectManager;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Linq;
 using System.Web.Mvc;
@@ -9,8 +11,10 @@ namespace RemoteSensingProject.Controllers
     public class DivisionHeadController : Controller
     {
         private readonly ManagerService _managerServices;
+        private readonly AdminServices _adminServices;
         public DivisionHeadController()
         {
+            _adminServices = new AdminServices();
             _managerServices = new ManagerService();
         }
         public ActionResult DivisionHead(string searchTerm)
@@ -95,21 +99,70 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
+        #region Final Submit
+        [HttpGet]
+        public ActionResult InternalReportFinalSubmit()
+        {
+            try
+            {
+                int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+                bool res = _managerServices.FinalSubmitInternalReportDivision(userid);
+                return Json(new
+                {
+                    status = res,
+                    message = res ? "Submitted Successfully" : "Something went wrong"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public ActionResult ExternalReportFinalSubmit()
+        {
+            try
+            {
+                int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+                bool res = _managerServices.FinalSubmitExternalReportDivision(userid);
+                return Json(new
+                {
+                    status = res,
+                    message = res ? "Submitted Successfully" : "Something went wrong"
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        #endregion
+
         #region Progress Report
-        public ActionResult InternalProject_ProgressReportDivision()
+        public ActionResult InternalProject_ProgressReportDivision(int? year = null,int? month = null,int? projectManagerId=null)
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.divisionId), filterBy: "DivisionHead",projectTypeFilter:"Internal", searchTerm: null, statusFilter: null);
-            ViewData["reportdata"] = _managerServices.GetMonthlyProjectReport(divisionid:userData.divisionId);
+            ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReport(divisionid:userData.divisionId,year:year,month:month,projectmanager:projectManagerId,filterby: "divisionhead");
+            ViewData["projectmanagerlist"] = _adminServices.BindEmployee().Where(n => n.EmployeeRole != null && n.EmployeeRole.Contains("projectManager")).ToList();
             ViewBag.divisionId = Convert.ToInt32(userData.divisionId);
             return View();
         }
-        public ActionResult ExternalProject_ProgressReportDivision()
+        public ActionResult ExternalProject_ProgressReportDivision(int? year = null, int? month = null, int? projectManagerId = null)
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.divisionId), filterBy: "DivisionHead",projectTypeFilter:"External", searchTerm: null, statusFilter: null);
-            ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(divisionid: userData.divisionId);
+            ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(divisionid: userData.divisionId, year: year, month: month, projectmanager: projectManagerId, filterby: "divisionhead");
             ViewBag.divisionId = Convert.ToInt32(userData.divisionId);
+            ViewData["projectmanagerlist"] = _adminServices.BindEmployee().Where(n => n.EmployeeRole != null && n.EmployeeRole.Contains("projectManager")).ToList();
             return View();
         }
 

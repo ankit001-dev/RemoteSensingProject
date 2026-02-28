@@ -1,29 +1,29 @@
 ﻿
 @{
-    ViewBag.Title = "Budget_Head";
-    Layout = "~/Views/Shared/_AccountLayout.cshtml";
-    var data = ViewData["headlist"] as List<RemoteSensingProject.Models.Admin.main.BudgetHeadModel>;
+    ViewBag.Title = "ProjectScheme";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    var data = ViewData["schemelist"] as List<RemoteSensingProject.Models.Admin.main.ProjectSchemeModel>;
 }
 
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">/Budget Head</li>
+        <li class="breadcrumb-item active" aria-current="page">/Project Scheme</li>
     </ol>
-    <button class="btn btn-primary" id="addEmployeeBtn"><i class="link-icon" data-feather="plus"></i> Add Budget Head</button>
+    <button class="btn btn-primary" id="addEmployeeBtn"><i class="link-icon" data-feather="plus"></i> Add Project Scheme</button>
 </nav>
 <div class="col-md-12 grid-margin stretch-card">
     <div class="card">
         <div class="card-title">
-            Budget Head List
+            Project Scheme List
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-striped">
-                    <thead style="background-color:blue !important;">
+                    <thead>
                         <tr>
                             <th>Sr. No.</th>
-                            <th>Budget Head</th>
+                            <th>Project Scheme</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -31,13 +31,13 @@
                         @if (data != null)
                         {
                             int i = 1;
-                            foreach (var item in data as List<RemoteSensingProject.Models.Admin.main.BudgetHeadModel>)
+                            foreach (var item in data as List<RemoteSensingProject.Models.Admin.main.ProjectSchemeModel>)
                             {
                                 <tr>
                                     <td>@i</td>
-                                    <td>@item.BudgetHead</td>
+                                    <td>@item.SchemeName</td>
                                     <td>
-                                        <a href="#" data-title="Edit" class="editDesgination" data-head="@item.BudgetHead" data-id="@item.Id"> <i class="fa-solid fa-pen"></i></a> &nbsp; &nbsp;
+                                        <a href="#" data-title="Edit" class="editDesgination" data-head="@item.SchemeName" data-id="@item.Id"> <i class="fa-solid fa-pen"></i></a> &nbsp; &nbsp;
                                         <a href="#" data-title="Delete" class="deleteDesgination" data-id="@item.Id"> <i class="fa-solid fa-trash text-danger"></i></a>
                                     </td>
                                 </tr>
@@ -57,7 +57,7 @@
             <div class="modal-header">
                 <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
 
-                <h5 class="modal-title" id="exampleModalLabel">Add <span id="modalTitle">Budget Head</span></h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add <span id="modalTitle">Project Scheme</span></h5>
 
             </div>
             <div class="modal-body">
@@ -66,8 +66,8 @@
                         <label>
                             Name :
                         </label>
-                        <input type="text" id="budgethead" class="form-control" name="name" autocomplete="off" />
-                        <input type="hidden" name="id" id="budgetid" />
+                        <input type="text" id="projectScheme" class="form-control" name="name" autocomplete="off" placeholder="Enter project scheme" />
+                        <input type="hidden" name="id" id="schemeid" />
                     </div>
                     <div class="text-center pt-3">
                         <button type="submit" class="btn btn-primary py-1"><i class="link-icon" data-feather="plus"></i> Submit</button>
@@ -95,9 +95,10 @@
         $("#categoryForms").on("submit", function (e) {
 
             e.preventDefault();
+            if ($(this).valid()) {
                 let data = $(this).serialize();
                 $.ajax({
-                    url: "/accounts/InsertBudgetHead",
+                    url: "/admin/InsertProjectSceheme",
                     type: "post",
                     data: data,
                     success: function (res) {
@@ -129,6 +130,7 @@
                         })
                     }
                 })
+            }
         })
 
         $(document).on("click", ".deleteDesgination", function () {
@@ -144,14 +146,14 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/accounts/RemoveBudgetHead",
+                        url: "/admin/RemoveProjectScheme",
                         type: "delete",
                         data: { id: dataId },
                         success: function (res) {
                             if (res.status) {
                                 Swal.fire({
                                     title: "Successfully !",
-                                    text: "Selected head has been deleted successfuly !",
+                                    text: "Selected scheme has been deleted successfuly !",
                                     icon: "success",
                                     didClose: () => {
                                         location.reload();
@@ -184,8 +186,8 @@
         $(".editDesgination").click(function () {
             const name = $(this).data("head");
             const id = $(this).data("id");
-            $('#budgethead').val(name);
-            $('#budgetid').val(id);
+            $('#projectScheme').val(name);
+            $('#schemeid').val(id);
             $("#addEmployeeCategory").modal("show");
         })
 

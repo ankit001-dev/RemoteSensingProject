@@ -773,9 +773,9 @@ namespace RemoteSensingProject.Models.ProjectManager
                             v_monthlystatus := @v_monthlystatus,
                             v_squencestatus := @v_squencestatus,
                             v_sequencestatusperc := @v_sequencestatusperc,
-                            NULL::text,
-NULL::text,
                             v_statebeneficiary := @v_statebeneficiary,
+                            v_totaltarget := NULL,
+                            v_previousfinancialyear := NULL,
                             v_remark := @v_remark,
                             v_createdby := @v_createdby,
                             v_createruserid := @v_createruserid,
@@ -902,6 +902,8 @@ NULL::text,
                             v_Amount := @v_Amount,
                             v_statebeneficiary := @v_statebeneficiary,
                             v_remark := @v_remark,
+                            v_createdby := @v_createdby,
+                            v_createrid := @v_createrid,
                             v_status := @v_status
                         )", conn))
                     {
@@ -919,6 +921,8 @@ NULL::text,
                         cmd.Parameters.AddWithValue("v_Statebeneficiary", pm.Statebeneficiary ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("v_Remark", pm.Remark ?? (object)DBNull.Value);
                         cmd.Parameters.AddWithValue("v_status", true);
+                        cmd.Parameters.AddWithValue("v_createdby", pm.CreaterRole);
+                        cmd.Parameters.AddWithValue("v_createrid", Convert.ToInt32(pm.CreaterId));
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -935,6 +939,132 @@ NULL::text,
                 throw ex;
             }
         }
+        #region Final Submit of Project report
+        public bool FinalSubmitInternalReport(int userid)
+        {
+            try
+            {
+                using (NpgsqlConnection conn = con)
+                {
+                    conn.Open();
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(@"
+                        CALL public.sp_manageprojectreporttechnical(
+                            v_action => @v_action,v_createrid=>@v_createrid
+                        )", conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("v_action", "finalsubmitint");
+                        cmd.Parameters.AddWithValue("v_createrid", userid);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (NpgsqlException npgsqlEx)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool FinalSubmitExternalReport(int userid)
+        {
+            try
+            {
+                using (NpgsqlConnection conn = con)
+                {
+                    conn.Open();
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(@"
+                        CALL public.sp_manageprojectreporttechnical(
+                            v_action => @v_action,v_createrid=>@v_createrid
+                        )", conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("v_action", "finalsubmitext");
+                        cmd.Parameters.AddWithValue("v_createrid", userid);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (NpgsqlException npgsqlEx)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool FinalSubmitInternalReportDivision(int userid)
+        {
+            try
+            {
+                using (NpgsqlConnection conn = con)
+                {
+                    conn.Open();
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(@"
+                        CALL public.sp_manageprojectreporttechnical(
+                            v_action => @v_action,v_createrid=>@v_createrid
+                        )", conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("v_action", "finalsubmitintdiv");
+                        cmd.Parameters.AddWithValue("v_createrid", userid);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (NpgsqlException npgsqlEx)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public bool FinalSubmitExternalReportDivision(int userid)
+        {
+            try
+            {
+                using (NpgsqlConnection conn = con)
+                {
+                    conn.Open();
+
+                    using (NpgsqlCommand cmd = new NpgsqlCommand(@"
+                        CALL public.sp_manageprojectreporttechnical(
+                            v_action => @v_action,v_createrid=>@v_createrid
+                        )", conn))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.AddWithValue("v_action", "finalsubmitextdiv");
+                        cmd.Parameters.AddWithValue("v_createrid", userid);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (NpgsqlException npgsqlEx)
+            {
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
 
         public List<InternalProject_ProgressModel>  GetMonthlyProjectReport(int? id = null,int? projectid=null, int? month = null, int? year = null,int? divisionid = null, int? projectmanager = null)
         {
@@ -982,7 +1112,8 @@ NULL::text,
                                             Statebeneficiary = res["statebeneficiary"].ToString(),
                                             Remark = res["remark"].ToString(),
                                             CreaterRole = res["createdby"].ToString(),
-                                            CreaterId = res["createruserid"].ToString()
+                                            CreaterId = res["createruserid"].ToString(),
+                                            DivisionName= res["divisionname"].ToString()
                                         });
                                     }
                                 }
@@ -1030,7 +1161,7 @@ NULL::text,
                 }
             }
         }
-        public List<TechnicalInternalMonthlyReport>  GetMonthlyTechnicalInternalProjectReport(int? id = null,int? projectid=null, int? month = null, int? year = null,int? divisionid = null, int? projectmanager = null)
+        public List<TechnicalInternalMonthlyReport>  GetMonthlyTechnicalInternalProjectReport(int? id = null,int? projectid=null, int? month = null, int? year = null,int? divisionid = null, int? projectmanager = null,string filterby=null)
         {
             try
             {
@@ -1050,6 +1181,7 @@ NULL::text,
                         cmd.Parameters.AddWithValue("@v_divisionid", divisionid.HasValue ? ((object)divisionid.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_year", year.HasValue ? ((object)year.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_month", month.HasValue ? ((object)month.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_filterby", !string.IsNullOrEmpty(filterby) ? ((object)filterby) : DBNull.Value);
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
                         try
@@ -1123,7 +1255,7 @@ NULL::text,
         }
 
 
-        public List<ExternalProject_ProgressModel> GetMonthlyExternalProjectReport(int? id = null, int? projectid = null, int? month = null, int? year = null,int? divisionid = null,int?projectmanager = null)
+        public List<ExternalProject_ProgressModel> GetMonthlyExternalProjectReport(int? id = null, int? projectid = null, int? month = null, int? year = null,int? divisionid = null,int?projectmanager = null,string filterby = null)
         {
             try
             {
@@ -1143,6 +1275,7 @@ NULL::text,
                         cmd.Parameters.AddWithValue("@v_divisionid", divisionid.HasValue ? ((object)divisionid.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_year", year.HasValue ? ((object)year.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_month", month.HasValue ? ((object)month.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_filterby", !string.IsNullOrEmpty(filterby) ? ((object)filterby) : DBNull.Value);
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
                         try
@@ -1171,7 +1304,8 @@ NULL::text,
                                             Statebeneficiary = res["statebeneficiary"].ToString(),
                                             Remark = res["remark"].ToString(),
                                             CreaterRole = res["createdby"].ToString(),
-                                            CreaterId = res["createruserid"].ToString()
+                                            CreaterId = res["createruserid"].ToString(),
+                                            DivisionName = res["divisionname"].ToString()
                                         });
                                     }
                                 }
@@ -1873,7 +2007,7 @@ NULL::text,
             }
         }
 
-        public List<OuterSource> selectAllOutSOurceList(int? id, int? limit = null, int? page = null, string searchTerm = null)
+        public List<OuterSource> selectAllOutSOurceList(int? id, int? limit = null, int? page = null, string searchTerm = null,int? divisionFilter = null)
         {
             try
             {
@@ -1891,6 +2025,7 @@ NULL::text,
                         cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+                        cmd.Parameters.AddWithValue("@v_divisionfilter", divisionFilter.HasValue ? ((object)divisionFilter.Value) : 0);
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
                         try
@@ -1905,13 +2040,13 @@ NULL::text,
                                     {
                                         OuterSource data = new OuterSource
                                         {
-                                            Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
-                                            EmpName = ((DbDataReader)(object)rd)["emp_name"].ToString(),
-                                            mobileNo = Convert.ToInt64(((DbDataReader)(object)rd)["emp_mobile"]),
-                                            email = ((DbDataReader)(object)rd)["emp_email"].ToString(),
-                                            gender = ((DbDataReader)(object)rd)["emp_gender"].ToString(),
-                                            designationname = ((DbDataReader)(object)rd)["designationname"].ToString(),
-                                            designationid = Convert.ToInt32(rd["designationid"])
+                                            Id = Convert.ToInt32(rd["id"]),
+                                            EmpName = rd["emp_name"] == DBNull.Value ? null : rd["emp_name"].ToString(),
+                                            mobileNo = rd["emp_mobile"] == DBNull.Value ? 0 : Convert.ToInt64(rd["emp_mobile"]),
+                                            email = rd["emp_email"] == DBNull.Value ? null : rd["emp_email"].ToString(),
+                                            gender = rd["emp_gender"] == DBNull.Value ? null : rd["emp_gender"].ToString(),
+                                            designationname = rd["designationname"] == DBNull.Value ? null : rd["designationname"].ToString(),
+                                            designationid = rd["designationid"] == DBNull.Value ? 0 : Convert.ToInt32(rd["designationid"])
                                         };
                                         if (firstRow)
                                         {

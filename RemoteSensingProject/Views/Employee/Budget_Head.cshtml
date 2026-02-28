@@ -1,9 +1,10 @@
 ﻿
 @{
     ViewBag.Title = "Budget_Head";
-    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["headlist"] as List<RemoteSensingProject.Models.Admin.main.BudgetHeadModel>;
 }
+
 <nav class="page-breadcrumb d-flex align-items-center justify-content-between">
     <ol class="breadcrumb mb-0">
         <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
@@ -19,7 +20,7 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-striped">
-                    <thead>
+                    <thead style="background-color:blue !important;">
                         <tr>
                             <th>Sr. No.</th>
                             <th>Budget Head</th>
@@ -49,6 +50,8 @@
         </div>
     </div>
 </div>
+
+<!--Add Budget Head Modal-->
 <div class="modal fade" id="addEmployeeCategory" tabindex="-1" aria-labelledby="addEmployeeCategory" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-sm modal-dialog-centered">
         <div class="modal-content">
@@ -77,9 +80,11 @@
     </div>
 </div>
 
+
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script>
     $(document).ready(function () {
+
         $(".table").DataTable({
             columnDefs: [
                 { width: "100px", targets: 0 }
@@ -94,42 +99,40 @@
         $("#categoryForms").on("submit", function (e) {
 
             e.preventDefault();
-            if ($(this).valid()) {
-                let data = $(this).serialize();
-                $.ajax({
-                    url: "/admin/InsertBudgetHead",
-                    type: "post",
-                    data: data,
-                    success: function (res) {
-                        if (res.status) {
-                            Swal.fire({
-                                title: "Successfully !",
-                                text: res.message,
-                                icon: "success",
-                                didClose: () => {
-                                    location.reload();
-                                }
-                            })
-                        } else {
-                            Swal.fire({
-                                title: "Sorry !",
-                                text: res.message,
-                                icon: "warning"
-                            })
-                        }
-                    },
-                    error: function () {
+            let data = $(this).serialize();
+            $.ajax({
+                url: "/employee/InsertBudgetHead",
+                type: "post",
+                data: data,
+                success: function (res) {
+                    if (res.status) {
                         Swal.fire({
-                            title: "Server issue !",
-                            text: "Server is busy ! Please try after sometime.",
-                            icon: "error",
+                            title: "Successfully !",
+                            text: res.message,
+                            icon: "success",
                             didClose: () => {
                                 location.reload();
                             }
                         })
+                    } else {
+                        Swal.fire({
+                            title: "Sorry !",
+                            text: res.message,
+                            icon: "warning"
+                        })
                     }
-                })
-            }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Server issue !",
+                        text: "Server is busy ! Please try after sometime.",
+                        icon: "error",
+                        didClose: () => {
+                            location.reload();
+                        }
+                    })
+                }
+            })
         })
 
         $(document).on("click", ".deleteDesgination", function () {
@@ -145,7 +148,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: "/admin/RemoveBudgetHead",
+                        url: "/employee/RemoveBudgetHead",
                         type: "delete",
                         data: { id: dataId },
                         success: function (res) {
@@ -216,4 +219,5 @@
         });
     })
 </script>
+
 

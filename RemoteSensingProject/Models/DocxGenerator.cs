@@ -329,7 +329,7 @@ namespace RemoteSensingProject.Models
             }
         }
 
-        public static byte[] CreateExternalProjectPhysicalAchievementReport(List<ExternalProject_ProgressModel> data, string financialYear,string divisionName)
+        public static byte[] CreateExternalProjectPhysicalAchievementReport(List<ExternalProject_ProgressModel> data, string financialYear,string divisionName,string year)
         {
             using (var ms = new MemoryStream())
             {
@@ -363,11 +363,11 @@ namespace RemoteSensingProject.Models
                     // HEADINGS (Compact)
                     // ==========================
                     body.Append(CreateReportHeading(
-                        "प्रभागीय मासिक प्रगति आख्या: माह .............202..."
+                        $"प्रभागीय मासिक प्रगति आख्या: माह {financialYear} {year}"
                     ));
 
                     body.Append(CreateReportHeading(
-                        "प्रभाग का नाम – .................................."
+                        $"प्रभाग का नाम – {divisionName}"
                     ));
 
                     body.Append(CreateReportHeading(
@@ -524,7 +524,7 @@ namespace RemoteSensingProject.Models
                     ));
 
                     body.Append(CreateReportHeadingAlignment(
-                        "माह...............202........."
+                        $"माह : {financialYear} {divisionName} "
                     ));
 
                     body.Append(new Paragraph(new Run(new Text(""))));

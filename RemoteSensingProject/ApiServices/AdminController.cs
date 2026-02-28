@@ -167,6 +167,7 @@ namespace RemoteSensingProject.ApiServices
 					Image_url = request.Form.Get("Image_url")
 				};
 				string[] empRole = request.Form.GetValues("EmployeeRole") ?? Array.Empty<string>();
+				empData.EmployeeRole = empRole;
 				HttpPostedFile file = request.Files["EmployeeImages"];
 				if (file != null && file.FileName != "")
 				{
@@ -474,32 +475,6 @@ namespace RemoteSensingProject.ApiServices
 					StatusCode = 500,
 					message = ex.Message
 				});
-			}
-		}
-
-		[HttpGet]
-		[Route("api/adminProjectList")]
-		public IHttpActionResult getProjectList(int? page, int? limit, string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null)
-		{
-			try
-			{
-				string[] selectProperties = new string[23]
-				{
-				"Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
-				"ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
-				"ProjectDepartment", "ContactPerson", "Address"
-				};
-				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(userId:projectManagerFilter, limit, page, filterBy: (projectManagerFilter > 0 ? "ProjectManager" : ""), searchTerm:searchTerm, statusFilter:statusFilter);
-				List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
-				if (data.Count > 0)
-				{
-					return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
-				}
-				return CommonHelper.NoData((ApiController)(object)this);
-			}
-			catch (Exception ex)
-			{
-				return CommonHelper.Error((ApiController)(object)this, ex.Message);
 			}
 		}
 

@@ -52,6 +52,7 @@ namespace RemoteSensingProject.Controllers
 
 		public ActionResult Expenses(int Id)
 		{
+            ViewBag.ProjectId = Id;
 			((ControllerBase)this).ViewData["ProjectStages"] = _managerServices.ProjectBudgetList(Id);
 			return View();
 		}
@@ -83,34 +84,6 @@ namespace RemoteSensingProject.Controllers
 			((dynamic)((ControllerBase)this).ViewBag).ProjectList = data;
 			return View();
 		}
-
-        #region Manage Budget Heads
-        public ActionResult Budget_Head()
-        {
-            ViewData["headlist"] = _adminServices.GetBudgetHeads();
-            return View();
-        }
-        [HttpPost]
-        public ActionResult InsertBudgetHead(RemoteSensingProject.Models.Admin.main.CommonResponse cr)
-        {
-            bool res = _adminServices.InsertBudgetHead(cr);
-            return Json((object)new
-            {
-                status = res,
-                message = (res ? (cr.id > 0 ? "Head updated successfully" : "Head inserted successfully!") : "Some issue found while processing your request !")
-            }, (JsonRequestBehavior)0);
-        }
-        [HttpDelete]
-        public ActionResult RemoveBudgetHead(int id)
-        {
-            bool res = _adminServices.DeleteBudgetHead(id);
-            return Json((object)new
-            {
-                status = res,
-                message = (res ? "Head removed successfully !" : "Some issue occred ")
-            }, (JsonRequestBehavior)0);
-        }
-        #endregion
 
         #region New Expense Changes
         [HttpPost]
@@ -213,6 +186,27 @@ namespace RemoteSensingProject.Controllers
                 {
                     status = res,
                     message = (res ? "Data updated successfully"  : "Some issue occured !")
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Server is busy !"
+                });
+            }
+        }
+        [HttpPost]
+        public ActionResult UpdateCommittedInHeads(UpdateCommitted model)
+        {
+            try
+            {
+                bool res = _accountSerivce.UpdateExpenseCommittedInHeads(model);
+                return Json((object)new
+                {
+                    status = res,
+                    message = (res ? "Data updated successfully" : "Some issue occured !")
                 });
             }
             catch (Exception ex)
