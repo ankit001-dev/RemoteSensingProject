@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using System;
 using System.Web.Mvc;
@@ -8,9 +9,11 @@ namespace RemoteSensingProject.Controllers
     public class TechnicalShellController : Controller
     {
         private readonly ManagerService _managerServices;
+        private readonly AdminServices _adminServices;
         public TechnicalShellController()
         {
             _managerServices = new ManagerService();
+            _adminServices = new AdminServices();
         }
         // GET: TechnicalShell
         #region Progress Report
@@ -19,6 +22,8 @@ namespace RemoteSensingProject.Controllers
             try
             {
                 UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
+                data.CreaterId = userObj.userId;
+                data.CreaterRole = userObj.userRole;
                 string message = string.Empty;
                 bool res = _managerServices.AddOrUpdateMonthlyInternalProgressReportTechnical(data, out message);
                 return Json((object)new
@@ -42,6 +47,7 @@ namespace RemoteSensingProject.Controllers
             try
             {
                 var data = type.Trim().Equals("editid") ? _managerServices.GetMonthlyTechnicalInternalProjectReport(id) : _managerServices.GetMonthlyTechnicalInternalProjectReport(projectid: id);
+
                 return Json((object)new
                 {
                     status = data.Count > 0 ? true : false,
@@ -57,18 +63,20 @@ namespace RemoteSensingProject.Controllers
                 }, (JsonRequestBehavior)0);
             }
         }
-        public ActionResult InternalProject_ProgressReportTechnical()
+        public ActionResult InternalProject_ProgressReportTechnical(int?year = null,int? month = null,int? division = null)
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "Internal");
-            ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReport();
+            ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReport(month:month,year:year,divisionid:division,filterby: "technicalcell");
+            ViewData["DivisionList"] = _adminServices.ListDivison();
             return View();
         }
-        public ActionResult ExternalProject_ProgressReportTechnical()
+        public ActionResult ExternalProject_ProgressReportTechnical(int? year = null, int? month = null, int? division = null)
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "External");
-            ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport();
+            ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(month:month,year:year,divisionid:division,filterby: "technicalcell");
+            ViewData["DivisionList"] = _adminServices.ListDivison();
             return View();
         }
 

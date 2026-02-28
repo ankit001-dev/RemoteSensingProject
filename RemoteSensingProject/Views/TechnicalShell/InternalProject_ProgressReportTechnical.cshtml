@@ -6,6 +6,7 @@
     var firstDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
     var lastDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
     var data = ViewData["reportdata"] as List<RemoteSensingProject.Models.Admin.main.TechnicalInternalMonthlyReport>;
+    var divisionlist = ViewData["DivisionList"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
 }
 
 <style>
@@ -26,7 +27,6 @@
         .custom-table th,
         .custom-table td {
             border: 1px solid #000;
-            text-align: center;
             vertical-align: middle;
             font-size: 14px;
         }
@@ -41,42 +41,71 @@
     }
 </style>
 
-<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
-    <div class="row align-items-end w-100">
+<nav class="page-breadcrumb mb-3">
+    <div class="container-fluid">
+        <div class="row align-items-end g-3">
 
-        <!-- Year Dropdown -->
-        <div class="col-md-3">
-            <label class="form-label">वर्ष चुनें</label>
-            <select class="form-select" id="yearFilter">
-                <option value="">सभी</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-            </select>
-        </div>
+            <!-- Year Dropdown -->
+            <div class="col-md-2 col-sm-6">
+                <label class="form-label">वर्ष चुनें</label>
+                <select class="form-select" id="yearFilter">
+                    <option value="">सभी</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
 
-        <!-- Month Dropdown -->
-        <div class="col-md-3">
-            <label class="form-label">माह चुनें</label>
-            <select class="form-select" id="monthFilter">
-                <option value="">सभी</option>
-                <option value="1">जनवरी</option>
-                <option value="2">फरवरी</option>
-                <option value="3">मार्च</option>
-                <option value="4">अप्रैल</option>
-                <option value="5">मई</option>
-                <option value="6">जून</option>
-                <option value="7">जुलाई</option>
-                <option value="8">अगस्त</option>
-                <option value="9">सितंबर</option>
-                <option value="10">अक्टूबर</option>
-                <option value="11">नवंबर</option>
-                <option value="12">दिसंबर</option>
-            </select>
+            <!-- Month Dropdown -->
+            <div class="col-md-2 col-sm-6">
+                <label class="form-label">माह चुनें</label>
+                <select class="form-select" id="monthFilter">
+                    <option value="">सभी</option>
+                    <option value="1">जनवरी</option>
+                    <option value="2">फरवरी</option>
+                    <option value="3">मार्च</option>
+                    <option value="4">अप्रैल</option>
+                    <option value="5">मई</option>
+                    <option value="6">जून</option>
+                    <option value="7">जुलाई</option>
+                    <option value="8">अगस्त</option>
+                    <option value="9">सितंबर</option>
+                    <option value="10">अक्टूबर</option>
+                    <option value="11">नवंबर</option>
+                    <option value="12">दिसंबर</option>
+                </select>
+            </div>
+
+            <!-- Division Dropdown -->
+            <div class="col-md-3 col-sm-6">
+                <label class="form-label">Division</label>
+                <select id="divisionFilter" class="form-select">
+                    <option value="" selected>Search by division</option>
+                    @if (divisionlist.Count > 0)
+                    {
+                        foreach (var item in divisionlist)
+                        {
+                            <option value="@item.id">@item.name</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="col-md-5 col-sm-6 d-flex justify-content-md-end gap-2">
+                <button class="btn btn-outline-primary text-nowrap" id="downloadDocx">
+                    <i class="link-icon" data-feather="download"></i>
+                    Export Docx
+                </button>
+
+                <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider">
+                    <i class="link-icon" data-feather="plus"></i>
+                    Add Monthly Status
+                </button>
+            </div>
+
         </div>
     </div>
-    <button class="btn btn-inverse-primary text-nowrap" id="downloadDocx"><i class="link-icon" data-feather="download"></i>Export Docx</button> &nbsp; &nbsp;
-    <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
 </nav>
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -429,11 +458,14 @@
         }
     }
 
-                $("#downloadDocx").click(function () {
+    $("#downloadDocx").click(function () {
+        const year = $('#yearFilter').val() || null;
+        const month = $('#monthFilter').val() || null;
+        const division = $('#divisionFilter').val() || null;
     $.ajax({
         url: '/api/report/CombinedInternalProject_ProgressReport',
         type: 'GET',
-        data: { month: 2, year: 2026},
+        data: { month: month, year: year, id: division },
         xhrFields: {
             responseType: 'blob'
         },
@@ -470,3 +502,76 @@
 })
 </script>
 
+<script>
+    // 🎯 Filters change events
+    $('#yearFilter').on('change', function () {
+        applyReportFilters();
+    });
+
+    $('#monthFilter').on('change', function () {
+        applyReportFilters();
+    });
+
+    $('#divisionFilter').on('change', function () {
+        applyReportFilters();
+    });
+
+    function applyReportFilters() {
+
+        let year = $('#yearFilter').val();
+        let month = $('#monthFilter').val();
+        let division = $('#divisionFilter').val();
+
+        const url = new URL(window.location.href);
+
+        // year
+        if (year) {
+            url.searchParams.set("year", year);
+        } else {
+            url.searchParams.delete("year");
+        }
+
+        // month
+        if (month) {
+            url.searchParams.set("month", month);
+        } else {
+            url.searchParams.delete("month");
+        }
+
+        // division
+        if (division) {
+            url.searchParams.set("division", division);
+        } else {
+            url.searchParams.delete("division");
+        }
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.filterTimer);
+        window.filterTimer = setTimeout(() => {
+            window.location.href = url.toString();
+        }, 400);
+    }
+
+    // 🔁 Reload ke baad filter values retain
+    $(document).ready(function () {
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const year = urlParams.get('year');
+        const month = urlParams.get('month');
+        const division = urlParams.get('division');
+
+        if (year) {
+            $('#yearFilter').val(year);
+        }
+
+        if (month) {
+            $('#monthFilter').val(month);
+        }
+
+        if (division) {
+            $('#divisionFilter').val(division);
+        }
+    });
+</script>

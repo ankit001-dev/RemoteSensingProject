@@ -71,8 +71,13 @@ namespace RemoteSensingProject.Models.Admin
 
 			public string BudgetHead { get; set; }
 		}
+		public class ProjectSchemeModel
+		{
+			public int Id { get; set; }
+			public string SchemeName { get; set; }
+        }
 
-		public class SubProblem
+        public class SubProblem
 		{
 			public bool newRequest { get; set; }
 
@@ -169,8 +174,8 @@ namespace RemoteSensingProject.Models.Admin
 			public bool completestatus { get; set; }
 
 			public int Id { get; set; }
-
-			public string letterNo { get; set; }
+			public int ProjectSchemeId { get; set; }
+            public string letterNo { get; set; }
 
 			public string devisionName { get; set; }
 
@@ -215,8 +220,9 @@ namespace RemoteSensingProject.Models.Admin
 			public bool ProjectStage { get; set; }
 
 			public bool ProjectStatus { get; set; }
+			public string projectStatusLabelColor { get; set; }
 
-			public string ProjectDepartment { get; set; }
+            public string ProjectDepartment { get; set; }
 
 			public string ContactPerson { get; set; }
 
@@ -280,6 +286,7 @@ namespace RemoteSensingProject.Models.Admin
 			public string Remark { get; set; }
 			public string CreaterId { get; set; }
 			public string CreaterRole { get; set; }
+			public string DivisionName { get; set; }
 		}
         public class ExternalProject_ProgressModel
         {
@@ -300,6 +307,7 @@ namespace RemoteSensingProject.Models.Admin
             public string PreviousFinancialYear { get; set; }
             public string Statebeneficiary { get; set; }
             public string Remark { get; set; }
+			public string DivisionName { get; set; }
         }
         public class Project_Budget
 		{
@@ -320,6 +328,7 @@ namespace RemoteSensingProject.Models.Admin
 			public string TotalAskAmount { get; set; }
 
 			public string ApproveAmount { get; set; }
+			public string CommittedAmount { get; set; }
 
 			public string budgetheadsname { get; set; }
 		}

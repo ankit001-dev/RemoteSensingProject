@@ -79,8 +79,7 @@
                                             <a class="viewtaskbtn cursor-pointer" title="View Task" data-id="@item.Id">@item.taskCount</a>
                                         </td>
                                         <td class="text-center">
-                                            <button title="Deallocate" data-id="@item.Id" class="deallocate border-0 bg-white"><i class="fa-solid fa-user-minus fs-6" style="color:rgb(2 158 157) !important"></i></button> | 
-                                            <a class="cursor-pointer monthlyReport" data-prjId="@item.Id">&nbsp; <i class="fa-regular fa-calendar text-danger"></i></a>
+                                            <button title="Deallocate" data-id="@item.Id" class="deallocate border-0 bg-white"><i class="fa-solid fa-user-minus fs-6" style="color:rgb(2 158 157) !important"></i></button> 
                                         </td>
                                     </tr>
 
@@ -136,106 +135,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="viewMonthlyReportInternalPrj" tabindex="-1" aria-labelledby="viewMonthlyReportInternalPrjLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header d-flex">
-                <h1 class="modal-title fs-5 text-success" id="viewMonthlyReportInternalPrjLabel">Monthly Report</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="formToPrintMonthlyRprt">
-                <div class="form-container">
-                    <div class="row">
-                        <div class="col-sm-6 mx-auto text-center">
-                            <span>मासिक समीक्षा: रूप पत्र-2</span>
-                            <p class="fw-bold" style="font-size: 15px;">शासन से गैर वेतन मद में प्राप्त धनराशि से संचालित योजना / कार्यक्रम की भौतिक उपलब्धियो का विवरण </p>
-                        </div>
-                    </div>
-                    <input type="hidden" id="hiddenProjectId" />
-                    <!-- Year and Month Filter -->
-                    <div class="row mb-3">
-                        <div class="col-sm-4">
-                            <label for="filterYear">Year</label>
-                            <select class="form-select" id="filterYear">
-                                @for (int i = DateTime.Now.Year; i >= 2020; i--)
-                                {
-                                    <option value="@i" @(i == DateTime.Now.Year ? "selected" : "")>@i</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-sm-4">
-                            <label for="filterMonth">Month</label>
-                            <select class="form-select" id="filterMonth">
-                                <!-- Options will be added dynamically -->
-                                @{
-                                    DateTime start = new DateTime(DateTime.Now.Year, 1, 1); // January of current year
-                                    int currentMonth = DateTime.Now.Month;
-
-                                    for (int i = 1; i <= 12; i++)
-                                    {
-                                        <option value="@start.Month" selected="@(start.Month == currentMonth ? "selected" : null)">
-                                            @start.ToString("MMMM")
-                                        </option>
-                                        ;
-
-                                        start = start.AddMonths(1);
-                                    }
-                                }
-                            </select>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <div class="form-title">
-                            भू-संसाधन प्रभाग
-                        </div>
-                        <div class="form-title">
-                            माह: @DateTime.Now.ToString("MMMM"), @DateTime.Now.Year
-                        </div>
-
-                    </div>
-
-                    <table class="table-bordered">
-                        <thead>
-                            <tr>
-                                <th rowspan="2" style="width: 5%">क्र.सं.</th>
-                                <th rowspan="2" style="width: 10%">मद / परियोजन का नाम</th>
-                                <th rowspan="2" style="width: 10%">इकाई</th>
-                                <th colspan="2" class="text-center" style="width: 30%">लक्ष्य</th>
-                                <th colspan="2" class="text-center" style="width: 30%">उपलब्धि</th>
-                                <th rowspan="2" style="width: 10%">प्रदेश सरकार के लाभाविंत होने वाले विभाग</th>
-                                <th rowspan="2" style="width: 10%">अभ्युक्ति</th>
-                            </tr>
-                            <tr>
-                                <th style="width:15%">वार्षिक</th>
-                                <th style="width:15%">आलोच्य मासांत तक</th>
-                                <th style="width:15%">आलोच्य माह में</th>
-                                <th style="width:15%">आलोच्य मासांत तक क्रमिक</th>
-                            </tr>
-                            <tr>
-                                <th>1</th>
-                                <th>2</th>
-                                <th>3</th>
-                                <th>4</th>
-                                <th>5</th>
-                                <th>6</th>
-                                <th>7</th>
-                                <th>8</th>
-                                <th>9</th>
-                            </tr>
-                        </thead>
-                        <tbody id="internalProjectTbody">
-                        </tbody>
-                    </table>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-                <input type="button" class="btn btn-primary" value="Download" id="printMonthlyRprt" />
-            </div>
-        </div>
-    </div>
-</div>
-
 
 <div class="modal fade" id="taskshowmodal" tabindex="-1" aria-labelledby="taskshowmodal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
@@ -259,31 +158,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @*@if (data != null && data.Count > 0)
-                            {
-                                int i = 1;
-                                foreach (var item in data)
-                                {
-                                    <tr>
-                                        <td>@i</td>
-                                        <td>@item.projectName</td>
-                                        <td><a class="cursor-pointer viewTaskDetail" data-description="@item.Description">@item.Title</a></td>
-                                        <td>
-                                            @if (!item.CompleteStatus)
-                                            {
-
-
-                                                <span class="badge bg-primary">Pending</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge bg-success">Completed</span>
-                                            }
-                                        </td>
-                                    </tr>
-                                    i++;
-                                }
-                            }*@
                         </tbody>
                     </table>
                 </div>
@@ -371,13 +245,9 @@
                             <tr>
                                 <td>${index++}</td>
                                 <td>${d.ProjectName}</td>
-                                <td>${d.Unit}</td>
-                                <td>${d.AnnualTarget}</td>
-                                <td>${d.TargetUptoReviewMonth}</td>
-                                <td>${d.AchievementDuringReviewMonth}</td>
-                                <td>${d.CumulativeAchievement}</td>
-                                <td>${d.BenefitingDepartments}</td>
-                                <td>${d.Remarks}</td>
+                                <td>${d.MonthAim}</td>
+                                <td>${d.MonthAchievement}</td>
+                                <td>${d.GradualAchievement}</td>
                             </tr>
                             `
                             )

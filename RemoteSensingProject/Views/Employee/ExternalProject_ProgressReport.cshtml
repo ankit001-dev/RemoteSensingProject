@@ -43,7 +43,6 @@
             .custom-table th,
             .custom-table td {
                 border: 1px solid #000;
-                text-align: center;
                 vertical-align: middle;
                 font-size: 14px;
             }
@@ -116,7 +115,7 @@
                                     <th rowspan="2">वित्त पोषक संस्था</th>
                                     <th rowspan="2">कुल लागत</th>
                                     <th rowspan="2">कुल लक्ष्य </th>
-                                    <th rowspan="2" >30-03-@financialYearEnd की उपलब्धि </th>
+                                    <th rowspan="2">30-03-@financialYearEnd की उपलब्धि </th>
                                     <th colspan="4">
                                         वर्ष @(DateTime.Now.Year - 1) - @(DateTime.Now.Year)
                                     </th>
@@ -142,34 +141,39 @@
                             <tbody>
                                 @if (data != null && data.Count > 0)
                                 {
-                                int count = 1;
-                                foreach (var item in data)
-                                {
-                                <tr>
-                                    <td>@count</td>
-                                    <td>@item.ProjectName</td>
-                                    <td>@item.FinancialInstitution</td>
-                                    <td>@item.TotalCost</td>
-                                    <td>@item.TotalTarget</td>
-                                    <td>@item.PreviousFinancialYear</td>
-                                    <td>@item.AnnualTarget</td>
-                                    <td>@item.TargetOfMonth</td>
-                                    <td>@item.AchievementOfMonth</td>
-                                    <td>@item.CurrentFinancialYear</td>
-                                    <td>@item.Statebeneficiary</td>
-                                    <td>@item.Remark</td>
-                                    <td>
-                                        <a class="cursor-pointer edit-btn" data-id="@item.Id">
-                                            <i class="link-icon" data-feather="edit"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                count++;
-                                }
+                                    int count = 1;
+                                    foreach (var item in data)
+                                    {
+                                        <tr>
+                                            <td>@count</td>
+                                            <td>@item.ProjectName</td>
+                                            <td>@item.FinancialInstitution</td>
+                                            <td>@item.TotalCost</td>
+                                            <td>@item.TotalTarget</td>
+                                            <td>@item.PreviousFinancialYear</td>
+                                            <td>@item.AnnualTarget</td>
+                                            <td>@item.TargetOfMonth</td>
+                                            <td>@item.AchievementOfMonth</td>
+                                            <td>@item.CurrentFinancialYear</td>
+                                            <td>@item.Statebeneficiary</td>
+                                            <td>@item.Remark</td>
+                                            <td>
+                                                <a class="cursor-pointer edit-btn" data-id="@item.Id">
+                                                    <i class="link-icon" data-feather="edit"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        count++;
+                                    }
                                 }
                             </tbody>
 
                         </table>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12 text-end">
+                            <button type="button" class="btn btn-primary" id="finalSubmitbtn">Final Submit</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -236,7 +240,7 @@
                                     </div>
                                     <div class="col-md-6 mb-2">
                                         <label class="form-label">कुल लागत </label>
-                                        <input type="number" name="TotalCost" class="form-control form-control-sm" placeholder="कुल लागत" />
+                                        <input type="number" name="TotalCost" step="any" class="form-control form-control-sm" placeholder="कुल लागत" />
                                     </div>
                                 </div>
                             </div>
@@ -275,6 +279,42 @@
     </div>
 
     <script>
+        $('#finalSubmitbtn').on('click', function () {
+            debugger
+            Swal.fire({
+                title: 'Please wait',
+                text: 'Processing your request...',
+                didOpen: () => {
+                    Swal.showLoading();
+                },
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            });
+            $.ajax({
+                url: '/Employee/ExternalReportFinalSubmit',
+                type: 'get',
+                success: function (res) {
+                    console.log(res);
+                    if (res.status) {
+                        Swal.fire({
+                            title: 'Success',
+                            text: res.message,
+                            icon: 'success'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Error',
+                            text: res.message,
+                            icon: 'error'
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        })
+
         $("#weeklyUpdateForm").on("submit", function (e) {
             e.preventDefault();
             Swal.fire({
@@ -452,10 +492,12 @@
         }
 
         $("#downloadDocx").click(function () {
+            const year = $('#yearFilter').val() || null;
+            const month = $('#monthFilter').val() || null;
     $.ajax({
         url: '/api/report/ExternalProject_ProgressReport',
         type: 'GET',
-        data: { month: 2, year: 2026, id:@(ViewBag.userId ?? 0) },
+        data: { month: month, year: year, id:@(ViewBag.userId ?? 0) },
         xhrFields: {
             responseType: 'blob'
         },
@@ -490,4 +532,36 @@
         }
     });
 })
+    </script>
+
+    <script>
+        $('#yearFilter, #monthFilter').on('change', function () {
+            applyFilters();
+        });
+
+        function applyFilters() {
+            const year = $('#yearFilter').val();
+            const month = $('#monthFilter').val();
+
+            const url = new URL(window.location.href);
+
+            if (year) url.searchParams.set('year', year);
+            else url.searchParams.delete('year');
+
+            if (month) url.searchParams.set('month', month);
+            else url.searchParams.delete('month');
+
+            window.location.href = url.toString();
+        }
+
+        // 🔁 Reload ke baad selected value retain
+        $(document).ready(function () {
+            const params = new URLSearchParams(window.location.search);
+
+            const year = params.get('year');
+            const month = params.get('month');
+
+            if (year) $('#yearFilter').val(year);
+            if (month) $('#monthFilter').val(month);
+        });
     </script>

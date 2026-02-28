@@ -9,6 +9,7 @@
     var lastDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
     var today = DateTime.Now;
     int financialYearEnd;
+    var projectmanagerlist = ViewData["projectmanagerlist"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 
     // Financial year: 1 April – 31 March
     if (today.Month >= 4)
@@ -43,7 +44,6 @@
         .custom-table th,
         .custom-table td {
             border: 1px solid #000;
-            text-align: center;
             vertical-align: middle;
             font-size: 14px;
         }
@@ -58,43 +58,71 @@
     }
 </style>
 
-<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
-    <div class="row align-items-end w-100">
+<nav class="page-breadcrumb mb-3">
+    <div class="container-fluid">
+        <div class="row align-items-end g-3">
 
-        <!-- Year Dropdown -->
-        <div class="col-md-3">
-            <label class="form-label">वर्ष चुनें</label>
-            <select class="form-select" id="yearFilter">
-                <option value="">सभी</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-            </select>
-        </div>
+            <!-- Year Dropdown -->
+            <div class="col-md-2 col-sm-6">
+                <label class="form-label">वर्ष चुनें</label>
+                <select class="form-select" id="yearFilter">
+                    <option value="">सभी</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
 
-        <!-- Month Dropdown -->
-        <div class="col-md-3">
-            <label class="form-label">माह चुनें</label>
-            <select class="form-select" id="monthFilter">
-                <option value="">सभी</option>
-                <option value="1">जनवरी</option>
-                <option value="2">फरवरी</option>
-                <option value="3">मार्च</option>
-                <option value="4">अप्रैल</option>
-                <option value="5">मई</option>
-                <option value="6">जून</option>
-                <option value="7">जुलाई</option>
-                <option value="8">अगस्त</option>
-                <option value="9">सितंबर</option>
-                <option value="10">अक्टूबर</option>
-                <option value="11">नवंबर</option>
-                <option value="12">दिसंबर</option>
-            </select>
+            <!-- Month Dropdown -->
+            <div class="col-md-2 col-sm-6">
+                <label class="form-label">माह चुनें</label>
+                <select class="form-select" id="monthFilter">
+                    <option value="">सभी</option>
+                    <option value="1">जनवरी</option>
+                    <option value="2">फरवरी</option>
+                    <option value="3">मार्च</option>
+                    <option value="4">अप्रैल</option>
+                    <option value="5">मई</option>
+                    <option value="6">जून</option>
+                    <option value="7">जुलाई</option>
+                    <option value="8">अगस्त</option>
+                    <option value="9">सितंबर</option>
+                    <option value="10">अक्टूबर</option>
+                    <option value="11">नवंबर</option>
+                    <option value="12">दिसंबर</option>
+                </select>
+            </div>
+
+            <!-- Project Manager Dropdown -->
+            <div class="col-md-3 col-sm-6">
+                <label class="form-label">Project Manager</label>
+                <select id="projectManagerFilter" class="form-select">
+                    <option value="" selected>Search by project manager</option>
+                    @if (projectmanagerlist.Count > 0)
+                    {
+                        foreach (var item in projectmanagerlist)
+                        {
+                            <option value="@item.Id">@item.EmployeeName</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Buttons -->
+            <div class="col-md-5 col-sm-6 d-flex justify-content-md-end gap-2">
+                <button class="btn btn-outline-primary text-nowrap" id="downloadDocx">
+                    <i class="link-icon" data-feather="download"></i>
+                    Export Docx
+                </button>
+
+                <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider">
+                    <i class="link-icon" data-feather="plus"></i>
+                    Add Monthly Status
+                </button>
+            </div>
+
         </div>
     </div>
-    <button class="btn btn-inverse-primary text-nowrap" id="downloadDocx"><i class="link-icon" data-feather="download"></i>Export Docx</button> &nbsp; &nbsp;
-
-    <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
 </nav>
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -170,6 +198,11 @@
                         </tbody>
 
                     </table>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 text-end">
+                        <button type="button" class="btn btn-primary" id="finalSubmitbtn">Final Submit</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -275,6 +308,42 @@
 </div>
 
 <script>
+    $('#finalSubmitbtn').on('click', function () {
+        debugger
+        Swal.fire({
+            title: 'Please wait',
+            text: 'Processing your request...',
+            didOpen: () => {
+                Swal.showLoading();
+            },
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        $.ajax({
+            url: '/Divisionhead/ExternalReportFinalSubmit',
+            type: 'get',
+            success: function (res) {
+                console.log(res);
+                if (res.status) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: res.message,
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: res.message,
+                        icon: 'error'
+                    });
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+    })
+
         $("#weeklyUpdateForm").on("submit", function (e) {
             e.preventDefault();
             Swal.fire({
@@ -451,11 +520,14 @@
             }
     }
 
-            $("#downloadDocx").click(function () {
+    $("#downloadDocx").click(function () {
+        const year = $('#yearFilter').val() || null;
+        const month = $('#monthFilter').val() || null;
+        const pmId = $('#projectManagerFilter').val() || null;
     $.ajax({
         url: '/api/report/ExternalProject_ProgressReport',
         type: 'GET',
-        data: { month: 2, year: 2026, divisionId:@(ViewBag.divisionId ?? 0) },
+        data: { month: 2, year: 2026,id:pmId, divisionId:@(ViewBag.divisionId ?? 0) },
         xhrFields: {
             responseType: 'blob'
         },
@@ -493,3 +565,76 @@
 </script>
 
 
+<script>
+    // 🎯 Filters change events
+    $('#yearFilter').on('change', function () {
+        applyDivisionReportFilters();
+    });
+
+    $('#monthFilter').on('change', function () {
+        applyDivisionReportFilters();
+    });
+
+    $('#projectManagerFilter').on('change', function () {
+        applyDivisionReportFilters();
+    });
+
+    function applyDivisionReportFilters() {
+
+        let year = $('#yearFilter').val();
+        let month = $('#monthFilter').val();
+        let pmId = $('#projectManagerFilter').val();
+
+        const url = new URL(window.location.href);
+
+        // year
+        if (year) {
+            url.searchParams.set("year", year);
+        } else {
+            url.searchParams.delete("year");
+        }
+
+        // month
+        if (month) {
+            url.searchParams.set("month", month);
+        } else {
+            url.searchParams.delete("month");
+        }
+
+        // project manager
+        if (pmId) {
+            url.searchParams.set("projectManagerId", pmId);
+        } else {
+            url.searchParams.delete("projectManagerId");
+        }
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.filterTimer);
+        window.filterTimer = setTimeout(() => {
+            window.location.href = url.toString();
+        }, 400);
+    }
+</script>
+<script>
+    $(document).ready(function () {
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const year = urlParams.get('year');
+        const month = urlParams.get('month');
+        const pmId = urlParams.get('projectManagerId');
+
+        if (year) {
+            $('#yearFilter').val(year);
+        }
+
+        if (month) {
+            $('#monthFilter').val(month);
+        }
+
+        if (pmId) {
+            $('#projectManagerFilter').val(pmId);
+        }
+    });
+</script>

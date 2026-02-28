@@ -2,6 +2,8 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Controllers.EmployeeController
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 using RemoteSensingProject.Models;
@@ -14,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Web.Http.Routing.Constraints;
 using System.Web.Mvc;
 
 namespace RemoteSensingProject.Controllers
@@ -272,8 +275,8 @@ namespace RemoteSensingProject.Controllers
                 message = (res ? "Updated successfully !" : "Some issue occured while processing...")
             });
         }
-
-        public JsonResult UpdateWeekly(RemoteSensingProject.Models.Admin.main.InternalProject_ProgressModel data)
+        [HttpPost]
+        public JsonResult UpdateWeekly(RemoteSensingProject.Models.Admin.main.TechnicalInternalMonthlyReport data)
         {
             try
             {
@@ -281,7 +284,7 @@ namespace RemoteSensingProject.Controllers
                 data.CreaterId = userObj.userId;
                 data.CreaterRole = userObj.userRole;
                 string message = string.Empty;
-                bool res = _managerServices.AddOrUpdateMonthlyInternalProgressReport(data, out message);
+                bool res = _managerServices.AddOrUpdateMonthlyInternalProgressReportTechnical(data, out message);
                 return Json((object)new
                 {
                     status = res,
@@ -1040,6 +1043,13 @@ namespace RemoteSensingProject.Controllers
                 });
             }
         }
+        public ActionResult ProjecStaffProgressReport(int?month = null,int? year = null,int?projectstafffilter=null)
+        {
+            int userId = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+            ViewData["ReportList"] = _subordinateServices.GetStaffMonthlyReport(projectstafffilter, null, null, id:userId, month, year);
+            ViewData["UserList"] = _managerServices.GetAllocatedOutSOurceList(userId, null, null, null);
+            return View();
+        }
         #endregion
 
         #region reports Start
@@ -1278,27 +1288,121 @@ namespace RemoteSensingProject.Controllers
                 return (ActionResult)new HttpStatusCodeResult(500, "Error while generating project expenses report.");
             }
         }
+        [HttpGet]
+        public ActionResult GetInternalTechnicalProjectReport(int id, string type)
+        {
+            try
+            {
+                var data = type.Trim().Equals("editid") ? _managerServices.GetMonthlyTechnicalInternalProjectReport(id) : _managerServices.GetMonthlyTechnicalInternalProjectReport(projectid: id);
 
+                return Json((object)new
+                {
+                    status = data.Count > 0 ? true : false,
+                    data = data
+                }, (JsonRequestBehavior)0);
+            }
+            catch (Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Error: " + ex.Message
+                }, (JsonRequestBehavior)0);
+            }
+        }
         #endregion Reports End
 
         #region Progress Report
-        public ActionResult InternalProject_ProgressReport()
+        public ActionResult InternalProject_ProgressReport(int?year = null,int? month = null)
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userData.userId), filterBy:"ProjectManager", projectTypeFilter:"Internal");
-            ViewData["reportdata"] = _managerServices.GetMonthlyProjectReport(projectmanager: Convert.ToInt32(userData.userId));
+            ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReport(month: month, year: year, projectmanager: Convert.ToInt32(userData.userId),filterby:"projectmanager");
             ViewBag.userId = Convert.ToInt32(userData.userId);
             return View();
         }
-        public ActionResult ExternalProject_ProgressReport()
+        [HttpGet]
+        public ActionResult InternalReportFinalSubmit()
+        {
+            try
+            {
+                int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+                bool res = _managerServices.FinalSubmitInternalReport(userid);
+                return Json(new
+                {
+                    status = res,
+                    message = res ? "Submitted Successfully" : "Something went wrong"
+                },JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public ActionResult ExternalReportFinalSubmit()
+        {
+            try
+            {
+                int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
+                bool res = _managerServices.FinalSubmitExternalReport(userid);
+                return Json(new
+                {
+                    status = res,
+                    message = res ? "Submitted Successfully" : "Something went wrong"
+                },JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult ExternalProject_ProgressReport(int? year = null, int? month = null)
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "External");
-            ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(projectmanager: Convert.ToInt32(userData.userId));
+            ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(projectmanager: Convert.ToInt32(userData.userId),year:year,month:month, filterby: "projectmanager");
             ViewBag.userId = Convert.ToInt32(userData.userId);
             return View();
         }
 
+        #endregion
+
+        #region Manage Budget Heads
+        public ActionResult Budget_Head()
+        {
+            ViewData["headlist"] = _adminServices.GetBudgetHeads();
+            return View();
+        }
+        [HttpPost]
+        public ActionResult InsertBudgetHead(RemoteSensingProject.Models.Admin.main.CommonResponse cr)
+        {
+            string message = string.Empty;
+            bool res = _adminServices.InsertBudgetHead(cr,out message);
+            return Json((object)new
+            {
+                status = res,
+                message = (res ? (cr.id > 0 ? "Head updated successfully" : "Head inserted successfully!") :message)
+            }, (JsonRequestBehavior)0);
+        }
+        [HttpDelete]
+        public ActionResult RemoveBudgetHead(int id)
+        {
+            bool res = _adminServices.DeleteBudgetHead(id);
+            return Json((object)new
+            {
+                status = res,
+                message = (res ? "Head removed successfully !" : "Some issue occred ")
+            }, (JsonRequestBehavior)0);
+        }
         #endregion
 
         #region Manage CM Dashboard

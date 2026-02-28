@@ -83,11 +83,11 @@ namespace RemoteSensingProject.Controllers
         [HttpPost]
         public ActionResult InsertBudgetHead(RemoteSensingProject.Models.Admin.main.CommonResponse cr)
         {
-            bool res = _adminServices.InsertBudgetHead(cr);
+            bool res = _adminServices.InsertBudgetHead(cr,out string message);
             return Json((object)new
             {
                 status = res,
-                message = (res ?(cr.id>0?"Head updated successfully": "Head inserted successfully!" ): "Some issue found while processing your request !")
+                message = res ?(cr.id>0?"Head updated successfully": "Head inserted successfully!" ):message
             }, (JsonRequestBehavior)0);
         }
         [HttpDelete]
@@ -98,6 +98,34 @@ namespace RemoteSensingProject.Controllers
             {
                 status = res,
                 message = (res ? "Head removed successfully !" : "Some issue occred ")
+            }, (JsonRequestBehavior)0);
+        }
+        #endregion
+
+        #region Manage Project Scheme
+        public ActionResult ProjectScheme()
+        {
+            ViewData["schemelist"] = _adminServices.GetProjectSchemes();
+            return View();
+        }
+        [HttpPost]
+        public ActionResult InsertProjectSceheme(RemoteSensingProject.Models.Admin.main.CommonResponse cr)
+        {
+            bool res = _adminServices.InsertProjectScheme(cr,out string message);
+            return Json((object)new
+            {
+                status = res,
+                message = (res ? (cr.id > 0 ? "Scheme updated successfully" : "Scheme inserted successfully!") : message)
+            }, (JsonRequestBehavior)0);
+        }
+        [HttpDelete]
+        public ActionResult RemoveProjectScheme(int id)
+        {
+            bool res = _adminServices.DeleteProjectScheme(id);
+            return Json((object)new
+            {
+                status = res,
+                message = (res ? "Scheme removed successfully !" : "Some issue occred ")
             }, (JsonRequestBehavior)0);
         }
         #endregion
@@ -246,7 +274,8 @@ namespace RemoteSensingProject.Controllers
             List<Models.Admin.main.BudgetHeadModel> budgetHeads = _adminServices.GetBudgetHeads();
 			((ControllerBase)this).ViewData["Designations"] = _adminServices.ListDesgination();
 			((ControllerBase)this).ViewData["BudgetHeads"] = budgetHeads;
-			return View();
+            ViewData["schemelist"] = _adminServices.GetProjectSchemes();
+            return View();
 		}
 
 		public ActionResult GetProjecDatatById(int Id)

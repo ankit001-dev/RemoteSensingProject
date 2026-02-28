@@ -181,7 +181,7 @@ namespace RemoteSensingProject.Controllers
 		}
 
         [HttpPost]
-        public ActionResult InsertMonthlyProgress(EmpReportModel model)
+        public ActionResult InsertMonthlyProgress(ProjectStaffProgressReport model)
         {
             try
             {

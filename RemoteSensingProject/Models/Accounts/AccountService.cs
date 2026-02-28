@@ -421,7 +421,7 @@ namespace RemoteSensingProject.Models.Accounts
             }
         }
 
-        //Update Expense Committed
+        //Update Expense Committed In Adhisthan
         public bool UpdateExpenseCommitted(UpdateCommitted ad)
         {
             ((DbConnection)(object)con).Open();
@@ -437,6 +437,51 @@ namespace RemoteSensingProject.Models.Accounts
 
                         cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = "updateexpensecommitted";
                         cmd.Parameters.Add("@p_id", NpgsqlDbType.Integer).Value = ad.AdhisthanId;
+                        cmd.Parameters.Add("@p_headname", NpgsqlDbType.Varchar).Value = ad.Title;
+                        cmd.Parameters.Add("@p_committed", NpgsqlDbType.Numeric).Value = ad.ExpenseCommitted;
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (PostgresException pgEx)
+                {
+                    transaction.Rollback();
+
+                    // Stored procedure ka exact error message
+                    throw new Exception(pgEx.MessageText);
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+                finally
+                {
+                    if (con.State == ConnectionState.Open)
+                        con.Close();
+                }
+            }
+        }
+        //Update Expense Committed In Project Heads
+        public bool UpdateExpenseCommittedInHeads(UpdateCommitted ad)
+        {
+            ((DbConnection)(object)con).Open();
+            using (var transaction = con.BeginTransaction())
+            {
+                try
+                {
+                    using (var cmd = new NpgsqlCommand(
+                        "CALL sp_manageadhisthan(p_action=>@p_action, p_id=>@p_id,p_projectid=>@p_projectid,p_headname=>@p_headname, p_committed=>@p_committed)",
+                        con, transaction))
+                    {
+                        cmd.CommandType = CommandType.Text;
+
+                        cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = "updateheadcommitt";
+                        cmd.Parameters.Add("@p_id", NpgsqlDbType.Integer).Value = ad.HeadId;
+                        cmd.Parameters.Add("@p_projectid", NpgsqlDbType.Integer).Value = ad.ProjectId;
                         cmd.Parameters.Add("@p_headname", NpgsqlDbType.Varchar).Value = ad.Title;
                         cmd.Parameters.Add("@p_committed", NpgsqlDbType.Numeric).Value = ad.ExpenseCommitted;
 

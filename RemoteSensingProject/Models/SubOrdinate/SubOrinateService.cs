@@ -448,25 +448,22 @@ namespace RemoteSensingProject.Models.SubOrdinate
 		}
 
         #region Manage Monthly Report
-        public bool InsertStaffMonthlyReport(EmpReportModel model, out string message)
+        public bool InsertStaffMonthlyReport(ProjectStaffProgressReport model, out string message)
         {
             message = string.Empty;
             try
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("call sp_ManageEmpReport(@v_action,NULL,@v_id,@v_ProjectId,@v_unit,@v_annualtarget,@v_targetuptoreviewmonth,@v_achievementduringreviewmonth,@v_cumulativeachievement,@v_benefitingdepartments,@v_remarks,Null);", con);
+                NpgsqlCommand cmd = new NpgsqlCommand("call sp_ManageEmpReport(v_action => @v_action,v_ProjectId => @v_ProjectId,v_id => @v_id,v_unit => @v_unit,v_annualtarget => @v_annualtarget,v_remarks => @v_remarks,v_w_date => @v_w_date);", con);
                 try
                 {
                     ((DbCommand)(object)cmd).CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@v_action", (object)"insertstaffmonthlyreport");
                     cmd.Parameters.AddWithValue("@v_ProjectId", (object)model.ProjectId);
                     cmd.Parameters.AddWithValue("@v_id", (object)model.ProjectStaffId);
-                    cmd.Parameters.AddWithValue("@v_unit", (object)model.Unit);
-                    cmd.Parameters.AddWithValue("@v_annualtarget", (object)model.AnnualTarget);
-                    cmd.Parameters.AddWithValue("@v_targetuptoreviewmonth", (object)model.TargetUptoReviewMonth);
-                    cmd.Parameters.AddWithValue("@v_achievementduringreviewmonth", (object)model.AchievementDuringReviewMonth);
-                    cmd.Parameters.AddWithValue("@v_cumulativeachievement", (object)model.CumulativeAchievement);
-                    cmd.Parameters.AddWithValue("@v_benefitingdepartments", (object)model.BenefitingDepartments);
-                    cmd.Parameters.AddWithValue("@v_remarks", (object)(model.Remarks ?? string.Empty));
+                    cmd.Parameters.AddWithValue("@v_unit", (object)model.MonthAim);
+                    cmd.Parameters.AddWithValue("@v_annualtarget", (object)model.MonthAchievement);
+                    cmd.Parameters.AddWithValue("@v_remarks", (object)(model.GradualAchievement ?? string.Empty));
+                    cmd.Parameters.AddWithValue("@v_w_date", (object)(model.Date));
                     ((DbConnection)(object)con).Open();
                     ((DbCommand)(object)cmd).ExecuteNonQuery();
                     return true;
@@ -489,11 +486,11 @@ namespace RemoteSensingProject.Models.SubOrdinate
             }
         }
 
-        public List<EmpReportModel> GetStaffMonthlyReport(int userid, int? limit = null, int? page = null, int? id = null, int? month = null, int? year = null)
+        public List<ProjectStaffProgressReport> GetStaffMonthlyReport(int? userid = null, int? limit = null, int? page = null, int? id = null, int? month = null, int? year = null)
         {
             try
             {
-                List<EmpReportModel> list = new List<EmpReportModel>();
+                List<ProjectStaffProgressReport> list = new List<ProjectStaffProgressReport>();
                 ((DbConnection)(object)con).Open();
                 NpgsqlTransaction tran = con.BeginTransaction();
                 try
@@ -503,7 +500,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@v_action", (object)"getstaffreport");
-                        cmd.Parameters.AddWithValue("@v_projectmanager", (object)userid);
+                        cmd.Parameters.AddWithValue("@v_projectmanager",userid.HasValue? (object)userid:DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
@@ -520,20 +517,16 @@ namespace RemoteSensingProject.Models.SubOrdinate
                                 {
                                     while (((DbDataReader)(object)res).Read())
                                     {
-                                        list.Add(new EmpReportModel
+                                        list.Add(new ProjectStaffProgressReport
                                         {
                                             ProjectId = ((((DbDataReader)(object)res)["ProjectId"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["ProjectId"]) : 0),
                                             ProjectStaffId = ((((DbDataReader)(object)res)["projectstaffid"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["projectstaffid"]) : 0),
                                             ProjectName = ((((DbDataReader)(object)res)["title"] != DBNull.Value) ? ((DbDataReader)(object)res)["title"].ToString() : ""),
                                             ProjectStaffName = ((((DbDataReader)(object)res)["emp_name"] != DBNull.Value) ? ((DbDataReader)(object)res)["emp_name"].ToString() : ""),
-                                            Unit = ((((DbDataReader)(object)res)["Unit"] != DBNull.Value) ? ((DbDataReader)(object)res)["Unit"].ToString() : ""),
-                                            AnnualTarget = ((((DbDataReader)(object)res)["AnnualTarget"] != DBNull.Value) ? ((DbDataReader)(object)res)["AnnualTarget"].ToString() : null),
-                                            TargetUptoReviewMonth = ((((DbDataReader)(object)res)["TargetUptoReviewMonth"] != DBNull.Value) ? ((DbDataReader)(object)res)["TargetUptoReviewMonth"].ToString() : null),
-                                            AchievementDuringReviewMonth = ((((DbDataReader)(object)res)["AchievementDuringReviewMonth"] != DBNull.Value) ? ((DbDataReader)(object)res)["AchievementDuringReviewMonth"].ToString() : null),
-                                            CumulativeAchievement = ((((DbDataReader)(object)res)["CumulativeAchievement"] != DBNull.Value) ? ((DbDataReader)(object)res)["CumulativeAchievement"].ToString() : null),
-                                            BenefitingDepartments = ((((DbDataReader)(object)res)["BenefitingDepartments"] != DBNull.Value) ? ((DbDataReader)(object)res)["BenefitingDepartments"].ToString() : ""),
-                                            Remarks = ((((DbDataReader)(object)res)["Remarks"] != DBNull.Value) ? ((DbDataReader)(object)res)["Remarks"].ToString() : ""),
-                                            CreatedAt = Convert.ToDateTime(((DbDataReader)(object)res)["CreatedAt"]).ToString("dd-mm-yyyy")
+                                            MonthAim = res["monthlyaim"].ToString(),
+											MonthAchievement = res["monthachievement"].ToString(),
+											Date = res["w_date"] != DBNull.Value ? Convert.ToDateTime(res["w_date"]):DateTime.MinValue,
+											GradualAchievement = res["gradualachievement"].ToString()
                                         });
                                     }
                                 }

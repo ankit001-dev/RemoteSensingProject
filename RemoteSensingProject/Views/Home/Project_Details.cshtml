@@ -35,7 +35,7 @@
                 </div>
 
                 <div>
-                    <span class="badge bg-success me-1">@data.pm.ProjectStatus</span>
+                    <span class="badge @data.pm.projectStatusLabelColor me-1">@data.pm.projectStatusLabel</span>
                 </div>
             </div>
         </div>
@@ -59,20 +59,6 @@
                     <div class="fw-semibold">@data.pm.ProjectManager</div>
                 </div>
 
-                <div class="col-md-3">
-                    <small class="text-muted">Assign Date</small>
-                    <div>@data.pm.AssignDateString</div>
-                </div>
-
-                <div class="col-md-3">
-                    <small class="text-muted">Completion Date</small>
-                    <div>@data.pm.CompletionDatestring</div>
-                </div>
-
-                <div class="col-md-3">
-                    <small class="text-muted">Current Stage</small>
-                    <div>Execution</div>
-                </div>
 
                 <div class="col-md-3">
                     <small class="text-muted">Project Staff Required</small>
@@ -182,6 +168,7 @@
                         <th class="text-end">Budget (₹ in Lacs)</th>
                         <th class="text-end">Expense (₹ in Lacs)</th>
                         <th class="text-end">Remaining (₹ in Lacs)</th>
+                        <th class="text-end">Committed (₹ in Lacs)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -196,6 +183,7 @@
                                 <td class="text-end">@item.ProjectAmount</td>
                                 <td class="text-end">@item.TotalAskAmount</td>
                                 <td class="text-end">@(item.ProjectAmount - Convert.ToDecimal(item.TotalAskAmount))</td>
+                                <td class="text-end">@item.CommittedAmount</td>
                             </tr>
                             budgetcount++;
                         }

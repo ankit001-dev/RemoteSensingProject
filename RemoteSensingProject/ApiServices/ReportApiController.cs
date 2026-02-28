@@ -870,20 +870,14 @@ public class ReportApiController : ApiController
     public IHttpActionResult DivisionalMonthlyReportPdf(int month, int year, int? id = null, int? divisionId = null)
     {
         List<InternalProject_ProgressModel> data = new List<InternalProject_ProgressModel>();
-        if (id.HasValue)
-        {
-            data = _managerservice.GetMonthlyProjectReport(projectmanager: Convert.ToInt32(id));
-        }
-        else if (divisionId.HasValue)
-        {
-            data = _managerservice.GetMonthlyProjectReport(divisionid: Convert.ToInt32(divisionId));
-        }
+            data = _managerservice.GetMonthlyProjectReport(projectmanager: Convert.ToInt32(id), divisionid: Convert.ToInt32(divisionId), year:year,month:month);
             string monthName = new CultureInfo("hi-IN")
             .DateTimeFormat
             .GetMonthName(DateTime.Now.Month);
+        string divisionname = data?.FirstOrDefault().DivisionName;
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"Internal_Project_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.CreateMonthlyInternalProjectProgressDocx(data, monthName, year,"");
+        byte[] pdfBytes = DocxGenerator.CreateMonthlyInternalProjectProgressDocx(data, monthName, year,divisionname);
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
 
@@ -893,20 +887,14 @@ public class ReportApiController : ApiController
     public IHttpActionResult ExternalProject_ProgressReport(int month, int year, int? id = null, int?divisionId=null)
     {
         List<ExternalProject_ProgressModel> data = new List<ExternalProject_ProgressModel>();
-        if (id.HasValue)
-        {
-            data = _managerservice.GetMonthlyExternalProjectReport(projectmanager: Convert.ToInt32(id));
-        }
-        else if (divisionId.HasValue)
-        {
-            data = _managerservice.GetMonthlyExternalProjectReport(divisionid: Convert.ToInt32(divisionId));
-        }
+        data = _managerservice.GetMonthlyExternalProjectReport(projectmanager: Convert.ToInt32(id), divisionid: Convert.ToInt32(divisionId), year: year, month: month);
             string monthName = new CultureInfo("hi-IN")
             .DateTimeFormat
             .GetMonthName(DateTime.Now.Month);
+        string divisionname = data.FirstOrDefault().DivisionName;
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"External_Project_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.CreateExternalProjectPhysicalAchievementReport(data, monthName,"");
+        byte[] pdfBytes = DocxGenerator.CreateExternalProjectPhysicalAchievementReport(data, monthName,divisionname ,year.ToString());
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
 
@@ -916,13 +904,13 @@ public class ReportApiController : ApiController
     [Route("api/report/CombinedInternalProject_ProgressReport")]
     public IHttpActionResult CombinedInternalProject_ProgressReport(int month, int year, int? id = null)
     {
-        var data = _managerservice.GetMonthlyTechnicalInternalProjectReport(); ;
+        var data = _managerservice.GetMonthlyTechnicalInternalProjectReport(year:year,month:month,divisionid:id); ;
         string monthName = new CultureInfo("hi-IN")
              .DateTimeFormat
              .GetMonthName(DateTime.Now.Month);
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"Combined_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName,"");
+        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName,year.ToString());
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
     

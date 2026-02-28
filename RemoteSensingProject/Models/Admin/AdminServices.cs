@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -75,8 +76,9 @@ namespace RemoteSensingProject.Models.Admin
         }
 
         #region Manage Budget Heads
-        public bool InsertBudgetHead(main.CommonResponse cr)
+        public bool InsertBudgetHead(main.CommonResponse cr,out string message)
         {
+                message = string.Empty;
             try
             {
                 con.Open();
@@ -94,6 +96,11 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     ((IDisposable)cmd)?.Dispose();
                 }
+            }
+            catch(SqlException ex)
+            {
+                message = ex.Message;
+                return false;
             }
             catch (Exception)
             {
@@ -141,6 +148,170 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
         #endregion
+
+        #region Manage Project Scheme
+        public bool InsertProjectScheme(main.CommonResponse cr,out string message)
+        {
+            message = string.Empty;
+            try
+            {
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_manageprojectscheme(:v_action,:v_id, :v_projectscheme )", con);
+                try
+                {
+                    ((DbCommand)(object)cmd).CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("v_id", (cr.id == 0) ? DBNull.Value : ((object)cr.id));
+                    cmd.Parameters.AddWithValue("v_projectscheme", ((object)cr.name) ?? ((object)DBNull.Value));
+                    cmd.Parameters.AddWithValue("v_action", (object)((cr.id > 0) ? "UPDATE" : "INSERT"));
+                    ((DbCommand)(object)cmd).ExecuteNonQuery();
+                    return true;
+                }
+                finally
+                {
+                    ((IDisposable)cmd)?.Dispose();
+                }
+            }
+            catch(SqlException ex)
+            {
+                message = ex.Message;
+                return false;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
+
+        public bool DeleteProjectScheme(int id)
+        {
+            try
+            {
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_manageprojectscheme(:v_action,:v_id, :v_projectscheme )", con);
+                try
+                {
+                    ((DbCommand)(object)cmd).CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("v_id", (id == 0) ? DBNull.Value : ((object)id));
+                    cmd.Parameters.AddWithValue("v_projectscheme", ((object)DBNull.Value));
+                    cmd.Parameters.AddWithValue("v_action", "DELETE");
+                    ((DbCommand)(object)cmd).ExecuteNonQuery();
+                    return true;
+                }
+                finally
+                {
+                    ((IDisposable)cmd)?.Dispose();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
+        public List<main.ProjectSchemeModel> GetProjectSchemes(int? id = null)
+        {
+            //IL_002b: Unknown result type (might be due to invalid IL or missing references)
+            //IL_0031: Expected O, but got Unknown
+            //IL_00f9: Unknown result type (might be due to invalid IL or missing references)
+            //IL_0100: Expected O, but got Unknown
+            //IL_01b9: Unknown result type (might be due to invalid IL or missing references)
+            //IL_01c0: Expected O, but got Unknown
+            try
+            {
+                List<main.ProjectSchemeModel> budgetlist = new List<main.ProjectSchemeModel>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageempreport_cursor", con);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("v_action", (object)"getprojectscheme");
+                        cmd.Parameters.AddWithValue("v_projectmanager", (object)0);
+                        cmd.Parameters.AddWithValue("v_id", id.HasValue ? (object)id : (object)0);
+                        cmd.Parameters.AddWithValue("v_limit", (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_page", (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_year", (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("v_month", (object)DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader res = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                while (((DbDataReader)(object)res).Read())
+                                {
+                                    budgetlist.Add(new main.ProjectSchemeModel
+                                    {
+                                        Id = ((((DbDataReader)(object)res)["id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["id"]) : 0),
+                                        SchemeName = ((((DbDataReader)(object)res)["projectscheme"] == DBNull.Value) ? null : ((DbDataReader)(object)res)["projectscheme"].ToString())
+                                    });
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)res)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return budgetlist;
+            }
+            catch (Exception innerException)
+            {
+                throw new Exception("An error occurred", innerException);
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                if (base.cmd != null)
+                {
+                    ((Component)(object)base.cmd).Dispose();
+                }
+            }
+        }
+        #endregion
+
         public bool InsertDivison(main.CommonResponse cr)
         {
             //IL_000d: Unknown result type (might be due to invalid IL or missing references)
@@ -681,7 +852,7 @@ namespace RemoteSensingProject.Models.Admin
                 ((DbConnection)(object)con).Open();
                 tran = con.BeginTransaction();
                 Random rand = new Random();
-                if (pm.pm.Id > 0)
+                if (pm.pm.Id <= 0)
                 {
                     pm.projectCode = $"{rand.Next(1000, 9999)}{DateTime.Now.Day}{DateTime.Now.Year.ToString().Substring(2, 2)}";
                 }
@@ -705,7 +876,8 @@ namespace RemoteSensingProject.Models.Admin
                     ["p_approvestatus"] = true,
                     ["p_projectcode"] = pm.projectCode,
                     ["p_id"] = pm.pm.Id,
-                    ["p_hrcount"] = pm.pm.hrCount
+                    ["p_hrcount"] = pm.pm.hrCount,
+                    ["p_projectschemeid"] = pm.pm.ProjectSchemeId
                 };
                 int projectId = ExecuteProjectAction(projectParams, tran);
                 if (pm.budgets != null && pm.budgets.Count > 0)
@@ -758,22 +930,6 @@ namespace RemoteSensingProject.Models.Admin
                         ExecuteProjectAction(stageParams, tran);
                     }
                 }
-                //if (pm.pm.SubOrdinate != null && pm.pm.SubOrdinate.Length != 0)
-                //{
-                //    int[] subOrdinate = pm.pm.SubOrdinate;
-                //    foreach (int subId in subOrdinate)
-                //    {
-                //        int SubProjectManager;
-                //        Dictionary<string, object> subParams = new Dictionary<string, object>
-                //        {
-                //            ["p_action"] = ((pm.pm.Id <= 0) ? "insertSubOrdinate" : "updateSubOrdinate"),
-                //            ["p_project_id"] = ((pm.pm.Id > 0) ? pm.pm.Id : projectId),
-                //            ["p_id"] = subId,
-                //            ["p_projectmanager"] = (int.TryParse(pm.pm.ProjectManager, out SubProjectManager) ? SubProjectManager : 0)
-                //        };
-                //        ExecuteProjectAction(subParams, tran);
-                //    }
-                //}
                 if (pm.pm.ProjectType.Equals("External") && (projectId > 0 || pm.pm.Id > 0))
                 {
                     Dictionary<string, object> extParams = new Dictionary<string, object>
@@ -984,18 +1140,20 @@ namespace RemoteSensingProject.Models.Admin
                             pm.ProjectDepartment = ((DbDataReader)(object)rd)["departmentname"].ToString();
                             pm.ContactPerson = ((DbDataReader)(object)rd)["contactperson"].ToString();
                         }
-                        //if (((DbDataReader)(object)rd)["SubordinateLinkId"] != DBNull.Value)
-                        //{
-                        //    subList.Add(new main.Project_Subordination
-                        //    {
-                        //        Id = Convert.ToInt32(((DbDataReader)(object)rd)["SubordinateLinkId"]),
-                        //        Name = ((DbDataReader)(object)rd)["subName"].ToString(),
-                        //        EmpCode = ((DbDataReader)(object)rd)["subCode"].ToString()
-                        //    });
-                        //}
                         pm.CompletionDatestring = pm.CompletionDate?.ToString("dd-MM-yyyy") ?? "N/A";
                         pm.AssignDateString = pm.AssignDate?.ToString("dd-MM-yyyy") ?? "N/A";
                         pm.StartDateString = pm.StartDate?.ToString("dd-MM-yyyy") ?? "N/A";
+                        pm.projectStatusLabel = rd["projectstatusstring"].ToString().Trim() ?? "N/A";
+                        if (pm.projectStatusLabel == "Complete")
+                            pm.projectStatusLabelColor = "bg-success";
+                        else if (pm.projectStatusLabel == "Ongoing")
+                            pm.projectStatusLabelColor = "bg-warning";
+                        else if (pm.projectStatusLabel == "Upcoming")
+                            pm.projectStatusLabelColor = "bg-info";
+                        else if (pm.projectStatusLabel == "Delay")
+                            pm.projectStatusLabelColor = "bg-danger";
+                        else
+                            pm.projectStatusLabelColor = "#6B7280";
                     }
                     ((DbDataReader)(object)rd).Close();
                 }
@@ -1132,6 +1290,7 @@ namespace RemoteSensingProject.Models.Admin
                                             HeadId = Convert.ToInt32((((DbDataReader)(object)rd)["budgethead"] != DBNull.Value) ? ((DbDataReader)(object)rd)["budgethead"] : ((object)0)),
                                             TotalAskAmount = ((DbDataReader)(object)rd)["totalAskAmount"].ToString(),
                                             ApproveAmount = ((DbDataReader)(object)rd)["approveAmount"].ToString(),
+                                            CommittedAmount =rd["committedamount"] != DBNull.Value? ((DbDataReader)(object)rd)["committedamount"].ToString():"N/A",
                                             ProjectAmount = Convert.ToDecimal((((DbDataReader)(object)rd)["headsAmount"] != DBNull.Value) ? ((DbDataReader)(object)rd)["headsAmount"] : ((object)0))
                                         });
                                         //if (firstRow)

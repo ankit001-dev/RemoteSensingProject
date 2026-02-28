@@ -5,9 +5,9 @@
     var projects = ViewData["projectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     var firstDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
     var lastDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
-    var data = ViewData["reportdata"] as List<RemoteSensingProject.Models.Admin.main.InternalProject_ProgressModel>;
+    var data = ViewData["reportdata"] as List<RemoteSensingProject.Models.Admin.main.TechnicalInternalMonthlyReport>;
+    var projectmanagerlist = ViewData["projectmanagerlist"] as List<RemoteSensingProject.Models.Admin.main.Employee_model>;
 }
-
 
 
 <style>
@@ -28,7 +28,6 @@
         .custom-table th,
         .custom-table td {
             border: 1px solid #000;
-            text-align: center;
             vertical-align: middle;
             font-size: 14px;
         }
@@ -43,51 +42,72 @@
     }
 </style>
 
-<nav class="page-breadcrumb d-flex align-items-center justify-content-between">
-    <div class="row align-items-end w-100">
+<nav class="page-breadcrumb mb-3">
+    <div class="container-fluid">
+        <div class="row align-items-end">
 
-        <!-- Year Dropdown -->
-        <div class="col-md-3">
-            <label class="form-label">वर्ष चुनें</label>
-            <select class="form-select" id="yearFilter">
-                <option value="">सभी</option>
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-            </select>
-        </div>
+            <!-- Left side: Filters -->
+            <div class="col-md-6">
+                <div class="row g-3">
 
-        <!-- Month Dropdown -->
-        <div class="col-md-3">
-            <label class="form-label">माह चुनें</label>
-            <select class="form-select" id="monthFilter">
-                <option value="">सभी</option>
-                <option value="1">जनवरी</option>
-                <option value="2">फरवरी</option>
-                <option value="3">मार्च</option>
-                <option value="4">अप्रैल</option>
-                <option value="5">मई</option>
-                <option value="6">जून</option>
-                <option value="7">जुलाई</option>
-                <option value="8">अगस्त</option>
-                <option value="9">सितंबर</option>
-                <option value="10">अक्टूबर</option>
-                <option value="11">नवंबर</option>
-                <option value="12">दिसंबर</option>
-            </select>
+                    <!-- Year Dropdown -->
+                    <div class="col-md-4 col-sm-6">
+                        <label class="form-label">वर्ष चुनें</label>
+                        <select class="form-select" id="yearFilter">
+                            <option value="">सभी</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                        </select>
+                    </div>
+
+                    <!-- Month Dropdown -->
+                    <div class="col-md-4 col-sm-6">
+                        <label class="form-label">माह चुनें</label>
+                        <select class="form-select" id="monthFilter">
+                            <option value="">सभी</option>
+                            <option value="1">जनवरी</option>
+                            <option value="2">फरवरी</option>
+                            <option value="3">मार्च</option>
+                            <option value="4">अप्रैल</option>
+                            <option value="5">मई</option>
+                            <option value="6">जून</option>
+                            <option value="7">जुलाई</option>
+                            <option value="8">अगस्त</option>
+                            <option value="9">सितंबर</option>
+                            <option value="10">अक्टूबर</option>
+                            <option value="11">नवंबर</option>
+                            <option value="12">दिसंबर</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Right side: Buttons -->
+            <div class="col-md-6 d-flex justify-content-end gap-2 mt-3 mt-md-0">
+                <button class="btn btn-outline-primary text-nowrap" id="downloadDocx">
+                    <i class="link-icon" data-feather="download"></i>
+                    Export Docx
+                </button>
+
+                <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider">
+                    <i class="link-icon" data-feather="plus"></i>
+                    Add Monthly Status
+                </button>
+            </div>
+
         </div>
     </div>
-    <button class="btn btn-inverse-primary text-nowrap" id="downloadDocx"><i class="link-icon" data-feather="download"></i>Export Docx</button> &nbsp; &nbsp;
-    <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider"><i class="link-icon" data-feather="plus"></i> Add Monthly Status</button>
 </nav>
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <p class="text-center">
-                    <h2 class="text-center">प्रभागीय मासिक प्रगति आख्या : माह फरवरी 2026 </h2>
-                    <h2 class="text-center">रिमोट सेन्सिंग ऍप्लिकेशन्स सेन्टर, उत्तर प्रदेश</h2>
-                    <h2 class="text-center">शासन से गैर वेतन मद में प्राप्त धनराषि से संचालित योजना / कार्यक्रमों की भौतिक उपलब्धियों का विवरण </h2>
+                    <h2 class="text-center">मासिक समीक्षा : रूप पत्र - 2 </h2>
+                    <h2 class="text-center">शासन से गैर वेतन मद में प्राप्त धनराषि से संचालित योजना / कार्यक्रमों की भौतिक उपलब्धियों का विवरण</h2>
+                    <h2 class="text-center">विभाग का नाम : रिमोटे सेन्सिंग एप्लीकेसन्स सेंटर, उत्तर प्रदेश, विज्ञान एवं प्रोद्योगिकी विभाग, उत्तर प्रदेश  </h2>
                 </p>
                 <div class="table-responsive">
                     <table class="table custom-table">
@@ -97,26 +117,20 @@
                             <tr>
                                 <th rowspan="2">क्रम सं०</th>
                                 <th rowspan="2">मद / परियोजना का नाम</th>
-                                <th colspan="2">वार्षिक लक्ष्य</th>
-                                <th rowspan="2">मासिक लक्ष्य</th>
-                                <th rowspan="2">मासिक प्रगति</th>
-                                <th rowspan="2">क्रमिक प्रगति</th>
-                                <th rowspan="2">
-                                    क्रमिक<br>प्रगति (%)
-                                </th>
-                                <th rowspan="2">
-                                    सरकार के लाभान्वित होने वाले विभाग
-                                </th>
-                                <th rowspan="2">
-                                    लाभान्वित होने वाले विभागों से किए गए संपर्क की वस्तुस्थिति
-                                </th>
+                                <th rowspan="2">इकाई (लाख मे)</th>
+                                <th colspan="2">लक्ष्य</th>
+                                <th colspan="2">उपलब्धि </th>
+                                <th rowspan="2">प्रदेश  सरकार के लाभान्वित होने वाले विभाग </th>
+                                <th rowspan="2">अभ्युक्ति</th>
                                 <th rowspan="2">Action</th>
                             </tr>
 
                             <!-- Second Header Row -->
                             <tr>
-                                <th>वित्तीय</th>
-                                <th>भौतिक</th>
+                                <th>आलोच्य माह में  </th>
+                                <th>आलोच्य मासांत तक क्रमिक </th>
+                                <th>वार्षिक </th>
+                                <th>आलोच्य मासांत तक</th>
                             </tr>
 
                             <!-- Column Number Row -->
@@ -131,7 +145,15 @@
                                 <th>8</th>
                                 <th>9</th>
                                 <th>10</th>
-                                <th>11</th>
+                            </tr>
+                            <!--Full collapse row-->
+                            <tr>
+                                <td class="fw-bold">1.0</td>
+                                <td colspan="9">
+                                    <h4>
+                                        रीमोट सेन्सिंग तकनीक से प्रदेश के समस्त प्रकार्तिक संसधानों का अनुश्रवण एवं आलंकान
+                                    </h4>
+                                </td>
                             </tr>
                         </thead>
 
@@ -144,14 +166,13 @@
                                     <tr>
                                         <td>@count</td>
                                         <td>@item.ProjectName</td>
+                                        <td>@item.Amount</td>
+                                        <td>@item.InMonthReview</td>
+                                        <td>@item.EndMonthReview</td>
                                         <td>@item.FinancialYearlyAim</td>
-                                        <td>@item.MonthAim</td>
-                                        <td>@item.MonthlyStatus</td>
-                                        <td>@item.SquenceStatus</td>
+                                        <td>@item.SequentiallyMonthReview</td>
                                         <td>@item.Statebeneficiary</td>
-                                        <td>@item.SequenceStatusPerc</td>
                                         <td>@item.Remark</td>
-                                        <td>@item.PhysicalYearlyAim</td>
                                         <td>
                                             <a class="cursor-pointer edit-btn" data-id="@item.Id">
                                                 <i class="link-icon" data-feather="edit"></i>
@@ -164,6 +185,11 @@
                         </tbody>
 
                     </table>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12 text-end">
+                        <button type="button" class="btn btn-primary" id="finalSubmitbtn">Final Submit</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -207,47 +233,43 @@
                                 <input type="text" class="form-control" placeholder="वित्तीय" name="FinancialYearlyAim" />
                             </div>
                             <div class="col-sm-6">
-                                <label>भौतिक</label>
-                                <input type="text" class="form-control" placeholder="भौतिक" name="PhysicalYearlyAim" />
+                                <label>आलोच्य मासांत तक </label>
+                                <input type="text" class="form-control" placeholder="आलोच्य मासांत तक" name="EndMonthReview" />
+                            </div>
+                        </div>
+                        <hr />
+                        <label>उपलब्धि</label>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>आलोच्य माह में </label>
+                                <input type="text" class="form-control" placeholder="आलोच्य माह में" name="InMonthReview" />
+                            </div>
+                            <div class="col-sm-6">
+                                <label>आलोच्य मासांत तक क्रमिक</label>
+                                <input type="text" class="form-control" placeholder="आलोच्य मासांत तक क्रमिक" name="SequentiallyMonthReview" />
                             </div>
                         </div>
 
                         <hr />
-                        <div class="mb-3 col-md-12">
 
-                            <div class="row">
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label">मासिक लक्ष्य</label>
-                                    <input type="text" name="MonthAim" class="form-control form-control-sm" placeholder="मासिक लक्ष्य" />
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label">मासिक प्रगति</label>
-                                    <input type="text" name="MonthlyStatus" class="form-control form-control-sm" placeholder="मासिक प्रगति" />
-                                </div>
-                            </div>
-                        </div>
                         <div class="mb-3 col-md-12">
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label">
-                                        क्रमिक प्रगति
+                                        इकाई (लाख में)
                                     </label>
-                                    <input type="text" name="SquenceStatus" class="form-control form-control-sm" placeholder="क्रमिक प्रगति" />
-                                </div>
-                                <div class="col-md-6 mb-2">
-                                    <label class="form-label">क्रमिक प्रगति (%)</label>
-                                    <input type="number" name="SequenceStatusPerc" class="form-control form-control-sm" placeholder="क्रमिक प्रगति (%)" />
+                                    <input type="text" name="Amount" class="form-control form-control-sm" placeholder="इकाई (लाख में)" />
                                 </div>
                             </div>
                         </div>
 
                         <div class="mb-3 col-md-12">
-                            <label for="subtitle" class="form-label">सरकार के लाभान्वित होने वाले विभाग</label>
-                            <input class="form-control form-control-sm" name="Statebeneficiary" id="tinymceExample" rows="10" placeholder="सरकार के लाभान्वित होने वाले विभाग" />
+                            <label for="subtitle" class="form-label">प्रदेश सरकार के लाभान्वित होने वाले विभाग</label>
+                            <input class="form-control form-control-sm" name="Statebeneficiary" id="tinymceExample" rows="10" placeholder="प्रदेश सरकार के लाभान्वित होने वाले विभाग" />
                         </div>
 
                         <div class="mb-3 col-md-12">
-                            <label for="subtitle" class="form-label">लाभान्वित होने वाले विभागों से किए गए संपर्क की वस्तुस्थिति</label>
+                            <label for="subtitle" class="form-label">अभियुक्ति</label>
                             <textarea class="form-control form-control-sm" name="Remark" id="tinymceExample" rows="10" placeholder="लाभान्वित होने वाले विभागों से किए गए संपर्क की वस्तुस्थिति"></textarea>
                         </div>
                     </div>
@@ -261,6 +283,42 @@
 </div>
 
 <script>
+    $('#finalSubmitbtn').on('click', function () {
+        debugger
+        Swal.fire({
+            title: 'Please wait',
+            text: 'Processing your request...',
+            didOpen: () => {
+                Swal.showLoading();
+            },
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        $.ajax({
+            url: '/divisionhead/InternalReportFinalSubmit',
+            type: 'get',
+            success: function (res) {
+                console.log(res);
+                if (res.status) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: res.message,
+                        icon: 'success'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: res.message,
+                        icon: 'error'
+                    });
+                }
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+    })
+
     $("#weeklyUpdateForm").on("submit", function (e) {
         e.preventDefault();
         Swal.fire({
@@ -276,7 +334,7 @@
 
         let formData = $(this).serialize();
         $.ajax({
-            url: "/employee/UpdateWeekly",
+            url: "/Employee/UpdateWeekly",
             type: "post",
             data: formData,
             success: function (res) {
@@ -331,18 +389,19 @@
     });
 
     $('.edit-btn').on('click', function () {
+        debugger
         const id = $(this).data("id");
         if (id > 0) {
-            BindData(id,"editid")
+            BindData(id, "editid")
         }
     })
 
     function BindData(id, type) {
         debugger
         $.ajax({
-            url: '/employee/GetInternalProjectReport',
+            url: '/employee/GetInternalTechnicalProjectReport',
             type: 'get',
-            data: { id: id,type:type },
+            data: { id: id, type: type },
             success: function (res) {
                 if (res.status && res.data.length > 0) {
                     function formatDate(dateStr) {
@@ -360,13 +419,12 @@
                     $('select[name="ProjectId"]').val(d.ProjectId);
 
                     $('input[name="FinancialYearlyAim"]').val(d.FinancialYearlyAim);
-                    $('input[name="PhysicalYearlyAim"]').val(d.PhysicalYearlyAim);
+                    $('input[name="EndMonthReview"]').val(d.EndMonthReview);
 
-                    $('input[name="MonthAim"]').val(d.MonthAim);
-                    $('input[name="MonthlyStatus"]').val(d.MonthlyStatus);
+                    $('input[name="InMonthReview"]').val(d.InMonthReview);
+                    $('input[name="SequentiallyMonthReview"]').val(d.SequentiallyMonthReview);
 
-                    $('input[name="SquenceStatus"]').val(d.SquenceStatus);
-                    $('input[name="SequenceStatusPerc"]').val(d.SequenceStatusPerc);
+                    $('input[name="Amount"]').val(d.Amount);
 
                     $('input[name="Statebeneficiary"]').val(d.Statebeneficiary);
                     $('textarea[name="Remark"]').val(d.Remark);
@@ -434,43 +492,121 @@
             $monthSelect.val(currentMonth);
         }
     }
-                $("#downloadDocx").click(function () {
-    $.ajax({
-        url: '/api/report/InternalProject_ProgressReport',
-        type: 'GET',
-        data: { month: 2, year: 2026, divisionId:@(ViewBag.divisionId ?? 0) },
-        xhrFields: {
-            responseType: 'blob'
-        },
-        success: function (data, status, xhr) {
 
-            var contentDisposition = xhr.getResponseHeader('Content-Disposition');
-            var fileName = "Report.docx"; // fallback
+    $("#downloadDocx").click(function () {
+        const year = $('#yearFilter').val() || null;
+        const month = $('#monthFilter').val() || null;
+        const division = $('#divisionFilter').val() || null;
+        $.ajax({
+            url: '/api/report/CombinedInternalProject_ProgressReport',
+            type: 'GET',
+            data: { month: month, year: year, id: division },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (data, status, xhr) {
 
-            if (contentDisposition) {
+                var contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                var fileName = "Report.docx"; // fallback
 
-                var fileNameMatch = contentDisposition.match(/filename\*=utf-8''(.+)/i);
+                if (contentDisposition) {
 
-                if (fileNameMatch && fileNameMatch.length > 1) {
-                    fileName = decodeURIComponent(fileNameMatch[1]);
+                    var fileNameMatch = contentDisposition.match(/filename\*=utf-8''(.+)/i);
+
+                    if (fileNameMatch && fileNameMatch.length > 1) {
+                        fileName = decodeURIComponent(fileNameMatch[1]);
+                    }
                 }
+
+                var blob = new Blob([data], {
+                    type: xhr.getResponseHeader("Content-Type")
+                });
+
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = fileName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            },
+            error: function (err) {
+                console.log(err);
+                alert("Error downloading file");
             }
+        });
+    })
+</script>
 
-            var blob = new Blob([data], {
-                type: xhr.getResponseHeader("Content-Type")
-            });
+<script>
+    // 🎯 Filters change events
+    $('#yearFilter').on('change', function () {
+        applyReportFilters();
+    });
 
-            var link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = fileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        },
-        error: function (err) {
-            console.log(err);
-            alert("Error downloading file");
+    $('#monthFilter').on('change', function () {
+        applyReportFilters();
+    });
+
+    $('#divisionFilter').on('change', function () {
+        applyReportFilters();
+    });
+
+    function applyReportFilters() {
+
+        let year = $('#yearFilter').val();
+        let month = $('#monthFilter').val();
+        let division = $('#divisionFilter').val();
+
+        const url = new URL(window.location.href);
+
+        // year
+        if (year) {
+            url.searchParams.set("year", year);
+        } else {
+            url.searchParams.delete("year");
+        }
+
+        // month
+        if (month) {
+            url.searchParams.set("month", month);
+        } else {
+            url.searchParams.delete("month");
+        }
+
+        // division
+        if (division) {
+            url.searchParams.set("division", division);
+        } else {
+            url.searchParams.delete("division");
+        }
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.filterTimer);
+        window.filterTimer = setTimeout(() => {
+            window.location.href = url.toString();
+        }, 400);
+    }
+
+    // 🔁 Reload ke baad filter values retain
+    $(document).ready(function () {
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const year = urlParams.get('year');
+        const month = urlParams.get('month');
+        const division = urlParams.get('division');
+
+        if (year) {
+            $('#yearFilter').val(year);
+        }
+
+        if (month) {
+            $('#monthFilter').val(month);
+        }
+
+        if (division) {
+            $('#divisionFilter').val(division);
         }
     });
-})
 </script>

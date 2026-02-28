@@ -73,7 +73,7 @@ namespace RemoteSensingProject.Controllers
 					}
                 }
 
-                FormsAuthentication.SetAuthCookie(username, createPersistentCookie: false);
+                FormsAuthentication.SetAuthCookie(username, true);
 				return Json((object)new
 				{
 					status = true,

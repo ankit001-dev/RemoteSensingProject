@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_prashasanLayout.cshtml";
     var designations = ViewData["Designations"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
     var data = ViewData["UserList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
+    var divisionlist = ViewData["DivisionList"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
 }
 
 <style>
@@ -38,8 +39,20 @@
         <div class="col-lg-3">
             <h5>Employee Lists</h5>
         </div>
-        <div class="col-lg-9 col-md-9">
+        <div class="col-lg-5 col-md-5">
             <input type="text" placeholder="Search by employee name" id="searchByEmployeeName" class="form-control">
+        </div>
+        <div class="col-lg-4 col-md-4">
+            <select class="form-select" id="divisionFilter">
+                <option value="" selected>Filter by division</option>
+                @if (divisionlist.Count > 0)
+                {
+                    foreach (var item in divisionlist)
+                    {
+                    <option value="@item.id">@item.name</option>
+                    }
+                }
+            </select>
         </div>
     </div>
 </div>
@@ -232,29 +245,29 @@
         })
     })
 
-    $('#searchByEmployeeName').on('keyup', function () {
-        let value = $(this).val().trim();
-        const url = new URL(window.location.href);
-        url.searchParams.set("searchTerm", value);
+    //$('#searchByEmployeeName').on('keyup', function () {
+    //    let value = $(this).val().trim();
+    //    const url = new URL(window.location.href);
+    //    url.searchParams.set("searchTerm", value);
 
-        window.history.replaceState({}, "", url);
+    //    window.history.replaceState({}, "", url);
 
-        clearTimeout(window.searchTimer);
-        window.searchTimer = setTimeout(() => {
-            showLoader(); // 👈 Add here
-            window.location.href = url.toString();
-        }, 500);
-    });
+    //    clearTimeout(window.searchTimer);
+    //    window.searchTimer = setTimeout(() => {
+    //        showLoader(); // 👈 Add here
+    //        window.location.href = url.toString();
+    //    }, 500);
+    //});
 
-    $(document).ready(function () {
-        const urlParams = new URLSearchParams(window.location.search);
+    //$(document).ready(function () {
+    //    const urlParams = new URLSearchParams(window.location.search);
 
-        const search = urlParams.get('searchTerm');
+    //    const search = urlParams.get('searchTerm');
 
-        if (search) {
-            $('#searchByEmployeeName').val(search).focus();
-        }
-    });
+    //    if (search) {
+    //        $('#searchByEmployeeName').val(search).focus();
+    //    }
+    //});
 
     $(document).on("click", ".cl_editOutSource", function () {
         const empId = $(this).data("id");
@@ -355,5 +368,62 @@
                 })
             }
         });
+    });
+</script>
+
+<script>
+    // 🔍 Search by employee name
+    $('#searchByEmployeeName').on('keyup', function () {
+        applyFilters();
+    });
+
+    // 🏢 Filter by division
+    $('#divisionFilter').on('change', function () {
+        applyFilters();
+    });
+
+    function applyFilters() {
+        let searchValue = $('#searchByEmployeeName').val().trim();
+        let divisionId = $('#divisionFilter').val();
+
+        const url = new URL(window.location.href);
+
+        // set / remove search param
+        if (searchValue) {
+            url.searchParams.set("searchTerm", searchValue);
+        } else {
+            url.searchParams.delete("searchTerm");
+        }
+
+        // set / remove division param
+        if (divisionId) {
+            url.searchParams.set("division", divisionId);
+        } else {
+            url.searchParams.delete("division");
+        }
+
+        window.history.replaceState({}, "", url);
+
+        clearTimeout(window.filterTimer);
+        window.filterTimer = setTimeout(() => {
+            showLoader(); // agar loader hai
+            window.location.href = url.toString();
+        }, 500);
+    }
+
+    // 🔁 Page reload ke baad values retain karne ke liye
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const search = urlParams.get('searchTerm');
+        const division = urlParams.get('division');
+
+        if (search) {
+            $('#searchByEmployeeName').val(search);
+        }
+
+        if (division) {
+            $('#divisionFilter').val(division);
+        }
     });
 </script>

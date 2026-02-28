@@ -45,9 +45,12 @@
                                             {
                                                 decimal acceptableAmount = item.ProjectAmount - Convert.ToDecimal(item.TotalAskAmount);
                                                 <a href="#" data-title="Add Expences" class="addExpences" data-acceptableAmount="@acceptableAmount" data-Id="@item.Id"><i class="fa fa-plus-circle"></i></a>
-                                            }
 
-                                        </td>
+                                            }
+                                            &nbsp; | &nbsp;  <a data-id="@item.Id"
+                                                  data-projectid="@item.Project_Id"
+                                                  class="edit-expensecommitt cursor-pointer" title="Update Committed"><i class="fa-regular fa-floppy-disk text-primary"></i></a>
+                                            </td>
                                     </tr>
                                     i++;
                                 }
@@ -61,7 +64,7 @@
     </div>
 </div>
 
-
+<!--Add Expense Modal-->
 <div class="modal fade" id="addExpencesModal" tabindex="-1" aria-labelledby="addExpencesModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -114,7 +117,7 @@
     </div>
 </div>
 
-
+<!--View Expense Modal-->
 <div class="modal fade" id="ViewBudgetExpenses" tabindex="-1" aria-labelledby="ViewBudgetExpenses" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -144,7 +147,106 @@
     </div>
 </div>
 
+
+<!---Update Committed Amount Modal-->
+<div class="modal fade" id="updatecommittedamountmodal" tabindex="-1" aria-labelledby="updatecommittedamountmodal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="btn-close float-end" data-bs-dismiss="modal" aria-label="Close"></button>
+
+                <h5 class="modal-title" id="exampleModalLabel">Update Committed</h5>
+
+            </div>
+            <div class="modal-body">
+                <form id="addexpensecommittedForm">
+                    <input type="hidden" id="headId" name="HeadId" value="0" />
+                    <input type="hidden" id="projectid" name="ProjectId" value="0" />
+
+                    <div class="form-group">
+                        <label for="heads" class="form-label">Title</label>
+                        <input type="text" class="form-control" name="Title" id="title" placeholder="Enter title">
+                    </div>
+                    <div class="form-group mt-1">
+                        <label for="Expenditure" class="form-label">Expense Committed (in Lakhs)</label>
+                        <input type="text" class="form-control" name="ExpenseCommitted" id="expensecommitted" placeholder="Enter expense committed">
+                    </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary"><span class="actionType">Update</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+    $(document).ready(function () {
+        $('.edit-expensecommitt').on('click', function () {
+            debugger
+            $('#addexpensecommittedForm')[0].reset();
+            const id = $(this).data('id');
+            const projectid = $(this).data('projectid');
+            $('#headId').val(id);
+            $('#projectid').val(projectid);
+            $('#updatecommittedamountmodal').modal('show');
+        });
+
+
+        //Update Committed
+        $("#addexpensecommittedForm").on("submit", function (e) {
+            e.preventDefault();
+            Swal.fire({
+                title: "Please wait !",
+                text: "Processing your request....",
+                timer: 100000,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+            let data = new FormData(this);
+
+            $.ajax({
+                url: "/accounts/UpdateCommittedInHeads",
+                type: "Post",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function (res) {
+                    if (res.status) {
+                        Swal.fire({
+                            title: "Successfuly !",
+                            text: res.message,
+                            icon: "success",
+                            didClose: () => {
+                                location.reload(true)
+                            }
+                        })
+                    } else {
+                        Swal.fire({
+                            title: "Sorry !",
+                            text: res.message,
+                            icon: "warning"
+                        })
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        title: "Server issue",
+                        text: "Server is not respondig. Please try after sometime.",
+                        icon: "error",
+                        didClose: () => {
+                            location.reload(true)
+                        }
+                    });
+                }
+            });
+        }); 
+    });
+
         // Function to add more rows
     $('#addMore').on('click', function () {
     let count = parseInt($(this).attr("data-count"));
@@ -205,7 +307,7 @@
 
     $(".headExpense").click(function () {
         let headId = $(this).attr("data-Id");
-        let projectId = @Request.QueryString["Id"];
+        let projectId = @Html.Raw(Json.Encode(ViewBag.ProjectId));
 
             Swal.fire({
             title: "Please wait !",

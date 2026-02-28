@@ -1,0 +1,149 @@
+﻿
+@{
+    ViewBag.Title = "ProjecStaffProgressReport";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var reports = ViewData["ReportList"] as List<RemoteSensingProject.Models.ProjectManager.ProjectStaffProgressReport>;
+    var projectstaffList = ViewData["UserList"] as List<RemoteSensingProject.Models.ProjectManager.OuterSource>;
+}
+
+<div class="row mb-3">
+    <div class="col-lg-4">
+        <label for="filterYear" class="form-label">Year</label>
+        <select class="form-select form-select-sm" id="filterYear">
+            @for (int j = DateTime.Now.Year; j >= 2020; j--)
+            {
+                <option value="@j">@j</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-4">
+        <label for="filterMonth" class="form-label">Month</label>
+        <select class="form-select form-select-sm" id="filterMonth">
+            <!-- Options will be added dynamically -->
+            @{
+                DateTime start = new DateTime(DateTime.Now.Year, 1, 1); // January of current year
+                int currentMonth = DateTime.Now.Month;
+
+                for (int k = 1; k <= 12; k++)
+                {
+                    <option value="@start.Month">
+                        @start.ToString("MMMM")
+                    </option>
+                    ;
+
+                    start = start.AddMonths(1);
+                }
+
+
+}
+        </select>
+    </div>
+    <div class="col-lg-4">
+        <label for="projectStaffFilter" class="form-label">Project Staff</label>
+        <select class="form-select form-select-sm" id="projectStaffFilter">
+            <option value="" selected>Filter by project staff</option>
+            @if (projectstaffList != null)
+            {
+                foreach (var item in projectstaffList)
+                {
+                    <option value="@item.Id">@item.EmpName</option>
+                }
+            }
+        </select>
+    </div>
+</div>
+
+
+<div class="row mx-0">
+    <div class="col-sm-12">
+        <div class="table-responsive">
+            <table class="table-bordered table-striped" style="white-space:nowrap" id="dataTableExample">
+                <thead>
+                    <tr>
+                        <th>क्र0स0 </th>
+                        <th>परियोजना वज्ञानिक </th>
+                        <th>परियोजना  का नाम </th>
+                        <th>माह  का लक्ष्य </th>
+                        <th>माह की उपलब्धि </th>
+                        <th>क्रमिक उपलब्धि</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                        if (reports != null)
+                        {
+                            foreach (var item in reports)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.ProjectStaffName</td>
+                                    <td>@item.ProjectName</td>
+                                    <td>@item.MonthAim</td>
+                                    <td>@item.MonthAchievement</td>
+                                    <td>@item.GradualAchievement</td>
+                                </tr>
+                                i++;
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function applyDateFilters() {
+        const url = new URL(window.location.href);
+
+        const month = $("#filterMonth").val();
+        const year = $("#filterYear").val();
+        const staffId = $("#projectStaffFilter").val();
+
+        // Month
+        if (month) url.searchParams.set("month", month);
+        else url.searchParams.delete("month");
+
+        // Year
+        if (year) url.searchParams.set("year", year);
+        else url.searchParams.delete("year");
+
+        // Project Staff
+        if (staffId) url.searchParams.set("projectstafffilter", staffId);
+        else url.searchParams.delete("projectstafffilter");
+
+        showLoader(); // optional
+        window.location.href = url.toString();
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#filterMonth").on("change", applyDateFilters);
+        $("#filterYear").on("change", applyDateFilters);
+        $("#projectStaffFilter").on("change", applyDateFilters);
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        let month = urlParams.get("month");
+        let year = urlParams.get("year");
+        let staffId = urlParams.get("projectstafffilter");
+
+        const currentMonth = new Date().getMonth() + 1;
+        const currentYear = new Date().getFullYear();
+
+        // Month
+        $("#filterMonth").val(month ? month : currentMonth);
+
+        // Year
+        $("#filterYear").val(year ? year : currentYear);
+
+        // Project Staff
+        if (staffId) {
+            $("#projectStaffFilter").val(staffId);
+        }
+    });
+</script>
