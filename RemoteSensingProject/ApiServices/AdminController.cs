@@ -2,6 +2,13 @@
 // for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.ApiServices.AdminController
+using Antlr.Runtime.Tree;
+using RemoteSensingProject.Models;
+using RemoteSensingProject.Models.Accounts;
+using RemoteSensingProject.Models.Admin;
+using RemoteSensingProject.Models.LoginManager;
+using RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.SubOrdinate;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,13 +17,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Web;
 using System.Web.Http;
-using Antlr.Runtime.Tree;
-using RemoteSensingProject.Models;
-using RemoteSensingProject.Models.Accounts;
-using RemoteSensingProject.Models.Admin;
-using RemoteSensingProject.Models.LoginManager;
-using RemoteSensingProject.Models.ProjectManager;
-using RemoteSensingProject.Models.SubOrdinate;
+using static RemoteSensingProject.Models.Admin.main;
 
 namespace RemoteSensingProject.ApiServices
 {
@@ -1545,8 +1546,40 @@ namespace RemoteSensingProject.ApiServices
 				data = data
 			});
 		}
-
-		private IHttpActionResult BadRequest(object value)
+        #region Manage Project Scheme
+        [Route("api/add-projectscheme")]
+        [HttpPost]
+        public IHttpActionResult AddProjectScheme(CommonResponse cr)
+        {
+            try
+            {
+                string message = string.Empty;
+                if (string.IsNullOrEmpty(cr.name))
+                {
+                    return Ok(new
+                    {
+                        status = false,
+                        message = "Project Scheme Name Required"
+                    });
+                }
+                bool res = _adminServices.InsertProjectScheme(cr, out message);
+                return Ok(new
+                {
+                    status = res,
+                    message = res ? (cr.id > 0 ? "Project scheme updated successfully" : "Project scheme added successfully") : message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+        private IHttpActionResult BadRequest(object value)
 		{
 			return Content<object>(HttpStatusCode.BadRequest, value);
 		}

@@ -498,6 +498,9 @@ $(function () {
 
         const pm = data.pm;
 
+        $("select[name='pm.pm.ProjectSchemeId']")
+            .val(pm.ProjectSchemeId)
+            .trigger("change");
         $("#ProjectId").val(pm.Id);
         $("input[name='pm.pm.ProjectTitle']").val(pm.ProjectTitle);
         $("input[name='pm.pm.ProjectBudget']").val(pm.ProjectBudget);

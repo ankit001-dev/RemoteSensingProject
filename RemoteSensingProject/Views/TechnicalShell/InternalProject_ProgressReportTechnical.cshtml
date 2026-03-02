@@ -27,7 +27,6 @@
         .custom-table th,
         .custom-table td {
             border: 1px solid #000;
-            vertical-align: middle;
             font-size: 14px;
         }
 
@@ -115,6 +114,7 @@
                     <h2 class="text-center">मासिक समीक्षा : रूप पत्र - 2 </h2>
                     <h2 class="text-center">शासन से गैर वेतन मद में प्राप्त धनराषि से संचालित योजना / कार्यक्रमों की भौतिक उपलब्धियों का विवरण</h2>
                     <h2 class="text-center">विभाग का नाम : रिमोटे सेन्सिंग एप्लीकेसन्स सेंटर, उत्तर प्रदेश, विज्ञान एवं प्रोद्योगिकी विभाग, उत्तर प्रदेश  </h2>
+                <p class="text-end">माह- @ViewBag.Month,वर्ष- @ViewBag.Year</p>
                 </p>
                 <div class="table-responsive">
                     <table class="table custom-table">
@@ -127,7 +127,7 @@
                                 <th rowspan="2">इकाई (लाख मे)</th>
                                 <th colspan="2">लक्ष्य</th>
                                 <th colspan="2">उपलब्धि </th>
-                                <th rowspan="2">प्रदेश  सरकार के लाभान्वित होने वाले विभाग </th>                                
+                                <th rowspan="2">प्रदेश  सरकार के लाभान्वित होने वाले विभाग </th>
                                 <th rowspan="2">अभ्युक्ति</th>
                                 <th rowspan="2">Action</th>
                             </tr>
@@ -158,7 +158,7 @@
                                 <td class="fw-bold">1.0</td>
                                 <td colspan="9">
                                     <h4>
-                                        रीमोट सेन्सिंग तकनीक से प्रदेश के समस्त प्रकार्तिक संसधानों का अनुश्रवण एवं आलंकान 
+                                        रीमोट सेन्सिंग तकनीक से प्रदेश के समस्त प्रकार्तिक संसधानों का अनुश्रवण एवं आलंकान
                                     </h4>
                                 </td>
                             </tr>
@@ -276,7 +276,7 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Update Status</button>
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Save </button>
                     </div>
                 </form>
             </div>
@@ -347,6 +347,7 @@
     });
 
     $('#projectname').on('change', function () {
+        $('#weeklyUpdateForm')[0].reset();
         const id = $(this).val();
 
         if (id > 0) {

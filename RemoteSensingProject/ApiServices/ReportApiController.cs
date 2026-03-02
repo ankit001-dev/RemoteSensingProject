@@ -888,13 +888,32 @@ public class ReportApiController : ApiController
     {
         List<ExternalProject_ProgressModel> data = new List<ExternalProject_ProgressModel>();
         data = _managerservice.GetMonthlyExternalProjectReport(projectmanager: Convert.ToInt32(id), divisionid: Convert.ToInt32(divisionId), year: year, month: month);
-            string monthName = new CultureInfo("hi-IN")
+        string monthName = string.Empty;
+        if (month <= 0)
+        {
+            monthName = new CultureInfo("hi-IN")
+             .DateTimeFormat
+             .GetMonthName(DateTime.Now.Month);
+        }
+        else
+        {
+            monthName = new CultureInfo("hi-IN")
             .DateTimeFormat
-            .GetMonthName(DateTime.Now.Month);
+            .GetMonthName(month);
+        }
+        string yearName = string.Empty;
+        if (year <= 0)
+        {
+            yearName = DateTime.Now.Year.ToString();
+        }
+        else
+        {
+            yearName = year.ToString();
+        }
         string divisionname = data.FirstOrDefault().DivisionName;
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"External_Project_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.CreateExternalProjectPhysicalAchievementReport(data, monthName,divisionname ,year.ToString());
+        byte[] pdfBytes = DocxGenerator.CreateExternalProjectPhysicalAchievementReport(data, monthName,divisionname ,yearName);
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
 
@@ -905,12 +924,31 @@ public class ReportApiController : ApiController
     public IHttpActionResult CombinedInternalProject_ProgressReport(int month, int year, int? id = null)
     {
         var data = _managerservice.GetMonthlyTechnicalInternalProjectReport(year:year,month:month,divisionid:id); ;
-        string monthName = new CultureInfo("hi-IN")
+        string monthName = string.Empty;
+        if (month <= 0)
+        {
+            monthName = new CultureInfo("hi-IN")
              .DateTimeFormat
              .GetMonthName(DateTime.Now.Month);
+        }
+        else
+        {
+            monthName = new CultureInfo("hi-IN")
+            .DateTimeFormat
+            .GetMonthName(month);
+        }
+        string yearName = string.Empty;
+        if (year <= 0)
+        {
+            yearName = DateTime.Now.Year.ToString();
+        }
+        else
+        {
+            yearName = year.ToString();
+        }
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"Combined_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName,year.ToString());
+        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName,yearName);
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
     
@@ -922,10 +960,10 @@ public class ReportApiController : ApiController
         var data = _accountService.GetInternalProjectExpenses();
         string monthName = new CultureInfo("hi-IN")
         .DateTimeFormat
-        .GetMonthName(DateTime.Now.Month);
+        .GetMonthName(DateTime.Now.Month);        
 
-        // ✅ Get financial year
-        string financialYear = DocxGenerator.GetCurrentFinancialYear();
+            // ✅ Get financial year
+            string financialYear = DocxGenerator.GetCurrentFinancialYear();
 
         byte[] pdfBytes = DocxGenerator.AccountsInternalProjectReport(data, financialYear, monthName);
         string filename = $"Account_Internal_Project_{monthName}_{financialYear}.docx";

@@ -12,7 +12,7 @@ using RemoteSensingProject.Models.ProjectManager;
 namespace RemoteSensingProject.Controllers
 {
 
-    [Authorize(Roles = "admin,prashasan")]
+    [Authorize(Roles = "admin,prashasan,cgp")]
     public class AdminController : Controller
     {
         private readonly AdminServices _adminServices;

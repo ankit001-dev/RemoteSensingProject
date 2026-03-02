@@ -965,7 +965,7 @@ namespace RemoteSensingProject.Models.Admin
         {
             //IL_000d: Unknown result type (might be due to invalid IL or missing references)
             //IL_0013: Expected O, but got Unknown
-            NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_adminaddproject(\r\n    @p_action,\r\n    @p_letterno,\r\n    @p_id,\r\n    @p_title,\r\n    @p_assigndate,\r\n    @p_startdate,\r\n    @p_completiondate,\r\n    @p_projectmanager,\r\n    @p_subordinate,\r\n    @p_budget,\r\n    @p_description,\r\n    @p_projectdocument,\r\n    @p_projecttype,\r\n    @p_stage,\r\n    @p_projectcode,\r\n    @p_approvestatus,\r\n    @p_createdby,\r\n    @p_status,\r\n    @p_heads,\r\n    @p_headsamount,\r\n    @p_keypoint,\r\n    @p_stagedocument,\r\n    @p_departmentname,\r\n    @p_contactperson,\r\n    @p_address,\r\n    @p_hrcount,\r\n @p_hrExisting,  @p_project_id\r\n)", con, tran);
+            NpgsqlCommand cmd = new NpgsqlCommand("CALL sp_adminaddproject(\r\n    @p_action,\r\n    @p_letterno,\r\n    @p_id,\r\n    @p_title,\r\n    @p_assigndate,\r\n    @p_startdate,\r\n    @p_completiondate,\r\n    @p_projectmanager,\r\n    @p_subordinate,\r\n    @p_budget,\r\n    @p_description,\r\n    @p_projectdocument,\r\n    @p_projecttype,\r\n    @p_stage,\r\n    @p_projectcode,\r\n    @p_approvestatus,\r\n    @p_createdby,\r\n    @p_status,\r\n    @p_heads,\r\n    @p_headsamount,\r\n    @p_keypoint,\r\n    @p_stagedocument,\r\n    @p_departmentname,\r\n    @p_contactperson,\r\n    @p_address,\r\n    @p_hrcount,\r\n @p_hrExisting, \r\n @p_projectschemeid, \r\n@p_project_id)", con, tran);
             try
             {
                 ((DbCommand)(object)cmd).CommandType = CommandType.Text;
@@ -973,7 +973,7 @@ namespace RemoteSensingProject.Models.Admin
             {
                 "p_action", "p_letterno", "p_id", "p_title", "p_assigndate", "p_startdate", "p_completiondate", "p_projectmanager", "p_subordinate", "p_budget",
                 "p_description", "p_projectdocument", "p_projecttype", "p_stage", "p_projectcode", "p_approvestatus", "p_createdby", "p_status", "p_heads", "p_headsamount",
-                "p_keypoint", "p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_hrcount", "p_hrExisting", "p_project_id"
+                "p_keypoint", "p_stagedocument", "p_departmentname", "p_contactperson", "p_address", "p_hrcount", "p_hrExisting", "p_project_id","p_projectschemeid"
             };
                 foreach (string paramName in allParams)
                 {
@@ -1119,6 +1119,7 @@ namespace RemoteSensingProject.Models.Admin
                 {
                     while (((DbDataReader)(object)rd).Read())
                     {
+                        pm.ProjectSchemeId = ((((DbDataReader)(object)rd)["projectscheme"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)rd)["projectscheme"]) : 0);
                         pm.Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]);
                         pm.hrCount = ((((DbDataReader)(object)rd)["hrcount"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)rd)["hrcount"]) : 0);
                         pm.ProjectTitle = ((DbDataReader)(object)rd)["title"].ToString();
