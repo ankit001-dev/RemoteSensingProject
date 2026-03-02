@@ -272,16 +272,16 @@ namespace RemoteSensingProject.Models
                     // ROW 2 (Sub Header)
                     // =============================
                     table.Append(new TableRow(
-                        CreateMergedCell("", false, JustificationValues.Center),
-                        CreateMergedCell("", false, JustificationValues.Center),
+                        CreateMergedCell("", false, JustificationValues.Left),
+                        CreateMergedCell("", false, JustificationValues.Left),
                         CreateHeaderCell("वित्तीय"),
                         CreateHeaderCell("भौतिक"),
-                        CreateMergedCell("", false, JustificationValues.Center),
-                        CreateMergedCell("", false, JustificationValues.Center),
-                        CreateMergedCell("", false, JustificationValues.Center),
-                        CreateMergedCell("", false, JustificationValues.Center),
-                        CreateMergedCell("", false, JustificationValues.Center),
-                        CreateMergedCell("", false, JustificationValues.Center)
+                        CreateMergedCell("", false, JustificationValues.Left),
+                        CreateMergedCell("", false, JustificationValues.Left),
+                        CreateMergedCell("", false, JustificationValues.Left),
+                        CreateMergedCell("", false, JustificationValues.Left),
+                        CreateMergedCell("", false, JustificationValues.Left),
+                        CreateMergedCell("", false, JustificationValues.Left)
                     ));
 
                     // =============================
@@ -437,20 +437,20 @@ namespace RemoteSensingProject.Models
                     // HEADER ROW 2
                     // ==========================
                     table.Append(new TableRow(
-                         CreateMergedCell("", false, JustificationValues.Center),
-                         CreateMergedCell("", false, JustificationValues.Center),
-                         CreateMergedCell("", false, JustificationValues.Center),
-                         CreateMergedCell("", false, JustificationValues.Center),
-                         CreateMergedCell("", false, JustificationValues.Center),
-                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left),
 
                         CreateHeaderCell("वार्षिक लक्ष्य"),
                         CreateHeaderCell("माह का लक्ष्य"),
                         CreateHeaderCell("माह की उपलब्धि"),
                         CreateHeaderCell("01.04.25 से क्रमिक उपलब्धि"),
-                         CreateMergedCell("", false, JustificationValues.Center),
-                         CreateMergedCell("", false, JustificationValues.Center),
-                         CreateMergedCell("", false, JustificationValues.Center)
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left)
                     ));
                     int i = 1;
                     foreach(var item in data)
@@ -584,15 +584,15 @@ namespace RemoteSensingProject.Models
                     // HEADER ROW 2
                     // ==========================
                     table.Append(new TableRow(
-                         CreateMergedCell("", false, JustificationValues.Center),
-                         CreateMergedCell("", false, JustificationValues.Center),
-                         CreateMergedCell("", false, JustificationValues.Center),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left),
                         CreateHeaderCell("वार्षिक"),
                         CreateHeaderCell("आलोच्य माशान्त तक"),
                         CreateHeaderCell("आलोच्य माह मे"),
                         CreateHeaderCell("आलोच्य मासांत तक क्रमिक"),
-                         CreateMergedCell("", false, JustificationValues.Center),
-                         CreateMergedCell("", false, JustificationValues.Center)
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left)
                     ));
 
                     int i = 1;
@@ -962,7 +962,14 @@ namespace RemoteSensingProject.Models
                 props,
                 new Paragraph(
                     new ParagraphProperties(
-                        new Justification() { Val = JustificationValues.Center }
+                        new Justification() { Val = JustificationValues.Center },
+                        new SpacingBetweenLines
+                        {
+                            Before = "50",
+                            After = "0",
+                            Line = "350",
+                            LineRule = LineSpacingRuleValues.Auto
+                        }
                     ),
                     new Run(
                         new RunProperties(new Bold()),
@@ -983,7 +990,14 @@ namespace RemoteSensingProject.Models
                     }
                 ),
                 new Paragraph(
-                    new ParagraphProperties(new Justification { Val = align }),
+                    new ParagraphProperties(new Justification { Val = align },
+                    new SpacingBetweenLines
+                    {
+                        Before = "50",
+                        After = "0",
+                        Line = "350",
+                        LineRule = LineSpacingRuleValues.Auto
+                    }),
                     new Run(new Text(text) { Space = SpaceProcessingModeValues.Preserve })
                 )
             );
@@ -1005,7 +1019,7 @@ namespace RemoteSensingProject.Models
                 {
                     Before = "0",
                     After = "0",
-                    Line = "140",
+                    Line = "250",
                     LineRule = LineSpacingRuleValues.Auto
                 }
             ),

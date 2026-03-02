@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var budgetHeads = ViewData["BudgetHeads"] as List<RemoteSensingProject.Models.Admin.main.BudgetHeadModel>;
     var designations = ViewData["Designations"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
+    var schemelist = ViewData["schemelist"] as List<RemoteSensingProject.Models.Admin.main.ProjectSchemeModel>;
 }
 
 
@@ -28,6 +29,19 @@
                     <input type="hidden" name="pm.pm.ProjectId" id="ProjectId" value="0" />
                     <div class="row">
                         <div class="col-lg-4 mb-3">
+                            <label for="projectScheme" class="form-label">Project Scheme</label>
+                            <select name="pm.pm.ProjectSchemeId" class="form-select" required id="projectScheme">
+                                <option selected disabled value="">select project scheme</option>
+                                @if (schemelist != null)
+                                {
+                                    foreach (var item in schemelist)
+                                    {
+                                        <option value="@item.Id">@item.SchemeName</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-lg-4 mb-3">
                             <label for="upload" class="form-label">Title</label>
                             <input type="text" name="pm.pm.ProjectTitle" class="form-control form-control-sm" id="daynight" placeholder="Enter Project Title">
                         </div>
@@ -37,14 +51,15 @@
                                 <input type="date" class="form-control form-control-sm" name="pm.pm.AssignDate" id="assignDate" required>
                             </div>
                         </div>
+                        
+                    </div>
+                    <div class="row">
                         <div class="col-lg-4 mb-3">
                             <label for="subtitle" class="form-label">Start Date (Fund Recieved Date)</label>
                             <div>
                                 <input type="date" class="form-control form-control-sm" name="pm.pm.StartDate" id="startDate" required>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Completion Date</label>
                             <div>
@@ -57,15 +72,16 @@
                             </div>
                             <input type="text" class="form-control form-control-sm" name="pm.pm.ProjectBudget" id="budgetAmount" placeholder="Enter Project Budget" required>
                         </div>
+                        
+
+                    </div>
+                    <div class="row">
                         <div class="col-lg-4 mb-3">
                             <div class="d-flex justify-content-between">
                                 <label for="humanResourcesCount" class="form-label">Project Staff</label><label class="form-label" id="addHRItem" data-count="1"> <a href="#"><i class="fa-solid fa-circle-plus"></i> Add Project Staff</a></label>
                             </div>
                             <input type="number" class="form-control form-control-sm" name="pm.pm.hrCount" id="humanResourcesCount" placeholder="Enter total HR count" required min="0">
                         </div>
-
-                    </div>
-                    <div class="row">
 
                         <div class="col-lg-4 mb-3">
                             <label for="title" class="form-label">Project Document</label>
@@ -470,9 +486,13 @@ $(function () {
     ========================================================== */
 
     function bindProjectData(data) {
-
+        console.log(data.pm,"data project");
         const pm = data.pm;
+        debugger
 
+        $("select[name='pm.pm.ProjectSchemeId']")
+            .val(pm.ProjectSchemeId)
+            .trigger("change");
         $("#ProjectId").val(pm.Id);
         $("input[name='pm.pm.ProjectTitle']").val(pm.ProjectTitle);
         $("input[name='pm.pm.ProjectBudget']").val(pm.ProjectBudget);

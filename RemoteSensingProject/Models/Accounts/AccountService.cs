@@ -339,7 +339,7 @@ namespace RemoteSensingProject.Models.Accounts
                 try
                 {
                     using (var cmd = new NpgsqlCommand(
-                        "CALL sp_manageadhisthan(p_action=>@p_action,p_w_date=>@p_w_date, p_id=>@p_id, p_headname=>@p_headname, p_budgetprovision=>@p_budgetprovision,p_committed=>@p_committed)",
+                        "CALL sp_manageadhisthan(p_action=>@p_action,p_id=>@p_id, p_headname=>@p_headname, p_budgetprovision=>@p_budgetprovision,p_committed=>@p_committed)",
                         con, transaction))
                     {
                         cmd.CommandType = CommandType.Text;
@@ -347,7 +347,7 @@ namespace RemoteSensingProject.Models.Accounts
                         cmd.Parameters.Add("@p_action", NpgsqlDbType.Varchar).Value = ad.Id>0? "updateadhisthan" : "insertadhisthan";
                         cmd.Parameters.Add("@p_id", NpgsqlDbType.Integer).Value = ad.Id;
                         cmd.Parameters.Add("@p_headname", NpgsqlDbType.Varchar).Value = ad.HeadName;
-                        cmd.Parameters.Add("@p_w_date", NpgsqlDbType.Date).Value = DateTime.Now.Date;
+                        //cmd.Parameters.Add("@p_w_date", NpgsqlDbType.Date).Value = DateTime.Now.Date;
                         cmd.Parameters.Add("@p_budgetprovision", NpgsqlDbType.Numeric).Value = ad.BudgetProvision;
                         cmd.Parameters.Add("@p_committed", NpgsqlDbType.Numeric).Value = ad.Committed;
 

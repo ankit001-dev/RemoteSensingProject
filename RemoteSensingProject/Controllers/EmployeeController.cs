@@ -13,6 +13,7 @@ using RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.SubOrdinate;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
@@ -125,6 +126,7 @@ namespace RemoteSensingProject.Controllers
             ViewBag.subOrdinateList = data;
             ViewData["BudgetHeads"] = _adminServices.GetBudgetHeads();
             ViewData["Designations"] = _adminServices.ListDesgination();
+            ViewData["schemelist"] = _adminServices.GetProjectSchemes();
             return View();
         }
 
@@ -1319,7 +1321,24 @@ namespace RemoteSensingProject.Controllers
             ViewData["projectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userData.userId), filterBy:"ProjectManager", projectTypeFilter:"Internal");
             ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReport(month: month, year: year, projectmanager: Convert.ToInt32(userData.userId),filterby:"projectmanager");
             ViewBag.userId = Convert.ToInt32(userData.userId);
-            return View();
+            if (month.HasValue && month >= 1 && month <= 12)
+            {
+                ViewBag.Month = new CultureInfo("hi-IN")
+                    .DateTimeFormat
+                    .GetMonthName(month.Value);
+            }
+            else
+            {
+                ViewBag.Month = new CultureInfo("hi-IN").DateTimeFormat.GetMonthName(DateTime.Now.Month); ViewBag.Year = year;
+            }
+            if (year.HasValue)
+            {
+                ViewBag.Year = year;
+            }else
+            {
+                ViewBag.Year = DateTime.Now.Year;
+            }
+                return View();
         }
         [HttpGet]
         public ActionResult InternalReportFinalSubmit()
@@ -1371,6 +1390,24 @@ namespace RemoteSensingProject.Controllers
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "External");
             ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(projectmanager: Convert.ToInt32(userData.userId),year:year,month:month, filterby: "projectmanager");
             ViewBag.userId = Convert.ToInt32(userData.userId);
+            if (month.HasValue && month >= 1 && month <= 12)
+            {
+                ViewBag.Month = new CultureInfo("hi-IN")
+                    .DateTimeFormat
+                    .GetMonthName(month.Value);
+            }
+            else
+            {
+                ViewBag.Month = new CultureInfo("hi-IN").DateTimeFormat.GetMonthName(DateTime.Now.Month); ViewBag.Year = year;
+            }
+            if (year.HasValue)
+            {
+                ViewBag.Year = year;
+            }
+            else
+            {
+                ViewBag.Year = DateTime.Now.Year;
+            }
             return View();
         }
 

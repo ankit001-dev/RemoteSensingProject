@@ -3,6 +3,7 @@
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.ApiServices.OutSourceController
 
+using DocumentFormat.OpenXml.Math;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
@@ -147,8 +148,7 @@ namespace RemoteSensingProject.ApiServices
 					longitude = request.Form.Get("longitude").ToString(),
 					latitude = request.Form.Get("latitude").ToString(),
 					attendanceStatus = request.Form.Get("attendanceStatus").ToString(),
-					attendanceDate = Convert.ToDateTime(request.Form.Get("attendanceDate")),
-					projectManager = Convert.ToInt32(request.Form.Get("projectManager"))
+					attendanceDate = Convert.ToDateTime(request.Form.Get("attendanceDate"))
 				};
 				DateTime today = DateTime.Now.Date;
 				if (formdata.attendanceDate.Date != today)
@@ -361,5 +361,55 @@ namespace RemoteSensingProject.ApiServices
 				});
 			}
 		}
+
+		#region Manage Monthly Progress Report
+		[HttpPost]
+		[Route("api/add-monthly-progressreport")]
+		public IHttpActionResult AddMonthlyProgressReport(ProjectStaffProgressReport pr)
+		{
+			string message = string.Empty;
+			try
+			{
+				bool res = _subordinate.InsertStaffMonthlyReport(pr,out message);
+				return Ok(new
+				{
+					status = res,
+					StatusCode = res ? 201 : 400,
+					message = res ? "Data updated successfully" : message
+				});
+			}
+			catch(Exception ex)
+			{
+				return BadRequest(new
+				{
+					status = false,
+					message = ex.Message
+				});
+			}
+		}
+		[HttpGet]
+		[Route("api/get-monthly-progressreport")]
+		public IHttpActionResult GetMonthlyProgressReport(int userid,int?month = null,int?year = null,int?limit = null,int?page=  null)
+		{
+			try
+			{
+				var data = _subordinate.GetStaffMonthlyReport(null, limit, page, id: userid, month:month, year:year);
+                return Ok(new
+				{
+					status = data.Any(),
+					data = data,
+					message = data.Any() ? "Data found" : "Data not found"
+				});
+			}
+			catch(Exception ex)
+			{
+				return BadRequest(new
+				{
+					status = false,
+					message = ex.Message
+				});
+			}
+		}
+        #endregion
     }
 }

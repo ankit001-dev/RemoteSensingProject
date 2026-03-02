@@ -19,11 +19,10 @@ using static RemoteSensingProject.Models.CommonHelper;
 
 namespace RemoteSensingProject.ApiServices
 {
-    [JwtAuthorize(Roles = "projectManager,divisionHead")]
+    [JwtAuthorize(Roles = "projectManager,divisionHead,technicalShell")]
     public class ProjectManagerController : ApiController
     {
         private readonly AdminServices _adminServices;
-
         private readonly ManagerService _managerService;
         private readonly SubOrinateService _subordinateServices;
 
@@ -1487,6 +1486,76 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+
+        [HttpGet]
+        [Route("api/get-employee-fortour")]
+        public IHttpActionResult GetEmployeeForTour()
+        {
+            try
+            {
+                var data = _adminServices.BindEmployee();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    message = data.Any() ? "Data found" : "Data not found"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    messge = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/get-employee-reportfilter")]
+        public IHttpActionResult GetEmployeeForReportFilter()
+        {
+            try
+            {
+                var data = _adminServices.BindEmployee().Where(n => n.EmployeeRole != null && n.EmployeeRole.Contains("projectManager")).ToList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    message = data.Any() ? "Data found" : "Data not found"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    messge = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/get-divisionlist")]
+        public IHttpActionResult GetDivisionList()
+        {
+            try
+            {
+                var data = _adminServices.ListDivison();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    message = data.Any() ? "Data found" : "Data not found"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    messge = ex.Message
+                });
+            }
+        }
         #endregion
 
         #region Manage Division Head
@@ -1638,6 +1707,197 @@ namespace RemoteSensingProject.ApiServices
                 {
                     status = false,
                     StatusCode = 400,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+        #region Manage Progress Report
+        [HttpPost]
+        [Route("api/add-progress-report-int")]
+        public IHttpActionResult AddInternalProgressReport(TechnicalInternalMonthlyReport ip)
+        {
+            try
+            {
+                List<string> errors = new List<string>();
+                if (ip.ProjectId <= 0)
+                {
+                    errors.Add("Project ID is required.");
+                }
+                if (errors.Count > 0)
+                {
+                    return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
+                }
+                string message = null;
+                bool res = _managerService.AddOrUpdateMonthlyInternalProgressReportTechnical(ip, out message);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = (res ? 200 : 500),
+                    message = (res ? "Progress report added successfully!" : "Some issue occured!")
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("api/add-progress-report-ext")]
+        public IHttpActionResult AddExternalProgressReport(ExternalProject_ProgressModel ep)
+        {
+            try
+            {
+                List<string> errors = new List<string>();
+                if (ep.ProjectId <= 0)
+                {
+                    errors.Add("Project ID is required.");
+                }
+                if (errors.Count > 0)
+                {
+                    return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
+                }
+                string message = null;
+                bool res = _managerService.AddOrUpdateMonthlyExternalProgressReport(ep, out message);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = (res ? 200 : 500),
+                    message = (res ? "Progress report added successfully!" : "Some issue occured!")
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/get-progress-report-int-byid")]
+        public IHttpActionResult GetInternalProgressReportById(int id)
+        {
+            try
+            {
+                var data = _managerService.GetMonthlyTechnicalInternalProjectReport(projectid: id);
+                return Ok(new
+                {
+                    status = (data != null),
+                    message = ((data != null) ? "Data found!" : "Data not found!"),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/get-progress-report-ext-byid")]
+        public IHttpActionResult GetExternalProgressReportById(int id)
+        {
+            try
+            {
+                var data = _managerService.GetMonthlyExternalProjectReport(projectid: id);
+                return Ok(new
+                {
+                    status = (data != null),
+                    message = ((data != null) ? "Data found!" : "Data not found!"),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/get-progress-report-int")]
+        public IHttpActionResult GetInternalProgressReport(string filterby,int? projectmanagerid = null,int?month=null,int?year=null,int? divisionid = null)
+        {
+            try
+            {
+                var data = _managerService.GetMonthlyTechnicalInternalProjectReport(projectmanager:projectmanagerid,month:month,year:year, filterby: filterby,divisionid:divisionid);
+                return Ok(new
+                {
+                    status = (data != null),
+                    message = ((data != null) ? "Data found!" : "Data not found!"),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/get-progress-report-ext")]
+        public IHttpActionResult GetExternalProgressReport(string filterby,int? projectmanagerid = null,int?month=null,int?year=null,int? divisionid = null)
+        {
+            try
+            {
+                var data = _managerService.GetMonthlyExternalProjectReport(projectmanager:projectmanagerid,month:month,year:year, filterby: filterby,divisionid:divisionid);
+                return Ok(new
+                {
+                    status = (data != null),
+                    message = ((data != null) ? "Data found!" : "Data not found!"),
+                    data = data
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = ex.Message
+                });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/get-monthly-progressreport")]
+        public IHttpActionResult GetMonthlyProgressReport(int? userid=null, int? month = null, int? year = null, int? limit = null, int? page = null,int? projectstafffilter= null)
+        {
+            try
+            {
+                var data = _subordinateServices.GetStaffMonthlyReport(projectstafffilter, limit, page, id: userid, month, year);
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    message = data.Any() ? "Data found" : "Data not found"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
                     message = ex.Message
                 });
             }

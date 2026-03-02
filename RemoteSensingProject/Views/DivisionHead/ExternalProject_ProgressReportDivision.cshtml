@@ -44,7 +44,6 @@
         .custom-table th,
         .custom-table td {
             border: 1px solid #000;
-            vertical-align: middle;
             font-size: 14px;
         }
 
@@ -132,6 +131,7 @@
                     <h2 class="text-center">प्रभागीय मासिक प्रगति आख्या : माह फरवरी 2026 </h2>
                     <h2 class="text-center">रिमोट सेन्सिंग ऍप्लिकेशन्स सेन्टर, उत्तर प्रदेश</h2>
                     <h2 class="text-center">बाह्य सहायतित परियोजनाओं की भौतिक उपतब्धियों का विवरण </h2>
+                <p class="text-end">माह- @ViewBag.Month,वर्ष- @ViewBag.Year</p>
                 </p>
                 <div class="table-responsive">
                     <table class="table custom-table">
@@ -299,7 +299,7 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Update Status</button>
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Save </button>
                     </div>
                 </form>
             </div>
@@ -405,7 +405,8 @@
 
         });
 
-        $('#projectname').on('change', function () {
+    $('#projectname').on('change', function () {
+        $('#weeklyUpdateForm')[0].reset();
             const id = $(this).val();
 
             if (id > 0) {

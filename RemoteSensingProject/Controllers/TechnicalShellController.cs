@@ -1,7 +1,7 @@
-﻿using DocumentFormat.OpenXml.Office2010.Excel;
-using RemoteSensingProject.Models.Admin;
+﻿using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using System;
+using System.Globalization;
 using System.Web.Mvc;
 
 namespace RemoteSensingProject.Controllers
@@ -69,6 +69,24 @@ namespace RemoteSensingProject.Controllers
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "Internal");
             ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReport(month:month,year:year,divisionid:division,filterby: "technicalcell");
             ViewData["DivisionList"] = _adminServices.ListDivison();
+            if (month.HasValue && month >= 1 && month <= 12)
+            {
+                ViewBag.Month = new CultureInfo("hi-IN")
+                    .DateTimeFormat
+                    .GetMonthName(month.Value);
+            }
+            else
+            {
+                ViewBag.Month = new CultureInfo("hi-IN").DateTimeFormat.GetMonthName(DateTime.Now.Month); ViewBag.Year = year;
+            }
+            if (year.HasValue)
+            {
+                ViewBag.Year = year;
+            }
+            else
+            {
+                ViewBag.Year = DateTime.Now.Year;
+            }
             return View();
         }
         public ActionResult ExternalProject_ProgressReportTechnical(int? year = null, int? month = null, int? division = null)
@@ -77,6 +95,24 @@ namespace RemoteSensingProject.Controllers
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "External");
             ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(month:month,year:year,divisionid:division,filterby: "technicalcell");
             ViewData["DivisionList"] = _adminServices.ListDivison();
+            if (month.HasValue && month >= 1 && month <= 12)
+            {
+                ViewBag.Month = new CultureInfo("hi-IN")
+                    .DateTimeFormat
+                    .GetMonthName(month.Value);
+            }
+            else
+            {
+                ViewBag.Month = new CultureInfo("hi-IN").DateTimeFormat.GetMonthName(DateTime.Now.Month); ViewBag.Year = year;
+            }
+            if (year.HasValue)
+            {
+                ViewBag.Year = year;
+            }
+            else
+            {
+                ViewBag.Year = DateTime.Now.Year;
+            }
             return View();
         }
 

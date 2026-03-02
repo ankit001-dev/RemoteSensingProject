@@ -275,6 +275,164 @@ namespace RemoteSensingProject.ApiServices
             }
         }
         #endregion
+
+        #region Manage Adhisthan
+        [HttpPost]
+        [Route("api/add-adhisthan")]
+        public IHttpActionResult AddAdhisthan(main.AdhisthanModel ad)
+        {
+            try
+            {
+                bool res = _accountSerivce.InsertAdhisthan(ad);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 201 : 400,
+                    message = res ? (ad.Id > 0 ? "Data updated successfully" : "Data added successfully !") : "Some issue occured !"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpGet]
+        [Route("api/get-adhisthan")]
+        public IHttpActionResult GetAdhisthan()
+        {
+            try
+            {
+                var data = _accountSerivce.GetAdhisthanList();
+                return Ok(new
+                {
+                    status = data.Any(),
+                    data = data,
+                    message = data.Any() ? "Data found" : "Data not found"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("api/add-expenditure")]
+        public IHttpActionResult AddExpenditure(main.AdhisthanModel ad)
+        {
+            try
+            {
+                bool res = _accountSerivce.InsertExpenditure(ad);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 201 : 400,
+                    message = res ?  "Data added successfully !" : "Some issue occured !"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("api/add-committed")]
+        public IHttpActionResult AddCommitted(main.UpdateCommitted ad)
+        {
+            try
+            {
+                bool res = _accountSerivce.UpdateExpenseCommitted(ad);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 201 : 400,
+                    message = res ?  "Data updated successfully !" : "Some issue occured !"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+        [HttpPost]
+        [Route("api/add-committed-heads")]
+        public IHttpActionResult AddCommittedInHeads(main.UpdateCommitted ad)
+        {
+            try
+            {
+                bool res = _accountSerivce.UpdateExpenseCommittedInHeads(ad);
+                return Ok(new
+                {
+                    status = res,
+                    StatusCode = res ? 201 : 400,
+                    message = res ?  "Data updated successfully !" : "Some issue occured !"
+                });
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+
+        #endregion
+
+        #region Manage Project List 
+        [HttpGet]
+        [Route("api/get-internal-projects")]
+        public IHttpActionResult GetInternalProjectList(string searchTerm = null,int? limit = null,int? page = null,string statusFilter = null)
+        {
+            string[] selectProperties = new string[23]
+           {
+                "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
+                "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
+                "ProjectDepartment", "ContactPerson", "Address"
+           };
+            var data = _mangerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "Internal",limit:limit,page:page,statusFilter:statusFilter);
+            List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
+            if (data.Count > 0)
+            {
+                return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+            }
+            return CommonHelper.NoData((ApiController)(object)this);
+        }
+        [HttpGet]
+        [Route("api/get-external-projects")]
+        public IHttpActionResult GetExternalProjectList(string searchTerm = null,int? limit = null,int? page = null,string statusFilter = null)
+        {
+            string[] selectProperties = new string[23]
+           {
+                "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
+                "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
+                "ProjectDepartment", "ContactPerson", "Address"
+           };
+            var data = _mangerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "External",limit:limit,page:page,statusFilter:statusFilter);
+            List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
+            if (data.Count > 0)
+            {
+                return CommonHelper.Success((ApiController)(object)this, filterData, "Data fetched successfully", 200, data[0].Pagination);
+            }
+            return CommonHelper.NoData((ApiController)(object)this);
+        }
+        #endregion
         private IHttpActionResult BadRequest(object value)
         {
             return Content<object>(HttpStatusCode.BadRequest, value);

@@ -28,7 +28,6 @@
         .custom-table th,
         .custom-table td {
             border: 1px solid #000;
-            vertical-align: middle;
             font-size: 14px;
         }
 
@@ -108,6 +107,7 @@
                     <h2 class="text-center">मासिक समीक्षा : रूप पत्र - 2 </h2>
                     <h2 class="text-center">शासन से गैर वेतन मद में प्राप्त धनराषि से संचालित योजना / कार्यक्रमों की भौतिक उपलब्धियों का विवरण</h2>
                     <h2 class="text-center">विभाग का नाम : रिमोटे सेन्सिंग एप्लीकेसन्स सेंटर, उत्तर प्रदेश, विज्ञान एवं प्रोद्योगिकी विभाग, उत्तर प्रदेश  </h2>
+                    <p class="text-end">माह- @ViewBag.Month,वर्ष- @ViewBag.Year</p>
                 </p>
                 <div class="table-responsive">
                     <table class="table custom-table">
@@ -274,7 +274,7 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Update Status</button>
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Save </button>
                     </div>
                 </form>
             </div>
@@ -381,6 +381,7 @@
     });
 
     $('#projectname').on('change', function () {
+        $('#weeklyUpdateForm')[0].reset();
         const id = $(this).val();
 
         if (id > 0) {

@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewBag.Title = "AttendanceView";
+    Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
+    var data = ViewData["attendancelist"] as List<RemoteSensingProject.Models.ProjectManager.AttendanceManage>;
+}
+
+
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <form class="forms-sample">
+        <div class="row align-items-center">
+            <div class="col-lg-3">
+                <div class="t-header"><h4 class="mb-2 text-primary"><a href="#">Attendance List</a></h4></div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="row gutters my-3">
+    <div class="card">
+        <div class="card-body">
+
+
+            <div class="table-container">
+
+
+                <div class="table-responsive">
+                    <table id="dataTableExample" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Sr.No.</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (data != null) {
+                                int count = 1;
+                                foreach(var item in data)
+                                {
+                    <tr>
+                        <td>@count</td>
+                        <td>@item.attendanceDate</td>
+                        <td>@item.attendanceStatus</td>
+                        <td>@item.address</td>
+                    </tr>
+                                    count++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

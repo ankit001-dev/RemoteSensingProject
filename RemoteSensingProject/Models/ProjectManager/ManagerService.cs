@@ -752,7 +752,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public bool AddOrUpdateMonthlyInternalProgressReport(InternalProject_ProgressModel pm,out string message)
+        public bool AddOrUpdateMonthlyInternalProgressReport(InternalProject_ProgressModel pm, out string message)
         {
             message = string.Empty;
             try
@@ -815,7 +815,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 throw ex;
             }
         }
-        public bool AddOrUpdateMonthlyExternalProgressReport(ExternalProject_ProgressModel pm,out string message)
+        public bool AddOrUpdateMonthlyExternalProgressReport(ExternalProject_ProgressModel pm, out string message)
         {
             message = string.Empty;
             try
@@ -880,7 +880,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 throw ex;
             }
         }
-        public bool AddOrUpdateMonthlyInternalProgressReportTechnical(TechnicalInternalMonthlyReport pm,out string message)
+        public bool AddOrUpdateMonthlyInternalProgressReportTechnical(TechnicalInternalMonthlyReport pm, out string message)
         {
             message = string.Empty;
             try
@@ -1066,7 +1066,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         }
         #endregion
 
-        public List<InternalProject_ProgressModel>  GetMonthlyProjectReport(int? id = null,int? projectid=null, int? month = null, int? year = null,int? divisionid = null, int? projectmanager = null)
+        public List<InternalProject_ProgressModel> GetMonthlyProjectReport(int? id = null, int? projectid = null, int? month = null, int? year = null, int? divisionid = null, int? projectmanager = null)
         {
             try
             {
@@ -1108,12 +1108,12 @@ namespace RemoteSensingProject.Models.ProjectManager
                                             MonthAim = res["monthaim"].ToString(),
                                             MonthlyStatus = res["monthlystatus"].ToString(),
                                             SquenceStatus = res["squencestatus"].ToString(),
-                                            SequenceStatusPerc = res["sequencestatusperc"] != DBNull.Value ? Convert.ToInt32(res["sequencestatusperc"]):0,
+                                            SequenceStatusPerc = res["sequencestatusperc"] != DBNull.Value ? Convert.ToInt32(res["sequencestatusperc"]) : 0,
                                             Statebeneficiary = res["statebeneficiary"].ToString(),
                                             Remark = res["remark"].ToString(),
                                             CreaterRole = res["createdby"].ToString(),
                                             CreaterId = res["createruserid"].ToString(),
-                                            DivisionName= res["divisionname"].ToString()
+                                            DivisionName = res["divisionname"].ToString()
                                         });
                                     }
                                 }
@@ -1161,7 +1161,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 }
             }
         }
-        public List<TechnicalInternalMonthlyReport>  GetMonthlyTechnicalInternalProjectReport(int? id = null,int? projectid=null, int? month = null, int? year = null,int? divisionid = null, int? projectmanager = null,string filterby=null)
+        public List<TechnicalInternalMonthlyReport> GetMonthlyTechnicalInternalProjectReport(int? id = null, int? projectid = null, int? month = null, int? year = null, int? divisionid = null, int? projectmanager = null, string filterby = null)
         {
             try
             {
@@ -1255,7 +1255,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         }
 
 
-        public List<ExternalProject_ProgressModel> GetMonthlyExternalProjectReport(int? id = null, int? projectid = null, int? month = null, int? year = null,int? divisionid = null,int?projectmanager = null,string filterby = null)
+        public List<ExternalProject_ProgressModel> GetMonthlyExternalProjectReport(int? id = null, int? projectid = null, int? month = null, int? year = null, int? divisionid = null, int? projectmanager = null, string filterby = null)
         {
             try
             {
@@ -1269,7 +1269,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@v_action", (object)"getExternalprojectReport");
-                        cmd.Parameters.AddWithValue("@v_projectmanager", projectmanager.HasValue?(object)projectmanager.Value:DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_projectmanager", projectmanager.HasValue ? (object)projectmanager.Value : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_projectid", projectid.HasValue ? ((object)projectid.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_divisionid", divisionid.HasValue ? ((object)divisionid.Value) : DBNull.Value);
@@ -2007,7 +2007,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<OuterSource> selectAllOutSOurceList(int? id, int? limit = null, int? page = null, string searchTerm = null,int? divisionFilter = null)
+        public List<OuterSource> selectAllOutSOurceList(int? id, int? limit = null, int? page = null, string searchTerm = null, int? divisionFilter = null)
         {
             try
             {
@@ -2583,7 +2583,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                                             description = ((DbDataReader)(object)rd)["description"].ToString(),
                                             completeStatus = Convert.ToBoolean(((DbDataReader)(object)rd)["completeStatus"]),
                                             projectName = rd["projectName"].ToString(),
-                                            completionDate = rd["completiondate"]!=DBNull.Value ? Convert.ToDateTime(rd["completiondate"]) :DateTime.MinValue
+                                            completionDate = rd["completiondate"] != DBNull.Value ? Convert.ToDateTime(rd["completiondate"]) : DateTime.MinValue
                                         };
                                         if (firstRow)
                                         {
@@ -2823,7 +2823,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 tx.Commit();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return false;
             }
@@ -2880,7 +2880,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                                             periodTo = Convert.ToDateTime(((DbDataReader)(object)res)["periodTo"]),
                                             returnDate = Convert.ToDateTime(((DbDataReader)(object)res)["returnDate"]),
                                             purpose = Convert.ToString(((DbDataReader)(object)res)["purpose"]),
-                                            proposalType = res["tourtype"]!= DBNull.Value? ((DbDataReader)(object)res)["tourtype"].ToString():"N/A",
+                                            proposalType = res["tourtype"] != DBNull.Value ? ((DbDataReader)(object)res)["tourtype"].ToString() : "N/A",
                                             projectCode = ((((DbDataReader)(object)res)["projectCode"] != DBNull.Value) ? ((DbDataReader)(object)res)["projectCode"].ToString() : "N/A"),
                                             outsource = new List<int>()
                                         };
@@ -3301,60 +3301,92 @@ namespace RemoteSensingProject.Models.ProjectManager
 
         public (bool success, string error) insertAttendance(AttendanceManage am)
         {
-            //IL_0019: Unknown result type (might be due to invalid IL or missing references)
-            //IL_001f: Expected O, but got Unknown
-            //IL_0086: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0090: Expected O, but got Unknown
+            NpgsqlTransaction tran = null;
             try
             {
                 ((DbConnection)(object)con).Open();
-                NpgsqlCommand checkCmd = new NpgsqlCommand("SELECT COUNT(*) FROM ManageAttendance WHERE EmpId = @EmpId AND attendancedate = @Date", con);
-                checkCmd.Parameters.AddWithValue("@EmpId", (object)am.EmpId);
-                checkCmd.Parameters.AddWithValue("@Date", (object)am.attendanceDate);
-                int count = (int)((DbCommand)(object)checkCmd).ExecuteScalar();
+                tran = con.BeginTransaction();
+
+                int count = 0;
+
+                // ===== Attendance check (same logic as second function) =====
+                using (NpgsqlCommand checkCmd = new NpgsqlCommand(
+                    "select fn_manageattendance_cursor(@v_action,NULL::int,@v_id,NULL::int,NULL::int,NULL::int,NULL::int,@v_date)",
+                    con, tran))
+                {
+                    checkCmd.Parameters.AddWithValue("@v_action", "checkattendance");
+                    checkCmd.Parameters.AddWithValue("@v_id", am.EmpId);
+                    checkCmd.Parameters.AddWithValue("@v_date", am.attendanceDate);
+
+                    string cursorName = Convert.ToString(checkCmd.ExecuteScalar());
+
+                    if (!string.IsNullOrEmpty(cursorName))
+                    {
+                        using (NpgsqlCommand fetchCmd =
+                               new NpgsqlCommand($"FETCH ALL FROM \"{cursorName}\"", con, tran))
+                        {
+                            count = Convert.ToInt32(fetchCmd.ExecuteScalar());
+                        }
+                    }
+                }
+
+                // ===== If attendance already exists =====
                 if (count > 0)
                 {
+                    tran.Commit();
                     return (success: true, error: null);
                 }
-                cmd = new NpgsqlCommand("sp_ManageAttendance", con);
-                ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@action", (object)"insertOutsource");
-                cmd.Parameters.AddWithValue("@EmpId", (object)am.EmpId);
-                cmd.Parameters.AddWithValue("@address", (object)am.address);
-                cmd.Parameters.AddWithValue("@longitude", (object)am.longitude);
-                cmd.Parameters.AddWithValue("@latitude", (object)am.latitude);
-                cmd.Parameters.AddWithValue("@attendancestatus", (object)am.attendanceStatus);
-                cmd.Parameters.AddWithValue("@attendancedate", (object)am.attendanceDate);
-                cmd.Parameters.AddWithValue("@projectManager", (object)am.projectManager);
-                int res = ((DbCommand)(object)cmd).ExecuteNonQuery();
-                if (res > 0)
+
+                // ===== Insert attendance (same SP style as second function) =====
+                using (NpgsqlCommand cmd = new NpgsqlCommand(@"
+            call sp_manageattendance(
+                0,
+                NULL::int,                -- projectmanager
+                @v_empid,
+                @v_address,
+                @v_longitude,
+                @v_latitude,
+                @v_attendancestatus,
+                @v_attendancedate,
+                NULL::boolean,
+                NULL::timestamp,
+                NULL::timestamp,
+                NULL::boolean,
+                NULL::boolean,
+                NULL::varchar,
+                NULL::integer,
+                NULL::integer,
+                @v_action
+            );", con, tran))
                 {
-                    return (success: true, error: "Added Successfully");
+                    cmd.Parameters.Add("@v_action", NpgsqlDbType.Varchar).Value = "insertOutsource";
+                    cmd.Parameters.Add("@v_empid", NpgsqlDbType.Integer).Value = am.EmpId;
+                    cmd.Parameters.Add("@v_address", NpgsqlDbType.Varchar).Value = am.address;
+                    cmd.Parameters.Add("@v_longitude", NpgsqlDbType.Varchar).Value = am.longitude;
+                    cmd.Parameters.Add("@v_latitude", NpgsqlDbType.Varchar).Value = am.latitude;
+                    cmd.Parameters.Add("@v_attendancestatus", NpgsqlDbType.Varchar).Value = am.attendanceStatus;
+                    cmd.Parameters.Add("@v_attendancedate", NpgsqlDbType.Timestamp).Value = am.attendanceDate;
+
+                    cmd.ExecuteNonQuery();
                 }
-                return (success: false, error: "Server Error");
+
+                tran.Commit();
+                return (success: true, error: "Added Successfully");
             }
-            catch
+            catch (Exception ex)
             {
-                return (success: false, error: "Error Occured");
+                tran?.Rollback();
+                return (success: false, error: ex.Message);
             }
             finally
             {
                 if (((DbConnection)(object)con).State == ConnectionState.Open)
-                {
                     ((DbConnection)(object)con).Close();
-                }
-                ((Component)(object)cmd).Dispose();
             }
         }
 
         public (bool success, List<string> skippedDates, string error) InsertAttendance(AttendanceManage model)
         {
-            //IL_004b: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0052: Expected O, but got Unknown
-            //IL_00e3: Unknown result type (might be due to invalid IL or missing references)
-            //IL_00ea: Expected O, but got Unknown
-            //IL_0144: Unknown result type (might be due to invalid IL or missing references)
-            //IL_014b: Expected O, but got Unknown
             List<string> skippedDates = new List<string>();
             try
             {
@@ -3430,37 +3462,69 @@ namespace RemoteSensingProject.Models.ProjectManager
 
         public List<AttendanceManage> GetAllAttendanceForOutsource(int EmpId)
         {
-            //IL_000e: Unknown result type (might be due to invalid IL or missing references)
-            //IL_0018: Expected O, but got Unknown
+            List<AttendanceManage> list = new List<AttendanceManage>();
+            ((DbConnection)(object)con).Open();
+            NpgsqlTransaction tran = con.BeginTransaction();
             try
             {
-                cmd = new NpgsqlCommand("sp_ManageAttendance", con);
-                ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("@EmpId", (object)EmpId);
-                cmd.Parameters.AddWithValue("@action", (object)"getallforoutsorce");
-                List<AttendanceManage> list = new List<AttendanceManage>();
-                ((DbConnection)(object)con).Open();
-                NpgsqlDataReader rd = cmd.ExecuteReader();
-                if (((DbDataReader)(object)rd).HasRows)
+                NpgsqlCommand cmd = new NpgsqlCommand("fn_manageattendance_cursor", con, tran);
+                try
                 {
-                    while (((DbDataReader)(object)rd).Read())
+                    ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("v_id", (object)EmpId);
+                    cmd.Parameters.AddWithValue("v_projectmanager", (object)0);
+                    cmd.Parameters.AddWithValue("v_action", (object)"getallforoutsorce");
+                    string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                    NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                    try
                     {
-                        list.Add(new AttendanceManage
+                        NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                        try
                         {
-                            id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
-                            EmpId = Convert.ToInt32(((DbDataReader)(object)rd)["EmpId"]),
-                            projectManager = Convert.ToInt32(((DbDataReader)(object)rd)["projectManager"]),
-                            address = ((DbDataReader)(object)rd)["address"].ToString(),
-                            longitude = ((DbDataReader)(object)rd)["longitude"].ToString(),
-                            latitude = ((DbDataReader)(object)rd)["latitude"].ToString(),
-                            createdAt = Convert.ToDateTime(((DbDataReader)(object)rd)["createdAt"]),
-                            attendanceDate = Convert.ToDateTime(((DbDataReader)(object)rd)["attendancedate"]),
-                            attendanceStatus = ((DbDataReader)(object)rd)["attendancestatus"].ToString(),
-                            newRequest = Convert.ToBoolean(((DbDataReader)(object)rd)["newRequest"]),
-                            remark = ((DbDataReader)(object)rd)["remark"].ToString(),
-                            projectManagerAppr = Convert.ToBoolean(((DbDataReader)(object)rd)["projectManagerAppr"])
-                        });
+                            if (((DbDataReader)(object)rd).HasRows)
+                            {
+                                while (((DbDataReader)(object)rd).Read())
+                                {
+                                    list.Add(new AttendanceManage
+                                    {
+                                        id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+                                        EmpId = Convert.ToInt32(((DbDataReader)(object)rd)["EmpId"]),
+                                        projectManager = rd["projectManager"]!=DBNull.Value? Convert.ToInt32(((DbDataReader)(object)rd)["projectManager"]):0,
+                                        address = ((DbDataReader)(object)rd)["address"].ToString(),
+                                        longitude = ((DbDataReader)(object)rd)["longitude"].ToString(),
+                                        latitude = ((DbDataReader)(object)rd)["latitude"].ToString(),
+                                        createdAt = Convert.ToDateTime(((DbDataReader)(object)rd)["createdAt"]),
+                                        attendanceDate = Convert.ToDateTime(((DbDataReader)(object)rd)["attendancedate"]),
+                                        attendanceStatus = ((DbDataReader)(object)rd)["attendancestatus"].ToString(),
+                                        newRequest = Convert.ToBoolean(((DbDataReader)(object)rd)["newRequest"]),
+                                        remark = rd["remark"]!=DBNull.Value?((DbDataReader)(object)rd)["remark"].ToString():"",
+                                        projectManagerAppr = Convert.ToBoolean(((DbDataReader)(object)rd)["projectManagerAppr"])
+                                    });
+                                }
+                            }
+                            return list;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        finally
+                        {
+                            if (((DbConnection)(object)con).State == ConnectionState.Open)
+                            {
+                                ((DbConnection)(object)con).Close();
+                            }
+                            ((Component)(object)cmd).Dispose();
+                        }
                     }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
                 }
                 return list;
             }
@@ -3474,7 +3538,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 {
                     ((DbConnection)(object)con).Close();
                 }
-                ((Component)(object)cmd).Dispose();
+                ((Component)(object)base.cmd).Dispose();
             }
         }
 
@@ -4437,8 +4501,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                                             ProjectName = ((((DbDataReader)(object)res)["title"] != DBNull.Value) ? ((DbDataReader)(object)res)["title"].ToString() : ""),
                                             Unit = ((((DbDataReader)(object)res)["Unit"] != DBNull.Value) ? ((DbDataReader)(object)res)["Unit"].ToString() : ""),
                                             AnnualTarget = ((((DbDataReader)(object)res)["AnnualTarget"] != DBNull.Value) ? ((DbDataReader)(object)res)["AnnualTarget"].ToString() : null),
-                                            TargetUptoReviewMonth = ((((DbDataReader)(object)res)["TargetUptoReviewMonth"] != DBNull.Value) ?((DbDataReader)(object)res)["TargetUptoReviewMonth"].ToString():null),
-                                            AchievementDuringReviewMonth = ((((DbDataReader)(object)res)["AchievementDuringReviewMonth"] != DBNull.Value) ? ((DbDataReader)(object)res)["AchievementDuringReviewMonth"].ToString():null),
+                                            TargetUptoReviewMonth = ((((DbDataReader)(object)res)["TargetUptoReviewMonth"] != DBNull.Value) ? ((DbDataReader)(object)res)["TargetUptoReviewMonth"].ToString() : null),
+                                            AchievementDuringReviewMonth = ((((DbDataReader)(object)res)["AchievementDuringReviewMonth"] != DBNull.Value) ? ((DbDataReader)(object)res)["AchievementDuringReviewMonth"].ToString() : null),
                                             CumulativeAchievement = ((((DbDataReader)(object)res)["CumulativeAchievement"] != DBNull.Value) ? ((DbDataReader)(object)res)["CumulativeAchievement"].ToString() : null),
                                             BenefitingDepartments = ((((DbDataReader)(object)res)["BenefitingDepartments"] != DBNull.Value) ? ((DbDataReader)(object)res)["BenefitingDepartments"].ToString() : ""),
                                             Remarks = ((((DbDataReader)(object)res)["Remarks"] != DBNull.Value) ? ((DbDataReader)(object)res)["Remarks"].ToString() : ""),
@@ -5430,7 +5494,7 @@ namespace RemoteSensingProject.Models.ProjectManager
         #endregion
 
         #region Manage Manpower report
-        public List<DivisionOutsourceReport> GetManpowerMonthlyReport(int? divisionId= null, int? year = null, int? month = null)
+        public List<DivisionOutsourceReport> GetManpowerMonthlyReport(int? divisionId = null, int? year = null, int? month = null)
         {
             try
             {

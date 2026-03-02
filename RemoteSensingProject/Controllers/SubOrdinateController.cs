@@ -171,8 +171,17 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
 
+        #region Report
+		public ActionResult AttendanceView()
+		{
+            int userid = Convert.ToInt32(_subOrdinate.GetOutSourceId(User.Identity.Name).userId);
+			ViewData["attendancelist"] = _managerServices.GetAllAttendanceForOutsource(userid);
+			return View();
+		}
+        #endregion
+
         #region Monthly Progress Report
-		public ActionResult MonthlyProgressReport(int? month = null, int? year = null)
+        public ActionResult MonthlyProgressReport(int? month = null, int? year = null)
 		{
             var userId = Convert.ToInt32(_subOrdinate.GetOutSourceId(User.Identity.Name).userId);
             ViewData["ReportList"] = _subOrdinate.GetStaffMonthlyReport(userId, null, null, null, month, year);
