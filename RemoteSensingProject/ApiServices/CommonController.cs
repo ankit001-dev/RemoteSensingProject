@@ -218,7 +218,7 @@ public class CommonController : ApiController
 		});
 
     }
-    [RoleAuthorize("admin,technicalShell")]
+    [RoleAuthorize("admin,technicalShell,accounts")]
     [HttpGet]
     [Route("api/adminProjectList")]
     public IHttpActionResult getProjectList(int? page, int? limit, string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null)
