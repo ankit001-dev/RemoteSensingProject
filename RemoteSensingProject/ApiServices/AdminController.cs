@@ -1578,6 +1578,37 @@ namespace RemoteSensingProject.ApiServices
                 });
             }
         }
+        [Route("api/remove-projectscheme")]
+        [HttpGet]
+        public IHttpActionResult RemoveProjectScheme(int id)
+        {
+            try
+            {
+                string message = string.Empty;
+                if (id <= 0)
+                {
+                    return Ok(new
+                    {
+                        status = false,
+                        message = "invalid id"
+                    });
+                }
+                bool res = _adminServices.DeleteProjectScheme(id);
+                return Ok(new
+                {
+                    status = res,
+                    message = res ? "Project scheme removed successfully" : message
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
         #endregion
         private IHttpActionResult BadRequest(object value)
 		{
