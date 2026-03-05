@@ -388,7 +388,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 		[HttpGet]
-		[Route("api/get-monthly-progressreport")]
+		[Route("api/getProjectstaff-monthly-progressreport")]
 		public IHttpActionResult GetMonthlyProgressReport(int userid,int?month = null,int?year = null,int?limit = null,int?page=  null)
 		{
 			try

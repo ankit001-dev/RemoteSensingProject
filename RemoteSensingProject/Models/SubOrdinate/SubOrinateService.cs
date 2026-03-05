@@ -491,7 +491,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
             try
             {
                 List<ProjectStaffProgressReport> list = new List<ProjectStaffProgressReport>();
-                ((DbConnection)(object)con).Open();
+				con.Open();
                 NpgsqlTransaction tran = con.BeginTransaction();
                 try
                 {

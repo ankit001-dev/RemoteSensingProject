@@ -9,6 +9,7 @@ using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.LoginManager;
 using RemoteSensingProject.Models.MailService;
+using RemoteSensingProject.Models.ProjectManager;
 
 namespace RemoteSensingProject.ApiServices
 {
@@ -16,7 +17,7 @@ namespace RemoteSensingProject.ApiServices
 	public class LoginController : ApiController
 	{
 		private readonly LoginServices _loginService;
-
+		private readonly ManagerService _managerService;
 		private readonly ObjectCache _cache = MemoryCache.Default;
 
 		private readonly mail _mail;
@@ -28,6 +29,7 @@ namespace RemoteSensingProject.ApiServices
 			_loginService = new LoginServices();
 			_mail = new mail();
 			authgaurd = new JwtAuthorizeAttribute();
+			_managerService = new ManagerService();
 		}
 
 		[System.Web.Mvc.AllowAnonymous]
@@ -54,11 +56,13 @@ namespace RemoteSensingProject.ApiServices
 				{
 					string token = _loginService.GenerateToken(data);
 					var userData = new { data.username, data.Emp_Id, data.Emp_Name, data.profilePath, data.role, data.userId };
+					var OtherData = _managerService.getManagerDetails(data.username);
 					return Ok(new
 					{
 						status = true,
 						StatusCode = 200,
 						data = userData,
+						otherData = OtherData,
 						token = token
 					});
 				}
