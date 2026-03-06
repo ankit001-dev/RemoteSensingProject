@@ -393,7 +393,7 @@ namespace RemoteSensingProject.ApiServices
 		{
 			try
 			{
-				var data = _subordinate.GetStaffMonthlyReport(null, limit, page, id: userid, month:month, year:year);
+				var data = _subordinate.GetStaffMonthlyReport(userid: userid, limit, page, month:month, year:year);
                 return Ok(new
 				{
 					status = data.Any(),
