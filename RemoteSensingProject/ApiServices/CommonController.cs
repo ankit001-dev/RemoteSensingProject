@@ -1,7 +1,3 @@
-// Warning: Some assembly references could not be resolved automatically. This might lead to incorrect decompilation of some parts,
-// for ex. property getter/setter access. To get optimal decompilation results, please manually add the missing references to the list of loaded assemblies.
-// RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-// RemoteSensingProject.ApiServices.CommonController
 using Newtonsoft.Json;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
@@ -14,7 +10,6 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Policy;
 using System.Web;
 using System.Web.Http;
 using static RemoteSensingProject.Models.Admin.main;
@@ -423,6 +418,234 @@ public class CommonController : ApiController
             return CommonHelper.Error((ApiController)(object)this, ex.Message);
         }
     }
+
+    [HttpGet]
+    [Route("api/GetMeetingMemberListById")]
+    [System.Web.Mvc.AllowAnonymous]
+    public IHttpActionResult GetMeetingMemberList(int meetId)
+    {
+        try
+        {
+            List<RemoteSensingProject.Models.Admin.main.Employee_model> data = _adminServices.GetMeetingMemberList(meetId);
+            string[] selectProperties = new string[7] { "Id", "EmployeeCode", "EmployeeName", "EmployeeRole", "MobileNo", "Email", "meetingId" };
+            List<object> newData = CommonHelper.SelectProperties(data, selectProperties);
+            if (newData.Count > 0)
+            {
+                return CommonHelper.Success((ApiController)(object)this, newData, "Data fetched successfully");
+            }
+            return CommonHelper.NoData((ApiController)(object)this);
+        }
+        catch (Exception ex)
+        {
+            return CommonHelper.Error((ApiController)(object)this, ex.Message);
+        }
+    }
+
+    [HttpGet]
+    [Route("api/getMeetingKeyResponse")]
+    public IHttpActionResult GetMeetingKeyResponse(int id)
+    {
+        try
+        {
+            List<RemoteSensingProject.Models.Admin.main.KeyPointResponse> data = _adminServices.getKeypointResponse(id);
+            return Ok(new
+            {
+                status = true,
+                StatusCode = 200,
+                data = data
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+
+    [HttpGet]
+    [Route("api/getMeetingPresentMember")]
+    public IHttpActionResult GetMeetingPresentMember(int MeetId)
+    {
+        try
+        {
+            List<RemoteSensingProject.Models.Admin.main.Employee_model> data = _adminServices.getPresentMember(MeetId);
+            string[] selectedprop = new string[4] { "EmployeeName", "Image_url", "EmployeeRole", "PresentStatus" };
+            List<object> newData = CommonHelper.SelectProperties(data, selectedprop);
+            return Ok(new
+            {
+                status = true,
+                StatusCode = 200,
+                data = newData
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+    [HttpGet]
+    [Route("api/allEmployeeList")]
+    public IHttpActionResult All_EmpList(int? page = null, int? limit = null, string searchTerm = null, int? devision = null)
+    {
+        try
+        {
+            List<RemoteSensingProject.Models.Admin.main.Employee_model> data = _adminServices.SelectEmployeeRecord(page, limit, searchTerm, devision);
+            string[] selectProperties = new string[13]
+            {
+                "Id", "EmployeeCode", "EmployeeName", "DevisionName", "Email", "MobileNo", "EmployeeRole", "Division", "DesignationName", "Status",
+                "ActiveStatus", "CreationDate", "Image_url"
+            };
+            List<object> filtered = CommonHelper.SelectProperties(data, selectProperties);
+            if (data != null && data.Count > 0)
+            {
+                ApiCommon.PaginationInfo pagination = data[0].Pagination;
+                return CommonHelper.Success((ApiController)(object)this, filtered, "Data fetched successfully.", 200, pagination);
+            }
+            return CommonHelper.NoData((ApiController)(object)this);
+        }
+        catch (Exception ex)
+        {
+            return CommonHelper.Error((ApiController)(object)this, ex.Message);
+        }
+    }
+
+
+    [HttpGet]
+    [Route("api/getMeetingConclusion")]
+    public IHttpActionResult GetMeetingCoclusion(int MeetId)
+    {
+        try
+        {
+            List<RemoteSensingProject.Models.Admin.main.MeetingConclusion> data = _adminServices.getConclusion(MeetId);
+            return Ok(new
+            {
+                status = true,
+                StatusCode = 200,
+                data = data
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+
+    [HttpPost]
+    [Route("api/UpdateMeetingConclusion")]
+    public IHttpActionResult UpdateMeetingConclusion()
+    {
+        try
+        {
+            HttpRequest request = HttpContext.Current.Request;
+            List<string> validationErrors = new List<string>();
+            if (string.IsNullOrWhiteSpace(request.Form.Get("Meeting")))
+            {
+                validationErrors.Add("Meeting Id is required.");
+            }
+            if (string.IsNullOrWhiteSpace(request.Form.Get("Conclusion")))
+            {
+                validationErrors.Add("Meeting conclusion is required.");
+            }
+            if (string.IsNullOrWhiteSpace(request.Form.Get("FollowUpStatus")))
+            {
+                validationErrors.Add("Follow up status is required.");
+            }
+            RemoteSensingProject.Models.Admin.main.MeetingConclusion formData = new RemoteSensingProject.Models.Admin.main.MeetingConclusion
+            {
+                Meeting = Convert.ToInt32(request.Form.Get("Meeting")),
+                Conclusion = request.Form.Get("Conclusion"),
+                FollowUpStatus = Convert.ToBoolean(request.Form.Get("FollowUpStatus")),
+                NextFollowUpDate = (string.IsNullOrWhiteSpace(request.Form["NextFollowUpDate"]) ? ((DateTime?)null) : new DateTime?(DateTime.Parse(request.Form["NextFollowUpDate"]))),
+                summary = request.Form.Get("summary")
+            };
+            if (request.Form["MeetingMemberList"] != null)
+            {
+                formData.MeetingMemberList = (from e in request.Form["MeetingMemberList"].Split(',')
+                                              select int.Parse(e)).ToList();
+            }
+            else
+            {
+                validationErrors.Add("Meeting member list is required !");
+            }
+            if (request.Form["MemberId"] != null)
+            {
+                formData.MemberId = request.Form["MemberId"].Split(',').ToList();
+            }
+            else
+            {
+                validationErrors.Add("Member Id is required !");
+            }
+            if (request.Form["KeyResponse"] != null)
+            {
+                formData.KeyResponse = request.Form["KeyResponse"].Split(',').ToList();
+            }
+            else
+            {
+                validationErrors.Add("Key responses is required !");
+            }
+            if (request.Form["KeyPointId"] != null)
+            {
+                formData.KeyPointId = request.Form["KeyPointId"].Split(',').ToList();
+            }
+            else
+            {
+                validationErrors.Add("Key Id is required !");
+            }
+            if (validationErrors.Any())
+            {
+                return BadRequest(new
+                {
+                    status = false,
+                    StatusCode = 500,
+                    message = string.Join("\n", validationErrors)
+                });
+            }
+            bool res = _adminServices.AddMeetingResponse(formData);
+            return Ok(new
+            {
+                status = res,
+                StatusCode = (res ? 200 : 500),
+                message = (res ? "Meeting conclusion updated successfully !" : "Some issue occured while processing request.")
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 500,
+                message = ex.Message
+            });
+        }
+    }
+
+    [HttpGet]
+    [Route("api/getMemberJoiningStatus")]
+    public IHttpActionResult GetMemberJoiningStatus(int meetingId)
+    {
+        List<RemoteSensingProject.Models.Admin.main.Employee_model> res = _managerservice.getMemberJoiningStatus(meetingId);
+        return Ok(new
+        {
+            status = true,
+            message = "data retrieved",
+            data = res
+        });
+    }
+
     #endregion
 
     #region Manage Employee
