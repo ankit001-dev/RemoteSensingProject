@@ -3,6 +3,8 @@
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Models.Admin.AdminServices
 using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json.Linq;
 using Npgsql;
 using NpgsqlTypes;
@@ -3482,6 +3484,56 @@ namespace RemoteSensingProject.Models.Admin
             }
             return list;
         }
+
+        #region Manage External Report Data
+        public List<DocxGenerator.MonthlyProgressRow> GetExternalReportLogData(int? userId = null, int? limit = null, int? page = null, string filterBy = null, string projectTypeFilter = null, int? id = null, string searchTerm = null, string statusFilter = null)
+        {
+            try
+            {
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                List<DocxGenerator.MonthlyProgressRow> list = new List<DocxGenerator.MonthlyProgressRow>();
+
+                NpgsqlCommand cmd = new NpgsqlCommand("fn_get_all_projects", con, tran);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("v_action", (object)"GetExternalReportLog");
+                cmd.Parameters.AddWithValue("v_id", (object)(id ?? new int?(0)));
+                cmd.Parameters.AddWithValue("v_userid", userId.HasValue ? ((object)userId) : ((object)0));
+                cmd.Parameters.AddWithValue("v_filterby", (object)(string.IsNullOrEmpty(filterBy) ? ((IConvertible)DBNull.Value) : ((IConvertible)filterBy)));
+                cmd.Parameters.AddWithValue("v_projecttypefilter", (object)(string.IsNullOrEmpty(projectTypeFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)projectTypeFilter)));
+                cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+                cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                cmd.Parameters.AddWithValue("v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+                cmd.Parameters.AddWithValue("v_statusfilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
+
+                string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                if (((DbDataReader)(object)rd).HasRows)
+                {
+                    while (((DbDataReader)(object)rd).Read())
+                    {
+                        list.Add(new DocxGenerator.MonthlyProgressRow
+                        {
+                            //Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+                            SchemeName = ((DbDataReader)(object)rd)["title"].ToString(),
+                            FundingAgency = rd["DepartmentName"] != DBNull.Value?((DbDataReader)(object)rd)["DepartmentName"].ToString():"N/A",
+                            ProjectBudget = Convert.ToDecimal(((DbDataReader)(object)rd)["budget"]),
+                            TotalExpenditure = Convert.ToDecimal(((DbDataReader)(object)rd)["totalexpense"]),
+                            ExpenditurePercentage = Convert.ToDecimal(((DbDataReader)(object)rd)["expensepercent"]),
+                            CompletionDatestring = ((((DbDataReader)(object)rd)["completionDate"] != DBNull.Value) ? Convert.ToDateTime(((DbDataReader)(object)rd)["completionDate"]).ToString("dd-MM-yyyy") : "N/A"),
+                            StartDateString = ((((DbDataReader)(object)rd)["startDate"] != DBNull.Value) ? Convert.ToDateTime(((DbDataReader)(object)rd)["startDate"]).ToString("dd-MM-yyyy") : "N/A"),
+                        });
+                    }
+                }
+                return list;
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
     }
 
 }

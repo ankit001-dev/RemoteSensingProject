@@ -186,6 +186,12 @@ namespace RemoteSensingProject.Models
         public class MonthlyProgressRow
         {
             public string SchemeName { get; set; }
+            public string FundingAgency { get; set; }
+            public decimal ProjectBudget { get; set; }
+            public string CompletionDatestring { get; set; }
+            public string StartDateString { get; set; }
+            public decimal TotalExpenditure { get; set; }
+            public decimal ExpenditurePercentage { get; set; }
             public decimal AnnualFinancial { get; set; }
             public decimal AnnualPhysical { get; set; }
             public decimal MonthlyTarget { get; set; }
@@ -817,7 +823,7 @@ namespace RemoteSensingProject.Models
             }
         }
 
-        public static byte[] AccountExternalProjectReport(List<object> data, string financialYear, string divisionName)
+        public static byte[] AccountExternalProjectReport(List<MonthlyProgressRow> data, string financialYear, string divisionName)
         {
             using (var ms = new MemoryStream())
             {
@@ -902,10 +908,10 @@ namespace RemoteSensingProject.Models
                         CreateHeaderCell("Name of funding agency", 1, 2),
                         CreateHeaderCell("Total cost of Project", 1, 2),
                         CreateHeaderCell("Project Duration", 2, 1),
-                        CreateHeaderCell("Amount Rec. upto March 2025(Exvluding)", 1, 2),
+                        CreateHeaderCell("Amount Rec. upto March 2025(Excluding)", 1, 2),
                         CreateHeaderCell("Amt rec dur. 2025-26(Exvluding GST)", 1, 2),
-                        CreateHeaderCell("Total rec. upto 30 Nov.-25(Exvluding GST)", 1, 2),
-                        CreateHeaderCell("Total Exp. Uptoi Mar-2025", 1, 2),
+                        CreateHeaderCell("Total rec. upto 30 Nov.-25(Excluding GST)", 1, 2),
+                        CreateHeaderCell("Total Exp. Upto Mar-2025", 1, 2),
                         CreateHeaderCell("Exp. Dur. The Year", 1, 2),
                         CreateHeaderCell("Total Exp. Upto 30 November-25", 1, 2),
                         CreateHeaderCell("Balance Upto 30 November-25", 1, 2),
@@ -931,6 +937,30 @@ namespace RemoteSensingProject.Models
                          CreateMergedCell("", false, JustificationValues.Center),
                          CreateMergedCell("", false, JustificationValues.Center)
                     ));
+
+                    int sr = 1;
+
+                    foreach (var row in data)
+                    {
+                        table.Append(new TableRow(
+                            CreateNormalCell(sr.ToString(), JustificationValues.Center),
+                            CreateNormalCell(row.SchemeName),
+                            CreateNormalCell(row.FundingAgency.ToString()),
+                            CreateNormalCell(row.ProjectBudget.ToString()),
+                            CreateNormalCell(row.StartDateString.ToString()),
+                            CreateNormalCell(row.CompletionDatestring.ToString()),
+                            CreateNormalCell(row.ProjectBudget.ToString()),
+                            CreateNormalCell(row.StateShare.ToString()),
+                            CreateNormalCell(row.BeneficiaryShare.ToString()),
+                            CreateNormalCell(row.BeneficiaryShare.ToString()),
+                            CreateNormalCell(row.TotalExpenditure.ToString()),
+                            CreateNormalCell(row.BeneficiaryShare.ToString()),
+                            CreateNormalCell(row.BeneficiaryShare.ToString()),
+                            CreateNormalCell(row.ExpenditurePercentage.ToString())
+                        ));
+
+                        sr++;
+                    }
 
                     // You can append data rows here later
 

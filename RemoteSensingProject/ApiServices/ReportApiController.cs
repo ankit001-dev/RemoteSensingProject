@@ -995,15 +995,15 @@ public class ReportApiController : ApiController
     [Route("api/report/AccountExternalProjectReport")]
     public IHttpActionResult AccountExternalProjectReport(int month, int year, int? id = null)
     {
-        var data = GetDummyData();
+        List<DocxGenerator.MonthlyProgressRow> data = _adminServices.GetExternalReportLogData();
         string monthName = new CultureInfo("hi-IN")
-      .DateTimeFormat
+      .DateTimeFormat 
       .GetMonthName(DateTime.Now.Month);
 
         // ✅ Get financial year
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string fileName = $"ExternalProject_Account_Report_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.AccountExternalProjectReport(null, monthName,"xyz");
+        byte[] pdfBytes = DocxGenerator.AccountExternalProjectReport(data, monthName,"xyz");
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, fileName, ((ApiController)this).Request);
     }
 
