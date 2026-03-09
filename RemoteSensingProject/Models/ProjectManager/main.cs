@@ -234,6 +234,7 @@ namespace RemoteSensingProject.Models.ProjectManager
     }
     public class OuterSource
     {
+        public string EmpRole { get; set; }
         public string joiningdate { get; set; }
         public int Id { get; set; }
         public int EmpId { get; set; }

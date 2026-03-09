@@ -469,83 +469,6 @@ namespace RemoteSensingProject.ApiServices
             }
         }
 
-        [HttpPost]
-        [Route("api/CreateOutSource")]
-        public IHttpActionResult CreateSource()
-        {
-            try
-            {
-                HttpRequest request = HttpContext.Current.Request;
-                NameValueCollection form = request.Form;
-                List<string> errors = new List<string>();
-                string empName = form["EmpName"];
-                if (string.IsNullOrWhiteSpace(empName))
-                {
-                    errors.Add("Employee Name is required.");
-                }
-                string mobile = form["mobileNo"];
-                if (string.IsNullOrWhiteSpace(mobile))
-                {
-                    errors.Add("Mobile Number is required.");
-                }
-                else if (!Regex.IsMatch(mobile, "^\\d{10}$"))
-                {
-                    errors.Add("Mobile Number must be exactly 10 digits.");
-                }
-                string gender = form["gender"];
-                if (string.IsNullOrWhiteSpace(gender))
-                {
-                    errors.Add("Gender is required.");
-                }
-                else
-                {
-                    string[] allowedGenders = new string[3] { "male", "female", "other" };
-                    if (!allowedGenders.Contains(gender.Trim().ToLower()))
-                    {
-                        errors.Add("Gender must be either 'Male', 'Female', or 'Other'.");
-                    }
-                }
-                string email = form["email"];
-                if (string.IsNullOrWhiteSpace(email))
-                {
-                    errors.Add("Email is required.");
-                }
-                else if (!Regex.IsMatch(email, "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$"))
-                {
-                    errors.Add("Invalid email format.");
-                }
-                if (errors.Count > 0)
-                {
-                    return CommonHelper.Error((ApiController)(object)this, string.Join(", ", errors));
-                }
-                OuterSource formData = new OuterSource
-                {
-                    EmpId = Convert.ToInt32(request.Form.Get("EmpId")),
-                    EmpName = request.Form.Get("EmpName"),
-                    mobileNo = Convert.ToInt64(request.Form.Get("mobileNo")),
-                    gender = request.Form.Get("gender"),
-                    email = request.Form.Get("email"),
-                    designationid = Convert.ToInt32(request.Form.Get("designationId"))
-                };
-                bool res = _managerService.insertOutSource(formData);
-                return Ok(new
-                {
-                    status = res,
-                    StatusCode = (res ? 200 : 500),
-                    message = (res ? "Outsource created successfully !" : "Some issue occured")
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new
-                {
-                    status = false,
-                    StatusCode = 500,
-                    message = ex.Message
-                });
-            }
-        }
-
         [HttpGet]
         [Route("api/GetOuterSourceList")]
         public IHttpActionResult GetOuterSourceListById(int userId, int? page, int? limit, string searchTerm = null)
@@ -687,15 +610,23 @@ namespace RemoteSensingProject.ApiServices
                 try
                 {
                     res = _managerService.updateTaskStatus(taskId);
+                    if (res)
+                    {
+                        return Ok(new
+                        {
+                            status = res,
+                            message = "Task updated successfully !"
+                        });
+                    }
                 }
                 catch (Exception ex)
                 {
                     message = ex.Message;
                 }
-                return Ok(new
+                return BadRequest(new
                 {
                     status = res,
-                    message = (res ? "Task updated successfully !" : message)
+                    message =  message
                 });
             }
             catch (Exception ex2)

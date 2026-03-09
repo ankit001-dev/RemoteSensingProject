@@ -2046,7 +2046,8 @@ namespace RemoteSensingProject.Models.ProjectManager
                                             email = rd["emp_email"] == DBNull.Value ? null : rd["emp_email"].ToString(),
                                             gender = rd["emp_gender"] == DBNull.Value ? null : rd["emp_gender"].ToString(),
                                             designationname = rd["designationname"] == DBNull.Value ? null : rd["designationname"].ToString(),
-                                            designationid = rd["designationid"] == DBNull.Value ? 0 : Convert.ToInt32(rd["designationid"])
+                                            designationid = rd["designationid"] == DBNull.Value ? 0 : Convert.ToInt32(rd["designationid"]),
+                                            //EmpRole = rd["role"].ToString()
                                         };
                                         if (firstRow)
                                         {
@@ -2452,6 +2453,7 @@ namespace RemoteSensingProject.Models.ProjectManager
 
                                 meetingc.Add(new RemoteSensingProject.Models.Admin.main.Employee_model
                                 {
+                                    Id = rdr["id"] != DBNull.Value ? Convert.ToInt32(rdr["id"]):0,
                                     EmployeeName = ((DbDataReader)(object)rdr)["name"].ToString(),
                                     Image_url = ((DbDataReader)(object)rdr)["profile"].ToString(),
                                     EmployeeRole = roleValue != DBNull.Value
