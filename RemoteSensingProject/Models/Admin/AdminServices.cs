@@ -3519,10 +3519,35 @@ namespace RemoteSensingProject.Models.Admin
                             SchemeName = ((DbDataReader)(object)rd)["title"].ToString(),
                             FundingAgency = rd["DepartmentName"] != DBNull.Value?((DbDataReader)(object)rd)["DepartmentName"].ToString():"N/A",
                             ProjectBudget = Convert.ToDecimal(((DbDataReader)(object)rd)["budget"]),
-                            TotalExpenditure = Convert.ToDecimal(((DbDataReader)(object)rd)["totalexpense"]),
-                            ExpenditurePercentage = Convert.ToDecimal(((DbDataReader)(object)rd)["expensepercent"]),
+                            //TotalExpenditure = Convert.ToDecimal(((DbDataReader)(object)rd)["totalexpense"]),
+                            //ExpenditurePercentage = Convert.ToDecimal(((DbDataReader)(object)rd)["expensepercent"]),
                             CompletionDatestring = ((((DbDataReader)(object)rd)["completionDate"] != DBNull.Value) ? Convert.ToDateTime(((DbDataReader)(object)rd)["completionDate"]).ToString("dd-MM-yyyy") : "N/A"),
                             StartDateString = ((((DbDataReader)(object)rd)["startDate"] != DBNull.Value) ? Convert.ToDateTime(((DbDataReader)(object)rd)["startDate"]).ToString("dd-MM-yyyy") : "N/A"),
+                            ProjectManager = ((((DbDataReader)(object)rd)["name"] != DBNull.Value) ? ((DbDataReader)(object)rd)["name"].ToString() : "N/A"),
+                            Prev_Budget = rd["prev_budget"] != DBNull.Value
+            ? Convert.ToDecimal(rd["prev_budget"]) : 0,
+
+                            Budget_Increase = rd["budget_increase"] != DBNull.Value
+            ? Convert.ToDecimal(rd["budget_increase"]) : 0,
+
+                            Total_Budget = rd["total_budget"] != DBNull.Value
+            ? Convert.ToDecimal(rd["total_budget"]) : 0,
+
+                            Prev_Expense = rd["prev_expense"] != DBNull.Value
+            ? Convert.ToDecimal(rd["prev_expense"]) : 0,
+
+                            Current_Expense = rd["current_expense"] != DBNull.Value
+            ? Convert.ToDecimal(rd["current_expense"]) : 0,
+
+                            Total_Expense = rd["total_expense"] != DBNull.Value
+            ? Convert.ToDecimal(rd["total_expense"]) : 0,
+
+                            Remaining_Budget = rd["remaining_budget"] != DBNull.Value
+            ? Convert.ToDecimal(rd["remaining_budget"]) : 0,
+
+                            Expense_Percentage = rd["expense_percentage"] != DBNull.Value
+    ? Convert.ToDecimal(rd["expense_percentage"])
+    : 0
                         });
                     }
                 }
