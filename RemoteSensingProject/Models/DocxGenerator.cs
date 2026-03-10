@@ -192,6 +192,15 @@ namespace RemoteSensingProject.Models
             public string StartDateString { get; set; }
             public decimal TotalExpenditure { get; set; }
             public decimal ExpenditurePercentage { get; set; }
+            public string ProjectManager { get; set; }
+            public decimal Prev_Budget { get; set; }
+            public decimal Budget_Increase { get; set; }
+            public decimal Total_Budget { get; set; }
+            public decimal Prev_Expense { get; set; }
+            public decimal Current_Expense { get; set; }
+            public decimal Total_Expense { get; set; }
+            public decimal Remaining_Budget { get; set; }
+            public decimal Expense_Percentage { get; set; }
             public decimal AnnualFinancial { get; set; }
             public decimal AnnualPhysical { get; set; }
             public decimal MonthlyTarget { get; set; }
@@ -909,7 +918,7 @@ namespace RemoteSensingProject.Models
                         CreateHeaderCell("Total cost of Project", 1, 2),
                         CreateHeaderCell("Project Duration", 2, 1),
                         CreateHeaderCell("Amount Rec. upto March 2025(Excluding)", 1, 2),
-                        CreateHeaderCell("Amt rec dur. 2025-26(Exvluding GST)", 1, 2),
+                        CreateHeaderCell("Amt rec dur. 2025-26(Excluding GST)", 1, 2),
                         CreateHeaderCell("Total rec. upto 30 Nov.-25(Excluding GST)", 1, 2),
                         CreateHeaderCell("Total Exp. Upto Mar-2025", 1, 2),
                         CreateHeaderCell("Exp. Dur. The Year", 1, 2),
@@ -938,25 +947,28 @@ namespace RemoteSensingProject.Models
                          CreateMergedCell("", false, JustificationValues.Center)
                     ));
 
+
+                    table.Append(new TableRow(CreateHeaderCell("1"), CreateHeaderCell("2"), CreateHeaderCell("3"), CreateHeaderCell("4"), CreateHeaderCell("5"), CreateHeaderCell("6"), CreateHeaderCell("7"), CreateHeaderCell("8"), CreateHeaderCell("9"), CreateHeaderCell("10"), CreateHeaderCell("11"), CreateHeaderCell("12"), CreateHeaderCell("13"), CreateHeaderCell("14")));
+
                     int sr = 1;
 
                     foreach (var row in data)
                     {
                         table.Append(new TableRow(
-                            CreateNormalCell(sr.ToString(), JustificationValues.Center),
-                            CreateNormalCell(row.SchemeName),
-                            CreateNormalCell(row.FundingAgency.ToString()),
-                            CreateNormalCell(row.ProjectBudget.ToString()),
-                            CreateNormalCell(row.StartDateString.ToString()),
-                            CreateNormalCell(row.CompletionDatestring.ToString()),
-                            CreateNormalCell(row.ProjectBudget.ToString()),
-                            CreateNormalCell(row.StateShare.ToString()),
-                            CreateNormalCell(row.BeneficiaryShare.ToString()),
-                            CreateNormalCell(row.BeneficiaryShare.ToString()),
-                            CreateNormalCell(row.TotalExpenditure.ToString()),
-                            CreateNormalCell(row.BeneficiaryShare.ToString()),
-                            CreateNormalCell(row.BeneficiaryShare.ToString()),
-                            CreateNormalCell(row.ExpenditurePercentage.ToString())
+                            CreateNormalCell(sr.ToString(), JustificationValues.Center),     //1
+                            CreateNormalCell(row.SchemeName +$"({row.ProjectManager})"),     //2
+                            CreateNormalCell(row.FundingAgency.ToString()),                  //3
+                            CreateNormalCell(row.ProjectBudget.ToString()),                  //4
+                            CreateNormalCell(row.StartDateString.ToString()),                //5
+                            CreateNormalCell(row.CompletionDatestring.ToString()),           //6
+                            CreateNormalCell(row.Prev_Budget.ToString()),                  //7
+                            CreateNormalCell(row.Budget_Increase.ToString()),                     //8
+                            CreateNormalCell(row.Total_Budget.ToString()),               //9
+                            CreateNormalCell(row.Prev_Expense.ToString()),               //10
+                            CreateNormalCell(row.Current_Expense.ToString()),               //11
+                            CreateNormalCell(row.Total_Expense.ToString()),               //12
+                            CreateNormalCell(row.Remaining_Budget.ToString()),               //13
+                            CreateNormalCell(row.Expense_Percentage.ToString())           //14
                         ));
 
                         sr++;
