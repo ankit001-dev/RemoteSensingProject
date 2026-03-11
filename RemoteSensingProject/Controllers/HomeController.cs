@@ -53,14 +53,14 @@ namespace RemoteSensingProject.Controllers
 
 
 		#region Project Details & Tour Detail View
-		[Authorize(Roles = "admin,employee,accounts,cgp,divisionHead")]
+		[Authorize(Roles = "admin,employee,accounts,cgp,divisionHead,projectManager")]
 		public ActionResult Project_Details(int id)
 		{
 			ViewBag.projectId = id;
             var data = _adminServices.GetProjectById(id);
 			return View(data);
 		}
-        [Authorize(Roles = "admin,employee,accounts,cgp,divisionHead")]
+        [Authorize(Roles = "admin,employee,accounts,cgp,divisionHead,projectManager")]
         public ActionResult TourDetails(int id)
 		{
 			var data = _managerServices.GetTourDetails(id);

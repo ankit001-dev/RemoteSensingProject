@@ -923,33 +923,57 @@ public class ReportApiController : ApiController
     [Route("api/report/CombinedInternalProject_ProgressReport")]
     public IHttpActionResult CombinedInternalProject_ProgressReport(int month, int year, int? id = null)
     {
-        var data = _managerservice.GetMonthlyTechnicalInternalProjectReport(year:year,month:month,divisionid:id); ;
-        string monthName = string.Empty;
-        if (month <= 0)
+        var authheader = Request.Headers.Authorization;
+
+        dynamic data = null;
+        bool isTechnicalShell = false;
+
+        if (authheader != null && authheader.Scheme == "Bearer")
         {
-            monthName = new CultureInfo("hi-IN")
-             .DateTimeFormat
-             .GetMonthName(DateTime.Now.Month);
+            string role = getRole(); // existing method
+
+            if (!string.IsNullOrEmpty(role))
+            {
+                var roles = role.Split(',');
+
+                if (roles.Any(r => r.Trim().Equals("technicalshell", StringComparison.OrdinalIgnoreCase)))
+                {
+                    isTechnicalShell = true;
+                }
+            }
+        }
+
+        // Data fetch
+        if (isTechnicalShell)
+        {
+            data = _managerservice.GetMonthlyTechnicalInternalProjectReportSchemeWise(year: year, month: month, divisionid: id);
         }
         else
         {
-            monthName = new CultureInfo("hi-IN")
-            .DateTimeFormat
-            .GetMonthName(month);
+            data = _managerservice.GetMonthlyTechnicalInternalProjectReport(year: year, month: month, divisionid: id);
         }
-        string yearName = string.Empty;
-        if (year <= 0)
-        {
-            yearName = DateTime.Now.Year.ToString();
-        }
-        else
-        {
-            yearName = year.ToString();
-        }
+
+        string monthName = month <= 0
+            ? new CultureInfo("hi-IN").DateTimeFormat.GetMonthName(DateTime.Now.Month)
+            : new CultureInfo("hi-IN").DateTimeFormat.GetMonthName(month);
+
+        string yearName = year <= 0 ? DateTime.Now.Year.ToString() : year.ToString();
+
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"Combined_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName,yearName);
-        return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
+
+        byte[] pdfBytes;
+
+        if (isTechnicalShell)
+        {
+            pdfBytes = DocxGenerator.CreateInternalProjectCombinedReportSchemeWise(data, monthName, yearName);
+        }
+        else
+        {
+            pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName, yearName);
+        }
+
+        return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, Request);
     }
     [HttpGet]
     [System.Web.Mvc.AllowAnonymous]
