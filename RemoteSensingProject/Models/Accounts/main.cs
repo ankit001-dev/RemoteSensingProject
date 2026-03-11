@@ -14,7 +14,6 @@ namespace RemoteSensingProject.Models.Accounts
 	{
 		public class DashboardCount
 		{
-
 			public int TotalTourCount { get; set; }
 			public int TotalInternalProjectCount { get; set; }
 			public int TotalExternalProjectCount { get; set; }
@@ -24,6 +23,9 @@ namespace RemoteSensingProject.Models.Accounts
 			public int TotalInternalExpense { get; set; }
 			public int TotalExternalExpense { get; set; }
 			public int TotalExternalCompletedProject { get; set; }
+			public int AdhisthanBudgetProvision { get; set; }
+			public decimal AdhisthanExpenditure { get; set; }
+			public decimal AdhisthanExpenditureInPerc { get; set; } 
 		}
 
 		public class Project_model
