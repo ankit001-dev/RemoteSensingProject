@@ -209,7 +209,12 @@ namespace RemoteSensingProject.Models.Accounts
 									obj.TotalExternalProjectFund = sdr["TotalExternalProjectFund"] != DBNull.Value ? Convert.ToInt32(sdr["TotalExternalProjectFund"]) : 0;
 									obj.TotalExternalExpense = sdr["TotalExternalExpense"] != DBNull.Value ? Convert.ToInt32(sdr["TotalExternalExpense"]) : 0;
 									obj.TotalExternalCompletedProject = sdr["TotalExternalCompletedProject"] != DBNull.Value ? Convert.ToInt32(sdr["TotalExternalCompletedProject"]) : 0;
-								}
+									obj.AdhisthanBudgetProvision = sdr["AdhisthanBudgetProvision"] != DBNull.Value ? Convert.ToInt32(sdr["AdhisthanBudgetProvision"]) : 0;
+									obj.AdhisthanExpenditure = sdr["AdhisthanExpenditure"] != DBNull.Value ? Convert.ToDecimal(sdr["AdhisthanExpenditure"]) : 0;
+									obj.AdhisthanExpenditureInPerc = sdr["AdhisthanExpenditureInPerc"] != DBNull.Value ? Convert.ToDecimal(sdr["AdhisthanExpenditureInPerc"]) : 0;
+                                    
+
+                                }
 								((DbDataReader)(object)sdr).Close();
 							}
 							finally
