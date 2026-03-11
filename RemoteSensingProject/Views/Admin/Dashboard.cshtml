@@ -493,7 +493,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const budgetEl = document.getElementById("bbchart");
     if (budgetEl && budgetData && budgetData.length > 0) {
 
-        const labels = budgetData.map(x => x.ProjectName);
+        const labels = budgetData.map(x =>
+            x.ProjectName ? x.ProjectName.substring(0, 5) : ''
+        );
 
         const datasets = [
             {

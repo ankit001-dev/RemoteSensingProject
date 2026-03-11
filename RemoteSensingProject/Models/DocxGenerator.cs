@@ -637,6 +637,167 @@ namespace RemoteSensingProject.Models
                 return ms.ToArray();
             }
         }
+        public static byte[] CreateInternalProjectCombinedReportSchemeWise(List<TechnicalInternalMonthlyReport> data, string financialYear, string divisionName)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (WordprocessingDocument doc = WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document, true))
+                {
+                    MainDocumentPart mainPart = doc.AddMainDocumentPart();
+                    mainPart.Document = new Document();
+                    Body body = new Body();
+
+                    SectionProperties sectionProps = new SectionProperties(
+                        new PageSize()
+                        {
+                            Width = 16838,
+                            Height = 11906,
+                            Orient = PageOrientationValues.Landscape
+                        },
+                        new PageMargin()
+                        {
+                            Top = 720,
+                            Right = 720,
+                            Bottom = 720,
+                            Left = 720
+                        }
+                    );
+
+                    body.Append(CreateReportHeading(
+                        "मासिक समिक्षा: रूप पत्र -2 "
+                    ));
+
+                    body.Append(CreateReportHeading(
+                        "शासन से गैर वेतन मद मे प्राप्त धनराशि से संचालित योजना/कार्यक्रमों की भौतिक उपलब्धियों का विवरण"
+                    ));
+
+                    body.Append(CreateReportHeading(
+                        "विभाग का नाम: रिमोट सेन्सिंग ऍप्लिकेशन्स सेन्टर, उत्तर प्रदेश, विज्ञान एवं प्रौद्योगिकी विभाग, उत्तर प्रदेश"
+                    ));
+
+                    body.Append(CreateReportHeadingAlignment(
+                        $"माह : {financialYear} {divisionName} "
+                    ));
+
+                    body.Append(new Paragraph(new Run(new Text(""))));
+
+                    // ==========================
+                    // TABLE
+                    // ==========================
+                    Table table = new Table(
+                        new TableProperties(
+                            new TableWidth()
+                            {
+                                Width = "5000",
+                                Type = TableWidthUnitValues.Pct
+                            },
+                            new TableLayout() { Type = TableLayoutValues.Fixed },
+                            new TableBorders(
+                                new TopBorder { Val = BorderValues.Single, Size = 6 },
+                                new BottomBorder { Val = BorderValues.Single, Size = 6 },
+                                new LeftBorder { Val = BorderValues.Single, Size = 6 },
+                                new RightBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideHorizontalBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideVerticalBorder { Val = BorderValues.Single, Size = 6 }
+                            )
+                        )
+                    );
+
+                    // Column Grid
+                    table.Append(new TableGrid(
+                        new GridColumn() { Width = "600" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "1500" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1000" },
+                        new GridColumn() { Width = "1200" },
+                        new GridColumn() { Width = "1200" },
+                        new GridColumn() { Width = "1200" },
+                        new GridColumn() { Width = "1200" },
+                        new GridColumn() { Width = "1200" },
+                        new GridColumn() { Width = "2000" },
+                        new GridColumn() { Width = "2500" }
+                    ));
+
+                    // ==========================
+                    // HEADER ROW 1
+                    // ==========================
+                    table.Append(new TableRow(
+                        CreateHeaderCell("क्र.सं.", 1, 2),
+                        CreateHeaderCell("मद/परियोजना का नाम", 1, 2),
+                        CreateHeaderCell("इकाई (लाख में)", 1, 2),
+                        CreateHeaderCell("लक्ष्य", 2 , 1 ),
+                        CreateHeaderCell("उपलब्धि", 2 , 1 ),
+                        CreateHeaderCell("प्रदेश सरकार के लाभान्वित होने वाले विभाग", 1, 2),
+                        CreateHeaderCell("अभ्युक्ति", 1, 2)
+                    ));
+
+                    // ==========================
+                    // HEADER ROW 2
+                    // ==========================
+                    table.Append(new TableRow(
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                        CreateHeaderCell("वार्षिक"),
+                        CreateHeaderCell("आलोच्य माशान्त तक"),
+                        CreateHeaderCell("आलोच्य माह मे"),
+                        CreateHeaderCell("आलोच्य मासांत तक क्रमिक"),
+                         CreateMergedCell("", false, JustificationValues.Left),
+                         CreateMergedCell("", false, JustificationValues.Left)
+                    ));
+
+                    var schemeGroups = data.GroupBy(x => new { x.SchemeId, x.SchemeName }).ToList();
+
+                    int schemeIndex = 1;
+
+                    foreach (var scheme in schemeGroups)
+                    {
+                        // Scheme Row
+                        table.Append(new TableRow(
+                            CreateNormalCell($"{schemeIndex}.0"),
+                            CreateBoldCell(scheme.Key.SchemeName),
+                            CreateNormalCell(""),
+                            CreateNormalCell(""),
+                            CreateNormalCell(""),
+                            CreateNormalCell(""),
+                            CreateNormalCell(""),
+                            CreateNormalCell(""),
+                            CreateNormalCell("")
+                        ));
+
+                        int projectIndex = 1;
+
+                        foreach (var item in scheme)
+                        {
+                            table.Append(new TableRow(
+                                CreateNormalCell($"{schemeIndex}.{projectIndex}"),
+                                CreateNormalCell(item.ProjectName),
+                                CreateNormalCell(item.Amount),
+                                CreateNormalCell(item.InMonthReview),
+                                CreateNormalCell(item.EndMonthReview),
+                                CreateNormalCell(item.FinancialYearlyAim),
+                                CreateNormalCell(item.SequentiallyMonthReview),
+                                CreateNormalCell(item.Statebeneficiary),
+                                CreateNormalCell(item.Remark)
+                            ));
+
+                            projectIndex++;
+                        }
+
+                        schemeIndex++;
+                    }
+
+                    // You can append data rows here later
+
+                    body.Append(table);
+                    body.Append(sectionProps);
+                    mainPart.Document.Append(body);
+                    mainPart.Document.Save();
+                }
+                return ms.ToArray();
+            }
+        }
 
 
         #region Accounts Reports formate
@@ -707,30 +868,53 @@ namespace RemoteSensingProject.Models
                         CreateHeaderCell("व्यय प्रतिशत ")
                     ));
 
-                    int index = 1;
-                    foreach(var item in data)
+                    var schemeGroups = data.GroupBy(x => new { x.SchemeId, x.SchemeName }).ToList();
+
+                    int schemeIndex = 1;
+
+                    foreach (var scheme in schemeGroups)
                     {
+                        decimal schemeBudget = scheme.Sum(x => x.BudgetProvision);
+                        decimal schemeExpense = scheme.Sum(x => x.ExpenditureAmount);
+
+                        decimal schemePercentage = 0;
+                        if (schemeBudget > 0)
+                            schemePercentage = Math.Round((schemeExpense / schemeBudget) * 100, 2);
+
+                        // Scheme Row with Sum
                         table.Append(new TableRow(
-                             CreateHeaderCell(index.ToString()),
-                             CreateHeaderCell(item.HeadName),
-                             CreateHeaderCell(item.BudgetProvision.ToString()),
-                             CreateHeaderCell(item.ExpenditureAmount.ToString()),
-                             CreateHeaderCell(item.ExpenditurePercentage.ToString())
+                            CreateBoldCell($"{schemeIndex}"),
+                            CreateBoldCell(scheme.Key.SchemeName),
+                            CreateBoldCell(schemeBudget.ToString()),
+                            CreateBoldCell(schemeExpense.ToString()),
+                            CreateBoldCell(schemePercentage.ToString())
+                        ));
 
-                         ));
+                        int projectIndex = 1;
 
-                        if(index == data.Count)
+                        foreach (var project in scheme)
                         {
                             table.Append(new TableRow(
-                             CreateHeaderCell(""),
-                             CreateHeaderCell("कुल धनराशि "),
-                             CreateHeaderCell(data.Sum(d=> d.BudgetProvision).ToString()),
-                             CreateHeaderCell(data.Sum(d=> d.ExpenditureAmount).ToString()),
-                             CreateHeaderCell("")
-                         ));
+                                CreateHeaderCell($"{schemeIndex}.{projectIndex}"),
+                                CreateHeaderCell(project.HeadName),
+                                CreateHeaderCell(project.BudgetProvision.ToString()),
+                                CreateHeaderCell(project.ExpenditureAmount.ToString()),
+                                CreateHeaderCell(project.ExpenditurePercentage.ToString())
+                            ));
+
+                            projectIndex++;
                         }
-                        index++;
+
+                        schemeIndex++;
                     }
+
+                    table.Append(new TableRow(
+                        CreateHeaderCell(""),
+                        CreateHeaderCell("कुल धनराशि"),
+                        CreateHeaderCell(data.Sum(d => d.BudgetProvision).ToString()),
+                        CreateHeaderCell(data.Sum(d => d.ExpenditureAmount).ToString()),
+                        CreateHeaderCell("")
+                    ));
 
                     body.Append(table);
                     body.Append(sectionProps);
@@ -739,6 +923,23 @@ namespace RemoteSensingProject.Models
                 }
                 return ms.ToArray();
             }
+        }
+
+        private static TableCell CreateBoldCell(string text)
+        {
+            return new TableCell(
+                new TableCellProperties(
+                    new TableCellVerticalAlignment() { Val = TableVerticalAlignmentValues.Center }
+                ),
+                new Paragraph(
+                    new Run(
+                        new RunProperties(
+                            new Bold()
+                        ),
+                        new Text(text)
+                    )
+                )
+            );
         }
 
         public static byte[] AdhisthanAccountReportGenerator(List<AdhisthanModel> data)

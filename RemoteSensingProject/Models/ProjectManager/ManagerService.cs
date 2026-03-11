@@ -1253,6 +1253,100 @@ namespace RemoteSensingProject.Models.ProjectManager
                 }
             }
         }
+        public List<TechnicalInternalMonthlyReport> GetMonthlyTechnicalInternalProjectReportSchemeWise(int? id = null, int? projectid = null, int? month = null, int? year = null, int? divisionid = null, int? projectmanager = null, string filterby = null)
+        {
+            try
+            {
+                List<TechnicalInternalMonthlyReport> list = new List<TechnicalInternalMonthlyReport>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageprojectmonthlyreports", con);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"gettechnicalinternalprojectReportschemewise");
+                        cmd.Parameters.AddWithValue("@v_projectmanager", projectmanager.HasValue ? (object)projectmanager.Value : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_id", id.HasValue ? ((object)id.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_projectid", projectid.HasValue ? ((object)projectid.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_divisionid", divisionid.HasValue ? ((object)divisionid.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_year", year.HasValue ? ((object)year.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_month", month.HasValue ? ((object)month.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_filterby", !string.IsNullOrEmpty(filterby) ? ((object)filterby) : DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader res = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)res).HasRows)
+                                {
+                                    while (((DbDataReader)(object)res).Read())
+                                    {
+                                        list.Add(new TechnicalInternalMonthlyReport
+                                        {
+                                            Id = ((((DbDataReader)(object)res)["id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["id"]) : 0),
+                                            ProjectId = ((((DbDataReader)(object)res)["projectid"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["projectid"]) : 0),
+                                            ProjectName = ((((DbDataReader)(object)res)["title"] != DBNull.Value) ? ((DbDataReader)(object)res)["title"].ToString() : ""),
+                                            DateString = res["w_date"] != DBNull.Value ? Convert.ToDateTime(res["w_date"]).ToString("dd-MM-yyyy") : "N/A",
+                                            FinancialYearlyAim = res["financialyearlyaim"].ToString(),
+                                            EndMonthReview = res["endmonthreview"].ToString(),
+                                            InMonthReview = res["inmonthreview"].ToString(),
+                                            SequentiallyMonthReview = res["sequentiallymonthreview"].ToString(),
+                                            Amount = res["amount"].ToString(),
+                                            Statebeneficiary = res["statebeneficiary"].ToString(),
+                                            Remark = res["remark"].ToString(),
+                                            SchemeName = res["projectscheme"]?.ToString(),
+                                            SchemeId = res["projectschemeid"] != DBNull.Value ? Convert.ToInt32(res["projectschemeid"]) : 0,
+                                        });
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)res)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
 
 
         public List<ExternalProject_ProgressModel> GetMonthlyExternalProjectReport(int? id = null, int? projectid = null, int? month = null, int? year = null, int? divisionid = null, int? projectmanager = null, string filterby = null)

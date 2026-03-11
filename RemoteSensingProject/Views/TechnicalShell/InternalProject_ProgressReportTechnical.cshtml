@@ -7,6 +7,8 @@
     var lastDayLastMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddDays(-1);
     var data = ViewData["reportdata"] as List<RemoteSensingProject.Models.Admin.main.TechnicalInternalMonthlyReport>;
     var divisionlist = ViewData["DivisionList"] as List<RemoteSensingProject.Models.Admin.main.CommonResponse>;
+    var schemeGroups = data.GroupBy(x => new { x.SchemeId, x.SchemeName });
+    int schemeIndex = 1;
 }
 
 <style>
@@ -154,39 +156,52 @@
                                 <th>10</th>
                             </tr>
                             <!--Full collapse row-->
-                            <tr>
+                            @*<tr>
                                 <td class="fw-bold">1.0</td>
                                 <td colspan="9">
                                     <h4>
                                         रीमोट सेन्सिंग तकनीक से प्रदेश के समस्त प्रकार्तिक संसधानों का अनुश्रवण एवं आलंकान
                                     </h4>
                                 </td>
-                            </tr>
+                            </tr>*@
                         </thead>
 
                         <tbody>
                             @if (data != null && data.Count > 0)
                             {
                                 int count = 1;
-                                foreach (var item in data)
+                                foreach (var scheme in schemeGroups)
                                 {
-                                    <tr>
-                                        <td>@count</td>
-                                        <td>@item.ProjectName</td>
-                                        <td>@item.Amount</td>
-                                        <td>@item.InMonthReview</td>
-                                        <td>@item.EndMonthReview</td>
-                                        <td>@item.FinancialYearlyAim</td>
-                                        <td>@item.SequentiallyMonthReview</td>
-                                        <td>@item.Statebeneficiary</td>
-                                        <td>@item.Remark</td>
-                                        <td>
-                                            <a class="cursor-pointer edit-btn" data-id="@item.Id">
-                                                <i class="link-icon" data-feather="edit"></i>
-                                            </a>
-                                        </td>
+                                    <tr class="table-secondary fw-bold">
+                                        <td><b>@schemeIndex.0</b></td>
+                                        <td colspan="9"><b>@scheme.Key.SchemeName</b></td>
                                     </tr>
-                                    count++;
+
+                                    int projectIndex = 1;
+
+                                    foreach (var item in scheme)
+                                    {
+                                        <tr>
+                                            <td>@schemeIndex.@projectIndex</td>
+                                            <td>@item.ProjectName</td>
+                                            <td>@item.Amount</td>
+                                            <td>@item.InMonthReview</td>
+                                            <td>@item.EndMonthReview</td>
+                                            <td>@item.FinancialYearlyAim</td>
+                                            <td>@item.SequentiallyMonthReview</td>
+                                            <td>@item.Statebeneficiary</td>
+                                            <td>@item.Remark</td>
+                                            <td>
+                                                <a class="cursor-pointer edit-btn" data-id="@item.Id">
+                                                    <i class="link-icon" data-feather="edit"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+
+                                        projectIndex++;
+                                    }
+
+                                    schemeIndex++;
                                 }
                             }
                         </tbody>
@@ -347,8 +362,9 @@
     });
 
     $('#projectname').on('change', function () {
-        $('#weeklyUpdateForm')[0].reset();
         const id = $(this).val();
+        $('#weeklyUpdateForm')[0].reset();
+        $('#projectname').val(id);
 
         if (id > 0) {
             BindData(id, "projectid");
@@ -464,7 +480,7 @@
         const month = $('#monthFilter').val() || null;
         const division = $('#divisionFilter').val() || null;
     $.ajax({
-        url: '/api/report/CombinedInternalProject_ProgressReport',
+        url: '/api/report/CombinedInternalProject_ProgressReportSchemeWise',
         type: 'GET',
         data: { month: month, year: year, id: division },
         xhrFields: {

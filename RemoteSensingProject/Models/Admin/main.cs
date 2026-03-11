@@ -254,6 +254,8 @@ namespace RemoteSensingProject.Models.Admin
 		}
         public class TechnicalInternalMonthlyReport
         {
+            public int SchemeId { get; set; }
+            public string SchemeName { get; set; }
             public int Id { get; set; }
             public DateTime Date { get; set; }
             public int ProjectId { get; set; }
