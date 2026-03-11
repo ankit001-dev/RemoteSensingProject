@@ -170,6 +170,8 @@ namespace RemoteSensingProject.Models.Accounts
 
 		public class AdhisthanModel
 		{
+			public int SchemeId { get; set; }
+			public string SchemeName { get; set; }
 			public int Id { get; set; }
 			public string HeadName { get; set; }
 			public decimal BudgetProvision { get; set; }

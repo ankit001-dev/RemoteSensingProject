@@ -406,8 +406,9 @@
         });
 
     $('#projectname').on('change', function () {
+        const id = $(this).val();
         $('#weeklyUpdateForm')[0].reset();
-            const id = $(this).val();
+        $('#projectname').val(id);
 
             if (id > 0) {
                 BindData(id, "projectid");

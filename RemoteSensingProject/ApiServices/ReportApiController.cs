@@ -951,6 +951,39 @@ public class ReportApiController : ApiController
         byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName,yearName);
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
+    [HttpGet]
+    [System.Web.Mvc.AllowAnonymous]
+    [Route("api/report/CombinedInternalProject_ProgressReportSchemeWise")]
+    public IHttpActionResult CombinedInternalProject_ProgressReportSchemeWise(int month, int year, int? id = null)
+    {
+        var data = _managerservice.GetMonthlyTechnicalInternalProjectReportSchemeWise(year:year,month:month,divisionid:id); ;
+        string monthName = string.Empty;
+        if (month <= 0)
+        {
+            monthName = new CultureInfo("hi-IN")
+             .DateTimeFormat
+             .GetMonthName(DateTime.Now.Month);
+        }
+        else
+        {
+            monthName = new CultureInfo("hi-IN")
+            .DateTimeFormat
+            .GetMonthName(month);
+        }
+        string yearName = string.Empty;
+        if (year <= 0)
+        {
+            yearName = DateTime.Now.Year.ToString();
+        }
+        else
+        {
+            yearName = year.ToString();
+        }
+        string financialYear = DocxGenerator.GetCurrentFinancialYear();
+        string filename = $"Combined_{monthName}_{financialYear}.docx";
+        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReportSchemeWise(data, monthName,yearName);
+        return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
+    }
     
     [HttpGet]
     [System.Web.Mvc.AllowAnonymous]
