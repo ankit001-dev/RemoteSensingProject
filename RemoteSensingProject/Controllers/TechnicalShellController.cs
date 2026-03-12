@@ -71,7 +71,7 @@ namespace RemoteSensingProject.Controllers
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
             ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.userId), filterBy: "ProjectManager", projectTypeFilter: "Internal");
-            ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReport(month:month,year:year,divisionid:division,filterby: "technicalcell");
+            ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReportSchemeWise(month:month,year:year,divisionid:division,filterby: "technicalcell");
             ViewData["DivisionList"] = _adminServices.ListDivison();
             if (month.HasValue && month >= 1 && month <= 12)
             {

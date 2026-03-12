@@ -152,7 +152,7 @@ namespace RemoteSensingProject.Controllers
             }, (JsonRequestBehavior)0);
         }
 
-        [HttpDelete]
+        [HttpGet]
         public ActionResult removeDivison(int id)
         {
             bool res = _adminServices.removeDivison(id);

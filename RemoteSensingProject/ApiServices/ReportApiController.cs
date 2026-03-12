@@ -923,7 +923,64 @@ public class ReportApiController : ApiController
     [Route("api/report/CombinedInternalProject_ProgressReport")]
     public IHttpActionResult CombinedInternalProject_ProgressReport(int month, int year, int? id = null)
     {
-        var data = _managerservice.GetMonthlyTechnicalInternalProjectReport(year:year,month:month,divisionid:id); ;
+        var authheader = Request.Headers.Authorization;
+
+        dynamic data = null;
+        bool isTechnicalShell = false;
+
+        if (authheader != null && authheader.Scheme == "Bearer")
+        {
+            string role = getRole(); // existing method
+
+            if (!string.IsNullOrEmpty(role))
+            {
+                var roles = role.Split(',');
+
+                if (roles.Any(r => r.Trim().Equals("technicalshell", StringComparison.OrdinalIgnoreCase)))
+                {
+                    isTechnicalShell = true;
+                }
+            }
+        }
+
+        // Data fetch
+        if (isTechnicalShell)
+        {
+            data = _managerservice.GetMonthlyTechnicalInternalProjectReportSchemeWise(year: year, month: month, divisionid: id);
+        }
+        else
+        {
+            data = _managerservice.GetMonthlyTechnicalInternalProjectReport(year: year, month: month, divisionid: id);
+        }
+
+        string monthName = month <= 0
+            ? new CultureInfo("hi-IN").DateTimeFormat.GetMonthName(DateTime.Now.Month)
+            : new CultureInfo("hi-IN").DateTimeFormat.GetMonthName(month);
+
+        string yearName = year <= 0 ? DateTime.Now.Year.ToString() : year.ToString();
+
+        string financialYear = DocxGenerator.GetCurrentFinancialYear();
+        string filename = $"Combined_{monthName}_{financialYear}.docx";
+
+        byte[] pdfBytes;
+
+        if (isTechnicalShell)
+        {
+            pdfBytes = DocxGenerator.CreateInternalProjectCombinedReportSchemeWise(data, monthName, yearName);
+        }
+        else
+        {
+            pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName, yearName);
+        }
+
+        return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, Request);
+    }
+    [HttpGet]
+    [System.Web.Mvc.AllowAnonymous]
+    [Route("api/report/CombinedInternalProject_ProgressReportSchemeWise")]
+    public IHttpActionResult CombinedInternalProject_ProgressReportSchemeWise(int month, int year, int? id = null)
+    {
+        var data = _managerservice.GetMonthlyTechnicalInternalProjectReportSchemeWise(year:year,month:month,divisionid:id); ;
         string monthName = string.Empty;
         if (month <= 0)
         {
@@ -948,7 +1005,7 @@ public class ReportApiController : ApiController
         }
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"Combined_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName,yearName);
+        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReportSchemeWise(data, monthName,yearName);
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
     

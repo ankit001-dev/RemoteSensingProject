@@ -225,7 +225,7 @@
                                     </div>
                                     <div class="d-flex align-items-baseline ">
                                         <a href="/Admin/Employee_Registration?filterType=divisionHead">
-                                            <p class="text-success w-100"><span><span class="text-dark">Division Head :  </span> @data.TotalDivisionHeadCount</span></p>
+                                            <p class="text-success w-100"><span><span class="text-dark">Divisional Head :  </span> @data.TotalDivisionHeadCount</span></p>
                                         </a>
                                     </div>
                                     <div class="d-flex align-items-baseline ">
@@ -493,7 +493,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const budgetEl = document.getElementById("bbchart");
     if (budgetEl && budgetData && budgetData.length > 0) {
 
-        const labels = budgetData.map(x => x.ProjectName);
+        const labels = budgetData.map(x =>
+            x.ProjectName ? x.ProjectName.substring(0, 5) : ''
+        );
 
         const datasets = [
             {

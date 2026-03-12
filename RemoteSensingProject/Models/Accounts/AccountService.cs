@@ -633,9 +633,10 @@ namespace RemoteSensingProject.Models.Accounts
 											Id = Convert.ToInt32(rd["id"]),
 											HeadName = rd["title"].ToString(),
 											BudgetProvision = rd["budget"] != null ? Convert.ToDecimal(rd["budget"]) : 0,
-											//Committed = rd["committed"] != null ? Convert.ToDecimal(rd["committed"]) : 0,
 											ExpenditureAmount = rd["expenditure"] != null ? Convert.ToDecimal(rd["expenditure"]) : 0,
-											ExpenditurePercentage = Convert.ToDecimal(rd["expense_percentage"] ?? 0)
+											ExpenditurePercentage = Convert.ToDecimal(rd["expense_percentage"] ?? 0),
+                                            SchemeName = rd["projectscheme"].ToString(),
+                                            SchemeId = rd["projectschemeid"]!=DBNull.Value?Convert.ToInt32(rd["projectschemeid"]):0 
                                         });
 									}
                                 }
