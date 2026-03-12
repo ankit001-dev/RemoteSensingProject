@@ -1,0 +1,103 @@
+﻿
+@{
+    ViewBag.Title = "DynamicFormat";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+}
+
+
+<style>
+    .modal-body .sliderimages img {
+        width: 20% !important;
+        height: 20%;
+        border-radius: 10px;
+    }
+
+    svg {
+        height: 20px;
+    }
+
+    .custom-table {
+        border: 2px solid #000;
+    }
+
+        .custom-table th,
+        .custom-table td {
+            border: 1px solid #000;
+            font-size: 14px;
+        }
+
+        .custom-table thead th {
+            background-color: #d9d9d9;
+            font-weight: 600;
+        }
+
+    .small-text {
+        font-size: 12px;
+    }
+</style>
+
+<nav class="page-breadcrumb mb-3">
+    <div class="container-fluid">
+        <div class="row text-end">
+            <div class="col-md-12">
+                <button class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#addslider">
+                    <i class="link-icon" data-feather="plus"></i>
+                    Add
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <p class="text-center">
+                    <h2 class="text-center">Format Name</h2>
+                </p>
+                <div class="table-responsive">
+                    <table class="table custom-table">
+
+                        <thead>
+                            <!-- First Header Row -->
+                            <tr>
+                                <th>क्रम सं०</th>
+                                <th>मद / परियोजना का नाम</th>
+                                <th>इकाई (लाख मे)</th>
+                                <th>लक्ष्य</th>
+                                <th>उपलब्धि </th>
+                                <th>प्रदेश  सरकार के लाभान्वित होने वाले विभाग </th>
+                                <th>अभ्युक्ति</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addslider" tabindex="-1" aria-labelledby="addslider" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <h5 class="modal-title" id="exampleModalLabel">Add Format</h5>
+            </div>
+            <div class="modal-body">
+                <form class="forms-sample" id="AddFormatForm">
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Save </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

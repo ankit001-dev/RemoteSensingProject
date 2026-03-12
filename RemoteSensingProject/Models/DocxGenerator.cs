@@ -756,14 +756,7 @@ namespace RemoteSensingProject.Models
                         // Scheme Row
                         table.Append(new TableRow(
                             CreateNormalCell($"{schemeIndex}.0"),
-                            CreateBoldCell(scheme.Key.SchemeName),
-                            CreateNormalCell(""),
-                            CreateNormalCell(""),
-                            CreateNormalCell(""),
-                            CreateNormalCell(""),
-                            CreateNormalCell(""),
-                            CreateNormalCell(""),
-                            CreateNormalCell("")
+                            CreateMergedSchemeCell(scheme.Key.SchemeName, 8) // remaining columns merged
                         ));
 
                         int projectIndex = 1;
@@ -798,7 +791,20 @@ namespace RemoteSensingProject.Models
                 return ms.ToArray();
             }
         }
-
+        private static TableCell CreateMergedSchemeCell(string text, int span)
+        {
+            return new TableCell(
+                new TableCellProperties(
+                    new GridSpan() { Val = span }
+                ),
+                new Paragraph(
+                    new Run(
+                        new RunProperties(new Bold()),
+                        new Text(text)
+                    )
+                )
+            );
+        }
 
         #region Accounts Reports formate
         public static byte[] AccountsInternalProjectReport(List<AdhisthanModel> data, string financialYear, string month) {

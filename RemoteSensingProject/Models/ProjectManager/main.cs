@@ -460,4 +460,10 @@ namespace RemoteSensingProject.Models.ProjectManager
         public string DesignationName { get; set; }
     }
 
+    public class DynamicTableFormatsDto
+    {
+        public int TableId { get; set; }
+        public string FormatName { get; set; }
+        public string TableName { get; set; }
+    }
 }

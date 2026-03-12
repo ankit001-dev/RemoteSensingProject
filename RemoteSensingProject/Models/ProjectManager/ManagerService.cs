@@ -5678,5 +5678,163 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
         #endregion
+
+        #region Manage Dynamic Tables
+        public List<DynamicTableFormatsDto> GetDynamicTablesFormat()
+        {
+            try
+            {
+                List<DynamicTableFormatsDto> list = new List<DynamicTableFormatsDto>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manage_master_dynamic_table", con);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"getInternalprojectReport");
+                        cmd.Parameters.AddWithValue("@v_tableid", DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader res = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)res).HasRows)
+                                {
+                                    while (((DbDataReader)(object)res).Read())
+                                    {
+                                        list.Add(new DynamicTableFormatsDto
+                                        {
+                                            TableId = ((((DbDataReader)(object)res)["id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["id"]) : 0),
+                                            FormatName = ((((DbDataReader)(object)res)["formate_name"] != DBNull.Value) ? ((DbDataReader)(object)res)["formate_name"].ToString() : ""),
+                                            TableName = ((((DbDataReader)(object)res)["table_name"] != DBNull.Value) ? ((DbDataReader)(object)res)["table_name"].ToString() : ""),
+                                        });
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)res)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
+
+        public List<DynamicTableFormatsDto> GetDynamicTableColumn(int tableid)
+        {
+            try
+            {
+                List<DynamicTableFormatsDto> list = new List<DynamicTableFormatsDto>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manage_master_dynamic_table", con);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"getInternalprojectReport");
+                        cmd.Parameters.AddWithValue("@v_tableid", tableid);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader res = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)res).HasRows)
+                                {
+                                    while (((DbDataReader)(object)res).Read())
+                                    {
+                                        list.Add(new DynamicTableFormatsDto
+                                        {
+                                            
+                                        });
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)res)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+            }
+        }
+        #endregion
     }
 }
