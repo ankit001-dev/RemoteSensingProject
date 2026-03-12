@@ -52,6 +52,8 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult DynamicFormat(int id)
         {
+            Models.TechnicalCell.main.DynamicFormate data = _managerServices.GetDynamicTableColumn(id);
+            ViewData["data"] = data;
             return View();
         }
         public ActionResult BindOverallCompletionPercentage()

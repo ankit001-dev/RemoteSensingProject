@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.EMMA;
 using Npgsql;
 using NpgsqlTypes;
 using System;
@@ -11,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using static RemoteSensingProject.Models.Admin.main;
+using static RemoteSensingProject.Models.TechnicalCell.main;
 
 namespace RemoteSensingProject.Models.ProjectManager
 {
@@ -5693,7 +5695,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     try
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@v_action", (object)"getInternalprojectReport");
+                        cmd.Parameters.AddWithValue("@v_action", (object)"getformats");
                         cmd.Parameters.AddWithValue("@v_tableid", DBNull.Value);
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
@@ -5709,7 +5711,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                                         list.Add(new DynamicTableFormatsDto
                                         {
                                             TableId = ((((DbDataReader)(object)res)["id"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)res)["id"]) : 0),
-                                            FormatName = ((((DbDataReader)(object)res)["formate_name"] != DBNull.Value) ? ((DbDataReader)(object)res)["formate_name"].ToString() : ""),
+                                            FormatName = ((((DbDataReader)(object)res)["format_name"] != DBNull.Value) ? ((DbDataReader)(object)res)["format_name"].ToString() : ""),
                                             TableName = ((((DbDataReader)(object)res)["table_name"] != DBNull.Value) ? ((DbDataReader)(object)res)["table_name"].ToString() : ""),
                                         });
                                     }
@@ -5759,20 +5761,21 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<DynamicTableFormatsDto> GetDynamicTableColumn(int tableid)
+        public DynamicFormate GetDynamicTableColumn(int tableid)
         {
             try
             {
-                List<DynamicTableFormatsDto> list = new List<DynamicTableFormatsDto>();
+                DynamicFormate model = new DynamicFormate();
                 ((DbConnection)(object)con).Open();
                 NpgsqlTransaction tran = con.BeginTransaction();
                 try
                 {
+                    model.ColumnName = new List<string>();
                     NpgsqlCommand cmd = new NpgsqlCommand("fn_manage_master_dynamic_table", con);
                     try
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@v_action", (object)"getInternalprojectReport");
+                        cmd.Parameters.AddWithValue("@v_action", (object)"getcolumns");
                         cmd.Parameters.AddWithValue("@v_tableid", tableid);
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
@@ -5783,12 +5786,18 @@ namespace RemoteSensingProject.Models.ProjectManager
                             {
                                 if (((DbDataReader)(object)res).HasRows)
                                 {
-                                    while (((DbDataReader)(object)res).Read())
+                                    while (res.Read())
                                     {
-                                        list.Add(new DynamicTableFormatsDto
-                                        {
-                                            
-                                        });
+                                        model.Id = res["table_id"] != DBNull.Value ? Convert.ToInt32(res["table_id"]) : 0;
+
+                                        if (model.FormatName == null)
+                                            model.FormatName = res["format_name"]?.ToString();
+
+                                        if (model.TableName == null)
+                                            model.TableName = res["table_name"]?.ToString();
+
+                                        if (res["column_name"] != DBNull.Value)
+                                            model.ColumnName.Add(res["column_name"]?.ToString());
                                     }
                                 }
                             }
@@ -5821,7 +5830,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 {
                     ((IDisposable)tran)?.Dispose();
                 }
-                return list;
+                return model;
             }
             catch (Exception ex)
             {
