@@ -131,7 +131,7 @@ namespace RemoteSensingProject.Controllers
         {
             try
             {
-                data.TableName = "tbl_dynamicFormate_" + data.FormatName;
+                data.TableName = "tbl_dynamicFormate_" + Guid.NewGuid().ToString("N");
                 bool result = _technicalCellServices.CreateDynamicReport(data);
                 return Json(new
                 {
