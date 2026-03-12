@@ -870,24 +870,32 @@ public class ReportApiController : ApiController
     public IHttpActionResult DivisionalMonthlyReportPdf(int month, int year, int? id = null, int? divisionId = null)
     {
         List<InternalProject_ProgressModel> data = new List<InternalProject_ProgressModel>();
-            data = _managerservice.GetMonthlyProjectReport(projectmanager: Convert.ToInt32(id), divisionid: Convert.ToInt32(divisionId), year:year,month:month);
-            string monthName = new CultureInfo("hi-IN")
-            .DateTimeFormat
-            .GetMonthName(DateTime.Now.Month);
+        data = _managerservice.GetMonthlyProjectReport(projectmanager: Convert.ToInt32(id), divisionid: Convert.ToInt32(divisionId), year: year, month: month);
+        string monthName = new CultureInfo("hi-IN")
+        .DateTimeFormat
+        .GetMonthName(DateTime.Now.Month);
         string divisionname = data?.FirstOrDefault().DivisionName;
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"Internal_Project_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.CreateMonthlyInternalProjectProgressDocx(data, monthName, year,divisionname);
+        byte[] pdfBytes = DocxGenerator.CreateMonthlyInternalProjectProgressDocx(data, monthName, year, divisionname);
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
 
     [HttpGet]
     [System.Web.Mvc.AllowAnonymous]
     [Route("api/report/ExternalProject_ProgressReport")]
-    public IHttpActionResult ExternalProject_ProgressReport(int month, int year, int? id = null, int?divisionId=null)
+    public IHttpActionResult ExternalProject_ProgressReport(int month, int year, int? id = null, int? divisionId = null)
     {
         List<ExternalProject_ProgressModel> data = new List<ExternalProject_ProgressModel>();
         data = _managerservice.GetMonthlyExternalProjectReport(projectmanager: Convert.ToInt32(id), divisionid: Convert.ToInt32(divisionId), year: year, month: month);
+        if (data == null || data.Count <= 0)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                message = "Data not found"
+            });
+        }
         string monthName = string.Empty;
         if (month <= 0)
         {
@@ -913,46 +921,25 @@ public class ReportApiController : ApiController
         string divisionname = data.FirstOrDefault().DivisionName;
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"External_Project_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.CreateExternalProjectPhysicalAchievementReport(data, monthName,divisionname ,yearName);
+        byte[] pdfBytes = DocxGenerator.CreateExternalProjectPhysicalAchievementReport(data, monthName, divisionname, yearName);
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
 
-    
+
     [HttpGet]
     [System.Web.Mvc.AllowAnonymous]
     [Route("api/report/CombinedInternalProject_ProgressReport")]
     public IHttpActionResult CombinedInternalProject_ProgressReport(int month, int year, int? id = null)
     {
-        var authheader = Request.Headers.Authorization;
-
-        dynamic data = null;
-        bool isTechnicalShell = false;
-
-        if (authheader != null && authheader.Scheme == "Bearer")
+        var data = _managerservice.GetMonthlyTechnicalInternalProjectReport(year: year, month: month, divisionid: id);
+        if (data == null || data.Count <= 0)
         {
-            string role = getRole(); // existing method
-
-            if (!string.IsNullOrEmpty(role))
+            return BadRequest(new
             {
-                var roles = role.Split(',');
-
-                if (roles.Any(r => r.Trim().Equals("technicalshell", StringComparison.OrdinalIgnoreCase)))
-                {
-                    isTechnicalShell = true;
-                }
-            }
+                status = false,
+                message = "Data not found"
+            });
         }
-
-        // Data fetch
-        if (isTechnicalShell)
-        {
-            data = _managerservice.GetMonthlyTechnicalInternalProjectReportSchemeWise(year: year, month: month, divisionid: id);
-        }
-        else
-        {
-            data = _managerservice.GetMonthlyTechnicalInternalProjectReport(year: year, month: month, divisionid: id);
-        }
-
         string monthName = month <= 0
             ? new CultureInfo("hi-IN").DateTimeFormat.GetMonthName(DateTime.Now.Month)
             : new CultureInfo("hi-IN").DateTimeFormat.GetMonthName(month);
@@ -962,25 +949,25 @@ public class ReportApiController : ApiController
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"Combined_{monthName}_{financialYear}.docx";
 
-        byte[] pdfBytes;
-
-        if (isTechnicalShell)
-        {
-            pdfBytes = DocxGenerator.CreateInternalProjectCombinedReportSchemeWise(data, monthName, yearName);
-        }
-        else
-        {
-            pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName, yearName);
-        }
-
+        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReport(data, monthName, yearName);
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, Request);
     }
+
+
     [HttpGet]
     [System.Web.Mvc.AllowAnonymous]
     [Route("api/report/CombinedInternalProject_ProgressReportSchemeWise")]
     public IHttpActionResult CombinedInternalProject_ProgressReportSchemeWise(int month, int year, int? id = null)
     {
-        var data = _managerservice.GetMonthlyTechnicalInternalProjectReportSchemeWise(year:year,month:month,divisionid:id); ;
+        var data = _managerservice.GetMonthlyTechnicalInternalProjectReportSchemeWise(year: year, month: month, divisionid: id);
+        if (data == null || data.Count <= 0)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                message = "Data not found"
+            });
+        }
         string monthName = string.Empty;
         if (month <= 0)
         {
@@ -1005,10 +992,10 @@ public class ReportApiController : ApiController
         }
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string filename = $"Combined_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReportSchemeWise(data, monthName,yearName);
+        byte[] pdfBytes = DocxGenerator.CreateInternalProjectCombinedReportSchemeWise(data, monthName, yearName);
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
-    
+
     [HttpGet]
     [System.Web.Mvc.AllowAnonymous]
     [Route("api/report/AccountInternalProjectBudgetReport")]
@@ -1017,17 +1004,17 @@ public class ReportApiController : ApiController
         var data = _accountService.GetInternalProjectExpenses();
         string monthName = new CultureInfo("hi-IN")
         .DateTimeFormat
-        .GetMonthName(DateTime.Now.Month);        
+        .GetMonthName(DateTime.Now.Month);
 
-            // ✅ Get financial year
-            string financialYear = DocxGenerator.GetCurrentFinancialYear();
+        // ✅ Get financial year
+        string financialYear = DocxGenerator.GetCurrentFinancialYear();
 
         byte[] pdfBytes = DocxGenerator.AccountsInternalProjectReport(data, financialYear, monthName);
         string filename = $"Account_Internal_Project_{monthName}_{financialYear}.docx";
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, ((ApiController)this).Request);
     }
 
-    
+
     [HttpGet]
     [System.Web.Mvc.AllowAnonymous]
     [Route("api/report/AdhisthanAccountReportGenerator")]
@@ -1054,17 +1041,17 @@ public class ReportApiController : ApiController
     {
         List<DocxGenerator.MonthlyProgressRow> data = _adminServices.GetExternalReportLogData();
         string monthName = new CultureInfo("hi-IN")
-      .DateTimeFormat 
+      .DateTimeFormat
       .GetMonthName(DateTime.Now.Month);
 
         // ✅ Get financial year
         string financialYear = DocxGenerator.GetCurrentFinancialYear();
         string fileName = $"ExternalProject_Account_Report_{monthName}_{financialYear}.docx";
-        byte[] pdfBytes = DocxGenerator.AccountExternalProjectReport(data, monthName,"xyz");
+        byte[] pdfBytes = DocxGenerator.AccountExternalProjectReport(data, monthName, "xyz");
         return (IHttpActionResult)(object)new PdfResult(pdfBytes, fileName, ((ApiController)this).Request);
     }
 
-    
+
 
     public static List<MonthlyProgressRow> GetDummyData()
     {
@@ -1109,4 +1096,9 @@ public class ReportApiController : ApiController
         };
     }
     #endregion
+
+    private IHttpActionResult BadRequest(object value)
+    {
+        return Content<object>(HttpStatusCode.BadRequest, value);
+    }
 }

@@ -559,8 +559,7 @@
             document.body.removeChild(link);
         },
         error: function (err) {
-            console.log(err);
-            alert("Error downloading file");
+            Swal.fire('Error', 'Data not found!', 'error');
         }
     });
 })

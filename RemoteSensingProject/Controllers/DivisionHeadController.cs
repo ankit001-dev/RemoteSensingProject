@@ -19,6 +19,17 @@ namespace RemoteSensingProject.Controllers
             _adminServices = new AdminServices();
             _managerServices = new ManagerService();
         }
+
+        public ActionResult Common()
+        {
+            return View();
+        }
+
+        public ActionResult DynamicFormat()
+        {
+            return View();
+        }
+
         public ActionResult DivisionHead(string searchTerm)
         {
             int divisionid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).divisionId);
@@ -149,11 +160,11 @@ namespace RemoteSensingProject.Controllers
         #endregion
 
         #region Progress Report
-        public ActionResult InternalProject_ProgressReportDivision(int? year = null,int? month = null,int? projectManagerId=null)
+        public ActionResult InternalProject_ProgressReportDivision(int? year = null, int? month = null, int? projectManagerId = null)
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.divisionId), filterBy: "DivisionHead",projectTypeFilter:"Internal", searchTerm: null, statusFilter: null);
-            ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReport(divisionid:userData.divisionId,year:year,month:month,projectmanager:projectManagerId,filterby: "divisionhead");
+            ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.divisionId), filterBy: "DivisionHead", projectTypeFilter: "Internal", searchTerm: null, statusFilter: null);
+            ViewData["reportdata"] = _managerServices.GetMonthlyTechnicalInternalProjectReport(divisionid: userData.divisionId, year: year, month: month, projectmanager: projectManagerId, filterby: "divisionhead");
             ViewData["projectmanagerlist"] = _adminServices.BindEmployee().Where(n => n.EmployeeRole != null && n.EmployeeRole.Contains("projectManager")).ToList();
             ViewBag.divisionId = Convert.ToInt32(userData.divisionId);
             if (month.HasValue && month >= 1 && month <= 12)
@@ -179,7 +190,7 @@ namespace RemoteSensingProject.Controllers
         public ActionResult ExternalProject_ProgressReportDivision(int? year = null, int? month = null, int? projectManagerId = null)
         {
             UserCredential userData = _managerServices.getManagerDetails(User.Identity.Name);
-            ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.divisionId), filterBy: "DivisionHead",projectTypeFilter:"External", searchTerm: null, statusFilter: null);
+            ViewData["projectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userData.divisionId), filterBy: "DivisionHead", projectTypeFilter: "External", searchTerm: null, statusFilter: null);
             ViewData["reportdata"] = _managerServices.GetMonthlyExternalProjectReport(divisionid: userData.divisionId, year: year, month: month, projectmanager: projectManagerId, filterby: "divisionhead");
             ViewBag.divisionId = Convert.ToInt32(userData.divisionId);
             ViewData["projectmanagerlist"] = _adminServices.BindEmployee().Where(n => n.EmployeeRole != null && n.EmployeeRole.Contains("projectManager")).ToList();

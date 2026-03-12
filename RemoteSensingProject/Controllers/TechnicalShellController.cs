@@ -19,6 +19,16 @@ namespace RemoteSensingProject.Controllers
             _adminServices = new AdminServices();
             _technicalCellServices = new TechnicalCellServices();
         }
+
+        public ActionResult Common()
+        {
+            return View();
+        }
+
+        public ActionResult DynamicFormat()
+        {
+            return View();
+        }
         // GET: TechnicalShell
         #region Progress Report
         public JsonResult UpdateTechnicalInternalProject(RemoteSensingProject.Models.Admin.main.TechnicalInternalMonthlyReport data)

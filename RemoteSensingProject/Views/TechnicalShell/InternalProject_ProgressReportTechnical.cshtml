@@ -512,8 +512,13 @@
             document.body.removeChild(link);
         },
         error: function (err) {
-            console.log(err);
-            alert("Error downloading file");
+            if (data == null || data.Count <= 0) {
+                return BadRequest(new
+                    {
+                        status = false,
+                        message = "Data not found"
+                    });
+            }
         }
     });
 })
