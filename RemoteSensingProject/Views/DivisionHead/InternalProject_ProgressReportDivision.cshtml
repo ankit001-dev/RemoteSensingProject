@@ -147,14 +147,14 @@
                                 <th>10</th>
                             </tr>
                             <!--Full collapse row-->
-                            <tr>
+                            @*<tr>
                                 <td class="fw-bold">1.0</td>
                                 <td colspan="9">
                                     <h4>
                                         रीमोट सेन्सिंग तकनीक से प्रदेश के समस्त प्रकार्तिक संसधानों का अनुश्रवण एवं आलंकान
                                     </h4>
                                 </td>
-                            </tr>
+                            </tr>*@
                         </thead>
 
                         <tbody>
@@ -532,8 +532,13 @@
                 document.body.removeChild(link);
             },
             error: function (err) {
-                console.log(err);
-                alert("Error downloading file");
+                if (data == null || data.Count <= 0) {
+                    return BadRequest(new
+                        {
+                            status = false,
+                            message = "Data not found"
+                        });
+                }
             }
         });
     })

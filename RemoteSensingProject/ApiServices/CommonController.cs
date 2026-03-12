@@ -1147,6 +1147,33 @@ public class CommonController : ApiController
         }
 
     }
+	#endregion
+
+	#region Get Division
+	[RoleAuthorize("admin,projectManager,divisionHead,technicalShell")]
+    [HttpGet]
+    [Route("api/get-division")]
+    public IHttpActionResult GetAllDivision()
+    {
+        try
+        {
+            var data = _adminServices.ListDivison();
+            return Ok(new
+            {
+                status = data.Any(),
+                data = data
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 400,
+                message = ex.Message
+            });
+        }
+    }
     #endregion
     private IHttpActionResult BadRequest(object value)
 	{

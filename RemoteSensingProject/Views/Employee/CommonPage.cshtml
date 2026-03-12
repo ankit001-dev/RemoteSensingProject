@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewBag.Title = "CommonPage";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["dynamicformats"] as List<RemoteSensingProject.Models.ProjectManager.DynamicTableFormatsDto>;
+}
+
+<style>
+    .dashboard-card {
+        position: relative;
+        height: 140px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background: linear-gradient(135deg,#eef2ff,#e0e7ff);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        transition: all .35s ease;
+        overflow: hidden;
+        font-size: 20px;
+    }
+
+        .dashboard-card h5 {
+            font-weight: 600;
+            color: #1e293b;
+            letter-spacing: .5px;
+            z-index: 2;
+        }
+
+        /* animated background circle */
+        .dashboard-card::before {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.35);
+            border-radius: 50%;
+            top: -80px;
+            right: -80px;
+            transition: all .4s ease;
+        }
+
+        /* second shape */
+        .dashboard-card::after {
+            content: "";
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 50%;
+            bottom: -60px;
+            left: -60px;
+            transition: all .4s ease;
+        }
+
+        /* hover effect */
+        .dashboard-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+            background: linear-gradient(135deg,#2563eb,#4f46e5);
+        }
+
+            .dashboard-card:hover h5 {
+                color: white;
+            }
+
+            .dashboard-card:hover::before {
+                transform: scale(1.2);
+            }
+
+            .dashboard-card:hover::after {
+                transform: scale(1.2);
+            }
+
+    h5 {
+        font-size: 34px !important;
+    }
+</style>
+<div class="container mt-4">
+    <div class="row g-4">
+
+        <div class="col-lg-3 col-md-6">
+            <a href="/employee/InternalProject_ProgressReport" class="text-decoration-none">
+                <div class="dashboard-card">
+                    <h5>Internal</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="/employee/ExternalProject_ProgressReport" class="text-decoration-none">
+                <div class="dashboard-card">
+                    <h5>External</h5>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <a href="/employee/ProjecStaffProgressReport" class="text-decoration-none">
+                <div class="dashboard-card">
+                    <h5>Project Staff</h5>
+                </div>
+            </a>
+        </div>
+        @if (data != null || data.Count <= 0)
+        {
+            foreach (var item in data)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <a href="/employee/DynamicFormat?id=@item.TableId" class="text-decoration-none">
+                        <div class="dashboard-card">
+                            <h5>@item.FormatName</h5>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+    </div>
+</div>
+

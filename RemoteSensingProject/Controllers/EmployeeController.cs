@@ -44,6 +44,16 @@ namespace RemoteSensingProject.Controllers
             return View((object)TotalCount);
         }
 
+        public ActionResult CommonPage()
+        {
+            ViewData["dynamicformats"] = _managerServices.GetDynamicTablesFormat();
+            return View();
+        }
+
+        public ActionResult DynamicFormat(int id)
+        {
+            return View();
+        }
         public ActionResult BindOverallCompletionPercentage()
         {
             string managerName = User.Identity.Name;

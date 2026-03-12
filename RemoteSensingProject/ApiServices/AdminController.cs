@@ -97,29 +97,7 @@ namespace RemoteSensingProject.ApiServices
 			}
 		}
 
-		[HttpGet]
-		[Route("api/get-division")]
-		public IHttpActionResult GetAllDivision()
-		{
-			try
-			{
-				var data = _adminServices.ListDivison();
-				return Ok(new
-				{
-					status = data.Any(),
-					data = data
-				});
-			}
-			catch(Exception ex)
-			{
-				return BadRequest(new
-				{
-					status = false,
-					StatusCode = 400,
-					message = ex.Message
-				});
-			}
-		}
+		
 		[HttpGet]
 		[Route("api/remove-division")]
 		public IHttpActionResult RemoveDivision(int id)
