@@ -1,8 +1,10 @@
 ﻿using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.TechnicalCell;
 using System;
 using System.Globalization;
 using System.Web.Mvc;
+using static RemoteSensingProject.Models.TechnicalCell.main;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -10,10 +12,12 @@ namespace RemoteSensingProject.Controllers
     {
         private readonly ManagerService _managerServices;
         private readonly AdminServices _adminServices;
+        private readonly TechnicalCellServices _technicalCellServices;
         public TechnicalShellController()
         {
             _managerServices = new ManagerService();
             _adminServices = new AdminServices();
+            _technicalCellServices = new TechnicalCellServices();
         }
 
         public ActionResult Common()
@@ -127,5 +131,32 @@ namespace RemoteSensingProject.Controllers
         }
 
         #endregion
+
+        public ActionResult Generate_formate()
+        {
+            return View();
+        }
+
+        public ActionResult SavedynamicFormate(DynamicFormate data)
+        {
+            try
+            {
+                data.TableName = "tbl_dynamicFormate_" + data.FormatName;
+                bool result = _technicalCellServices.CreateDynamicReport(data);
+                return Json(new
+                {
+                    status = result,
+                    message = result ? "Dynamic report created successfully !" : "Some issue occured while creating dynamic report."
+                });
+            }catch(Exception ex)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+                
+        }
     }
 }

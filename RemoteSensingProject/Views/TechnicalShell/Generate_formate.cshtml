@@ -1,0 +1,226 @@
+﻿
+@{
+    ViewBag.Title = "Generate formate";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
+}
+<style>
+
+    body {
+        background: linear-gradient(135deg,#eef2f7,#f8fbff);
+        min-height: 100vh;
+        font-family: 'Segoe UI',sans-serif;
+    }
+
+    .page-title {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .builder-card {
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .section-title {
+        font-weight: 600;
+        color: #34495e;
+        margin-bottom: 15px;
+    }
+
+    .column-row {
+        background: #f9fbff;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        transition: 0.2s;
+    }
+
+        .column-row:hover {
+            background: #eef4ff;
+        }
+
+    .add-btn {
+        border-radius: 25px;
+        padding: 8px 18px;
+        font-size: 14px;
+    }
+
+    .remove-btn {
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .save-btn {
+        border-radius: 25px;
+        padding: 10px 30px;
+        font-weight: 500;
+    }
+
+    input.form-control {
+        border-radius: 8px;
+    }
+</style>
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card builder-card p-4">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <h4 class="page-title">
+                    <i class="fa-solid fa-table-columns text-primary"></i>
+                    Report Format Builder
+                </h4>
+
+            </div>
+
+            <div class="mb-4">
+
+                <label class="form-label fw-semibold">Format Name</label>
+
+                <input type="text" class="form-control" id="formatName" placeholder="Enter report format name">
+
+            </div>
+
+            <hr>
+
+            <div>
+
+                <h6 class="section-title">
+                    <i class="fa-solid fa-list text-secondary"></i>
+                    Columns
+                </h6>
+
+                <div id="columnsContainer">
+
+                    <div class="row column-row align-items-center">
+
+                        <div class="col-md-10">
+                            <input type="text" class="form-control column-input" placeholder="Enter column name">
+                        </div>
+
+                        <div class="col-md-2 text-end">
+
+                            <button class="btn btn-outline-danger remove-btn" onclick="removeColumn(this)">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <button class="btn btn-primary add-btn mt-2" onclick="addColumn()">
+
+                    <i class="fa-solid fa-plus"></i>
+                    Add Column
+
+                </button>
+
+            </div>
+
+            <hr class="my-4">
+
+            <div class="text-end">
+
+                <button class="btn btn-success save-btn" onclick="saveFormat()">
+
+                    <i class="fa-solid fa-save"></i>
+                    Save Format
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    function addColumn() {
+
+        let container = document.getElementById("columnsContainer");
+
+        let div = document.createElement("div");
+
+        div.className = "row column-row align-items-center";
+
+        div.innerHTML = `
+
+<div class="col-md-10">
+<input type="text" class="form-control column-input" placeholder="Enter column name">
+</div>
+
+<div class="col-md-2 text-end">
+<button class="btn btn-outline-danger remove-btn" onclick="removeColumn(this)">
+<i class="fa-solid fa-trash"></i>
+</button>
+</div>
+
+`;
+
+        container.appendChild(div);
+
+    }
+
+    function removeColumn(btn) {
+
+        btn.closest(".column-row").remove();
+
+    }
+
+    function saveFormat() {
+
+        let formatName = document.getElementById("formatName").value;
+
+        let columnName = [];
+
+        document.querySelectorAll(".column-input").forEach(e => {
+
+            if (e.value.trim() != "")
+                columnName.push(e.value.trim());
+
+        });
+        const data = { formatName, columnName };
+
+
+        $.ajax({
+            url: "/TechnicalShell/SavedynamicFormate",
+            type: "post",
+            data: { data: data },
+            success: function (res) {
+                Swal.fire({
+                    title: res.status ? "Successfully !" : "Sorry !",
+                    text: res.message,
+                    icon: res.status ? "success" : "warning",
+                    didClose: () =>{
+                        if (res.status) {
+                            location.reload(true)
+                        }
+                    }
+                })
+            },
+            error: function (err) {
+                Swal.fire({
+                    title: "Server issue !",
+                    text: "Internal server issue found !",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload()
+                    }
+                })
+            }
+        })
+
+
+    }
+
+</script>
