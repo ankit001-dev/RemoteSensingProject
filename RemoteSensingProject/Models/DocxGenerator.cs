@@ -10,6 +10,7 @@ using System.Linq;
 using System.Web.Http.Results;
 using static RemoteSensingProject.Models.Accounts.main;
 using static RemoteSensingProject.Models.Admin.main;
+using static RemoteSensingProject.Models.TechnicalCell.main;
 namespace RemoteSensingProject.Models
 {
     public class DocxGenerator
@@ -1406,5 +1407,68 @@ namespace RemoteSensingProject.Models
             return $"{startYear}-{endYear}";
         }
         #endregion
+
+        public static byte[] CreateDynamicTableDocx(DynamicFormate format,List<Dictionary<string, string>> rows)
+        {
+            using (var ms = new MemoryStream())
+            {
+                using (WordprocessingDocument doc =
+                    WordprocessingDocument.Create(ms, WordprocessingDocumentType.Document, true))
+                {
+                    MainDocumentPart mainPart = doc.AddMainDocumentPart();
+                    mainPart.Document = new Document(new Body());
+                    Body body = mainPart.Document.Body;
+
+                    // ===== FORMAT NAME HEADING =====
+                    if (!string.IsNullOrEmpty(format.FormatName))
+                    {
+                        body.Append(CreateReportHeading(format.FormatName));
+                    }
+
+                    // ===== TABLE =====
+                    Table table = new Table(
+                        new TableProperties(
+                            new TableBorders(
+                                new TopBorder { Val = BorderValues.Single, Size = 6 },
+                                new BottomBorder { Val = BorderValues.Single, Size = 6 },
+                                new LeftBorder { Val = BorderValues.Single, Size = 6 },
+                                new RightBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideHorizontalBorder { Val = BorderValues.Single, Size = 6 },
+                                new InsideVerticalBorder { Val = BorderValues.Single, Size = 6 }
+                            )
+                        )
+                    );
+
+                    // ===== HEADER ROW =====
+                    TableRow headerRow = new TableRow();
+
+                    foreach (var col in format.ColumnName)
+                    {
+                        headerRow.Append(CreateHeaderCell(col));
+                    }
+
+                    table.Append(headerRow);
+
+                    // ===== DATA ROWS =====
+                    foreach (var row in rows)
+                    {
+                        TableRow tr = new TableRow();
+
+                        foreach (var col in format.ColumnName)
+                        {
+                            string value = row.ContainsKey(col) ? row[col] : "";
+                            tr.Append(CreateNormalCell(value));
+                        }
+
+                        table.Append(tr);
+                    }
+
+                    body.Append(table);
+                    mainPart.Document.Save();
+                }
+
+                return ms.ToArray();
+            }
+        }
     }
 }
