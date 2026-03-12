@@ -1097,6 +1097,26 @@ public class ReportApiController : ApiController
     }
     #endregion
 
+
+    [HttpGet]
+    [System.Web.Mvc.AllowAnonymous]
+    [Route("api/report/dynamic-table-report")]
+    public IHttpActionResult DynamicTableData(int id)
+    {
+        var data = _managerservice.GetDynamicTableColumn(id);
+        if (data == null)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                message = "Data not found"
+            });
+        }
+        string filename = $"DynamicTableDocs.docx";
+
+        byte[] pdfBytes = DocxGenerator.CreateDynamicTableDocx(data,null);
+        return (IHttpActionResult)(object)new PdfResult(pdfBytes, filename, Request);
+    }
     private IHttpActionResult BadRequest(object value)
     {
         return Content<object>(HttpStatusCode.BadRequest, value);
