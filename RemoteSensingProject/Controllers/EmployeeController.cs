@@ -56,7 +56,10 @@ namespace RemoteSensingProject.Controllers
 
         public ActionResult DynamicFormat(int id)
         {
+            UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
             Models.TechnicalCell.main.DynamicFormate data = _managerServices.GetDynamicTableColumn(id);
+            var dynamicData = _technicalCellServices.GetDynamicData(data.TableName, data.ColumnName, "projectManager", Convert.ToInt32(userObj.userId));
+            ViewData["DynamicData"] = dynamicData;
             ViewData["data"] = data;
             return View();
         }

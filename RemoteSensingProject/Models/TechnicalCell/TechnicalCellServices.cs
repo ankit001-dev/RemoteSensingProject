@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.ExtendedProperties;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -75,6 +76,46 @@ namespace RemoteSensingProject.Models.TechnicalCell
                 cmd.ExecuteNonQuery();
                 return true;
             }
+        }
+
+        public DataTable GetDynamicData(string tableName, List<string> columns, string userrole, int userId)
+        {
+            DataTable dt = new DataTable();
+
+            string columnList = string.Join(",", columns.Select(c => $"\"{c}\""));
+
+            string query;
+
+            if (userrole == "technicalShell")
+            {
+                query = $@"SELECT {columnList}
+                   FROM ""{tableName}""
+                   WHERE status = true
+                   ORDER BY id DESC";
+            }
+            else
+            {
+                query = $@"SELECT {columnList}
+                   FROM ""{tableName}""
+                   WHERE status = true
+                   AND managerid = @userId
+                   ORDER BY id DESC";
+            }
+
+            using (var cmd = new NpgsqlCommand(query, con))
+            {
+                if (userrole == "projectManager")
+                {
+                    cmd.Parameters.AddWithValue("@userId", userId);
+                }
+
+                using (var adapter = new NpgsqlDataAdapter(cmd))
+                {
+                    adapter.Fill(dt);
+                }
+            }
+
+            return dt;
         }
     }
 }
