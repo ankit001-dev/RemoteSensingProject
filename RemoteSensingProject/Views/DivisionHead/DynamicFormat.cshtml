@@ -3,6 +3,7 @@
     ViewBag.Title = "DynamicFormat";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
     var data = ViewData["data"] as RemoteSensingProject.Models.TechnicalCell.main.DynamicFormate;
+    System.Data.DataTable dt = ViewData["DynamicData"] as System.Data.DataTable;
 }
 
 <style>
@@ -71,6 +72,33 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @if (dt != null && dt.Rows.Count > 0)
+                            {
+                                int sr = 1;
+
+                                foreach (System.Data.DataRow row in dt.Rows)
+                                {
+                                    <tr>
+                                        <td>@sr</td>
+
+                                        @foreach (var col in data.ColumnName)
+                                        {
+                                            <td>@row[col]</td>
+                                        }
+
+                                    </tr>
+
+                                    sr++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="@(data.ColumnName.Count + 1)" class="text-center">
+                                        No Data Available
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
 
                     </table>

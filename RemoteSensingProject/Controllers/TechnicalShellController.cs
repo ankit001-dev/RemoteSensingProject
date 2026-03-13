@@ -32,6 +32,9 @@ namespace RemoteSensingProject.Controllers
         {
             Models.TechnicalCell.main.DynamicFormate data = _managerServices.GetDynamicTableColumn(id);
             ViewData["data"] = data;
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name);
+            var dynamicData = _technicalCellServices.GetDynamicData(data.TableName, data.ColumnName, "technicalShell", Convert.ToInt32(userObj.userId));
+            ViewData["DynamicData"] = dynamicData;
             return View();
         }
         [HttpPost]

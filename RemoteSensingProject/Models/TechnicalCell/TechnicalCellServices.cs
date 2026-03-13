@@ -64,7 +64,7 @@ namespace RemoteSensingProject.Models.TechnicalCell
             {
                 cmd.Parameters.AddWithValue("managerid", userId);
                 cmd.Parameters.AddWithValue("createdby", createdBy);
-                cmd.Parameters.AddWithValue("divisionid", createdBy);
+                cmd.Parameters.AddWithValue("divisionid", divisionid);
 
                 i = 0;
 
@@ -94,6 +94,14 @@ namespace RemoteSensingProject.Models.TechnicalCell
                    WHERE status = true
                    ORDER BY id DESC";
             }
+            else if(userrole == "divisionHead")
+            {
+                query = $@"SELECT {columnList}
+                   FROM ""{tableName}""
+                   WHERE status = true
+                   AND divisionid = @userId
+                   ORDER BY id DESC";
+            }
             else
             {
                 query = $@"SELECT {columnList}
@@ -105,15 +113,15 @@ namespace RemoteSensingProject.Models.TechnicalCell
 
             using (var cmd = new NpgsqlCommand(query, con))
             {
-                if (userrole == "projectManager")
+                if (userrole == "projectManager" || userrole == "divisionHead")
                 {
                     cmd.Parameters.AddWithValue("@userId", userId);
                 }
 
-                using (var adapter = new NpgsqlDataAdapter(cmd))
-                {
-                    adapter.Fill(dt);
-                }
+                    using (var adapter = new NpgsqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
             }
 
             return dt;
