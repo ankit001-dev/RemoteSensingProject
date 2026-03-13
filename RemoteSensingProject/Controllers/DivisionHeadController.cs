@@ -47,8 +47,9 @@ namespace RemoteSensingProject.Controllers
                 var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(data.TableRawValue);
                 data.Data = dictionary;
                 UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
+                int divisionid = userObj.divisionId;
                 string message = string.Empty;
-                bool res = _technicalCellServices.InsertDynamicReportData(data, int.Parse(userObj.userId), userObj.userRole);
+                bool res = _technicalCellServices.InsertDynamicReportData(data, int.Parse(userObj.userId), userObj.userRole,divisionid);
                 return Json((object)new
                 {
                     status = res,

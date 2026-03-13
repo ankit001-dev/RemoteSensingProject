@@ -83,7 +83,7 @@
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h5 class="modal-title" id="exampleModalLabel">Add Format</h5>
+                <h5 class="modal-title" id="exampleModalLabel">@data.FormatName</h5>
             </div>
             <div class="modal-body">
                 <form class="forms-sample" id="AddFormatForm">
@@ -96,7 +96,7 @@
                             {
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label">@col</label>
-                                    <input type="text" name="@col" class="form-control form-control-sm dynamic-field" />
+                                    <input type="text" name="@col" placeholder="@col" class="form-control form-control-sm dynamic-field" />
                                 </div>
                             }
                         }
@@ -131,33 +131,36 @@
         });
 
         $.ajax({
-            url: '/TechnicalShell/UpdateDynamicReportData',
+            url: '/employee/UpdateDynamicReportData',
             type: 'POST',
-            data:{
+            data: {
                 TableName: tableName,
                 TableRawValue: JSON.stringify(formData)
             },
             success: function (res) {
 
-                if (res.status) {
-
-                    alert(res.message);
-
-                    $("#addslider").modal('hide');
-
-                    $("#AddFormatForm")[0].reset();
-
-                }
-                else {
-
-                    alert(res.message);
-
-                }
+                Swal.fire({
+                    title: res.status ? "Successfully !" : "Sorry !",
+                    text: res.message,
+                    icon: res.status ? "success" : "warning",
+                    didClose: () => {
+                        if (res.status) {
+                            location.reload();
+                        }
+                    }
+                });
 
             },
             error: function () {
 
-                alert("Something went wrong");
+                Swal.fire({
+                    title: "Server issue !",
+                    text: "Internal server issue. Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload();
+                    }
+                });
 
             }
 

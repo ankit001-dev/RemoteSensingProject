@@ -343,7 +343,8 @@ namespace RemoteSensingProject.Controllers
                 data.Data = dictionary;
                 UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
                 string message = string.Empty;
-                bool res = _technicalCellServices.InsertDynamicReportData(data, int.Parse(userObj.userId), userObj.userRole);
+                int divsionid = userObj.divisionId;
+                bool res = _technicalCellServices.InsertDynamicReportData(data, int.Parse(userObj.userId), userObj.userRole,divsionid);
                 return Json((object)new
                 {
                     status = res,
