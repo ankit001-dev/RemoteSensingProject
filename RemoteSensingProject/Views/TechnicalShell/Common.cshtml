@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Common";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["dynamicformats"] as List<RemoteSensingProject.Models.ProjectManager.DynamicTableFormatsDto>;
 }
 
 <style>
@@ -24,33 +25,38 @@
             font-weight: 600;
             color: #1e293b;
             letter-spacing: .5px;
+            font-size: 24px;
             z-index: 2;
+            max-width: 90%;
+            /* ellipsis */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        /* animated background circle */
-        .dashboard-card::before {
-            content: "";
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: rgba(255,255,255,0.35);
-            border-radius: 50%;
-            top: -80px;
-            right: -80px;
-            transition: all .4s ease;
-        }
-
-        /* second shape */
+        /* animated shapes */
+        .dashboard-card::before,
         .dashboard-card::after {
             content: "";
             position: absolute;
+            border-radius: 50%;
+            transition: all .4s ease;
+        }
+
+        .dashboard-card::before {
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.35);
+            top: -80px;
+            right: -80px;
+        }
+
+        .dashboard-card::after {
             width: 140px;
             height: 140px;
             background: rgba(255,255,255,0.25);
-            border-radius: 50%;
             bottom: -60px;
             left: -60px;
-            transition: all .4s ease;
         }
 
         /* hover effect */
@@ -61,20 +67,13 @@
         }
 
             .dashboard-card:hover h5 {
-                color: white;
+                color: #fff;
             }
 
-            .dashboard-card:hover::before {
-                transform: scale(1.2);
-            }
-
+            .dashboard-card:hover::before,
             .dashboard-card:hover::after {
                 transform: scale(1.2);
             }
-
-    h5 {
-        font-size: 34px !important;
-    }
 </style>
 <div class="container mt-4">
     <div class="row g-4">
@@ -95,14 +94,28 @@
             </a>
         </div>
 
-        <div class="col-lg-3 col-md-6">
-            <a href="/technicalshell/DynamicFormat" class="text-decoration-none">
-                <div class="dashboard-card">
-                    <h5>Format 1</h5>
+        @if (data != null && data.Count > 0)
+        {
+            foreach (var item in data)
+            {
+                <div class="col-lg-3 col-md-6">
+                    <a href="/employee/DynamicFormat?id=@item.TableId" class="text-decoration-none">
+                        <div class="dashboard-card">
+                            <h5 data-bs-toggle="tooltip" title="@item.FormatName">
+                                @item.FormatName
+                            </h5>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
+            }
+        }
 
     </div>
 </div>
 
+<script>
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+</script>
