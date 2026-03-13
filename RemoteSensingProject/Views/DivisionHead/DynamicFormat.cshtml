@@ -2,8 +2,9 @@
 @{
     ViewBag.Title = "DynamicFormat";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var data = ViewData["data"] as RemoteSensingProject.Models.TechnicalCell.main.DynamicFormate;
+    System.Data.DataTable dt = ViewData["DynamicData"] as System.Data.DataTable;
 }
-
 
 <style>
     .modal-body .sliderimages img {
@@ -53,27 +54,51 @@
         <div class="card">
             <div class="card-body">
                 <p class="text-center">
-                    <h2 class="text-center">Format Name</h2>
+                    <h2 class="text-center mb-2">@data.FormatName</h2>
                 </p>
                 <div class="table-responsive">
                     <table class="table custom-table">
 
                         <thead>
-                            <!-- First Header Row -->
                             <tr>
-                                <th>क्रम सं०</th>
-                                <th>मद / परियोजना का नाम</th>
-                                <th>इकाई (लाख मे)</th>
-                                <th>लक्ष्य</th>
-                                <th>उपलब्धि </th>
-                                <th>प्रदेश  सरकार के लाभान्वित होने वाले विभाग </th>
-                                <th>अभ्युक्ति</th>
-                                <th>Action</th>
+                                <th>Sr.No.</th>
+                                @if (data != null && data.ColumnName != null)
+                                {
+                                    foreach (var col in data.ColumnName)
+                                    {
+                                        <th>@col</th>
+                                    }
+                                }
                             </tr>
-
                         </thead>
-
                         <tbody>
+                            @if (dt != null && dt.Rows.Count > 0)
+                            {
+                                int sr = 1;
+
+                                foreach (System.Data.DataRow row in dt.Rows)
+                                {
+                                    <tr>
+                                        <td>@sr</td>
+
+                                        @foreach (var col in data.ColumnName)
+                                        {
+                                            <td>@row[col]</td>
+                                        }
+
+                                    </tr>
+
+                                    sr++;
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="@(data.ColumnName.Count + 1)" class="text-center">
+                                        No Data Available
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
 
                     </table>
@@ -87,13 +112,30 @@
     <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h5 class="modal-title" id="exampleModalLabel">Add Format</h5>
+                <h5 class="modal-title" id="exampleModalLabel">@data.FormatName</h5>
             </div>
             <div class="modal-body">
                 <form class="forms-sample" id="AddFormatForm">
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary"><i class="link-icon" data-feather="plus"></i> Save </button>
+
+                    <div class="row">
+                        <input type="hidden" id="tableName" value="@data.TableName" />
+                        @if (data != null && data.ColumnName != null)
+                        {
+                            foreach (var col in data.ColumnName)
+                            {
+                                <div class="col-md-6 mb-2">
+                                    <label class="form-label">@col</label>
+                                    <input type="text" name="@col" placeholder="@col" class="form-control form-control-sm dynamic-field" />
+                                </div>
+                            }
+                        }
                     </div>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+                    </div>
+
                 </form>
             </div>
         </div>
@@ -101,3 +143,58 @@
 </div>
 
 
+<script>
+
+    $("#AddFormatForm").on("submit", function (e) {
+        e.preventDefault();
+        let tableName = $("#tableName").val();
+        let formData = {};
+
+        $(".dynamic-field").each(function () {
+
+            let key = $(this).attr("name");
+            let value = $(this).val();
+
+            formData[key] = value;
+
+        });
+
+        $.ajax({
+            url: '/employee/UpdateDynamicReportData',
+            type: 'POST',
+            data: {
+                TableName: tableName,
+                TableRawValue: JSON.stringify(formData)
+            },
+            success: function (res) {
+
+                Swal.fire({
+                    title: res.status ? "Successfully !" : "Sorry !",
+                    text: res.message,
+                    icon: res.status ? "success" : "warning",
+                    didClose: () => {
+                        if (res.status) {
+                            location.reload();
+                        }
+                    }
+                });
+
+            },
+            error: function () {
+
+                Swal.fire({
+                    title: "Server issue !",
+                    text: "Internal server issue. Please try after sometime.",
+                    icon: "error",
+                    didClose: () => {
+                        location.reload();
+                    }
+                });
+
+            }
+
+        });
+
+    });
+
+</script>

@@ -1,11 +1,16 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Office2010.Excel;
+using Newtonsoft.Json;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
+using RemoteSensingProject.Models.TechnicalCell;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
+using static RemoteSensingProject.Models.TechnicalCell.main;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -14,20 +19,54 @@ namespace RemoteSensingProject.Controllers
     {
         private readonly ManagerService _managerServices;
         private readonly AdminServices _adminServices;
+        private readonly TechnicalCellServices _technicalCellServices;
         public DivisionHeadController()
         {
             _adminServices = new AdminServices();
             _managerServices = new ManagerService();
+            _technicalCellServices = new TechnicalCellServices();
         }
 
         public ActionResult Common()
         {
+            ViewData["dynamicformats"] = _managerServices.GetDynamicTablesFormat();
             return View();
         }
 
-        public ActionResult DynamicFormat()
+        public ActionResult DynamicFormat(int id)
         {
+            Models.TechnicalCell.main.DynamicFormate data = _managerServices.GetDynamicTableColumn(id);
+            ViewData["data"] = data;
+            var userObj = _managerServices.getManagerDetails(User.Identity.Name);
+            var dynamicData = _technicalCellServices.GetDynamicData(data.TableName, data.ColumnName, "divisionHead", Convert.ToInt32(userObj.divisionId));
+            ViewData["DynamicData"] = dynamicData;
             return View();
+        }
+        [HttpPost]
+        public JsonResult UpdateDynamicReportData(DynamicInsertData data)
+        {
+            try
+            {
+                var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(data.TableRawValue);
+                data.Data = dictionary;
+                UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
+                int divisionid = userObj.divisionId;
+                string message = string.Empty;
+                bool res = _technicalCellServices.InsertDynamicReportData(data, int.Parse(userObj.userId), userObj.userRole,divisionid);
+                return Json((object)new
+                {
+                    status = res,
+                    message = (res ? "Data saved successfully !" : "Some issue occured while processing...")
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Error: " + ex.Message
+                });
+            }
         }
 
         public ActionResult DivisionHead(string searchTerm)

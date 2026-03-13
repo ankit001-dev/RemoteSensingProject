@@ -33,7 +33,7 @@ namespace RemoteSensingProject.Models.TechnicalCell
             }
         }
 
-        public bool InsertDynamicReportData(DynamicInsertData data, int userId, string createdBy)
+        public bool InsertDynamicReportData(DynamicInsertData data, int userId, string createdBy,int divisionid)
         {
             if (!Regex.IsMatch(data.TableName, @"^[a-zA-Z0-9_]+$"))
                 throw new Exception("Invalid table name");
@@ -55,15 +55,16 @@ namespace RemoteSensingProject.Models.TechnicalCell
 
             string query = $@"
         INSERT INTO ""{data.TableName}""
-        (managerid, createdby, {columnList})
+        (managerid, createdby,divisionid, {columnList})
         VALUES
-        (@managerid, @createdby, {parameterList})
+        (@managerid, @createdby,@divisionid, {parameterList})
     ";
 
             using (var cmd = new NpgsqlCommand(query, con))
             {
                 cmd.Parameters.AddWithValue("managerid", userId);
                 cmd.Parameters.AddWithValue("createdby", createdBy);
+                cmd.Parameters.AddWithValue("divisionid", divisionid);
 
                 i = 0;
 
@@ -93,6 +94,14 @@ namespace RemoteSensingProject.Models.TechnicalCell
                    WHERE status = true
                    ORDER BY id DESC";
             }
+            else if(userrole == "divisionHead")
+            {
+                query = $@"SELECT {columnList}
+                   FROM ""{tableName}""
+                   WHERE status = true
+                   AND divisionid = @userId
+                   ORDER BY id DESC";
+            }
             else
             {
                 query = $@"SELECT {columnList}
@@ -104,15 +113,15 @@ namespace RemoteSensingProject.Models.TechnicalCell
 
             using (var cmd = new NpgsqlCommand(query, con))
             {
-                if (userrole == "projectManager")
+                if (userrole == "projectManager" || userrole == "divisionHead")
                 {
                     cmd.Parameters.AddWithValue("@userId", userId);
                 }
 
-                using (var adapter = new NpgsqlDataAdapter(cmd))
-                {
-                    adapter.Fill(dt);
-                }
+                    using (var adapter = new NpgsqlDataAdapter(cmd))
+                    {
+                        adapter.Fill(dt);
+                    }
             }
 
             return dt;
