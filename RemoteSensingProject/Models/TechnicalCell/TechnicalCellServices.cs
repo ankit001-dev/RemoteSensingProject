@@ -1,8 +1,10 @@
 ﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using static RemoteSensingProject.Models.TechnicalCell.main;
 
@@ -27,6 +29,51 @@ namespace RemoteSensingProject.Models.TechnicalCell
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+
+        public bool InsertDynamicReportData(DynamicInsertData data, int userId, string createdBy)
+        {
+            if (!Regex.IsMatch(data.TableName, @"^[a-zA-Z0-9_]+$"))
+                throw new Exception("Invalid table name");
+
+            var columns = new List<string>();   
+            var parameters = new List<string>();
+
+            int i = 0;
+
+            foreach (var item in data.Data)
+            {
+                columns.Add($"\"{item.Key}\"");
+                parameters.Add($"@p{i}");
+                i++;
+            }
+
+            string columnList = string.Join(",", columns);
+            string parameterList = string.Join(",", parameters);
+
+            string query = $@"
+        INSERT INTO ""{data.TableName}""
+        (managerid, createdby, {columnList})
+        VALUES
+        (@managerid, @createdby, {parameterList})
+    ";
+
+            using (var cmd = new NpgsqlCommand(query, con))
+            {
+                cmd.Parameters.AddWithValue("managerid", userId);
+                cmd.Parameters.AddWithValue("createdby", createdBy);
+
+                i = 0;
+
+                foreach (var item in data.Data)
+                {
+                    cmd.Parameters.AddWithValue($"@p{i}", item.Value);
+                    i++;
+                }
+                con.Open();
+                cmd.ExecuteNonQuery();
+                return true;
             }
         }
     }

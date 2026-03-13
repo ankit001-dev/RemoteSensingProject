@@ -1,15 +1,18 @@
+using DocumentFormat.OpenXml.Bibliography;
 using Newtonsoft.Json;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
 using RemoteSensingProject.Models.Admin;
 using RemoteSensingProject.Models.ProjectManager;
 using RemoteSensingProject.Models.SubOrdinate;
+using RemoteSensingProject.Models.TechnicalCell;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using static RemoteSensingProject.Models.TechnicalCell.main;
 
 namespace RemoteSensingProject.Controllers
 {
@@ -22,13 +25,14 @@ namespace RemoteSensingProject.Controllers
 
         private readonly AccountService _accountService;
         private readonly SubOrinateService _subordinateServices;
-
+        private readonly TechnicalCellServices _technicalCellServices;
         public EmployeeController()
         {
             _managerServices = new ManagerService();
             _adminServices = new AdminServices();
             _accountService = new AccountService();
             _subordinateServices = new SubOrinateService();
+            _technicalCellServices = new TechnicalCellServices();
         }
 
         public ActionResult Dashboard()
@@ -330,6 +334,31 @@ namespace RemoteSensingProject.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult UpdateDynamicReportData(DynamicInsertData data)
+        {
+            try
+            {
+                var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(data.TableRawValue);
+                data.Data = dictionary;
+                UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
+                string message = string.Empty;
+                bool res = _technicalCellServices.InsertDynamicReportData(data, int.Parse(userObj.userId), userObj.userRole);
+                return Json((object)new
+                {
+                    status = res,
+                    message = (res ? "Data saved successfully !" : "Some issue occured while processing...")
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json((object)new
+                {
+                    status = false,
+                    message = "Error: " + ex.Message
+                });
+            }
+        }
         [HttpGet]
         public ActionResult GetInternalProjectReport(int id,string type)
         {

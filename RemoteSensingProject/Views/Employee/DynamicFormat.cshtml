@@ -91,14 +91,14 @@
                 <form class="forms-sample" id="AddFormatForm">
 
                     <div class="row">
-
+                        <input type="hidden" id="tableName" value="@data.TableName" />
                         @if (data != null && data.ColumnName != null)
                         {
                             foreach (var col in data.ColumnName)
                             {
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label">@col</label>
-                                    <input type="text" name="@col" class="form-control form-control-sm" />
+                                    <input type="text" name="@col" class="form-control form-control-sm dynamic-field" />
                                 </div>
                             }
                         }
@@ -116,5 +116,55 @@
 </div>
 
 
+<script>
 
+    $("#AddFormatForm").on("submit", function (e) {
+        e.preventDefault();
+        let tableName = $("#tableName").val();
+        let formData = {};
 
+        $(".dynamic-field").each(function () {
+
+            let key = $(this).attr("name");
+            let value = $(this).val();
+
+            formData[key] = value;
+
+        });
+
+        $.ajax({
+            url: '/employee/UpdateDynamicReportData',
+            type: 'POST',
+            data:{
+                TableName: tableName,
+                TableRawValue: JSON.stringify(formData)
+            },
+            success: function (res) {
+
+                if (res.status) {
+
+                    alert(res.message);
+
+                    $("#addslider").modal('hide');
+
+                    $("#AddFormatForm")[0].reset();
+
+                }
+                else {
+
+                    alert(res.message);
+
+                }
+
+            },
+            error: function () {
+
+                alert("Something went wrong");
+
+            }
+
+        });
+
+    });
+
+</script>
