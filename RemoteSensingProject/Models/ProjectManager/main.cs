@@ -249,7 +249,15 @@ namespace RemoteSensingProject.Models.ProjectManager
         public PaginationInfo Pagination { get; set; }
         public int taskCount { get; set; }
     }
+    public class AttendanceDto
+    {
+        public int Id { get; set; }
+        public string ProjectStaffName { get; set; }
+        public string AttendanceDate { get; set; }
+        public string Location { get; set; }
+        public string AttendanceStatus { get; set; }
 
+    }
     public class OutSourceTask { 
         public DateTime completionDate { get; set; }
         public int projectId { get; set; }

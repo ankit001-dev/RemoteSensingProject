@@ -1,8 +1,7 @@
 ﻿
 @{
-    ViewBag.Title = "Attendance_Report";
-    Layout = "~/Views/Shared/_employeeLayout.cshtml";
-    var counts = ViewData["attendanceCount"] as List<RemoteSensingProject.Models.ProjectManager.AttendanceManage>;
+    ViewBag.Title = "ViewAttendance";
+    Layout = "~/Views/Shared/_adminLayout.cshtml";
     var data = ViewData["tourlist"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
     var financialyears = ViewData["financialyears"] as List<string>;
 }
@@ -146,7 +145,7 @@
         selectedStaff = $('#staffdropdown').val();
 
         $.ajax({
-            url: '/employee/GetProjectStaffFromTour',
+            url: '/admin/GetProjectStaffFromTour',
             type: 'get',
             data: {
                 tourid: currentTourId,
@@ -272,3 +271,4 @@
         });
     });
 </script>
+

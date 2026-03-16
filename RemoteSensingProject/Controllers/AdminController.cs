@@ -342,21 +342,23 @@ namespace RemoteSensingProject.Controllers
 			}, (JsonRequestBehavior)0);
 		}
 
-		public ActionResult Project_List(string searchTerm = null, string statusFilter = null)
+		public ActionResult Project_List(string searchTerm = null, string statusFilter = null,string financialyear = null)
 		{
-			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(searchTerm:searchTerm, statusFilter:statusFilter);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            ((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(searchTerm:searchTerm, statusFilter:statusFilter,financialyear:financialyear);
 			return View();
 		}
 
-		public ActionResult All_Projects(string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null,string typeFilter = null)
+		public ActionResult All_Projects(string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null,string typeFilter = null,string financialyear = null)
 		{
 			((dynamic)((ControllerBase)this).ViewBag).ManagerList = (from d in _adminServices.SelectEmployeeRecord()
 																	 where d.EmployeeRole.Contains("projectManager")
 																	 select d).ToList();
 			object viewBag = ((ControllerBase)this).ViewBag;
 			AdminServices adminServices = _adminServices;
-			((dynamic)viewBag).ProjectList = _managerServices.All_Project_List(projectTypeFilter:typeFilter, searchTerm:searchTerm, statusFilter:statusFilter, userId: projectManagerFilter, filterBy:(projectManagerFilter.HasValue ? "ProjectManager" : ""));
-			return View();
+			((dynamic)viewBag).ProjectList = _managerServices.All_Project_List(projectTypeFilter:typeFilter, searchTerm:searchTerm, statusFilter:statusFilter, userId: projectManagerFilter, filterBy:(projectManagerFilter.HasValue ? "ProjectManager" : ""),financialyear:financialyear);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            return View();
 		}
 
 		public ActionResult Project_Request()
@@ -662,14 +664,16 @@ namespace RemoteSensingProject.Controllers
 			return Json((object)data, (JsonRequestBehavior)0);
 		}
 
-		public ActionResult TravelRequest(int? projectFilter = null)
+		public ActionResult TravelRequest(int? projectFilter = null,string financialyear= null)
 		{
 			AdminServices adminServices = _adminServices;
-			var res = _managerServices.GetTourList(type: "ALLDATA", projectFilter: projectFilter);
+			var res = _managerServices.GetTourList(type: "ALLDATA", projectFilter: projectFilter,financialyear:financialyear);
 			((ControllerBase)this).ViewData["allTourList"] = res;
 			((ControllerBase)this).ViewData["projects"] = _managerServices.All_Project_List();
 			((ControllerBase)this).ViewData["projectMangaer"] = _adminServices.SelectEmployeeRecord();
-			return View();
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+			
+            return View();
 		}
 
 		public ActionResult RaisedProblem()
@@ -1085,5 +1089,38 @@ namespace RemoteSensingProject.Controllers
 			}
 		}
 
-	}
+        #region Manage Attendance
+		public ActionResult ViewAttendance(int projectmanagerid ,string financialyear = null)
+		{
+            ViewData["tourList"] = _managerServices.GetTourList(type: "GETBYMANAGER", id:projectmanagerid, projectFilter: null, financialyear: financialyear).Where(d=>d.proposalType == "projectstaff").ToList();
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            ViewBag.SelectedFY = financialyear;
+			return View();
+        }
+        [HttpGet]
+        public ActionResult GetProjectStaffFromTour(int tourid, int? projectstaffid = null, int? month = null)
+        {
+            try
+            {
+                var data = _managerServices.GetAttendanceProjectStaffFromTour(tourid, projectstaff: projectstaffid, month: month);
+                var projectstaff = _managerServices.GetProjectStaffFromTour(tourid);
+                return Json(new
+                {
+                    status = data.Any(),
+                    projectstafflist = projectstaff,
+                    data = data,
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
+        }
+        #endregion
+
+    }
 }
