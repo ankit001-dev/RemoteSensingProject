@@ -612,16 +612,17 @@ namespace RemoteSensingProject.Controllers
 			return Json((object)res);
 		}
 
-		public ActionResult Notice_List(int? projectManager, string searchTerm = null)
+		public ActionResult Notice_List(int? projectManager, string searchTerm = null,string financialyear=null)
 		{
 			object noticeList = null;
 			AdminServices adminServices = _adminServices;
 			int? id = projectManager;
-			noticeList = adminServices.getNoticeList(null, null, id, null, searchTerm);
+			noticeList = adminServices.getNoticeList(null, null, id, null, searchTerm,financialyear:financialyear);
 			((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List();
 			((dynamic)((ControllerBase)this).ViewBag).EmployeeList = _adminServices.SelectEmployeeRecord();
 			((ControllerBase)this).ViewData["NoticeList"] = noticeList;
-			return View();
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            return View();
 		}
 
 		public ActionResult View_Notice()
@@ -676,10 +677,11 @@ namespace RemoteSensingProject.Controllers
             return View();
 		}
 
-		public ActionResult RaisedProblem()
+		public ActionResult RaisedProblem(string financialyear=null)
 		{
-			((ControllerBase)this).ViewData["problemList"] = _adminServices.getProblemList();
-			return View();
+			((ControllerBase)this).ViewData["problemList"] = _adminServices.getProblemList(financialyear:financialyear);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            return View();
 		}
 
 		public ActionResult Attendance()

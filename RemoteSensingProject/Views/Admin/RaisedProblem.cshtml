@@ -4,8 +4,30 @@
     Layout = "~/Views/Shared/_adminLayout.cshtml";
     var data = ViewData["ProblemList"] as List<RemoteSensingProject.Models.Admin.main.RaisedProblem>;
     int i = 1;
+    var financialyears = ViewData["financialyears"] as List<string>;
 }
 
+<div class="search-box p-4 bg-white rounded mb-3 box-shadow">
+    <form class="forms-sample">
+        <div class="row align-items-center">
+            <div class="col-lg-4">
+                <h5>Project Problem Lists</h5>
+            </div>
+            <div class="col-md-4 col-lg-4">
+                <select class="form-select form-select-sm" id="financialyearfilter">
+                    <option value="">Select Financial Year</option>
+                    @if (financialyears != null && financialyears.Count > 0)
+                    {
+                        foreach (var fy in financialyears)
+                        {
+                            <option value="@fy">@fy</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
 <div class="row mx-0">
     <div class="col-sm-12">
         <table class="table-bordered table-striped" id="dataTableExample">
@@ -135,71 +157,30 @@
             });
         });
     });
+
+    // Financial Year Filter
+    $("#financialyearfilter").on("change", function () {
+
+        const url = new URL(window.location.href);
+        const fy = $(this).val();
+
+        if (fy) url.searchParams.set("financialyear", fy);
+        else url.searchParams.delete("financialyear");
+
+        window.location.href = url.toString();
+    });
+
+
+    // Restore FY on page load
+    $(document).ready(function () {
+
+        const params = new URLSearchParams(window.location.search);
+        const fy = params.get("financialyear");
+
+        if (fy) {
+            $("#financialyearfilter").val(fy);
+        }
+
+    });
 </script>
 
-
-
-
-
-@*<script>
-    $(document).ready(function () {
-        $(".changeStatus").on("click", async function (e) {
-            e.preventDefault();
-            let status = $(this).data("value");
-            let id = $(this).data("id")
-            let remark = "";
-
-            if (!status) {
-                Swal.close();
-                const { value: userRemark, isConfirmed } = await Swal.fire({
-                    title: "Enter Remark",
-                    input: "text",
-                    inputLabel: "Remark",
-                    inputPlaceholder: "Type here...",
-                    showCancelButton: true,
-                    confirmButtonText: 'Submit',
-                });
-
-                if (isConfirmed && userRemark && userRemark != "") {
-                    remark = userRemark;
-                    Swal.fire({
-                        title: 'Please wait !',
-                        allowOutsideClick: false,
-                        allowEscapeKey:false,
-                        text: 'Your request under process',
-                        didOpen: () => { Swal.showLoading(); }
-                    })
-                }
-            }
-            $.ajax({
-                url: '/admin/raisedproblem',
-                type: 'post',
-                data: { status: status, id: id,remark:remark },
-                success: function (res) {
-                    if (res.status) {
-                        Swal.fire({
-                            title: 'Success',
-                            text: res.message,
-                            icon: 'success',
-                            didClose: () => { location.reload(true) }
-                        })
-                    }
-                    else {
-                        Swal.fire({
-                            title: 'Warning',
-                            text: res.message,
-                            icon: 'warning'
-                        })
-                    }
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        title: 'error',
-                        text: 'Server busy Please try after sometime.',
-                        icon: 'error'
-                    })
-                }
-            })
-        })
-    });
-</script>*@
