@@ -3,6 +3,7 @@
     Layout = "~/Views/Shared/_adminLayout.cshtml";
     var data = ViewData["allTourList"] as List<RemoteSensingProject.Models.ProjectManager.tourProposal>;
     var projects = ViewData["projects"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
+    var financialyears = ViewData["financialyears"] as List<string>;
 }
 <link href="~/assets/css/TourProposalStyle.css" rel="stylesheet" />
 <div class="row mx-0">
@@ -19,6 +20,18 @@
                                 foreach (var proj in projects)
                                 {
                                     <option value="@proj.Id">@proj.ProjectTitle</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select class="form-select form-select-sm" id="financialyearfilter">
+                            <option value="">Select Financial Year</option>
+                            @if (financialyears != null && financialyears.Count > 0)
+                            {
+                                foreach (var fy in financialyears)
+                                {
+                                    <option value="@fy" @(ViewBag.SelectedFY == fy ? "selected" : "")>@fy</option>
                                 }
                             }
                         </select>
@@ -352,37 +365,79 @@
         })
     });
 
-    // Project Manager Filter
-    $("#Filter1").on("change", function () {
-        const url = new URL(window.location.href);
-        const manager = $(this).val();
+// Project Manager Filter
+$("#Filter1").on("change", function () {
+    const url = new URL(window.location.href);
+    const manager = $(this).val();
 
-        const project = $("#Filter2").val();
-        if (project) url.searchParams.set("projectFilter", project);
-        else url.searchParams.delete("projectFilter");
+    if (manager) url.searchParams.set("managerFilter", manager);
+    else url.searchParams.delete("managerFilter");
 
-        showLoader();
-        window.location.href = url.toString();
-    });
+    const project = $("#Filter2").val();
+    if (project) url.searchParams.set("projectFilter", project);
+    else url.searchParams.delete("projectFilter");
 
-    // Project Filter
-    $("#Filter2").on("change", function () {
-        const url = new URL(window.location.href);
-        const project = $(this).val();
+    const fy = $("#financialyearfilter").val();
+    if (fy) url.searchParams.set("financialyear", fy);
+    else url.searchParams.delete("financialyear");
 
-        if (project) url.searchParams.set("projectFilter", project);
-        else url.searchParams.delete("projectFilter");
+    showLoader();
+    window.location.href = url.toString();
+});
 
-        showLoader();
-        window.location.href = url.toString();
-    });
 
-    // Restore selected values on page load
-    $(document).ready(function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const project = urlParams.get("projectFilter");
-         
-        if (project) $("#Filter2").val(project);
-    });
+// Project Filter
+$("#Filter2").on("change", function () {
+    const url = new URL(window.location.href);
+    const project = $(this).val();
+
+    if (project) url.searchParams.set("projectFilter", project);
+    else url.searchParams.delete("projectFilter");
+
+    const manager = $("#Filter1").val();
+    if (manager) url.searchParams.set("managerFilter", manager);
+
+    const fy = $("#financialyearfilter").val();
+    if (fy) url.searchParams.set("financialyear", fy);
+
+    showLoader();
+    window.location.href = url.toString();
+});
+
+
+// Financial Year Filter
+    $("#financialyearfilter").on("change", function () {
+        debugger
+    const url = new URL(window.location.href);
+    const fy = $(this).val();
+
+    if (fy) url.searchParams.set("financialyear", fy);
+    else url.searchParams.delete("financialyear");
+
+    const manager = $("#Filter1").val();
+    if (manager) url.searchParams.set("managerFilter", manager);
+
+    const project = $("#Filter2").val();
+    if (project) url.searchParams.set("projectFilter", project);
+
+    showLoader();
+    window.location.href = url.toString();
+});
+
+
+// Restore selected values on page load
+$(document).ready(function () {
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const manager = urlParams.get("managerFilter");
+    const project = urlParams.get("projectFilter");
+    const fy = urlParams.get("financialyear");
+
+    if (manager) $("#Filter1").val(manager);
+    if (project) $("#Filter2").val(project);
+    if (fy) $("#financialyearfilter").val(fy);
+
+});
 
 </script>

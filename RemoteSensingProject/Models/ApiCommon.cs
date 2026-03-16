@@ -3,6 +3,7 @@
 // RemoteSensingProject, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 // RemoteSensingProject.Models.ApiCommon
 using RemoteSensingProject.Models;
+using System.Security.Policy;
 
 namespace RemoteSensingProject.Models
 {
@@ -43,5 +44,6 @@ namespace RemoteSensingProject.Models
 
 			public string PropertyName { get; set; }
 		}
+		
 	}
 }

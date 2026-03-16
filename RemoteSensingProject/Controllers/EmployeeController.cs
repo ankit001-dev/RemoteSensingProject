@@ -1,4 +1,5 @@
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 using RemoteSensingProject.Models;
 using RemoteSensingProject.Models.Accounts;
@@ -877,12 +878,37 @@ namespace RemoteSensingProject.Controllers
         }
 
         [HttpGet]
-        public ActionResult Attendance_Report()
+        public ActionResult Attendance_Report(string financialyear = null)
         {
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
-            ((ControllerBase)this).ViewData["UserList"] = _managerServices.selectAllOutSOurceList(userObj);
-            ((ControllerBase)this).ViewData["attendanceCount"] = _managerServices.getAttendanceCount(userObj);
+            ViewData["tourList"] = _managerServices.GetTourList(type: "GETBYMANAGER", id: userObj, projectFilter: null,financialyear:financialyear).Where(d => d.proposalType == "projectstaff").ToList(); ;
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            ViewBag.SelectedFY = financialyear;
             return View();
+        }
+
+        [HttpGet]
+        public ActionResult GetProjectStaffFromTour(int tourid,int? projectstaffid = null,int?month = null)
+        {
+            try
+            {
+                var data = _managerServices.GetAttendanceProjectStaffFromTour(tourid,projectstaff:projectstaffid,month:month);
+                var projectstaff = _managerServices.GetProjectStaffFromTour(tourid);
+                return Json(new
+                {
+                    status = data.Any(),
+                    projectstafflist = projectstaff,
+                    data = data,
+                },JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                return Json(new
+                {
+                    status = false,
+                    message = ex.Message
+                });
+            }
         }
 
         [HttpGet]

@@ -46,8 +46,8 @@
                                     <tr>
                                         <td class="text-start">@count</td>
                                         <td>@item.EmployeeCode</td>
-                                        <td><a href="#" data-title="View Attendance" data-id="@item.Id" class="showEmployeeProfile" data-bs-toggle="modal" data-bs-target="#viewslider">@item.EmployeeName</a></td>
-                                        <td>@item.EmployeeRole</td>
+                                        <td><a href="/admin/ViewAttendance?projectmanagerid=@item.Id" title="View Attendance">@item.EmployeeName</a></td>
+                                        <td>@string.Join(", ", item.EmployeeRole)</td>
                                         <td>@item.DevisionName</td>
                                         <td>@item.DesignationName</td>
                                     </tr>

@@ -3,6 +3,7 @@
     ViewBag.Title = "Project_List";
     Layout = "~/Views/Shared/_adminLayout.cshtml";
     int i = 1;
+    var financialyears = ViewData["financialyears"] as List<string>;
 }
 <style>
     svg {
@@ -12,19 +13,31 @@
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <form class="forms-sample">
         <div class="row align-items-center">
-            <div class="col-lg-3">
+            <div class="col-lg-12 mb-2">
                 <h5>Project Lists</h5>
             </div>
-            <div class="col-lg-6 col-md-6">
+            <div class="col-lg-6 col-md-4">
                 <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
             </div>
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-3 col-md-4">
                 <select class="form-select form-select-lg" id="filterProjectStatus">
                     <option selected value="">Project Status</option>
                     <option value="Ongoing">Ongoing</option>
                     <option value="Upcoming">Upcoming</option>
                     <option value="delay">Delay</option>
                     <option value="Complete">Completed</option>
+                </select>
+            </div>
+            <div class="col-md-4 col-lg-3">
+                <select class="form-select form-select-sm" id="financialyearfilter">
+                    <option value="">Select Financial Year</option>
+                    @if (financialyears != null && financialyears.Count > 0)
+                    {
+                        foreach (var fy in financialyears)
+                        {
+                            <option value="@fy">@fy</option>
+                        }
+                    }
                 </select>
             </div>
         </div>
@@ -275,49 +288,81 @@
             }
         })
     })
-
+    // SEARCH
     $('#searchProjectBy').on('keyup', function () {
         let value = $(this).val().trim();
         const url = new URL(window.location.href);
-        url.searchParams.set("searchTerm", value);
 
-        const division = $("#filterProjectStatus").val();
-        if (division && division !== "null") url.searchParams.set("statusFilter", division);
+        if (value) url.searchParams.set("searchTerm", value);
+        else url.searchParams.delete("searchTerm");
+
+        const status = $("#filterProjectStatus").val();
+        if (status && status !== "null") url.searchParams.set("statusFilter", status);
+
+        const fy = $("#financialyearfilter").val();
+        if (fy) url.searchParams.set("financialyear", fy);
 
         window.history.replaceState({}, "", url);
 
         clearTimeout(window.searchTimer);
         window.searchTimer = setTimeout(() => {
-            showLoader(); // 👈 Add here
+            showLoader();
             window.location.href = url.toString();
         }, 500);
     });
 
+
+    // STATUS FILTER
     $("#filterProjectStatus").on("change", function () {
         const url = new URL(window.location.href);
 
-        if ($(this).val()) url.searchParams.set("statusFilter", $(this).val());
+        const status = $(this).val();
+        if (status) url.searchParams.set("statusFilter", status);
         else url.searchParams.delete("statusFilter");
 
         const searchValue = $('#searchProjectBy').val().trim();
         if (searchValue) url.searchParams.set("searchTerm", searchValue);
 
-        showLoader(); // 👈
+        const fy = $("#financialyearfilter").val();
+        if (fy) url.searchParams.set("financialyear", fy);
+
+        showLoader();
         window.location.href = url.toString();
     });
 
+
+    // FINANCIAL YEAR FILTER
+    $('#financialyearfilter').on('change', function () {
+
+        const url = new URL(window.location.href);
+        const fy = $(this).val();
+
+        if (fy) url.searchParams.set("financialyear", fy);
+        else url.searchParams.delete("financialyear");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        const status = $("#filterProjectStatus").val();
+        if (status) url.searchParams.set("statusFilter", status);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+
+    // PAGE LOAD PAR VALUES SET KARNA
     $(document).ready(function () {
-        const urlParams = new URLSearchParams(window.location.search);
 
-        const search = urlParams.get('searchTerm');
-        const division = urlParams.get('statusFilter');
+        const params = new URLSearchParams(window.location.search);
 
-        if (search) {
-            $('#searchProjectBy').val(search).focus();
-        }
+        const search = params.get('searchTerm');
+        const status = params.get('statusFilter');
+        const fy = params.get('financialyear');
 
-        if (division) {
-            $('#filterProjectStatus').val(division);
-        }
+        if (search) $('#searchProjectBy').val(search).focus();
+        if (status) $('#filterProjectStatus').val(status);
+        if (fy) $('#financialyearfilter').val(fy);
+
     });
 </script>

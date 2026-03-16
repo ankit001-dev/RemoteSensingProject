@@ -18,6 +18,54 @@ namespace RemoteSensingProject.Models.ProjectManager
 {
     public class ManagerService : DataFactory
     {
+
+        public List<string> GetAllFinancialYears()
+        {
+            //IL_0020: Unknown result type (might be due to invalid IL or missing references)
+            //IL_002a: Expected O, but got Unknown
+            try
+            {
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                List<string> list = new List<string>();
+
+                NpgsqlCommand cmd = new NpgsqlCommand("fn_get_all_projects", con, tran);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("v_action", (object)"selectfinancialyear");
+                //cmd.Parameters.AddWithValue("v_id", (object)(id ?? new int?(0)));
+                //cmd.Parameters.AddWithValue("v_userid", userId.HasValue ? ((object)userId) : ((object)0));
+                //cmd.Parameters.AddWithValue("v_filterby", (object)(string.IsNullOrEmpty(filterBy) ? ((IConvertible)DBNull.Value) : ((IConvertible)filterBy)));
+                //cmd.Parameters.AddWithValue("v_projecttypefilter", (object)(string.IsNullOrEmpty(projectTypeFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)projectTypeFilter)));
+                //cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+                //cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                //cmd.Parameters.AddWithValue("v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+                //cmd.Parameters.AddWithValue("v_statusfilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
+
+                string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                if (((DbDataReader)(object)rd).HasRows)
+                {
+                    while (((DbDataReader)(object)rd).Read())
+                    {
+                        list.Add(rd["FinancialYear"].ToString());
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)cmd).Dispose();
+            }
+        }
         public DashboardCount DashboardCount(int userId)
         {
             DashboardCount obj = null;
@@ -259,7 +307,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<RemoteSensingProject.Models.Admin.main.Project_model> All_Project_List(int? userId = null, int? limit = null, int? page = null, string filterBy = null, string projectTypeFilter = null, int? id = null, string searchTerm = null, string statusFilter = null)
+        public List<RemoteSensingProject.Models.Admin.main.Project_model> All_Project_List(int? userId = null, int? limit = null, int? page = null, string filterBy = null, string projectTypeFilter = null, int? id = null, string searchTerm = null, string statusFilter = null,string financialyear=  null)
         {
             //IL_0020: Unknown result type (might be due to invalid IL or missing references)
             //IL_002a: Expected O, but got Unknown
@@ -280,6 +328,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                 cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
                 cmd.Parameters.AddWithValue("v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
                 cmd.Parameters.AddWithValue("v_statusfilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
+                cmd.Parameters.AddWithValue("v_financialyear", (object)(string.IsNullOrEmpty(financialyear) ? ((IConvertible)DBNull.Value) : ((IConvertible)financialyear)));
 
                 string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                 NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
@@ -2306,6 +2355,183 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
+        #region Manage Attendance
+        public List<AttendanceDto> GetAttendanceProjectStaffFromTour(int tourid, int? limit = null, int? page = null,int? projectstaff = null,int?month = null)
+        {
+            try
+            {
+                List<AttendanceDto> list = new List<AttendanceDto>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageOutsource_cursor", con, tran);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"selectattendanceprojectstafffromtour");
+                        cmd.Parameters.AddWithValue("@v_id", tourid);
+                        cmd.Parameters.AddWithValue("@v_limit", month.HasValue ? ((object)month.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_searchterm",DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_divisionfilter", projectstaff.HasValue ? ((object)projectstaff.Value) : DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+                                        AttendanceDto data = new AttendanceDto
+                                        {
+                                            Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+                                            ProjectStaffName = ((DbDataReader)(object)rd)["emp_name"].ToString(),
+                                            AttendanceStatus = ((DbDataReader)(object)rd)["attendancestatus"].ToString(),
+                                            AttendanceDate = Convert.ToDateTime(((DbDataReader)(object)rd)["attendancedate"]).ToString("dd-MM-yyyy"),
+                                            Location = ((DbDataReader)(object)rd)["address"].ToString(),
+                                        };
+                                        
+                                        list.Add(data);
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)base.cmd).Dispose();
+            }
+        }
+
+        public List<OuterSource> GetProjectStaffFromTour(int tourid, int? limit = null, int? page = null)
+        {
+            try
+            {
+                List<OuterSource> list = new List<OuterSource>();
+                ((DbConnection)(object)con).Open();
+                NpgsqlTransaction tran = con.BeginTransaction();
+                try
+                {
+                    NpgsqlCommand cmd = new NpgsqlCommand("fn_manageOutsource_cursor", con, tran);
+                    try
+                    {
+                        ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@v_action", (object)"selectprojectstafffromtour");
+                        cmd.Parameters.AddWithValue("@v_id", tourid);
+                        cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_searchterm", DBNull.Value);
+                        string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
+                        NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
+                        try
+                        {
+                            NpgsqlDataReader rd = fetchCmd.ExecuteReader();
+                            try
+                            {
+                                if (((DbDataReader)(object)rd).HasRows)
+                                {
+                                    bool firstRow = true;
+                                    while (((DbDataReader)(object)rd).Read())
+                                    {
+                                        OuterSource data = new OuterSource
+                                        {
+                                            Id = Convert.ToInt32(((DbDataReader)(object)rd)["id"]),
+                                            EmpName = ((DbDataReader)(object)rd)["emp_name"].ToString(),
+                                            mobileNo = Convert.ToInt64(((DbDataReader)(object)rd)["emp_mobile"]),
+                                            email = ((DbDataReader)(object)rd)["emp_email"].ToString(),
+                                            gender = ((DbDataReader)(object)rd)["emp_gender"].ToString(),
+                                        };
+
+                                        list.Add(data);
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                ((IDisposable)rd)?.Dispose();
+                            }
+                        }
+                        finally
+                        {
+                            ((IDisposable)fetchCmd)?.Dispose();
+                        }
+                        NpgsqlCommand closeCmd = new NpgsqlCommand("close \"" + cursorName + "\"", con, tran);
+                        try
+                        {
+                            ((DbCommand)(object)closeCmd).ExecuteNonQuery();
+                        }
+                        finally
+                        {
+                            ((IDisposable)closeCmd)?.Dispose();
+                        }
+                        ((DbTransaction)(object)tran).Commit();
+                    }
+                    finally
+                    {
+                        ((IDisposable)cmd)?.Dispose();
+                    }
+                }
+                finally
+                {
+                    ((IDisposable)tran)?.Dispose();
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                if (((DbConnection)(object)con).State == ConnectionState.Open)
+                {
+                    ((DbConnection)(object)con).Close();
+                }
+                ((Component)(object)base.cmd).Dispose();
+            }
+        }
+        #endregion
         public bool DeleteOutSource(int id)
         {
             try
@@ -2932,7 +3158,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<tourProposal> GetTourList(int? id = null, string type = null, int? page = null, int? limit = null, int? projectFilter = null)
+        public List<tourProposal> GetTourList(int? id = null, string type = null, int? page = null, int? limit = null, int? projectFilter = null,string financialyear=null)
         {
             //IL_002b: Unknown result type (might be due to invalid IL or missing references)
             //IL_0031: Expected O, but got Unknown
@@ -2955,6 +3181,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                         cmd.Parameters.AddWithValue("v_type", (object)type);
                         cmd.Parameters.AddWithValue("v_limit", (object)(limit ?? new int?(0)));
                         cmd.Parameters.AddWithValue("v_page", (object)(page ?? new int?(0)));
+                        cmd.Parameters.AddWithValue("v_statusfilter", (object)(financialyear ?? ""));
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
                         try
