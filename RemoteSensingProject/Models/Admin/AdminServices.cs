@@ -2554,7 +2554,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public List<main.Generate_Notice> getNoticeList(int? limit = null, int? page = null, int? id = null, int? managerId = null, string searchTerm = null)
+        public List<main.Generate_Notice> getNoticeList(int? limit = null, int? page = null, int? id = null, int? managerId = null, string searchTerm = null,string financialyear=null)
         {
             //IL_002c: Unknown result type (might be due to invalid IL or missing references)
             //IL_0032: Expected O, but got Unknown
@@ -2579,6 +2579,7 @@ namespace RemoteSensingProject.Models.Admin
                         cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+                        cmd.Parameters.AddWithValue("v_financialyear", (object)(string.IsNullOrEmpty(financialyear) ? ((IConvertible)DBNull.Value) : ((IConvertible)financialyear)));
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
                         try
@@ -2972,7 +2973,7 @@ namespace RemoteSensingProject.Models.Admin
             }
         }
 
-        public List<main.RaisedProblem> getProblemList(int? page = null, int? limit = null, int? id = null, int? managerId = null, string searchTerm = null)
+        public List<main.RaisedProblem> getProblemList(int? page = null, int? limit = null, int? id = null, int? managerId = null, string searchTerm = null,string financialyear=null)
         {
             //IL_002c: Unknown result type (might be due to invalid IL or missing references)
             //IL_0032: Expected O, but got Unknown
@@ -2997,6 +2998,7 @@ namespace RemoteSensingProject.Models.Admin
                         cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
+                        cmd.Parameters.AddWithValue("@v_financialyear", (object)(string.IsNullOrEmpty(financialyear) ? ((IConvertible)DBNull.Value) : ((IConvertible)financialyear)));
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\"", con, tran);
                         try

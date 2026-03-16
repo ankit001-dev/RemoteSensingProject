@@ -1,5 +1,22 @@
 ﻿@model List<RemoteSensingProject.Models.ProjectManager.TourProposalDto>
 
+@*{
+    ViewBag.Title = "TourDetails";
+    Layout = null;
+    if (User.IsInRole("admin"))
+    {
+        Layout = "~/Views/Shared/_adminLayout.cshtml";
+    }
+    else if (User.IsInRole("projectManager"))
+    {
+        Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    }
+    else if (User.IsInRole("accounts"))
+    {
+        Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    }
+}*@
+
 @if (Model != null && Model.Count > 0)
 {
     var d = Model.First();
