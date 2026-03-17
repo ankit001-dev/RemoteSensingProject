@@ -3,6 +3,7 @@
     ViewBag.Title = "ProjectCompleteTaskList";
     Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
     var data = ViewData["TaskList"] as List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task>;
+    var financialyears = ViewData["financialyears"] as List<string>;
 }
 <style>
     .link-icon {
@@ -15,17 +16,18 @@
             <div class="col-lg-3">
                 <h5>Completed Tasks Lists</h5>
             </div>
-            @*<div class="col-lg-6 col-md-6">
-                <input type="text" id="searchProjectBy" name="searchByProjectName" placeholder="Search by project name" class="form-control">
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <select id="filterProjectStatus" class="form-select form-select-lg">
-                    <option selected value="">Project Status</option>
-                    <option value="Ongoing">Ongoing</option>
-                    <option value="delay">Delay</option>
-                    <option value="Complete">Completed</option>
+            <div class="col-lg-4">
+                <select class="form-select form-select-sm" id="financialyearfilter">
+                    <option value="">Select Financial Year</option>
+                    @if (financialyears != null && financialyears.Count > 0)
+                    {
+                        foreach (var fy in financialyears)
+                        {
+                            <option value="@fy" @(ViewBag.SelectedFY == fy ? "selected" : "")>@fy</option>
+                        }
+                    }
                 </select>
-            </div>*@
+            </div>
         </div>
     </form>
 </div>
@@ -104,5 +106,33 @@
                 popup: 'rounded-3 shadow-lg'
             }
         });
+    });
+
+    // Financial Year Filter
+    $(document).ready(function () {
+        // Financial Year Filter
+        $("#financialyearfilter").on("change", function () {
+
+            const url = new URL(window.location.href);
+            const fy = $(this).val();
+
+            if (fy) url.searchParams.set("financialyear", fy);
+            else url.searchParams.delete("financialyear");
+
+            window.location.href = url.toString();
+        });
+    })
+
+
+    // Restore FY on page load
+    $(document).ready(function () {
+
+        const params = new URLSearchParams(window.location.search);
+        const fy = params.get("financialyear");
+
+        if (fy) {
+            $("#financialyearfilter").val(fy);
+        }
+
     });
 </script>

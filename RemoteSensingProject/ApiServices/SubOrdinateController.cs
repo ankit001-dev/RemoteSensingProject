@@ -38,11 +38,11 @@ namespace RemoteSensingProject.ApiServices
 
 		[HttpGet]
 		[Route("api/subAssignedProject")]
-		public IHttpActionResult assignedProject(int subId, int? page = null, int? limit = null, string searchTerm = null, string statusFilter = null)
+		public IHttpActionResult assignedProject(int subId, int? page = null, int? limit = null, string searchTerm = null, string statusFilter = null, string financialyear = null)
 		{
 			try
 			{
-				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List( limit, page, searchTerm:searchTerm, statusFilter:statusFilter);
+				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List( limit, page, searchTerm:searchTerm, statusFilter:statusFilter,financialyear:financialyear);
 				return Ok(new
 				{
 					status = data.Any(),

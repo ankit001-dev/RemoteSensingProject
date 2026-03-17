@@ -104,16 +104,17 @@ namespace RemoteSensingProject.Controllers
             }
         }
 
-        public ActionResult CreateTask(string req)
+        public ActionResult CreateTask(string req,string financialyear = null)
         {
             int userObj = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             ViewData["projectlist"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj), filterBy: "ProjectManager");
             ViewData["OutSourceList"] = _managerServices.GetAllocatedOutSOurceList(userObj);
-            ViewData["TaskList"] = ((req == "completed") ? (from d in _managerServices.taskList(userObj)
+            ViewData["TaskList"] = ((req == "completed") ? (from d in _managerServices.taskList(userObj,financialyear:financialyear)
                                                             where d.completeStatus
-                                                            select d).ToList() : ((req == "pending") ? (from d in _managerServices.taskList(userObj)
+                                                            select d).ToList() : ((req == "pending") ? (from d in _managerServices.taskList(userObj, financialyear: financialyear)
                                                                                                         where !d.completeStatus
-                                                                                                        select d).ToList() : _managerServices.taskList(userObj)));
+                                                                                                        select d).ToList() : _managerServices.taskList(userObj, financialyear: financialyear)));
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
             return View();
         }
 
@@ -219,31 +220,28 @@ namespace RemoteSensingProject.Controllers
         }
 
 
-        public ActionResult Project_List(string searchTerm = null, string statusFilter = null)
+        public ActionResult Project_List(string searchTerm = null, string statusFilter = null,string financialyear = null)
         {
             string managerName = User.Identity.Name;
             UserCredential userObj = new UserCredential();
             userObj = _managerServices.getManagerDetails(managerName);
-            ((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", searchTerm: searchTerm, statusFilter: statusFilter);
+            ((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", searchTerm: searchTerm, statusFilter: statusFilter,financialyear:financialyear);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
             return View();
         }
 
-        //public ActionResult All_Project_List(string searchTerm = null, string statusFilter = null)
-        //{
-        //    UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-        //    ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(Convert.ToInt32(userObj.userId), null, null, null, null, searchTerm, statusFilter);
-        //    return View();
-        //}
-        public ActionResult Internal_Projects(string searchTerm = null, string statusFilter = null)
+        public ActionResult Internal_Projects(string searchTerm = null, string statusFilter = null,string financialyear = null)
         {
             UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", projectTypeFilter: "Internal", searchTerm: searchTerm, statusFilter: statusFilter);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", projectTypeFilter: "Internal", searchTerm: searchTerm, statusFilter: statusFilter,financialyear:financialyear);
             return View();
         }
-        public ActionResult External_Projects(string searchTerm = null, string statusFilter = null)
+        public ActionResult External_Projects(string searchTerm = null, string statusFilter = null,string financialyear = null)
         {
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
             UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", projectTypeFilter: "External", searchTerm: searchTerm, statusFilter: statusFilter);
+            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId: Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", projectTypeFilter: "External", searchTerm: searchTerm, statusFilter: statusFilter, financialyear: financialyear);
             return View();
         }
 
@@ -584,12 +582,13 @@ namespace RemoteSensingProject.Controllers
             return View();
         }
 
-        public ActionResult Notice(int? projectId, string searchTerm = null)
+        public ActionResult Notice(int? projectId, string searchTerm = null,string financialyear = null)
         {
             object noticeList = null;
             string managerName = User.Identity.Name;
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
             UserCredential userObj = _managerServices.getManagerDetails(managerName);
-            noticeList = _adminServices.getNoticeList(null, null, projectId, Convert.ToInt32(userObj.userId), searchTerm);
+            noticeList = _adminServices.getNoticeList(null, null, projectId, Convert.ToInt32(userObj.userId), searchTerm,financialyear:financialyear);
             ((dynamic)((ControllerBase)this).ViewBag).ProjectList = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj.userId), filterBy:"ProjectManager");
             ((ControllerBase)this).ViewData["NoticeList"] = noticeList;
             return View();
@@ -636,12 +635,14 @@ namespace RemoteSensingProject.Controllers
             });
         }
 
-        public ActionResult All_Project_Report(string searchTerm = null, string statusFilter = null)
+        public ActionResult All_Project_Report(string searchTerm = null, string statusFilter = null,string financialyear = null)
         {
             UserCredential userObj = _managerServices.getManagerDetails(User.Identity.Name);
-            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", searchTerm: searchTerm, statusFilter: statusFilter);
+            ((ControllerBase)this).ViewData["ProjectList"] = _managerServices.All_Project_List(userId:Convert.ToInt32(userObj.userId), filterBy: "ProjectManager", searchTerm: searchTerm, statusFilter: statusFilter,financialyear:financialyear);
             ViewBag.statusFilter = statusFilter;
             ViewBag.searchTerm = searchTerm;
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            ViewBag.financialyear = financialyear;
             return View();
         }
 
@@ -667,16 +668,17 @@ namespace RemoteSensingProject.Controllers
         }
 
         #region Manage Tourproposal
-        public ActionResult Tour_Proposal(int? projectFilter = null)
+        public ActionResult Tour_Proposal(int? projectFilter = null,string financialyear = null)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             ManagerService managerServices = _managerServices;
-            List<tourProposal> res = managerServices.GetTourList(type: "GETBYMANAGER", id: userid, projectFilter: projectFilter);
+            List<tourProposal> res = managerServices.GetTourList(type: "GETBYMANAGER", id: userid, projectFilter: projectFilter,financialyear:financialyear);
             List<RemoteSensingProject.Models.Admin.main.Project_model> res2 = _managerServices.All_Project_List(userId:userid, filterBy:"ProjectManager");
             ((ControllerBase)this).ViewData["projectList"] = res2;
             ((ControllerBase)this).ViewData["tourList"] = res;
             ViewData["EmployeeList"] = _adminServices.BindEmployee();
             ViewData["OutSourceList"] = _managerServices.GetAllocatedOutSOurceList(userid);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
             return View();
         }
 
@@ -708,11 +710,12 @@ namespace RemoteSensingProject.Controllers
         }
         #endregion
 
-        public ActionResult RaiseProblem()
+        public ActionResult RaiseProblem(string financialyear = null)
         {
             int userid = Convert.ToInt32(_managerServices.getManagerDetails(User.Identity.Name).userId);
             ((ControllerBase)this).ViewData["projectList"] = _managerServices.All_Project_List(userId:userid, filterBy:"ProjectManager");
-            ((ControllerBase)this).ViewData["ProblemList"] = _managerServices.getProblems(userid);
+            ((ControllerBase)this).ViewData["ProblemList"] = _managerServices.getProblems(userid,financialyear:financialyear);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
             return View();
         }
 

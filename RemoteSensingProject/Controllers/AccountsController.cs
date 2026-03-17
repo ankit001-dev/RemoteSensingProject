@@ -38,14 +38,16 @@ namespace RemoteSensingProject.Controllers
 		}
 
         #region Manage Projects
-		public ActionResult InternalProject(string searchTerm = null)
+		public ActionResult InternalProject(string searchTerm = null,string financialyear = null)
 		{
-            ViewBag.ProjectList = _managerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "Internal");
+            ViewBag.ProjectList = _managerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "Internal",financialyear:financialyear);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
             return View();
 		}
-        public ActionResult ExternalProject(string searchTerm = null)
+        public ActionResult ExternalProject(string searchTerm = null,string financialyear = null)
         {
-            ViewBag.ProjectList = _managerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "External");
+            ViewBag.ProjectList = _managerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "External",financialyear:financialyear);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
             return View();
         }
         #endregion
@@ -69,10 +71,11 @@ namespace RemoteSensingProject.Controllers
 		}
 
         #region Manage TourProposal
-        public ActionResult TourProposalRequest(int? projectFilter = null)
+        public ActionResult TourProposalRequest(int? projectFilter = null,string financialyear = null)
 		{
 			((ControllerBase)this).ViewData["projectList"] = _managerServices.All_Project_List();
-			ViewData["tourproposal"] = _managerServices.GetTourList(type:"ALLDATA",projectFilter:projectFilter);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            ViewData["tourproposal"] = _managerServices.GetTourList(type:"ALLDATA",projectFilter:projectFilter,financialyear:financialyear);
 			return View();
 		}
         

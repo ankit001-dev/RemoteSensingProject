@@ -39,6 +39,11 @@ namespace RemoteSensingProject.Controllers
             return View((object)TotalCount);
         }
 
+		public ActionResult HelpDesk()
+		{
+			return View();
+		}
+
         public ActionResult ViewExpenditureAmount(string req)
         {
             ((ControllerBase)this).ViewData["ExpendedData"] = ((req == "expenditure") ? (from d in _adminServices.ViewProjectExpenditure()

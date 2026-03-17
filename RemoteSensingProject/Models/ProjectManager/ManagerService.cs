@@ -32,15 +32,6 @@ namespace RemoteSensingProject.Models.ProjectManager
                 NpgsqlCommand cmd = new NpgsqlCommand("fn_get_all_projects", con, tran);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("v_action", (object)"selectfinancialyear");
-                //cmd.Parameters.AddWithValue("v_id", (object)(id ?? new int?(0)));
-                //cmd.Parameters.AddWithValue("v_userid", userId.HasValue ? ((object)userId) : ((object)0));
-                //cmd.Parameters.AddWithValue("v_filterby", (object)(string.IsNullOrEmpty(filterBy) ? ((IConvertible)DBNull.Value) : ((IConvertible)filterBy)));
-                //cmd.Parameters.AddWithValue("v_projecttypefilter", (object)(string.IsNullOrEmpty(projectTypeFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)projectTypeFilter)));
-                //cmd.Parameters.AddWithValue("v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
-                //cmd.Parameters.AddWithValue("v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
-                //cmd.Parameters.AddWithValue("v_searchterm", (object)(string.IsNullOrEmpty(searchTerm) ? ((IConvertible)DBNull.Value) : ((IConvertible)searchTerm)));
-                //cmd.Parameters.AddWithValue("v_statusfilter", (object)(string.IsNullOrEmpty(statusFilter) ? ((IConvertible)DBNull.Value) : ((IConvertible)statusFilter)));
-
                 string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                 NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
                 NpgsqlDataReader rd = fetchCmd.ExecuteReader();
@@ -2864,7 +2855,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<OutSourceTask> taskList(int empId, int? limit = null, int? page = null, string searchTerm = null)
+        public List<OutSourceTask> taskList(int empId, int? limit = null, int? page = null, string searchTerm = null,string financialyear = null)
         {
             //IL_002c: Unknown result type (might be due to invalid IL or missing references)
             //IL_0032: Expected O, but got Unknown
@@ -2884,6 +2875,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                     {
                         ((DbCommand)(object)cmd).CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@v_action", (object)"selectAllTask");
+                        cmd.Parameters.AddWithValue("@v_projectmanager", (object)(string.IsNullOrEmpty(financialyear) ? ((IConvertible)DBNull.Value) : ((IConvertible)financialyear)));
                         cmd.Parameters.AddWithValue("@v_id", (object)empId);
                         cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
@@ -3488,7 +3480,7 @@ namespace RemoteSensingProject.Models.ProjectManager
             }
         }
 
-        public List<RaiseProblem> getProblems(int userId, int? limit = null, int? page = null)
+        public List<RaiseProblem> getProblems(int userId, int? limit = null, int? page = null,string financialyear = null)
         {
             //IL_002c: Unknown result type (might be due to invalid IL or missing references)
             //IL_0032: Expected O, but got Unknown
@@ -3512,6 +3504,7 @@ namespace RemoteSensingProject.Models.ProjectManager
                         cmd.Parameters.AddWithValue("v_id", (object)0);
                         cmd.Parameters.AddWithValue("@v_limit", limit.HasValue ? ((object)limit.Value) : DBNull.Value);
                         cmd.Parameters.AddWithValue("@v_page", page.HasValue ? ((object)page.Value) : DBNull.Value);
+                        cmd.Parameters.AddWithValue("@v_financialyear", (object)(string.IsNullOrEmpty(financialyear) ? ((IConvertible)DBNull.Value) : ((IConvertible)financialyear)));
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
                         NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
                         try

@@ -172,7 +172,7 @@ namespace RemoteSensingProject.Models.SubOrdinate
             }
         }
 
-        public List<main.OutSource_Task> getOutSourceTask(int id, int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null)
+        public List<main.OutSource_Task> getOutSourceTask(int id, int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null,string financialyear = null)
 		{
 			try
 			{
@@ -204,6 +204,8 @@ namespace RemoteSensingProject.Models.SubOrdinate
 
                         cmd.Parameters.Add("@v_searchterm", NpgsqlTypes.NpgsqlDbType.Varchar)
                             .Value = (object)searchTerm ?? DBNull.Value;
+                        cmd.Parameters.Add("@v_projectmanager", NpgsqlTypes.NpgsqlDbType.Varchar)
+                            .Value = (object)financialyear ?? DBNull.Value;
                         string cursorName = (string)((DbCommand)(object)cmd).ExecuteScalar();
 						NpgsqlCommand fetchCmd = new NpgsqlCommand("fetch all from \"" + cursorName + "\";", con, tran);
 						try

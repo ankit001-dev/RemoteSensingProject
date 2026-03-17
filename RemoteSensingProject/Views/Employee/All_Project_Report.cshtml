@@ -5,13 +5,16 @@
     var data = ViewData["ProjectList"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     int i = 1;
     string statusFilter = ViewBag.statusFilter ?? "";
-    string searchTerm= ViewBag.searchTerm ?? "";
+    string searchTerm = ViewBag.searchTerm ?? "";
+    string financialyear = ViewBag.financialyear ?? "";
+    var financialyears = ViewData["financialyears"] as List<string>;
 }
 
 <style>
     .link-icon {
         height: 16px;
     }
+
     .progress-bar {
         width: 100% !important;
         background-color: #f3f3f3 !important;
@@ -29,12 +32,11 @@
         color: white !important;
         justify-content: center;
     }
-   
 </style>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <form class="forms-sample">
         <div class="row align-items-center">
-            <div class="col-lg-2">
+            <div class="col-lg-12 mb-2">
                 <h5>All Project Lists</h5>
             </div>
             <div class="col-lg-6 col-md-6">
@@ -47,6 +49,18 @@
                     <option value="Upcoming" @(statusFilter.Equals("Upcoming") ? "selected" : "")>Upcoming</option>
                     <option value="delay" @(statusFilter.Equals("delay") ? "selected" : "")>Delay</option>
                     <option value="Complete" @(statusFilter.Equals("Complete") ? "selected" : "")>Completed</option>
+                </select>
+            </div>
+            <div class="col-sm-4 col-lg-3">
+                <select class="form-select form-select-sm" id="financialyearfilter">
+                    <option value="">Select Financial Year</option>
+                    @if (financialyears != null && financialyears.Count > 0)
+                    {
+                        foreach (var fy in financialyears)
+                        {
+                            <option value="@fy" @(ViewBag.SelectedFY == fy ? "selected" : "")>@fy</option>
+                        }
+                    }
                 </select>
             </div>
         </div>
@@ -150,11 +164,18 @@
     $('#searchProjectBy').on('keyup', function () {
         let value = $(this).val().trim();
         const url = new URL(window.location.href);
-        url.searchParams.set("searchTerm", value);
+
+        if (value) url.searchParams.set("searchTerm", value);
+        else url.searchParams.delete("searchTerm");
 
         const division = $("#filterProjectStatus").val();
         if (division && division !== "null") url.searchParams.set("statusFilter", division);
         else url.searchParams.delete("statusFilter");
+
+        // ✅ Add FY
+        const fy = $("#financialyearfilter").val();
+        if (fy) url.searchParams.set("financialyear", fy);
+        else url.searchParams.delete("financialyear");
 
         clearTimeout(window.searchTimer);
         window.searchTimer = setTimeout(() => {
@@ -162,6 +183,7 @@
             window.location.href = url.toString();
         }, 500);
     });
+
 
     // Filter by status
     $("#filterProjectStatus").on("change", function () {
@@ -173,20 +195,50 @@
         const searchValue = $('#searchProjectBy').val().trim();
         if (searchValue) url.searchParams.set("searchTerm", searchValue);
 
+        // ✅ Add FY
+        const fy = $("#financialyearfilter").val();
+        if (fy) url.searchParams.set("financialyear", fy);
+
         showLoader();
         window.location.href = url.toString();
     });
 
+
+    // Financial Year Filter
+    $("#financialyearfilter").on("change", function () {
+
+        const url = new URL(window.location.href);
+        const fy = $(this).val();
+
+        if (fy) url.searchParams.set("financialyear", fy);
+        else url.searchParams.delete("financialyear");
+
+        const searchValue = $('#searchProjectBy').val().trim();
+        if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+        const division = $("#filterProjectStatus").val();
+        if (division) url.searchParams.set("statusFilter", division);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+
     // Set values on page load
     $(document).ready(function () {
+
         const urlParams = new URLSearchParams(window.location.search);
 
         const search = urlParams.get('searchTerm');
         const division = urlParams.get('statusFilter');
+        const fy = urlParams.get('financialyear');
 
         if (search) $('#searchProjectBy').val(search).focus();
         if (division) $('#filterProjectStatus').val(division);
+        if (fy) $('#financialyearfilter').val(fy);
+
     });
+
 </script>
 
 

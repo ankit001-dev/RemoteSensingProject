@@ -72,11 +72,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
 		[Route("api/getOutSourceTask")]
-		public IHttpActionResult getOutSourceAssignTask(int id, int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null)
+		public IHttpActionResult getOutSourceAssignTask(int id, int? limit = null, int? page = null, string searchTerm = null, string statusFilter = null, string financialyear = null)
 		{
 			try
 			{
-				List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task> data = _subordinate.getOutSourceTask(id, limit, page, searchTerm, statusFilter);
+				List<RemoteSensingProject.Models.SubOrdinate.main.OutSource_Task> data = _subordinate.getOutSourceTask(id, limit, page, searchTerm, statusFilter,financialyear:financialyear);
 				string[] selectprop = new string[9] { "id", "Title", "Description", "CompleteStatus", "Status", "ApprovalStatus", "projectName", "projectId", "AssignTaskId" };
 				List<object> newdata = CommonHelper.SelectProperties(data, selectprop);
 				if (data.Count > 0)
