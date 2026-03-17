@@ -123,27 +123,27 @@ namespace RemoteSensingProject.Controllers
 			return Json((object)res);
 		}
 
-		public ActionResult ProjectAllTaskList()
+		public ActionResult ProjectAllTaskList(string financialyear= null)
 		{
 			var userData = _subOrdinate.GetOutSourceId(User.Identity.Name);
-
-            ViewData["TaskList"] = _subOrdinate.getOutSourceTask(Convert.ToInt32(userData.userId));
-
-            return View();
-		}
-		public ActionResult ProjectPendingTaskList()
-		{
-            var userData = _subOrdinate.GetOutSourceId(User.Identity.Name);
-
-            ViewData["TaskList"] = _subOrdinate.getOutSourceTask(Convert.ToInt32(userData.userId), statusFilter: "Pending");
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            ViewData["TaskList"] = _subOrdinate.getOutSourceTask(Convert.ToInt32(userData.userId),financialyear:financialyear);
 
             return View();
 		}
-		public ActionResult ProjectCompleteTaskList()
+		public ActionResult ProjectPendingTaskList(string financialyear = null)
 		{
             var userData = _subOrdinate.GetOutSourceId(User.Identity.Name);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            ViewData["TaskList"] = _subOrdinate.getOutSourceTask(Convert.ToInt32(userData.userId), statusFilter: "Pending",financialyear:financialyear);
 
-            ViewData["TaskList"] = _subOrdinate.getOutSourceTask(Convert.ToInt32(userData.userId), statusFilter: "Complete");
+            return View();
+		}
+		public ActionResult ProjectCompleteTaskList(string financialyear = null)
+		{
+            var userData = _subOrdinate.GetOutSourceId(User.Identity.Name);
+            ViewData["financialyears"] = _managerServices.GetAllFinancialYears();
+            ViewData["TaskList"] = _subOrdinate.getOutSourceTask(Convert.ToInt32(userData.userId), statusFilter: "Complete", financialyear: financialyear);
 
             return View();
 		}

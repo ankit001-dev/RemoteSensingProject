@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Notice";
     Layout = "~/Views/Shared/_employeeLayout.cshtml";
+    var financialyears = ViewData["financialyears"] as List<string>;
 }
 
 
@@ -23,11 +24,20 @@
         <div class="col-lg-3">
             <h5>Notice Lists</h5>
         </div>
-        <div class="col-lg-6 col-md-6">
+        <div class="col-lg-5 col-md-6">
             <input type="text" id="searchbyProjecManager" placeholder="Search by Project Name" class="form-control">
         </div>
-        <div class="col-lg-3 col-md-6">
-        
+        <div class="col-md-6 col-lg-4">
+            <select class="form-select form-select-sm" id="financialyearfilter">
+                <option value="">Select Financial Year</option>
+                @if (financialyears != null && financialyears.Count > 0)
+                {
+                    foreach (var fy in financialyears)
+                    {
+                        <option value="@fy">@fy</option>
+                    }
+                }
+            </select>
         </div>
 
     </div>
@@ -55,8 +65,8 @@
                                 {
                                     <tr>
                                         <td class="text-start">@count</td>
-                      
-                                        <td><a href="/home/Project_Details?id=@item.Id"  data-title="View Details">@item.ProjectName</a></td>
+
+                                        <td><a href="/home/Project_Details?id=@item.Id" data-title="View Details">@item.ProjectName</a></td>
                                         <td>@item.noticeDate</td>
                                         <td> <a href="@item.Attachment_Url" target="_blank"><span>Document</span> <i class="fa-regular fa-file-pdf"></i></a></td>
                                         <td class="text-center">
@@ -65,7 +75,7 @@
                                                     <a href="#" data-title="Show Notice" onclick="shownotice(`@item.Notice`)"><i class="link-icon" data-feather="file"></i></a>
 
                                                 </li>
-                                             
+
                                             </ul>
                                         </td>
                                     </tr>
@@ -346,6 +356,13 @@
         else
             url.searchParams.delete("searchTerm");
 
+        // ✅ Add FY
+        const fy = $("#financialyearfilter").val();
+        if (fy)
+            url.searchParams.set("financialyear", fy);
+        else
+            url.searchParams.delete("financialyear");
+
         clearTimeout(window.searchTimer);
         window.searchTimer = setTimeout(() => {
             showLoader();
@@ -353,12 +370,38 @@
         }, 500);
     });
 
+
+    // Financial Year Filter
+    $("#financialyearfilter").on("change", function () {
+
+        const url = new URL(window.location.href);
+        const fy = $(this).val();
+
+        if (fy)
+            url.searchParams.set("financialyear", fy);
+        else
+            url.searchParams.delete("financialyear");
+
+        const searchTerm = $("#searchbyProjecManager").val().trim();
+        if (searchTerm)
+            url.searchParams.set("searchTerm", searchTerm);
+
+        showLoader();
+        window.location.href = url.toString();
+    });
+
+
     // Restore values on page load
     $(document).ready(function () {
+
         const urlParams = new URLSearchParams(window.location.search);
 
         const searchTerm = urlParams.get("searchTerm");
         if (searchTerm) $("#searchbyProjecManager").val(searchTerm).focus();
 
+        const fy = urlParams.get("financialyear");
+        if (fy) $("#financialyearfilter").val(fy);
+
     });
+
 </script>

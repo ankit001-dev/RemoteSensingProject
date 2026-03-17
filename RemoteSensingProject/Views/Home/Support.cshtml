@@ -6,7 +6,7 @@
     {
         Layout = "~/Views/Shared/_adminLayout.cshtml";
     }
-    else if (User.IsInRole("subOrdinate"))
+    else if (User.IsInRole("outSource"))
     {
         Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
     }
@@ -239,11 +239,11 @@
                     <div class="download-buttons">
                         <a href="https://play.google.com/store/apps/details?id=com.remotesensing&hl=en" class="download-btn download-btn-android">
                             <i class="fab fa-android"></i>
-                            <span>Android APK</span>
+                            <span>Android</span>
                         </a>
                         <a href="https://apps.apple.com/in/app/remote-sensing/id6753871132" class="download-btn download-btn-ios">
                             <i class="fab fa-apple"></i>
-                            <span>iOS APK</span>
+                            <span>iOS</span>
                         </a>
                     </div>
                 </div>

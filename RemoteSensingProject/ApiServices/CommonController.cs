@@ -216,7 +216,7 @@ public class CommonController : ApiController
     [RoleAuthorize("admin,technicalShell,accounts")]
     [HttpGet]
     [Route("api/adminProjectList")]
-    public IHttpActionResult getProjectList(int? page, int? limit, string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null)
+    public IHttpActionResult getProjectList(int? page, int? limit, string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null,string financialyear = null)
     {
         try
         {
@@ -226,7 +226,7 @@ public class CommonController : ApiController
                 "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
                 "ProjectDepartment", "ContactPerson", "Address"
             };
-            List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(userId: projectManagerFilter, limit, page, filterBy: (projectManagerFilter > 0 ? "ProjectManager" : ""), searchTerm: searchTerm, statusFilter: statusFilter);
+            List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(userId: projectManagerFilter, limit, page, filterBy: (projectManagerFilter > 0 ? "ProjectManager" : ""), searchTerm: searchTerm, statusFilter: statusFilter,financialyear:financialyear);
             List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
             if (data.Count > 0)
             {
@@ -890,18 +890,54 @@ public class CommonController : ApiController
     #region Manage Attendance
     [RoleAuthorize("admin,projectManager")]
 	[HttpGet]
-	[Route("api/getattendancebyIdofEmp")]
-	public IHttpActionResult GetAttendanceByIdOfEmp(int projectManager, int EmpId)
+	[Route("api/get-tourfor-attendance")]
+	public IHttpActionResult GetAttendanceByIdOfEmp(int projectManager,string financialyear = null)
 	{
 		try
 		{
-			List<AttendanceManage> data = _managerservice.GetAllAttendanceForProjectManager(projectManager, EmpId);
-			if (data != null)
+			var data = _managerservice.GetTourList(type: "GETBYMANAGER", id: projectManager, projectFilter: null, financialyear: financialyear).Where(d => d.proposalType == "projectstaff").ToList();
+            if (data != null)
 			{
 				return Ok(new
 				{
 					status = data.Any(),
 					data = data,
+					message = "Data found!"
+				});
+			}
+			return Ok(new
+			{
+				status = data.Any(),
+				data = data,
+				message = "Data not found!"
+			});
+		}
+		catch (Exception ex)
+		{
+			return Ok(new
+			{
+				status = false,
+				StatusCode = 500,
+				message = ex.Message
+			});
+		}
+	}
+    [RoleAuthorize("admin,projectManager")]
+	[HttpGet]
+	[Route("api/getattendance-bytour-ps")]
+	public IHttpActionResult GetAttendanceByIdOfEmp(int tourid,int? projectstaffid = null,int? month = null)
+	{
+		try
+		{
+			var data = _managerservice.GetAttendanceProjectStaffFromTour(tourid, projectstaff: projectstaffid, month: month);
+            var projectstaff = _managerservice.GetProjectStaffFromTour(tourid);
+            if (data != null)
+			{
+				return Ok(new
+				{
+					status = data.Any(),
+					data = data,
+					projectstaff = projectstaff,
 					message = "Data found!"
 				});
 			}
@@ -962,11 +998,11 @@ public class CommonController : ApiController
     // All TourProposal
     [HttpGet]
     [Route("api/getAllTourproposalList")]
-    public IHttpActionResult GetAllTourProposal(int? limit = null, int? page = null, int? projectFilter = null)
+    public IHttpActionResult GetAllTourProposal(int? limit = null, int? page = null, int? projectFilter = null,string financialyear = null)
     {
         try
         {
-            var data = _managerservice.GetTourList(type: "ALLDATA", projectFilter: projectFilter, limit: limit, page: page);
+            var data = _managerservice.GetTourList(type: "ALLDATA", projectFilter: projectFilter, limit: limit, page: page,financialyear:financialyear);
             if (data.Count > 0)
             {
                 return Success(this, data, "Data fetched successfully", 200, data[0].Pagination);
@@ -989,7 +1025,7 @@ public class CommonController : ApiController
 	[JwtAuthorize(Roles ="cgp")]	
     [HttpGet]
     [Route("api/cgpProjectList")]
-    public IHttpActionResult GetCgpProjectList(int? page, int? limit, string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null, string filterType = null)
+    public IHttpActionResult GetCgpProjectList(int? page, int? limit, string searchTerm = null, string statusFilter = null, int? projectManagerFilter = null, string filterType = null,string financialyear = null)
     {
         try
         {
@@ -999,7 +1035,7 @@ public class CommonController : ApiController
                 "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
                 "ProjectDepartment", "ContactPerson", "Address"
             };
-            var data = _managerservice.All_Project_List(userId:projectManagerFilter, limit, page, projectTypeFilter:filterType, searchTerm:searchTerm, statusFilter:statusFilter);
+            var data = _managerservice.All_Project_List(userId:projectManagerFilter, limit, page, projectTypeFilter:filterType, searchTerm:searchTerm, statusFilter:statusFilter,financialyear:financialyear);
             List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
             if (data.Count > 0)
             {
@@ -1174,7 +1210,36 @@ public class CommonController : ApiController
             });
         }
     }
+	#endregion
+
+	#region Get Financial Year For Dropdown
+	[System.Web.Mvc.AllowAnonymous]
+    [HttpGet]
+    [Route("api/get-financialyears")]
+    public IHttpActionResult GetFinancialYears()
+    {
+        try
+        {
+            var data = _managerservice.GetAllFinancialYears();
+            return Ok(new
+            {
+                status = data.Any(),
+                data = data
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new
+            {
+                status = false,
+                StatusCode = 400,
+                message = ex.Message
+            });
+        }
+    }
     #endregion
+
+    
     private IHttpActionResult BadRequest(object value)
 	{
 		return Content<object>(HttpStatusCode.BadRequest, value);

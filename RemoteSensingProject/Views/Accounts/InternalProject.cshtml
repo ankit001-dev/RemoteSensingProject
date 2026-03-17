@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "InternalProject";
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    var financialyears = ViewData["financialyears"] as List<string>;
 }
 
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
@@ -9,10 +10,22 @@
         <div class="col-lg-3">
             <h5>Internal Projects</h5>
         </div>
-        <div class="col-lg-6 col-md-6">
+        <div class="col-lg-4 col-md-6">
             <input type="text" placeholder="Search by project name" id="searchProjectBy" class="form-control">
         </div>
-        <div class="col-lg-3">
+        <div class="col-md-4 col-lg-3">
+            <select class="form-select form-select-sm" id="financialyearfilter">
+                <option value="">Select Financial Year</option>
+                @if (financialyears != null && financialyears.Count > 0)
+                {
+                    foreach (var fy in financialyears)
+                    {
+                        <option value="@fy">@fy</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-lg-2">
             <button class="btn btn-inverse-primary py-1" id="downloadDocx"><i class="link-icon" data-feather="download"></i>Export Docx</button>
         </div>
     </div>
@@ -245,12 +258,18 @@
             }
         })
     })
-
     // Search by text
     $('#searchProjectBy').on('keyup', function () {
         let value = $(this).val().trim();
         const url = new URL(window.location.href);
-        url.searchParams.set("searchTerm", value);
+
+        if (value) url.searchParams.set("searchTerm", value);
+        else url.searchParams.delete("searchTerm");
+
+        // ✅ Add FY
+        const fy = $("#financialyearfilter").val();
+        if (fy) url.searchParams.set("financialyear", fy);
+        else url.searchParams.delete("financialyear");
 
         clearTimeout(window.searchTimer);
         window.searchTimer = setTimeout(() => {
@@ -259,16 +278,42 @@
         }, 500);
     });
 
+
+    // Financial Year Filter
+    $(document).ready(function () {
+
+        $(document).on("change", "#financialyearfilter", function () {
+            console.log("FY Changed Stable ✅");
+
+            const url = new URL(window.location.href);
+            const fy = $(this).val();
+
+            if (fy) url.searchParams.set("financialyear", fy);
+            else url.searchParams.delete("financialyear");
+
+            const searchValue = $('#searchProjectBy').val().trim();
+            if (searchValue) url.searchParams.set("searchTerm", searchValue);
+
+            showLoader();
+            window.location.href = url.toString();
+        });
+
+    });
+
+
     // Set values on page load
     $(document).ready(function () {
+
         const urlParams = new URLSearchParams(window.location.search);
 
         const search = urlParams.get('searchTerm');
-        const division = urlParams.get('statusFilter');
-        const manager = urlParams.get('projectManagerFilter');
+        const fy = urlParams.get('financialyear');
 
         if (search) $('#searchProjectBy').val(search).focus();
+        if (fy) $('#financialyearfilter').val(fy);
+
     });
+
 
 
     //download internal project expenditure

@@ -6,6 +6,7 @@
     var TaskList = ViewData["TaskList"] as List<RemoteSensingProject.Models.ProjectManager.OutSourceTask>;
     var projects = ViewData["projectlist"] as List<RemoteSensingProject.Models.Admin.main.Project_model>;
     int i = 1;
+    var financialyears = ViewData["financialyears"] as List<string>;
 }
 
 <style>
@@ -33,8 +34,20 @@
 </nav>
 <div class="search-box p-4 bg-white rounded mb-3 box-shadow">
     <div class="row align-items-center">
-        <div class="col">
+        <div class="col-lg-4">
             <h5>Task List</h5>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <select class="form-select form-select-sm" id="financialyearfilter">
+                <option value="">Select Financial Year</option>
+                @if (financialyears != null && financialyears.Count > 0)
+                {
+                    foreach (var fy in financialyears)
+                    {
+                        <option value="@fy" @(ViewBag.SelectedFY == fy ? "selected" : "")>@fy</option>
+                    }
+                }
+            </select>
         </div>
     </div>
 </div>
@@ -184,7 +197,37 @@
             var table = $("#dataTableExample").DataTable();
             table.column(1).search($(this).val()).draw();
         })
-    })
+    });
+
+
+    //Filters
+
+    $('#financialyearfilter').on('change', function () {
+
+        let fy = $(this).val();
+
+        const url = new URL(window.location.href);
+
+        if (fy) {
+            url.searchParams.set("financialyear", fy);
+        } else {
+            url.searchParams.delete("financialyear");
+        }
+
+        window.location.href = url.toString();
+
+    });
+
+    $(document).ready(function () {
+
+        const params = new URLSearchParams(window.location.search);
+        const fy = params.get('financialyear');
+
+        if (fy) {
+            $('#financialyearfilter').val(fy);
+        }
+
+    });
 </script>
 
 

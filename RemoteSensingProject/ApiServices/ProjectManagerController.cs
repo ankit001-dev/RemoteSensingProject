@@ -316,11 +316,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/managerAssignedProject")]
-        public IHttpActionResult AssignedPRoject(int userId, int? page, int? limit, string searchTerm = null, string statusFilter = null)
+        public IHttpActionResult AssignedPRoject(int userId, int? page, int? limit, string searchTerm = null, string statusFilter = null,string financialyear =null)
         {
             try
             {
-                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId:userId, limit:limit, page:page, filterBy:"AssignedProject", searchTerm:searchTerm, statusFilter:statusFilter);
+                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId:userId, limit:limit, page:page, filterBy:"AssignedProject", searchTerm:searchTerm, statusFilter:statusFilter,financialyear:financialyear);
                 string[] selectProperties = new string[20]
                 {
                 "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
@@ -341,11 +341,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getManagerProject")]
-        public IHttpActionResult GetProjectList(int userId, int? page = null, int? limit = null, string searchTerm = null, string statusFilter = null, string projectTypeFilter = null)
+        public IHttpActionResult GetProjectList(int userId, int? page = null, int? limit = null, string searchTerm = null, string statusFilter = null, string projectTypeFilter = null,string financialyear = null)
         {
             try
             {
-                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId:userId, limit: limit, page: page, filterBy:"ProjectManager", searchTerm: searchTerm, statusFilter:statusFilter, projectTypeFilter:projectTypeFilter);
+                List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerService.All_Project_List(userId:userId, limit: limit, page: page, filterBy:"ProjectManager", searchTerm: searchTerm, statusFilter:statusFilter, projectTypeFilter:projectTypeFilter,financialyear:financialyear);
                 string[] selectProperties = new string[20]
                 {
                 "Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
@@ -365,13 +365,13 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/getManagerNotice")]
-        public IHttpActionResult NoticeList(int managerId, int? page = null, int? limit = null, string searchTerm = null)
+        public IHttpActionResult NoticeList(int managerId, int? page = null, int? limit = null, string searchTerm = null,string financialyear = null)
         {
             try
             {
                 AdminServices adminServices = _adminServices;
                 int? managerId2 = managerId;
-                List<RemoteSensingProject.Models.Admin.main.Generate_Notice> data = adminServices.getNoticeList(limit, page, null, managerId2, searchTerm);
+                List<RemoteSensingProject.Models.Admin.main.Generate_Notice> data = adminServices.getNoticeList(limit, page, null, managerId2, searchTerm,financialyear:financialyear);
                 if (!data.Any())
                 {
                     return BadRequest(new
@@ -554,11 +554,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getTaskList")]
-        public IHttpActionResult getTaskList(int empId, int? page, int? limit, string searchTerm = null)
+        public IHttpActionResult getTaskList(int empId, int? page, int? limit, string searchTerm = null,string financialyear = null)
         {
             try
             {
-                List<OutSourceTask> data = _managerService.taskList(empId, limit, page, searchTerm);
+                List<OutSourceTask> data = _managerService.taskList(empId, limit, page, searchTerm,financialyear:financialyear);
                 string[] selectProperties = new string[4] { "Id", "title", "description", "completeStatus" };
                 List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
                 if (data.Count > 0)
@@ -718,11 +718,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getraisedproblem")]
-        public IHttpActionResult getRaisedProblem(int userId, int? page, int? limit)
+        public IHttpActionResult getRaisedProblem(int userId, int? page, int? limit,string financialyear = null)
         {
             try
             {
-                List<RaiseProblem> data = _managerService.getProblems(userId, limit, page);
+                List<RaiseProblem> data = _managerService.getProblems(userId, limit, page,financialyear:financialyear);
                 if (data.Count > 0)
                 {
                     return CommonHelper.Success((ApiController)(object)this, data, "Data fetched successfully");
@@ -869,11 +869,11 @@ namespace RemoteSensingProject.ApiServices
 
         [HttpGet]
         [Route("api/getProjectManagerTourproposalList")]
-        public IHttpActionResult GetAllTourProposal(int userid, int? limit = null, int? page = null, int? projectFilter = null)
+        public IHttpActionResult GetAllTourProposal(int userid, int? limit = null, int? page = null, int? projectFilter = null,string financialyear = null)
         {
             try
             {
-                var data = _managerService.GetTourList(type: "GETBYMANAGER", id: userid, projectFilter: projectFilter, page: page, limit: limit);
+                var data = _managerService.GetTourList(type: "GETBYMANAGER", id: userid, projectFilter: projectFilter, page: page, limit: limit,financialyear:financialyear);
                 if (data.Count > 0)
                 {
                     return Success(this, data, "Data fetched successfully", 200, data[0].Pagination);

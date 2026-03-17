@@ -335,11 +335,11 @@ namespace RemoteSensingProject.ApiServices
 
 		[HttpGet]
 		[Route("api/adminDelayProject")]
-		public IHttpActionResult DelayProject(int? page, int? limit)
+		public IHttpActionResult DelayProject(int? page, int? limit, string financialyear = null)
 		{
 			try
 			{
-				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(0, limit, page, "delay");
+				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(0, limit, page, "delay",financialyear:financialyear);
 				string[] selectProperties = new string[23]
 				{
 				"Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
@@ -361,11 +361,11 @@ namespace RemoteSensingProject.ApiServices
 
 		[HttpGet]
 		[Route("api/adminOngoingProject")]
-		public IHttpActionResult ongoingProject(int? page, int? limit)
+		public IHttpActionResult ongoingProject(int? page, int? limit, string financialyear = null)
 		{
 			try
 			{
-				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(0, limit, page, "Ongoing");
+				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(0, limit, page, "Ongoing", financialyear: financialyear);
 				string[] selectProperties = new string[23]
 				{
 				"Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
@@ -387,11 +387,11 @@ namespace RemoteSensingProject.ApiServices
 
 		[HttpGet]
 		[Route("api/adminCompleteProject")]
-		public IHttpActionResult completeProject(int? page, int? limit)
+		public IHttpActionResult completeProject(int? page, int? limit,string financialyear = null)
 		{
 			try
 			{
-				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(0, limit, page, "Complete");
+				List<RemoteSensingProject.Models.Admin.main.Project_model> data = _managerservice.All_Project_List(0, limit, page, "Complete",financialyear:financialyear);
 				string[] selectProperties = new string[23]
 				{
 				"Id", "ProjectTitle", "AssignDate", "CompletionDate", "StartDate", "ProjectManager", "Percentage", "ProjectBudget", "ProjectDescription", "projectDocumentUrl",
@@ -668,11 +668,11 @@ namespace RemoteSensingProject.ApiServices
 		
 		[HttpGet]
 		[Route("api/getallNoticeList")]
-		public IHttpActionResult NoticeList(int? limit = null, int? page = null, int? projectId = null, string searchTerm = null)
+		public IHttpActionResult NoticeList(int? limit = null, int? page = null, int? projectId = null, string searchTerm = null,string financialyear = null)
 		{
 			try
 			{
-				List<RemoteSensingProject.Models.Admin.main.Generate_Notice> data = _adminServices.getNoticeList(limit, page, projectId, null, searchTerm);
+				List<RemoteSensingProject.Models.Admin.main.Generate_Notice> data = _adminServices.getNoticeList(limit, page, projectId, null, searchTerm,financialyear:financialyear);
 				string[] selectprop = new string[9] { "Id", "ProjectId", "ProjectManagerId", "Attachment_Url", "Notice", "ProjectManagerImage", "ProjectManager", "ProjectName", "noticeDate" };
 				List<object> newData = CommonHelper.SelectProperties(data, selectprop);
 				if (data.Count > 0)
@@ -896,11 +896,11 @@ namespace RemoteSensingProject.ApiServices
 
 		[HttpGet]
 		[Route("api/getraisedproblemforadmin")]
-		public IHttpActionResult getRaisedProblem(int? limit = null, int? page = null, string searchTerm = null)
+		public IHttpActionResult getRaisedProblem(int? limit = null, int? page = null, string searchTerm = null,string financialyear = null)
 		{
 			try
 			{
-				List<RemoteSensingProject.Models.Admin.main.RaisedProblem> data = _adminServices.getProblemList(page, limit, null, null, searchTerm);
+				List<RemoteSensingProject.Models.Admin.main.RaisedProblem> data = _adminServices.getProblemList(page, limit, null, null, searchTerm,financialyear:financialyear);
 				if (data.Count > 0)
 				{
 					return CommonHelper.Success((ApiController)(object)this, data, "Data fetched successfully");

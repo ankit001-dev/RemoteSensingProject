@@ -32,9 +32,9 @@ namespace RemoteSensingProject.ApiServices
         #region Manage Project
         [Route("api/getProjectList")]
         [HttpGet]
-        public IHttpActionResult GetProjectList(int? page = null, int? limit = null, string searchTerm = null)
+        public IHttpActionResult GetProjectList(int? page = null, int? limit = null, string searchTerm = null,string financialyear = null)
         {
-            List<RemoteSensingProject.Models.Admin.main.Project_model> res = _mangerServices.All_Project_List(limit:limit,page:page, filterBy:"AccountPending", searchTerm:searchTerm);
+            List<RemoteSensingProject.Models.Admin.main.Project_model> res = _mangerServices.All_Project_List(limit:limit,page:page, filterBy:"AccountPending", searchTerm:searchTerm,financialyear:financialyear);
             return Ok(new
             {
                 status = true,
@@ -45,9 +45,9 @@ namespace RemoteSensingProject.ApiServices
 
         [Route("api/getProjectHistoryList")]
         [HttpGet]
-        public IHttpActionResult GetProjectHistoryList(int? page = null, int? limit = null, string searchTerm = null)
+        public IHttpActionResult GetProjectHistoryList(int? page = null, int? limit = null, string searchTerm = null, string financialyear = null)
         {
-            List<RemoteSensingProject.Models.Admin.main.Project_model> res = _mangerServices.All_Project_List(limit:limit, page:page, filterBy:"AccountApproved", searchTerm: searchTerm);
+            List<RemoteSensingProject.Models.Admin.main.Project_model> res = _mangerServices.All_Project_List(limit:limit, page:page, filterBy:"AccountApproved", searchTerm: searchTerm, financialyear: financialyear);
             return Ok(new
             {
                 status = true,
@@ -398,7 +398,7 @@ namespace RemoteSensingProject.ApiServices
         #region Manage Project List 
         [HttpGet]
         [Route("api/get-internal-projects")]
-        public IHttpActionResult GetInternalProjectList(string searchTerm = null,int? limit = null,int? page = null,string statusFilter = null)
+        public IHttpActionResult GetInternalProjectList(string searchTerm = null,int? limit = null,int? page = null,string statusFilter = null, string financialyear = null)
         {
             string[] selectProperties = new string[23]
            {
@@ -406,7 +406,7 @@ namespace RemoteSensingProject.ApiServices
                 "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
                 "ProjectDepartment", "ContactPerson", "Address"
            };
-            var data = _mangerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "Internal",limit:limit,page:page,statusFilter:statusFilter);
+            var data = _mangerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "Internal",limit:limit,page:page,statusFilter:statusFilter,financialyear:financialyear);
             List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
             if (data.Count > 0)
             {
@@ -416,7 +416,7 @@ namespace RemoteSensingProject.ApiServices
         }
         [HttpGet]
         [Route("api/get-external-projects")]
-        public IHttpActionResult GetExternalProjectList(string searchTerm = null,int? limit = null,int? page = null,string statusFilter = null)
+        public IHttpActionResult GetExternalProjectList(string searchTerm = null,int? limit = null,int? page = null,string statusFilter = null, string financialyear = null)
         {
             string[] selectProperties = new string[23]
            {
@@ -424,7 +424,7 @@ namespace RemoteSensingProject.ApiServices
                 "ProjectType", "physicalcomplete", "overallPercentage", "ProjectStage", "CompletionDatestring", "ProjectStatus", "AssignDateString", "StartDateString", "createdBy", "projectCode",
                 "ProjectDepartment", "ContactPerson", "Address"
            };
-            var data = _mangerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "External",limit:limit,page:page,statusFilter:statusFilter);
+            var data = _mangerServices.All_Project_List(searchTerm: searchTerm, projectTypeFilter: "External",limit:limit,page:page,statusFilter:statusFilter, financialyear: financialyear);
             List<object> filterData = CommonHelper.SelectProperties(data, selectProperties);
             if (data.Count > 0)
             {

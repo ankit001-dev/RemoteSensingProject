@@ -3,6 +3,7 @@
     ViewBag.Title = "AllProject";
     Layout = "~/Views/Shared/_cgpLayout.cshtml";
     int i = 1;
+    var financialyears = ViewData["financialyears"] as List<string>;
 }
 
 <style>
@@ -68,7 +69,7 @@
 <div class="search-box p-4 bg-white rounded mx-0 mb-3 box-shadow">
     <form class="forms-sample">
         <div class="row align-items-center">
-            <div class="col-lg-2">
+            <div class="col-lg-12 mb-2">
                 <h5>@ViewBag.pageTitle</h5>
             </div>
             <div class="col-lg-4 col-md-6">
@@ -90,6 +91,18 @@
                     <option value="Upcoming">Upcoming</option>
                     <option value="delay">Delay</option>
                     <option value="Complete">Completed</option>
+                </select>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <select class="form-select form-select-sm" id="financialyearfilter">
+                    <option value="">Select Financial Year</option>
+                    @if (financialyears != null && financialyears.Count > 0)
+                    {
+                        foreach (var fy in financialyears)
+                        {
+                            <option value="@fy" @(ViewBag.SelectedFY == fy ? "selected" : "")>@fy</option>
+                        }
+                    }
                 </select>
             </div>
         </div>
@@ -521,7 +534,7 @@
                 type: "get",
                 data: { projectId: prjId },
                 success: function (res) {
-                    console.log('Utilealgsas',res);
+                    console.log('Utilealgsas', res);
                     if (res.status) {
                         $("#internalProjectTbody").empty();
                         let index = 1;
@@ -556,7 +569,7 @@
                     console.log(xhr);
                     Swal.fire({
                         title: "Warning",
-                        text: xhr.responseJSON.StatusCode == 404? xhr.responseJSON.message:"Server issue occured. Please try again!",
+                        text: xhr.responseJSON.StatusCode == 404 ? xhr.responseJSON.message : "Server issue occured. Please try again!",
                         icon: "warning",
                         didClose: () => {
                             location.reload(true)
@@ -780,6 +793,11 @@
             if (manager && manager !== "null") url.searchParams.set("projectManager", manager);
             else url.searchParams.delete("projectManager");
 
+            // ✅ ADD FY HERE
+            const fy = options.financialyear ?? $("#financialyearfilter").val();
+            if (fy) url.searchParams.set("financialyear", fy);
+            else url.searchParams.delete("financialyear");
+
             showLoader();
             window.location.href = url.toString();
         }
@@ -802,18 +820,27 @@
             applyProjectFilters({ projectManager: $(this).val() });
         });
 
+        // 📅 Financial Year filter
+        $('#financialyearfilter').on('change', function () {
+            applyProjectFilters({ financialyear: $(this).val() });
+        });
+
     });
 
+
+    // Restore values on page load
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
 
         const search = urlParams.get('searchTerm');
         const division = urlParams.get('statusFilter');
         const manager = urlParams.get('projectManager');
+        const fy = urlParams.get('financialyear');
 
         if (search) $('#searchProjectBy').val(search).focus();
         if (division) $('#filterProjectStatus').val(division);
         if (manager) $('#searchByProjectManager').val(manager);
+        if (fy) $('#financialyearfilter').val(fy);
     });
 
 
