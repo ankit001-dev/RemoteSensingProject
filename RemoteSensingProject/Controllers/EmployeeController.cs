@@ -49,6 +49,10 @@ namespace RemoteSensingProject.Controllers
             return View((object)TotalCount);
         }
 
+        public ActionResult HelpDesk()
+        {
+            return View();
+        }
         public ActionResult CommonPage()
         {
             ViewData["dynamicformats"] = _managerServices.GetDynamicTablesFormat();
