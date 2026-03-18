@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "HelpDesk";
-    Layout = "~/Views/Shared/_adminLayout.cshtml";
+    Layout = "~/Views/Shared/_employeeLayout.cshtml";
 }
 
 <style>
@@ -118,63 +118,26 @@
                         </p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i> View total budget & expenditure</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Track project progress</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Monitor employees & meetings</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Track internal and external project seperately</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Track project staff tasks</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Monitor project staff & meetings</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i> Analyze charts & reports</li>
                         </ul>
 
-                        <a class="open-btn" href="/admin/dashboard" target="_blank">
+                        <a class="open-btn" href="/employee/dashboard" target="_blank">
                             Open Page →
                         </a>
                     </div>
 
                     <!-- RIGHT -->
                     <div class="col-md-6">
-                        <img src="~/Content/User Manual/dashboard.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/dashboard.png" class="screenshot mb-3">
                     </div>
                     <div class="col-md-6">
-                        <img src="~/Content/User Manual/phychart.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/chart-1.png" class="screenshot mb-3">
                     </div>
                     <div class="col-md-6">
-                        <img src="~/Content/User Manual/finchart.png" class="screenshot mb-3">
-                    </div>
-                    <div class="col-md-6">
-                        <img src="~/Content/User Manual/prchart.png" class="screenshot mb-3">
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= EMPLOYEE CATEGORY ================= -->
-        <div class="col-md-12">
-            <div class="card module-card p-4">
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <h4 class="module-title">
-                            <i class="bi bi-people-fill text-primary"></i> Employee Category
-                        </h4>
-
-                        <p class="text-muted">Manage employee division and designations.</p>
-
-                        <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Add categories(division,designation)</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Edit category</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Delete category</li>
-                        </ul>
-
-                        <a target="_blank" class="open-btn"  href="/Admin/Emp_Category">
-                            Open Page →
-                        </a>
-                    </div>
-
-                    <div class="col-md-6">
-                        <img src="~/Content/User Manual/designation.png" class="screenshot mb-3">
-                    </div>
-                    <div class="col-md-6">
-                        <img src="~/Content/User Manual/division.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/chart-2.png" class="screenshot mb-3">
                     </div>
 
                 </div>
@@ -199,7 +162,7 @@
                             <li><i class="bi bi-check-circle-fill text-success"></i> Remove budget head</li>
                         </ul>
 
-                        <a class="open-btn" target="_blank" href="/Admin/Budget_Head">
+                        <a class="open-btn" target="_blank" href="/employee/Budget_Head">
                             Open Page →
                         </a>
                     </div>
@@ -214,76 +177,7 @@
                 </div>
             </div>
         </div>
-        <!-- ================= Project Scheme ================= -->
-        <div class="col-md-12">
-            <div class="card module-card p-4">
-                <div class="row">
 
-                    <div class="col-md-6">
-                        <h4 class="module-title">
-                            <i class="bi bi-cash-stack text-primary"></i> Project Scheme
-                        </h4>
-
-                        <p class="text-muted">Manage Project Schemes.</p>
-
-                        <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Add new project scheme.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Update existing project scheme.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Remove existing project scheme.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Search project scheme by its name in the table.</li>
-                        </ul>
-
-                        <a target="_blank" class="open-btn" href="/Admin/projectscheme">
-                            Open Page →
-                        </a>
-                    </div>
-
-                    <div class="col-md-6">
-                        <img src="~/Content/User Manual/schemelist.png" class="screenshot mb-3">
-                    </div>
-                    <div class="col-md-6 mt-2">
-                        <img src="~/Content/User Manual/addscheme.png" class="screenshot mb-3">
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <!-- ================= Employee Registration ================= -->
-        <div class="col-md-12">
-            <div class="card module-card p-4">
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <h4 class="module-title">
-                            <i class="bi bi-cash-stack text-primary"></i> Employee Registration
-                        </h4>
-
-                        <p class="text-muted">Register employees.</p>
-
-                        <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Add new employees using the “Add Employee” button by filling required details like name, code, role, division, and designation.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i>View employee records in a table with details such as employee code, name, role, division, designation, and status.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Search employees by employee name to find records.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Filter employees using the division dropdown to show only selected division data.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Update or delete employee details using the edit and delete actions.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i> Manage employee availability using the active/inactive toggle.</li>
-                        </ul>
-
-                        <a target="_blank" class="open-btn" href="/Admin/Budget_Head">
-                            Open Page →
-                        </a>
-                    </div>
-
-                    <div class="col-md-6">
-                        <img src="~/Content/User Manual/emplist.png" class="screenshot mb-3">
-                    </div>
-                    <div class="col-md-6 mt-2">
-                        <img src="~/Content/User Manual/addemp.png" class="screenshot mb-3">
-                    </div>
-
-                </div>
-            </div>
-        </div>
         <!-- ================= Add Project ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
@@ -303,7 +197,7 @@
                                 <ul>
                                     <li>Select Project Scheme and enter Project Title</li>
                                     <li>Choose Assign Date, Start Date, and Completion Date</li>
-                                    <li>Select Project Manager and upload Project Document</li>
+                                    <li>Upload Project Document</li>
                                 </ul>
                             </li>
 
@@ -363,13 +257,13 @@
 
                         </ul>
 
-                        <a class="open-btn" target="_blank" href="/Admin/add_project">
+                        <a class="open-btn" target="_blank" href="/employee/add_project">
                             Open Page →
                         </a>
                     </div>
 
                     <div class="col-md-6">
-                        <img src="~/Content/User Manual/addproject.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/add-project.png" class="screenshot mb-3">
                         <img src="~/Content/User Manual/bg-sf.png" class="screenshot mb-3">
                         <img src="~/Content/User Manual/ext-stage.png" class="screenshot mb-3">
                     </div>
@@ -378,50 +272,51 @@
             </div>
         </div>
 
-        <!-- ================= Project List ================= -->
+        <!-- ================= My Project ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
                 <div class="row">
 
                     <div class="col-md-6">
                         <h4 class="module-title">
-                            <i class="bi bi-cash-stack text-primary"></i> Project List
+                            <i class="bi bi-cash-stack text-primary"></i> My Project
                         </h4>
 
                         <p class="text-muted">Manage Project List.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This page displays all those projects which is created by admin/director in a table format for easy viewing and management.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This page displays all those projects which is created by projectmanager in a table format for easy viewing and management.</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i>Each project record includes key details such as Project Name, Project Manager, Start Date, Completion Date and current Project Status.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can edit and delete their projects using icons which is showing in action column.</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i>Users can search for projects using the Project Name, which dynamically filters the list based on entered keywords.</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i>The page provides filtering options to refine project data, including filtering by Project Status (e.g., Ongoing, Completed, Pending) and by selecting a Financial Year from the dropdown.</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i>The Project Status field helps users quickly identify the progress of each project and monitor ongoing, completed, or pending work.</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i>On click project name see all details about the project.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/Admin/Project_List">
+                        <a target="_blank" class="open-btn" href="/employee/Project_List">
                             Open Page →
                         </a>
                     </div>
 
                     <div class="col-md-6">
-                        <img src="~/Content/User Manual/prlist.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/my-projects.png" class="screenshot mb-3">
                     </div>
 
                 </div>
             </div>
         </div>
-        <!-- ================= ALL Project List ================= -->
+        <!-- ================= Internal & External Project List ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
                 <div class="row">
 
                     <div class="col-md-6">
                         <h4 class="module-title">
-                            <i class="bi bi-cash-stack text-primary"></i>All Projects
+                            <i class="bi bi-cash-stack text-primary"></i>Internal & External Projects
                         </h4>
 
-                        <p class="text-muted">Manage Project List.</p>
+                        <p class="text-muted">Manage Internal and External Project.</p>
 
                         <ul class="feature-list">
                             <li><i class="bi bi-check-circle-fill text-success"></i>This page displays all added projects in a table format for easy viewing and management.</li>
@@ -429,26 +324,113 @@
                             <li><i class="bi bi-check-circle-fill text-success"></i>Users can search for projects using the Project Name, which dynamically filters the list based on entered keywords.</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i>The page provides filtering options to refine project data, including filtering by Project Status (e.g., Ongoing, Completed, Pending) and by selecting a Financial Year from the dropdown.</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i>The Project Status field helps users quickly identify the progress of each project and monitor ongoing, completed, or pending work.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The Physical percenatge column helps users quickly identify the physical progress of each project.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The Financial percenatage column helps users quickly identify the financial progress of each project.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The Overall percentage column helps users quickly identify the overall progress of each project.</li>
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This table also includes an Action column that contains two icons: a calendar icon and a document icon. The calendar icon is used to display the monthly progress report of the project when clicked, while the document icon shows the project’s head-wise expenses.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This table also includes an Action column that contains a icons: a list icon. The icon is used to display the project’s head-wise expenses.</li>
                             <li><i class="bi bi-check-circle-fill text-success"></i>On click project name see all details about the project.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/Admin/all_projects">
+                        <a target="_blank" class="open-btn" href="/employee/internal_projects">
                             Open Page →
                         </a>
                     </div>
 
                     <div class="col-md-6">
-                        <img src="~/Content/User Manual/allprojects.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/div-projectlist.png" class="screenshot mb-3">
                         <img src="~/Content/User Manual/view-exp.png" class="screenshot mb-3">
                     </div>
 
                 </div>
             </div>
         </div>
+
+        <!-- ================= Project Staff ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-cash-stack text-primary"></i> Project Staff
+                        </h4>
+
+                        <p class="text-muted">Manage project staff and show their task.</p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>View project staff records in a table with details such as  name, contact, email, designation.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Search employees by employee name to find records.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>There is a column of tasks where showing count of tasks of every project staff and on click that number show task details in list of their project staff.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> There is a column of Action where showing icon of user minus which is use to deallocate the project staff.</li>
+                        </ul>
+
+                        <a target="_blank" class="open-btn" href="/employee/outsource">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <div class="col-md-6">
+                        <img src="~/Content/emp-helpdesk/pr-staff.png" class="screenshot mb-3">
+                    </div>
+                    @*<div class="col-md-6 mt-2">
+                        <img src="~/Content/User Manual/addemp.png" class="screenshot mb-3">
+                    </div>*@
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Task ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-cash-stack text-primary"></i> Task
+                        </h4>
+
+                        <p class="text-muted">Assign task to project staff and check status of task.</p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Project Managers to create and assign tasks to Project Staff for specific projects.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A Create Task button is provided to add new tasks and assign them to one or multiple Project Staff members.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Each task is associated with a specific project and includes details such as Task Title, Description, and Completion Date.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A single task can be assigned to multiple Project Staff members simultaneously.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All created tasks are displayed in a structured list format for easy tracking and management.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The task list displays key details such as Project Name, Task Title, Description, and Completion Date.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Status column indicates whether the task has been completed or is still pending.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Staff update the status of assigned tasks from their panel.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Once a task is updated by Project Staff, the Project Manager reviews it and marks the task as completed.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A Financial Year filter is provided to view tasks for a specific financial year.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Managers efficiently assign, monitor, and track task progress across different projects.</li>
+                        </ul>
+
+                        <a target="_blank" class="open-btn" href="/employee/outsource">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <div class="col-md-6">
+                        <img src="~/Content/emp-helpdesk/create-task-form.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/create-task.png" class="screenshot mb-3">
+                    </div>
+                    <div class="col-md-6 mt-2">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
         <!-- ================= Create Meeting ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
@@ -507,7 +489,7 @@
                             <li><i class="bi bi-check-circle-fill text-success"></i>The List icon in the Action column displays all Key Points discussed in the meeting along with their respective responses or outcomes.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/Admin/min_of_meeting">
+                        <a target="_blank" class="open-btn" href="/employee/min_of_meeting">
                             Open Page →
                         </a>
                     </div>
@@ -517,7 +499,7 @@
                         <img src="~/Content/User Manual/meet-list.png" class="screenshot mb-3">
                         <img src="~/Content/User Manual/add-meet-conclu.png" class="screenshot mb-3">
                         <img src="~/Content/User Manual/add-key-res.png" class="screenshot mb-3">
-                        <img src="~/Content/User Manual/meet-conclu.png" class="screenshot mb-3">    
+                        <img src="~/Content/User Manual/meet-conclu.png" class="screenshot mb-3">
                     </div>
                     <div class="col-md-6">
                         <img src="~/Content/User Manual/meet-member.png" class="screenshot mb-3">
@@ -537,41 +519,47 @@
 
                     <div class="col-md-6">
                         <h4 class="module-title">
-                            <i class="bi bi-cash-stack text-primary"></i>Tour List
+                            <i class="bi bi-cash-stack text-primary"></i>Tour Form
                         </h4>
 
-                        <p class="text-muted">View all tours which is added by employees/project manager.</p>
+                        <p class="text-muted">Create and view all added tours.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Admin users to view all tour entries submitted by the Project Manager.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Project Managers to create and manage tour entries for themselves as well as for Project Staff.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Tour entries are created by the Project Manager through a form, whether the tour is for themselves or for Project Staff.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A tour creation form is provided where Project Managers can enter all required tour details.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>All submitted tour records are displayed in a structured list format for easy viewing and tracking.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The form includes a Tour Type field with two options: Regular and Project Staff.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The tour list displays key details such as Project Name, Purpose of Visit, Place of Visit, Period From, and Period To.</li>                            
+                            <li><i class="bi bi-check-circle-fill text-success"></i>If the Tour Type is selected as Regular, the tour is considered for the Project Manager.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Admin users can filter the tour list using the Project Filter to view tours related to a specific project.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>If the Tour Type is selected as Project Staff, the tour is created for selected Project Staff members.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The Financial Year filter allows Admin users to view tour records for a selected financial year.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The form includes fields such as Project Name, Purpose of Visit, Place of Visit, Period From, and Period To.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>These filters help in refining the data and quickly accessing relevant tour information.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can submit the form to create a new tour entry.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Admin users can click on the Project Name in the list to view complete details of the selected tour entry.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All created tour entries are displayed in a list format for easy viewing and tracking.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The detailed view provides all additional information filled in the tour form for better understanding.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The tour list displays key details such as Project Name, Purpose, Place of Visit, Period From, and Period To.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Admin users keep track of all tour activities related to different projects and staff.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A Financial Year filter is provided to view tours for a specific financial year.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can click on the Project Name to view complete details of the selected tour.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The detailed view shows all information filled in the tour form for better reference.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Managers efficiently plan, create, and track tour activities for both themselves and their Project Staff.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/Admin/travelrequest">
+                        <a target="_blank" class="open-btn" href="/employee/tour_proposal">
                             Open Page →
                         </a>
                     </div>
 
                     <div class="col-md-6">
-                        <img src="~/Content/User Manual/tour.png" class="screenshot mb-3">
-                        <img src="~/Content/User Manual/tour-detail.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/create-tour.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/tour-list.png" class="screenshot mb-3">
                     </div>
 
                 </div>
@@ -590,7 +578,7 @@
                         <p class="text-muted">View attendance of project staff while they are on tour.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Admin users to view attendance records of Project Staff based on Project Manager selection.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows employee users to view attendance records of Project Staff based on Project Manager selection.</li>
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>Initially, a list of all Project Managers is displayed for selection.</li>
 
@@ -612,10 +600,10 @@
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>The Attendance Status is represented as 'P' for Present and 'A' for Absent.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Admin users monitor and track attendance of Project Staff efficiently across different tours.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps employee users monitor and track attendance of Project Staff efficiently across different tours.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/Admin/attendance">
+                        <a target="_blank" class="open-btn" href="/employee/attendance">
                             Open Page →
                         </a>
                     </div>
@@ -644,7 +632,7 @@
                         <p class="text-muted">View project problems which is feeded by project manager.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Admin users to view all project-related problems raised by the Project Manager.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows employee users to view all project-related problems raised by the Project Manager.</li>
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can raise issues or problems related to a specific project through their panel.</li>
 
@@ -656,22 +644,22 @@
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>A Financial Year filter is provided to view problems for a specific financial year.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The Status column indicates whether the problem has been viewed by the Admin or is still pending.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Status column indicates whether the problem has been viewed by the employee or is still pending.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Problems that are not yet viewed by the Admin are marked as Pending.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Problems that are not yet viewed by the employee are marked as Pending.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Once the Admin views a problem, its status is automatically updated to Seen.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Once the employee views a problem, its status is automatically updated to Seen.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Admin users can click on the Project Name in the list to view complete details of the selected problem.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>employee users can click on the Project Name in the list to view complete details of the selected problem.</li>
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>On opening the problem details, the system automatically marks that problem as Seen.</li>
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>The detailed view provides full information submitted by the Project Manager for better understanding and action.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Admin users track and respond to project-related issues efficiently.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps employee users track and respond to project-related issues efficiently.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/Admin/raisedproblem">
+                        <a target="_blank" class="open-btn" href="/employee/raisedproblem">
                             Open Page →
                         </a>
                     </div>
@@ -684,7 +672,7 @@
                 </div>
             </div>
         </div>
-        <!-- ================= Notice ================= -->
+        <!-- ================= Notices ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
                 <div class="row">
@@ -694,47 +682,35 @@
                             <i class="bi bi-cash-stack text-primary"></i>Notices
                         </h4>
 
-                        <p class="text-muted">Create & view notices for project manager related to projects.</p>
+                        <p class="text-muted">View notices created by admin/director.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Admin users to generate and manage notices related to specific projects.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Project Managers to view all notices shared by the Admin.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The notice creation form enables users to select a project for which the notice needs to be generated.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All received notices are displayed in a structured list format for easy access.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Once a project is selected, related details such as Project Name, Project Manager, and Project Completion Date are automatically displayed.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The notice list includes key details such as Project Name, Project Manager Name, and notice content summary.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The form includes an Attachment field where users can upload supporting documents related to the notice.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Attachment column is provided to download or view the document shared with the notice.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>A text editor is provided to write and format the notice content as required.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can search notices using the Project Name for quick access.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>After entering all details, users can submit the form to generate the notice.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Filter options are available, including Financial Year filter, to view notices for a specific period.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Once submitted, the generated notice is shared with the respective Project Manager.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can click on the Project Name to view complete notice details.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>All generated notices are displayed in a structured list/table format for easy access and management.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The detailed view displays full notice content along with any attached documents.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The notice list displays key details such as Project Name, Project Manager Name, and an option to download the uploaded document.</li>
-
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The module provides a search functionality that allows users to search notices based on Project Name.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Filter options are available, including Project Manager filter and Financial Year filter, to refine the notice list.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>These filters help in quickly locating specific notices based on selected criteria.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>An Edit icon is available in the list, allowing users to update or modify an existing notice.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Admin users efficiently communicate important updates and information to Project Managers.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Managers stay updated with important project-related notices shared by the Admin.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/Admin/generate_notice">
+                        <a target="_blank" class="open-btn" href="/employee/generate_notice">
                             Open Page →
                         </a>
                     </div>
 
                     <div class="col-md-6">
-                        <img src="~/Content/User Manual/gen-notice.png" class="screenshot mb-3">
-                        <img src="~/Content/User Manual/notice-list.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/notice-list.png" class="screenshot mb-3">
                     </div>
 
                 </div>
@@ -753,7 +729,7 @@
                         <p class="text-muted">View and download monthly progress report of employees.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Admin users to view the Employee Monthly Progress Reports of all Project Managers.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows employee users to view the Employee Monthly Progress Reports of all Project Managers.</li>
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>A list of all Project Managers is displayed along with key details such as Project Manager Name and Division Name.</li>
 
@@ -769,10 +745,10 @@
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>The downloaded report maintains the same structured format as shown in the preview.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Admin users easily access, review, and download monthly performance reports of Project Managers.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps employee users easily access, review, and download monthly performance reports of Project Managers.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/Admin/EployeeMonthlyReport">
+                        <a target="_blank" class="open-btn" href="/employee/EployeeMonthlyReport">
                             Open Page →
                         </a>
                     </div>
@@ -798,7 +774,7 @@
                         <p class="text-muted">View expense report of the heads of projects.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Admin users to view expense reports based on selected Project and Head.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows employee users to view expense reports based on selected Project and Head.</li>
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>By default, two dropdown fields are provided: Project and Head.</li>
 
@@ -814,10 +790,10 @@
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>The Attachment column allows users to view or download supporting documents related to each expense.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Admin users easily track and review project-wise and head-wise expenses.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps employee users easily track and review project-wise and head-wise expenses.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/Admin/expense_report">
+                        <a target="_blank" class="open-btn" href="/employee/expense_report">
                             Open Page →
                         </a>
                     </div>
@@ -835,5 +811,4 @@
 
     </div>
 </div>
-
 
