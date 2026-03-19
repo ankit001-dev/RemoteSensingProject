@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using System.Web.Mvc;
 
 namespace RemoteSensingProject.Controllers
@@ -31,17 +32,17 @@ namespace RemoteSensingProject.Controllers
 		public ActionResult Dashboard()
 		{
 			string managerName = ((Controller)this).User.Identity.Name;
-			int userId = Convert.ToInt32(_managerServices.getManagerDetails(managerName).userId);
-			RemoteSensingProject.Models.SubOrdinate.main.DashboardCount dcount = _subOrdinate.GetDashboardCounts(Convert.ToInt32(userId));
-			List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList> _list = new List<RemoteSensingProject.Models.SubOrdinate.main.ProjectList>();
-			ViewDataDictionary viewData = ((ControllerBase)this).ViewData;
+			int userId = Convert.ToInt32(_subOrdinate.GetOutSourceId(User.Identity.Name).userId);
+			RemoteSensingProject.Models.SubOrdinate.main.DashboardCount dcount = _subOrdinate.GetDashboardCounts(userId);
 			ManagerService managerServices = _managerServices;
 			int? userId2 = 0;
 			int? id = userId;
-			//viewData["AssignedProjectList"] = managerServices.All_Project_List(userId2, null, null, "SubordinateProject", id);
 			return View((object)dcount);
 		}
-
+		public ActionResult HelpDesk()
+		{
+			return View();
+        }
 		public ActionResult Assigned_Project(string searchTerm = null, string statusFilter = null, string filterType = null)
 		{
 			string managerName = ((Controller)this).User.Identity.Name;

@@ -37,6 +37,11 @@ namespace RemoteSensingProject.Controllers
 			return View();
 		}
 
+        public ActionResult HelpDesk()
+        {
+            return View();
+        }
+
         #region Manage Projects
 		public ActionResult InternalProject(string searchTerm = null,string financialyear = null)
 		{

@@ -1113,7 +1113,7 @@ namespace RemoteSensingProject.Controllers
                 var projectstaff = _managerServices.GetProjectStaffFromTour(tourid);
                 return Json(new
                 {
-                    status = data.Any(),
+                    status = true,
                     projectstafflist = projectstaff,
                     data = data,
                 }, JsonRequestBehavior.AllowGet);

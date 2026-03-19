@@ -173,6 +173,11 @@
 
                 if (res.status) {
 
+                    // ✅ Correct way: pehle tbody select karo phir empty
+                    var tbody = $("#attendancelist");
+                    tbody.empty();
+
+                    // ✅ Staff dropdown clear + reset
                     var staffdropdown = $("#staffdropdown");
                     staffdropdown.empty();
                     staffdropdown.append('<option value="">Filter by projectstaff</option>');
@@ -184,12 +189,21 @@
                         staffdropdown.append(
                             `<option value="${item.Id}" ${selected}>${item.EmpName}</option>`
                         );
-
                     });
 
-                    var tbody = $("#attendancelist");
-                    tbody.empty();
+                    // ✅ Agar data empty hai
+                    if (res.data.length === 0) {
+                        tbody.append(`
+                        <tr>
+                            <td colspan="5" class="text-center text-danger">
+                                No attendance data found
+                            </td>
+                        </tr>
+                    `);
+                        return;
+                    }
 
+                    // ✅ New data insert
                     $.each(res.data, function (index, item) {
 
                         var row = `<tr>
@@ -201,16 +215,17 @@
                     </tr>`;
 
                         tbody.append(row);
-
                     });
 
+                    // ✅ Maintain selected values
                     $('#monthFilter').val(selectedMonth);
-
+                    $('#staffdropdown').val(selectedStaff);
                 }
-
+            },
+            error: function () {
+                console.log("Error loading attendance");
             }
         });
-
     }
 
     //Show Attendance Data

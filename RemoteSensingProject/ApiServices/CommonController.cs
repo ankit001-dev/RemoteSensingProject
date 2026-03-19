@@ -517,6 +517,31 @@ public class CommonController : ApiController
             return CommonHelper.Error((ApiController)(object)this, ex.Message);
         }
     }
+    [HttpGet]
+    [Route("api/get-all-projectmanager")]
+    public IHttpActionResult GetAllProjectManager(int? page = null, int? limit = null)
+    {
+        try
+        {
+            List<RemoteSensingProject.Models.Admin.main.Employee_model> data = _adminServices.SelectEmployeeRecord(page, limit, null, null).Where(n => n.EmployeeRole != null && n.EmployeeRole.Contains("projectManager")).ToList();
+            string[] selectProperties = new string[13]
+            {
+                "Id", "EmployeeCode", "EmployeeName", "DevisionName", "Email", "MobileNo", "EmployeeRole", "Division", "DesignationName", "Status",
+                "ActiveStatus", "CreationDate", "Image_url"
+            };
+            List<object> filtered = CommonHelper.SelectProperties(data, selectProperties);
+            if (data != null && data.Count > 0)
+            {
+                ApiCommon.PaginationInfo pagination = data[0].Pagination;
+                return CommonHelper.Success((ApiController)(object)this, filtered, "Data fetched successfully.", 200, pagination);
+            }
+            return CommonHelper.NoData((ApiController)(object)this);
+        }
+        catch (Exception ex)
+        {
+            return CommonHelper.Error((ApiController)(object)this, ex.Message);
+        }
+    }
 
 
     [HttpGet]

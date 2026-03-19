@@ -1,0 +1,346 @@
+﻿
+@{
+    ViewBag.Title = "HelpDesk";
+    Layout = "~/Views/Shared/_subOrdinateLayout.cshtml";
+}
+
+<style>
+
+    .header {
+        background: linear-gradient(135deg, #6ea8fe, #cfe2ff);
+        color: #1b3c74;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .module-card {
+        border: none;
+        border-radius: 14px;
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border-left: 5px solid #6ea8fe;
+    }
+
+        .module-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            border-left: 5px solid #0d6efd;
+        }
+
+    .module-title {
+        font-weight: 600;
+    }
+
+    .feature-list li {
+        margin-bottom: 10px;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+        .feature-list li:hover {
+            transform: translateX(5px);
+            color: #0d6efd;
+        }
+
+    .screenshot {
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        width: 100%;
+        min-height: 260px;
+        object-fit: contain;
+        transition: 0.3s;
+    }
+
+        .screenshot:hover {
+            transform: scale(1.05);
+        }
+
+    .chart-img {
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        transition: 0.3s;
+    }
+
+        .chart-img:hover {
+            transform: scale(1.05);
+        }
+
+    .image-box {
+        background: #f8faff;
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid #e0e6f1;
+    }
+
+    .open-btn {
+        background: linear-gradient(135deg, #4e73df, #224abe);
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 20px;
+        transition: 0.3s;
+    }
+
+        .open-btn:hover {
+            background: linear-gradient(135deg, #224abe, #1a3a8f);
+            transform: scale(1.05);
+        }
+</style>
+
+<div class="container-fluid mt-2">
+
+    <!-- HEADER -->
+    <div class="header text-center">
+        <h2><i class="bi bi-life-preserver"></i> Help Desk</h2>
+        <p class="mb-0">User Guide for Remote Sensing Application Centre Project Management System</p>
+    </div>
+
+    <div class="row g-4 mt-3">
+
+        <!-- ================= DASHBOARD ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Dashboard
+                        </h4>
+
+                        <p class="text-muted">
+                            Dashboard provides overview of task and meeting.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This dashboard provides an overview of tasks and meetings for Project Staff.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Four summary cards are displayed: Total Tasks, Pending Tasks, Completed Tasks, and Total Meetings.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Each card shows the respective count for quick insights.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All cards are clickable and redirect users to their respective detailed pages.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A task chart is displayed to visualize task distribution.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The chart shows counts of Total Tasks, Pending Tasks, and Completed Tasks.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Staff quickly track their workload and meeting count.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/subordinate/dashboard" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/ps-helpdesk/dashboard.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Task Lists ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Task Lists
+                        </h4>
+
+                        <p class="text-muted">
+                            View all total,pending,completed task in task list.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module provides three task lists for User: Total Tasks, Pending Tasks, and Completed Tasks.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All three lists are accessible separately but are part of the same task management section.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Total Task list displays key details such as Project Name, Task Title, and Task Status.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Pending Task list includes an additional Action column.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>In the Pending list, users can mark tasks as completed using the Action option.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Completed Task list displays details such as Project Name, Task Title, and Task Description.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All three task lists include a Financial Year filter to view tasks for a specific period.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Staff efficiently track and manage their assigned tasks.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/subordinate/projectalltasklist" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/ps-helpdesk/all-task.png" class="screenshot mb-3">
+                        <img src="~/Content/ps-helpdesk/pen-task.png" class="screenshot mb-3">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="~/Content/ps-helpdesk/com-task.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Meeting Lists ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Meeting Lists
+                        </h4>
+
+                        <p class="text-muted">
+                            View all meeting created by project manager.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows user to view all meetings scheduled by the Project Manager.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All meetings assigned to the Project Staff are displayed in a structured list format.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The meeting list includes key details such as Meeting Title, Meeting Mode, Date & Time, Address/Link, Meeting Status, and Joining Status.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Action column is provided to accept or reject meeting invitations.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>User can accept the meeting directly from the list.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>If a meeting is rejected, users are required to provide a reason for rejection.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Joining Status indicates whether the user has accepted, rejected, or not responded to the meeting.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A search functionality is available to find meetings based on Meeting Title.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A filter option is provided to filter meetings based on Meeting Status.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Staff manage meeting participation and respond to invitations efficiently.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/subordinate/meeting_list" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/ps-helpdesk/meet.png" class="screenshot mb-3">
+                        <img src="~/Content/ps-helpdesk/meet-rej.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Monthly Progress Report ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Monthly Progress Report
+                        </h4>
+
+                        <p class="text-muted">
+                            Add monthly progress report related to project.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows user to manage Monthly Progress Reports.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A structured list is displayed where all added records are shown in a predefined format.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The report data is maintained project-wise for better tracking and organization.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Year and Month filters are provided to view reports for a specific time period.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Add button is available to enter new monthly progress data.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the Add button, users can fill in the required details and submit the report.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The submitted data is saved and displayed in the report list.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Staff maintain and update project-wise monthly progress efficiently.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/subordinate/monthlyprogressreport" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/ps-helpdesk/pr-repo.png" class="screenshot mb-3">
+                        <img src="~/Content/ps-helpdesk/pr-form.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Attendance ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Attendance
+                        </h4>
+
+                        <p class="text-muted">
+                            View attendance which marked while tour.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows user to view their own attendance records.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A structured list is displayed showing attendance details of the logged-in user.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The attendance list includes key details such as Date, Status, and Attendance Location (Address).</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Status indicates whether the user was Present or Absent.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps users easily track their daily attendance records.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/subordinate/monthlyprogressreport" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/ps-helpdesk/att-list.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+

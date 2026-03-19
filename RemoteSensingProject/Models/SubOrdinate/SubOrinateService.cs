@@ -332,15 +332,10 @@ namespace RemoteSensingProject.Models.SubOrdinate
 									while (((DbDataReader)(object)sdr).Read())
 									{
 										obj = new main.DashboardCount();
-										obj.TotalAssignProject = Convert.ToInt32(((DbDataReader)(object)sdr)["TotalProject"]);
-										obj.InternalProject = Convert.ToInt32(((DbDataReader)(object)sdr)["InternalProject"]);
-										obj.ExternalProject = Convert.ToInt32(((DbDataReader)(object)sdr)["ExternalProject"]);
-										obj.CompletedProject = Convert.ToInt32(((DbDataReader)(object)sdr)["CompletedProject"]);
-										obj.PendingProject = Convert.ToInt32(((DbDataReader)(object)sdr)["PendingProject"]);
-										obj.OngoingProject = Convert.ToInt32(((DbDataReader)(object)sdr)["OngoingProject"]);
-										obj.TotalMeetings = Convert.ToInt32(((DbDataReader)(object)sdr)["TotalMeetings"]);
-										obj.AdminMeetings = Convert.ToInt32(((DbDataReader)(object)sdr)["AdminMeetings"]);
-										obj.ProjectManagerMeetings = Convert.ToInt32(((DbDataReader)(object)sdr)["ProjectManagerMeetings"]);
+										obj.TotalTaskCount = Convert.ToInt32(((DbDataReader)(object)sdr)["TotalTaskCount"]);
+										obj.PendingTaskCount = Convert.ToInt32(((DbDataReader)(object)sdr)["PendingTaskCount"]);
+										obj.CompleteTaskCount = Convert.ToInt32(((DbDataReader)(object)sdr)["CompleteTaskCount"]);
+										obj.MeetingCount = Convert.ToInt32(((DbDataReader)(object)sdr)["TotalMeetingCount"]);
 									}
 									((DbDataReader)(object)sdr).Close();
 								}
