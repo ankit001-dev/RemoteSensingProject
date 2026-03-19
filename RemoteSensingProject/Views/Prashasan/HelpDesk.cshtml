@@ -1,0 +1,351 @@
+﻿
+@{
+    ViewBag.Title = "HelpDesk";
+    Layout = "~/Views/Shared/_prashasanLayout.cshtml";
+}
+
+<style>
+
+    .header {
+        background: linear-gradient(135deg, #6ea8fe, #cfe2ff);
+        color: #1b3c74;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .module-card {
+        border: none;
+        border-radius: 14px;
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border-left: 5px solid #6ea8fe;
+    }
+
+        .module-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            border-left: 5px solid #0d6efd;
+        }
+
+    .module-title {
+        font-weight: 600;
+    }
+
+    .feature-list li {
+        margin-bottom: 10px;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+        .feature-list li:hover {
+            transform: translateX(5px);
+            color: #0d6efd;
+        }
+
+    .screenshot {
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        width: 100%;
+        min-height: 260px;
+        object-fit: contain;
+        transition: 0.3s;
+    }
+
+        .screenshot:hover {
+            transform: scale(1.05);
+        }
+
+    .chart-img {
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        transition: 0.3s;
+    }
+
+        .chart-img:hover {
+            transform: scale(1.05);
+        }
+
+    .image-box {
+        background: #f8faff;
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid #e0e6f1;
+    }
+
+    .open-btn {
+        background: linear-gradient(135deg, #4e73df, #224abe);
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 20px;
+        transition: 0.3s;
+    }
+
+        .open-btn:hover {
+            background: linear-gradient(135deg, #224abe, #1a3a8f);
+            transform: scale(1.05);
+        }
+</style>
+
+<div class="container-fluid mt-2">
+
+    <!-- HEADER -->
+    <div class="header text-center">
+        <h2><i class="bi bi-life-preserver"></i> Help Desk</h2>
+        <p class="mb-0">User Guide for Remote Sensing Application Centre Project Management System</p>
+    </div>
+
+    <div class="row g-4 mt-3">
+
+        <!-- ================= DASHBOARD ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Dashboard
+                        </h4>
+
+                        <p class="text-muted">
+                            Dashboard provides overview of outsource & manpower request.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This dashboard provides an overview of manpower and outsourcing data in the Prashasan panel.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Summary cards are displayed showing Total Designation, Total Outsource, Total Requests, and Total Remaining manpower.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Each card displays the respective count for quick analysis and monitoring.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A chart is provided to visualize outsource data for better understanding.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps users track manpower distribution and outsourcing status efficiently.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/prashasan/dashboard" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/pr-helpdesk/dashboard.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Designation ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Manage Designation
+                        </h4>
+
+                        <p class="text-muted">
+                            Create and view designations.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows users to manage Designations in the Prashasan panel.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can add new designations using a dedicated form.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All added designations are displayed in a structured list format.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can update existing designations using the Edit option.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can delete designations using the Delete option.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module supports complete CRUD operations (Create, Read, Update, Delete) for managing designations.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/prashasan/managedivision" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6 mt-3">
+                        <img src="~/Content/pr-helpdesk/desg.png" class="screenshot mb-3">
+                    </div>
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/pr-helpdesk/desg-form.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Add OutSource ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Add OutSource
+                        </h4>
+
+                        <p class="text-muted">
+                            Create and view outsource.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows users to manage Outsource entries in the Prashasan panel.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can perform complete CRUD operations (Create, Read, Update, Delete) for outsource records.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All outsource entries are displayed in a structured list format for easy management.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A search functionality is provided to find outsource records based on Outsource Name.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A Division filter is available to view outsource records for a specific division.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Add Outsource button is provided to create new outsource entries.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the Add Outsource button, a form opens where users can enter details and add a new outsource record.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can update existing outsource records using the Edit option.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can delete outsource records using the Delete option.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps in efficiently managing outsource resources across different divisions.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/prashasan/manageoutsource" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/pr-helpdesk/out-list.png" class="screenshot mb-3">
+                        <img src="~/Content/pr-helpdesk/out-add.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Manage Manpower ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Manage Manpower
+                        </h4>
+
+                        <p class="text-muted">
+                            Manage manpower request and view manpower details.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows users to manage manpower distribution across divisions.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A structured list is displayed showing Division-wise Manpower details including Requested, Added, and Remaining manpower.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can search divisions using the Division Name for quick access.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Request column is clickable to view detailed manpower requirements.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the Request count, a new page opens showing Designation-wise manpower details.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The designation-wise list displays Requested, Added, and Remaining manpower for each designation.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Action column is provided to allocate manpower for a specific designation.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the Action option, users can select multiple outsource resources and assign them to the selected designation.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A search functionality is also available to filter records based on Designation Name.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps in efficient allocation and management of manpower across divisions and designations.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/prshasan/managemanpowerrequest" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/pr-helpdesk/man-req.png" class="screenshot mb-3">
+                        <img src="~/Content/pr-helpdesk/man-man.png" class="screenshot mb-3">
+                        
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <img src="~/Content/pr-helpdesk/man-add.png" class="screenshot mb-3">
+                        
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Report ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Report
+                        </h4>
+
+                        <p class="text-muted">
+                            View outsource monthly report which is added by outsource.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows users to view Monthly Progress Reports of outsource resources.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The reports are displayed in a structured list based on a predefined format.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Each record shows the progress details submitted for outsource resources.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Filter options are provided to refine the data based on Division, Year, and Month.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Division filter allows users to view reports for a specific division.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Year and Month filters help in viewing reports for a specific time period.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps in tracking and monitoring the performance of outsource resources effectively.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/Prashasan/Monthly_ManPower_Allocation_Report" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/pr-helpdesk/st-repo.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+

@@ -12,38 +12,13 @@ namespace RemoteSensingProject.Models.SubOrdinate
 {
 	public class DashboardCount
 	{
-		public int TotalAssignProject { get; set; }
+		public int TotalTaskCount { get; set; }
 
-		public int InternalProject { get; set; }
+		public int PendingTaskCount { get; set; }
 
-		public int ExternalProject { get; set; }
+		public int CompleteTaskCount { get; set; }
 
-		public int CompletedProject { get; set; }
-
-		public int PendingProject { get; set; }
-
-		public int OngoingProject { get; set; }
-
-		public int TotalMeetings { get; set; }
-
-		public int AdminMeetings { get; set; }
-
-		public int ProjectManagerMeetings { get; set; }
-	}
-
-	public class AssignedProject
-	{
-		public int Id { get; set; }
-
-		public DateTime AssignDate { get; set; }
-
-		public string ProjectName { get; set; }
-
-		public DateTime StartDate { get; set; }
-
-		public DateTime CompletionDate { get; set; }
-
-		public string ProjectStatus { get; set; }
+		public int MeetingCount { get; set; }
 	}
 
 	public class UserCredential

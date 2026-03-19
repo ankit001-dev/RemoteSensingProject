@@ -1,0 +1,336 @@
+﻿
+@{
+    ViewBag.Title = "HelpDesk";
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+}
+
+<style>
+
+    .header {
+        background: linear-gradient(135deg, #6ea8fe, #cfe2ff);
+        color: #1b3c74;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .module-card {
+        border: none;
+        border-radius: 14px;
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border-left: 5px solid #6ea8fe;
+    }
+
+        .module-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+            border-left: 5px solid #0d6efd;
+        }
+
+    .module-title {
+        font-weight: 600;
+    }
+
+    .feature-list li {
+        margin-bottom: 10px;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+        .feature-list li:hover {
+            transform: translateX(5px);
+            color: #0d6efd;
+        }
+
+    .screenshot {
+        border-radius: 12px;
+        border: 1px solid #ddd;
+        width: 100%;
+        min-height: 260px;
+        object-fit: contain;
+        transition: 0.3s;
+    }
+
+        .screenshot:hover {
+            transform: scale(1.05);
+        }
+
+    .chart-img {
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        transition: 0.3s;
+    }
+
+        .chart-img:hover {
+            transform: scale(1.05);
+        }
+
+    .image-box {
+        background: #f8faff;
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px solid #e0e6f1;
+    }
+
+    .open-btn {
+        background: linear-gradient(135deg, #4e73df, #224abe);
+        color: white;
+        border: none;
+        padding: 8px 18px;
+        border-radius: 20px;
+        transition: 0.3s;
+    }
+
+        .open-btn:hover {
+            background: linear-gradient(135deg, #224abe, #1a3a8f);
+            transform: scale(1.05);
+        }
+</style>
+
+<div class="container-fluid mt-2">
+
+    <!-- HEADER -->
+    <div class="header text-center">
+        <h2><i class="bi bi-life-preserver"></i> Help Desk</h2>
+        <p class="mb-0">User Guide for Remote Sensing Application Centre Project Management System</p>
+    </div>
+
+    <div class="row g-4 mt-3">
+
+        <!-- ================= DASHBOARD ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <!-- LEFT -->
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-speedometer2 text-primary"></i> Dashboard
+                        </h4>
+
+                        <p class="text-muted">
+                            Dashboard provides overview of projects, budget and analytics.
+                        </p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This dashboard provides an overview of project financials and activities for the Accounts panel.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Separate cards are displayed for Internal Projects and External Projects.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Each project card shows key details such as Total Projects, Total Fund, and Total Expense.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Adhisthan card is provided, displaying Budget Provision Count, Expenditure in Rupees, and Expenditure in Percentage.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A Tour card is also available, showing the total number of tours.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All dashboard cards are clickable and redirect users to their respective detailed pages.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A project-wise budget chart is displayed, showing Total Budget, Pending Amount, and Expense distribution.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Separate charts for Internal and External projects are provided to show summary insights.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>These charts display the percentage of completed projects and pending projects.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Below the charts, an additional section displays External Project Budget details similar to the Internal budget card.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This dashboard helps users quickly analyze financial status, project progress, and overall performance.</li>
+                        </ul>
+
+                        <a class="open-btn" href="/accounts/dashboard" target="_blank">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <!-- RIGHT -->
+                    <div class="col-md-6">
+                        <img src="~/Content/acc-helpdesk/dashboard.png" class="screenshot mb-3">
+                        <img src="~/Content/acc-helpdesk/chart1.png" class="screenshot mb-3">
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <img src="~/Content/acc-helpdesk/chart2.png" class="screenshot mb-3">
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <img src="~/Content/acc-helpdesk/chart3.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ================= Adhisthan ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-cash-stack text-primary"></i> Manage Adhisthan
+                        </h4>
+
+                        <p class="text-muted">Create,edit and view adhisthan with expenditure and committed.</p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows users to add and manage Adhisthan records in the Accounts panel.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A form is provided to add new Adhisthan entries with required details.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All added Adhisthan records are displayed in a structured list format for easy viewing.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The list includes key details such as Head Name, Budget Provision, Expenditure Amount, Expenditure Percentage, and Committed Amount.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Action column is provided with an Edit icon to update Adhisthan details.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can click on the Head Name to open a form for adding expenditure amount for that specific Adhisthan.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The added expenditure is automatically updated and reflected in the same list.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can click on the Committed Amount field to open a form for updating the committed amount.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The updated committed amount is saved and reflected instantly in the table.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Export Docs button is provided to download the Adhisthan data in a predefined DOCX format.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps users efficiently manage budget provisions, expenditures, and committed amounts under Adhisthan.</li>
+                        </ul>
+
+                        <a target="_blank" class="open-btn" href="/accounts/adhisthan">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <div class="col-md-6">
+                        <img src="~/Content/acc-helpdesk/ad-list.png" class="screenshot mb-3">
+                        <img src="~/Content/acc-helpdesk/ad-form.png" class="screenshot mb-3">          
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <img src="~/Content/acc-helpdesk/ex-form.png" class="screenshot mb-3">
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <img src="~/Content/acc-helpdesk/com-up.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ================= Project List ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-cash-stack text-primary"></i> Project List
+                        </h4>
+
+                        <p class="text-muted">Manage Project List.</p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module provides separate project lists for Internal and External projects in the Accounts panel.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Both lists are similar in structure, with the only difference being the project bifurcation (Internal and External).</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The project list displays key details such as Assign Date, Project Code, Project Name, and Start Date.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A search functionality is available to find projects based on Project Name.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A Financial Year filter is provided to view projects for a specific financial year.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Export Docs button is available to download the project list in a predefined DOCX format.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The list includes an Action column with an icon to manage project expenses.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the Add Expense icon, a list of all heads related to the selected project is displayed.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The head list contains an Action column with two icons for further operations.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The first icon allows users to add expense under the selected head through a dedicated form.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The second icon allows users to update the committed amount for that specific head using a separate form.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Users can click on the Head Name to view the list of all expenses recorded under that head.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The expense list provides detailed information about all entries made for that head.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The same functionality and structure are available for both Internal and External project lists.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps users efficiently manage and track project-wise and head-wise expenses.</li>
+                        </ul>
+
+                        <a target="_blank" class="open-btn" href="/accounts/internalproject">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <div class="col-md-6">
+                        <img src="~/Content/acc-helpdesk/pr-list.png" class="screenshot mb-3">
+                        <img src="~/Content/acc-helpdesk/ex-add.png" class="screenshot mb-3">
+                        <img src="~/Content/acc-helpdesk/ex-add-form.png" class="screenshot mb-3">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="~/Content/acc-helpdesk/com-upp.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= Tour ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-cash-stack text-primary"></i>Tour List
+                        </h4>
+
+                        <p class="text-muted">View all tours which is added by employees/project manager.</p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Admin users to view all tour entries submitted by the Project Manager.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Tour entries are created by the Project Manager through a form, whether the tour is for themselves or for Project Staff.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All submitted tour records are displayed in a structured list format for easy viewing and tracking.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The tour list displays key details such as Project Name, Purpose of Visit, Place of Visit, Period From, and Period To.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Admin users can filter the tour list using the Project Filter to view tours related to a specific project.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Financial Year filter allows Admin users to view tour records for a selected financial year.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>These filters help in refining the data and quickly accessing relevant tour information.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Admin users can click on the Project Name in the list to view complete details of the selected tour entry.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The detailed view provides all additional information filled in the tour form for better understanding.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Admin users keep track of all tour activities related to different projects and staff.</li>
+                        </ul>
+
+                        <a target="_blank" class="open-btn" href="/accounts/tourproposalrequest">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <div class="col-md-6">
+                        <img src="~/Content/User Manual/tour.png" class="screenshot mb-3">
+                        <img src="~/Content/User Manual/tour-detail.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+

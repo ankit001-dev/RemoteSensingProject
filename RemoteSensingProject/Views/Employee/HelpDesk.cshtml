@@ -144,6 +144,348 @@
             </div>
         </div>
 
+
+        <!-- ======================= Divisional Head ================= -->
+        @if (User.IsInRole("divisionHead"))
+        {
+            <!-- ================= Reports ================= -->
+            <div class="col-md-12">
+                <div class="card module-card p-4">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <h4 class="module-title">
+                                <i class="bi bi-cash-stack text-primary"></i>Division Report
+                            </h4>
+
+                            <p class="text-muted">Manage & view internal & external project progress report.</p>
+
+                            <ul class="feature-list">
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module provides a Progress Reports section where Division Heads can view and monitor project reports submitted by Project Managers.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The main page displays predefined cards such as Internal and External, along with additional dynamic cards created from the Technical Panel.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Each card represents a specific report format and allows Division Heads to access reports accordingly.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the Internal card, a new page opens showing the Internal Project Progress Reports in a predefined format.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The Internal report page includes Year and Month filters to view reports for a specific period.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Division Heads can view all submitted data entered by Project Managers in the report.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The reports are visible only after they are final submitted by the respective Project Managers.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>An Export Docs button is provided to download the report in the same predefined format.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The External card works similarly to the Internal report but follows a different predefined format.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>All functionalities such as filters, viewing data, and export are available in the External report as well.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The dynamic cards represent additional report formats created from the Technical Panel.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>On clicking a dynamic card, the corresponding report format is displayed as defined by the Technical Panel.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Division Heads can view the submitted data in a structured table format for each dynamic report.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Division Heads monitor project progress, review submitted reports, and track performance across projects.</li>
+                            </ul>
+
+                            <a target="_blank" class="open-btn" href="/divisionhead/common">
+                                Open Page →
+                            </a>
+                        </div>
+
+                        <div class="col-md-6">
+                            <img src="~/Content/emp-helpdesk/div-dashboard.png" class="screenshot mb-3">
+                            <img src="~/Content/emp-helpdesk/div-int-form.png" class="screenshot mb-3">
+                            <img src="~/Content/emp-helpdesk/div-int-repo.png" class="screenshot mb-3">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <img src="~/Content/emp-helpdesk/div-ext-form.png" class="screenshot mb-3">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <img src="~/Content/emp-helpdesk/div-ext-repo.png" class="screenshot mb-3">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <img src="~/Content/emp-helpdesk/dy-form.png" class="screenshot mb-3">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <img src="~/Content/emp-helpdesk/dy-form-view.png" class="screenshot mb-3">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= Manpower Request ================= -->
+            <div class="col-md-12">
+                <div class="card module-card p-4">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <h4 class="module-title">
+                                <i class="bi bi-cash-stack text-primary"></i>Manpower Request
+                            </h4>
+
+                            <p class="text-muted">View manpower requirement raised by projectmanager.</p>
+
+                            <ul class="feature-list">
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Division Heads to view manpower requirements raised by Project Managers.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>A structured list is displayed showing manpower requests for different projects.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The list provides details of how many manpower resources are required by each Project Manager for their respective division.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The module also displays the total number of manpower already available within the Divisional Head’s division.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This helps in comparing the required manpower with the existing manpower in the division.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The list view enables quick analysis of manpower gaps across projects.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Division Heads in planning and managing manpower distribution efficiently within their division.</li>
+                            </ul>
+
+                            <a target="_blank" class="open-btn" href="/divisionhead/divisionhead">
+                                Open Page →
+                            </a>
+                        </div>
+
+                        <div class="col-md-6">
+                            <img src="~/Content/emp-helpdesk/man-req.png" class="screenshot mb-3">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= Manage Manpower ================= -->
+            <div class="col-md-12">
+                <div class="card module-card p-4">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <h4 class="module-title">
+                                <i class="bi bi-cash-stack text-primary"></i>Manage Manpower
+                            </h4>
+
+                            <p class="text-muted">Manage and allocate manpower to their division's project manager.</p>
+
+                            <ul class="feature-list">
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Division Heads to manage manpower allocation across projects effectively.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>A table is displayed showing Total Manpower and Manpower Requests in a designation-wise format.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The Manpower Request count is clickable, allowing users to view detailed request information.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the request count, a new page opens showing Project Manager-wise manpower requests.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This detailed view displays how many manpower resources each Project Manager has requested.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>It also shows the number of manpower already assigned to each Project Manager.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The required manpower count is clickable for each Project Manager.</li>
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Searching also available in that page where user can also filter record by enter name of project manager in search box.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the required count, an allocation form opens for assigning manpower.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The form displays the selected Project Manager’s name for whom manpower is being allocated.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>A dropdown is provided to select multiple manpower resources for allocation.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Division Heads can select one or more manpower resources and allocate them to the Project Manager.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Once allocated, the manpower is reflected in the Project Manager’s panel.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module helps in efficient distribution and management of manpower based on project requirements.</li>
+                            </ul>
+
+                            <a target="_blank" class="open-btn" href="/divisionhead/manpower">
+                                Open Page →
+                            </a>
+                        </div>
+
+                        <div class="col-md-6">
+                            <img src="~/Content/emp-helpdesk/man-add.png" class="screenshot mb-3">
+                            <img src="~/Content/emp-helpdesk/manage-man.png" class="screenshot mb-3">
+                            <img src="~/Content/emp-helpdesk/add-man.png" class="screenshot mb-3">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= Division Project List ================= -->
+            <div class="col-md-12">
+                <div class="card module-card p-4">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <h4 class="module-title">
+                                <i class="bi bi-cash-stack text-primary"></i>Division Project List
+                            </h4>
+
+                            <p class="text-muted">View all Projects of their division.</p>
+
+                            <ul class="feature-list">
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Division Heads to view all projects under their division.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>A structured project list is displayed similar to the Project Manager’s project list view.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The list shows key project details such as Project Name, Project Manager, Start Date, Completion Date, and Project Status.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Additional columns such as Physical Percentage, Financial Percentage, and Overall Progress are also displayed for better monitoring.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Division Heads can search projects using the Project Name for quick access.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Filter options such as Project Status and Financial Year are available to refine the project list.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The Project Status field helps in identifying whether the project is ongoing, completed, or pending.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Division Heads can click on the Project Name to view complete details of the selected project.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The Action column includes icons to view monthly progress reports and project-related expense details.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Division Heads effectively monitor and manage all projects within their division.</li>
+                            </ul>
+
+                            <a target="_blank" class="open-btn" href="/divisionhead/divisionheadallprojectlist">
+                                Open Page →
+                            </a>
+                        </div>
+
+                        <div class="col-md-6">
+                            <img src="~/Content/emp-helpdesk/div-projectlist.png" class="screenshot mb-3">
+                            <img src="~/Content/User Manual/view-exp.png" class="screenshot mb-3">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        }
+
+
+        <!-- ======================= Divisional Head ================= -->
+        @if (User.IsInRole("technicalShell"))
+        {
+            <!-- ================= Reports ================= -->
+            <div class="col-md-12">
+                <div class="card module-card p-4">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <h4 class="module-title">
+                                <i class="bi bi-cash-stack text-primary"></i>Technical Report
+                            </h4>
+
+                            <p class="text-muted">Manage & view internal & external project progress report.</p>
+
+                            <ul class="feature-list">
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module provides a Progress Reports section where Technical Cell users can create, manage, and monitor project reports.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The main page displays predefined cards such as Internal and External, along with dynamic cards for additional formats.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Each card represents a specific report format and allows users to access and manage reports accordingly.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the Internal card, a new page opens showing the Internal Project Progress Report in a predefined format.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The Internal report page includes Year and Month filters to view and manage data for a specific period.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Technical Cell users can add and manage reports for all projects across divisions.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>An Add Monthly Status button is provided to enter new report data.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>On clicking this button, a modal form opens where users can fill in the required report details.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>After filling the form, the entered data is saved and displayed in the report view.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>A Final Submit button is available to finalize and submit the report.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>An Export Docs button is provided to download the report in the same predefined format.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The External card works similarly to the Internal report but follows a different predefined format.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>All functionalities such as filters, data entry, submission, and export are also available in the External report.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The dynamic cards represent additional report formats created and managed by the Technical Cell.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Technical Cell users to manage reports for all projects, unlike Division Heads who can access only their division’s projects.</li>
+                            </ul>
+
+                            <a target="_blank" class="open-btn" href="/divisionhead/common">
+                                Open Page →
+                            </a>
+                        </div>
+
+                        <div class="col-md-6">
+                            <img src="~/Content/emp-helpdesk/tech-dashboard.png" class="screenshot mb-3">
+                            <img src="~/Content/emp-helpdesk/div-int-form.png" class="screenshot mb-3">
+                            <img src="~/Content/emp-helpdesk/tech-int-repo.png" class="screenshot mb-3">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <img src="~/Content/emp-helpdesk/div-ext-form.png" class="screenshot mb-3">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <img src="~/Content/emp-helpdesk/tech-ext.png" class="screenshot mb-3">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <img src="~/Content/emp-helpdesk/dy-form.png" class="screenshot mb-3">
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <img src="~/Content/emp-helpdesk/dy-form-view.png" class="screenshot mb-3">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= Add New Format ================= -->
+            <div class="col-md-12">
+                <div class="card module-card p-4">
+                    <div class="row">
+
+                        <div class="col-md-6">
+                            <h4 class="module-title">
+                                <i class="bi bi-cash-stack text-primary"></i>Add New Format
+                            </h4>
+
+                            <p class="text-muted">Create & view new format for report.</p>
+
+                            <ul class="feature-list mt-3">
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Technical Cell users to create new dynamic report formats.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Users can define custom fields and structure for the dynamic report format.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Once a new format is created, it appears as a dynamic card in the Progress Reports section.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The created dynamic format is visible in both Division Head and Project Manager panels.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>A dynamic form is generated automatically based on the defined fields of the format.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>Users can enter data using the dynamic form, and the submitted data is stored accordingly.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>The entered data is displayed in a table format for easy viewing and management.</li>
+
+                                <li><i class="bi bi-check-circle-fill text-success"></i>This module helps in creating flexible and customizable reporting formats as per project requirements.</li>
+                            </ul>
+
+                            <a target="_blank" class="open-btn" href="/divisionhead/divisionhead">
+                                Open Page →
+                            </a>
+                        </div>
+
+                        <div class="col-md-6">
+                            <img src="~/Content/emp-helpdesk/add-new-format.png" class="screenshot mb-3">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            
+
+        }
+
         <!-- ================= BUDGET HEAD ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
@@ -306,6 +648,7 @@
                 </div>
             </div>
         </div>
+
         <!-- ================= Internal & External Project List ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
@@ -369,9 +712,6 @@
                     <div class="col-md-6">
                         <img src="~/Content/emp-helpdesk/pr-staff.png" class="screenshot mb-3">
                     </div>
-                    @*<div class="col-md-6 mt-2">
-                        <img src="~/Content/User Manual/addemp.png" class="screenshot mb-3">
-                    </div>*@
 
                 </div>
             </div>
@@ -428,8 +768,6 @@
                 </div>
             </div>
         </div>
-
-
 
         <!-- ================= Create Meeting ================= -->
         <div class="col-md-12">
@@ -512,6 +850,51 @@
             </div>
         </div>
 
+        <!-- ================= Notice ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-cash-stack text-primary"></i>Notices
+                        </h4>
+
+                        <p class="text-muted">View notices which is generated from admin/director related to project.</p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Project Managers to view all notices shared by the Admin.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All received notices are displayed in a structured list format for easy access.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The notice list includes key details such as Project Name and notice content summary.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Attachment column is provided to download or view the document shared with the notice.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can search notices using the Project Name for quick access.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Filter options are available, including Financial Year filter, to view notices for a specific period.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can click on the Project Name to view complete notice details.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The detailed view displays full notice content along with any attached documents.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Managers stay updated with important project-related notices shared by the Admin.</li>
+                        </ul>
+
+                        <a target="_blank" class="open-btn" href="/employee/generate_notice">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <div class="col-md-6">
+                        <img src="~/Content/emp-helpdesk/notice-list.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <!-- ================= Tour ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
@@ -565,202 +948,179 @@
                 </div>
             </div>
         </div>
-        <!-- ================= Attendance ================= -->
+
+        <!-- ================= Raise Problem ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
                 <div class="row">
 
                     <div class="col-md-6">
                         <h4 class="module-title">
-                            <i class="bi bi-cash-stack text-primary"></i>Attendance
+                            <i class="bi bi-cash-stack text-primary"></i>Raise Problems
                         </h4>
 
-                        <p class="text-muted">View attendance of project staff while they are on tour.</p>
+                        <p class="text-muted">Create & view project problems related to any project.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows employee users to view attendance records of Project Staff based on Project Manager selection.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Project Managers to raise project-related problems directly from their panel.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Initially, a list of all Project Managers is displayed for selection.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A form is provided where Project Managers can select the Project and enter problem details.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking a Project Manager’s name, all tours associated with that Project Manager (for Project Staff) are displayed.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The form includes fields to describe the issue clearly so that it can be reviewed by the Admin.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The tour list includes a Financial Year filter to view tours for a specific financial year.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>After submitting the form, the problem is recorded and displayed in the problem list.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Each tour record contains an Action column with an icon to view attendance details.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All raised problems are shown in a structured list format for easy tracking.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the View Attendance icon, the attendance sheet of all Project Staff for that tour is displayed.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The list displays key details such as Project Name, Problem Description (short), and current status.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The attendance sheet includes filters such as Month and Project Staff to refine the data.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The Month filter allows users to view attendance for a specific month.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The Project Staff filter allows users to view attendance records of a specific staff member.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The attendance list displays key details such as Attendance Location, Project Staff Name, Attendance Date, and Attendance Status.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The Attendance Status is represented as 'P' for Present and 'A' for Absent.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps employee users monitor and track attendance of Project Staff efficiently across different tours.</li>
-                        </ul>
-
-                        <a target="_blank" class="open-btn" href="/employee/attendance">
-                            Open Page →
-                        </a>
-                    </div>
-
-                    <div class="col-md-6">
-                        <img src="~/Content/User Manual/emp-attendance.png" class="screenshot mb-3">
-                        <img src="~/Content/User Manual/view-attendance.png" class="screenshot mb-3">
-                    </div>
-                    <div class="col-md-12 p-4 mt-3">
-                        <img src="~/Content/User Manual/attendance-sheet.png" class="screenshot mb-3">
-                    </div>
-
-                </div>
-            </div>
-        </div>
-        <!-- ================= Project Problem ================= -->
-        <div class="col-md-12">
-            <div class="card module-card p-4">
-                <div class="row">
-
-                    <div class="col-md-6">
-                        <h4 class="module-title">
-                            <i class="bi bi-cash-stack text-primary"></i>Project Problems
-                        </h4>
-
-                        <p class="text-muted">View project problems which is feeded by project manager.</p>
-
-                        <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows employee users to view all project-related problems raised by the Project Manager.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can raise issues or problems related to a specific project through their panel.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>All submitted problems are displayed in a structured list format for easy monitoring.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The problem list includes key details such as Project Name, Problem Description (short), and current status.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The Project Name field helps identify which project the problem is associated with.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Status column indicates whether the problem has been viewed by the Admin or is still pending.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>There is another column of Action in which showing a icon to delete that raised problem.</li>
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>A Financial Year filter is provided to view problems for a specific financial year.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The Status column indicates whether the problem has been viewed by the employee or is still pending.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can click on the Project Name to view complete details of the raised problem.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Problems that are not yet viewed by the employee are marked as Pending.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Once the employee views a problem, its status is automatically updated to Seen.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>employee users can click on the Project Name in the list to view complete details of the selected problem.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>On opening the problem details, the system automatically marks that problem as Seen.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The detailed view provides full information submitted by the Project Manager for better understanding and action.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps employee users track and respond to project-related issues efficiently.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Managers report issues effectively and keep track of their status.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/employee/raisedproblem">
+                        <a target="_blank" class="open-btn" href="/employee/raiseproblem">
                             Open Page →
                         </a>
                     </div>
 
                     <div class="col-md-6">
-                        <img src="~/Content/User Manual/project-problem.png" class="screenshot mb-3">
-                        <img src="~/Content/User Manual/problem-details.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/raise-fr.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/raise-pr.png" class="screenshot mb-3">
                     </div>
 
                 </div>
             </div>
         </div>
-        <!-- ================= Notices ================= -->
+
+        <!-- ================= Progress Report ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
                 <div class="row">
 
                     <div class="col-md-6">
                         <h4 class="module-title">
-                            <i class="bi bi-cash-stack text-primary"></i>Notices
+                            <i class="bi bi-cash-stack text-primary"></i>Progress Report
                         </h4>
 
-                        <p class="text-muted">View notices created by admin/director.</p>
+                        <p class="text-muted">View project progress report.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Project Managers to view all notices shared by the Admin.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module provides a Progress Reports section where Project Managers can manage and submit different types of project reports.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>All received notices are displayed in a structured list format for easy access.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The main page displays predefined cards such as Internal and External, along with additional dynamic cards created from the Technical Panel.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The notice list includes key details such as Project Name, Project Manager Name, and notice content summary.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Each card represents a specific report format and allows users to access and manage reports accordingly.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>An Attachment column is provided to download or view the document shared with the notice.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the Internal card, a new page opens showing the Internal Project Progress Report in a predefined format.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can search notices using the Project Name for quick access.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Internal report page includes Year and Month filters to view data for a specific period.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Filter options are available, including Financial Year filter, to view notices for a specific period.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Add Monthly Status button is provided to enter new report data.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can click on the Project Name to view complete notice details.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking this button, a modal form opens where users can fill in the required report details.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The detailed view displays full notice content along with any attached documents.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>After filling the form, the entered data is saved and displayed in the report view.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Managers stay updated with important project-related notices shared by the Admin.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A Final Submit button is available to submit the complete report.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Once the report is final submitted, it becomes visible to the respective Division Head of the Project Manager.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>An Export Docs button is provided to download the report in the same predefined format.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The system allows data entry only for the previous month of the current financial year for the selected project.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The External card works similarly to the Internal report but follows a different predefined format.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All functionalities such as filters, data entry, final submission, and export are available in the External report as well.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The dynamic cards represent additional report formats created from the Technical Panel.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking a dynamic card, the corresponding report format is displayed as defined by the Technical Panel.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A dynamic form is generated based on the selected format, allowing users to input data accordingly.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Submitted data from the dynamic form is saved and displayed in a table format for that report.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Managers efficiently manage, submit, and track project-wise progress reports in multiple formats.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/employee/generate_notice">
+                        <a target="_blank" class="open-btn" href="/employee/commonpage">
                             Open Page →
                         </a>
                     </div>
 
                     <div class="col-md-6">
-                        <img src="~/Content/emp-helpdesk/notice-list.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/pr-repo.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/div-int-form.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/pr-int-list.png" class="screenshot mb-3">
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <img src="~/Content/emp-helpdesk/div-ext-form.png" class="screenshot mb-3">
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <img src="~/Content/emp-helpdesk/pr-ext-list.png" class="screenshot mb-3">
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <img src="~/Content/emp-helpdesk/dy-form.png" class="screenshot mb-3">
+                    </div>
+                    <div class="col-md-6 mt-3">
+                        <img src="~/Content/emp-helpdesk/dy-form-view.png" class="screenshot mb-3">
                     </div>
 
                 </div>
             </div>
         </div>
-        <!-- ================= Employee Monthly Report ================= -->
+
+        <!-- ================= Feedback Form ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
                 <div class="row">
 
                     <div class="col-md-6">
                         <h4 class="module-title">
-                            <i class="bi bi-cash-stack text-primary"></i>Employee Monthly Report
+                            <i class="bi bi-cash-stack text-primary"></i>Feedback Form
                         </h4>
 
-                        <p class="text-muted">View and download monthly progress report of employees.</p>
+                        <p class="text-muted">submit your feedback here for this software.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows employee users to view the Employee Monthly Progress Reports of all Project Managers.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Project Managers to submit feedback related to the software.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>A list of all Project Managers is displayed along with key details such as Project Manager Name and Division Name.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>A feedback form is provided where users can report issues or share suggestions.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The list includes a Download column with a Calendar icon for each Project Manager.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The form includes fields such as Feedback Title, Feedback Type, and Description.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the Calendar icon, the monthly progress report of the selected Project Manager is displayed in a predefined format.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Project Managers can clearly describe any issue faced in the system or provide improvement suggestions.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The report view includes filters for selecting Year and Month to view data for a specific time period.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>After filling in the required details, users can submit the feedback using the submit button.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>Based on the selected Year and Month, the report data is dynamically displayed.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All submitted feedback entries are saved and displayed in a list format below the form.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>A Download button is provided in the report view to download the report in the given format.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The feedback list allows users to view all previously submitted feedback records.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>The downloaded report maintains the same structured format as shown in the preview.</li>
-
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps employee users easily access, review, and download monthly performance reports of Project Managers.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps in tracking software issues and collecting user suggestions for system improvement.</li>
                         </ul>
 
-                        <a target="_blank" class="open-btn" href="/employee/EployeeMonthlyReport">
+                        <a target="_blank" class="open-btn" href="/employee/feedback">
                             Open Page →
                         </a>
                     </div>
 
                     <div class="col-md-6">
-                        <img src="~/Content/User Manual/emp-mon-repo.png" class="screenshot mb-3">
-                        <img src="~/Content/User Manual/repo-form.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/fdb.png" class="screenshot mb-3">
+                        <img src="~/Content/emp-helpdesk/fdb-list.png" class="screenshot mb-3">
                     </div>
 
                 </div>
             </div>
         </div>
+
         <!-- ================= Expense Report ================= -->
         <div class="col-md-12">
             <div class="card module-card p-4">
@@ -774,7 +1134,7 @@
                         <p class="text-muted">View expense report of the heads of projects.</p>
 
                         <ul class="feature-list">
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows employee users to view expense reports based on selected Project and Head.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows users to view expense reports based on selected Project and Head.</li>
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>By default, two dropdown fields are provided: Project and Head.</li>
 
@@ -790,7 +1150,7 @@
 
                             <li><i class="bi bi-check-circle-fill text-success"></i>The Attachment column allows users to view or download supporting documents related to each expense.</li>
 
-                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps employee users easily track and review project-wise and head-wise expenses.</li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Admin users easily track and review project-wise and head-wise expenses.</li>
                         </ul>
 
                         <a target="_blank" class="open-btn" href="/employee/expense_report">
@@ -807,8 +1167,56 @@
             </div>
         </div>
 
+        <!-- ================= Attendance ================= -->
+        <div class="col-md-12">
+            <div class="card module-card p-4">
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <h4 class="module-title">
+                            <i class="bi bi-cash-stack text-primary"></i>Attendance
+                        </h4>
+
+                        <p class="text-muted">View attendance of project staff while they are on tour.</p>
+
+                        <ul class="feature-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module allows Project Managers to view attendance records of their Project Staff based on their own tours.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>All tours related to the logged-in Project Manager are displayed directly.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The tour list includes a Financial Year filter to view tours for a specific financial year.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>Each tour record contains an Action column with an icon to view attendance details.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>On clicking the View Attendance icon, the attendance sheet of Project Staff for that tour is displayed.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The attendance sheet includes filters such as Month and Project Staff to refine the data.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Month filter allows users to view attendance for a specific month.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Project Staff filter allows users to view attendance records of a specific staff member.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The attendance list displays key details such as Attendance Location, Project Staff Name, Attendance Date, and Attendance Status.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>The Attendance Status is represented as 'P' for Present and 'A' for Absent.</li>
+
+                            <li><i class="bi bi-check-circle-fill text-success"></i>This module helps Project Managers monitor and track attendance of their Project Staff efficiently.</li>
+                        </ul>
+
+                        <a target="_blank" class="open-btn" href="/employee/attendance_report">
+                            Open Page →
+                        </a>
+                    </div>
+
+                    <div class="col-md-6">
+                        <img src="~/Content/User Manual/view-attendance.png" class="screenshot mb-3">
+                        <img src="~/Content/User Manual/attendance-sheet.png" class="screenshot mb-3">
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
 
     </div>
 </div>
-
