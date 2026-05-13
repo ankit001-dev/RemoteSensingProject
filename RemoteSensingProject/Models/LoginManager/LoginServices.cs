@@ -138,20 +138,28 @@ namespace RemoteSensingProject.Models.LoginManager
 					NpgsqlDataReader rd = cmd.ExecuteReader();
 					try
 					{
-						if (((DbDataReader)(object)rd).HasRows)
-						{
-							var roleValue = rd["userrole"];
-                            ((DbDataReader)(object)rd).Read();
-							cr.userId = ((((DbDataReader)(object)rd)["userid"] != DBNull.Value) ? Convert.ToInt32(((DbDataReader)(object)rd)["userid"]) : 0);
-							cr.username = ((DbDataReader)(object)rd)["username"].ToString();
-							cr.role = roleValue != DBNull.Value ? roleValue.ToString()
-								.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-								.Select(r => r.Trim())
-								.ToArray()
-							: Array.Empty<string>();
-							cr.Email = ((((DbDataReader)(object)rd)["username"] != DBNull.Value) ? ((DbDataReader)(object)rd)["username"].ToString() : "");
-						}
-					}
+                        if (rd.Read()) // <-- directly read first row
+                        {
+                            cr.userId = rd[0] != DBNull.Value
+                                ? Convert.ToInt32(rd[0])
+                                : 0;
+
+                            cr.username = rd[1]?.ToString();
+
+                            var roleValue = rd[3];
+
+                            cr.role = roleValue != DBNull.Value
+                                ? roleValue.ToString()
+                                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                    .Select(r => r.Trim())
+                                    .ToArray()
+                                : Array.Empty<string>();
+
+                            cr.Email = rd[1] != DBNull.Value
+                                ? rd[1].ToString()
+                                : "";
+                        }
+                    }
 					finally
 					{
 						((IDisposable)rd)?.Dispose();
